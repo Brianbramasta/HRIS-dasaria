@@ -64,6 +64,9 @@ import DataKaryawan from "./feature/staff/pages/data-karyawan";
 import PengunduranDiri from "./feature/staff/pages/pengunduran-diri";
 import PerpanjanganKontrak from "./feature/staff/pages/perpanjangan-kontrak";
 
+// Auth Feature Pages
+import { LoginPage, ForgotPasswordPage } from "./feature/auth/pages";
+
 export default function App() {
   return (
     <>
@@ -144,6 +147,8 @@ export default function App() {
           {/* Auth Layout */}
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route
             path="/two-step-verification"
