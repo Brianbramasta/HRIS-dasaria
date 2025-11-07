@@ -59,6 +59,10 @@ import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import TaskList from "./pages/Task/TaskList";
 import Saas from "./pages/Dashboard/Saas";
+import StructureAndOrganize from "./feature/structure-and-organize/pages/List";
+import DataKaryawan from "./feature/staff/pages/data-karyawan";
+import PengunduranDiri from "./feature/staff/pages/pengunduran-diri";
+import PerpanjanganKontrak from "./feature/staff/pages/perpanjangan-kontrak";
 
 export default function App() {
   return (
@@ -69,6 +73,10 @@ export default function App() {
           {/* Dashboard Layout */}
           <Route element={<AppLayout />}>
             <Route index path="/" element={<Ecommerce />} />
+            <Route index path="/structure-and-organize" element={<StructureAndOrganize />} />
+            <Route path="/data-karyawan" element={<DataKaryawan />} />
+            <Route path="/pengunduran-diri" element={<PengunduranDiri />} />
+            <Route path="/perpanjangan-kontrak" element={<PerpanjanganKontrak />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/marketing" element={<Marketing />} />
             <Route path="/crm" element={<Crm />} />
