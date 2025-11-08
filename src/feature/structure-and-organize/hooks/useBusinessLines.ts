@@ -54,7 +54,7 @@ export const useBusinessLines = (): UseBusinessLinesReturn => {
         page: filter?.page ?? page,
         pageSize: filter?.pageSize ?? pageSize,
       });
-      
+      console.log('response', response);
       setBusinessLines(response.data);
       setTotal(response.total);
       setTotalPages(response.totalPages);

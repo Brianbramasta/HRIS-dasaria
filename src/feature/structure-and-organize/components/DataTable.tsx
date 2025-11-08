@@ -49,7 +49,7 @@ export function DataTable<T = any>({
   columns,
   actions,
   title,
-  searchable = true,
+  // searchable = true,
   searchPlaceholder = 'Cari berdasarkan kata kunci',
   pageSize = 10,
   pageSizeOptions = [5, 10, 25, 50],
@@ -79,6 +79,7 @@ export function DataTable<T = any>({
   };
 
   const filteredData = useMemo(() => {
+    console.log('data', data)
     if (!searchTerm) return data;
     return data.filter((row) =>
       columns.some((column) => {

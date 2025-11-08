@@ -29,6 +29,7 @@ const buildQueryParams = (filter: TableFilter) => {
 export const businessLineService = {
   getAll: async (filter: TableFilter): Promise<PaginatedResponse<BusinessLine>> => {
     const queryParams = buildQueryParams(filter);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const response = await apiService.get<any>(`/business-lines?${queryParams}`);
     const total = response.data.length;
     
@@ -70,9 +71,11 @@ export const businessLineService = {
 };
 
 // Companies API
+
 export const companyService = {
   getAll: async (filter: TableFilter): Promise<PaginatedResponse<Company>> => {
     const queryParams = buildQueryParams(filter);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const response = await apiService.get<any>(`/companies?${queryParams}`);
     const total = response.data.length;
     
@@ -118,6 +121,7 @@ export const companyService = {
 export const officeService = {
   getAll: async (filter: TableFilter): Promise<PaginatedResponse<Office>> => {
     const queryParams = buildQueryParams(filter);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const response = await apiService.get<any>(`/offices?${queryParams}`);
     const total = response.data.length;
     
@@ -162,6 +166,7 @@ export const officeService = {
 export const directorateService = {
   getAll: async (filter: TableFilter): Promise<PaginatedResponse<Directorate>> => {
     const queryParams = buildQueryParams(filter);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const response = await apiService.get<any>(`/directorates?${queryParams}`);
     const total = response.data.length;
     
@@ -206,6 +211,7 @@ export const directorateService = {
 export const divisionService = {
   getAll: async (filter: TableFilter): Promise<PaginatedResponse<Division>> => {
     const queryParams = buildQueryParams(filter);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const response = await apiService.get<any>(`/divisions?${queryParams}`);
     const total = response.data.length;
     
@@ -250,6 +256,7 @@ export const divisionService = {
 export const departmentService = {
   getAll: async (filter: TableFilter): Promise<PaginatedResponse<Department>> => {
     const queryParams = buildQueryParams(filter);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const response = await apiService.get<any>(`/departments?${queryParams}`);
     const total = response.data.length;
     
@@ -294,6 +301,7 @@ export const departmentService = {
 export const positionService = {
   getAll: async (filter: TableFilter): Promise<PaginatedResponse<Position>> => {
     const queryParams = buildQueryParams(filter);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const response = await apiService.get<any>(`/positions?${queryParams}`);
     const total = response.data.length;
     
@@ -338,6 +346,7 @@ export const positionService = {
 export const employeePositionService = {
   getAll: async (filter: TableFilter): Promise<PaginatedResponse<EmployeePosition>> => {
     const queryParams = buildQueryParams(filter);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const response = await apiService.get<any>(`/employee-positions?${queryParams}`);
     const total = response.data.length;
     
