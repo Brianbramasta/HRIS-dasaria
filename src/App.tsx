@@ -59,7 +59,7 @@ import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import TaskList from "./pages/Task/TaskList";
 import Saas from "./pages/Dashboard/Saas";
-import StructureAndOrganize from "./feature/structure-and-organize/pages/List";
+import StructureAndOrganize from "./feature/structure-and-organize/pages/StrukturOrganisasiPage";
 import DataKaryawan from "./feature/staff/pages/data-karyawan";
 import PengunduranDiri from "./feature/staff/pages/pengunduran-diri";
 import PerpanjanganKontrak from "./feature/staff/pages/perpanjangan-kontrak";

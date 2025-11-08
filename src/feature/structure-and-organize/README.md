@@ -1,224 +1,203 @@
-# Fitur Struktur dan Organisasi
+# HRIS Project - Dokumentasi Struktur Folder
 
-Fitur ini menyediakan manajemen struktur organisasi perusahaan dengan 8 tab utama:
+Project ini adalah aplikasi HRIS (Human Resource Information System) berbasis React TypeScript dengan Vite sebagai build tool.
 
-## 8 Tab Utama
+## 📁 Struktur Folder Utama
 
-1. **Lini Bisnis** - Mengelola lini bisnis perusahaan
-2. **Perusahaan** - Mengelola data perusahaan
-3. **Kantor** - Mengelola data kantor/cabang
-4. **Direktorat** - Mengelola direktorat
-5. **Divisi** - Mengelola divisi
-6. **Departemen** - Mengelola departemen
-7. **Posisi** - Mengelola posisi/jabatan
-8. **Posisi Karyawan** - Mengelola penempatan karyawan
-
-## Arsitektur
-
-Fitur ini mengikuti prinsip clean architecture dengan pemisahan yang jelas antara:
-
-- **Types** - Definisi interface dan type TypeScript
-- **Services** - Logic bisnis dan komunikasi API
-- **Hooks** - Custom React hooks untuk state management
-- **Components** - Komponen UI reusable
-- **Pages** - Halaman utama fitur
-
-## Cara Penggunaan
-
-### 1. Menjalankan json-server
-
-```bash
-# Install json-server secara global
-npm install -g json-server
-
-# Di root project
-json-server organization-db.json --watch --port 3001 --routes routes.json
-
-# Atau menggunakan file konfigurasi
-json-server --watch organization-db.json --config json-server.json
+### 🏠 Root Directory
+```
+d:\all progress code\Dasaria\HRIS\typscript/
+├── .gitignore              # File konfigurasi Git ignore
+├── README.md               # Dokumentasi utama project
+├── db.json                 # Database JSON untuk json-server
+├── eslint.config.js        # Konfigurasi ESLint
+├── index.html              # Entry point HTML
+├── json-server.json        # Konfigurasi JSON Server
+├── package-lock.json       # Dependency lock file
+├── package.json            # Project dependencies dan scripts
+├── postcss.config.js       # Konfigurasi PostCSS
+├── routes.json             # Routing untuk json-server
+├── server.js               # Server backend untuk development
+├── tsconfig*.json          # Konfigurasi TypeScript
+└── vite.config.ts          # Konfigurasi Vite
 ```
 
-### 2. Import Halaman
-
-```typescript
-import { StrukturOrganisasiPage } from '../feature/structure-and-organize';
-
-// Dalam routing aplikasi
-<Route path="/struktur-organisasi" element={<StrukturOrganisasiPage />} />
+### 📂 `public/` - Aset Statik
+```
+public/
+├── favicon.png             # Icon website
+└── images/                 # Folder gambar
+    ├── brand/              # Logo dan brand assets
+    ├── cards/              # Gambar untuk card components
+    ├── carousel/           # Gambar untuk carousel
+    ├── chat/               # Assets untuk fitur chat
+    ├── country/            # Bendera negara
+    ├── error/              # Gambar untuk halaman error
+    ├── grid-image/         # Gambar untuk grid layout
+    ├── icons/              # Icon-icon tambahan
+    ├── logo/               # Logo perusahaan
+    ├── product/            # Gambar produk
+    ├── shape/              # Shape/shadow images
+    ├── task/               # Icons untuk task management
+    ├── user/               # Avatar dan user images
+    └── video-thumb/        # Thumbnail video
 ```
 
-### 3. Menggunakan Komponen Individual
+### 📂 `src/` - Source Code Utama
 
-```typescript
-import { DataTable, Tabs } from '../feature/structure-and-organize';
-
-// Menggunakan DataTable
-<DataTable
-  columns={columns}
-  data={data}
-  loading={loading}
-  error={error}
-  total={total}
-  page={page}
-  pageSize={pageSize}
-  onPageChange={setPage}
-  onPageSizeChange={setPageSize}
-  onSort={setSort}
-  sortBy={sortBy}
-  sortOrder={sortOrder}
-/>
-
-// Menggunakan Tabs
-<Tabs
-  tabs={tabs}
-  activeTab={activeTab}
-  onTabChange={setActiveTab}
-  variant="scrollable"
-  orientation="horizontal"
-/>
+#### 🧩 `src/components/` - Komponen Reusable
+```
+components/
+├── UiExample/              # Contoh komponen UI
+├── UserProfile/            # Komponen profil user
+├── analytics/              # Komponen untuk analytics dashboard
+├── auth/                   # Komponen autentikasi (login, register)
+├── cards/                  # Card components reusable
+├── charts/                 # Komponen chart dan grafik
+├── chats/                  # Komponen untuk fitur chat
+├── common/                 # Komponen umum yang sering digunakan
+├── crm/                    # Komponen untuk CRM features
+├── ecommerce/              # Komponen untuk fitur e-commerce
+├── email/                  # Komponen untuk fitur email
+├── faqs/                   # Komponen untuk FAQ section
+├── file-manager/           # Komponen file manager
+├── form/                   # Komponen form dan input
+├── header/                 # Komponen header
+├── invoice/                # Komponen untuk invoice
+├── links/                  # Komponen untuk link management
+├── list/                   # Komponen list dan table
+├── marketing/              # Komponen untuk marketing tools
+├── price-table/            # Komponen price table
+├── saas/                   # Komponen untuk SaaS features
+├── stocks/                 # Komponen untuk stock management
+├── tables/                 # Komponen table yang kompleks
+├── task/                   # Komponen untuk task management
+└── ui/                     # Komponen UI dasar (button, modal, dll)
 ```
 
-### 4. Menggunakan Hooks
-
-```typescript
-import { useBusinessLines, useCompanies } from '../feature/structure-and-organize';
-
-// Menggunakan hook untuk business lines
-const {
-  businessLines,
-  loading,
-  error,
-  total,
-  page,
-  pageSize,
-  fetchBusinessLines,
-  createBusinessLine,
-  updateBusinessLine,
-  deleteBusinessLine,
-  setPage,
-  setPageSize,
-  setSort,
-  setSearch
-} = useBusinessLines();
-
-// Menggunakan hook untuk companies
-const {
-  companies,
-  loading,
-  error,
-  total,
-  page,
-  pageSize,
-  fetchCompanies,
-  createCompany,
-  updateCompany,
-  deleteCompany,
-  setPage,
-  setPageSize,
-  setSort,
-  setSearch
-} = useCompanies();
+#### 🗂️ `src/context/` - React Context
+```
+context/
+├── SidebarContext.tsx      # Context untuk sidebar state
+└── ThemeContext.tsx        # Context untuk theme switching
 ```
 
-## Fitur Utama
-
-### Dynamic Table dengan Column Filter
-
-Tabel pada setiap tab memiliki fitur:
-- Sorting (ascending/descending)
-- Pagination
-- Column filtering (dengan popup)
-- Search
-- CRUD operations (Create, Read, Update, Delete)
-
-### Responsive Design
-
-Semua komponen dibuat responsive dan dapat digunakan di berbagai ukuran layar.
-
-### Error Handling
-
-Fitur ini memiliki error handling yang komprehensif untuk:
-- Network errors
-- Validation errors
-- Server errors
-
-## API Endpoints
-
-Berikut adalah endpoint yang tersedia di json-server:
-
-- `GET /business-lines` - Mendapatkan daftar lini bisnis
-- `GET /business-lines/:id` - Mendapatkan detail lini bisnis
-- `POST /business-lines` - Membuat lini bisnis baru
-- `PUT /business-lines/:id` - Update lini bisnis
-- `DELETE /business-lines/:id` - Hapus lini bisnis
-
-- `GET /companies` - Mendapatkan daftar perusahaan
-- `GET /companies/:id` - Mendapatkan detail perusahaan
-- `POST /companies` - Membuat perusahaan baru
-- `PUT /companies/:id` - Update perusahaan
-- `DELETE /companies/:id` - Hapus perusahaan
-
-- `GET /offices` - Mendapatkan daftar kantor
-- `GET /offices/:id` - Mendapatkan detail kantor
-- `POST /offices` - Membuat kantor baru
-- `PUT /offices/:id` - Update kantor
-- `DELETE /offices/:id` - Hapus kantor
-
-- `GET /directorates` - Mendapatkan daftar direktorat
-- `GET /directorates/:id` - Mendapatkan detail direktorat
-- `POST /directorates` - Membuat direktorat baru
-- `PUT /directorates/:id` - Update direktorat
-- `DELETE /directorates/:id` - Hapus direktorat
-
-- `GET /divisions` - Mendapatkan daftar divisi
-- `GET /divisions/:id` - Mendapatkan detail divisi
-- `POST /divisions` - Membuat divisi baru
-- `PUT /divisions/:id` - Update divisi
-- `DELETE /divisions/:id` - Hapus divisi
-
-- `GET /departments` - Mendapatkan daftar departemen
-- `GET /departments/:id` - Mendapatkan detail departemen
-- `POST /departments` - Membuat departemen baru
-- `PUT /departments/:id` - Update departemen
-- `DELETE /departments/:id` - Hapus departemen
-
-- `GET /positions` - Mendapatkan daftar posisi
-- `GET /positions/:id` - Mendapatkan detail posisi
-- `POST /positions` - Membuat posisi baru
-- `PUT /positions/:id` - Update posisi
-- `DELETE /positions/:id` - Hapus posisi
-
-- `GET /employee-positions` - Mendapatkan daftar posisi karyawan
-- `GET /employee-positions/:id` - Mendapatkan detail posisi karyawan
-- `POST /employee-positions` - Membuat posisi karyawan baru
-- `PUT /employee-positions/:id` - Update posisi karyawan
-- `DELETE /employee-positions/:id` - Hapus posisi karyawan
-
-## Struktur Folder
-
+#### 🎯 `src/feature/` - Fitur-Fitur Utama
 ```
-structure-and-organize/
-├── types/
-│   └── organization.types.ts
-├── services/
-│   └── organization.service.ts
-├── hooks/
-│   ├── useBusinessLines.ts
-│   ├── useCompanies.ts
-│   ├── useOffices.ts
-│   ├── useDirectorates.ts
-│   ├── useDivisions.ts
-│   ├── useDepartments.ts
-│   ├── usePositions.ts
-│   └── useEmployeePositions.ts
-├── components/
-│   ├── DataTable.tsx
-│   └── Tabs.tsx
-├── pages/
-│   └── StrukturOrganisasiPage.tsx
-├── db.json
-├── json-server.json
-├── routes.json
-├── index.ts
-└── README.md
+feature/
+├── auth/                   # Fitur autentikasi lengkap
+├── staff/                  # Fitur manajemen staff/karyawan
+├── structure-and-organize/ # Fitur untuk struktur organisasi
+└── template/               # Template dan layout patterns
 ```
+
+#### 🪝 `src/hooks/` - Custom Hooks
+```
+hooks/
+├── useGoBack.ts            # Hook untuk navigation go back
+└── useModal.ts             # Hook untuk modal state management
+```
+
+#### 🎨 `src/icons/` - SVG Icons
+```
+icons/
+├── *.svg                   # Collection SVG icons
+├── index.ts                # Export semua icons
+├── alert.svg               # Icon alert/notification
+├── calendar.svg            # Icon kalender
+├── chat.svg                # Icon chat
+├── check-circle.svg        # Icon check/success
+├── close.svg               # Icon close/X
+├── user-circle.svg         # Icon user profile
+└── ... (50+ icons lainnya)
+```
+
+#### 📐 `src/layout/` - Layout Components
+```
+layout/
+├── AppHeader.tsx           # Header utama aplikasi
+├── AppLayout.tsx           # Layout wrapper utama
+├── AppSidebar.tsx          # Sidebar navigation
+├── Backdrop.tsx            # Backdrop component
+└── SidebarWidget.tsx       # Widget untuk sidebar
+```
+
+#### 📄 `src/pages/` - Halaman Utama
+```
+pages/
+├── AuthPages/              # Halaman login, register, forgot password
+├── Blank.tsx               # Halaman kosong (template)
+├── Calendar.tsx            # Halaman kalender
+├── Charts/                 # Halaman charts dan dashboard
+├── Chat/                   # Halaman chat/messaging
+├── Dashboard/              # Halaman dashboard utama
+├── Email/                  # Halaman email client
+├── Faqs.tsx                # Halaman FAQ
+├── FileManager.tsx         # Halaman file manager
+├── Forms/                  # Halaman form dan input
+├── Invoices.tsx            # Halaman invoice management
+├── OtherPage/              # Halaman-halaman lainnya
+├── PricingTables.tsx       # Halaman pricing
+├── Tables/                 # Halaman data tables
+├── Task/                   # Halapan task management
+├── UiElements/             # Halaman UI components showcase
+└── UserProfiles.tsx        # Halaman profil user
+```
+
+#### 🔧 `src/services/` - Services & API
+```
+services/
+└── api.ts                  # Service untuk API calls dan data fetching
+```
+
+#### 📋 File-file Konfigurasi TypeScript
+```
+src/
+├── svg.d.ts                # Type declarations untuk SVG imports
+├── vite-env.d.ts           # Type declarations untuk Vite
+├── index.css               # Global CSS styles
+├── main.tsx                # Entry point aplikasi React
+└── App.tsx                 # Root component
+```
+
+## 🎯 Kegunaan Utama Setiap Section
+
+### Components (`src/components/`)
+- **Reusable Components**: Semua komponen yang bisa dipakai ulang di seluruh aplikasi
+- **Feature-specific Components**: Komponen khusus untuk fitur tertentu seperti CRM, e-commerce, dll
+- **UI Components**: Komponen dasar seperti button, card, modal
+
+### Features (`src/feature/`)
+- **Modular Features**: Setiap fitur utama dibuat terpisah untuk maintainability
+- **HRIS Core**: Fokus pada manajemen karyawan dan struktur organisasi
+- **Authentication**: Sistem login dan otorisasi
+
+### Pages (`src/pages/`)
+- **Route-based Pages**: Setiap halamaan yang ada di routing aplikasi
+- **Dashboard Variations**: Berbagai jenis dashboard untuk kebutuhan berbeda
+- **Management Pages**: Halaman untuk manajemen data (user, task, invoice, dll)
+
+### Layout (`src/layout/`)
+- **Consistent Layout**: Layout yang konsisten di seluruh aplikasi
+- **Responsive Design**: Layout yang adaptif untuk berbagai screen size
+- **Navigation**: Sistem navigasi yang terpusat
+
+## 🔧 Teknologi yang Digunakan
+- **Frontend**: React 18 + TypeScript
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS (diasumsikan dari postcss.config.js)
+- **State Management**: React Context
+- **Mock API**: JSON Server
+- **Linting**: ESLint
+- **Icons**: SVG dengan custom index
+
+## 📈 Skalabilitas
+Struktur folder ini dirancang untuk:
+- **Easy Maintenance**: Setiap fitur terpisah dan terorganisir
+- **Team Collaboration**: Struktur yang jelas memudahkan kolaborasi tim
+- **Feature Scaling**: Mudah menambahkan fitur baru
+- **Component Reusability**: Komponen bisa dipakai di berbagai tempat
+
+---
+
+*Dokumentasi ini berisi struktur folder dan kegunaannya untuk project HRIS TypeScript React.*

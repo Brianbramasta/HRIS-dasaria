@@ -1,218 +1,262 @@
 import React, { useState, useMemo } from 'react';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  TablePagination,
-  TableSortLabel,
-  IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  Checkbox,
-  FormControlLabel,
-  TextField,
-  Box,
-  Typography,
-  CircularProgress,
-  Alert,
-} from '@mui/material';
-import { FilterList as FilterListIcon } from '@mui/icons-material';
-import { TableColumn, TableFilter } from '../types/organization.types';
+import { Table, TableHeader, TableBody, TableRow, TableCell } from '../../../components/ui/table';
+import PaginationWithIcon from '../../../components/tables/DataTables/TableOne/PaginationWithIcon';
+import Button from '../../../components/ui/button/Button';
+import {Modal} from '../../../components/ui/modal/index';
+import { Plus, Download, Filter } from 'react-feather';
 
-interface DataTableProps<T> {
-  columns: TableColumn<T>[];
-  data: T[];
-  loading?: boolean;
-  error?: string | null;
-  total: number;
-  page: number;
-  pageSize: number;
-  onPageChange: (newPage: number) => void;
-  onPageSizeChange: (newPageSize: number) => void;
-  onSort?: (column: string, direction: 'asc' | 'desc') => void;
-  sortBy?: string;
-  sortOrder?: 'asc' | 'desc';
-  onRowClick?: (row: T) => void;
-  onEdit?: (row: T) => void;
-  onDelete?: (row: T) => void;
-  actions?: {
-    edit?: boolean;
-    delete?: boolean;
-    view?: boolean;
-  };
+export interface DataTableColumn<T = any> {
+  id: string;
+  label: string;
+  minWidth?: number;
+  align?: 'left' | 'center' | 'right';
+  format?: (value: any, row: T) => React.ReactNode;
+  sortable?: boolean;
+  filterable?: boolean;
 }
 
-export function DataTable<T>({
-  columns,
-  data,
-  loading = false,
-  error = null,
-  total,
-  page,
-  pageSize,
-  onPageChange,
-  onPageSizeChange,
-  onSort,
-  sortBy,
-  sortOrder,
-  onRowClick,
-  onEdit,
-  onDelete,
-  actions = { edit: true, delete: true, view: true },
-}: DataTableProps<T>) {
-  const [visibleColumns, setVisibleColumns] = useState<Set<string>>(
-    new Set(columns.map(col => col.field as string))
-  );
-  const [filterDialogOpen, setFilterDialogOpen] = useState(false);
+export interface DataTableAction<T = any> {
+  label: string;
+  icon?: React.ReactNode;
+  onClick: (row: T) => void;
+  color?: 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info';
+  variant?: 'text' | 'outline' | 'primary';
+  condition?: (row: T) => boolean;
+  className?: string;
+}
 
-  const visibleColumnsArray = useMemo(() => {
-    return columns.filter(col => visibleColumns.has(col.field as string));
+interface DataTableProps<T = any> {
+  data: T[];
+  columns: DataTableColumn<T>[];
+  actions?: DataTableAction<T>[];
+  title?: string;
+  searchable?: boolean;
+  searchPlaceholder?: string;
+  pageSize?: number;
+  pageSizeOptions?: number[];
+  onAdd?: () => void;
+  addButtonLabel?: string;
+  onExport?: () => void;
+  exportButtonLabel?: string;
+  filterable?: boolean;
+  className?: string;
+  loading?: boolean;
+  emptyMessage?: string;
+}
+
+export function DataTable<T = any>({
+  data,
+  columns,
+  actions,
+  title,
+  searchable = true,
+  searchPlaceholder = 'Cari berdasarkan kata kunci',
+  pageSize = 10,
+  pageSizeOptions = [5, 10, 25, 50],
+  onAdd,
+  addButtonLabel = 'Tambah Lini Bisnis',
+  onExport,
+  exportButtonLabel = 'Ekspor',
+  filterable = true,
+  className = '',
+  loading = false,
+  emptyMessage = 'No data available',
+}: DataTableProps<T>) {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(pageSize);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [orderBy, setOrderBy] = useState<string>('');
+  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
+  const [isFilterModalOpen, setFilterModalOpen] = useState(false);
+  const [visibleColumns, setVisibleColumns] = useState<string[]>(() =>
+    columns.map((c) => c.id)
+  );
+
+  const handleSort = (columnId: string) => {
+    const isAsc = orderBy === columnId && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(columnId);
+  };
+
+  const filteredData = useMemo(() => {
+    if (!searchTerm) return data;
+    return data.filter((row) =>
+      columns.some((column) => {
+        if (!visibleColumns.includes(column.id)) return false;
+        const value = row[column.id as keyof T];
+        if (value === null || value === undefined) return false;
+        return value.toString().toLowerCase().includes(searchTerm.toLowerCase());
+      })
+    );
+  }, [data, searchTerm, columns, visibleColumns]);
+
+  const sortedData = useMemo(() => {
+    if (!orderBy) return filteredData;
+    return [...filteredData].sort((a, b) => {
+      const aValue = a[orderBy as keyof T] as any;
+      const bValue = b[orderBy as keyof T] as any;
+      if (aValue === null || aValue === undefined) return 1;
+      if (bValue === null || bValue === undefined) return -1;
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return order === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+      }
+      return order === 'asc' ? (aValue > bValue ? 1 : -1) : (aValue < bValue ? 1 : -1);
+    });
+  }, [filteredData, orderBy, order]);
+
+  const paginatedData = useMemo(() => {
+    const startIndex = page * rowsPerPage;
+    return sortedData.slice(startIndex, startIndex + rowsPerPage);
+  }, [sortedData, page, rowsPerPage]);
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage - 1);
+  };
+
+  const handleRowsPerPageChange = (newRowsPerPage: number) => {
+    setRowsPerPage(newRowsPerPage);
+    setPage(0);
+  };
+
+  const handleColumnVisibilityChange = (columnId: string) => {
+    setVisibleColumns((prev) =>
+      prev.includes(columnId)
+        ? prev.filter((id) => id !== columnId)
+        : [...prev, columnId]
+    );
+  };
+  
+  const handleSelectAllColumns = (checked: boolean) => {
+    setVisibleColumns(checked ? columns.map((c) => c.id) : []);
+  };
+
+  const getSortIcon = (columnId: string) => {
+    if (orderBy !== columnId) return '↑↓';
+    return order === 'asc' ? '↑' : '↓';
+  };
+  
+  const displayColumns = useMemo(() => {
+    return columns.filter((c) => visibleColumns.includes(c.id));
   }, [columns, visibleColumns]);
 
-  const handleColumnToggle = (field: string) => {
-    setVisibleColumns(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(field)) {
-        newSet.delete(field);
-      } else {
-        newSet.add(field);
-      }
-      return newSet;
-    });
-  };
-
-  const handleSelectAllColumns = () => {
-    setVisibleColumns(new Set(columns.map(col => col.field as string)));
-  };
-
-  const handleDeselectAllColumns = () => {
-    setVisibleColumns(new Set());
-  };
-
-  const handleSort = (column: string) => {
-    if (!onSort) return;
-    
-    const isActive = sortBy === column;
-    const newDirection = isActive && sortOrder === 'asc' ? 'desc' : 'asc';
-    onSort(column, newDirection);
-  };
-
-  const renderCellContent = (row: T, column: TableColumn<T>) => {
-    const value = row[column.field as keyof T];
-    
-    if (column.render) {
-      return column.render(value, row);
-    }
-    
-    if (column.format) {
-      return column.format(value);
-    }
-    
-    return value as React.ReactNode;
-  };
-
-  if (error) {
-    return (
-      <Alert severity="error" sx={{ mb: 2 }}>
-        {error}
-      </Alert>
-    );
-  }
-
   return (
-    <>
-      <TableContainer component={Paper}>
-        <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="h6" component="h2">
-            Data Table
-          </Typography>
-          <IconButton onClick={() => setFilterDialogOpen(true)} color="primary">
-            <FilterListIcon />
-          </IconButton>
-        </Box>
+    <div className={`rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900 ${className}`}>
+      <div className="border-b border-gray-200 p-6 dark:border-gray-800">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center items-center sm:justify-between mb-4">
+          {title && (
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white ">{title}</h2>
+          )}
+          <div className="flex items-center gap-3">
+            {onExport && (
+              <Button className='bg-success text-white' onClick={onExport} variant="outline" size="sm">
+                <Download size={16} className="mr-2" />
+                {exportButtonLabel}
+              </Button>
+            )}
+            {onAdd && (
+              <Button onClick={onAdd} variant="primary" size="sm">
+                <Plus size={16} className="mr-2" />
+                {addButtonLabel}
+              </Button>
+            )}
+          </div>
+          
+        </div>
         
-        <Table>
-          <TableHead>
-            <TableRow>
-              {visibleColumnsArray.map((column) => (
+
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder={searchPlaceholder}
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setPage(0);
+              }}
+              className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 pl-10 text-sm text-gray-900 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-brand-400"
+            />
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+              <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            
+            {filterable && (
+              <Button onClick={() => setFilterModalOpen(true)} variant="outline" size="sm">
+                <Filter size={16} className="mr-2" />
+                Filter
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="overflow-x-auto">
+        <Table className="min-w-full">
+          <TableHeader>
+            <TableRow className="border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800">
+              {displayColumns.map((column) => (
                 <TableCell
-                  key={String(column.field)}
-                  sortDirection={sortBy === column.field ? sortOrder : false}
+                  key={column.id}
+                  className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${
+                    column.align === 'center' ? 'text-center' : column.align === 'right' ? 'text-right' : 'text-left'
+                  } ${column.sortable !== false ? 'cursor-pointer hover:text-gray-700' : ''}`}
+                  onClick={() => column.sortable !== false && handleSort(column.id)}
                 >
-                  {onSort ? (
-                    <TableSortLabel
-                      active={sortBy === column.field}
-                      direction={sortBy === column.field ? sortOrder : 'asc'}
-                      onClick={() => handleSort(column.field as string)}
-                    >
-                      {column.headerName}
-                    </TableSortLabel>
-                  ) : (
-                    column.headerName
-                  )}
+                  <div className="flex items-center gap-1">
+                    {column.label}
+                    {column.sortable !== false && <span className="text-gray-400">{getSortIcon(column.id)}</span>}
+                  </div>
                 </TableCell>
               ))}
-              {(actions.edit || actions.delete || actions.view) && (
-                <TableCell align="right">Actions</TableCell>
+              {actions && actions.length > 0 && (
+                <TableCell className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</TableCell>
               )}
             </TableRow>
-          </TableHead>
+          </TableHeader>
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={visibleColumnsArray.length + 1} align="center">
-                  <CircularProgress />
-                </TableCell>
+                <TableCell colSpan={displayColumns.length + (actions ? 1 : 0)} className="px-6 py-8 text-center text-gray-500">Loading...</TableCell>
               </TableRow>
-            ) : data.length === 0 ? (
+            ) : paginatedData.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={visibleColumnsArray.length + 1} align="center">
-                  <Typography color="text.secondary">
-                    No data available
-                  </Typography>
-                </TableCell>
+                <TableCell colSpan={displayColumns.length + (actions ? 1 : 0)} className="px-6 py-8 text-center text-gray-500">{emptyMessage}</TableCell>
               </TableRow>
             ) : (
-              data.map((row, index) => (
-                <TableRow
-                  key={index}
-                  hover
-                  onClick={() => onRowClick?.(row)}
-                  sx={{ cursor: onRowClick ? 'pointer' : 'default' }}
-                >
-                  {visibleColumnsArray.map((column) => (
-                    <TableCell key={String(column.field)}>
-                      {renderCellContent(row, column)}
+              paginatedData.map((row, index) => (
+                <TableRow key={index} className="border-b border-gray-100 hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-800/50">
+                  {displayColumns.map((column) => (
+                    <TableCell
+                      key={column.id}
+                      className={`px-6 py-4 text-sm text-gray-900 dark:text-gray-100 ${
+                        column.align === 'center' ? 'text-center' : column.align === 'right' ? 'text-right' : 'text-left'
+                      }`}
+                    >
+                      {column.format ? column.format(row[column.id as keyof T], row) : (row[column.id as keyof T] as React.ReactNode)}
                     </TableCell>
                   ))}
-                  {(actions.edit || actions.delete || actions.view) && (
-                    <TableCell align="right">
-                      {actions.view && (
-                        <Button size="small" onClick={(e) => { e.stopPropagation(); onRowClick?.(row); }}>
-                          View
-                        </Button>
-                      )}
-                      {actions.edit && onEdit && (
-                        <Button size="small" onClick={(e) => { e.stopPropagation(); onEdit(row); }}>
-                          Edit
-                        </Button>
-                      )}
-                      {actions.delete && onDelete && (
-                        <Button 
-                          size="small" 
-                          color="error" 
-                          onClick={(e) => { e.stopPropagation(); onDelete(row); }}
-                        >
-                          Delete
-                        </Button>
-                      )}
+                  {actions && actions.length > 0 && (
+                    <TableCell className="px-6 py-4 text-center">
+                      <div className="flex items-center justify-center gap-2">
+                        {actions
+                          .filter((action) => !action.condition || action.condition(row))
+                          .map((action, actionIndex) => (
+                            <Button
+                            className={action.className}
+                              key={actionIndex}
+                              onClick={() => action.onClick(row)}
+                              variant={action.variant || 'outline'}
+                              size="sm"
+                            >
+                              {action.icon && <span className="mr-1">{action.icon}</span>}
+                              {action.label}
+                            </Button>
+                          ))}
+                      </div>
                     </TableCell>
                   )}
                 </TableRow>
@@ -220,72 +264,86 @@ export function DataTable<T>({
             )}
           </TableBody>
         </Table>
-        
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25, 50]}
-          component="div"
-          count={total}
-          rowsPerPage={pageSize}
-          page={page - 1} // Material-UI uses 0-based indexing
-          onPageChange={(_, newPage) => onPageChange(newPage + 1)}
-          onRowsPerPageChange={(event) => onPageSizeChange(parseInt(event.target.value, 10))}
-        />
-      </TableContainer>
+      </div>
 
-      {/* Column Filter Dialog */}
-      <Dialog 
-        open={filterDialogOpen} 
-        onClose={() => setFilterDialogOpen(false)}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>
-          Filter Columns
-        </DialogTitle>
-        <DialogContent>
-          <Box sx={{ mb: 2 }}>
-            <Button 
-              size="small" 
-              onClick={handleSelectAllColumns}
-              sx={{ mr: 1 }}
-            >
-              Select All
-            </Button>
-            <Button 
-              size="small" 
-              onClick={handleDeselectAllColumns}
-            >
-              Deselect All
-            </Button>
-          </Box>
-          
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            {columns.map((column) => (
-              <FormControlLabel
-                key={String(column.field)}
-                control={
-                  <Checkbox
-                    checked={visibleColumns.has(column.field as string)}
-                    onChange={() => handleColumnToggle(column.field as string)}
-                  />
-                }
-                label={column.headerName}
-              />
-            ))}
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setFilterDialogOpen(false)}>
-            Cancel
-          </Button>
-          <Button 
-            onClick={() => setFilterDialogOpen(false)} 
-            variant="contained"
+      <div className="flex items-center justify-between border-t border-gray-200 px-6 py-4 dark:border-gray-800">
+        <div className="flex items-center gap-2 text-sm">
+          <span>Show</span>
+          <select
+            value={rowsPerPage}
+            onChange={(e) => handleRowsPerPageChange(Number(e.target.value))}
+            className="rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
           >
-            Apply
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </>
+            {pageSizeOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+          <span>rows</span>
+        </div>
+        <PaginationWithIcon
+          currentPage={page + 1}
+          totalPages={Math.ceil(sortedData.length / rowsPerPage) || 1}
+          onPageChange={handlePageChange}
+          showInfo={true}
+          infoText={`${sortedData.length === 0 ? 0 : page * rowsPerPage + 1}-${Math.min((page + 1) * rowsPerPage, sortedData.length)} of ${sortedData.length}`}
+        />
+      </div>
+      
+      <Modal className="max-w-md" isOpen={isFilterModalOpen} onClose={() => setFilterModalOpen(false)} title="Filter">
+        <div className="p-6">
+          <div className="mb-4">
+            <div className='text-center'>
+              <h1 className='text-2xl font-bold'>Filter</h1>
+            </div>
+            <div className="flex justify-between items-center mb-2">
+              <h4 className="font-semibold">Kolom</h4>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={visibleColumns.length === columns.length}
+                  onChange={(e) => handleSelectAllColumns(e.target.checked)}
+                />
+                Select All
+              </label>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {columns.map((col) => (
+                <label key={col.id} className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={visibleColumns.includes(col.id)}
+                    onChange={() => handleColumnVisibilityChange(col.id)}
+                  />
+                  {col.label}
+                </label>
+              ))}
+            </div>
+          </div>
+          <div className="mb-4">
+            <h4 className="font-semibold mb-2">Data</h4>
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Cari berdasarkan kata kunci"
+                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 pl-10 text-sm text-gray-900 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-brand-400"
+              />
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div className="flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setFilterModalOpen(false)}>Close</Button>
+            <Button variant="primary" onClick={() => setFilterModalOpen(false)}>Search</Button>
+          </div>
+        </div>
+      </Modal>
+    </div>
   );
 }
+
+export default DataTable;

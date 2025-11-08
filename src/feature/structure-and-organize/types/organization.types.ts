@@ -102,7 +102,7 @@ export interface TableColumn<T> {
   width?: string;
   sortable?: boolean;
   filterable?: boolean;
-  render?: (value: any, record: T) => React.ReactNode;
+  render?: <K extends keyof T>(value: T[K], record: T) => React.ReactNode;
 }
 
 export interface TableFilter {
