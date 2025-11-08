@@ -3,6 +3,10 @@ import DataTable, { DataTableColumn, DataTableAction } from '../../components/da
 import { Edit, Trash, FileText } from 'react-feather';
 import { useCompanies } from '../../index';
 import type { CompanyRow } from '../../types/organizationTable.types';
+import type { Company } from '../../types/organization.types';
+import AddCompanyModal from '../../components/modals/Perusahaan/AddCompanyModal';
+import EditCompanyModal from '../../components/modals/Perusahaan/EditCompanyModal';
+import DeleteCompanyModal from '../../components/modals/Perusahaan/DeleteCompanyModal';
 
 type Props = { resetKey: string };
 
@@ -17,8 +21,14 @@ const companyColumns: DataTableColumn<CompanyRow>[] = [
 export default function CompaniesTab({ resetKey }: Props) {
   const { companies, fetchCompanies, setSearch, setPage, setPageSize, setSort } = useCompanies();
 
-  const rows: CompanyRow[] = useMemo(() => {
+  const [isAddOpen, setAddOpen] = React.useState(false);
+  const [isEditOpen, setEditOpen] = React.useState(false);
+  const [isDeleteOpen, setDeleteOpen] = React.useState(false);
+  const [selectedCompany, setSelectedCompany] = React.useState<Company | null>(null);
+
+  const rows: (CompanyRow & { id?: string })[] = useMemo(() => {
     return (companies || []).map((c, idx) => ({
+      id: (c as any).id,
       no: idx + 1,
       'Nama Perusahaan': (c as any).name ?? '—',
       'Deskripsi Umum': (c as any).description ?? '—',
@@ -28,8 +38,16 @@ export default function CompaniesTab({ resetKey }: Props) {
   }, [companies]);
 
   const actionsIconOnly = [
-    { label: '', onClick: (row: any) => console.log('Edit', row), variant: 'outline', className: 'border-0', icon: <Edit size={16} /> },
-    { label: '', onClick: (row: any) => console.log('Delete', row), variant: 'outline', className: 'border-0', color: 'error', icon: <Trash size={16} /> },
+    { label: '', onClick: (row: any) => {
+        const comp = companies.find((c) => c.id === row.id) || null;
+        setSelectedCompany(comp);
+        setEditOpen(true);
+      }, variant: 'outline', className: 'border-0', icon: <Edit size={16} /> },
+    { label: '', onClick: (row: any) => {
+        const comp = companies.find((c) => c.id === row.id) || null;
+        setSelectedCompany(comp);
+        setDeleteOpen(true);
+      }, variant: 'outline', className: 'border-0', color: 'error', icon: <Trash size={16} /> },
   ] as DataTableAction<any>[];
 
   const exportCSV = (filename: string, data: any[]) => {
@@ -50,6 +68,7 @@ export default function CompaniesTab({ resetKey }: Props) {
   React.useEffect(() => { fetchCompanies(); }, []);
 
   return (
+    <div>
     <DataTable
       title="Perusahaan"
       data={rows}
@@ -63,8 +82,26 @@ export default function CompaniesTab({ resetKey }: Props) {
       onPageChangeExternal={(p) => { setPage(p); fetchCompanies(); }}
       onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); fetchCompanies(); }}
       onColumnVisibilityChange={() => { fetchCompanies(); }}
-      onAdd={() => console.log('Add Company')}
+      onAdd={() => setAddOpen(true)}
       onExport={() => exportCSV('perusahaan.csv', rows)}
     />
+    <AddCompanyModal
+      isOpen={isAddOpen}
+      onClose={() => setAddOpen(false)}
+      onSuccess={() => fetchCompanies()}
+    />
+    <EditCompanyModal
+      isOpen={isEditOpen}
+      onClose={() => { setEditOpen(false); setSelectedCompany(null); }}
+      company={selectedCompany}
+      onSuccess={() => fetchCompanies()}
+    />
+    <DeleteCompanyModal
+      isOpen={isDeleteOpen}
+      onClose={() => { setDeleteOpen(false); setSelectedCompany(null); }}
+      company={selectedCompany || undefined}
+      onSuccess={() => fetchCompanies()}
+    />
+    </div>
   );
 }
