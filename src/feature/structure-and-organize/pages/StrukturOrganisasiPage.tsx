@@ -80,14 +80,14 @@ export default function StrukturOrganisasiPage() {
   const [activeTab, setActiveTab] = useState('business-lines');
 
   // Hooks to fetch data from services/json-server
-  const { businessLines } = useBusinessLines();
-  const { companies } = useCompanies();
-  const { offices } = useOffices();
-  const { directorates } = useDirectorates();
-  const { divisions } = useDivisions();
-  const { departments } = useDepartments();
-  const { positions } = usePositions();
-  const { employeePositions } = useEmployeePositions();
+  const { businessLines, fetchBusinessLines, setSearch: setBLSearch, setPage: setBLPage, setPageSize: setBLPageSize, setSort: setBLSort } = useBusinessLines();
+  const { companies, fetchCompanies, setSearch: setCompanySearch, setPage: setCompanyPage, setPageSize: setCompanyPageSize, setSort: setCompanySort } = useCompanies();
+  const { offices, fetchOffices, setSearch: setOfficeSearch, setPage: setOfficePage, setPageSize: setOfficePageSize, setSort: setOfficeSort } = useOffices();
+  const { directorates, fetchDirectorates, setSearch: setDirectorateSearch, setPage: setDirectoratePage, setPageSize: setDirectoratePageSize, setSort: setDirectorateSort } = useDirectorates();
+  const { divisions, fetchDivisions, setSearch: setDivisionSearch, setPage: setDivisionPage, setPageSize: setDivisionPageSize, setSort: setDivisionSort } = useDivisions();
+  const { departments, fetchDepartments, setSearch: setDepartmentSearch, setPage: setDepartmentPage, setPageSize: setDepartmentPageSize, setSort: setDepartmentSort } = useDepartments();
+  const { positions, fetchPositions, setSearch: setPositionSearch, setPage: setPositionPage, setPageSize: setPositionPageSize, setSort: setPositionSort } = usePositions();
+  const { employeePositions, fetchEmployeePositions, setSearch: setEmployeePositionSearch, setPage: setEmployeePositionPage, setPageSize: setEmployeePositionPageSize, setSort: setEmployeePositionSort } = useEmployeePositions();
 
   // Map service data to display rows expected by DataTable
   const blRows: BLRow[] = useMemo(() => {
@@ -204,6 +204,12 @@ export default function StrukturOrganisasiPage() {
           actions={actionsIconOnly}
           searchable
           filterable
+          resetKey={activeTab}
+          onSearchChange={(val) => { setBLSearch(val); fetchBusinessLines(); }}
+          onSortChange={() => { setBLSort('name', 'asc'); fetchBusinessLines(); }}
+          onPageChangeExternal={(p) => { setBLPage(p); fetchBusinessLines(); }}
+          onRowsPerPageChangeExternal={(ps) => { setBLPageSize(ps); fetchBusinessLines(); }}
+          onColumnVisibilityChange={() => { fetchBusinessLines(); }}
           onAdd={() => console.log('Add Business Line')}
           onExport={() => exportCSV('lini-bisnis.csv', blRows)}
         />
@@ -220,6 +226,12 @@ export default function StrukturOrganisasiPage() {
           actions={actionsIconOnly}
           searchable
           filterable
+          resetKey={activeTab}
+          onSearchChange={(val) => { setCompanySearch(val); fetchCompanies(); }}
+          onSortChange={() => { setCompanySort('name', 'asc'); fetchCompanies(); }}
+          onPageChangeExternal={(p) => { setCompanyPage(p); fetchCompanies(); }}
+          onRowsPerPageChangeExternal={(ps) => { setCompanyPageSize(ps); fetchCompanies(); }}
+          onColumnVisibilityChange={() => { fetchCompanies(); }}
           onAdd={() => console.log('Add Company')}
           onExport={() => exportCSV('perusahaan.csv', companyRows)}
         />
@@ -236,6 +248,12 @@ export default function StrukturOrganisasiPage() {
           actions={actionsIconOnly}
           searchable
           filterable
+          resetKey={activeTab}
+          onSearchChange={(val) => { setOfficeSearch(val); fetchOffices(); }}
+          onSortChange={() => { setOfficeSort('name', 'asc'); fetchOffices(); }}
+          onPageChangeExternal={(p) => { setOfficePage(p); fetchOffices(); }}
+          onRowsPerPageChangeExternal={(ps) => { setOfficePageSize(ps); fetchOffices(); }}
+          onColumnVisibilityChange={() => { fetchOffices(); }}
           onAdd={() => console.log('Add Office')}
           onExport={() => exportCSV('office.csv', officeRows)}
         />
@@ -252,6 +270,12 @@ export default function StrukturOrganisasiPage() {
           actions={actionsIconOnly}
           searchable
           filterable
+          resetKey={activeTab}
+          onSearchChange={(val) => { setDirectorateSearch(val); fetchDirectorates(); }}
+          onSortChange={() => { setDirectorateSort('name', 'asc'); fetchDirectorates(); }}
+          onPageChangeExternal={(p) => { setDirectoratePage(p); fetchDirectorates(); }}
+          onRowsPerPageChangeExternal={(ps) => { setDirectoratePageSize(ps); fetchDirectorates(); }}
+          onColumnVisibilityChange={() => { fetchDirectorates(); }}
           onAdd={() => console.log('Add Directorate')}
           onExport={() => exportCSV('direktorat.csv', directorateRows)}
         />
@@ -268,6 +292,12 @@ export default function StrukturOrganisasiPage() {
           actions={actionsIconOnly}
           searchable
           filterable
+          resetKey={activeTab}
+          onSearchChange={(val) => { setDivisionSearch(val); fetchDivisions(); }}
+          onSortChange={() => { setDivisionSort('name', 'asc'); fetchDivisions(); }}
+          onPageChangeExternal={(p) => { setDivisionPage(p); fetchDivisions(); }}
+          onRowsPerPageChangeExternal={(ps) => { setDivisionPageSize(ps); fetchDivisions(); }}
+          onColumnVisibilityChange={() => { fetchDivisions(); }}
           onAdd={() => console.log('Add Division')}
           onExport={() => exportCSV('divisi.csv', divisionRows)}
         />
@@ -284,6 +314,12 @@ export default function StrukturOrganisasiPage() {
           actions={actionsIconOnly}
           searchable
           filterable
+          resetKey={activeTab}
+          onSearchChange={(val) => { setDepartmentSearch(val); fetchDepartments(); }}
+          onSortChange={() => { setDepartmentSort('name', 'asc'); fetchDepartments(); }}
+          onPageChangeExternal={(p) => { setDepartmentPage(p); fetchDepartments(); }}
+          onRowsPerPageChangeExternal={(ps) => { setDepartmentPageSize(ps); fetchDepartments(); }}
+          onColumnVisibilityChange={() => { fetchDepartments(); }}
           onAdd={() => console.log('Add Department')}
           onExport={() => exportCSV('departemen.csv', departmentRows)}
         />
@@ -300,6 +336,12 @@ export default function StrukturOrganisasiPage() {
           actions={actionsIconOnly}
           searchable
           filterable
+          resetKey={activeTab}
+          onSearchChange={(val) => { setPositionSearch(val); fetchPositions(); }}
+          onSortChange={() => { setPositionSort('name', 'asc'); fetchPositions(); }}
+          onPageChangeExternal={(p) => { setPositionPage(p); fetchPositions(); }}
+          onRowsPerPageChangeExternal={(ps) => { setPositionPageSize(ps); fetchPositions(); }}
+          onColumnVisibilityChange={() => { fetchPositions(); }}
           onAdd={() => console.log('Add Position')}
           onExport={() => exportCSV('jabatan.csv', positionRows)}
         />
@@ -316,12 +358,50 @@ export default function StrukturOrganisasiPage() {
           actions={actionsIconOnly}
           searchable
           filterable
+          resetKey={activeTab}
+          onSearchChange={(val) => { setEmployeePositionSearch(val); fetchEmployeePositions(); }}
+          onSortChange={() => { setEmployeePositionSort('name', 'asc'); fetchEmployeePositions(); }}
+          onPageChangeExternal={(p) => { setEmployeePositionPage(p); fetchEmployeePositions(); }}
+          onRowsPerPageChangeExternal={(ps) => { setEmployeePositionPageSize(ps); fetchEmployeePositions(); }}
+          onColumnVisibilityChange={() => { fetchEmployeePositions(); }}
           onAdd={() => console.log('Add Employee Position')}
           onExport={() => exportCSV('posisi-pegawai.csv', employeePositionRows)}
         />
       ),
     },
   ];
+
+  // Refetch when switching tabs
+  React.useEffect(() => {
+    switch (activeTab) {
+      case 'business-lines':
+        fetchBusinessLines();
+        break;
+      case 'companies':
+        fetchCompanies();
+        break;
+      case 'offices':
+        fetchOffices();
+        break;
+      case 'directorates':
+        fetchDirectorates();
+        break;
+      case 'divisions':
+        fetchDivisions();
+        break;
+      case 'departments':
+        fetchDepartments();
+        break;
+      case 'positions':
+        fetchPositions();
+        break;
+      case 'employee-positions':
+        fetchEmployeePositions();
+        break;
+      default:
+        break;
+    }
+  }, [activeTab]);
 
   return (
     <div className="space-y-6">
@@ -332,3 +412,4 @@ export default function StrukturOrganisasiPage() {
     </div>
   );
 }
+  

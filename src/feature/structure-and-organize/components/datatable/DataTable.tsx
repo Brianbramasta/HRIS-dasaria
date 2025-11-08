@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Table, TableHeader, TableBody, TableRow, TableCell } from '../../../../components/ui/table';
 import PaginationWithIcon from '../../../../components/tables/DataTables/TableOne/PaginationWithIcon';
 import Button from '../../../../components/ui/button/Button';
@@ -42,6 +42,14 @@ interface DataTableProps<T = any> {
   className?: string;
   loading?: boolean;
   emptyMessage?: string;
+  // External callbacks to trigger refetches or synchronize state
+  onSearchChange?: (search: string) => void;
+  onSortChange?: (columnId: string, order: 'asc' | 'desc') => void;
+  onPageChangeExternal?: (page: number) => void;
+  onRowsPerPageChangeExternal?: (rowsPerPage: number) => void;
+  onColumnVisibilityChange?: (visibleColumnIds: string[]) => void;
+  // Use resetKey to force resetting internal filters when parent context changes (e.g., tab switch)
+  resetKey?: string;
 }
 
 export function DataTable<T = any>({
@@ -61,6 +69,12 @@ export function DataTable<T = any>({
   className = '',
   loading = false,
   emptyMessage = 'No data available',
+  onSearchChange,
+  onSortChange,
+  onPageChangeExternal,
+  onRowsPerPageChangeExternal,
+  onColumnVisibilityChange,
+  resetKey,
 }: DataTableProps<T>) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(pageSize);
@@ -72,10 +86,17 @@ export function DataTable<T = any>({
     columns.map((c) => c.id)
   );
 
+  // Reset visible columns when resetKey changes (e.g., on tab switch)
+  useEffect(() => {
+    setVisibleColumns(columns.map((c) => c.id));
+  }, [resetKey, columns]);
+
   const handleSort = (columnId: string) => {
     const isAsc = orderBy === columnId && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(columnId);
+    // Notify parent for refetch on sort changes
+    onSortChange?.(columnId, isAsc ? 'desc' : 'asc');
   };
 
   const filteredData = useMemo(() => {
@@ -112,11 +133,15 @@ export function DataTable<T = any>({
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage - 1);
+    // Notify parent for refetch on page changes
+    onPageChangeExternal?.(newPage);
   };
 
   const handleRowsPerPageChange = (newRowsPerPage: number) => {
     setRowsPerPage(newRowsPerPage);
     setPage(0);
+    // Notify parent for refetch on page size changes
+    onRowsPerPageChangeExternal?.(newRowsPerPage);
   };
 
   const handleColumnVisibilityChange = (columnId: string) => {
@@ -126,9 +151,16 @@ export function DataTable<T = any>({
         : [...prev, columnId]
     );
   };
+
+  useEffect(() => {
+    onColumnVisibilityChange?.(visibleColumns);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visibleColumns]);
+  // };
   
   const handleSelectAllColumns = (checked: boolean) => {
     setVisibleColumns(checked ? columns.map((c) => c.id) : []);
+    onColumnVisibilityChange?.(checked ? columns.map((c) => c.id) : []);
   };
 
   const getSortIcon = (columnId: string) => {
@@ -167,16 +199,17 @@ export function DataTable<T = any>({
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="relative">
-            <input
-              type="text"
-              placeholder={searchPlaceholder}
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                setPage(0);
-              }}
-              className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 pl-10 text-sm text-gray-900 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-brand-400"
-            />
+          <input
+            type="text"
+            placeholder={searchPlaceholder}
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setPage(0);
+              onSearchChange?.(e.target.value);
+            }}
+            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 pl-10 text-sm text-gray-900 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-brand-400"
+          />
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
               <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -250,7 +283,7 @@ export function DataTable<T = any>({
                             className={action.className}
                               key={actionIndex}
                               onClick={() => action.onClick(row)}
-                              variant={action.variant || 'outline'}
+                              variant={action.variant as 'primary' | 'outline' || 'outline'}
                               size="sm"
                             >
                               {action.icon && <span className="mr-1">{action.icon}</span>}
@@ -284,15 +317,15 @@ export function DataTable<T = any>({
           <span>rows</span>
         </div>
         <PaginationWithIcon
-          currentPage={page + 1}
+          initialPage={page + 1}
           totalPages={Math.ceil(sortedData.length / rowsPerPage) || 1}
           onPageChange={handlePageChange}
-          showInfo={true}
-          infoText={`${sortedData.length === 0 ? 0 : page * rowsPerPage + 1}-${Math.min((page + 1) * rowsPerPage, sortedData.length)} of ${sortedData.length}`}
+          // showInfo={true}
+          // infoText={`${sortedData.length === 0 ? 0 : page * rowsPerPage + 1}-${Math.min((page + 1) * rowsPerPage, sortedData.length)} of ${sortedData.length}`}
         />
       </div>
       
-      <Modal className="max-w-md" isOpen={isFilterModalOpen} onClose={() => setFilterModalOpen(false)} title="Filter">
+      <Modal className="max-w-md" isOpen={isFilterModalOpen} onClose={() => setFilterModalOpen(false)} >
         <div className="p-6">
           <div className="mb-4">
             <div className='text-center'>
@@ -328,6 +361,12 @@ export function DataTable<T = any>({
               <input
                 type="text"
                 placeholder="Cari berdasarkan kata kunci"
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setPage(0);
+                  onSearchChange?.(e.target.value);
+                }}
                 className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 pl-10 text-sm text-gray-900 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-brand-400"
               />
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
