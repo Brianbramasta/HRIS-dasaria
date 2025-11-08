@@ -34,7 +34,9 @@
       "description": "Divisi yang mengelola keuangan dan akuntansi perusahaan",
       "isActive": true,
       "createdAt": "2024-01-01T00:00:00Z",
-      "updatedAt": "2024-01-01T00:00:00Z"
+      "updatedAt": "2025-11-08T13:16:50.870Z",
+      "memoFile": "sss",
+      "skFile": "bef7334e1cc3c5a5559687d0bff230aaea4f1e27.png"
     },
     {
       "id": "5",
@@ -44,6 +46,14 @@
       "isActive": true,
       "createdAt": "2024-01-01T00:00:00Z",
       "updatedAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "name": "test",
+      "description": "aaa",
+      "memoFile": "112",
+      "id": "1762593029087",
+      "createdAt": "2025-11-08T09:10:29.087Z",
+      "updatedAt": "2025-11-08T09:10:29.087Z"
     }
   ],
   "companies": [
@@ -401,46 +411,6 @@
       "departmentId": "3",
       "departmentName": "Departemen Digital Marketing",
       "startDate": "2022-07-10",
-      "endDate": null,
-      "isActive": true,
-      "createdAt": "2024-01-01T00:00:00Z",
-      "updatedAt": "2024-01-01T00:00:00Z"
-    },
-    {
-      "id": "4",
-      "employeeId": "EMP010",
-      "employeeName": "Dewi Lestari",
-      "employeeCode": "EMP010",
-      "positionId": "4",
-      "positionName": "HR Specialist",
-      "positionCode": "HRS",
-      "directorateId": "5",
-      "directorateName": "Direktorat Sumber Daya Manusia",
-      "divisionId": "6",
-      "divisionName": "Divisi HR Operations",
-      "departmentId": "7",
-      "departmentName": "Departemen Recruitment",
-      "startDate": "2023-05-20",
-      "endDate": null,
-      "isActive": true,
-      "createdAt": "2024-01-01T00:00:00Z",
-      "updatedAt": "2024-01-01T00:00:00Z"
-    },
-    {
-      "id": "5",
-      "employeeId": "EMP011",
-      "employeeName": "Agus Wibowo",
-      "employeeCode": "EMP011",
-      "positionId": "5",
-      "positionName": "Finance Analyst",
-      "positionCode": "FA",
-      "directorateId": "4",
-      "directorateName": "Direktorat Keuangan",
-      "divisionId": "5",
-      "divisionName": "Divisi Financial Planning",
-      "departmentId": "6",
-      "departmentName": "Departemen Budget Planning",
-      "startDate": "2023-02-14",
       "endDate": null,
       "isActive": true,
       "createdAt": "2024-01-01T00:00:00Z",

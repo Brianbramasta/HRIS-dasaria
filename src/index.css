@@ -790,3 +790,7 @@ span.flatpickr-weekday,
 .bg-success{
   background-color: #28A745;
 }
+
+.zoom-50{
+  zoom:50%
+}

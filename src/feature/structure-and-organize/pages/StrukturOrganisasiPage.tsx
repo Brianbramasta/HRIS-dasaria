@@ -13,6 +13,9 @@ import {
   useEmployeePositions,
 } from '../index';
 import { BLRow, CompanyRow, OfficeRow, DirectorateRow, DivisionRow, DepartmentRow, PositionRow, EmployeePositionRow } from '../types/organizationTable.types';
+import AddBusinessLineModal from '../components/modals/LiniBisnis/AddBusinessLineModal';
+import EditBusinessLineModal from '../components/modals/LiniBisnis/EditBusinessLineModal';
+import DeleteBusinessLineModal from '../components/modals/LiniBisnis/DeleteBusinessLineModal';
 
 
 const businessLineColumns: DataTableColumn<BLRow>[] = [
@@ -78,6 +81,11 @@ const employeePositionColumns: DataTableColumn<EmployeePositionRow>[] = [
 
 export default function StrukturOrganisasiPage() {
   const [activeTab, setActiveTab] = useState('business-lines');
+  // BL modals state
+  const [isAddBLOpen, setIsAddBLOpen] = useState(false);
+  const [isEditBLOpen, setIsEditBLOpen] = useState(false);
+  const [isDeleteBLOpen, setIsDeleteBLOpen] = useState(false);
+  const [selectedBLIndex, setSelectedBLIndex] = useState<number | null>(null);
 
   // Hooks to fetch data from services/json-server
   const { businessLines, fetchBusinessLines, setSearch: setBLSearch, setPage: setBLPage, setPageSize: setBLPageSize, setSort: setBLSort } = useBusinessLines();
@@ -201,7 +209,31 @@ export default function StrukturOrganisasiPage() {
           title="Lini Bisnis"
           data={blRows}
           columns={businessLineColumns}
-          actions={actionsIconOnly}
+          actions={[
+            {
+              label: '',
+              variant: 'outline',
+              className: 'border-0',
+              icon: <Edit size={16} />,
+              onClick: (row: any) => {
+                const idx = (row?.no ?? 0) - 1;
+                setSelectedBLIndex(idx);
+                setIsEditBLOpen(true);
+              },
+            },
+            {
+              label: '',
+              variant: 'outline',
+              className: 'border-0',
+              color: 'error',
+              icon: <Trash size={16} />,
+              onClick: (row: any) => {
+                const idx = (row?.no ?? 0) - 1;
+                setSelectedBLIndex(idx);
+                setIsDeleteBLOpen(true);
+              },
+            },
+          ]}
           searchable
           filterable
           resetKey={activeTab}
@@ -210,7 +242,7 @@ export default function StrukturOrganisasiPage() {
           onPageChangeExternal={(p) => { setBLPage(p); fetchBusinessLines(); }}
           onRowsPerPageChangeExternal={(ps) => { setBLPageSize(ps); fetchBusinessLines(); }}
           onColumnVisibilityChange={() => { fetchBusinessLines(); }}
-          onAdd={() => console.log('Add Business Line')}
+          onAdd={() => setIsAddBLOpen(true)}
           onExport={() => exportCSV('lini-bisnis.csv', blRows)}
         />
       ),
@@ -409,6 +441,25 @@ export default function StrukturOrganisasiPage() {
         <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Struktur Organisasi</h1>
       </div>
       <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
+
+      {/* BL Modals */}
+      <AddBusinessLineModal
+        isOpen={isAddBLOpen}
+        onClose={() => setIsAddBLOpen(false)}
+        onSuccess={() => fetchBusinessLines()}
+      />
+      <EditBusinessLineModal
+        isOpen={isEditBLOpen}
+        onClose={() => setIsEditBLOpen(false)}
+        businessLine={selectedBLIndex !== null ? (businessLines?.[selectedBLIndex] as any) : null}
+        onSuccess={() => fetchBusinessLines()}
+      />
+      <DeleteBusinessLineModal
+        isOpen={isDeleteBLOpen}
+        onClose={() => setIsDeleteBLOpen(false)}
+        businessLine={selectedBLIndex !== null ? (businessLines?.[selectedBLIndex] as any) : null}
+        onSuccess={() => fetchBusinessLines()}
+      />
     </div>
   );
 }
