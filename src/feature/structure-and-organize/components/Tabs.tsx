@@ -21,9 +21,9 @@ export function Tabs({
   tabs,
   activeTab,
   onTabChange,
-  variant = 'scrollable',
+  // variant = 'scrollable',
   orientation = 'horizontal',
-  centered = false,
+  // centered = false,
   className = '',
 }: TabsProps) {
   const activeTabContent = tabs.find(tab => tab.id === activeTab)?.content;

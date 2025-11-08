@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { 
   BusinessLine, 
-  PaginatedResponse, 
+  // PaginatedResponse, 
   TableFilter
 } from '../types/organization.types';
 import { businessLineService } from '../services/organization.service';

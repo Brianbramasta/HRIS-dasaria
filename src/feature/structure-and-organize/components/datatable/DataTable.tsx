@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
-import { Table, TableHeader, TableBody, TableRow, TableCell } from '../../../components/ui/table';
-import PaginationWithIcon from '../../../components/tables/DataTables/TableOne/PaginationWithIcon';
-import Button from '../../../components/ui/button/Button';
-import {Modal} from '../../../components/ui/modal/index';
+import { Table, TableHeader, TableBody, TableRow, TableCell } from '../../../../components/ui/table';
+import PaginationWithIcon from '../../../../components/tables/DataTables/TableOne/PaginationWithIcon';
+import Button from '../../../../components/ui/button/Button';
+import {Modal} from '../../../../components/ui/modal/index';
 import { Plus, Download, Filter } from 'react-feather';
 
 export interface DataTableColumn<T = any> {

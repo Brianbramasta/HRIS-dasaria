@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import Tabs from '../components/Tabs';
-import DataTable, { DataTableColumn, DataTableAction } from '../components/DataTable';
+import DataTable, { DataTableColumn, DataTableAction } from '../components/datatable/DataTable';
 import { Edit, Trash, FileText } from 'react-feather';
 import { 
   useBusinessLines,
