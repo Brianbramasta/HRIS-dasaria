@@ -1,0 +1,68 @@
+import React, { useMemo } from 'react';
+import DataTable, { DataTableColumn, DataTableAction } from '../../components/datatable/DataTable';
+import { Edit, Trash, FileText } from 'react-feather';
+import { useDirectorates } from '../../index';
+import type { DirectorateRow } from '../../types/organizationTable.types';
+
+type Props = { resetKey: string };
+
+const directorateColumns: DataTableColumn<DirectorateRow>[] = [
+  { id: 'no', label: 'No', sortable: true },
+  { id: 'Nama Direktorat', label: 'Nama Direktorat', sortable: true },
+  { id: 'Deskripsi Umum', label: 'Deskripsi Umum', sortable: true },
+  { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: true, format: () => <FileText size={16} /> },
+];
+
+export default function DirectoratesTab({ resetKey }: Props) {
+  const { directorates, fetchDirectorates, setSearch, setPage, setPageSize, setSort } = useDirectorates();
+
+  const rows: DirectorateRow[] = useMemo(() => {
+    return (directorates || []).map((d, idx) => ({
+      no: idx + 1,
+      'Nama Direktorat': (d as any).name ?? '—',
+      'Deskripsi Umum': (d as any).description ?? '—',
+      'File SK dan Memo': ((d as any).skFile || (d as any).memoFile) ? 'Ada' : '—',
+    }));
+  }, [directorates]);
+
+  const actionsIconOnly = [
+    { label: '', onClick: (row: any) => console.log('Edit', row), variant: 'outline', className: 'border-0', icon: <Edit size={16} /> },
+    { label: '', onClick: (row: any) => console.log('Delete', row), variant: 'outline', className: 'border-0', color: 'error', icon: <Trash size={16} /> },
+  ] as DataTableAction<any>[];
+
+  const exportCSV = (filename: string, data: any[]) => {
+    if (!data || data.length === 0) return;
+    const headers = Object.keys(data[0]);
+    const csv = [headers.join(','), ...data.map(r => headers.map(h => JSON.stringify((r as any)[h] ?? '')).join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  React.useEffect(() => { fetchDirectorates(); }, []);
+
+  return (
+    <DataTable
+      title="Direktorat"
+      data={rows}
+      columns={directorateColumns}
+      actions={actionsIconOnly}
+      searchable
+      filterable
+      resetKey={resetKey}
+      onSearchChange={(val) => { setSearch(val); fetchDirectorates(); }}
+      onSortChange={() => { setSort('name', 'asc'); fetchDirectorates(); }}
+      onPageChangeExternal={(p) => { setPage(p); fetchDirectorates(); }}
+      onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); fetchDirectorates(); }}
+      onColumnVisibilityChange={() => { fetchDirectorates(); }}
+      onAdd={() => console.log('Add Directorate')}
+      onExport={() => exportCSV('direktorat.csv', rows)}
+    />
+  );
+}
