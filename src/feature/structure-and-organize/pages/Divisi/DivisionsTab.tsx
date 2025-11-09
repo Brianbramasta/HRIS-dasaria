@@ -1,8 +1,13 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '../../components/datatable/DataTable';
 import { Edit, Trash, FileText } from 'react-feather';
 import { useDivisions } from '../../index';
 import type { DivisionRow } from '../../types/organizationTable.types';
+import type { Division } from '../../types/organization.types';
+import { useModal } from '../../../../hooks/useModal';
+import AddDivisionModal from '../../components/modals/Divisi/AddDivisionModal';
+import EditDivisionModal from '../../components/modals/Divisi/EditDivisionModal';
+import DeleteDivisionModal from '../../components/modals/Divisi/DeleteDivisionModal';
 
 type Props = { resetKey: string };
 
@@ -15,19 +20,24 @@ const divisionColumns: DataTableColumn<DivisionRow>[] = [
 
 export default function DivisionsTab({ resetKey }: Props) {
   const { divisions, fetchDivisions, setSearch, setPage, setPageSize, setSort } = useDivisions();
+  const addModal = useModal(false);
+  const editModal = useModal(false);
+  const deleteModal = useModal(false);
+  const [selected, setSelected] = useState<Division | null>(null);
 
-  const rows: DivisionRow[] = useMemo(() => {
+  const rows: any[] = useMemo(() => {
     return (divisions || []).map((d, idx) => ({
       no: idx + 1,
       'Nama Divisi': (d as any).name ?? '—',
       'Deskripsi Umum': (d as any).description ?? '—',
       'File SK dan Memo': ((d as any).skFile || (d as any).memoFile) ? 'Ada' : '—',
+      raw: d,
     }));
   }, [divisions]);
 
   const actionsIconOnly = [
-    { label: '', onClick: (row: any) => console.log('Edit', row), variant: 'outline', className: 'border-0', icon: <Edit size={16} /> },
-    { label: '', onClick: (row: any) => console.log('Delete', row), variant: 'outline', className: 'border-0', color: 'error', icon: <Trash size={16} /> },
+    { label: '', onClick: (row: any) => { setSelected(row.raw as Division); editModal.openModal(); }, variant: 'outline', className: 'border-0', icon: <Edit size={16} /> },
+    { label: '', onClick: (row: any) => { setSelected(row.raw as Division); deleteModal.openModal(); }, variant: 'outline', className: 'border-0', color: 'error', icon: <Trash size={16} /> },
   ] as DataTableAction<any>[];
 
   const exportCSV = (filename: string, data: any[]) => {
@@ -48,6 +58,7 @@ export default function DivisionsTab({ resetKey }: Props) {
   React.useEffect(() => { fetchDivisions(); }, []);
 
   return (
+    <>
     <DataTable
       title="Divisi"
       data={rows}
@@ -61,8 +72,26 @@ export default function DivisionsTab({ resetKey }: Props) {
       onPageChangeExternal={(p) => { setPage(p); fetchDivisions(); }}
       onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); fetchDivisions(); }}
       onColumnVisibilityChange={() => { fetchDivisions(); }}
-      onAdd={() => console.log('Add Division')}
+      onAdd={() => addModal.openModal()}
       onExport={() => exportCSV('divisi.csv', rows)}
     />
+    <AddDivisionModal
+      isOpen={addModal.isOpen}
+      onClose={addModal.closeModal}
+      onSuccess={() => fetchDivisions()}
+    />
+    <EditDivisionModal
+      isOpen={editModal.isOpen}
+      onClose={() => { editModal.closeModal(); setSelected(null); }}
+      division={selected}
+      onSuccess={() => fetchDivisions()}
+    />
+    <DeleteDivisionModal
+      isOpen={deleteModal.isOpen}
+      onClose={() => { deleteModal.closeModal(); setSelected(null); }}
+      division={selected}
+      onSuccess={() => fetchDivisions()}
+    />
+    </>
   );
 }

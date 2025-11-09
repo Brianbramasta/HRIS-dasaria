@@ -1,8 +1,13 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '../../components/datatable/DataTable';
 import { Edit, Trash, FileText } from 'react-feather';
 import { useDepartments } from '../../index';
 import type { DepartmentRow } from '../../types/organizationTable.types';
+import type { Department } from '../../types/organization.types';
+import { useModal } from '../../../../hooks/useModal';
+import AddDepartmentModal from '../../components/modals/Departemen/AddDepartmentModal';
+import EditDepartmentModal from '../../components/modals/Departemen/EditDepartmentModal';
+import DeleteDepartmentModal from '../../components/modals/Departemen/DeleteDepartmentModal';
 
 type Props = { resetKey: string };
 
@@ -14,18 +19,23 @@ const departmentColumns: DataTableColumn<DepartmentRow>[] = [
 
 export default function DepartmentsTab({ resetKey }: Props) {
   const { departments, fetchDepartments, setSearch, setPage, setPageSize, setSort } = useDepartments();
+  const addModal = useModal(false);
+  const editModal = useModal(false);
+  const deleteModal = useModal(false);
+  const [selected, setSelected] = useState<Department | null>(null);
 
-  const rows: DepartmentRow[] = useMemo(() => {
+  const rows: any[] = useMemo(() => {
     return (departments || []).map((d, idx) => ({
       no: idx + 1,
       'Nama Departemen': (d as any).name ?? '—',
       'File SK dan Memo': ((d as any).skFile || (d as any).memoFile) ? 'Ada' : '—',
+      raw: d,
     }));
   }, [departments]);
 
   const actionsIconOnly = [
-    { label: '', onClick: (row: any) => console.log('Edit', row), variant: 'outline', className: 'border-0', icon: <Edit size={16} /> },
-    { label: '', onClick: (row: any) => console.log('Delete', row), variant: 'outline', className: 'border-0', color: 'error', icon: <Trash size={16} /> },
+    { label: '', onClick: (row: any) => { setSelected(row.raw as Department); editModal.openModal(); }, variant: 'outline', className: 'border-0', icon: <Edit size={16} /> },
+    { label: '', onClick: (row: any) => { setSelected(row.raw as Department); deleteModal.openModal(); }, variant: 'outline', className: 'border-0', color: 'error', icon: <Trash size={16} /> },
   ] as DataTableAction<any>[];
 
   const exportCSV = (filename: string, data: any[]) => {
@@ -46,6 +56,7 @@ export default function DepartmentsTab({ resetKey }: Props) {
   React.useEffect(() => { fetchDepartments(); }, []);
 
   return (
+    <>
     <DataTable
       title="Departemen"
       data={rows}
@@ -59,8 +70,26 @@ export default function DepartmentsTab({ resetKey }: Props) {
       onPageChangeExternal={(p) => { setPage(p); fetchDepartments(); }}
       onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); fetchDepartments(); }}
       onColumnVisibilityChange={() => { fetchDepartments(); }}
-      onAdd={() => console.log('Add Department')}
+      onAdd={() => addModal.openModal()}
       onExport={() => exportCSV('departemen.csv', rows)}
     />
+    <AddDepartmentModal
+      isOpen={addModal.isOpen}
+      onClose={addModal.closeModal}
+      onSuccess={() => fetchDepartments()}
+    />
+    <EditDepartmentModal
+      isOpen={editModal.isOpen}
+      onClose={() => { editModal.closeModal(); setSelected(null); }}
+      department={selected}
+      onSuccess={() => fetchDepartments()}
+    />
+    <DeleteDepartmentModal
+      isOpen={deleteModal.isOpen}
+      onClose={() => { deleteModal.closeModal(); setSelected(null); }}
+      department={selected}
+      onSuccess={() => fetchDepartments()}
+    />
+    </>
   );
 }

@@ -1,8 +1,13 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '../../components/datatable/DataTable';
 import { Edit, Trash, FileText } from 'react-feather';
 import { useOffices } from '../../index';
 import type { OfficeRow } from '../../types/organizationTable.types';
+import { useModal } from '../../../../hooks/useModal';
+import type { Office } from '../../types/organization.types';
+import AddOfficeModal from '../../components/modals/Kantor/AddOfficeModal';
+import EditOfficeModal from '../../components/modals/Kantor/EditOfficeModal';
+import DeleteOfficeModal from '../../components/modals/Kantor/DeleteOfficeModal';
 
 type Props = { resetKey: string };
 
@@ -15,6 +20,10 @@ const officeColumns: DataTableColumn<OfficeRow>[] = [
 
 export default function OfficesTab({ resetKey }: Props) {
   const { offices, fetchOffices, setSearch, setPage, setPageSize, setSort } = useOffices();
+  const addModal = useModal(false);
+  const editModal = useModal(false);
+  const deleteModal = useModal(false);
+  const [selected, setSelected] = useState<Office | null>(null);
 
   const rows: OfficeRow[] = useMemo(() => {
     return (offices || []).map((o, idx) => ({
@@ -22,12 +31,13 @@ export default function OfficesTab({ resetKey }: Props) {
       Office: (o as any).name ?? '—',
       'Deskripsi Umum': (o as any).description ?? '—',
       'File SK dan Memo': ((o as any).skFile || (o as any).memoFile) ? 'Ada' : '—',
+      raw: o,
     }));
   }, [offices]);
 
   const actionsIconOnly = [
-    { label: '', onClick: (row: any) => console.log('Edit', row), variant: 'outline', className: 'border-0', icon: <Edit size={16} /> },
-    { label: '', onClick: (row: any) => console.log('Delete', row), variant: 'outline', className: 'border-0', color: 'error', icon: <Trash size={16} /> },
+    { label: '', onClick: (row: any) => { setSelected(row.raw as Office); editModal.openModal(); }, variant: 'outline', className: 'border-0', icon: <Edit size={16} /> },
+    { label: '', onClick: (row: any) => { setSelected(row.raw as Office); deleteModal.openModal(); }, variant: 'outline', className: 'border-0', color: 'error', icon: <Trash size={16} /> },
   ] as DataTableAction<any>[];
 
   const exportCSV = (filename: string, data: any[]) => {
@@ -48,6 +58,7 @@ export default function OfficesTab({ resetKey }: Props) {
   React.useEffect(() => { fetchOffices(); }, []);
 
   return (
+    <>
     <DataTable
       title="Office"
       data={rows}
@@ -61,8 +72,26 @@ export default function OfficesTab({ resetKey }: Props) {
       onPageChangeExternal={(p) => { setPage(p); fetchOffices(); }}
       onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); fetchOffices(); }}
       onColumnVisibilityChange={() => { fetchOffices(); }}
-      onAdd={() => console.log('Add Office')}
+      onAdd={() => addModal.openModal()}
       onExport={() => exportCSV('office.csv', rows)}
     />
+    <AddOfficeModal
+      isOpen={addModal.isOpen}
+      onClose={addModal.closeModal}
+      onSuccess={() => fetchOffices()}
+    />
+    <EditOfficeModal
+      isOpen={editModal.isOpen}
+      onClose={() => { editModal.closeModal(); setSelected(null); }}
+      office={selected}
+      onSuccess={() => fetchOffices()}
+    />
+    <DeleteOfficeModal
+      isOpen={deleteModal.isOpen}
+      onClose={() => { deleteModal.closeModal(); setSelected(null); }}
+      office={selected}
+      onSuccess={() => fetchOffices()}
+    />
+    </>
   );
 }

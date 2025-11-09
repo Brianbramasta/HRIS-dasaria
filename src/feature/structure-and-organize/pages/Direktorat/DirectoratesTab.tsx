@@ -1,8 +1,13 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '../../components/datatable/DataTable';
 import { Edit, Trash, FileText } from 'react-feather';
 import { useDirectorates } from '../../index';
 import type { DirectorateRow } from '../../types/organizationTable.types';
+import type { Directorate } from '../../types/organization.types';
+import { useModal } from '../../../../hooks/useModal';
+import AddDirectorateModal from '../../components/modals/Direktorat/AddDirectorateModal';
+import EditDirectorateModal from '../../components/modals/Direktorat/EditDirectorateModal';
+import DeleteDirectorateModal from '../../components/modals/Direktorat/DeleteDirectorateModal';
 
 type Props = { resetKey: string };
 
@@ -15,19 +20,24 @@ const directorateColumns: DataTableColumn<DirectorateRow>[] = [
 
 export default function DirectoratesTab({ resetKey }: Props) {
   const { directorates, fetchDirectorates, setSearch, setPage, setPageSize, setSort } = useDirectorates();
+  const addModal = useModal(false);
+  const editModal = useModal(false);
+  const deleteModal = useModal(false);
+  const [selected, setSelected] = useState<Directorate | null>(null);
 
-  const rows: DirectorateRow[] = useMemo(() => {
+  const rows: any[] = useMemo(() => {
     return (directorates || []).map((d, idx) => ({
       no: idx + 1,
       'Nama Direktorat': (d as any).name ?? '—',
       'Deskripsi Umum': (d as any).description ?? '—',
       'File SK dan Memo': ((d as any).skFile || (d as any).memoFile) ? 'Ada' : '—',
+      raw: d,
     }));
   }, [directorates]);
 
   const actionsIconOnly = [
-    { label: '', onClick: (row: any) => console.log('Edit', row), variant: 'outline', className: 'border-0', icon: <Edit size={16} /> },
-    { label: '', onClick: (row: any) => console.log('Delete', row), variant: 'outline', className: 'border-0', color: 'error', icon: <Trash size={16} /> },
+    { label: '', onClick: (row: any) => { setSelected(row.raw as Directorate); editModal.openModal(); }, variant: 'outline', className: 'border-0', icon: <Edit size={16} /> },
+    { label: '', onClick: (row: any) => { setSelected(row.raw as Directorate); deleteModal.openModal(); }, variant: 'outline', className: 'border-0', color: 'error', icon: <Trash size={16} /> },
   ] as DataTableAction<any>[];
 
   const exportCSV = (filename: string, data: any[]) => {
@@ -48,6 +58,7 @@ export default function DirectoratesTab({ resetKey }: Props) {
   React.useEffect(() => { fetchDirectorates(); }, []);
 
   return (
+    <>
     <DataTable
       title="Direktorat"
       data={rows}
@@ -61,8 +72,26 @@ export default function DirectoratesTab({ resetKey }: Props) {
       onPageChangeExternal={(p) => { setPage(p); fetchDirectorates(); }}
       onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); fetchDirectorates(); }}
       onColumnVisibilityChange={() => { fetchDirectorates(); }}
-      onAdd={() => console.log('Add Directorate')}
+      onAdd={() => addModal.openModal()}
       onExport={() => exportCSV('direktorat.csv', rows)}
     />
+    <AddDirectorateModal
+      isOpen={addModal.isOpen}
+      onClose={addModal.closeModal}
+      onSuccess={() => fetchDirectorates()}
+    />
+    <EditDirectorateModal
+      isOpen={editModal.isOpen}
+      onClose={() => { editModal.closeModal(); setSelected(null); }}
+      directorate={selected}
+      onSuccess={() => fetchDirectorates()}
+    />
+    <DeleteDirectorateModal
+      isOpen={deleteModal.isOpen}
+      onClose={() => { deleteModal.closeModal(); setSelected(null); }}
+      directorate={selected}
+      onSuccess={() => fetchDirectorates()}
+    />
+    </>
   );
 }

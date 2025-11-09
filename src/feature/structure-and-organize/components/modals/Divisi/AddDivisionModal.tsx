@@ -1,0 +1,135 @@
+import React, { useEffect, useState } from 'react';
+import { Modal } from '../../../../../components/ui/modal/index';
+import { divisionService, directorateService } from '../../../services/organization.service';
+import type { Directorate } from '../../../types/organization.types';
+
+interface AddDivisionModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSuccess?: () => void;
+}
+
+const AddDivisionModal: React.FC<AddDivisionModalProps> = ({ isOpen, onClose, onSuccess }) => {
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [directorateId, setDirectorateId] = useState('');
+  const [memoNumber, setMemoNumber] = useState('');
+  const [skFile, setSkFile] = useState<File | null>(null);
+  const [directorates, setDirectorates] = useState<Directorate[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    const loadDirectorates = async () => {
+      try {
+        const res = await directorateService.getAll({ search: '', page: 1, pageSize: 100, sortBy: 'name', sortOrder: 'asc' });
+        setDirectorates(res.data || []);
+      } catch (err) {
+        console.error('Failed to load directorates', err);
+      }
+    };
+    if (isOpen) loadDirectorates();
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setName('');
+      setDescription('');
+      setDirectorateId('');
+      setMemoNumber('');
+      setSkFile(null);
+    }
+  }, [isOpen]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    setSkFile(file);
+  };
+
+  const handleSubmit = async () => {
+    setSubmitting(true);
+    try {
+      await divisionService.create({
+        name,
+        description,
+        directorateId,
+        skFile: skFile?.name,
+        memoFile: memoNumber,
+      });
+      onSuccess?.();
+      onClose();
+    } catch (err) {
+      console.error('Failed to add division', err);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} className="max-w-3xl p-6" showCloseButton>
+      <div className="space-y-6">
+        <h2 className="text-3xl font-bold">Add Division</h2>
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Nama Divisi</label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Direktorat</label>
+          <select
+            value={directorateId}
+            onChange={(e) => setDirectorateId(e.target.value)}
+            className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+          >
+            <option value="">Pilih Direktorat</option>
+            {directorates.map((d) => (
+              <option key={d.id} value={d.id}>{d.name}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Deskripsi Umum</label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="w-full rounded-xl border border-gray-300 px-4 py-3 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
+          <input
+            type="text"
+            value={memoNumber}
+            onChange={(e) => setMemoNumber(e.target.value)}
+            className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Upload File SK</label>
+          <input type="file" onChange={handleFileChange} />
+        </div>
+
+        <div className="flex justify-end gap-3">
+          <button onClick={onClose} className="rounded-xl border px-5 py-2">Close</button>
+          <button
+            onClick={handleSubmit}
+            disabled={submitting || !name || !directorateId}
+            className="rounded-xl bg-primary px-5 py-2 text-white disabled:opacity-60"
+          >
+            Simpan
+          </button>
+        </div>
+      </div>
+    </Modal>
+  );
+};
+
+export default AddDivisionModal;
