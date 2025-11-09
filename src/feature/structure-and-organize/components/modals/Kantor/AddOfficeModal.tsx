@@ -45,7 +45,7 @@ const AddOfficeModal: React.FC<AddOfficeModalProps> = ({ isOpen, onClose, onSucc
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="max-w-3xl p-6" showCloseButton>
+    <Modal isOpen={isOpen} onClose={onClose} className="max-w-3xl p-6 zoom-50" showCloseButton>
       <div className="space-y-6">
         <h2 className="text-3xl font-bold text-center">Tambah Office</h2>
 
@@ -79,11 +79,28 @@ const AddOfficeModal: React.FC<AddOfficeModalProps> = ({ isOpen, onClose, onSucc
           />
         </div>
 
-        <div className="space-y-2">
+        {/* <div className="space-y-2">
           <label className="text-sm font-medium">Upload File SK</label>
           <div className="flex items-center gap-2">
             <input type="file" onChange={handleFileChange} />
             {skFile && <span className="text-sm text-gray-600">{skFile.name}</span>}
+          </div>
+        </div> */}
+         <div className="space-y-2">
+          <label className="text-sm font-medium">Upload File SK</label>
+          <div className="rounded-xl border-2 border-dashed border-gray-300 p-6 text-center">
+            <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
+              <span className="text-xl">⬆️</span>
+            </div>
+            <p className="text-lg font-semibold">Drop File Here</p>
+            <p className="text-sm text-gray-500">Drag and drop your PNG, JPG, WebP, SVG images here or browse</p>
+            <label className="mt-3 inline-block cursor-pointer text-primary underline">
+              <input type="file" className="hidden" onChange={handleFileChange} />
+              Browser File
+            </label>
+            {skFile && (
+              <p className="mt-2 text-sm text-gray-600">Selected: {skFile.name}</p>
+            )}
           </div>
         </div>
 

@@ -57,6 +57,7 @@ export interface Position extends BaseEntity {
   directSubordinates: string[];
   skFile?: string;
   memoFile?: string;
+  memoNumber?: string;
 }
 
 export interface EmployeePosition extends BaseEntity {

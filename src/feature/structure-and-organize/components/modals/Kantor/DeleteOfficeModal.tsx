@@ -35,11 +35,11 @@ const DeleteOfficeModal: React.FC<DeleteOfficeModalProps> = ({ isOpen, onClose, 
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="max-w-3xl p-6" showCloseButton>
+    <Modal isOpen={isOpen} onClose={onClose} className="max-w-3xl p-6 zoom-50" showCloseButton>
       <div className="space-y-6">
-        <div className="text-center">
-          <div className="mx-auto mb-4 h-10 w-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center">!</div>
-          <h2 className="text-3xl font-bold">Hapus Data</h2>
+        <div className="flex flex-col items-center">
+          <div className="mb-3 text-4xl">⚠️</div>
+          <h2 className="text-2xl font-bold">Hapus Data</h2>
         </div>
 
         <div className="space-y-2">
@@ -52,7 +52,7 @@ const DeleteOfficeModal: React.FC<DeleteOfficeModalProps> = ({ isOpen, onClose, 
           />
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2 hidden">
           <label className="text-sm font-medium">Upload File SK</label>
           <div className="flex items-center gap-2">
             <input type="file" onChange={handleFileChange} />
@@ -60,7 +60,17 @@ const DeleteOfficeModal: React.FC<DeleteOfficeModalProps> = ({ isOpen, onClose, 
           </div>
         </div>
 
-        <p className="text-sm text-gray-600">*Data tidak benar-benar dihapus akan tetapi diarsipkan</p>
+         <div className="space-y-2">
+          <label className="text-sm font-medium">Upload File SK</label>
+          <div className="rounded-xl border-2 border-dashed border-gray-300 p-6 text-center text-gray-500">
+            <p className="text-lg font-semibold">Drop File Here</p>
+            <p className="text-sm">Drag and drop your PNG, JPG, WebP, SVG images here or browse</p>
+            <span className="mt-3 inline-block text-primary underline">Browser File</span>
+          </div>
+          <p className="text-xs text-gray-500">*Data tidak benar-benar dihapus akan tetapi diarsipkan</p>
+        </div>
+
+        {/* <p className="text-sm text-gray-600">*Data tidak benar-benar dihapus akan tetapi diarsipkan</p> */}
 
         <div className="flex justify-end gap-3">
           <button onClick={onClose} className="rounded-xl border px-5 py-2">Close</button>

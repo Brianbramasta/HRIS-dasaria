@@ -3,6 +3,11 @@ import DataTable, { DataTableColumn, DataTableAction } from '../../components/da
 import { Edit, Trash, FileText } from 'react-feather';
 import { usePositions } from '../../index';
 import type { PositionRow } from '../../types/organizationTable.types';
+import { useModal } from '../../../../hooks/useModal';
+import { AddPositionModal } from '../../components/modals/Jabatan/AddPositionModal';
+import { EditPositionModal } from '../../components/modals/Jabatan/EditPositionModal';
+import { DeletePositionModal } from '../../components/modals/Jabatan/DeletePositionModal';
+import { Position } from '../../types/organization.types';
 
 type Props = { resetKey: string };
 
@@ -17,6 +22,10 @@ const positionColumns: DataTableColumn<PositionRow>[] = [
 
 export default function PositionsTab({ resetKey }: Props) {
   const { positions, fetchPositions, setSearch, setPage, setPageSize, setSort } = usePositions();
+  const addModal = useModal(false);
+  const editModal = useModal(false);
+  const deleteModal = useModal(false);
+  const [selected, setSelected] = React.useState<Position | null>(null);
 
   const rows: PositionRow[] = useMemo(() => {
     return (positions || []).map((p, idx) => ({
@@ -26,12 +35,32 @@ export default function PositionsTab({ resetKey }: Props) {
       'Deskripsi Tugas': (p as any).jobDescription ?? (p as any).description ?? '—',
       'Bawahan Langsung': Array.isArray((p as any).directSubordinates) ? (p as any).directSubordinates.join(', ') : '—',
       'File SK & MoU': ((p as any).skFile || (p as any).memoFile) ? 'Ada' : '—',
+      raw: p,
     }));
   }, [positions]);
 
   const actionsIconOnly = [
-    { label: '', onClick: (row: any) => console.log('Edit', row), variant: 'outline', className: 'border-0', icon: <Edit size={16} /> },
-    { label: '', onClick: (row: any) => console.log('Delete', row), variant: 'outline', className: 'border-0', color: 'error', icon: <Trash size={16} /> },
+    {
+      label: '',
+      onClick: (row: any) => {
+        setSelected(row.raw);
+        editModal.openModal();
+      },
+      variant: 'outline',
+      className: 'border-0',
+      icon: <Edit size={16} />,
+    },
+    {
+      label: '',
+      onClick: (row: any) => {
+        setSelected(row.raw);
+        deleteModal.openModal();
+      },
+      variant: 'outline',
+      className: 'border-0',
+      color: 'error',
+      icon: <Trash size={16} />,
+    },
   ] as DataTableAction<any>[];
 
   const exportCSV = (filename: string, data: any[]) => {
@@ -52,21 +81,49 @@ export default function PositionsTab({ resetKey }: Props) {
   React.useEffect(() => { fetchPositions(); }, []);
 
   return (
-    <DataTable
-      title="Jabatan"
-      data={rows}
-      columns={positionColumns}
-      actions={actionsIconOnly}
-      searchable
-      filterable
-      resetKey={resetKey}
-      onSearchChange={(val) => { setSearch(val); fetchPositions(); }}
-      onSortChange={() => { setSort('name', 'asc'); fetchPositions(); }}
-      onPageChangeExternal={(p) => { setPage(p); fetchPositions(); }}
-      onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); fetchPositions(); }}
-      onColumnVisibilityChange={() => { fetchPositions(); }}
-      onAdd={() => console.log('Add Position')}
-      onExport={() => exportCSV('jabatan.csv', rows)}
-    />
+    <>
+      <DataTable
+        title="Jabatan"
+        data={rows}
+        columns={positionColumns}
+        actions={actionsIconOnly}
+        searchable
+        filterable
+        resetKey={resetKey}
+        onSearchChange={(val) => { setSearch(val); fetchPositions(); }}
+        onSortChange={() => { setSort('name', 'asc'); fetchPositions(); }}
+        onPageChangeExternal={(p) => { setPage(p); fetchPositions(); }}
+        onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); fetchPositions(); }}
+        onColumnVisibilityChange={() => { fetchPositions(); }}
+        onAdd={()=>addModal.openModal()}
+        onExport={() => exportCSV('jabatan.csv', rows)}
+      />
+      <AddPositionModal
+        isOpen={addModal.isOpen}
+        onClose={addModal.closeModal}
+        onSuccess={() => {
+          fetchPositions();
+          addModal.closeModal();
+        }}
+      />
+      <EditPositionModal
+        isOpen={editModal.isOpen}
+        onClose={editModal.closeModal}
+        onSuccess={() => {
+          fetchPositions();
+          editModal.closeModal();
+        }}
+        position={selected}
+      />
+      <DeletePositionModal
+        isOpen={deleteModal.isOpen}
+        onClose={deleteModal.closeModal}
+        onSuccess={() => {
+          fetchPositions();
+          deleteModal.closeModal();
+        }}
+        position={selected}
+      />
+    </>
   );
 }
