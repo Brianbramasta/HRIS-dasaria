@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Modal } from '../../../../../components/ui/modal/index';
 import { departmentService } from '../../../services/organization.service';
 import type { Department } from '../../../types/organization.types';
+import FileInput from '../shared/field/FileInput';
 
 interface DeleteDepartmentModalProps {
   isOpen: boolean;
@@ -52,13 +53,14 @@ const DeleteDepartmentModal: React.FC<DeleteDepartmentModalProps> = ({ isOpen, o
           />
         </div>
 
-        <div className="space-y-2">
+        {/* <div className="space-y-2">
           <label className="text-sm font-medium">Upload File SK</label>
           <div className="flex items-center gap-2">
             <input type="file" onChange={handleFileChange} />
             {skFileName && <span className="text-sm text-gray-600">{skFileName}</span>}
           </div>
-        </div>
+        </div> */}
+        <FileInput skFileName={skFileName} onChange={handleFileChange} />
 
         <p className="text-sm text-gray-600">*Data tidak benar-benar dihapus akan tetapi diarsipkan</p>
 

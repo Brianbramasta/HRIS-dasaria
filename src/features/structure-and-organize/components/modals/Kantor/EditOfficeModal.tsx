@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Modal } from '../../../../../components/ui/modal/index';
 import { officeService } from '../../../services/organization.service';
 import type { Office } from '../../../types/organization.types';
+import FileInput from '../shared/field/FileInput';
 
 interface EditOfficeModalProps {
   isOpen: boolean;
@@ -92,7 +93,7 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
             {skFileName && <span className="text-sm text-gray-600">{skFileName}</span>}
           </div>
         </div> */}
-        <div className="space-y-2">
+        {/* <div className="space-y-2">
           <label className="text-sm font-medium">Upload File SK terbaru</label>
           <div className="rounded-xl border-2 border-dashed border-gray-300 p-6 text-center">
             <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
@@ -108,7 +109,8 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
               <p className="mt-2 text-sm text-gray-600">Selected: {skFileName}</p>
             )}
           </div>
-        </div>
+        </div> */}
+        <FileInput skFileName={skFileName} onChange={handleFileChange} />
 
         <div className="flex justify-end gap-3">
           <button onClick={onClose} className="rounded-xl border px-5 py-2">Close</button>

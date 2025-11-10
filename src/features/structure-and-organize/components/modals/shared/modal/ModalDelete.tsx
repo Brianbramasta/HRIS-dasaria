@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Modal } from '../../../../../components/ui/modal/index';
-import { officeService } from '../../../services/organization.service';
-import type { Office } from '../../../types/organization.types';
-import FileInput from '../shared/field/FileInput';
+import { Modal } from '../../../../../../components/ui/modal/index';
+import { officeService } from '../../../../services/organization.service';
+import type { Office } from '../../../../types/organization.types';
+import FileInput from '../../shared/field/FileInput';
 
 interface DeleteOfficeModalProps {
   isOpen: boolean;
@@ -52,26 +52,6 @@ const DeleteOfficeModal: React.FC<DeleteOfficeModalProps> = ({ isOpen, onClose, 
             className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
-
-        {/* <div className="space-y-2 hidden">
-          <label className="text-sm font-medium">Upload File SK</label>
-          <div className="flex items-center gap-2">
-            <input type="file" onChange={handleFileChange} />
-            {skFileName && <span className="text-sm text-gray-600">{skFileName}</span>}
-          </div>
-        </div>
-
-         <div className="space-y-2">
-          <label className="text-sm font-medium">Upload File SK</label>
-          <div className="rounded-xl border-2 border-dashed border-gray-300 p-6 text-center text-gray-500">
-            <p className="text-lg font-semibold">Drop File Here</p>
-            <p className="text-sm">Drag and drop your PNG, JPG, WebP, SVG images here or browse</p>
-            <span className="mt-3 inline-block text-primary underline">Browser File</span>
-          </div>
-          <p className="text-xs text-gray-500">*Data tidak benar-benar dihapus akan tetapi diarsipkan</p>
-        </div> */}
-
-        {/* <p className="text-sm text-gray-600">*Data tidak benar-benar dihapus akan tetapi diarsipkan</p> */}
 
         <FileInput skFileName={skFileName} onChange={handleFileChange} />
 

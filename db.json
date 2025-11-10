@@ -46,6 +46,13 @@
       "isActive": true,
       "createdAt": "2024-01-01T00:00:00Z",
       "updatedAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "name": "Keuangan",
+      "code": "FIN",
+      "description": "...",
+      "isActive": true,
+      "id": "5QmDHWh"
     }
   ],
   "companies": [
