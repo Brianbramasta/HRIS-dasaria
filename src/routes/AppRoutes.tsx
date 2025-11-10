@@ -59,6 +59,14 @@ import AppLayout from "../layout/AppLayout";
 import TaskList from "../pages/Task/TaskList";
 import Saas from "../pages/Dashboard/Saas";
 import StructureAndOrganize from "../features/structure-and-organize/pages/StrukturOrganisasiPage";
+import BusinessLinesTab from "../features/structure-and-organize/pages/LiniBisnis/BusinessLinesTab";
+import CompaniesTab from "../features/structure-and-organize/pages/Perusahaan/CompaniesTab";
+import OfficesTab from "../features/structure-and-organize/pages/Kantor/OfficesTab";
+import DirectoratesTab from "../features/structure-and-organize/pages/Direktorat/DirectoratesTab";
+import DivisionsTab from "../features/structure-and-organize/pages/Divisi/DivisionsTab";
+import DepartmentsTab from "../features/structure-and-organize/pages/Departemen/DepartmentsTab";
+import PositionsTab from "../features/structure-and-organize/pages/Jabatan/PositionsTab";
+import EmployeePositionsTab from "../features/structure-and-organize/pages/PosisiPegawai/EmployeePositionsTab";
 import DataKaryawan from "../features/staff/pages/data-karyawan";
 import PengunduranDiri from "../features/staff/pages/pengunduran-diri";
 import PerpanjanganKontrak from "../features/staff/pages/perpanjangan-kontrak";
@@ -72,7 +80,16 @@ export default function AppRoutes() {
       {/* Dashboard Layout */}
       <Route element={<AppLayout />}>
         <Route index path="/" element={<Ecommerce />} />
-        <Route index path="/structure-and-organize" element={<StructureAndOrganize />} />
+        <Route path="/structure-and-organize" element={<StructureAndOrganize />}>
+          <Route path="business-lines" element={<BusinessLinesTab resetKey="business-lines" />} />
+          <Route path="companies" element={<CompaniesTab resetKey="companies" />} />
+          <Route path="offices" element={<OfficesTab resetKey="offices" />} />
+          <Route path="directorates" element={<DirectoratesTab resetKey="directorates" />} />
+          <Route path="divisions" element={<DivisionsTab resetKey="divisions" />} />
+          <Route path="departments" element={<DepartmentsTab resetKey="departments" />} />
+          <Route path="positions" element={<PositionsTab resetKey="positions" />} />
+          <Route path="employee-positions" element={<EmployeePositionsTab resetKey="employee-positions" />} />
+        </Route>
         <Route path="/data-karyawan" element={<DataKaryawan />} />
         <Route path="/pengunduran-diri" element={<PengunduranDiri />} />
         <Route path="/perpanjangan-kontrak" element={<PerpanjanganKontrak />} />

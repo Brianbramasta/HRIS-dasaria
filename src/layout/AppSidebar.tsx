@@ -38,7 +38,7 @@ const navItems: NavItem[] = [
   },{
     icon: <StructureIcon/>,
     name: "Struktur dan Organisasi",
-    path: "/structure-and-organize",
+    path: "/structure-and-organize/business-lines",
   },
   {
     icon: <GridIcon />,

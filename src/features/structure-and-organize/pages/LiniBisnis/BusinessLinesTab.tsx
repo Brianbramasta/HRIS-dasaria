@@ -16,7 +16,7 @@ const businessLineColumns: DataTableColumn<BLRow>[] = [
   { id: 'no', label: 'No', sortable: true },
   { id: 'Lini Bisnis', label: 'Lini Bisnis', sortable: true },
   { id: 'Deskripsi Umum', label: 'Deskripsi Umum', sortable: true },
-  { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: true, format: () => <FileText size={16} /> },
+  { id: 'File SK dan Memo', label: 'Detail', sortable: true, format: () => <FileText size={16} /> },
 ];
 
 export default function BusinessLinesTab({ resetKey }: Props) {
