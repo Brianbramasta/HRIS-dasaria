@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { Link } from 'react-router';
 import DataTable, { DataTableColumn, DataTableAction } from '../../components/datatable/DataTable';
 import { Edit, Trash, FileText } from 'react-feather';
 import { useCompanies } from '../../index';
@@ -15,7 +16,11 @@ const companyColumns: DataTableColumn<CompanyRow>[] = [
   { id: 'Nama Perusahaan', label: 'Nama Perusahaan', sortable: true },
   { id: 'Deskripsi Umum', label: 'Deskripsi Umum', sortable: true },
   { id: 'Lini Bisnis', label: 'Lini Bisnis', sortable: true },
-  { id: 'Detail', label: 'Detail', sortable: true, format: () => <FileText size={16} /> },
+  { id: 'Detail', label: 'Detail', sortable: true, format: (_val, row) => (
+    <Link to={`/structure-and-organize/companies/${(row as any).id ?? (row as any).no}`} className="text-brand-600 hover:underline">
+      <FileText size={16} />
+    </Link>
+  ) },
 ];
 
 export default function CompaniesTab({ resetKey }: Props) {
@@ -65,7 +70,7 @@ export default function CompaniesTab({ resetKey }: Props) {
     URL.revokeObjectURL(url);
   };
 
-  React.useEffect(() => { fetchCompanies(); }, []);
+  React.useEffect(() => { fetchCompanies(); }, [fetchCompanies]);
 
   return (
     <div>

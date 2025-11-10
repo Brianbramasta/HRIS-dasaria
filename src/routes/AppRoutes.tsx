@@ -68,6 +68,7 @@ import DepartmentsTab from "../features/structure-and-organize/pages/Departemen/
 import PositionsTab from "../features/structure-and-organize/pages/Jabatan/PositionsTab";
 import EmployeePositionsTab from "../features/structure-and-organize/pages/PosisiPegawai/EmployeePositionsTab";
 import DetailLiniBisnis from "../features/structure-and-organize/pages/LiniBisnis/DetailLiniBisnis";
+import DetailPerusahaan from "../features/structure-and-organize/pages/Perusahaan/detail/DetailPerusahaan";
 import DataKaryawan from "../features/staff/pages/data-karyawan";
 import PengunduranDiri from "../features/staff/pages/pengunduran-diri";
 import PerpanjanganKontrak from "../features/staff/pages/perpanjangan-kontrak";
@@ -85,6 +86,7 @@ export default function AppRoutes() {
           <Route path="business-lines" element={<BusinessLinesTab resetKey="business-lines" />} />
           <Route path="business-lines/:id" element={<DetailLiniBisnis />} />
           <Route path="companies" element={<CompaniesTab resetKey="companies" />} />
+          <Route path="companies/:id" element={<DetailPerusahaan />} />
           <Route path="offices" element={<OfficesTab resetKey="offices" />} />
           <Route path="directorates" element={<DirectoratesTab resetKey="directorates" />} />
           <Route path="divisions" element={<DivisionsTab resetKey="divisions" />} />
