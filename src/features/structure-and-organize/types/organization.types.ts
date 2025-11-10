@@ -72,6 +72,7 @@ export interface EmployeePosition extends BaseEntity {
   department?: Department;
   skFile?: string;
   memoFile?: string;
+  description?: string;
 }
 
 export type OrganizationEntity = 

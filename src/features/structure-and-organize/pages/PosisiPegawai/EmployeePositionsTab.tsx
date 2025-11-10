@@ -1,8 +1,13 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '../../components/datatable/DataTable';
 import { Edit, Trash, FileText } from 'react-feather';
 import { useEmployeePositions } from '../../index';
-import type { EmployeePositionRow } from '../../types/organizationTable.types';
+import type { EmployeePosition } from '../../types/organization.types';
+import { EmployeePositionRow } from '../../types/organizationTable.types';
+import AddEmployeePositionModal from '../../components/modals/PosisiPegawai/AddEmployeePositionModal';
+import EditEmployeePositionModal from '../../components/modals/PosisiPegawai/EditEmployeePositionModal';
+import DeleteEmployeePositionModal from '../../components/modals/PosisiPegawai/DeleteEmployeePositionModal';
+import { useModal } from '../../../../hooks/useModal';
 
 type Props = { resetKey: string };
 
@@ -18,9 +23,14 @@ const employeePositionColumns: DataTableColumn<EmployeePositionRow>[] = [
 
 export default function EmployeePositionsTab({ resetKey }: Props) {
   const { employeePositions, fetchEmployeePositions, setSearch, setPage, setPageSize, setSort } = useEmployeePositions();
+  const addModal = useModal(false);
+  const editModal = useModal(false);
+  const deleteModal = useModal(false);
+  const [selectedEmployeePosition, setSelectedEmployeePosition] = useState<EmployeePosition | null>(null);
 
   const rows: EmployeePositionRow[] = useMemo(() => {
     return (employeePositions || []).map((ep, idx) => ({
+      id: ep.id,
       no: idx + 1,
       'Nama Posisi': (ep as any).name ?? (ep as any).positionName ?? '—',
       Jabatan: (ep as any).position?.name ?? (ep as any).positionName ?? '—',
@@ -28,12 +38,39 @@ export default function EmployeePositionsTab({ resetKey }: Props) {
       Divisi: (ep as any).division?.name ?? (ep as any).divisionName ?? '—',
       Departemen: (ep as any).department?.name ?? (ep as any).departmentName ?? '—',
       'File SK & MoU': ((ep as any).skFile || (ep as any).memoFile) ? 'Ada' : '—',
+      raw: ep,
     }));
   }, [employeePositions]);
 
+  const handleAddSuccess = () => {
+    fetchEmployeePositions();
+  };
+
+  const handleUpdateSuccess = () => {
+    fetchEmployeePositions();
+  };
+
+  const handleDeleteSuccess = () => {
+    fetchEmployeePositions();
+  };
+
   const actionsIconOnly = [
-    { label: '', onClick: (row: any) => console.log('Edit', row), variant: 'outline', className: 'border-0', icon: <Edit size={16} /> },
-    { label: '', onClick: (row: any) => console.log('Delete', row), variant: 'outline', className: 'border-0', color: 'error', icon: <Trash size={16} /> },
+    {
+      label: '',
+      onClick: (row: any) => {
+        setSelectedEmployeePosition(row.raw as EmployeePosition);
+        editModal.openModal();
+      },
+      variant: 'outline', className: 'border-0', icon: <Edit size={16} />
+    },
+    {
+      label: '',
+      onClick: (row: any) => {
+        setSelectedEmployeePosition(row.raw as EmployeePosition);
+        deleteModal.openModal();
+      },
+      variant: 'outline', className: 'border-0', color: 'error', icon: <Trash size={16} />
+    },
   ] as DataTableAction<any>[];
 
   const exportCSV = (filename: string, data: any[]) => {
@@ -54,21 +91,40 @@ export default function EmployeePositionsTab({ resetKey }: Props) {
   React.useEffect(() => { fetchEmployeePositions(); }, []);
 
   return (
-    <DataTable
-      title="Posisi Pegawai"
-      data={rows}
-      columns={employeePositionColumns}
-      actions={actionsIconOnly}
-      searchable
-      filterable
-      resetKey={resetKey}
-      onSearchChange={(val) => { setSearch(val); fetchEmployeePositions(); }}
-      onSortChange={() => { setSort('name', 'asc'); fetchEmployeePositions(); }}
-      onPageChangeExternal={(p) => { setPage(p); fetchEmployeePositions(); }}
-      onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); fetchEmployeePositions(); }}
-      onColumnVisibilityChange={() => { fetchEmployeePositions(); }}
-      onAdd={() => console.log('Add Employee Position')}
-      onExport={() => exportCSV('posisi-pegawai.csv', rows)}
-    />
+    <>
+      <DataTable
+        title="Posisi Pegawai"
+        data={rows}
+        columns={employeePositionColumns}
+        actions={actionsIconOnly}
+        searchable
+        filterable
+        resetKey={resetKey}
+        onSearchChange={(val) => { setSearch(val); fetchEmployeePositions(); }}
+        onSortChange={() => { setSort('name', 'asc'); fetchEmployeePositions(); }}
+        onPageChangeExternal={(p) => { setPage(p); fetchEmployeePositions(); }}
+        onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); fetchEmployeePositions(); }}
+        onColumnVisibilityChange={() => { fetchEmployeePositions(); }}
+        onAdd={() => addModal.openModal()}
+        onExport={() => exportCSV('posisi-pegawai.csv', rows)}
+      />
+      <AddEmployeePositionModal
+        isOpen={addModal.isOpen}
+        onClose={addModal.closeModal}
+        onSuccess={handleAddSuccess}
+      />
+      <EditEmployeePositionModal
+        isOpen={editModal.isOpen}
+        onClose={() => { editModal.closeModal(); setSelectedEmployeePosition(null); }}
+        onSuccess={handleUpdateSuccess}
+        employeePosition={selectedEmployeePosition}
+      />
+      <DeleteEmployeePositionModal
+        isOpen={deleteModal.isOpen}
+        onClose={() => { deleteModal.closeModal(); setSelectedEmployeePosition(null); }}
+        onSuccess={handleDeleteSuccess}
+        employeePosition={selectedEmployeePosition}
+      />
+    </>
   );
 }
