@@ -1,4 +1,4 @@
-export type BLRow = { no: number; 'Lini Bisnis': string; 'Deskripsi Umum': string; 'File SK dan Memo': string };
+export type BLRow = { id?: string; no: number; 'Lini Bisnis': string; 'Deskripsi Umum': string; 'File SK dan Memo': string };
 export type CompanyRow = { no: number; 'Nama Perusahaan': string; 'Deskripsi Umum': string; 'Lini Bisnis': string; Detail: string };
 export type OfficeRow = { no: number; Office: string; 'Deskripsi Umum': string; 'File SK dan Memo': string };
 export type DirectorateRow = { no: number; 'Nama Direktorat': string; 'Deskripsi Umum': string; 'File SK dan Memo': string };

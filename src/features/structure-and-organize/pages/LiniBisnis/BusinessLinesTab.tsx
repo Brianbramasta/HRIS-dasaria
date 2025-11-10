@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { Link } from 'react-router';
 import DataTable, { DataTableColumn } from '../../components/datatable/DataTable';
 import { Edit, Trash, FileText } from 'react-feather';
 import {
@@ -16,7 +17,11 @@ const businessLineColumns: DataTableColumn<BLRow>[] = [
   { id: 'no', label: 'No', sortable: true },
   { id: 'Lini Bisnis', label: 'Lini Bisnis', sortable: true },
   { id: 'Deskripsi Umum', label: 'Deskripsi Umum', sortable: true },
-  { id: 'File SK dan Memo', label: 'Detail', sortable: true, format: () => <FileText size={16} /> },
+  { id: 'File SK dan Memo', label: 'Detail', sortable: true, format: (_val, row) => (
+    <Link to={`/structure-and-organize/business-lines/${(row as any).id ?? (row as any).no}`} className="text-brand-600 hover:underline">
+      <FileText size={16} />
+    </Link>
+  ) },
 ];
 
 export default function BusinessLinesTab({ resetKey }: Props) {
@@ -36,6 +41,7 @@ export default function BusinessLinesTab({ resetKey }: Props) {
 
   const rows: BLRow[] = useMemo(() => {
     return (businessLines || []).map((b, idx) => ({
+      id: (b as any).id,
       no: idx + 1,
       'Lini Bisnis': (b as any).name ?? '—',
       'Deskripsi Umum': (b as any).description ?? '—',
