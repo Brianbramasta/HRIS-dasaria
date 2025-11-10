@@ -2,8 +2,8 @@ import React from 'react';
 
 
 interface HeaderModalDeleteProps {
-  icon: string;
-  title: string;
+  icon?: string;
+  title?: string;
 }
 
 const HeaderModalDelete: React.FC<HeaderModalDeleteProps> = ({ icon='⚠️', title='Hapus Data' }) => {

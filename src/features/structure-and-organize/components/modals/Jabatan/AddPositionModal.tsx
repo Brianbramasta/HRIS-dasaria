@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Modal } from "../../../../../components/ui/modal/index";
 import { positionService } from "../../../services/organization.service";
 
+
 type Props = {
   isOpen: boolean;
   onClose: () => void;
