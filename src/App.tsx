@@ -59,13 +59,13 @@ import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import TaskList from "./pages/Task/TaskList";
 import Saas from "./pages/Dashboard/Saas";
-import StructureAndOrganize from "./feature/structure-and-organize/pages/StrukturOrganisasiPage";
-import DataKaryawan from "./feature/staff/pages/data-karyawan";
-import PengunduranDiri from "./feature/staff/pages/pengunduran-diri";
-import PerpanjanganKontrak from "./feature/staff/pages/perpanjangan-kontrak";
+import StructureAndOrganize from "./features/structure-and-organize/pages/StrukturOrganisasiPage";
+import DataKaryawan from "./features/staff/pages/data-karyawan";
+import PengunduranDiri from "./features/staff/pages/pengunduran-diri";
+import PerpanjanganKontrak from "./features/staff/pages/perpanjangan-kontrak";
 
 // Auth Feature Pages
-import { LoginPage, ForgotPasswordPage } from "./feature/auth/pages";
+import { LoginPage, ForgotPasswordPage } from "./features/auth/pages";
 
 export default function App() {
   return (
