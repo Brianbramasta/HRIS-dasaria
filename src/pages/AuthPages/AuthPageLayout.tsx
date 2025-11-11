@@ -1,5 +1,5 @@
 import React from 'react';
-import { Zoom } from 'swiper/modules';
+// import { Zoom } from 'swiper/modules';
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   return (

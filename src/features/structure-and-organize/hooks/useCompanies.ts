@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { 
   Company, 
-  PaginatedResponse, 
+  // PaginatedResponse, 
   TableFilter 
 } from '../types/organization.types';
 import { companyService } from '../services/organization.service';
