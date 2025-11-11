@@ -6,7 +6,7 @@ import FileInput from '../shared/field/FileInput';
 import ModalAddEdit from '../shared/modal/modalAddEdit';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
-import { error } from 'console';
+// import { error } from 'console';
 
 interface EditBusinessLineModalProps {
   isOpen: boolean;
