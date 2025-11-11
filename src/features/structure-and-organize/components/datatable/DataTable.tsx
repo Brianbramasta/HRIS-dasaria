@@ -3,7 +3,8 @@ import { Table, TableHeader, TableBody, TableRow, TableCell } from '../../../../
 import PaginationWithIcon from '../../../../components/tables/DataTables/TableOne/PaginationWithIcon';
 import Button from '../../../../components/ui/button/Button';
 import {Modal} from '../../../../components/ui/modal/index';
-import { Plus, Download, Filter } from 'react-feather';
+import { Plus, Download } from 'react-feather';
+import { FilterLineIcon } from '../../../../icons/index';
 
 export interface DataTableColumn<T = any> {
   id: string;
@@ -220,7 +221,7 @@ export function DataTable<T = any>({
             
             {filterable && (
               <Button onClick={() => setFilterModalOpen(true)} variant="outline" size="sm">
-                <Filter size={16} className="mr-2" />
+                <FilterLineIcon />
                 Filter
               </Button>
             )}
@@ -231,18 +232,18 @@ export function DataTable<T = any>({
       <div className="overflow-x-auto">
         <Table className="min-w-full">
           <TableHeader>
-            <TableRow className="border-b border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800">
+            <TableRow className="border-b border-gray-200 bg-[#004969] dark:border-gray-700 dark:bg-gray-800">
               {displayColumns.map((column) => (
                 <TableCell
                   key={column.id}
-                  className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${
+                  className={`px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider ${
                     column.align === 'center' ? 'text-center' : column.align === 'right' ? 'text-right' : 'text-left'
                   } ${column.sortable !== false ? 'cursor-pointer hover:text-gray-700' : ''}`}
                   onClick={() => column.sortable !== false && handleSort(column.id)}
                 >
                   <div className="flex items-center gap-1">
                     {column.label}
-                    {column.sortable !== false && <span className="text-gray-400">{getSortIcon(column.id)}</span>}
+                    {column.sortable !== false && <span className="text-white">{getSortIcon(column.id)}</span>}
                   </div>
                 </TableCell>
               ))}

@@ -139,6 +139,11 @@ export const officeService = {
     return response.data;
   },
 
+  getByCompanyId: async (companyId: string): Promise<Office[]> => {
+    const response = await apiService.get<Office[]>(`/offices?companyId=${companyId}`);
+    return response.data;
+  },
+
   create: async (office: Omit<Office, 'id' | 'createdAt' | 'updatedAt'>): Promise<Office> => {
     const response = await apiService.post<Office>('/offices', {
       ...office,

@@ -53,6 +53,7 @@ import { ReactComponent as MoreDotIcon } from "./moredot.svg?react";
 import { ReactComponent as AlertHexaIcon } from "./alert-hexa.svg?react";
 import { ReactComponent as ErrorHexaIcon } from "./info-hexa.svg?react";
 import { ReactComponent as StructureIcon } from "./structure.svg?react";
+import { ReactComponent as FilterLineIcon } from "./filter-line.svg?react";
 
 
 
@@ -111,5 +112,6 @@ export {
   HorizontaLDots,
   ChevronUpIcon,
   ChatIcon,
-  StructureIcon
+  StructureIcon,
+  FilterLineIcon
 };

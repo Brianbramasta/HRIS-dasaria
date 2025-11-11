@@ -29,9 +29,10 @@ const DetailPerusahaan: React.FC = () => {
       const comp = await companyService.getById(id);
       setCompany(comp);
 
-      const offices = await officeService.getAll({ search: `companyId:${id}`, page: 1, pageSize: 100, sortBy: 'name', sortOrder: 'asc' });
+      const offices = await officeService.getByCompanyId(id);
       // If API does not support companyId filter, fallback to filter client-side
-      const filtered = (offices.data || []).filter((o: any) => (o.companyId || String(o.companyId)) === String(id));
+      console.log('offices', offices);
+      const filtered = (offices || []).filter((o: any) => (o.companyId || String(o.companyId)) === String(id));
       setBranches(filtered);
 
       // fetch documents from /documents?companyId=...

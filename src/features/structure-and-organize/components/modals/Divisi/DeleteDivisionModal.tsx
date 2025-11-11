@@ -4,6 +4,7 @@ import { divisionService } from '../../../services/organization.service';
 import type { Division } from '../../../types/organization.types';
 import FileInput from '../shared/field/FileInput';
 import ModalDelete from '../shared/modal/ModalDelete';
+import Input from '@/components/form/input/InputField';
 
 interface DeleteDivisionModalProps {
   isOpen: boolean;
@@ -45,7 +46,7 @@ const DeleteDivisionModal: React.FC<DeleteDivisionModalProps> = ({ isOpen, onClo
       content={
         <><div className="space-y-2">
           <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
-          <input
+          <Input
             type="text"
             value={memoNumber}
             onChange={(e) => setMemoNumber(e.target.value)}
@@ -53,7 +54,7 @@ const DeleteDivisionModal: React.FC<DeleteDivisionModalProps> = ({ isOpen, onClo
           />
         </div>
 
-            <FileInput skFileName={skFileName} onChange={handleFileChange} /></>
+          <FileInput skFileName={skFileName} onChange={handleFileChange} /></>
       }
     />
   );

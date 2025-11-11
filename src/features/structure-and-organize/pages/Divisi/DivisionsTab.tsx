@@ -14,6 +14,7 @@ type Props = { resetKey: string };
 const divisionColumns: DataTableColumn<DivisionRow>[] = [
   { id: 'no', label: 'No', sortable: true },
   { id: 'Nama Divisi', label: 'Nama Divisi', sortable: true },
+  { id: 'Direktorat', label: 'Direktorat', sortable: true },
   { id: 'Deskripsi Umum', label: 'Deskripsi Umum', sortable: true },
   { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: true, format: () => <FileText size={16} /> },
 ];
@@ -26,9 +27,11 @@ export default function DivisionsTab({ resetKey }: Props) {
   const [selected, setSelected] = useState<Division | null>(null);
 
   const rows: any[] = useMemo(() => {
+    console.log('divisions', divisions);
     return (divisions || []).map((d, idx) => ({
       no: idx + 1,
       'Nama Divisi': (d as any).name ?? '—',
+      'Direktorat': (d as any).directorateName ?? '—',
       'Deskripsi Umum': (d as any).description ?? '—',
       'File SK dan Memo': ((d as any).skFile || (d as any).memoFile) ? 'Ada' : '—',
       raw: d,
