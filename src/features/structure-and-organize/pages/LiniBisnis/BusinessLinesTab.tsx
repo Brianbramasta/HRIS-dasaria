@@ -120,7 +120,7 @@ export default function BusinessLinesTab({ resetKey }: Props) {
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
         businessLine={selectedIndex !== null ? (businessLines?.[selectedIndex] as any) : null}
-        onSuccess={() => fetchBusinessLines()}
+        onSuccess={() => setIsEditOpen(false)}
       />
       <DeleteBusinessLineModal
         isOpen={isDeleteOpen}
