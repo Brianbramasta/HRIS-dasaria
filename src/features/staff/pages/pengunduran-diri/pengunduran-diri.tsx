@@ -1,17 +1,47 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Plus } from 'react-feather';
 import TabPendingReview from './TabPendingReview';
 import TabReviewed from './TabReviewed';
 import Button from '../../../../components/ui/button/Button';
+import ResignKaryawanModal from '../../components/ResignKaryawanModal';
+import { addNotification } from '../../../../stores/notificationStore';
 
 type TabType = 'pending' | 'reviewed';
 
 export default function PengunduranDiriPage() {
   const [activeTab, setActiveTab] = useState<TabType>('pending');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleAddResign = () => {
-    console.log('Add new resign form');
-    // TODO: Navigate to form resign page or open modal
+    setIsModalOpen(true);
+  };
+
+  const handleShareLink = async () => {
+    const url = `${window.location.origin}/pengunduran-diri/form`;
+    try {
+      await navigator.clipboard.writeText(url);
+      addNotification({
+        title: 'Tautan disalin',
+        description: 'Link formulir resign berhasil disalin ke clipboard.',
+        variant: 'success',
+      });
+    } catch (err) {
+    console.log('error',err)
+      addNotification({
+        title: 'Gagal menyalin tautan',
+        description: 'Silakan salin manual: ' + url,
+        variant: 'warning',
+      });
+    } finally {
+      setIsModalOpen(false);
+    }
+  };
+
+  const goToFormResign = () => {
+    setIsModalOpen(false);
+    navigate('/pengunduran-diri/form');
   };
 
   return (
@@ -63,6 +93,14 @@ export default function PengunduranDiriPage() {
           {activeTab === 'reviewed' && <TabReviewed />}
         </div>
       </div>
+
+      {/* Modal Resign */}
+      <ResignKaryawanModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onShareLink={handleShareLink}
+        onFormResign={goToFormResign}
+      />
     </div>
   );
 }

@@ -1,25 +1,45 @@
 import ComponentCard from "../../common/ComponentCard";
 import { useDropzone } from "react-dropzone";
-// import Dropzone from "react-dropzone";
+import { useState } from "react";
 
-const DropzoneComponent: React.FC = () => {
-  const onDrop = (acceptedFiles: File[]) => {
+interface DropzoneProps {
+  onDrop?: (acceptedFiles: File[]) => void;
+  accept?: { [mime: string]: string[] };
+  required?: boolean;
+  className?: string;
+}
+
+const defaultAccept = {
+  "image/png": [],
+  "image/jpeg": [],
+  "image/webp": [],
+  "image/svg+xml": [],
+};
+
+const DropzoneComponent: React.FC<DropzoneProps> = ({
+  onDrop: onDropProp,
+  accept,
+  required = false,
+  className = "",
+}) => {
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+
+  const handleDrop = (acceptedFiles: File[]) => {
+    setSelectedFiles(acceptedFiles);
+    if (onDropProp) onDropProp(acceptedFiles);
     console.log("Files dropped:", acceptedFiles);
-    // Handle file uploads here
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: {
-      "image/png": [],
-      "image/jpeg": [],
-      "image/webp": [],
-      "image/svg+xml": [],
-    },
+    onDrop: handleDrop,
+    accept: accept ?? defaultAccept,
   });
+
   return (
     <ComponentCard title="Dropzone">
-      <div className="transition border border-gray-300 border-dashed cursor-pointer dark:hover:border-brand-500 dark:border-gray-700 rounded-xl hover:border-brand-500">
+      <div
+        className={`transition border border-gray-300 border-dashed cursor-pointer dark:hover:border-brand-500 dark:border-gray-700 rounded-xl hover:border-brand-500 ${className}`}
+      >
         <form
           {...getRootProps()}
           className={`dropzone rounded-xl   border-dashed border-gray-300 p-7 lg:p-10
@@ -68,6 +88,16 @@ const DropzoneComponent: React.FC = () => {
             </span>
           </div>
         </form>
+
+        {selectedFiles.length > 0 && (
+          <div className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+            Selected: {selectedFiles.map((f) => f.name).join(", ")}
+          </div>
+        )}
+
+        {required && selectedFiles.length === 0 && (
+          <div className="px-4 pb-4 text-xs text-error-500">File wajib diunggah.</div>
+        )}
       </div>
     </ComponentCard>
   );

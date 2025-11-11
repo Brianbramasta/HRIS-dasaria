@@ -73,6 +73,8 @@ import DataKaryawan from "../features/staff/pages/data-karyawan/data-karyawan";
 import FormulirKaryawanPage from "../features/staff/pages/data-karyawan/FormulirKaryawanPage";
 import PendaftaranKaryawanBaru from "../features/staff/pages/data-karyawan/PendaftaranKaryawanBaru";
 import PengunduranDiri from "../features/staff/pages/pengunduran-diri/pengunduran-diri";
+import FormResignPage from "../features/staff/pages/pengunduran-diri/form-resign/form-resign";
+import DetailPengunduranDiriPage from "../features/staff/pages/pengunduran-diri/detail/DetailPengunduranDiriPage";
 import PerpanjanganKontrak from "../features/staff/pages/perpanjangan-kontrak";
 
 // Auth Feature Pages
@@ -100,6 +102,8 @@ export default function AppRoutes() {
   <Route path="/data-karyawan/pendaftaran" element={<PendaftaranKaryawanBaru />} />
   <Route path="/data-karyawan/form" element={<FormulirKaryawanPage />} />
         <Route path="/pengunduran-diri" element={<PengunduranDiri />} />
+        <Route path="/pengunduran-diri/form" element={<FormResignPage />} />
+        <Route path="/pengunduran-diri/:id" element={<DetailPengunduranDiriPage />} />
         <Route path="/perpanjangan-kontrak" element={<PerpanjanganKontrak />} />
         <Route path="/analytics" element={<Analytics />} />
         <Route path="/marketing" element={<Marketing />} />

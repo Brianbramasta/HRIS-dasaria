@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DataTable, DataTableColumn, DataTableAction } from '../../../../features/structure-and-organize/components/datatable/DataTable';
 import { PengunduranDiri } from '../../types/PengunduranDiri';
 import usePengunduranDiri from '../../hooks/usePengunduranDiri';
@@ -6,6 +7,7 @@ import { Edit2} from 'react-feather';
 import Button from '../../../../components/ui/button/Button';
 
 export default function TabPendingReview() {
+  const navigate = useNavigate();
   const {
     data,
     loading,
@@ -114,8 +116,7 @@ export default function TabPendingReview() {
       label: 'Edit',
       icon: <Edit2 size={16} />,
       onClick: (row) => {
-        console.log('Edit:', row);
-        // TODO: Open edit modal
+        navigate(`/pengunduran-diri/${row.id}`);
       },
       variant: 'outline',
       color: 'warning',

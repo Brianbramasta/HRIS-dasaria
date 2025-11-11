@@ -26,7 +26,7 @@ class PengunduranDiriService {
     if (params?.order) queryParams.append('order', params.order);
 
     const queryString = queryParams.toString();
-    const url = queryString ? `${this.baseUrl}?${queryString}` : this.baseUrl;
+    const url = queryString ? `${this.baseUrl}?${queryString}&status=Pending` : this.baseUrl;
 
     return apiService.get<PengunduranDiriListResponse>(url);
   }

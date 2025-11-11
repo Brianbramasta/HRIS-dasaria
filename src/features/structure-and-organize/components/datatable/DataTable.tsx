@@ -238,7 +238,7 @@ export function DataTable<T = any>({
                   key={column.id}
                   className={`px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider ${
                     column.align === 'center' ? 'text-center' : column.align === 'right' ? 'text-right' : 'text-left'
-                  } ${column.sortable !== false ? 'cursor-pointer hover:text-gray-700' : ''}`}
+                  } ${column.sortable !== false ? 'cursor-pointer hover:text-gray-200' : ''}`}
                   onClick={() => column.sortable !== false && handleSort(column.id)}
                 >
                   <div className="flex items-center gap-1">

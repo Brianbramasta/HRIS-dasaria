@@ -1087,6 +1087,21 @@
       "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Rain",
       "createdAt": "2024-07-15T00:00:00Z",
       "updatedAt": "2024-07-20T00:00:00Z"
+    },
+    {
+      "idKaryawan": "112222",
+      "name": "Brian Bramasta",
+      "email": "Brianaldybramasta@gmail.com",
+      "posisi": "Front End Developer",
+      "department": "www",
+      "departmentId": "2",
+      "tanggalPengajuan": "23 Juli 2025",
+      "alasan": "test",
+      "status": "Pending",
+       "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Rain",
+      "createdAt": "2024-07-15T00:00:00Z",
+      "updatedAt": "2024-07-20T00:00:00Z",
+      "id": "50"
     }
   ]
 }
