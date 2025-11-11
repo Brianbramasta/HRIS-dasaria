@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Modal } from "../../../../../components/ui/modal/index";
 import { positionService } from "../../../services/organization.service";
-
+import FileInput from "../shared/field/FileInput";
 
 type Props = {
   isOpen: boolean;
@@ -156,7 +156,7 @@ export const AddPositionModal = ({ isOpen, onClose, onSuccess }: Props) => {
               onChange={handleInputChange}
             ></textarea>
           </div>
-          <div>
+          {/* <div>
             <label
               htmlFor="skFile"
               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -199,7 +199,11 @@ export const AddPositionModal = ({ isOpen, onClose, onSuccess }: Props) => {
                 />
               </label>
             </div>
-          </div>
+          </div> */}
+          <FileInput 
+            onChange={handleFileChange}
+            skFileName={formData.skFile?.name || ''}
+          />
           <div className="flex justify-end space-x-4">
             <button
               type="button"

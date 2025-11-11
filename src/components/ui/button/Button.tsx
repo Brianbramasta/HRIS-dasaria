@@ -21,6 +21,7 @@ const Button: React.FC<ButtonProps> = ({
   onClick,
   className = "",
   disabled = false,
+  type = "button",
   ...rest
 }) => {
   // Size Classes
@@ -46,6 +47,7 @@ const Button: React.FC<ButtonProps> = ({
       }`}
       onClick={onClick}
       disabled={disabled}
+      type={type}
       {...rest}
     >
       {startIcon && <span className="flex items-center">{startIcon}</span>}

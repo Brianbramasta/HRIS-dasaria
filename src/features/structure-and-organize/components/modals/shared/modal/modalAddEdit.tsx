@@ -1,5 +1,6 @@
 import React from 'react';
 import { Modal } from '../../../../../../components/ui/modal/index';
+import Button from '@/components/ui/button/Button';
 
 
 
@@ -8,7 +9,7 @@ interface ModalAddEditProps {
   isOpen: boolean;
   onClose: () => void;
   content: React.ReactNode;
-  handleSubmit: () => void;
+  handleSubmit?: () => void;
   submitting: boolean;
 }
 
@@ -23,14 +24,16 @@ const ModalAddEdit: React.FC<ModalAddEditProps> = ({ title, content, isOpen, onC
         {content}
         
         <div className="flex justify-end gap-3">
-          <button onClick={onClose} className="rounded-xl border px-5 py-2">Close</button>
-          <button
+          <Button variant={'outline'} onClick={onClose} className="rounded-xl border px-5 py-2">Close</Button>
+          <Button
+            
             onClick={handleSubmit}
+            
             disabled={submitting}
             className="rounded-xl bg-blue-600 px-5 py-2 text-white disabled:opacity-60"
           >
             Save
-          </button>
+          </Button>
         </div>
       </div>
     </Modal>
