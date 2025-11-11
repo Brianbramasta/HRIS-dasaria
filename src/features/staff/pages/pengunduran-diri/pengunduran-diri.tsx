@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Plus } from 'react-feather';
-import TabPendingReview from './pengunduran-diri/TabPendingReview';
-import TabReviewed from './pengunduran-diri/TabReviewed';
-import Button from '../../../components/ui/button/Button';
+import TabPendingReview from './TabPendingReview';
+import TabReviewed from './TabReviewed';
+import Button from '../../../../components/ui/button/Button';
 
 type TabType = 'pending' | 'reviewed';
 

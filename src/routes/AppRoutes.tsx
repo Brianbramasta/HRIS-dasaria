@@ -69,9 +69,10 @@ import PositionsTab from "../features/structure-and-organize/pages/Jabatan/Posit
 import EmployeePositionsTab from "../features/structure-and-organize/pages/PosisiPegawai/EmployeePositionsTab";
 import DetailLiniBisnis from "../features/structure-and-organize/pages/LiniBisnis/DetailLiniBisnis";
 import DetailPerusahaan from "../features/structure-and-organize/pages/Perusahaan/detail/DetailPerusahaan";
-import DataKaryawan from "../features/staff/pages/data-karyawan";
+import DataKaryawan from "../features/staff/pages/data-karyawan/data-karyawan";
 import FormulirKaryawanPage from "../features/staff/pages/data-karyawan/FormulirKaryawanPage";
-import PengunduranDiri from "../features/staff/pages/pengunduran-diri";
+import PendaftaranKaryawanBaru from "../features/staff/pages/data-karyawan/PendaftaranKaryawanBaru";
+import PengunduranDiri from "../features/staff/pages/pengunduran-diri/pengunduran-diri";
 import PerpanjanganKontrak from "../features/staff/pages/perpanjangan-kontrak";
 
 // Auth Feature Pages
@@ -96,6 +97,7 @@ export default function AppRoutes() {
           <Route path="employee-positions" element={<EmployeePositionsTab resetKey="employee-positions" />} />
         </Route>
   <Route path="/data-karyawan" element={<DataKaryawan />} />
+  <Route path="/data-karyawan/pendaftaran" element={<PendaftaranKaryawanBaru />} />
   <Route path="/data-karyawan/form" element={<FormulirKaryawanPage />} />
         <Route path="/pengunduran-diri" element={<PengunduranDiri />} />
         <Route path="/perpanjangan-kontrak" element={<PerpanjanganKontrak />} />
