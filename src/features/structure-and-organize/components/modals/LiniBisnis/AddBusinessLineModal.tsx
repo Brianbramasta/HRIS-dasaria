@@ -92,7 +92,7 @@ const AddBusinessLineModal: React.FC<AddBusinessLineModalProps> = ({ isOpen, onC
           />
         </div>
 
-        <div className="space-y-2">
+        {/* <div className="space-y-2">
           <label className="text-sm font-medium">Upload File SK</label>
           <div className="rounded-xl border-2 border-dashed border-gray-300 p-6 text-center">
             <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
@@ -108,7 +108,7 @@ const AddBusinessLineModal: React.FC<AddBusinessLineModalProps> = ({ isOpen, onC
               <p className="mt-2 text-sm text-gray-600">Selected: {skFile.name}</p>
             )}
           </div>
-        </div>
+        </div> */}
         <FileInput 
           onChange={handleFileChange}
           skFileName={skFile?.name || ''}
