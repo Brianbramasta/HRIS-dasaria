@@ -725,6 +725,56 @@
       "isActive": true,
       "createdAt": "2024-01-28T00:00:00Z",
       "updatedAt": "2024-01-28T00:00:00Z"
+    },
+    {
+      "name": "Brian Bramasta",
+      "email": "Brianaldybramasta@gmail.com",
+      "nik": "333333",
+      "agama": "kristen",
+      "tempatLahir": "ssss",
+      "golDarah": "O",
+      "statusMenikah": "menikah",
+      "nomorTelepon": "+62895397115216",
+      "jumlahTanggungan": "0",
+      "alamatDomisili": "surabaya",
+      "alamatKtp": "surabaya",
+      "idKaryawan": "KRY-20251111-3YMY",
+      "posisi": "Staff",
+      "jabatan": "Karyawan",
+      "tanggalJoin": "2025-11-11",
+      "company": "PT. Default",
+      "education": [
+        {
+          "namaLembaga": "s1",
+          "nilaiPendidikan": "3.76",
+          "jurusanKeahlian": "teknik_informatika",
+          "tahunLulus": "2022"
+        }
+      ],
+      "facebook": "22",
+      "xCom": "222",
+      "linkedin": "33",
+      "instagram": "111",
+      "akunSosialMediaTerdekat": "22",
+      "noKontakDarurat": "3333333",
+      "namaNoKontakDarurat": "oke",
+      "hubunganKontakDarurat": "orang tua",
+      "bank": "bca",
+      "namaAkunBank": "bbbbb",
+      "noRekening": "444444",
+      "npwp": "44333",
+      "noBpjsKesehatan": "4444",
+      "statusBpjsKesehatan": "mandiri",
+      "noBpjsKetenagakerjaan": "333333",
+      "statusBpjsKetenagakerjaan": "mandiri",
+      "nominalBpjsTk": "3333",
+      "documents": [
+        {
+          "tipeFile": "ktp",
+          "namaFile": "pexels-benprater-34492076.jpg"
+        }
+      ],
+      "id": "uUWHz0Y"
     }
   ],
   "staff-pengunduran-diri": [

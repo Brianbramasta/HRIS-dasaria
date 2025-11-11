@@ -1,13 +1,16 @@
 
 
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DataTable, DataTableColumn } from '../../../features/structure-and-organize/components/datatable/DataTable';
 import { Karyawan } from '../types/Karyawan';
 import useKaryawan from '../hooks/useKaryawan';
 // import { Edit2, Trash2, Eye } from 'react-feather';
 import Button from '../../../components/ui/button/Button';
+import AddKaryawanModal from '../components/AddKaryawanModal';
 
 export default function DataKaryawanPage() {
+  const navigate = useNavigate();
   const {
     data,
     loading,
@@ -28,6 +31,7 @@ export default function DataKaryawanPage() {
 
   const [selectedKaryawan, setSelectedKaryawan] = useState<Karyawan | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
 
   // Define columns untuk DataTable
   const columns: DataTableColumn<Karyawan>[] = [
@@ -142,8 +146,8 @@ export default function DataKaryawanPage() {
   // ];
 
   const handleAddKaryawan = () => {
-    console.log('Add new karyawan');
-    // TODO: Navigate to add page or open add modal
+    // Open the Add Karyawan modal
+    setShowAddModal(true);
   };
 
   const handleExportKaryawan = async () => {
@@ -198,6 +202,20 @@ export default function DataKaryawanPage() {
         onSortChange={handleSortChange}
         onPageChangeExternal={handlePageChange}
         onRowsPerPageChangeExternal={handleRowsPerPageChange}
+      />
+
+      {/* Add Karyawan Modal */}
+      <AddKaryawanModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onAddManual={() => {
+          setShowAddModal(false);
+          navigate('/data-karyawan/form');
+        }}
+        onImportFile={() => {
+          // TODO: handle import file flow (not implemented yet)
+          setShowAddModal(false);
+        }}
       />
 
       {/* Detail Modal */}

@@ -21,9 +21,23 @@ export interface Karyawan {
 }
 
 export interface CreateKaryawanDto {
+  // Personal Data
   idKaryawan: string;
   name: string;
   email: string;
+  nik?: string;
+  agama?: string;
+  tempatLahir?: string;
+  golDarah?: string;
+  tanggalLahir?: string;
+  jenisKelamin?: string;
+  statusMenikah?: string;
+  nomorTelepon?: string;
+  jumlahTanggungan?: string;
+  alamatDomisili?: string;
+  alamatKtp?: string;
+  
+  // Position & Company Info
   posisi: string;
   jabatan: string;
   tanggalJoin: string;
@@ -34,6 +48,44 @@ export interface CreateKaryawanDto {
   departmentId?: string;
   office?: string;
   officeId?: string;
+  
+  // Educational Background
+  education?: Array<{
+    namaLembaga: string;
+    nilaiPendidikan: string;
+    jurusanKeahlian: string;
+    tahunLulus: string;
+  }>;
+  
+  // Media Sosial & Kontak
+  facebook?: string;
+  xCom?: string;
+  linkedin?: string;
+  instagram?: string;
+  akunSosialMediaTerdekat?: string;
+  noKontakDarurat?: string;
+  namaNoKontakDarurat?: string;
+  hubunganKontakDarurat?: string;
+  
+  // Salary & Bank
+  bank?: string;
+  namaAkunBank?: string;
+  noRekening?: string;
+  npwp?: string;
+  
+  // BPJS
+  noBpjsKesehatan?: string;
+  statusBpjsKesehatan?: string;
+  noBpjsKetenagakerjaan?: string;
+  statusBpjsKetenagakerjaan?: string;
+  nominalBpjsTk?: string;
+  
+  // Documents
+  documents?: Array<{
+    tipeFile: string;
+    namaFile: string;
+    filePath?: string;
+  }>;
 }
 
 export interface UpdateKaryawanDto extends Partial<CreateKaryawanDto> {
