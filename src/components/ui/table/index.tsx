@@ -31,6 +31,7 @@ interface TableCellProps {
   className?: string; // Optional className for styling
   onClick?: () => void; // Optional click handler
   colSpan?: number; // Optional colspan attribute
+  style?: React.CSSProperties; // Optional inline styles
 }
 
 // Table Component
@@ -60,6 +61,7 @@ const TableCell: React.FC<TableCellProps> = ({
   className,
   onClick,
   colSpan = 1,
+  style = {},
 }) => {
   const CellTag = isHeader ? "th" : "td";
   return (
@@ -67,6 +69,7 @@ const TableCell: React.FC<TableCellProps> = ({
       className={`cursor-pointer ${className}`}
       onClick={onClick}
       colSpan={colSpan}
+      style={style}
     >
       {children}
     </CellTag>
