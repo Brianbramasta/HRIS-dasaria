@@ -8,6 +8,7 @@ import {
 import AddBusinessLineModal from '../../components/modals/LiniBisnis/AddBusinessLineModal';
 import EditBusinessLineModal from '../../components/modals/LiniBisnis/EditBusinessLineModal';
 import DeleteBusinessLineModal from '../../components/modals/LiniBisnis/DeleteBusinessLineModal';
+import { addNotification } from '../../../../stores/notificationStore';
 
 import type { BLRow } from '../../types/organizationTable.types';
 
@@ -39,6 +40,8 @@ export default function BusinessLinesTab({ resetKey }: Props) {
     setSort,
   } = useBusinessLines();
 
+  // pages only call addNotification; the container is rendered globally in App.tsx
+
   const rows: BLRow[] = useMemo(() => {
     return (businessLines || []).map((b, idx) => ({
       id: (b as any).id,
@@ -66,7 +69,7 @@ export default function BusinessLinesTab({ resetKey }: Props) {
 
   React.useEffect(() => {
     fetchBusinessLines();
-  }, []);
+  }, [fetchBusinessLines]);
 
   return (
     <>
@@ -114,20 +117,46 @@ export default function BusinessLinesTab({ resetKey }: Props) {
       <AddBusinessLineModal
         isOpen={isAddOpen}
         onClose={() => setIsAddOpen(false)}
-        onSuccess={() => fetchBusinessLines()}
+        onSuccess={() => {
+          fetchBusinessLines();
+          addNotification({
+            variant: 'success',
+            title: 'Lini Bisnis ditambahkan',
+            description: 'Berhasil menambahkan lini bisnis',
+            hideDuration: 4000,
+          });
+        }}
       />
       <EditBusinessLineModal
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
         businessLine={selectedIndex !== null ? (businessLines?.[selectedIndex] as any) : null}
-        onSuccess={() => setIsEditOpen(false)}
+        onSuccess={() => {
+          fetchBusinessLines();
+          addNotification({
+            variant: 'success',
+            title: 'Lini Bisnis diubah',
+            description: 'Berhasil mengubah lini bisnis',
+            hideDuration: 4000,
+          });
+        }}
       />
       <DeleteBusinessLineModal
         isOpen={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
         businessLine={selectedIndex !== null ? (businessLines?.[selectedIndex] as any) : null}
-        onSuccess={() => fetchBusinessLines()}
+        onSuccess={() => {
+          fetchBusinessLines();
+          addNotification({
+            variant: 'success',
+            title: 'Lini Bisnis dihapus',
+            description: 'Berhasil menghapus lini bisnis',
+            hideDuration: 4000,
+          });
+        }}
       />
+
+      {/* notification container moved to App.tsx */}
     </>
   );
 }

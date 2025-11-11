@@ -12,13 +12,15 @@ interface NotificationProps {
   title: string; // Title text
   description?: string; // Optional description
   hideDuration?: number; // Time in milliseconds to hide the notification (default: 5000ms)
+  onClose?: () => void; // optional callback to inform parent/store that user closed the notif
 }
 
 const Notification: React.FC<NotificationProps> = ({
   variant,
   title,
   description,
-  hideDuration = 3000, // Default hide duration: 5 seconds
+  hideDuration = 3000, // Default hide duration: 3 seconds
+  onClose,
 }) => {
   const [isVisible, setIsVisible] = useState(true);
 
@@ -49,10 +51,14 @@ const Notification: React.FC<NotificationProps> = ({
   const { borderColor, iconBg, icon } = variantStyles[variant];
 
   const handleClose = () => {
-    // Hide the notification
-    setIsVisible(false);
+    // If parent provided an onClose (global store), call it to remove this notification
+    if (typeof onClose === 'function') {
+      onClose();
+      return;
+    }
 
-    // Show it again after the specified time
+    // Fallback local behaviour: hide and re-show after hideDuration
+    setIsVisible(false);
     setTimeout(() => {
       setIsVisible(true);
     }, hideDuration);
