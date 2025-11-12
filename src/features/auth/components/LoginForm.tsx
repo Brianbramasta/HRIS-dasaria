@@ -6,7 +6,6 @@ import Input from '../../../components/form/input/InputField';
 import Checkbox from '../../../components/form/input/Checkbox';
 import Button from '../../../components/ui/button/Button';
 import { LoginRequest } from '../types';
-import Logo from '../../../components/common/Logo';
 
 interface LoginFormProps {
   onSubmit: (data: LoginRequest) => Promise<void>;
@@ -48,7 +47,7 @@ export default function LoginForm({ onSubmit, isLoading = false, error = null }:
     <div className="w-full max-w-sm mx-auto">
       <div className="mb-8 text-center">
         <div className="flex justify-center mb-4">
-          <Logo />
+          <img src="/images/logo-icon.svg" alt="logo" className="w-12 h-12" />
         </div>
         <h1 className="mb-2 text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
           Welcome to <span className="text-blue-600">HRIS</span>
