@@ -1,6 +1,9 @@
 // server.js
 import jsonServer from 'json-server';
 import jwt from 'jsonwebtoken';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 
 const server = jsonServer.create();
 const router = jsonServer.router('db.json');
@@ -119,6 +122,42 @@ server.post('/api/auth/refresh', (req, res) => {
 server.post('/api/auth/logout', (req, res) => {
   // Stateless JWT: nothing to do server-side
   return res.status(200).send(JSON.stringify({ message: 'Logged out' }));
+});
+
+// ===== File Upload (local storage) =====
+// Ensure documents directory exists
+const documentsDir = path.resolve('src/documents');
+if (!fs.existsSync(documentsDir)) {
+  fs.mkdirSync(documentsDir, { recursive: true });
+}
+
+// Serve static files so frontend can preview via returned path
+server.use('/documents', jsonServer.defaults({ static: documentsDir }));
+
+// Configure multer storage
+const storage = multer.diskStorage({
+  destination: (_req, _file, cb) => {
+    cb(null, documentsDir);
+  },
+  filename: (_req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const base = path.basename(file.originalname, ext);
+    const safeBase = base.replace(/[^a-zA-Z0-9-_]/g, '_');
+    const unique = `${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+    cb(null, `${unique}${ext}`);
+  },
+});
+const upload = multer({ storage });
+
+// Upload endpoint: returns { fileName, filePath, size }
+server.post('/api/upload', upload.single('file'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).send(JSON.stringify({ message: 'No file uploaded' }));
+  }
+  const fileName = req.file.filename;
+  const filePath = `/src/documents/${fileName}`; // public URL served by static middleware
+  const size = req.file.size;
+  return res.status(200).send(JSON.stringify({ fileName, filePath, size }));
 });
 
 // 👉 Tambahkan prefix '/api' di sini untuk resource endpoints

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
+import axios from 'axios';
 
 interface FileInputProps {
   skFileName: string;
@@ -9,6 +10,8 @@ interface FileInputProps {
 const FileInput: React.FC<FileInputProps> = ({ skFileName, onChange }) => {
   const [preview, setPreview] = useState<string | null>(null);
   const [fileType, setFileType] = useState<string>('');
+  const [savedInfo, setSavedInfo] = useState<{ fileName: string; filePath: string; size: number } | null>(null);
+  const [uploading, setUploading] = useState<boolean>(false);
 
   useEffect(() => {
     return () => {
@@ -19,27 +22,43 @@ const FileInput: React.FC<FileInputProps> = ({ skFileName, onChange }) => {
     };
   }, [preview]);
 
-  const onDrop = (acceptedFiles: File[]) => {
+  const onDrop = async (acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
       const file = acceptedFiles[0];
-      
-      // Create preview URL
-      const previewUrl = URL.createObjectURL(file);
-      setPreview(previewUrl);
+      // Local preview as immediate feedback
+      const localPreview = URL.createObjectURL(file);
+      setPreview(localPreview);
       setFileType(file.type);
 
-      // Create a synthetic event that mimics HTMLInputElement change event
+      // Emit change for parent consumers (existing behavior)
       const dataTransfer = new DataTransfer();
-      acceptedFiles.forEach(file => dataTransfer.items.add(file));
-      
-      // Create synthetic event with target property
+      acceptedFiles.forEach(f => dataTransfer.items.add(f));
       const syntheticEvent = {
         target: {
           files: dataTransfer.files,
         },
       } as unknown as React.ChangeEvent<HTMLInputElement>;
-      
       onChange(syntheticEvent);
+
+      // Upload to API to store in local folder and get public path
+      try {
+        setUploading(true);
+        const formData = new FormData();
+        formData.append('file', file);
+        const resp = await axios.post('http://localhost:3001/api/upload', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        const data = (resp.data?.data) ?? resp.data; // server wraps responses with { data }
+        if (data?.filePath) {
+          setSavedInfo({ fileName: data.fileName, filePath: data.filePath, size: data.size });
+          setPreview(data.filePath); // switch preview to server-served path
+        }
+      } catch (err) {
+        // fallback: keep local preview; optionally log
+        console.error('Upload failed:', err);
+      } finally {
+        setUploading(false);
+      }
     }
   };
 
@@ -116,18 +135,26 @@ const FileInput: React.FC<FileInputProps> = ({ skFileName, onChange }) => {
               className="max-w-full h-auto max-h-64 mx-auto object-contain"
             />
           </div>
+          {savedInfo && (
+            <div className="mt-2 text-xs text-gray-600 dark:text-gray-400">
+              <span className="font-medium">File:</span> {savedInfo.fileName} · <span className="font-medium">Size:</span> {Math.round(savedInfo.size / 1024)} KB
+            </div>
+          )}
         </div>
       )}
-      {skFileName && (
+      {(savedInfo?.fileName || skFileName) && (
         <div className="mt-2 flex items-center justify-between bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
           <div className="flex items-center gap-2">
             <svg className="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <p className="text-sm text-blue-700 dark:text-blue-300">
-              <span className="font-medium">Selected:</span> {skFileName}
+              <span className="font-medium">Selected:</span> {savedInfo?.fileName || skFileName}
             </p>
           </div>
+          {uploading && (
+            <div className="text-xs text-blue-600 dark:text-blue-400">Uploading...</div>
+          )}
         </div>
       )}
     </div>
