@@ -27,7 +27,7 @@ const LayoutContent: React.FC = () => {
         } ${isMobileOpen ? "ml-0" : ""}`}
       >
         {isAuthenticated && <AppHeader />}
-        <div className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6 bg-[#EAEAEA]">
+        <div className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6 bg-[#EAEAEA] dark:bg-[#1A1A1A]">
           <Outlet />
         </div>
       </div>

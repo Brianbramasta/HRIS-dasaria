@@ -80,7 +80,7 @@ const EditCompanyModal: React.FC<EditCompanyModalProps> = ({ isOpen, onClose, co
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="max-w-4xl p-6 zoom-50" showCloseButton>
+    <Modal isOpen={isOpen} onClose={onClose} className="max-w-4xl p-6 zoom-50 dark:text-white" showCloseButton>
       <div className="space-y-6">
         <h2 className="text-2xl font-bold text-center">Update Perusahaan</h2>
 

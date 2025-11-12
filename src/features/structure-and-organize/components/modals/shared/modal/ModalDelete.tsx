@@ -15,7 +15,7 @@ interface DeleteOfficeModalProps {
 const DeleteOfficeModal: React.FC<DeleteOfficeModalProps> = ({ content, isOpen, onClose, handleDelete, submitting=false}) => {
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="max-w-3xl p-6 zoom-50" showCloseButton>
+    <Modal isOpen={isOpen} onClose={onClose} className="max-w-3xl p-6 zoom-50 dark:text-white" showCloseButton>
       <div className="space-y-6">
         <HeaderModalDelete/>
 

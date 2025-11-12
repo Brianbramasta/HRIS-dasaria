@@ -192,7 +192,7 @@ export function DataTable<T = any>({
           )}
           <div className="flex items-center gap-3">
             {onExport && (
-              <Button className='bg-success text-white' onClick={() => setExportModalOpen(true)} variant="outline" size="sm">
+              <Button className='bg-success text-white dark:text-white' onClick={() => setExportModalOpen(true)} variant="outline" size="sm">
                 <Download size={16} className="mr-2" />
                 {exportButtonLabel}
               </Button>

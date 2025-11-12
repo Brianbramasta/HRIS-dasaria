@@ -17,7 +17,7 @@ const ModalAddEdit: React.FC<ModalAddEditProps> = ({ title, content, isOpen, onC
   
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="max-w-3xl p-6 zoom-50" showCloseButton>
+    <Modal isOpen={isOpen} onClose={onClose} className="max-w-3xl p-6 zoom-50 dark:text-white" showCloseButton>
       <div className="space-y-6">
         <h2 className="text-3xl font-bold text-center">{title}</h2>
         

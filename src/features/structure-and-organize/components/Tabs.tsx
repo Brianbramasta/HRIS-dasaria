@@ -45,7 +45,7 @@ export function Tabs({
               disabled={tab.disabled}
               className={`text-left px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 ${
                 activeTab === tab.id
-                  ? 'bg-brand-500 text-white'
+                  ? 'bg-brand-500 text-white '
                   : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800'
               } ${
                 tab.disabled 

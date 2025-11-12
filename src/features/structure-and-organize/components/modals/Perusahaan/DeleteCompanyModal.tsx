@@ -29,7 +29,7 @@ const DeleteCompanyModal: React.FC<DeleteCompanyModalProps> = ({ isOpen, onClose
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="max-w-2xl p-6 zoom-50" showCloseButton>
+    <Modal isOpen={isOpen} onClose={onClose} className="max-w-2xl p-6 zoom-50 dark:text-white" showCloseButton>
       <div className="space-y-6">
         <div className="flex flex-col items-center">
           <div className="mb-3 text-4xl">⚠️</div>
