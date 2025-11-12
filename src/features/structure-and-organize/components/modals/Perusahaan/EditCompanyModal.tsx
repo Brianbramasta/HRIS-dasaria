@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Modal } from '../../../../../components/ui/modal/index';
 import { companyService, businessLineService } from '../../../services/organization.service';
 import type { Company, BusinessLine } from '../../../types/organization.types';
+import Input from '@/components/form/input/InputField';
+import TextArea from '@/components/form/input/TextArea';
 
 interface EditCompanyModalProps {
   isOpen: boolean;
@@ -84,7 +86,7 @@ const EditCompanyModal: React.FC<EditCompanyModalProps> = ({ isOpen, onClose, co
 
         <div className="space-y-2">
           <label className="text-sm font-medium">Nama Perusahaan</label>
-          <input
+          <Input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -108,7 +110,7 @@ const EditCompanyModal: React.FC<EditCompanyModalProps> = ({ isOpen, onClose, co
 
         <div className="space-y-2">
           <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
-          <input
+          <Input
             type="text"
             value={docNumber}
             onChange={(e) => setDocNumber(e.target.value)}
@@ -119,9 +121,10 @@ const EditCompanyModal: React.FC<EditCompanyModalProps> = ({ isOpen, onClose, co
 
         <div className="space-y-2">
           <label className="text-sm font-medium">Deksripsi Umum</label>
-          <textarea
+          
+          <TextArea
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => setDescription(e)}
             className="w-full min-h-28 rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
             placeholder="Enter as description ..."
           />

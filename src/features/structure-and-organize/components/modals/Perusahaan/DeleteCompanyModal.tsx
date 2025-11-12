@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal } from '../../../../../components/ui/modal/index';
 import { companyService } from '../../../services/organization.service';
 import type { Company } from '../../../types/organization.types';
+import Input from '@/components/form/input/InputField';
 
 interface DeleteCompanyModalProps {
   isOpen: boolean;
@@ -37,7 +38,7 @@ const DeleteCompanyModal: React.FC<DeleteCompanyModalProps> = ({ isOpen, onClose
 
         <div className="space-y-2">
           <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
-          <input
+          <Input
             type="text"
             value={(company?.details || '').split(' | ')[1] || ''}
             disabled

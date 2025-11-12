@@ -4,6 +4,10 @@ import { officeService } from '../../../services/organization.service';
 import type { Office } from '../../../types/organization.types';
 import FileInput from '../shared/field/FileInput';
 import ModalAddEdit from '../shared/modal/modalAddEdit';
+import Input from '@/components/form/input/InputField';
+import TextArea from '@/components/form/input/TextArea';
+
+
 
 interface EditOfficeModalProps {
   isOpen: boolean;
@@ -62,7 +66,7 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
         <>
         <div className="space-y-2">
           <label className="text-sm font-medium">Nama Office</label>
-          <input
+          <Input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -72,7 +76,7 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
 
         <div className="space-y-2">
           <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
-          <input
+          <Input
             type="text"
             value={memoNumber}
             onChange={(e) => setMemoNumber(e.target.value)}
@@ -82,10 +86,11 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
 
         <div className="space-y-2">
           <label className="text-sm font-medium">Deskripsi Umum</label>
-          <textarea
+         
+          <TextArea
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="w-full min-h-28 rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+            onChange={(e) => setDescription(e)}
+            className="w-full rounded-xl border border-gray-300 px-4 py-3 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
         

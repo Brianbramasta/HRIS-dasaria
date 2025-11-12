@@ -4,6 +4,8 @@ import { positionService } from "../../../services/organization.service";
 import { Position } from "../../../types/organization.types";
 import FileInput from "../shared/field/FileInput";
 
+import Input from "@/components/form/input/InputField";
+
 type Props = {
   isOpen: boolean;
   onClose: () => void;
@@ -95,7 +97,7 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
             >
               Nama Jabatan
             </label>
-            <input
+            <Input
               type="text"
               name="name"
               id="name"
@@ -113,7 +115,7 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
             >
               Grade
             </label>
-            <input
+            <Input
               type="text"
               name="grade"
               id="grade"
@@ -131,7 +133,7 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
             >
               Bawahan Langsung
             </label>
-            <input
+            <Input
               type="text"
               name="directSubordinates"
               id="directSubordinates"
@@ -148,7 +150,7 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
             >
               No. Surat Keputusan / Memo Internal
             </label>
-            <input
+            <Input
               type="text"
               name="memoNumber"
               id="memoNumber"
@@ -210,7 +212,7 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
                     Drag and drop your PNG, JPG, WebP, SVG images here or browse
                   </p>
                 </div>
-                <input
+                <Input
                   id="dropzone-file"
                   type="file"
                   className="hidden"

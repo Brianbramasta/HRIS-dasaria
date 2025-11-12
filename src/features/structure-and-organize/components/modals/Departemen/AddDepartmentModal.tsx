@@ -4,6 +4,8 @@ import { departmentService, divisionService } from '../../../services/organizati
 import type { Division } from '../../../types/organization.types';
 import FileInput from '../shared/field/FileInput';
 import ModalAddEdit from '../shared/modal/modalAddEdit';
+import Input from '@/components/form/input/InputField';
+import Select from '@/components/form/Select';
 
 interface AddDepartmentModalProps {
   isOpen: boolean;
@@ -73,7 +75,7 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ isOpen, onClose
       content={<>
       <div className="space-y-2">
           <label className="text-sm font-medium">Nama Departemen</label>
-          <input
+          <Input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -83,21 +85,17 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ isOpen, onClose
 
         <div className="space-y-2">
           <label className="text-sm font-medium">Divisi</label>
-          <select
-            value={divisionId}
-            onChange={(e) => setDivisionId(e.target.value)}
+          
+          <Select
+            options={divisions.map((d) => ({ value: d.id, label: d.name }))}
+            onChange={(e) => setDivisionId(e)}
             className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-          >
-            <option value="">Pilih Divisi</option>
-            {divisions.map((d) => (
-              <option key={d.id} value={d.id}>{d.name}</option>
-            ))}
-          </select>
+          />
         </div>
 
         <div className="space-y-2">
           <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
-          <input
+          <Input
             type="text"
             value={memoNumber}
             onChange={(e) => setMemoNumber(e.target.value)}

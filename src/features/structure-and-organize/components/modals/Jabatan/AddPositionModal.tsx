@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Modal } from "../../../../../components/ui/modal/index";
 import { positionService } from "../../../services/organization.service";
 import FileInput from "../shared/field/FileInput";
+import Input from "@/components/form/input/InputField";
+
+
 
 type Props = {
   isOpen: boolean;
@@ -76,7 +79,7 @@ export const AddPositionModal = ({ isOpen, onClose, onSuccess }: Props) => {
             >
               Nama Jabatan
             </label>
-            <input
+            <Input
               type="text"
               name="name"
               id="name"
@@ -94,7 +97,7 @@ export const AddPositionModal = ({ isOpen, onClose, onSuccess }: Props) => {
             >
               Grade
             </label>
-            <input
+            <Input
               type="text"
               name="grade"
               id="grade"
@@ -112,7 +115,7 @@ export const AddPositionModal = ({ isOpen, onClose, onSuccess }: Props) => {
             >
               Bawahan Langsung
             </label>
-            <input
+            <Input
               type="text"
               name="directSubordinates"
               id="directSubordinates"
@@ -129,7 +132,7 @@ export const AddPositionModal = ({ isOpen, onClose, onSuccess }: Props) => {
             >
               No. Surat Keputusan / Memo Internal
             </label>
-            <input
+            <Input
               type="text"
               name="memoNumber"
               id="memoNumber"
@@ -155,6 +158,7 @@ export const AddPositionModal = ({ isOpen, onClose, onSuccess }: Props) => {
               value={formData.jobDescription}
               onChange={handleInputChange}
             ></textarea>
+            
           </div>
           {/* <div>
             <label

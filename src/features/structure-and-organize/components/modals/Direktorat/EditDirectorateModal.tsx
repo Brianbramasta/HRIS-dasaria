@@ -5,6 +5,9 @@ import type { Directorate } from '../../../types/organization.types';
 import FileInput from '../shared/field/FileInput';
 import ModalAddEdit from '../shared/modal/modalAddEdit';
 
+import Input from '@/components/form/input/InputField';
+import TextArea from '@/components/form/input/TextArea';
+
 interface EditDirectorateModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -64,7 +67,7 @@ const EditDirectorateModal: React.FC<EditDirectorateModalProps> = ({ isOpen, onC
         
         <div className="space-y-2">
           <label className="text-sm font-medium">Nama Direktorat</label>
-          <input
+          <Input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -74,16 +77,17 @@ const EditDirectorateModal: React.FC<EditDirectorateModalProps> = ({ isOpen, onC
 
         <div className="space-y-2">
           <label className="text-sm font-medium">Deskripsi Umum</label>
-          <textarea
+         
+          <TextArea
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => setDescription(e)}
             className="w-full rounded-xl border border-gray-300 px-4 py-3 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
 
         <div className="space-y-2">
           <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
-          <input
+          <Input
             type="text"
             value={memoNumber}
             onChange={(e) => setMemoNumber(e.target.value)}

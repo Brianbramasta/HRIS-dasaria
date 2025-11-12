@@ -4,6 +4,10 @@ import { companyService, businessLineService } from '../../../services/organizat
 import type { Company, BusinessLine } from '../../../types/organization.types';
 import { PlusIcon } from '../../../../../icons/index';
 import { TrashBinIcon } from '../../../../../icons/index';
+import Input from '@/components/form/input/InputField';
+import TextArea from '@/components/form/input/TextArea';
+
+
 
 interface AddCompanyModalProps {
   isOpen: boolean;
@@ -99,7 +103,7 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
 
         <div className="space-y-2">
           <label className="text-sm font-medium">Nama Perusahaan</label>
-          <input
+          <Input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -119,6 +123,7 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
               <option key={bl.id} value={bl.id}>{bl.name}</option>
             ))}
           </select>
+         
         </div>
 
         <div className="space-y-2">
@@ -129,6 +134,12 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
             className="w-full min-h-28 rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
             placeholder="Enter as description ..."
           />
+          <TextArea
+            value={description}
+            onChange={(e) => setDescription(e)}
+            className="w-full min-h-28 rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder="Enter as description ..."
+          />
         </div>
 
         <div className="space-y-4">
@@ -136,7 +147,7 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
             <div key={index} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
               <div className="space-y-2 md:col-span-4">
                 <label className="text-sm font-medium">Nama Dokumen</label>
-                <input
+                <Input
                   type="text"
                   value={doc.docName}
                   onChange={(e) => handleDocumentChange(index, 'docName', e.target.value)}
@@ -145,7 +156,7 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
               </div>
               <div className="space-y-2 md:col-span-3">
                 <label className="text-sm font-medium">No. Dokumen</label>
-                <input
+                <Input
                   type="text"
                   value={doc.docNumber}
                   onChange={(e) => handleDocumentChange(index, 'docNumber', e.target.value)}
@@ -155,7 +166,7 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
               <div className="space-y-2 md:col-span-4">
                 <label className="text-sm font-medium">Upload file</label>
                 <div className="flex items-center gap-2">
-                  <input type="file" onChange={(e) => handleFileChange(index, e)} className="text-sm" />
+                  <Input type="file" onChange={(e) => handleFileChange(index, e)} className="text-sm" />
                   {doc.skFile && <span className="text-sm text-gray-600 truncate">{doc.skFile.name}</span>}
                 </div>
               </div>

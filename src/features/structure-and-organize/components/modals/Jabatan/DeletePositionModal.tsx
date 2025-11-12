@@ -3,6 +3,7 @@ import { Modal } from "../../../../../components/ui/modal/index";
 import { positionService } from "../../../services/organization.service";
 import { Position } from "../../../types/organization.types";
 
+
 type Props = {
   isOpen: boolean;
   onClose: () => void;
