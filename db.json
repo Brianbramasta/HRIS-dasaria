@@ -34,7 +34,7 @@
       "description": "Divisi yang mengelola keuangan dan akuntansi perusahaan",
       "isActive": true,
       "createdAt": "2024-01-01T00:00:00Z",
-      "updatedAt": "2025-11-12T05:43:35.670Z",
+      "updatedAt": "2025-11-11T12:04:33.154Z",
       "memoFile": "sss",
       "skFile": "bef7334e1cc3c5a5559687d0bff230aaea4f1e27.png"
     },
@@ -53,28 +53,37 @@
       "description": "...",
       "isActive": true,
       "id": "5QmDHWh",
-      "updatedAt": "2025-11-12T05:44:20.086Z"
+      "updatedAt": "2025-11-11T07:12:26.681Z"
     }
   ],
   "companies": [
     {
       "id": "1",
       "name": "PT Teknologi Nusantara",
+      "logoUrl": "https://example.com/logo-ptn.png",
       "code": "PTN",
       "businessLineId": "1",
       "businessLineName": "Teknologi Informasi",
-      "address": "Jl. Sudirman No. 123, Jakarta",
-      "phone": "+62-21-12345678",
-      "email": "info@ptn.co.id",
-      "website": "www.ptn.co.id",
-      "taxId": "1234567890123",
+      "description": "cek",
+      "address": "surabaya",
+      "phone": "0895222",
+      "email": "info@pos.co.id",
+      "website": "www.pos.co.id",
+      "taxId": "5566778899001",
       "isActive": true,
+      "postalCode": "22222",
+      "industry": "",
+      "founded": "2024-01-01T00:00:00Z",
+      "type": "PT",
+      "companySize": "",
+      "logoFileName": "Frame 1000004254.png",
       "createdAt": "2024-01-01T00:00:00Z",
       "updatedAt": "2024-01-01T00:00:00Z"
     },
     {
       "id": "2",
       "name": "PT Pemasaran Global",
+      "logoUrl": "https://example.com/logo-pmg.png",
       "code": "PMG",
       "businessLineId": "2",
       "businessLineName": "Pemasaran",
@@ -90,6 +99,7 @@
     {
       "id": "3",
       "name": "PT Operasi Sejahtera 22",
+      "logoUrl": "https://example.com/logo-pos.png",
       "code": "POS",
       "businessLineId": "3",
       "businessLineName": "Operasional",
@@ -112,10 +122,24 @@
     },
     {
       "name": "test",
+      "logoUrl": "https://example.com/logo-test.png",
+
       "description": "ee",
       "businessLineId": "4",
-      "details": "",
-      "id": "1762612677701",
+       "businessLineName": "Operasional",
+      "address": "surabaya",
+      "phone": "0895222",
+      "email": "info@pos.co.id",
+      "website": "www.pos.co.id",
+      "taxId": "5566778899001",
+      "isActive": true,
+ 
+      "postalCode": "22222",
+      "industry": "",
+      "founded": "2024-01-01T00:00:00Z",
+      "type": "PT",
+      "companySize": "",
+      "logoFileName": "Frame 1000004254.png",
       "createdAt": "2025-11-08T14:37:57.701Z",
       "updatedAt": "2025-11-08T14:56:29.623Z"
     }
@@ -1061,7 +1085,7 @@
       "tanggalPengajuan": "23 Juli 2025",
       "alasan": "test",
       "status": "Pending",
-      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Rain",
+       "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Rain",
       "createdAt": "2024-07-15T00:00:00Z",
       "updatedAt": "2024-07-20T00:00:00Z",
       "id": "50"
@@ -1075,6 +1099,7 @@
       "name": "Akta Pendirian Perusahaan (Update 2025)",
       "docNumber": "AKTA-PTN/01/2025",
       "fileName": "akta-pendirian-2025.pdf",
+      "filePath": "https://example.com/akta-pendirian-2025.pdf",
       "size": "2.5 MB",
       "type": "active",
       "createdAt": "2025-01-15T00:00:00Z"
@@ -1086,6 +1111,7 @@
       "name": "Surat Izin Usaha Perdagangan",
       "docNumber": "SIUP-PTN/001/2024",
       "fileName": "siup-2024.pdf",
+      "filePath": "https://example.com/siup-2024.pdf",
       "size": "1.8 MB",
       "type": "active",
       "createdAt": "2024-03-10T00:00:00Z"
@@ -1093,10 +1119,11 @@
     {
       "id": "DOC003",
       "ownerType": "company",
-      "ownerId": "1",
+      "ownerId": "1",   
       "name": "Akta Pendirian Perusahaan (Update 2024)",
       "docNumber": "AKTA-PTN/01/2024",
       "fileName": "akta-pendirian-2024.pdf",
+      "filePath": "https://example.com/akta-pendirian-2024.pdf",
       "size": "2.3 MB",
       "type": "archive",
       "createdAt": "2024-01-10T00:00:00Z"
@@ -1108,6 +1135,7 @@
       "name": "Laporan Keuangan 2023",
       "docNumber": "LK-PTN/2023",
       "fileName": "laporan-keuangan-2023.pdf",
+      "filePath": "https://example.com/laporan-keuangan-2023.pdf",
       "size": "3.1 MB",
       "type": "archive",
       "createdAt": "2024-02-28T00:00:00Z"
@@ -1119,6 +1147,7 @@
       "name": "Surat Keputusan Perubahan Struktur Organisasi",
       "docNumber": "SK-PMG/STRUK/2024",
       "fileName": "sk-struktur-org-2024.pdf",
+      "filePath": "https://example.com/sk-struktur-org-2024.pdf",
       "size": "1.2 MB",
       "type": "active",
       "createdAt": "2024-08-20T00:00:00Z"
@@ -1130,6 +1159,8 @@
       "name": "test",
       "docNumber": "cek",
       "fileName": "",
+      "filePath": "https://example.com/cek.pdf",
+      "size": "1.2 MB",
       "type": "active",
       "createdAt": "2025-11-11T04:42:04.529Z"
     },
@@ -1141,6 +1172,7 @@
       "docNumber": "SK-FIN/2024",
       "fileName": "sk-direktorat-keuangan.pdf",
       "type": "active",
+      "filePath": "https://example.com/sk-direktorat-keuangan.pdf",
       "size": "1.2 MB",
       "createdAt": "2024-08-20T00:00:00Z"
     },
@@ -1152,6 +1184,7 @@
       "docNumber": "MEMO-FIN/2024-09",
       "fileName": "memo-internal.pdf",
       "type": "archive",
+      "filePath": "https://example.com/memo-internal.pdf",
       "size": "560 KB",
       "createdAt": "2024-09-12T00:00:00Z"
     },
@@ -1163,8 +1196,8 @@
       "docNumber": "AKTA-POS/2025",
       "fileName": "akta-perubahan-2025.pdf",
       "type": "active",
+      "filePath": "https://example.com/akta-perubahan-2025.pdf",
       "size": "2.5 MB",
       "createdAt": "2025-01-15T00:00:00Z"
-    }
-  ]
+    }]
 }

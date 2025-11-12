@@ -6,10 +6,13 @@ import Notification from "./components/ui/notification/Notfication";
 import { useNotificationStore, removeNotification } from "./stores/notificationStore";
 import type { AppNotification } from "./stores/notificationStore";
 import { useAuthStore } from "./features/auth/stores/authStore";
+import SpinnerOne from "./components/ui/spinner/SpinnerOne";
+import { useLoadingStore } from "./stores/loadingStore";
 
 export default function App() {
   const notifications = useNotificationStore((s) => s.notifications);
   const hydrate = useAuthStore((s) => s.hydrate);
+  const isLoading = useLoadingStore((s) => s.isLoading);
 
   useEffect(() => {
     hydrate();
@@ -35,6 +38,15 @@ export default function App() {
           />
         ))}
       </div>
+
+      {/* Global loading overlay */}
+      {isLoading && (
+        <div className="fixed inset-0 z-[9998] flex items-center justify-center bg-black/20 backdrop-blur-sm">
+          <div className="rounded-md bg-white/80 p-4">
+            <SpinnerOne />
+          </div>
+        </div>
+      )}
     </>
   );
 }

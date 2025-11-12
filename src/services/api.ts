@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { startLoading, stopLoading } from '../stores/loadingStore';
 
 // Interface untuk response API
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -40,6 +41,8 @@ class ApiService {
     // Request interceptor untuk menambahkan token
     this.instance.interceptors.request.use(
       (config) => {
+        // aktifkan loading saat request dimulai
+        startLoading();
         const token = this.getToken();
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
@@ -47,6 +50,8 @@ class ApiService {
         return config;
       },
       (error) => {
+        // jika gagal sebelum request dikirim, matikan loading
+        stopLoading();
         return Promise.reject(error);
       }
     );
@@ -54,9 +59,13 @@ class ApiService {
     // Response interceptor untuk handle error dan refresh token
     this.instance.interceptors.response.use(
       (response: AxiosResponse) => {
+        // matikan loading setelah response sukses
+        stopLoading();
         return response;
       },
       async (error) => {
+        // matikan loading untuk response error
+        stopLoading();
         const originalRequest = error.config;
 
         // Handle 401 Unauthorized
