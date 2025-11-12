@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Modal } from '@/components/ui/modal/index';
 import { officeService, companyService } from '../../../../services/organization.service';
 import Input from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
+import ModalAddEdit from '../../shared/modal/modalAddEdit';
 
 interface AddBranchModalProps {
   isOpen: boolean;
@@ -80,11 +80,15 @@ const AddBranchModal: React.FC<AddBranchModalProps> = ({ isOpen, onClose, compan
   }, [selectedBranch, branchOptions]);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="max-w-2xl p-6" showCloseButton>
-      <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center">Tambah Branch</h2>
-
-        <div className="space-y-2">
+    
+    <ModalAddEdit
+      isOpen={isOpen}
+      onClose={onClose}
+      handleSubmit={handleSubmit}
+      submitting={submitting}
+      title="Add Branch"
+      content={<>
+         <div className="space-y-2">
           <label className="text-sm font-medium">Nama Perusahaan</label>
           <Input disabled value={companyName} onChange={() => {}} className="" />
         </div>
@@ -109,13 +113,8 @@ const AddBranchModal: React.FC<AddBranchModalProps> = ({ isOpen, onClose, compan
           <label className="text-sm font-medium">Jumlah Karyawan</label>
           <Input disabled value={employeeCount as any} onChange={() => {}} />
         </div>
-
-        <div className="flex justify-end gap-3">
-          <button onClick={onClose} className="rounded-xl border px-5 py-2">Close</button>
-          <button onClick={handleSubmit} disabled={submitting} className="rounded-xl bg-blue-600 px-5 py-2 text-white disabled:opacity-60">Save</button>
-        </div>
-      </div>
-    </Modal>
+      </>}
+    />
   );
 };
 
