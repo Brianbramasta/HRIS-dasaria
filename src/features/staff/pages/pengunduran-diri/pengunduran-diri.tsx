@@ -46,13 +46,17 @@ export default function PengunduranDiriPage() {
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+      
+
+      {/* Tabs */}
+      <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
+        {/* Page Header */}
+      <div className="p-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Pengunduran Diri</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          {/* <p className="text-sm text-gray-500 dark:text-gray-400">
             Kelola pengajuan pengunduran diri karyawan
-          </p>
+          </p> */}
         </div>
         <Button onClick={handleAddResign} variant="primary" size="sm">
           <Plus size={16} className="mr-2" />
@@ -60,9 +64,7 @@ export default function PengunduranDiriPage() {
         </Button>
       </div>
 
-      {/* Tabs */}
-      <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
-        <div className="border-b border-gray-200 dark:border-gray-800">
+        <div className="px-6  w-1/2">
           <div className="flex gap-0">
             <button
               onClick={() => setActiveTab('pending')}

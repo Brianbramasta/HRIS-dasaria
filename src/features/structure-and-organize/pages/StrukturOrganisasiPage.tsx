@@ -25,9 +25,9 @@ export default function StrukturOrganisasiPage() {
     <div className="space-y-6">
       {!isDetailPage && (
         <>
-          <div className="flex items-center justify-between">
+          {/* <div className="flex items-center justify-between">
             <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Struktur Organisasi</h1>
-          </div>
+          </div> */}
           <div className="px-6 flex justify-between overflow-x-auto rounded-lg bg-[var(--color-brand-50)] p-1 dark:bg-gray-900 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-track]:bg-white dark:[&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-200 dark:[&::-webkit-scrollbar-thumb]:bg-gray-600 mb-0">
             {tabs.map((tab) => (
               <Link

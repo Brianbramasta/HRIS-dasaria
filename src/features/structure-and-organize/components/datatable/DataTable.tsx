@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Table, TableHeader, TableBody, TableRow, TableCell } from '../../../../components/ui/table';
 import PaginationWithIcon from '../../../../components/tables/DataTables/TableOne/PaginationWithIcon';
 import Button from '../../../../components/ui/button/Button';
@@ -83,13 +84,22 @@ export function DataTable<T = any>({
   const [orderBy, setOrderBy] = useState<string>('');
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [isFilterModalOpen, setFilterModalOpen] = useState(false);
+  const [isExportModalOpen, setExportModalOpen] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState<string[]>(() =>
     columns.map((c) => c.id)
   );
+  const [exportVisibleColumns, setExportVisibleColumns] = useState<string[]>(() =>
+    columns.map((c) => c.id)
+  );
+  const [exportSearchTerm, setExportSearchTerm] = useState('');
+  const navigate = useNavigate();
 
   // Reset visible columns when resetKey changes (e.g., on tab switch)
   useEffect(() => {
     setVisibleColumns(columns.map((c) => c.id));
+  }, [resetKey, columns]);
+  useEffect(() => {
+    setExportVisibleColumns(columns.map((c) => c.id));
   }, [resetKey, columns]);
 
   const handleSort = (columnId: string) => {
@@ -182,7 +192,7 @@ export function DataTable<T = any>({
           )}
           <div className="flex items-center gap-3">
             {onExport && (
-              <Button className='bg-success text-white' onClick={onExport} variant="outline" size="sm">
+              <Button className='bg-success text-white' onClick={() => setExportModalOpen(true)} variant="outline" size="sm">
                 <Download size={16} className="mr-2" />
                 {exportButtonLabel}
               </Button>
@@ -345,6 +355,7 @@ export function DataTable<T = any>({
             </div>
             <div className="grid grid-cols-2 gap-2">
               {columns.map((col) => (
+                <div className='border border-gray-300 rounded-md p-2'>
                 <label key={col.id} className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
@@ -353,6 +364,7 @@ export function DataTable<T = any>({
                   />
                   {col.label}
                 </label>
+                </div>
               ))}
             </div>
           </div>
@@ -380,6 +392,106 @@ export function DataTable<T = any>({
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={() => setFilterModalOpen(false)}>Close</Button>
             <Button variant="primary" onClick={() => setFilterModalOpen(false)}>Search</Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Export Modal */}
+      <Modal className="max-w-md" isOpen={isExportModalOpen} onClose={() => setExportModalOpen(false)}>
+        <div className="p-6">
+          <div className="mb-4">
+            <div className='text-center'>
+              <h1 className='text-2xl font-bold'>Export</h1>
+            </div>
+            <div className="flex justify-between items-center mb-2">
+              <h4 className="font-semibold">Kolom</h4>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={exportVisibleColumns.length === columns.length}
+                  onChange={(e) => setExportVisibleColumns(e.target.checked ? columns.map((c) => c.id) : [])}
+                />
+                Select All
+              </label>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {columns.map((col) => (
+                <div key={col.id} className='border border-gray-300 rounded-md p-2'>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={exportVisibleColumns.includes(col.id)}
+                      onChange={() =>
+                        setExportVisibleColumns((prev) =>
+                          prev.includes(col.id)
+                            ? prev.filter((id) => id !== col.id)
+                            : [...prev, col.id]
+                        )
+                      }
+                    />
+                    {col.label}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="mb-4">
+            <h4 className="font-semibold mb-2">Data</h4>
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Cari berdasarkan kata kunci"
+                value={exportSearchTerm}
+                onChange={(e) => setExportSearchTerm(e.target.value)}
+                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 pl-10 text-sm text-gray-900 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-brand-400"
+              />
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div className="flex justify-end gap-3">
+            <Button variant="outline" onClick={() => setExportModalOpen(false)}>Close</Button>
+            <Button
+              variant="primary"
+              onClick={() => {
+                const selectedColumns = columns.filter((c) => exportVisibleColumns.includes(c.id));
+                // const hasNo = selectedColumns.some((c) => c.id === 'no' || c.label.toLowerCase() === 'no.' || c.label.toLowerCase() === 'no');
+                const selectedWithoutNo = selectedColumns.filter((c) => c.id !== 'no');
+
+                const dataSource = sortedData.filter((row) => {
+                  if (!exportSearchTerm) return true;
+                  return selectedWithoutNo.some((column) => {
+                    const value = row[column.id as keyof T];
+                    if (value === null || value === undefined) return false;
+                    return value.toString().toLowerCase().includes(exportSearchTerm.toLowerCase());
+                  });
+                });
+
+                const exportRows = dataSource.map((row, idx) => {
+                  const record: Record<string, any> = {};
+                  // tambahkan nomor (selalu dihitung agar konsisten)
+                  record['No.'] = idx + 1;
+                  selectedWithoutNo.forEach((c) => {
+                    const value = row[c.id as keyof T];
+                    record[c.label] = value as any;
+                  });
+                  return record;
+                });
+
+                navigate('/export', {
+                  state: {
+                    title: title || 'Struktur Organisasi',
+                    columns: ['No.', ...selectedWithoutNo.map((c) => c.label)],
+                    rows: exportRows,
+                  },
+                });
+              }}
+            >
+              Confirm
+            </Button>
           </div>
         </div>
       </Modal>

@@ -176,7 +176,6 @@ export default function TabPendingReview() {
         data={data}
         columns={columns}
         actions={actions}
-        title="Pending Review"
         searchable={true}
         searchPlaceholder="Cari berdasarkan kata kunci"
         pageSize={limit}

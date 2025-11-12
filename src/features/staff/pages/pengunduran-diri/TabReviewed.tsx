@@ -106,7 +106,6 @@ export default function TabReviewed() {
       <DataTable
         data={data}
         columns={columns}
-        title="Reviewed"
         searchable={true}
         searchPlaceholder="Cari berdasarkan kata kunci"
         pageSize={limit}

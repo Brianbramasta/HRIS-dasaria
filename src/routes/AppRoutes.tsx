@@ -59,6 +59,7 @@ import AppLayout from "../layout/AppLayout";
 import TaskList from "../pages/Task/TaskList";
 import Saas from "../pages/Dashboard/Saas";
 import StructureAndOrganize from "../features/structure-and-organize/pages/StrukturOrganisasiPage";
+import ExportPage from "../features/structure-and-organize/pages/ExportPage";
 import BusinessLinesTab from "../features/structure-and-organize/pages/LiniBisnis/BusinessLinesTab";
 import CompaniesTab from "../features/structure-and-organize/pages/Perusahaan/CompaniesTab";
 import OfficesTab from "../features/structure-and-organize/pages/Kantor/OfficesTab";
@@ -101,9 +102,9 @@ export default function AppRoutes() {
             <Route path="offices" element={<OfficesTab resetKey="offices" />} />
             <Route path="directorates" element={<DirectoratesTab resetKey="directorates" />} />
             <Route path="divisions" element={<DivisionsTab resetKey="divisions" />} />
-            <Route path="departments" element={<DepartmentsTab resetKey="departments" />} />
-            <Route path="positions" element={<PositionsTab resetKey="positions" />} />
-            <Route path="employee-positions" element={<EmployeePositionsTab resetKey="employee-positions" />} />
+          <Route path="departments" element={<DepartmentsTab resetKey="departments" />} />
+          <Route path="positions" element={<PositionsTab resetKey="positions" />} />
+          <Route path="employee-positions" element={<EmployeePositionsTab resetKey="employee-positions" />} />
           </Route>
           <Route path="/data-karyawan" element={<DataKaryawan />} />
           
@@ -174,6 +175,12 @@ export default function AppRoutes() {
           <Route path="/bar-chart" element={<BarChart />} />
           <Route path="/pie-chart" element={<PieChart />} />
         </Route>
+      </Route>
+
+      {/* Export print view tanpa AppLayout */}
+      <Route element={<ProtectedOutlet />}>
+        <Route path="/structure-and-organize/export" element={<ExportPage />} />
+        <Route path="/export" element={<ExportPage />} />
       </Route>
 
       {/* Auth Layout */}
