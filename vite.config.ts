@@ -21,4 +21,14 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    watch: {
+      // Ignore changes to db.json and server.js to prevent dev reloads
+      // when json-server writes updates after PATCH/POST.
+      ignored: [
+        path.resolve(__dirname, './db.json'),
+        path.resolve(__dirname, './server.js'),
+      ],
+    },
+  },
 });

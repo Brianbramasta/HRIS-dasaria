@@ -8,6 +8,7 @@ import AddEmployeePositionModal from '../../components/modals/PosisiPegawai/AddE
 import EditEmployeePositionModal from '../../components/modals/PosisiPegawai/EditEmployeePositionModal';
 import DeleteEmployeePositionModal from '../../components/modals/PosisiPegawai/DeleteEmployeePositionModal';
 import { useModal } from '../../../../hooks/useModal';
+import { addNotification } from '@/stores/notificationStore';
 
 type Props = { resetKey: string };
 
@@ -111,18 +112,45 @@ export default function EmployeePositionsTab({ resetKey }: Props) {
       <AddEmployeePositionModal
         isOpen={addModal.isOpen}
         onClose={addModal.closeModal}
-        onSuccess={handleAddSuccess}
+        onSuccess={() => {
+          handleAddSuccess();
+          addModal.closeModal();
+          addNotification({
+            description: 'Posisi pegawai berhasil ditambahkan',
+            variant: 'success',
+            hideDuration: 4000,
+            title: 'Posisi pegawai ditambahkan',
+          });
+        }}
       />
       <EditEmployeePositionModal
         isOpen={editModal.isOpen}
         onClose={() => { editModal.closeModal(); setSelectedEmployeePosition(null); }}
-        onSuccess={handleUpdateSuccess}
+        onSuccess={() => {
+          handleUpdateSuccess();
+          editModal.closeModal();
+          addNotification({
+            description: 'Posisi pegawai berhasil diupdate',
+            variant: 'success',
+            hideDuration: 4000,
+            title: 'Posisi pegawai diupdate',
+          });
+        }}
         employeePosition={selectedEmployeePosition}
       />
       <DeleteEmployeePositionModal
         isOpen={deleteModal.isOpen}
         onClose={() => { deleteModal.closeModal(); setSelectedEmployeePosition(null); }}
-        onSuccess={handleDeleteSuccess}
+        onSuccess={() => {
+          handleDeleteSuccess();
+          deleteModal.closeModal();
+          addNotification({
+            description: 'Posisi pegawai berhasil dihapus',
+            variant: 'success',
+            hideDuration: 4000,
+            title: 'Posisi pegawai dihapus',
+          });
+        }}
         employeePosition={selectedEmployeePosition}
       />
     </>

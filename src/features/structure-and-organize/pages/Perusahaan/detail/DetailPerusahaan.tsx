@@ -9,6 +9,7 @@ import DeleteDocumentModal from '../../../components/modals/Perusahaan/detail/De
 import EditDetailCompany from '../../../components/modals/Perusahaan/detail/EditDetailCompany';
 import Button from '@/components/ui/button/Button';
 import {TrashBinIcon} from '@/icons/index';
+import { addNotification } from '@/stores/notificationStore';
 
 const DetailPerusahaan: React.FC = () => {
   const { id } = useParams();
@@ -206,11 +207,46 @@ const DetailPerusahaan: React.FC = () => {
         </div>
       </div>
 
-      <AddBranchModal isOpen={isAddBranchOpen} onClose={() => setAddBranchOpen(false)} companyId={id || ''} onSuccess={() => fetch()} />
-      <DeleteBranchModal isOpen={isDeleteBranchOpen} onClose={() => setDeleteBranchOpen(false)} branch={selectedBranch} onSuccess={() => fetch()} />
-      <AddDocumentModal isOpen={isAddDocOpen} onClose={() => setAddDocOpen(false)} companyId={id || ''} onSuccess={() => fetch()} />
-      <DeleteDocumentModal isOpen={isDeleteDocOpen} onClose={() => setDeleteDocOpen(false)} document={selectedDoc} onSuccess={() => fetch()} />
-      <EditDetailCompany isOpen={isEditOpen} onClose={() => setEditOpen(false)} company={company} onSuccess={() => fetch()} />
+      <AddBranchModal isOpen={isAddBranchOpen} onClose={() => setAddBranchOpen(false)} companyId={id || ''} onSuccess={() => {fetch();
+        addNotification({
+          description: 'Branch berhasil ditambahkan',
+          variant: 'success',
+          hideDuration: 4000,
+          title: 'Branch ditambahkan',
+        });
+      }} />
+      <DeleteBranchModal isOpen={isDeleteBranchOpen} onClose={() => setDeleteBranchOpen(false)} branch={selectedBranch} onSuccess={() => {fetch();
+        addNotification({
+          description: 'Branch berhasil dihapus',
+          variant: 'success',
+          hideDuration: 4000,
+          title: 'Branch dihapus',
+        });
+      }} />
+      <AddDocumentModal isOpen={isAddDocOpen} onClose={() => setAddDocOpen(false)} companyId={id || ''} onSuccess={() => {fetch();
+        addNotification({
+          description: 'Dokumen berhasil ditambahkan',
+          variant: 'success',
+          hideDuration: 4000,
+          title: 'Dokumen ditambahkan',
+        });
+      }} />
+      <DeleteDocumentModal isOpen={isDeleteDocOpen} onClose={() => setDeleteDocOpen(false)} document={selectedDoc} onSuccess={() => {fetch();
+        addNotification({
+          description: 'Dokumen berhasil dihapus',
+          variant: 'success',
+          hideDuration: 4000,
+          title: 'Dokumen dihapus',
+        });
+      }} />
+      <EditDetailCompany isOpen={isEditOpen} onClose={() => setEditOpen(false)} company={company} onSuccess={() => {fetch();
+        addNotification({
+          description: 'Perusahaan berhasil diupdate',
+          variant: 'success',
+          hideDuration: 4000,
+          title: 'Perusahaan diupdate',
+        });
+      }} />
     </div>
   );
 };

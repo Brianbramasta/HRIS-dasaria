@@ -142,6 +142,7 @@ class ApiService {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public async patch<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
     const response = await this.instance.patch(url, data, config);
+    // const response = {data:{}}
     return response.data;
   }
 

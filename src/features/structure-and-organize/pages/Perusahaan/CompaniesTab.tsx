@@ -8,6 +8,7 @@ import type { Company } from '../../types/organization.types';
 import AddCompanyModal from '../../components/modals/Perusahaan/AddCompanyModal';
 import EditCompanyModal from '../../components/modals/Perusahaan/EditCompanyModal';
 import DeleteCompanyModal from '../../components/modals/Perusahaan/DeleteCompanyModal';
+import { addNotification } from '@/stores/notificationStore';
 
 type Props = { resetKey: string };
 
@@ -93,19 +94,40 @@ export default function CompaniesTab({ resetKey }: Props) {
     <AddCompanyModal
       isOpen={isAddOpen}
       onClose={() => setAddOpen(false)}
-      onSuccess={() => fetchCompanies()}
+      onSuccess={() => {fetchCompanies();
+        addNotification({
+          description: 'Perusahaan berhasil ditambahkan',
+          variant: 'success',
+          hideDuration: 4000,
+          title: 'Perusahaan ditambahkan',
+        });
+      }}
     />
     <EditCompanyModal
       isOpen={isEditOpen}
       onClose={() => { setEditOpen(false); setSelectedCompany(null); }}
       company={selectedCompany}
-      onSuccess={() => fetchCompanies()}
+      onSuccess={() => {fetchCompanies();
+        addNotification({
+          description: 'Perusahaan berhasil diubah',
+          variant: 'success',
+          hideDuration: 4000,
+          title: 'Perusahaan diubah',
+        });
+      }}
     />
     <DeleteCompanyModal
       isOpen={isDeleteOpen}
       onClose={() => { setDeleteOpen(false); setSelectedCompany(null); }}
       company={selectedCompany || undefined}
-      onSuccess={() => fetchCompanies()}
+      onSuccess={() => {fetchCompanies();
+        addNotification({
+          description: 'Perusahaan berhasil dihapus',
+          variant: 'success',
+          hideDuration: 4000,
+          title: 'Perusahaan dihapus',
+        });
+      }}
     />
     </div>
   );

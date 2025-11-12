@@ -8,6 +8,7 @@ import type { Office } from '../../types/organization.types';
 import AddOfficeModal from '../../components/modals/Kantor/AddOfficeModal';
 import EditOfficeModal from '../../components/modals/Kantor/EditOfficeModal';
 import DeleteOfficeModal from '../../components/modals/Kantor/DeleteOfficeModal';
+import { addNotification } from '@/stores/notificationStore';
 
 type Props = { resetKey: string };
 
@@ -78,19 +79,40 @@ export default function OfficesTab({ resetKey }: Props) {
     <AddOfficeModal
       isOpen={addModal.isOpen}
       onClose={addModal.closeModal}
-      onSuccess={() => fetchOffices()}
+      onSuccess={() => {fetchOffices();
+        addNotification({
+          description: 'Kantor berhasil ditambahkan',
+          variant: 'success',
+          hideDuration: 4000,
+          title: 'Kantor ditambahkan',
+        });
+      }}
     />
     <EditOfficeModal
       isOpen={editModal.isOpen}
       onClose={() => { editModal.closeModal(); setSelected(null); }}
       office={selected}
-      onSuccess={() => fetchOffices()}
+      onSuccess={() => {fetchOffices();
+        addNotification({
+          description: 'Kantor berhasil diupdate',
+          variant: 'success',
+          hideDuration: 4000,
+          title: 'Kantor diupdate',
+        });
+      }}
     />
     <DeleteOfficeModal
       isOpen={deleteModal.isOpen}
       onClose={() => { deleteModal.closeModal(); setSelected(null); }}
       office={selected}
-      onSuccess={() => fetchOffices()}
+      onSuccess={() => {fetchOffices();
+        addNotification({
+          description: 'Kantor berhasil dihapus',
+          variant: 'success',
+          hideDuration: 4000,
+          title: 'Kantor dihapus',
+        });
+      }}
     />
     </>
   );

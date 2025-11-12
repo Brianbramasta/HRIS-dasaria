@@ -9,6 +9,8 @@ import AddDirectorateModal from '../../components/modals/Direktorat/AddDirectora
 import EditDirectorateModal from '../../components/modals/Direktorat/EditDirectorateModal';
 import DeleteDirectorateModal from '../../components/modals/Direktorat/DeleteDirectorateModal';
 
+import { addNotification } from '@/stores/notificationStore';
+
 type Props = { resetKey: string };
 
 const directorateColumns: DataTableColumn<DirectorateRow>[] = [
@@ -78,19 +80,46 @@ export default function DirectoratesTab({ resetKey }: Props) {
     <AddDirectorateModal
       isOpen={addModal.isOpen}
       onClose={addModal.closeModal}
-      onSuccess={() => fetchDirectorates()}
+      onSuccess={() => {
+        fetchDirectorates();
+        addModal.closeModal();
+        addNotification({
+          description: 'Direktorat berhasil ditambahkan',
+          variant: 'success',
+          hideDuration: 4000,
+          title: 'Direktorat ditambahkan',
+        });
+      }}
     />
     <EditDirectorateModal
       isOpen={editModal.isOpen}
       onClose={() => { editModal.closeModal(); setSelected(null); }}
       directorate={selected}
-      onSuccess={() => fetchDirectorates()}
+      onSuccess={() => {
+        fetchDirectorates();
+        editModal.closeModal();
+        addNotification({
+          description: 'Direktorat berhasil diupdate',
+          variant: 'success',
+          hideDuration: 4000,
+          title: 'Direktorat diupdate',
+        });
+      }}
     />
     <DeleteDirectorateModal
       isOpen={deleteModal.isOpen}
       onClose={() => { deleteModal.closeModal(); setSelected(null); }}
       directorate={selected}
-      onSuccess={() => fetchDirectorates()}
+      onSuccess={() => {
+        fetchDirectorates();
+        deleteModal.closeModal();
+        addNotification({
+          description: 'Direktorat berhasil dihapus',
+          variant: 'success',
+          hideDuration: 4000,
+          title: 'Direktorat dihapus',
+        });
+      }}
     />
     </>
   );

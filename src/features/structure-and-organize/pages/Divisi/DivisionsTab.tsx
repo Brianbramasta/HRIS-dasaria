@@ -8,6 +8,7 @@ import { useModal } from '../../../../hooks/useModal';
 import AddDivisionModal from '../../components/modals/Divisi/AddDivisionModal';
 import EditDivisionModal from '../../components/modals/Divisi/EditDivisionModal';
 import DeleteDivisionModal from '../../components/modals/Divisi/DeleteDivisionModal';
+import { addNotification } from '@/stores/notificationStore';
 
 type Props = { resetKey: string };
 
@@ -81,19 +82,46 @@ export default function DivisionsTab({ resetKey }: Props) {
     <AddDivisionModal
       isOpen={addModal.isOpen}
       onClose={addModal.closeModal}
-      onSuccess={() => fetchDivisions()}
+      onSuccess={() => {
+        fetchDivisions();
+        addModal.closeModal();
+        addNotification({
+          description: 'Divisi berhasil ditambahkan',
+          variant: 'success',
+          hideDuration: 4000,
+          title: 'Divisi ditambahkan',
+        });
+      }}
     />
     <EditDivisionModal
       isOpen={editModal.isOpen}
       onClose={() => { editModal.closeModal(); setSelected(null); }}
       division={selected}
-      onSuccess={() => fetchDivisions()}
+      onSuccess={() => {
+        fetchDivisions();
+        editModal.closeModal();
+        addNotification({
+          description: 'Divisi berhasil diupdate',
+          variant: 'success',
+          hideDuration: 4000,
+          title: 'Divisi diupdate',
+        });
+      }}
     />
     <DeleteDivisionModal
       isOpen={deleteModal.isOpen}
       onClose={() => { deleteModal.closeModal(); setSelected(null); }}
       division={selected}
-      onSuccess={() => fetchDivisions()}
+      onSuccess={() => {
+        fetchDivisions();
+        deleteModal.closeModal();
+        addNotification({
+          description: 'Divisi berhasil dihapus',
+          variant: 'success',
+          hideDuration: 4000,
+          title: 'Divisi dihapus',
+        });
+      }}
     />
     </>
   );

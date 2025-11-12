@@ -9,6 +9,8 @@ import AddDepartmentModal from '../../components/modals/Departemen/AddDepartment
 import EditDepartmentModal from '../../components/modals/Departemen/EditDepartmentModal';
 import DeleteDepartmentModal from '../../components/modals/Departemen/DeleteDepartmentModal';
 
+import { addNotification } from '@/stores/notificationStore';
+
 type Props = { resetKey: string };
 
 const departmentColumns: DataTableColumn<DepartmentRow>[] = [
@@ -76,19 +78,46 @@ export default function DepartmentsTab({ resetKey }: Props) {
     <AddDepartmentModal
       isOpen={addModal.isOpen}
       onClose={addModal.closeModal}
-      onSuccess={() => fetchDepartments()}
+      onSuccess={() => {
+        fetchDepartments();
+        addModal.closeModal();
+        addNotification({
+          description: 'Departemen berhasil ditambahkan',
+          variant: 'success',
+          hideDuration: 4000,
+          title: 'Departemen ditambahkan',
+        });
+      }}
     />
     <EditDepartmentModal
       isOpen={editModal.isOpen}
       onClose={() => { editModal.closeModal(); setSelected(null); }}
       department={selected}
-      onSuccess={() => fetchDepartments()}
+      onSuccess={() => {
+        fetchDepartments();
+        editModal.closeModal();
+        addNotification({
+          description: 'Departemen berhasil diupdate',
+          variant: 'success',
+          hideDuration: 4000,
+          title: 'Departemen diupdate',
+        });
+      }}
     />
     <DeleteDepartmentModal
       isOpen={deleteModal.isOpen}
       onClose={() => { deleteModal.closeModal(); setSelected(null); }}
       department={selected}
-      onSuccess={() => fetchDepartments()}
+      onSuccess={() => {
+        fetchDepartments();
+        deleteModal.closeModal();
+        addNotification({
+          description: 'Departemen berhasil dihapus',
+          variant: 'success',
+          hideDuration: 4000,
+          title: 'Departemen dihapus',
+        });
+      }}
     />
     </>
   );

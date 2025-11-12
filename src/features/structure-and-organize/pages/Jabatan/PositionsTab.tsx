@@ -8,6 +8,7 @@ import { AddPositionModal } from '../../components/modals/Jabatan/AddPositionMod
 import { EditPositionModal } from '../../components/modals/Jabatan/EditPositionModal';
 import { DeletePositionModal } from '../../components/modals/Jabatan/DeletePositionModal';
 import { Position } from '../../types/organization.types';
+import { addNotification } from '@/stores/notificationStore';
 
 type Props = { resetKey: string };
 
@@ -104,6 +105,12 @@ export default function PositionsTab({ resetKey }: Props) {
         onSuccess={() => {
           fetchPositions();
           addModal.closeModal();
+          addNotification({
+            description: 'Jabatan berhasil ditambahkan',
+            variant: 'success',
+            hideDuration: 4000,
+            title: 'Jabatan ditambahkan',
+          });
         }}
       />
       <EditPositionModal
@@ -112,6 +119,12 @@ export default function PositionsTab({ resetKey }: Props) {
         onSuccess={() => {
           fetchPositions();
           editModal.closeModal();
+          addNotification({
+            description: 'Jabatan berhasil diupdate',
+            variant: 'success',
+            hideDuration: 4000,
+            title: 'Jabatan diupdate',
+          });
         }}
         position={selected}
       />
@@ -121,6 +134,12 @@ export default function PositionsTab({ resetKey }: Props) {
         onSuccess={() => {
           fetchPositions();
           deleteModal.closeModal();
+          addNotification({
+            description: 'Jabatan berhasil dihapus',
+            variant: 'success',
+            hideDuration: 4000,
+            title: 'Jabatan dihapus',
+          });
         }}
         position={selected}
       />
