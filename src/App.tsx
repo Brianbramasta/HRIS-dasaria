@@ -1,12 +1,19 @@
 import { BrowserRouter as Router } from "react-router";
+import { useEffect } from "react";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import AppRoutes from "./routes/AppRoutes";
 import Notification from "./components/ui/notification/Notfication";
 import { useNotificationStore, removeNotification } from "./stores/notificationStore";
 import type { AppNotification } from "./stores/notificationStore";
+import { useAuthStore } from "./features/auth/stores/authStore";
 
 export default function App() {
   const notifications = useNotificationStore((s) => s.notifications);
+  const hydrate = useAuthStore((s) => s.hydrate);
+
+  useEffect(() => {
+    hydrate();
+  }, [hydrate]);
 
   return (
     <>

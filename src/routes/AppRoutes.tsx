@@ -79,94 +79,100 @@ import PerpanjanganKontrak from "../features/staff/pages/perpanjangan-kontrak";
 
 // Auth Feature Pages
 import { LoginPage, ForgotPasswordPage } from "../features/auth/pages";
+import ProtectedOutlet from "../features/auth/components/ProtectedOutlet";
 
 export default function AppRoutes() {
   return (
     <Routes>
       {/* Dashboard Layout */}
       <Route element={<AppLayout />}>
-        <Route index path="/" element={<Ecommerce />} />
-        <Route path="/structure-and-organize" element={<StructureAndOrganize />}>
-          <Route path="business-lines" element={<BusinessLinesTab resetKey="business-lines" />} />
-          <Route path="business-lines/:id" element={<DetailLiniBisnis />} />
-          <Route path="companies" element={<CompaniesTab resetKey="companies" />} />
-          <Route path="companies/:id" element={<DetailPerusahaan />} />
-          <Route path="offices" element={<OfficesTab resetKey="offices" />} />
-          <Route path="directorates" element={<DirectoratesTab resetKey="directorates" />} />
-          <Route path="divisions" element={<DivisionsTab resetKey="divisions" />} />
-          <Route path="departments" element={<DepartmentsTab resetKey="departments" />} />
-          <Route path="positions" element={<PositionsTab resetKey="positions" />} />
-          <Route path="employee-positions" element={<EmployeePositionsTab resetKey="employee-positions" />} />
+        {/* Public route: pendaftaran karyawan baru */}
+        <Route path="/data-karyawan/pendaftaran" element={<PendaftaranKaryawanBaru />} />
+
+        {/* Protected routes */}
+        <Route element={<ProtectedOutlet />}> 
+          <Route index path="/" element={<Ecommerce />} />
+          <Route path="/structure-and-organize" element={<StructureAndOrganize />}>
+            <Route path="business-lines" element={<BusinessLinesTab resetKey="business-lines" />} />
+            <Route path="business-lines/:id" element={<DetailLiniBisnis />} />
+            <Route path="companies" element={<CompaniesTab resetKey="companies" />} />
+            <Route path="companies/:id" element={<DetailPerusahaan />} />
+            <Route path="offices" element={<OfficesTab resetKey="offices" />} />
+            <Route path="directorates" element={<DirectoratesTab resetKey="directorates" />} />
+            <Route path="divisions" element={<DivisionsTab resetKey="divisions" />} />
+            <Route path="departments" element={<DepartmentsTab resetKey="departments" />} />
+            <Route path="positions" element={<PositionsTab resetKey="positions" />} />
+            <Route path="employee-positions" element={<EmployeePositionsTab resetKey="employee-positions" />} />
+          </Route>
+          <Route path="/data-karyawan" element={<DataKaryawan />} />
+          <Route path="/data-karyawan/form" element={<FormulirKaryawanPage />} />
+          <Route path="/pengunduran-diri" element={<PengunduranDiri />} />
+          <Route path="/pengunduran-diri/form" element={<FormResignPage />} />
+          <Route path="/pengunduran-diri/:id" element={<DetailPengunduranDiriPage />} />
+          <Route path="/perpanjangan-kontrak" element={<PerpanjanganKontrak />} />
+          <Route path="/analytics" element={<Analytics />} />
+          <Route path="/marketing" element={<Marketing />} />
+          <Route path="/crm" element={<Crm />} />
+          <Route path="/stocks" element={<Stocks />} />
+          <Route path="/saas" element={<Saas />} />
+
+          {/* Others Page */}
+          <Route path="/profile" element={<UserProfiles />} />
+          <Route path="/calendar" element={<Calendar />} />
+          <Route path="/invoice" element={<Invoices />} />
+          <Route path="/faq" element={<Faqs />} />
+          <Route path="/pricing-tables" element={<PricingTables />} />
+          <Route path="/blank" element={<Blank />} />
+
+          {/* Forms */}
+          <Route path="/form-elements" element={<FormElements />} />
+          <Route path="/form-layout" element={<FormLayout />} />
+
+          {/* Applications */}
+          <Route path="/chat" element={<Chats />} />
+
+          <Route path="/task-list" element={<TaskList />} />
+          <Route path="/task-kanban" element={<TaskKanban />} />
+          <Route path="/file-manager" element={<FileManager />} />
+
+          {/* Email */}
+
+          <Route path="/inbox" element={<EmailInbox />} />
+          <Route path="/inbox-details" element={<EmailDetails />} />
+
+          {/* Tables */}
+          <Route path="/basic-tables" element={<BasicTables />} />
+          <Route path="/data-tables" element={<DataTables />} />
+
+          {/* Ui Elements */}
+          <Route path="/alerts" element={<Alerts />} />
+          <Route path="/avatars" element={<Avatars />} />
+          <Route path="/badge" element={<Badges />} />
+          <Route path="/breadcrumb" element={<BreadCrumb />} />
+          <Route path="/buttons" element={<Buttons />} />
+          <Route path="/buttons-group" element={<ButtonsGroup />} />
+          <Route path="/cards" element={<Cards />} />
+          <Route path="/carousel" element={<Carousel />} />
+          <Route path="/dropdowns" element={<Dropdowns />} />
+          <Route path="/images" element={<Images />} />
+          <Route path="/links" element={<Links />} />
+          <Route path="/list" element={<Lists />} />
+          <Route path="/modals" element={<Modals />} />
+          <Route path="/notifications" element={<Notifications />} />
+          <Route path="/pagination" element={<Pagination />} />
+          <Route path="/popovers" element={<Popovers />} />
+          <Route path="/progress-bar" element={<Progressbar />} />
+          <Route path="/ribbons" element={<Ribbons />} />
+          <Route path="/spinners" element={<Spinners />} />
+          <Route path="/tabs" element={<Tabs />} />
+          <Route path="/tooltips" element={<Tooltips />} />
+          <Route path="/videos" element={<Videos />} />
+
+          {/* Charts */}
+          <Route path="/line-chart" element={<LineChart />} />
+          <Route path="/bar-chart" element={<BarChart />} />
+          <Route path="/pie-chart" element={<PieChart />} />
         </Route>
-  <Route path="/data-karyawan" element={<DataKaryawan />} />
-  <Route path="/data-karyawan/pendaftaran" element={<PendaftaranKaryawanBaru />} />
-  <Route path="/data-karyawan/form" element={<FormulirKaryawanPage />} />
-        <Route path="/pengunduran-diri" element={<PengunduranDiri />} />
-        <Route path="/pengunduran-diri/form" element={<FormResignPage />} />
-        <Route path="/pengunduran-diri/:id" element={<DetailPengunduranDiriPage />} />
-        <Route path="/perpanjangan-kontrak" element={<PerpanjanganKontrak />} />
-        <Route path="/analytics" element={<Analytics />} />
-        <Route path="/marketing" element={<Marketing />} />
-        <Route path="/crm" element={<Crm />} />
-        <Route path="/stocks" element={<Stocks />} />
-        <Route path="/saas" element={<Saas />} />
-
-        {/* Others Page */}
-        <Route path="/profile" element={<UserProfiles />} />
-        <Route path="/calendar" element={<Calendar />} />
-        <Route path="/invoice" element={<Invoices />} />
-        <Route path="/faq" element={<Faqs />} />
-        <Route path="/pricing-tables" element={<PricingTables />} />
-        <Route path="/blank" element={<Blank />} />
-
-        {/* Forms */}
-        <Route path="/form-elements" element={<FormElements />} />
-        <Route path="/form-layout" element={<FormLayout />} />
-
-        {/* Applications */}
-        <Route path="/chat" element={<Chats />} />
-
-        <Route path="/task-list" element={<TaskList />} />
-        <Route path="/task-kanban" element={<TaskKanban />} />
-        <Route path="/file-manager" element={<FileManager />} />
-
-        {/* Email */}
-
-        <Route path="/inbox" element={<EmailInbox />} />
-        <Route path="/inbox-details" element={<EmailDetails />} />
-
-        {/* Tables */}
-        <Route path="/basic-tables" element={<BasicTables />} />
-        <Route path="/data-tables" element={<DataTables />} />
-
-        {/* Ui Elements */}
-        <Route path="/alerts" element={<Alerts />} />
-        <Route path="/avatars" element={<Avatars />} />
-        <Route path="/badge" element={<Badges />} />
-        <Route path="/breadcrumb" element={<BreadCrumb />} />
-        <Route path="/buttons" element={<Buttons />} />
-        <Route path="/buttons-group" element={<ButtonsGroup />} />
-        <Route path="/cards" element={<Cards />} />
-        <Route path="/carousel" element={<Carousel />} />
-        <Route path="/dropdowns" element={<Dropdowns />} />
-        <Route path="/images" element={<Images />} />
-        <Route path="/links" element={<Links />} />
-        <Route path="/list" element={<Lists />} />
-        <Route path="/modals" element={<Modals />} />
-        <Route path="/notifications" element={<Notifications />} />
-        <Route path="/pagination" element={<Pagination />} />
-        <Route path="/popovers" element={<Popovers />} />
-        <Route path="/progress-bar" element={<Progressbar />} />
-        <Route path="/ribbons" element={<Ribbons />} />
-        <Route path="/spinners" element={<Spinners />} />
-        <Route path="/tabs" element={<Tabs />} />
-        <Route path="/tooltips" element={<Tooltips />} />
-        <Route path="/videos" element={<Videos />} />
-
-        {/* Charts */}
-        <Route path="/line-chart" element={<LineChart />} />
-        <Route path="/bar-chart" element={<BarChart />} />
-        <Route path="/pie-chart" element={<PieChart />} />
       </Route>
 
       {/* Auth Layout */}

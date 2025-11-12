@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { authService } from '../services';
 import { LoginRequest } from '../types';
 import { ApiError } from '../../../services/api';
+import { useAuthStore } from '../stores/authStore';
 
 export const useLogin = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const setAuth = useAuthStore((s) => s.setAuth);
 
   const handleLogin = async (data: LoginRequest) => {
     try {
@@ -19,7 +21,7 @@ export const useLogin = () => {
       const intendedUrl = localStorage.getItem('intended_url') || '/';
       localStorage.removeItem('intended_url');
 
-      localStorage.setItem('user', JSON.stringify(response.user));
+      setAuth({ user: response.user, accessToken: response.accessToken, refreshToken: response.refreshToken });
 
       console.log('Login successful:', response);
 
