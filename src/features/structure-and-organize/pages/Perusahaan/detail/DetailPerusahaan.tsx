@@ -42,7 +42,7 @@ const DetailPerusahaan: React.FC = () => {
 
       // fetch documents from /documents?companyId=...
       try {
-        const docsRes = await apiService.get<any>(`/documents?companyId=${id}`);
+        const docsRes = await apiService.get<any>(`/files?ownerType=company&ownerId=${id}`);
         setDocuments(docsRes.data || []);
       } catch (e) {
         console.error('Failed to load documents for company', e);
@@ -88,7 +88,7 @@ const DetailPerusahaan: React.FC = () => {
         <div className="col-span-4  rounded-lg p-6 shadow-sm bg-[#F6F6F6]">
           <div className="flex flex-col items-center">
             <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center mb-4">{/* logo */}
-              <span className="text-3xl font-bold">{company?.name ? company.name[0] : 'C'}</span>
+              <span className="text-3xl font-bold"><img src={company?.logo || '/placeholder.svg'} alt='logo' className='w-full h-full object-cover rounded-full'/></span>
             </div>
             <h2 className="text-xl font-bold">{company?.name}</h2>
             <p className="text-sm text-gray-500">{company?.businessLineName}</p>
