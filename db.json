@@ -53,7 +53,7 @@
       "description": "...",
       "isActive": true,
       "id": "5QmDHWh",
-      "updatedAt": "2025-11-11T07:12:26.681Z"
+      "updatedAt": "2025-11-12T04:22:46.568Z"
     }
   ],
   "companies": [
@@ -452,67 +452,6 @@
       "isActive": true,
       "createdAt": "2024-01-01T00:00:00Z",
       "updatedAt": "2024-01-01T00:00:00Z"
-    }
-  ],
-  "documents": [
-    {
-      "id": "DOC001",
-      "companyId": "3",
-      "name": "Akta Pendirian Perusahaan (Update 2025)",
-      "docNumber": "AKTA-PTN/01/2025",
-      "fileName": "akta-pendirian-2025.pdf",
-      "size": "2.5 MB",
-      "type": "active",
-      "createdAt": "2025-01-15T00:00:00Z"
-    },
-    {
-      "id": "DOC002",
-      "companyId": "3",
-      "name": "Surat Izin Usaha Perdagangan",
-      "docNumber": "SIUP-PTN/001/2024",
-      "fileName": "siup-2024.pdf",
-      "size": "1.8 MB",
-      "type": "active",
-      "createdAt": "2024-03-10T00:00:00Z"
-    },
-    {
-      "id": "DOC003",
-      "companyId": "1",
-      "name": "Akta Pendirian Perusahaan (Update 2024)",
-      "docNumber": "AKTA-PTN/01/2024",
-      "fileName": "akta-pendirian-2024.pdf",
-      "size": "2.3 MB",
-      "type": "archive",
-      "createdAt": "2024-01-10T00:00:00Z"
-    },
-    {
-      "id": "DOC004",
-      "companyId": "1",
-      "name": "Laporan Keuangan 2023",
-      "docNumber": "LK-PTN/2023",
-      "fileName": "laporan-keuangan-2023.pdf",
-      "size": "3.1 MB",
-      "type": "archive",
-      "createdAt": "2024-02-28T00:00:00Z"
-    },
-    {
-      "id": "DOC005",
-      "companyId": "2",
-      "name": "Surat Keputusan Perubahan Struktur Organisasi",
-      "docNumber": "SK-PMG/STRUK/2024",
-      "fileName": "sk-struktur-org-2024.pdf",
-      "size": "1.2 MB",
-      "type": "active",
-      "createdAt": "2024-08-20T00:00:00Z"
-    },
-    {
-      "id": "1762836124529",
-      "companyId": "3",
-      "name": "test",
-      "docNumber": "cek",
-      "fileName": "",
-      "type": "active",
-      "createdAt": "2025-11-11T04:42:04.529Z"
     }
   ],
   "users": [
@@ -1122,10 +1061,110 @@
       "tanggalPengajuan": "23 Juli 2025",
       "alasan": "test",
       "status": "Pending",
-       "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Rain",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Rain",
       "createdAt": "2024-07-15T00:00:00Z",
       "updatedAt": "2024-07-20T00:00:00Z",
       "id": "50"
+    }
+  ],
+  "files": [
+    {
+      "id": "DOC001",
+      "ownerType": "company",
+      "ownerId": "3",
+      "name": "Akta Pendirian Perusahaan (Update 2025)",
+      "docNumber": "AKTA-PTN/01/2025",
+      "fileName": "akta-pendirian-2025.pdf",
+      "size": "2.5 MB",
+      "type": "active",
+      "createdAt": "2025-01-15T00:00:00Z"
+    },
+    {
+      "id": "DOC002",
+      "ownerType": "company",
+      "ownerId": "3",
+      "name": "Surat Izin Usaha Perdagangan",
+      "docNumber": "SIUP-PTN/001/2024",
+      "fileName": "siup-2024.pdf",
+      "size": "1.8 MB",
+      "type": "active",
+      "createdAt": "2024-03-10T00:00:00Z"
+    },
+    {
+      "id": "DOC003",
+      "ownerType": "company",
+      "ownerId": "1",
+      "name": "Akta Pendirian Perusahaan (Update 2024)",
+      "docNumber": "AKTA-PTN/01/2024",
+      "fileName": "akta-pendirian-2024.pdf",
+      "size": "2.3 MB",
+      "type": "archive",
+      "createdAt": "2024-01-10T00:00:00Z"
+    },
+    {
+      "id": "DOC004",
+      "ownerType": "company",
+      "ownerId": "1",
+      "name": "Laporan Keuangan 2023",
+      "docNumber": "LK-PTN/2023",
+      "fileName": "laporan-keuangan-2023.pdf",
+      "size": "3.1 MB",
+      "type": "archive",
+      "createdAt": "2024-02-28T00:00:00Z"
+    },
+    {
+      "id": "DOC005",
+      "ownerType": "company",
+      "ownerId": "2",
+      "name": "Surat Keputusan Perubahan Struktur Organisasi",
+      "docNumber": "SK-PMG/STRUK/2024",
+      "fileName": "sk-struktur-org-2024.pdf",
+      "size": "1.2 MB",
+      "type": "active",
+      "createdAt": "2024-08-20T00:00:00Z"
+    },
+    {
+      "id": "1762836124529",
+      "ownerType": "company",
+      "ownerId": "3",
+      "name": "test",
+      "docNumber": "cek",
+      "fileName": "",
+      "type": "active",
+      "createdAt": "2025-11-11T04:42:04.529Z"
+    },
+    {
+      "id": "FILE-BL-001",
+      "ownerType": "business-line",
+      "ownerId": "4",
+      "name": "SK Direktorat Keuangan",
+      "docNumber": "SK-FIN/2024",
+      "fileName": "sk-direktorat-keuangan.pdf",
+      "type": "active",
+      "size": "1.2 MB",
+      "createdAt": "2024-08-20T00:00:00Z"
+    },
+    {
+      "id": "FILE-BL-002",
+      "ownerType": "business-line",
+      "ownerId": "1",
+      "name": "Memo Internal",
+      "docNumber": "MEMO-FIN/2024-09",
+      "fileName": "memo-internal.pdf",
+      "type": "archive",
+      "size": "560 KB",
+      "createdAt": "2024-09-12T00:00:00Z"
+    },
+    {
+      "id": "FILE-CMP-001",
+      "ownerType": "company",
+      "ownerId": "1",
+      "name": "Akta Perubahan 2025",
+      "docNumber": "AKTA-POS/2025",
+      "fileName": "akta-perubahan-2025.pdf",
+      "type": "active",
+      "size": "2.5 MB",
+      "createdAt": "2025-01-15T00:00:00Z"
     }
   ]
 }
