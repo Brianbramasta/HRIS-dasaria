@@ -71,6 +71,7 @@ import EmployeePositionsTab from "../features/structure-and-organize/pages/Posis
 import DetailLiniBisnis from "../features/structure-and-organize/pages/LiniBisnis/DetailLiniBisnis";
 import DetailPerusahaan from "../features/structure-and-organize/pages/Perusahaan/detail/DetailPerusahaan";
 import DataKaryawanIndexPage from "../features/staff/pages/data-karyawan/indexPage";
+import DetailKaryawanPage from "../features/staff/pages/data-karyawan/detail/detailPage";
 import FormulirKaryawanPage from "../features/staff/pages/data-karyawan/FormulirKaryawanPage";
 import PendaftaranKaryawanBaru from "../features/staff/pages/data-karyawan/PendaftaranKaryawanBaru";
 import PengunduranDiri from "../features/staff/pages/pengunduran-diri/pengunduran-diri";
@@ -107,6 +108,7 @@ export default function AppRoutes() {
           <Route path="employee-positions" element={<EmployeePositionsTab resetKey="employee-positions" />} />
           </Route>
           <Route path="/data-karyawan" element={<DataKaryawanIndexPage />} />
+          <Route path="/data-karyawan/:id" element={<DetailKaryawanPage />} />
           <Route path="/data-karyawan/perpanjangan-kontrak" element={<PerpanjanganKontrak />} />
           
           <Route path="/pengunduran-diri" element={<PengunduranDiri />} />

@@ -29,7 +29,7 @@ class KaryawanService {
    * Fetch karyawan berdasarkan ID
    */
   async getKaryawanById(id: string): Promise<ApiResponse<Karyawan>> {
-    return apiService.get<Karyawan>(`${this.baseUrl}/${id}`);
+    return apiService.get<Karyawan>(`${this.baseUrl}?id=${id}`);
   }
 
   /**

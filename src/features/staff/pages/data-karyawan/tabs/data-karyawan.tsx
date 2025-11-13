@@ -181,8 +181,7 @@ export default function DataKaryawanPage() {
       label: 'Lihat Detail',
       icon: <Eye size={16} />,
       onClick: (row) => {
-        setSelectedKaryawan(row);
-        setShowDetailModal(true);
+        navigate(`/data-karyawan/${row.idKaryawan}?mode=view`);
       },
       variant: 'outline',
       color: 'info',
@@ -191,8 +190,7 @@ export default function DataKaryawanPage() {
       label: 'Edit',
       icon: <Edit2 size={16} />,
       onClick: (row) => {
-        console.log('Edit karyawan:', row);
-        // TODO: Navigate to edit page or open edit modal
+        navigate(`/data-karyawan/${row.idKaryawan}?mode=edit`);
       },
       variant: 'outline',
       color: 'warning',
