@@ -7,6 +7,7 @@ import FileInput from '../shared/field/FileInput';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 import { useFileStore } from '@/stores/fileStore';
+import { addNotification } from '@/stores/notificationStore';
 
 interface AddBusinessLineModalProps {
   isOpen: boolean;
@@ -22,11 +23,23 @@ const AddBusinessLineModal: React.FC<AddBusinessLineModalProps> = ({ isOpen, onC
   const [submitting, setSubmitting] = useState(false);
 
   const handleFileChange = (_e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(_e)
     // metadata file dikelola oleh FileInput melalui store
   };
 
   const handleSubmit = async () => {
     if (!name.trim()) return;
+    // Jika file wajib diunggah, blokir submit bila belum ada
+    if (!skFile?.name) {
+        console.log('skFile2', skFile)
+        addNotification({
+          variant: 'error',
+          title: 'Lini Bisnis tidak ditambahkan',
+          description: 'File Wajib di isi',
+          hideDuration: 4000,
+        });
+      return 
+      }
     setSubmitting(true);
     try {
       const created = await businessLineService.create({
@@ -64,6 +77,7 @@ const AddBusinessLineModal: React.FC<AddBusinessLineModalProps> = ({ isOpen, onC
           <Input
             type="text"
             value={name}
+            required
             onChange={(e) => setName(e.target.value)}
             className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
             placeholder=""
@@ -75,6 +89,7 @@ const AddBusinessLineModal: React.FC<AddBusinessLineModalProps> = ({ isOpen, onC
           <Input
             type="text"
             value={memoNumber}
+            required
             onChange={(e) => setMemoNumber(e.target.value)}
             className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
             placeholder=""
@@ -86,6 +101,7 @@ const AddBusinessLineModal: React.FC<AddBusinessLineModalProps> = ({ isOpen, onC
         
           <TextArea
             value={description}
+            required
             onChange={(e) => setDescription(e)}
             className="w-full min-h-28 rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
             placeholder="Enter as description ..."

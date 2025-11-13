@@ -26,7 +26,7 @@ export default function App() {
       </Router>
 
       {/* Global notification container so pages don't need to render it */}
-      <div className="fixed right-4 top-24 flex flex-col gap-3 z-[9999] bg-white">
+      <div className="fixed right-4 top-24 flex flex-col gap-3 z-[999999999] bg-white">
         {notifications.map((n: AppNotification) => (
           <Notification
             key={n.id}

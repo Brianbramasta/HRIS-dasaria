@@ -9,6 +9,7 @@ import TextArea from '@/components/form/input/TextArea';
 // import { error } from 'console';
 import { useFileStore } from '@/stores/fileStore';
 import { fileService } from '@/services/file.service';
+import { addNotification } from '@/stores/notificationStore';
 
 
 
@@ -45,7 +46,22 @@ const EditBusinessLineModal: React.FC<EditBusinessLineModalProps> = ({ isOpen, o
   };
 
   const handleSubmit = async () => {
+    
     if (!businessLine) return;
+  
+    // Jika file wajib diunggah, blokir submit bila belum ada
+    console.log('skFile', skFile)
+    if (!skFile?.name) {
+    console.log('skFile2', skFile)
+    addNotification({
+      variant: 'error',
+      title: 'Lini Bisnis tidak ditambahkan',
+      description: 'File Wajib di isi',
+      hideDuration: 4000,
+    });
+      // optional: bisa menambahkan notifikasi di sini
+      return;
+    }
     setSubmitting(true);
     try {
       const updated = await Promise.all([
@@ -91,6 +107,7 @@ const EditBusinessLineModal: React.FC<EditBusinessLineModalProps> = ({ isOpen, o
           <Input
             type="text"
             value={name}
+            required
             onChange={(e) => setName(e.target.value)}
             className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
             placeholder=""
@@ -102,6 +119,7 @@ const EditBusinessLineModal: React.FC<EditBusinessLineModalProps> = ({ isOpen, o
           <Input
             type="text"
             value={memoNumber}
+            required
             onChange={(e) => setMemoNumber(e.target.value)}
             className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
             placeholder=""
@@ -113,6 +131,7 @@ const EditBusinessLineModal: React.FC<EditBusinessLineModalProps> = ({ isOpen, o
          
           <TextArea
             value={description}
+            required={true}
             onChange={(e) => setDescription(e)}
             className="w-full min-h-28 rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
             placeholder="Enter as description ..."
@@ -122,6 +141,7 @@ const EditBusinessLineModal: React.FC<EditBusinessLineModalProps> = ({ isOpen, o
         <FileInput 
           onChange={handleFileChange}
           skFileName={skFile?.name || businessLine?.skFile || ''}
+         
         />
 
         </>}

@@ -4,6 +4,8 @@ import { businessLineService } from '../../../services/organization.service';
 import { BusinessLine } from '../../../types/organization.types';
 import ModalDelete from '../shared/modal/ModalDelete';
 import FileInput from '../shared/field/FileInput';
+import { addNotification } from '@/stores/notificationStore';
+import Input from '@/components/form/input/InputField';
 
 interface DeleteBusinessLineModalProps {
   isOpen: boolean;
@@ -24,6 +26,14 @@ const DeleteBusinessLineModal: React.FC<DeleteBusinessLineModalProps> = ({ isOpe
 
   const handleDelete = async () => {
     if (!businessLine) return;
+    if (!skFileName) {
+      addNotification({
+        variant: 'error',
+        title: 'Lini Bisnis tidak ditambahkan',
+        description: 'File Wajib di isi',
+        hideDuration: 4000,
+      });
+      return};
     setSubmitting(true);
     try {
       await businessLineService.delete(businessLine.id);
@@ -45,10 +55,11 @@ const DeleteBusinessLineModal: React.FC<DeleteBusinessLineModalProps> = ({ isOpe
       content={<>
       <div className="space-y-2">
           <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
-          <input
+          <Input
             type="text"
+            required
             value={businessLine?.memoFile || ''}
-            disabled
+            
             className="w-full rounded-xl border border-gray-300 bg-gray-100 px-4 py-3"
           />
         </div>

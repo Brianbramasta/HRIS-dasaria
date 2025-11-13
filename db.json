@@ -35,9 +35,9 @@
       "description": "Divisi yang mengelola keuangan dan akuntansi perusahaan",
       "isActive": true,
       "createdAt": "2024-01-01T00:00:00Z",
-      "updatedAt": "2025-11-11T12:04:33.154Z",
+      "updatedAt": "2025-11-13T01:02:01.001Z",
       "memoFile": "sss",
-      "skFile": "bef7334e1cc3c5a5559687d0bff230aaea4f1e27.png"
+      "skFile": "sk-direktorat-keuangan.pdf"
     },
     {
       "id": "5",
@@ -49,13 +49,14 @@
       "updatedAt": "2024-01-01T00:00:00Z"
     },
     {
-      "name": "Keuangan",
+      "name": "Internet Server Provider",
       "code": "FIN",
-      "description": "...",
+      "description": "aa",
       "isActive": true,
       "id": "5QmDHWh",
-      "updatedAt": "2025-11-12T14:55:36.358Z",
-      "skFile": "mhw4gt4i_u6bs82.jpeg"
+      "updatedAt": "2025-11-13T01:12:59.337Z",
+      "skFile": "mhwqc1yf_rmg07u.jpg",
+      "memoFile": "aaaa"
     }
   ],
   "companies": [
@@ -1201,19 +1202,6 @@
       "createdAt": "2025-01-15T00:00:00Z"
     },
     {
-      "name": "mhw4gt4i_u6bs82.jpeg",
-      "fileName": "mhw4gt4i_u6bs82.jpeg",
-      "ownerType": "business-line",
-      "ownerId": "5QmDHWh",
-      "docNumber": "",
-      "type": "Active",
-      "filePath": "/src/documents/mhw4gt4i_u6bs82.jpeg",
-      "size": 56377,
-      "id": "1762959336359",
-      "createdAt": "2025-11-12T14:55:36.359Z",
-      "updatedAt": "2025-11-12T14:55:36.359Z"
-    },
-    {
       "name": "mhwoaqpp_eeizdi.jpg",
       "fileName": "mhwoaqpp_eeizdi.jpg",
       "ownerType": "business-line",
@@ -1252,6 +1240,61 @@
       "id": "1762993485272",
       "createdAt": "2025-11-13T00:24:45.272Z",
       "updatedAt": "2025-11-13T00:24:45.272Z"
+    },
+    {
+      "name": "sk-direktorat-keuangan.pdf",
+      "fileName": "sk-direktorat-keuangan.pdf",
+      "ownerType": "business-line",
+      "ownerId": "4",
+      "docNumber": "sss",
+      "type": "Active",
+      "filePath": "https://example.com/sk-direktorat-keuangan.pdf",
+      "size": "1.2 MB",
+      "id": "1762995721001",
+      "createdAt": "2025-11-13T01:02:01.001Z",
+      "updatedAt": "2025-11-13T01:02:01.001Z"
+    },
+    {
+      "name": "mhwqc1yf_rmg07u.jpg",
+      "fileName": "mhwqc1yf_rmg07u.jpg",
+      "ownerType": "business-line",
+      "ownerId": "5QmDHWh",
+      "docNumber": "aaaa",
+      "type": "Active",
+      "filePath": "/src/documents/mhwqc1yf_rmg07u.jpg",
+      "fileType": "image/jpeg",
+      "size": 1943005,
+      "id": "1762996073697",
+      "createdAt": "2025-11-13T01:07:53.697Z",
+      "updatedAt": "2025-11-13T01:07:53.697Z"
+    },
+    {
+      "name": "mhwqc1yf_rmg07u.jpg",
+      "fileName": "mhwqc1yf_rmg07u.jpg",
+      "ownerType": "business-line",
+      "ownerId": "5QmDHWh",
+      "docNumber": "aaaa",
+      "type": "Active",
+      "filePath": "/src/documents/mhwqc1yf_rmg07u.jpg",
+      "fileType": "image/jpeg",
+      "size": 1943005,
+      "id": "1762996078775",
+      "createdAt": "2025-11-13T01:07:58.775Z",
+      "updatedAt": "2025-11-13T01:07:58.775Z"
+    },
+    {
+      "name": "mhwqc1yf_rmg07u.jpg",
+      "fileName": "mhwqc1yf_rmg07u.jpg",
+      "ownerType": "business-line",
+      "ownerId": "5QmDHWh",
+      "docNumber": "aaaa",
+      "type": "Active",
+      "filePath": "/src/documents/mhwqc1yf_rmg07u.jpg",
+      "fileType": "image/jpeg",
+      "size": 1943005,
+      "id": "1762996379337",
+      "createdAt": "2025-11-13T01:12:59.337Z",
+      "updatedAt": "2025-11-13T01:12:59.337Z"
     }
   ]
 }

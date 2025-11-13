@@ -18,11 +18,12 @@ const DeleteOfficeModal: React.FC<DeleteOfficeModalProps> = ({ content, isOpen, 
     <Modal isOpen={isOpen} onClose={onClose} className="max-w-3xl p-6 zoom-50 dark:text-white" showCloseButton>
       <div className="space-y-6">
         <HeaderModalDelete/>
+        <form onSubmit={(e) => {e.preventDefault(); onClose?.()}}>
 
         {content}
 
         <div className="flex justify-end gap-3">
-          <button onClick={onClose} className="rounded-xl border px-5 py-2">Close</button>
+          <button type='submit' className="rounded-xl border px-5 py-2">Close</button>
           <button
             onClick={handleDelete}
             disabled={submitting}
@@ -31,6 +32,7 @@ const DeleteOfficeModal: React.FC<DeleteOfficeModalProps> = ({ content, isOpen, 
             Delete
           </button>
         </div>
+        </form>
       </div>
     </Modal>
   );
