@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import TabWithUnderline from '../../../../../components/ui/tabs/TabWithUnderline';
-import Button from '../../../../../components/ui/button/Button';
+// import Button from '../../../../../components/ui/button/Button';
 import { karyawanService } from '../../../../staff/services/karyawanService';
 import type { Karyawan } from '../../../../staff/types/Karyawan';
 import PesonalInformationTab from './tab/pesonalInformation';
@@ -87,13 +87,15 @@ export default function DetailKaryawanPage() {
               className="h-12 w-12 rounded-full"
             />
             <div>
-              <div className="text-base font-semibold">{data.name}</div>
-              <div className="text-sm text-gray-500">{data.posisi} | {data.company}</div>
+              <div className="text-base font-semibold">{data.name || 'Megawati'}</div>
+              <div className="text-sm text-gray-500">{data.posisi || 'Staff'} | {data.company || 'PT. Dasaria Indonesia'}</div>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm">Bagikan</Button>
-            <Button variant="primary" size="sm">Ekspor</Button>
+            <button ><img src='/images/icons/sosial-media/x.svg'/></button>
+            <button ><img src='/images/icons/sosial-media/linkedin.svg'/></button>
+            <button ><img src='/images/icons/sosial-media/facebook.svg'/></button>
+            <button ><img src='/images/icons/sosial-media/instagram.svg'/></button>
           </div>
         </div>
       </div>
