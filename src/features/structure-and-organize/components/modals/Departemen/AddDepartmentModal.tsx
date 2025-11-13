@@ -6,6 +6,7 @@ import FileInput from '../shared/field/FileInput';
 import ModalAddEdit from '../shared/modal/modalAddEdit';
 import Input from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
+import { addNotification } from '@/stores/notificationStore';
 
 interface AddDepartmentModalProps {
   isOpen: boolean;
@@ -49,6 +50,16 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ isOpen, onClose
 
   const handleSubmit = async () => {
     setSubmitting(true);
+    if (!skFile) {
+      addNotification({
+        variant: 'error',
+        title: 'Surat Keputusan tidak ditambahkan',
+        description: 'File Wajib di isi',
+        hideDuration: 4000,
+      });
+      setSubmitting(false);
+      return;
+    }
     try {
       await departmentService.create({
         name,
@@ -77,6 +88,7 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ isOpen, onClose
           <label className="text-sm font-medium">Nama Departemen</label>
           <Input
             type="text"
+            required
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
@@ -87,6 +99,7 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ isOpen, onClose
           <label className="text-sm font-medium">Divisi</label>
           
           <Select
+          required
             options={divisions.map((d) => ({ value: d.id, label: d.name }))}
             onChange={(e) => setDivisionId(e)}
             className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
@@ -96,6 +109,7 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ isOpen, onClose
         <div className="space-y-2">
           <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
           <Input
+          required
             type="text"
             value={memoNumber}
             onChange={(e) => setMemoNumber(e.target.value)}

@@ -5,6 +5,7 @@ import { Position } from "../../../types/organization.types";
 import FileInput from "../shared/field/FileInput";
 
 import Input from "@/components/form/input/InputField";
+import { addNotification } from "@/stores/notificationStore";
 
 type Props = {
   isOpen: boolean;
@@ -55,6 +56,15 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!position) return;
+    if (!formData.skFile) {
+      addNotification({
+        variant: 'error',
+        title: 'Jabatan tidak diupdate',
+        description: 'File Wajib di isi',
+        hideDuration: 4000,
+      });
+      return;
+    }
 
     setIsLoading(true);
     try {
@@ -134,6 +144,7 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
               Bawahan Langsung
             </label>
             <Input
+              required
               type="text"
               name="directSubordinates"
               id="directSubordinates"
@@ -151,6 +162,7 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
               No. Surat Keputusan / Memo Internal
             </label>
             <Input
+              required
               type="text"
               name="memoNumber"
               id="memoNumber"
@@ -168,6 +180,7 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
               Deskripsi Tugas
             </label>
             <textarea
+              required
               name="jobDescription"
               id="jobDescription"
               rows={4}

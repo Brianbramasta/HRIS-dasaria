@@ -4,6 +4,7 @@ import { departmentService } from '../../../services/organization.service';
 import type { Department } from '../../../types/organization.types';
 import FileInput from '../shared/field/FileInput';
 import ModalDelete from '../shared/modal/ModalDelete';
+import { addNotification } from '@/stores/notificationStore';
 
 interface DeleteDepartmentModalProps {
   isOpen: boolean;
@@ -24,6 +25,16 @@ const DeleteDepartmentModal: React.FC<DeleteDepartmentModalProps> = ({ isOpen, o
 
   const handleDelete = async () => {
     if (!department) return;
+    if (!skFileName) {
+      addNotification({
+        variant: 'error',
+        title: 'Surat Keputusan tidak ditambahkan',
+        description: 'File Wajib di isi',
+        hideDuration: 4000,
+      });
+      setSubmitting(false);
+      return;
+    }
     setSubmitting(true);
     try {
       await departmentService.delete(department.id);

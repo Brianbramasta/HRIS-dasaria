@@ -4,6 +4,7 @@ import { directorateService } from '../../../services/organization.service';
 import type { Directorate } from '../../../types/organization.types';
 import FileInput from '../shared/field/FileInput';
 import ModalDelete from '../shared/modal/ModalDelete';
+import { addNotification } from '@/stores/notificationStore';
 
 interface DeleteDirectorateModalProps {
   isOpen: boolean;
@@ -24,6 +25,14 @@ const DeleteDirectorateModal: React.FC<DeleteDirectorateModalProps> = ({ isOpen,
 
   const handleDelete = async () => {
     if (!directorate) return;
+    if (!skFileName) {
+          addNotification({
+            variant: 'error',
+            title: ' Direktorat tidak dihapus',
+            description: 'File Wajib di isi',
+            hideDuration: 4000,
+          });
+          return};
     setSubmitting(true);
     try {
       await directorateService.delete(directorate.id);
@@ -46,6 +55,7 @@ const DeleteDirectorateModal: React.FC<DeleteDirectorateModalProps> = ({ isOpen,
         <><div className="space-y-2">
           <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
           <input
+            required
             type="text"
             value={memoNumber}
             onChange={(e) => setMemoNumber(e.target.value)}

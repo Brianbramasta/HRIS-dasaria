@@ -7,6 +7,7 @@ import ModalAddEdit from '../shared/modal/modalAddEdit';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 import Select from '@/components/form/Select';
+import { addNotification } from '@/stores/notificationStore';
 
 interface EditDivisionModalProps {
   isOpen: boolean;
@@ -53,6 +54,16 @@ const EditDivisionModal: React.FC<EditDivisionModalProps> = ({ isOpen, onClose, 
 
   const handleSubmit = async () => {
     if (!division) return;
+    if (!skFileName) {
+      addNotification({
+        variant: 'error',
+        title: 'Divisi tidak diupdate',
+        description: 'File Wajib di isi',
+        hideDuration: 4000,
+      });
+      setSubmitting(false);
+      return;
+    }
     setSubmitting(true);
     try {
       await divisionService.update(division.id, {
@@ -83,6 +94,7 @@ const EditDivisionModal: React.FC<EditDivisionModalProps> = ({ isOpen, onClose, 
           <div className="space-y-2">
           <label className="text-sm font-medium">Nama Divisi</label>
           <Input
+            required
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -94,6 +106,7 @@ const EditDivisionModal: React.FC<EditDivisionModalProps> = ({ isOpen, onClose, 
           <label className="text-sm font-medium">Direktorat</label>
        
           <Select
+            required
             options={directorates.map((d) => ({ value: d.id, label: d.name }))}
             placeholder="Pilih Direktorat"
             onChange={(v) => setDirectorateId(v)}
@@ -106,6 +119,7 @@ const EditDivisionModal: React.FC<EditDivisionModalProps> = ({ isOpen, onClose, 
           <label className="text-sm font-medium">Deskripsi Umum</label>
           
           <TextArea
+            required
             value={description}
             onChange={(value) => setDescription(value)}
             className="w-full rounded-xl border border-gray-300 px-4 py-3 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary"
@@ -116,6 +130,7 @@ const EditDivisionModal: React.FC<EditDivisionModalProps> = ({ isOpen, onClose, 
         <div className="space-y-2">
           <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
           <Input
+            required
             type="text"
             value={memoNumber}
             onChange={(e) => setMemoNumber(e.target.value)}

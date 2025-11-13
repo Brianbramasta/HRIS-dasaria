@@ -5,6 +5,7 @@ import type { Office } from '../../../types/organization.types';
 import FileInput from '../shared/field/FileInput';
 import ModalDelete from '../shared/modal/ModalDelete';
 import Input from '@/components/form/input/InputField';
+import { addNotification } from '@/stores/notificationStore';
 
 
 interface DeleteOfficeModalProps {
@@ -26,6 +27,15 @@ const DeleteOfficeModal: React.FC<DeleteOfficeModalProps> = ({ isOpen, onClose, 
 
   const handleDelete = async () => {
     if (!office) return;
+    if (!skFileName){
+          addNotification({
+            variant: 'error',
+            title: 'Office tidak ditambahkan',
+            description: 'File Wajib di isi',
+            hideDuration: 4000,
+          });
+          return;
+        }
     setSubmitting(true);
     try {
       await officeService.delete(office.id);
@@ -48,6 +58,7 @@ const DeleteOfficeModal: React.FC<DeleteOfficeModalProps> = ({ isOpen, onClose, 
         <><div className="space-y-2">
           <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
           <Input
+            required
             type="text"
             value={memoNumber}
             onChange={(e) => setMemoNumber(e.target.value)}

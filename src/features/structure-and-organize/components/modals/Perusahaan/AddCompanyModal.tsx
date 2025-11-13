@@ -170,6 +170,7 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
                   {doc.skFile && <span className="text-sm text-gray-600 truncate">{doc.skFile.name}</span>}
                 </div>
               </div>
+              
               <div className="flex gap-2 md:col-span-1">
                 {documents.length > 1 && (
                   <button onClick={() => removeDocument(index)} className="p-2 h-10 w-10 flex items-center justify-center bg-red-200 text-red-600 rounded-lg">

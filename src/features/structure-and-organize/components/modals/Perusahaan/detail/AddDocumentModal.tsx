@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { apiService } from '../../../../../../services/api';
 import ModalAddEdit from '../../shared/modal/modalAddEdit';
 import FileInput from '../../shared/field/FileInput';
+import { addNotification } from '@/stores/notificationStore';
 
 interface AddDocumentModalProps {
   isOpen: boolean;
@@ -25,6 +26,14 @@ const AddDocumentModal: React.FC<AddDocumentModalProps> = ({ isOpen, onClose, co
 
   const handleSubmit = async () => {
     if (!name.trim() || !companyId) return;
+    if (!file) {
+      addNotification({
+        variant: 'error',
+        title: 'Dokumen tidak ditambahkan',
+        description: 'File Wajib di isi',
+      });
+      return;
+    }
     setSubmitting(true);
     try {
       // For demo: store filename and metadata. Real upload can use apiService.uploadFile
@@ -63,17 +72,17 @@ const AddDocumentModal: React.FC<AddDocumentModalProps> = ({ isOpen, onClose, co
 
         <div className="space-y-2">
           <label className="text-sm font-medium">Nama Dokumen</label>
-          <input value={name} onChange={(e)=>setName(e.target.value)} className="w-full rounded-xl border px-4 py-3" />
+          <input required value={name} onChange={(e)=>setName(e.target.value)} className="w-full rounded-xl border px-4 py-3" />
         </div>
 
         <div className="space-y-2">
           <label className="text-sm font-medium">No. Dokumen</label>
-          <input value={docNumber} onChange={(e)=>setDocNumber(e.target.value)} className="w-full rounded-xl border px-4 py-3" />
+          <input required value={docNumber} onChange={(e)=>setDocNumber(e.target.value)} className="w-full rounded-xl border px-4 py-3" />
         </div>
 
         <div className="space-y-2">
           <label className="text-sm font-medium">Tipe</label>
-          <select value={type} onChange={(e)=>setType(e.target.value as any)} className="w-full rounded-xl border px-4 py-3">
+          <select required value={type} onChange={(e)=>setType(e.target.value as any)} className="w-full rounded-xl border px-4 py-3">
             <option value="active">Dokumen Berlaku</option>
             <option value="archive">Riwayat / Arsip</option>
           </select>

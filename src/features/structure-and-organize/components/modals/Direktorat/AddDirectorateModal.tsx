@@ -5,6 +5,7 @@ import FileInput from '../shared/field/FileInput';
 import ModalAddEdit from '../shared/modal/modalAddEdit';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
+import { addNotification } from '@/stores/notificationStore';
 
 interface AddDirectorateModalProps {
   isOpen: boolean;
@@ -34,6 +35,16 @@ const AddDirectorateModal: React.FC<AddDirectorateModalProps> = ({ isOpen, onClo
   };
 
   const handleSubmit = async () => {
+    if (!skFile) {
+      addNotification({
+        variant: 'error',
+        title: 'Surat Keputusan tidak ditambahkan',
+        description: 'File Wajib di isi',
+        hideDuration: 4000,
+      });
+      setSubmitting(false);
+      return;
+    }
     setSubmitting(true);
     try {
       await directorateService.create({
@@ -63,6 +74,7 @@ const AddDirectorateModal: React.FC<AddDirectorateModalProps> = ({ isOpen, onClo
        <div className="space-y-2">
           <label className="text-sm font-medium">Nama Direktorat</label>
           <Input
+            required
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -73,6 +85,7 @@ const AddDirectorateModal: React.FC<AddDirectorateModalProps> = ({ isOpen, onClo
         <div className="space-y-2">
           <label className="text-sm font-medium">Deskripsi Umum</label>
           <TextArea
+            required
             value={description}
             onChange={(e) => setDescription(e)}
             className="w-full rounded-xl border border-gray-300 px-4 py-3 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary"
@@ -82,6 +95,7 @@ const AddDirectorateModal: React.FC<AddDirectorateModalProps> = ({ isOpen, onClo
         <div className="space-y-2">
           <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
           <Input
+            required
             type="text"
             value={memoNumber}
             onChange={(e) => setMemoNumber(e.target.value)}

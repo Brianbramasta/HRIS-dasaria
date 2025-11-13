@@ -6,6 +6,7 @@ import FileInput from '../shared/field/FileInput';
 import ModalAddEdit from '../shared/modal/modalAddEdit';
 import Input from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
+import { addNotification } from '@/stores/notificationStore';
 
 interface EditDepartmentModalProps {
   isOpen: boolean;
@@ -50,6 +51,14 @@ const EditDepartmentModal: React.FC<EditDepartmentModalProps> = ({ isOpen, onClo
 
   const handleSubmit = async () => {
     if (!department) return;
+    if (!skFileName) {
+      addNotification({
+        variant: 'error',
+        title: 'Surat Keputusan tidak ditambahkan',
+        description: 'File Wajib di isi',
+        hideDuration: 4000,
+      });
+      return};
     setSubmitting(true);
     try {
       await departmentService.update(department.id, {
@@ -79,6 +88,7 @@ const EditDepartmentModal: React.FC<EditDepartmentModalProps> = ({ isOpen, onClo
         <div className="space-y-2">
           <label className="text-sm font-medium">Nama Departemen</label>
           <Input
+            required
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -89,6 +99,7 @@ const EditDepartmentModal: React.FC<EditDepartmentModalProps> = ({ isOpen, onClo
         <div className="space-y-2">
           <label className="text-sm font-medium">Divisi</label>
           <Select
+            required
             onChange={(e) => setDivisionId(e)}
             options={divisions.map((d) => ({ value: d.id, label: d.name }))}
           />
@@ -97,6 +108,7 @@ const EditDepartmentModal: React.FC<EditDepartmentModalProps> = ({ isOpen, onClo
         <div className="space-y-2">
           <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
           <Input
+            required
             type="text"
             value={memoNumber}
             onChange={(e) => setMemoNumber(e.target.value)}

@@ -3,6 +3,7 @@ import { employeePositionService } from '../../../services/organization.service'
 import type { EmployeePosition } from '../../../types/organization.types';
 import FileInput from '../shared/field/FileInput';
 import ModalAddEdit from '../shared/modal/modalAddEdit';
+import { addNotification } from '@/stores/notificationStore';
 
 interface AddEmployeePositionModalProps {
   isOpen: boolean;
@@ -28,7 +29,16 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
 
   const handleSubmit = async () => {
     console.log('submit', name, jabatan, direktorat, divisi, departemen, memoNumber, description, skFile);
-    if (!name.trim()) return;
+    
+    if (!skFile) {
+      addNotification({
+        variant: 'error',
+        title: 'Posisi Pegawai tidak ditambahkan',
+        description: 'File Wajib di isi',
+        hideDuration: 4000,
+      });
+      return;
+    }
     setSubmitting(true);
     try {
       const created = await employeePositionService.create({
@@ -68,6 +78,7 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
           <div className="space-y-2">
             <label className="text-sm font-medium">Nama Posisi</label>
             <input
+              required
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -77,6 +88,7 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
           <div className="space-y-2">
             <label className="text-sm font-medium">Jabatan</label>
             <select
+              required
               value={jabatan}
               onChange={(e) => setJabatan(e.target.value)}
               className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
@@ -89,6 +101,7 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
           <div className="space-y-2">
             <label className="text-sm font-medium">Direktorat</label>
             <select
+              required
               value={direktorat}
               onChange={(e) => setDirektorat(e.target.value)}
               className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
@@ -100,6 +113,7 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
           <div className="space-y-2">
             <label className="text-sm font-medium">Divisi</label>
             <select
+              required
               value={divisi}
               onChange={(e) => setDivisi(e.target.value)}
               className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
@@ -111,6 +125,7 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
           <div className="space-y-2">
             <label className="text-sm font-medium">Departemen</label>
             <select
+              required
               value={departemen}
               onChange={(e) => setDepartemen(e.target.value)}
               className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
@@ -122,6 +137,7 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
           <div className="space-y-2">
             <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
             <input
+              required
               type="text"
               value={memoNumber}
               onChange={(e) => setMemoNumber(e.target.value)}
@@ -131,6 +147,7 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
           <div className="space-y-2">
             <label className="text-sm font-medium">Gambaran Umum</label>
             <textarea
+              required
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="w-full min-h-28 rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"

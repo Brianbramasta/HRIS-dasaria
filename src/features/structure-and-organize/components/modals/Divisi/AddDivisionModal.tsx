@@ -7,6 +7,7 @@ import ModalAddEdit from '../shared/modal/modalAddEdit';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 import Select from '@/components/form/Select';
+import { addNotification } from '@/stores/notificationStore';
 
 
 interface AddDivisionModalProps {
@@ -52,6 +53,14 @@ const AddDivisionModal: React.FC<AddDivisionModalProps> = ({ isOpen, onClose, on
   };
 
   const handleSubmit = async () => {
+    if (!skFile) {
+          addNotification({
+            variant: 'error',
+            title: 'Lini Bisnis tidak ditambahkan',
+            description: 'File Wajib di isi',
+            hideDuration: 4000,
+          });
+          return};
     setSubmitting(true);
     try {
       await divisionService.create({
@@ -82,6 +91,7 @@ const AddDivisionModal: React.FC<AddDivisionModalProps> = ({ isOpen, onClose, on
         <div className="space-y-2">
           <label className="text-sm font-medium">Nama Divisi</label>
           <Input
+            required
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -102,6 +112,7 @@ const AddDivisionModal: React.FC<AddDivisionModalProps> = ({ isOpen, onClose, on
             ))}
           </select> */}
           <Select
+            required
             options={directorates.map(d => ({ value: d.id, label: d.name }))}
             placeholder="Select directorate"
             onChange={(v) => setDirectorateId(v)}
@@ -118,6 +129,7 @@ const AddDivisionModal: React.FC<AddDivisionModalProps> = ({ isOpen, onClose, on
             className="w-full rounded-xl border border-gray-300 px-4 py-3 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary"
           /> */}
           <TextArea
+            required
             value={description}
             onChange={(value) => setDescription(value)}
             className="w-full rounded-xl border border-gray-300 px-4 py-3 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary"
@@ -127,6 +139,7 @@ const AddDivisionModal: React.FC<AddDivisionModalProps> = ({ isOpen, onClose, on
         <div className="space-y-2">
           <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
           <Input
+            required
             type="text"
             value={memoNumber}
             onChange={(e) => setMemoNumber(e.target.value)}

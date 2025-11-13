@@ -3,6 +3,7 @@ import { Modal } from "../../../../../components/ui/modal/index";
 import { positionService } from "../../../services/organization.service";
 import FileInput from "../shared/field/FileInput";
 import Input from "@/components/form/input/InputField";
+import { addNotification } from "@/stores/notificationStore";
 
 
 
@@ -38,6 +39,15 @@ export const AddPositionModal = ({ isOpen, onClose, onSuccess }: Props) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.skFile) {
+      addNotification({
+        variant: 'error',
+        title: 'Jabatan tidak ditambahkan',
+        description: 'File Wajib di isi',
+        hideDuration: 4000,
+      });
+      return;
+    }
     setIsLoading(true);
     try {
       const { directSubordinates, ...rest } = formData;
@@ -80,6 +90,7 @@ export const AddPositionModal = ({ isOpen, onClose, onSuccess }: Props) => {
               Nama Jabatan
             </label>
             <Input
+              required
               type="text"
               name="name"
               id="name"
@@ -87,7 +98,7 @@ export const AddPositionModal = ({ isOpen, onClose, onSuccess }: Props) => {
               placeholder="Nama Jabatan"
               value={formData.name}
               onChange={handleInputChange}
-              required
+              
             />
           </div>
           <div>
@@ -98,6 +109,7 @@ export const AddPositionModal = ({ isOpen, onClose, onSuccess }: Props) => {
               Grade
             </label>
             <Input
+              required
               type="text"
               name="grade"
               id="grade"
@@ -105,7 +117,7 @@ export const AddPositionModal = ({ isOpen, onClose, onSuccess }: Props) => {
               placeholder="DO"
               value={formData.grade}
               onChange={handleInputChange}
-              required
+              
             />
           </div>
           <div>
@@ -116,6 +128,7 @@ export const AddPositionModal = ({ isOpen, onClose, onSuccess }: Props) => {
               Bawahan Langsung
             </label>
             <Input
+              required
               type="text"
               name="directSubordinates"
               id="directSubordinates"
@@ -133,6 +146,7 @@ export const AddPositionModal = ({ isOpen, onClose, onSuccess }: Props) => {
               No. Surat Keputusan / Memo Internal
             </label>
             <Input
+              required
               type="text"
               name="memoNumber"
               id="memoNumber"
@@ -150,6 +164,7 @@ export const AddPositionModal = ({ isOpen, onClose, onSuccess }: Props) => {
               Deskripsi Tugas
             </label>
             <textarea
+              required
               name="jobDescription"
               id="jobDescription"
               rows={4}

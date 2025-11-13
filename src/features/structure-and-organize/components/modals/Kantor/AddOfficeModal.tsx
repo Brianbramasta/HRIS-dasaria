@@ -6,6 +6,7 @@ import FileInput from '../shared/field/FileInput';
 import ModalAddEdit from '../shared/modal/modalAddEdit';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
+import { addNotification } from '@/stores/notificationStore';
 
 
 
@@ -29,6 +30,15 @@ const AddOfficeModal: React.FC<AddOfficeModalProps> = ({ isOpen, onClose, onSucc
 
   const handleSubmit = async () => {
     if (!name.trim()) return;
+    if (!skFile){
+      addNotification({
+        variant: 'error',
+        title: 'Office tidak ditambahkan',
+        description: 'File Wajib di isi',
+        hideDuration: 4000,
+      });
+      return;
+    }
     setSubmitting(true);
     try {
       const created = await officeService.create({
@@ -61,6 +71,7 @@ const AddOfficeModal: React.FC<AddOfficeModalProps> = ({ isOpen, onClose, onSucc
           <div className="space-y-2">
           <label className="text-sm font-medium">Nama Office</label>
           <Input
+            required
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -71,6 +82,7 @@ const AddOfficeModal: React.FC<AddOfficeModalProps> = ({ isOpen, onClose, onSucc
         <div className="space-y-2">
           <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
           <Input
+            required
             type="text"
             value={memoNumber}
             onChange={(e) => setMemoNumber(e.target.value)}
@@ -81,6 +93,7 @@ const AddOfficeModal: React.FC<AddOfficeModalProps> = ({ isOpen, onClose, onSucc
         <div className="space-y-2">
           <label className="text-sm font-medium">Deskripsi Umum</label>
           <TextArea
+            required
             value={description}
             onChange={(e) => setDescription(e)}
             className="w-full rounded-xl border border-gray-300 px-4 py-3 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary"

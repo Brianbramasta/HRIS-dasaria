@@ -7,6 +7,7 @@ import ModalAddEdit from '../shared/modal/modalAddEdit';
 
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
+import { addNotification } from '@/stores/notificationStore';
 
 interface EditDirectorateModalProps {
   isOpen: boolean;
@@ -38,6 +39,14 @@ const EditDirectorateModal: React.FC<EditDirectorateModalProps> = ({ isOpen, onC
 
   const handleSubmit = async () => {
     if (!directorate) return;
+    if (!skFileName) {
+          addNotification({
+            variant: 'error',
+            title: ' Direktorat tidak diupdate',
+            description: 'File Wajib di isi',
+            hideDuration: 4000,
+          });
+          return};
     setSubmitting(true);
     try {
       await directorateService.update(directorate.id, {
@@ -68,6 +77,7 @@ const EditDirectorateModal: React.FC<EditDirectorateModalProps> = ({ isOpen, onC
         <div className="space-y-2">
           <label className="text-sm font-medium">Nama Direktorat</label>
           <Input
+            required
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -79,6 +89,7 @@ const EditDirectorateModal: React.FC<EditDirectorateModalProps> = ({ isOpen, onC
           <label className="text-sm font-medium">Deskripsi Umum</label>
          
           <TextArea
+            required
             value={description}
             onChange={(e) => setDescription(e)}
             className="w-full rounded-xl border border-gray-300 px-4 py-3 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary"
@@ -88,6 +99,7 @@ const EditDirectorateModal: React.FC<EditDirectorateModalProps> = ({ isOpen, onC
         <div className="space-y-2">
           <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
           <Input
+            required
             type="text"
             value={memoNumber}
             onChange={(e) => setMemoNumber(e.target.value)}

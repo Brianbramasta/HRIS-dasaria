@@ -5,6 +5,7 @@ import type { Division } from '../../../types/organization.types';
 import FileInput from '../shared/field/FileInput';
 import ModalDelete from '../shared/modal/ModalDelete';
 import Input from '@/components/form/input/InputField';
+import { addNotification } from '@/stores/notificationStore';
 
 interface DeleteDivisionModalProps {
   isOpen: boolean;
@@ -25,6 +26,14 @@ const DeleteDivisionModal: React.FC<DeleteDivisionModalProps> = ({ isOpen, onClo
 
   const handleDelete = async () => {
     if (!division) return;
+    if (!skFileName) {
+          addNotification({
+            variant: 'error',
+            title: 'Divisi tidak dihapus',
+            description: 'File Wajib di isi',
+            hideDuration: 4000,
+          });
+          return};
     setSubmitting(true);
     try {
       await divisionService.delete(division.id);
@@ -47,6 +56,7 @@ const DeleteDivisionModal: React.FC<DeleteDivisionModalProps> = ({ isOpen, onClo
         <><div className="space-y-2">
           <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
           <Input
+            required
             type="text"
             value={memoNumber}
             onChange={(e) => setMemoNumber(e.target.value)}
