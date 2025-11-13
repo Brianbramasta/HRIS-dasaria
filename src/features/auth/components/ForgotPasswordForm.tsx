@@ -4,7 +4,7 @@ import Label from '../../../components/form/Label';
 import Input from '../../../components/form/input/InputField';
 import Button from '../../../components/ui/button/Button';
 import { ForgotPasswordRequest } from '../types';
-import Logo from '../../../components/common/Logo';
+// import Logo from '../../../components/common/Logo';
 
 interface ForgotPasswordFormProps {
   onSubmit: (data: ForgotPasswordRequest) => Promise<void>;
@@ -37,11 +37,11 @@ export default function ForgotPasswordForm({
   };
 
   return (
-    <div className="w-full max-w-sm mx-auto">
+    <div className="w-full max-w-sm mx-auto ">
       <div className="mb-8 text-center">
-        <div className="flex justify-center mb-4">
+        {/* <div className="flex justify-center mb-4">
           <Logo />
-        </div>
+        </div> */}
         <h1 className="mb-2 text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
           Forgot Your Password?
         </h1>
@@ -90,7 +90,7 @@ export default function ForgotPasswordForm({
 
       <div className="mt-6 text-center">
         <Link
-          to="/signin"
+          to="/login"
           className="text-sm font-medium text-gray-600 hover:underline dark:text-gray-400"
         >
           ← Back To Login

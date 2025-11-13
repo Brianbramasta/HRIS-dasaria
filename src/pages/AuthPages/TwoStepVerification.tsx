@@ -1,5 +1,5 @@
 import PageMeta from "../../components/common/PageMeta";
-import AuthLayout from "./AuthPageLayout";
+import AuthLayout from "../../features/auth/pages/AuthPageLayout";
 
 export default function TwoStepVerification() {
   return (

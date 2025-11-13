@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '../../components/datatable/DataTable';
-import { Edit, Trash, FileText } from 'react-feather';
+import { Edit, Trash } from 'react-feather';
 import { useEmployeePositions } from '../../index';
 import type { EmployeePosition } from '../../types/organization.types';
 import { EmployeePositionRow } from '../../types/organizationTable.types';
@@ -9,7 +9,7 @@ import EditEmployeePositionModal from '../../components/modals/PosisiPegawai/Edi
 import DeleteEmployeePositionModal from '../../components/modals/PosisiPegawai/DeleteEmployeePositionModal';
 import { useModal } from '../../../../hooks/useModal';
 import { addNotification } from '@/stores/notificationStore';
-
+import { FileText } from '@/icons/components/icons';
 type Props = { resetKey: string };
 
 const employeePositionColumns: DataTableColumn<EmployeePositionRow>[] = [

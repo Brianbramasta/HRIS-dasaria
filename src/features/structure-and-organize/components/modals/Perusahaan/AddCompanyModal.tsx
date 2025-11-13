@@ -108,6 +108,7 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
       onClose={onClose}
       handleSubmit={handleSubmit}
       submitting={submitting}
+      maxWidth="max-w-6xl"
       content={
         <>
           <div className="space-y-2">
@@ -179,9 +180,9 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
                 <div className="flex-1">
                   <FileInput onChange={(e) => handleDocFileChange(idx, e)} />
                 </div>
-                <span className="text-sm text-gray-500">
+                {/* <span className="text-sm text-gray-500">
                   {doc.file?.name || 'Tidak ada file yang dipilih'}
-                </span>
+                </span> */}
                 {idx === 0 ? (
                   <button
                     type="button"
@@ -189,7 +190,7 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
                     className="ml-1 flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500 text-white hover:bg-emerald-600"
                     aria-label="Tambah dokumen"
                   >
-                    <PlusIcon className="h-5 w-5" />
+                    <PlusIcon className="h-5 w-5 text-white" />
                   </button>
                 ) : (
                   <button

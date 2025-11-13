@@ -1,5 +1,5 @@
 import PageMeta from '../../../components/common/PageMeta';
-import AuthLayout from '../../../pages/AuthPages/AuthPageLayout';
+import AuthLayout from './AuthPageLayout';
 import { ForgotPasswordForm } from '../components';
 import { useForgotPassword } from '../hooks';
 

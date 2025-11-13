@@ -1,12 +1,12 @@
 import React from 'react';
 import { Table, TableHeader, TableBody, TableRow, TableCell } from '../../../../components/ui/table';
-import { FileText, Eye, Download } from 'react-feather';
+import {  Eye, Download } from 'react-feather';
 import { useParams, Link } from 'react-router';
 import ExpandCard from '../../components/card/ExpandCard';
 import { businessLineService } from '../../services/organization.service';
 import { apiService } from '../../../../services/api';
 import type { Company } from '../../types/organization.types';
-
+import { FileText } from '@/icons/components/icons';
 export default function DetailLiniBisnis() {
   const { id } = useParams();
 
@@ -77,7 +77,7 @@ export default function DetailLiniBisnis() {
       </div>
 
       {/* Overview */}
-      <ExpandCard title="Overview" leftIcon={<FileText size={18} className="text-gray-400" />} defaultOpen contentClassName="px-6 pb-6">
+      <ExpandCard title="Overview" leftIcon={<FileText size={18}  />} defaultOpen contentClassName="px-6 pb-6">
         <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">{overviewText}</p>
       </ExpandCard>
 

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '../../components/datatable/DataTable';
-import { Edit, Trash, FileText } from 'react-feather';
+import { Edit, Trash } from 'react-feather';
 import { usePositions } from '../../index';
 import type { PositionRow } from '../../types/organizationTable.types';
 import { useModal } from '../../../../hooks/useModal';
@@ -9,7 +9,7 @@ import { EditPositionModal } from '../../components/modals/Jabatan/EditPositionM
 import { DeletePositionModal } from '../../components/modals/Jabatan/DeletePositionModal';
 import { Position } from '../../types/organization.types';
 import { addNotification } from '@/stores/notificationStore';
-
+import { FileText } from '@/icons/components/icons';
 type Props = { resetKey: string };
 
 const positionColumns: DataTableColumn<PositionRow>[] = [

@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '../../components/datatable/DataTable';
-import { Edit, Trash, FileText } from 'react-feather';
+import { Edit, Trash } from 'react-feather';
 import { useDivisions } from '../../index';
 import type { DivisionRow } from '../../types/organizationTable.types';
 import type { Division } from '../../types/organization.types';
@@ -9,7 +9,7 @@ import AddDivisionModal from '../../components/modals/Divisi/AddDivisionModal';
 import EditDivisionModal from '../../components/modals/Divisi/EditDivisionModal';
 import DeleteDivisionModal from '../../components/modals/Divisi/DeleteDivisionModal';
 import { addNotification } from '@/stores/notificationStore';
-
+import { FileText } from '@/icons/components/icons';
 type Props = { resetKey: string };
 
 const divisionColumns: DataTableColumn<DivisionRow>[] = [

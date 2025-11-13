@@ -11,13 +11,14 @@ interface ModalAddEditProps {
   content: React.ReactNode;
   handleSubmit?: () => void;
   submitting: boolean;
+  maxWidth?: string;
 }
 
-const ModalAddEdit: React.FC<ModalAddEditProps> = ({ title, content, isOpen, onClose,  handleSubmit, submitting }) => {
+const ModalAddEdit: React.FC<ModalAddEditProps> = ({ title, content, isOpen, onClose,  handleSubmit, submitting, maxWidth }) => {
   
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="max-w-3xl p-6 zoom-50 dark:text-white" showCloseButton>
+    <Modal isOpen={isOpen} onClose={onClose} className={`${maxWidth || 'max-w-3xl'} p-6 zoom-50 dark:text-white`} showCloseButton>
       <div className="space-y-6">
         <form onSubmit={(e) => {e.preventDefault(); handleSubmit?.()}}>
         <h2 className="text-3xl font-bold text-center">{title}</h2>

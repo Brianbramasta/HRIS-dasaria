@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import DataTable, { DataTableColumn } from '../../components/datatable/DataTable';
-import { Edit, Trash, FileText } from 'react-feather';
+import { Edit, Trash } from 'react-feather';
 import {
   useBusinessLines,
 } from '../../index';
@@ -13,15 +13,18 @@ import { addNotification } from '../../../../stores/notificationStore';
 import type { BLRow } from '../../types/organizationTable.types';
 import fileService from '@/services/file.service';
 import { setSkFile, clearSkFile} from '@/stores/fileStore';
+import { FileText } from '@/icons/components/icons';
 
 type Props = { resetKey: string };
+
+
 
 const businessLineColumns: DataTableColumn<BLRow>[] = [
   { id: 'no', label: 'No', sortable: true },
   { id: 'Lini Bisnis', label: 'Lini Bisnis', sortable: true },
   { id: 'Deskripsi Umum', label: 'Deskripsi Umum', sortable: true },
   { id: 'File SK dan Memo', label: 'Detail', sortable: true, format: (_val, row) => (
-    <Link to={`/structure-and-organize/business-lines/${(row as any).id ?? (row as any).no}`} className="text-brand-600 hover:underline">
+    <Link to={`/structure-and-organize/business-lines/${(row as any).id ?? (row as any).no}`} className="text-center text-brand-600 hover:underline">
       <FileText size={16} />
     </Link>
   ) },

@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '../../components/datatable/DataTable';
-import { Edit, Trash, FileText } from 'react-feather';
+import { Edit, Trash } from 'react-feather';
 import { useDirectorates } from '../../index';
 import type { DirectorateRow } from '../../types/organizationTable.types';
 import type { Directorate } from '../../types/organization.types';
@@ -8,7 +8,7 @@ import { useModal } from '../../../../hooks/useModal';
 import AddDirectorateModal from '../../components/modals/Direktorat/AddDirectorateModal';
 import EditDirectorateModal from '../../components/modals/Direktorat/EditDirectorateModal';
 import DeleteDirectorateModal from '../../components/modals/Direktorat/DeleteDirectorateModal';
-
+import { FileText } from '@/icons/components/icons';
 import { addNotification } from '@/stores/notificationStore';
 
 type Props = { resetKey: string };

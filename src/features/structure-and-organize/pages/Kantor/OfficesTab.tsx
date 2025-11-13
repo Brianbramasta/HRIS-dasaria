@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '../../components/datatable/DataTable';
-import { Edit, Trash, FileText } from 'react-feather';
+import { Edit, Trash } from 'react-feather';
 import { useOffices } from '../../index';
 import type { OfficeRow } from '../../types/organizationTable.types';
 import { useModal } from '../../../../hooks/useModal';
@@ -9,7 +9,7 @@ import AddOfficeModal from '../../components/modals/Kantor/AddOfficeModal';
 import EditOfficeModal from '../../components/modals/Kantor/EditOfficeModal';
 import DeleteOfficeModal from '../../components/modals/Kantor/DeleteOfficeModal';
 import { addNotification } from '@/stores/notificationStore';
-
+import { FileText } from '@/icons/components/icons';
 type Props = { resetKey: string };
 
 const officeColumns: DataTableColumn<OfficeRow>[] = [

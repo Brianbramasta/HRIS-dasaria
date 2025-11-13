@@ -1,7 +1,8 @@
 import React from 'react';
 import { Modal } from '../../../components/ui/modal';
 import Button from '../../../components/ui/button/Button';
-import { Link as LinkIcon, FileText } from 'react-feather';
+import { Link as LinkIcon } from 'react-feather';
+import { FileText } from '@/icons/components/icons';
 
 interface ResignKaryawanModalProps {
   isOpen: boolean;

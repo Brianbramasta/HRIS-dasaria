@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '../../components/datatable/DataTable';
-import { Edit, Trash, FileText } from 'react-feather';
+import { Edit, Trash } from 'react-feather';
 import { useDepartments } from '../../index';
 import type { DepartmentRow } from '../../types/organizationTable.types';
 import type { Department } from '../../types/organization.types';
@@ -8,7 +8,7 @@ import { useModal } from '../../../../hooks/useModal';
 import AddDepartmentModal from '../../components/modals/Departemen/AddDepartmentModal';
 import EditDepartmentModal from '../../components/modals/Departemen/EditDepartmentModal';
 import DeleteDepartmentModal from '../../components/modals/Departemen/DeleteDepartmentModal';
-
+import { FileText } from '@/icons/components/icons';
 import { addNotification } from '@/stores/notificationStore';
 
 type Props = { resetKey: string };

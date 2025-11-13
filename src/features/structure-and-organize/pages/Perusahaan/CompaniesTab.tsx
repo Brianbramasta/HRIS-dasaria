@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router';
 import DataTable, { DataTableColumn, DataTableAction } from '../../components/datatable/DataTable';
-import { Edit, Trash, FileText } from 'react-feather';
+import { /*Edit,*/ Trash } from 'react-feather';
 import { useCompanies } from '../../index';
 import type { CompanyRow } from '../../types/organizationTable.types';
 import type { Company } from '../../types/organization.types';
@@ -9,6 +9,7 @@ import AddCompanyModal from '../../components/modals/Perusahaan/AddCompanyModal'
 import EditCompanyModal from '../../components/modals/Perusahaan/EditCompanyModal';
 import DeleteCompanyModal from '../../components/modals/Perusahaan/DeleteCompanyModal';
 import { addNotification } from '@/stores/notificationStore';
+import { FileText } from '@/icons/components/icons';
 
 type Props = { resetKey: string };
 
@@ -44,11 +45,11 @@ export default function CompaniesTab({ resetKey }: Props) {
   }, [companies]);
 
   const actionsIconOnly = [
-    { label: '', onClick: (row: any) => {
-        const comp = companies.find((c) => c.id === row.id) || null;
-        setSelectedCompany(comp);
-        setEditOpen(true);
-      }, variant: 'outline', className: 'border-0', icon: <Edit size={16} /> },
+    // { label: '', onClick: (row: any) => {
+    //     const comp = companies.find((c) => c.id === row.id) || null;
+    //     setSelectedCompany(comp);
+    //     setEditOpen(true);
+    //   }, variant: 'outline', className: 'border-0', icon: <Edit size={16} /> },
     { label: '', onClick: (row: any) => {
         const comp = companies.find((c) => c.id === row.id) || null;
         setSelectedCompany(comp);
