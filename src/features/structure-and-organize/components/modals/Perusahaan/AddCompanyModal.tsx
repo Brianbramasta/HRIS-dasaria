@@ -3,9 +3,10 @@ import { companyService, businessLineService } from '../../../services/organizat
 import type { Company, BusinessLine } from '../../../types/organization.types';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
-import FileInput from '../shared/field/FileInput';
+import FileInput from '@/components/form/input/FileInput';
 import ModalAddEdit from '../shared/modal/modalAddEdit';
 import { addNotification } from '@/stores/notificationStore';
+import { PlusIcon, TrashBinIcon } from '@/icons';
 
 
 
@@ -20,10 +21,10 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
   const [businessLineId, setBusinessLineId] = useState('');
   const [businessLines, setBusinessLines] = useState<BusinessLine[]>([]);
   const [description, setDescription] = useState('');
-  // Document fields (selaras dengan EditCompanyModal)
-  const [docName, setDocName] = useState('');
-  const [docNumber, setDocNumber] = useState('');
-  const [skFile, setSkFile] = useState<File | null>(null);
+  // Dokumen dinamis: minimal satu baris wajib dengan file
+  const [documents, setDocuments] = useState<{ name: string; number: string; file: File | null }[]>([
+    { name: '', number: '', file: null },
+  ]);
 
   const [submitting, setSubmitting] = useState(false);
 
@@ -38,26 +39,47 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
       }
     })();
   }, []);
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDocChange = (index: number, key: 'name' | 'number', value: string) => {
+    setDocuments((prev) => {
+      const next = [...prev];
+      next[index] = { ...next[index], [key]: value };
+      return next;
+    });
+  };
+
+  const handleDocFileChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
-    setSkFile(file);
+    setDocuments((prev) => {
+      const next = [...prev];
+      next[index] = { ...next[index], file };
+      return next;
+    });
+  };
+
+  const addDocumentRow = () => {
+    setDocuments((prev) => [...prev, { name: '', number: '', file: null }]);
+  };
+
+  const removeDocumentRow = (index: number) => {
+    setDocuments((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async () => {
     if (!name.trim()) return;
-    if (!skFile) {
+    if (!documents[0]?.file) {
       addNotification({
         variant: 'error',
         title: 'Dokumen tidak ditambahkan',
-        description: 'File SK Wajib di isi',
+        description: 'File SK Wajib di isi pada baris pertama',
       });
       return;
     }
     setSubmitting(true);
     try {
-      const details = [docName.trim(), docNumber.trim(), skFile?.name || '']
+      const details = documents
+        .map((d) => [d.name.trim(), d.number.trim(), d.file?.name || ''].filter(Boolean).join(' | '))
         .filter(Boolean)
-        .join(' | ');
+        .join(' ; ');
 
       const created = await companyService.create({
         name: name.trim(),
@@ -70,9 +92,7 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
       setName('');
       setBusinessLineId('');
       setDescription('');
-      setDocName('');
-      setDocNumber('');
-      setSkFile(null);
+      setDocuments([{ name: '', number: '', file: null }]);
       onClose();
     } catch (err) {
       console.error('Failed to create company', err);
@@ -127,32 +147,63 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
             />
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Nama Dokumen</label>
-            <Input
-              required
-              type="text"
-              value={docName}
-              onChange={(e) => setDocName(e.target.value)}
-              className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-            />
+          {/* Header kolom dokumen */}
+          <div className="mt-4 grid grid-cols-12 gap-3 text-sm font-medium">
+            <div className="col-span-4">Nama Dokumen</div>
+            <div className="col-span-4">No. Dokumen</div>
+            <div className="col-span-4">Upload file</div>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium">No. Dokumen</label>
-            <Input
-              required
-              type="text"
-              value={docNumber}
-              onChange={(e) => setDocNumber(e.target.value)}
-              className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-          </div>
-
-          <FileInput 
-            onChange={handleFileChange}
-            skFileName={skFile?.name || ''}
-          />
+          {/* Baris dokumen dinamis */}
+          {documents.map((doc, idx) => (
+            <div key={idx} className="grid grid-cols-12 items-center gap-3">
+              <div className="col-span-4">
+                <Input
+                  required
+                  type="text"
+                  value={doc.name}
+                  onChange={(e) => handleDocChange(idx, 'name', e.target.value)}
+                  className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <div className="col-span-4">
+                <Input
+                  required
+                  type="text"
+                  value={doc.number}
+                  onChange={(e) => handleDocChange(idx, 'number', e.target.value)}
+                  className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <div className="col-span-4 flex items-center gap-2">
+                <div className="flex-1">
+                  <FileInput onChange={(e) => handleDocFileChange(idx, e)} />
+                </div>
+                <span className="text-sm text-gray-500">
+                  {doc.file?.name || 'Tidak ada file yang dipilih'}
+                </span>
+                {idx === 0 ? (
+                  <button
+                    type="button"
+                    onClick={addDocumentRow}
+                    className="ml-1 flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500 text-white hover:bg-emerald-600"
+                    aria-label="Tambah dokumen"
+                  >
+                    <PlusIcon className="h-5 w-5" />
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => removeDocumentRow(idx)}
+                    className="ml-1 flex h-9 w-9 items-center justify-center rounded-lg bg-rose-500 text-white hover:bg-rose-600"
+                    aria-label="Hapus baris dokumen"
+                  >
+                    <TrashBinIcon className="h-5 w-5" />
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
         </>
       }
     />

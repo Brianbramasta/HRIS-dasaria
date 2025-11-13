@@ -8,7 +8,7 @@ import AddDocumentModal from '../../../components/modals/Perusahaan/detail/AddDo
 import DeleteDocumentModal from '../../../components/modals/Perusahaan/detail/DeleteDocumentModal';
 import EditDetailCompany from '../../../components/modals/Perusahaan/detail/EditDetailCompany';
 import Button from '@/components/ui/button/Button';
-import {TrashBinIcon} from '@/icons/index';
+import { TrashBinIcon, PencilIcon, AngleUpIcon, AngleDownIcon, FileIcon, ArrowRightIcon } from '@/icons/index';
 import { addNotification } from '@/stores/notificationStore';
 
 const DetailPerusahaan: React.FC = () => {
@@ -27,6 +27,8 @@ const DetailPerusahaan: React.FC = () => {
   const [isDeleteDocOpen, setDeleteDocOpen] = React.useState(false);
   const [selectedDoc, setSelectedDoc] = React.useState<any | null>(null);
   const [isEditOpen, setEditOpen] = React.useState(false);
+  const [expandActive, setExpandActive] = React.useState(true);
+  const [expandArchive, setExpandArchive] = React.useState(true);
 
   const fetch = React.useCallback(async () => {
     if (!id) return;
@@ -57,11 +59,18 @@ const DetailPerusahaan: React.FC = () => {
 
   
   // const elementCardKiri = () => {
-    const dataKiri = [
-      { label: 'Alamat', value: company?.address || '—' },
+    const alamatValue = company?.address || '—';
+    const companySizeValue = (company?.employeeCount || company?.employees || '')
+      ? `${company?.employeeCount || company?.employees} Employes`
+      : '—';
+
+    const contactInformation = [
       { label: 'Kode Pos', value: company?.postalCode || company?.postal || '—' },
       { label: 'Gmail', value: company?.email || '—' },
       { label: 'Phone', value: company?.phone || '—' },
+    ];
+
+    const customInformation = [
       { label: 'Industry', value: company?.industry || company?.businessLineName || '—' },
       { label: 'Founded', value: company?.founded || new Date(company?.createdAt || '').getFullYear() || '—' },
       { label: 'Type', value: company?.type || '—' },
@@ -81,11 +90,11 @@ const DetailPerusahaan: React.FC = () => {
   // };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-semibold mb-4">{company?.name || 'Detail Perusahaan'}</h1>
-      <div className="grid grid-cols-12 gap-6">
+    <div className="p-4 md:p-6">
+      {/* <h1 className="text-3xl font-semibold mb-4">{company?.name || 'Detail Perusahaan'}</h1> */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
         {/* card kiri */}
-        <div className="col-span-4  rounded-lg p-6 shadow-sm bg-[#F6F6F6]">
+        <div className="col-span-12 md:col-span-4 rounded-lg p-4 md:p-6 shadow-sm bg-[#F6F6F6]">
           <div className="flex flex-col items-center">
             <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center mb-4">{/* logo */}
               <span className="text-3xl font-bold"><img src={company?.logo || '/placeholder.svg'} alt='logo' className='w-full h-full object-cover rounded-full'/></span>
@@ -94,14 +103,36 @@ const DetailPerusahaan: React.FC = () => {
             <p className="text-sm text-gray-500">{company?.businessLineName}</p>
           </div>
 
-          <div className="mt-6 space-y-2 text-sm">
-            {/* {elementCardKiri()} */}
-             {dataKiri.map((data, idx) => (
-                <div key={idx} className='flex gap-2 justify-between'>
-                  <div className='min-w-[70px] text-gray-600'>{data.label}</div> <div>:</div> <div className=" max-w-[100px] w-[100px] break-all">{data.value}</div>
-                </div>
-              ))}
-          
+          <div className="mt-6 text-sm">
+            {/* Address */}
+            <div className='flex gap-2 justify-between mb-6 items-start flex-wrap sm:flex-nowrap'>
+              <div className='min-w-[120px] text-gray-600'>Alamat</div> <div>:</div> 
+              <div className="w-full max-w-full break-words md:max-w-[200px] md:w-[200px]">{alamatValue}</div>
+            </div>
+
+            {/* Company Size */}
+            <div className='flex gap-2 justify-between mb-6 items-start flex-wrap sm:flex-nowrap'>
+              <div className='min-w-[120px] text-gray-600'>Company Size</div> <div>:</div> 
+              <div className="w-full max-w-full break-words md:max-w-[200px] md:w-[200px]">{companySizeValue}</div>
+            </div>
+
+            <hr className="my-4 border-gray-200" />
+            <div className="text-gray-800 font-semibold mb-2">Contact Information</div>
+            {contactInformation.map((data, idx) => (
+              <div key={`contact-${idx}`} className='flex gap-2 justify-between mb-6 items-start flex-wrap sm:flex-nowrap'>
+                <div className='min-w-[120px] text-gray-600'>{data.label}</div> <div>:</div> 
+                <div className="w-full max-w-full break-words md:max-w-[200px] md:w-[200px]">{data.value}</div>
+              </div>
+            ))}
+
+            <hr className="my-4 border-gray-200" />
+            <div className="text-gray-800 font-semibold mb-2">Custom Information</div>
+            {customInformation.map((data, idx) => (
+              <div key={`custom-${idx}`} className='flex gap-2 justify-between mb-6 items-start flex-wrap sm:flex-nowrap'>
+                <div className='min-w-[120px] text-gray-600'>{data.label}</div> <div>:</div> 
+                <div className="w-full max-w-full break-words md:max-w-[200px] md:w-[200px]">{data.value}</div>
+              </div>
+            ))}
           </div>
           <div className="mt-6 flex justify-end">
             <Button size='sm' onClick={() => setEditOpen(true)} startIcon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z" fill="currentColor"/><path d="M20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/></svg>}>
@@ -111,7 +142,7 @@ const DetailPerusahaan: React.FC = () => {
         </div>
 
         {/* card kanan */}
-        <div className="col-span-8 bg-white rounded-lg p-6 shadow-sm">
+        <div className="col-span-12 md:col-span-8 bg-white rounded-lg p-4 md:p-6 shadow-sm">
           <div className="border-b mb-4">
             <nav className="flex gap-4 -mb-px">
               <button onClick={() => setTab('profile')} className={`py-2 px-3 ${tab==='profile'? 'border-b-2 border-blue-600 text-blue-600':'text-gray-600'}`}>Profil Perusahaan</button>
@@ -123,21 +154,27 @@ const DetailPerusahaan: React.FC = () => {
 
           {tab === 'profile' && (
             <div>
-              <h3 className="text-2xl font-semibold mb-2 text-[#004969]">Profil Perusahaan</h3>
-              <p className="text-gray-600 mb-4">{company?.description || '—'}</p>
+              <h3 className="text-3xl font-semibold mb-2 text-[#004969]">Profil Perusahaan</h3>
+              <p className="text-[#000] mb-4">{company?.description || '—'}</p>
 
               <div className="flex items-center justify-between mb-3">
-                <h4 className="text-2xl font-semibold text-[#004969]">Branch</h4>
-                <button onClick={() => setAddBranchOpen(true)} className="bg-blue-600 text-white px-3 py-1 rounded">Tambah Branch</button>
+                <h4 className="text-3xl font-semibold text-[#004969]">Branch</h4>
+                <Button onClick={() => setAddBranchOpen(true)} className="flex items-center justify-center bg-blue-600 text-white  rounded">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="2" y="2" width="20" height="20" rx="10" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1 3"/>
+                  <path d="M11.9987 7.33301V16.6663M7.33203 11.9997H16.6654" stroke="white" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+
+                  Tambah Branch</Button>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {branches.map((b) => (
-                  <div key={b.id} className="p-3 border rounded flex justify-between items-center">
+                  <div key={b.id} className="p-3 border rounded flex justify-between items-center gap-3 flex-wrap sm:flex-nowrap">
                     <div>
                       <div className="font-semibold">{b.name}</div>
                       <div className="text-sm text-gray-500">{b.address}</div>
-                      <div className="text-sm text-gray-500">{b.employeeCount ? `${b.employeeCount} Employees` : ''}</div>
+                      <div className="text-sm text-gray-500">{b.employeeCount ? `${b.employeeCount} Employees` : '0 Employees'}</div>
                     </div>
                     <div>
                       <button onClick={() => { setSelectedBranch(b); setDeleteBranchOpen(true); }} className="bg-red-500 text-white rounded px-2 py-1"><TrashBinIcon/></button>
@@ -151,42 +188,100 @@ const DetailPerusahaan: React.FC = () => {
           {tab === 'dokumen' && (
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-2xl  font-semibold text-[#004969]">Dokumen & Arsip</h3>
-                <button onClick={() => setAddDocOpen(true)} className="bg-blue-600 text-white px-3 py-1 rounded">Dokumen Baru</button>
+                <h3 className="text-3xl  font-semibold text-[#004969]">Dokumen & Arsip</h3>
+                <Button onClick={() => setAddDocOpen(true)} className="bg-blue-600 text-white px-3 py-1 rounded"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="2" y="2" width="20" height="20" rx="10" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1 3"/>
+                  <path d="M11.9987 7.33301V16.6663M7.33203 11.9997H16.6654" stroke="white" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  Dokumen Baru</Button>
               </div>
 
-              <div className="mb-4">
-                <h4 className="font-semibold">Dokumen Berlaku</h4>
-                <div className="grid grid-cols-2 gap-3">
-                  {documents.filter(d=>d.type === 'active').map(d => (
-                    <div key={d.id} className="p-3 border rounded flex justify-between items-center">
-                      <div>
-                        <div className="font-semibold">{d.name}</div>
-                        <div className="text-sm text-gray-500">{d.docNumber} • {d.fileName} • {d.size || ''}</div>
-                      </div>
-                      <div className="flex gap-2">
-                        <button onClick={() => { setSelectedDoc(d); setDeleteDocOpen(true); }} className="bg-red-500 text-white px-2 py-1 rounded"><TrashBinIcon/></button>
-                      </div>
-                    </div>
-                  ))}
+              {/* Dokumen Berlaku - collapsible */}
+              <div className="mb-4 rounded-lg">
+                <div className="flex items-center justify-between px-4 py-3 bg-gray-50">
+                  <h4 className="font-semibold">Dokumen Berlaku</h4>
+                  <button
+                    type="button"
+                    onClick={() => setExpandActive((v) => !v)}
+                    className="h-8 w-8 flex items-center justify-center rounded-md border hover:bg-gray-100"
+                    aria-label={expandActive ? 'Collapse Dokumen Berlaku' : 'Expand Dokumen Berlaku'}
+                  >
+                    {expandActive ? <AngleUpIcon className="h-4 w-4"/> : <AngleDownIcon className="h-4 w-4"/>}
+                  </button>
                 </div>
+                {expandActive && (<>
+                  {documents?.length ? 
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4">
+                    {documents.filter(d=>d.type === 'active').map(d => (
+                      <div key={d.id} className=" p-4">
+                        <div className="mb-3 font-medium line-clamp-1">{d.name}</div>
+                        <div className="flex items-center justify-between gap-3 rounded border p-2">
+                          <div className="flex items-center gap-2">
+                            <div className="h-12 w-12 rounded bg-gray-200 flex items-center justify-center">
+                              <FileIcon className="h-6 w-6 text-gray-500" />
+                            </div>
+                            <div>
+                              <div className="text-sm font-medium line-clamp-2">{d.fileName || '—'}</div>
+                              <div className="text-xs text-gray-500">{d.size || ''}</div>
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <button onClick={() => { setSelectedDoc(d); setDeleteDocOpen(true); }} className="h-9 w-9 flex items-center justify-center rounded-lg bg-red-500 text-white hover:bg-red-600"><TrashBinIcon className="h-5 w-5"/></button>
+                            <button onClick={() => { setSelectedDoc(d); setAddDocOpen(true); }} className="h-9 w-9 flex items-center justify-center rounded-lg bg-blue-600 text-white hover:bg-blue-700"><PencilIcon className="h-5 w-5"/></button>
+                          </div>
+                        </div>
+                        <button className="mt-3 inline-flex items-center gap-1 text-sm text-blue-600 hover:underline" onClick={() => {/* TODO: navigate to detail */}}>
+                          Detail <ArrowRightIcon className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>:<p className={'text-center w-full'}>Tidak ada dokumen Berlaku</p>}
+                </>)}
               </div>
 
-              <div>
-                <h4 className="font-semibold">Riwayat dan Arsip</h4>
-                <div className="grid grid-cols-2 gap-3">
-                  {documents.filter(d=>d.type === 'archive').map(d => (
-                    <div key={d.id} className="p-3 border rounded flex justify-between items-center">
-                      <div>
-                        <div className="font-semibold">{d.name}</div>
-                        <div className="text-sm text-gray-500">{d.docNumber} • {d.fileName}</div>
-                      </div>
-                      <div className="flex gap-2">
-                        <button onClick={() => { setSelectedDoc(d); setDeleteDocOpen(true); }} className="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
-                      </div>
-                    </div>
-                  ))}
+              {/* Riwayat dan Arsip - collapsible */}
+              <div className="rounded-lg">
+                <div className="flex items-center justify-between px-4 py-3 bg-gray-50">
+                  <h4 className="font-semibold">Riwayat dan Arsip</h4>
+                  <button
+                    type="button"
+                    onClick={() => setExpandArchive((v) => !v)}
+                    className="h-8 w-8 flex items-center justify-center rounded-md border hover:bg-gray-100"
+                    aria-label={expandArchive ? 'Collapse Riwayat dan Arsip' : 'Expand Riwayat dan Arsip'}
+                  >
+                    {expandArchive ? <AngleUpIcon className="h-4 w-4"/> : <AngleDownIcon className="h-4 w-4"/>}
+                  </button>
                 </div>
+                {expandArchive && (
+                  <>
+                  {documents?.length ? 
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4">
+                    {documents.filter(d=>d.type === 'archive').map(d => (
+                      <div key={d.id} className=" p-4">
+                        <div className="mb-3 font-medium line-clamp-1">{d.name}</div>
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-2 rounded border p-2">
+                            <div className="h-12 w-12 rounded bg-gray-200 flex items-center justify-center">
+                              <FileIcon className="h-6 w-6 text-gray-500" />
+                            </div>
+                            <div>
+                              <div className="text-sm font-medium line-clamp-2">{d.fileName || '—'}</div>
+                              <div className="text-xs text-gray-500">{d.size || ''}</div>
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <button onClick={() => { setSelectedDoc(d); setDeleteDocOpen(true); }} className="h-9 w-9 flex items-center justify-center rounded-lg bg-red-500 text-white hover:bg-red-600"><TrashBinIcon className="h-5 w-5"/></button>
+                            <button onClick={() => { setSelectedDoc(d); setAddDocOpen(true); }} className="h-9 w-9 flex items-center justify-center rounded-lg bg-blue-600 text-white hover:bg-blue-700"><PencilIcon className="h-5 w-5"/></button>
+                          </div>
+                        </div>
+                        <button className="mt-3 inline-flex items-center gap-1 text-sm text-blue-600 hover:underline" onClick={() => {/* TODO: navigate to detail */}}>
+                          Detail <ArrowRightIcon className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>:<p className={'text-center w-full'}>Tidak ada dokumen Arsip</p>}
+                  </>
+                )}
               </div>
             </div>
           )}

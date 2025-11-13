@@ -2,12 +2,13 @@
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DataTable, DataTableColumn } from '../../../structure-and-organize/components/datatable/DataTable';
+import { DataTable, DataTableColumn, DataTableAction } from '../../../structure-and-organize/components/datatable/DataTable';
 import { Karyawan } from '../../types/Karyawan';
 import useKaryawan from '../../hooks/useKaryawan';
 // import { Edit2, Trash2, Eye } from 'react-feather';
 import Button from '../../../../components/ui/button/Button';
 import AddKaryawanModal from '../../components/AddKaryawanModal';
+import { Edit2, Eye, Trash2 } from 'react-feather';
 
 export default function DataKaryawanPage() {
   const navigate = useNavigate();
@@ -109,41 +110,104 @@ export default function DataKaryawanPage() {
         </span>
       ),
     },
+    {
+      id:'office',
+      label: 'Office',
+      minWidth: 130,
+      sortable: true,
+    },{
+      id:'jabatan',
+      label: 'Jabatan',
+      minWidth: 130,
+      sortable: true,
+    },
+    {
+      id:'grade',
+      label: 'Grade',
+      minWidth: 130,
+      sortable: true,
+    },{
+      id:'posisi',
+      label: 'User Access',
+      minWidth: 130,
+      sortable: true,
+    },{
+      id:'departement',
+      label: 'Departement',
+      minWidth: 130,
+      sortable: true,
+    },{
+      id:'divisi',
+      label: 'Divisi',
+      minWidth: 130,
+      sortable: true,
+    },
+    {
+      id: 'status',
+      label: 'Status Karyawan',
+      minWidth: 100,
+      sortable: true,
+      format: (value) => (
+        <span className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${
+          value === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+        }`}>
+          {value}
+        </span>
+      ),
+    },{
+      id: 'statusPayroll',
+      label: 'Status Payroll',
+      minWidth: 100,
+      sortable: true,
+      format: (value) => (
+        <span className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${
+          value === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+        }`}>
+          {value}
+        </span>
+      ),
+    },{
+      id:'kategori',
+      label: 'kategori karyawan',
+      minWidth: 130,
+      sortable: true,
+    },
+
   ];
 
   // Define actions untuk DataTable
-  // const actions: DataTableAction<Karyawan>[] = [
-  //   {
-  //     label: 'Lihat Detail',
-  //     icon: <Eye size={16} />,
-  //     onClick: (row) => {
-  //       setSelectedKaryawan(row);
-  //       setShowDetailModal(true);
-  //     },
-  //     variant: 'outline',
-  //     color: 'info',
-  //   },
-  //   {
-  //     label: 'Edit',
-  //     icon: <Edit2 size={16} />,
-  //     onClick: (row) => {
-  //       console.log('Edit karyawan:', row);
-  //       // TODO: Navigate to edit page or open edit modal
-  //     },
-  //     variant: 'outline',
-  //     color: 'warning',
-  //   },
-  //   {
-  //     label: 'Hapus',
-  //     icon: <Trash2 size={16} />,
-  //     onClick: (row) => {
-  //       console.log('Delete karyawan:', row);
-  //       // TODO: Show delete confirmation modal
-  //     },
-  //     variant: 'outline',
-  //     color: 'error',
-  //   },
-  // ];
+  const actions: DataTableAction<Karyawan>[] = [
+    {
+      label: 'Lihat Detail',
+      icon: <Eye size={16} />,
+      onClick: (row) => {
+        setSelectedKaryawan(row);
+        setShowDetailModal(true);
+      },
+      variant: 'outline',
+      color: 'info',
+    },
+    {
+      label: 'Edit',
+      icon: <Edit2 size={16} />,
+      onClick: (row) => {
+        console.log('Edit karyawan:', row);
+        // TODO: Navigate to edit page or open edit modal
+      },
+      variant: 'outline',
+      color: 'warning',
+    },
+    {
+      label: 'Hapus',
+      icon: <Trash2 size={16} />,
+      onClick: (row) => {
+        console.log('Delete karyawan:', row);
+        // TODO: Show delete confirmation modal
+      },
+      variant: 'outline',
+      color: 'error',
+    },
+  ];
 
   const handleAddKaryawan = () => {
     // Open the Add Karyawan modal
@@ -185,7 +249,7 @@ export default function DataKaryawanPage() {
       <DataTable
         data={data}
         columns={columns}
-        // actions={actions}
+        actions={actions}
         title="Data Master Karyawan"
         searchable={true}
         searchPlaceholder="Cari berdasarkan kata kunci"

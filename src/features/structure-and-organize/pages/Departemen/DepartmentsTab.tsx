@@ -16,6 +16,7 @@ type Props = { resetKey: string };
 const departmentColumns: DataTableColumn<DepartmentRow>[] = [
   { id: 'no', label: 'No', sortable: true },
   { id: 'Nama Departemen', label: 'Nama Departemen', sortable: true },
+  { id: 'Nama Divisi', label: 'Divisi', sortable: true },
   { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: true, format: () => <FileText size={16} /> },
 ];
 
@@ -30,6 +31,7 @@ export default function DepartmentsTab({ resetKey }: Props) {
     return (departments || []).map((d, idx) => ({
       no: idx + 1,
       'Nama Departemen': (d as any).name ?? '—',
+      'Nama Divisi': (d as any).divisionName ?? '—',
       'File SK dan Memo': ((d as any).skFile || (d as any).memoFile) ? 'Ada' : '—',
       raw: d,
     }));

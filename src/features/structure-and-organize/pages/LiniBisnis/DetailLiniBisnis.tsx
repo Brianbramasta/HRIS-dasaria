@@ -13,7 +13,7 @@ export default function DetailLiniBisnis() {
   const [title, setTitle] = React.useState<string>('Detail Lini Bisnis');
   const [overviewText, setOverviewText] = React.useState<string>('');
   const [personalFiles, setPersonalFiles] = React.useState<Array<{ no: number; namaFile: string; dokumen: string }>>([]);
-  const [companies, setCompanies] = React.useState<Array<{ no: number; nama: string; dokumen: string }>>([]);
+  const [companies, setCompanies] = React.useState<Array<{ no: number; nama: string; dokumen: string, companyId: string }>>([]);
   const [loading, setLoading] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string | null>(null);
 
@@ -49,7 +49,7 @@ export default function DetailLiniBisnis() {
         // Fetch companies using this business line
         const companiesResp = await apiService.get<Company[]>(`/companies?businessLineId=${id}`);
         const comps = (companiesResp?.data ?? []) as Company[];
-        setCompanies(comps.map((c, idx) => ({ no: idx + 1, nama: c.name, dokumen: c.details ? c.details : '—' })));
+        setCompanies(comps.map((c, idx) => ({ no: idx + 1, nama: c.name, dokumen: c.details ? c.details : '—', companyId: c.id })));
       } catch (err) {
         console.error('Failed to load business line detail:', err);
         setError(err instanceof Error ? err.message : 'Gagal memuat detail lini bisnis');
@@ -83,8 +83,8 @@ export default function DetailLiniBisnis() {
 
       {/* Berkas/Dokumen Pribadi */}
       <ExpandCard title="Berkas/Dokumen Pribadi" withHeaderDivider defaultOpen>
-        <div className="p-0">
-          <Table className="min-w-full">
+        <div className="p-0 overflow-x-auto">
+          <Table className="min-w-[640px] md:min-w-full">
             <TableHeader>
               <TableRow className="bg-brand-900 text-white">
                 <TableCell isHeader className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">No.</TableCell>
@@ -124,8 +124,8 @@ export default function DetailLiniBisnis() {
 
       {/* Daftar Perusahaan */}
       <ExpandCard title="Daftar Perusahaan" withHeaderDivider defaultOpen>
-        <div className="p-0">
-          <Table className="min-w-full">
+        <div className="p-0 overflow-x-auto">
+          <Table className="min-w-[640px] md:min-w-full">
             <TableHeader>
               <TableRow className="bg-brand-900 text-white">
                 <TableCell isHeader className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">No.</TableCell>
@@ -142,9 +142,9 @@ export default function DetailLiniBisnis() {
                   <TableCell className="px-6 py-4 text-sm">{c.dokumen}</TableCell>
                   <TableCell className="px-6 py-4 text-center">
                     <div className="flex items-center justify-center gap-2">
-                      <button className="rounded-md border border-gray-300 px-2 py-1 text-sm hover:bg-gray-50">
+                      <Link to={`/structure-and-organize/companies/${c.companyId}`} className="rounded-md border border-gray-300 px-2 py-1 text-sm hover:bg-gray-50">
                         <Eye size={16} />
-                      </button>
+                      </Link>
                       <button className="rounded-md border border-gray-300 px-2 py-1 text-sm hover:bg-gray-50">
                         <Download size={16} />
                       </button>
