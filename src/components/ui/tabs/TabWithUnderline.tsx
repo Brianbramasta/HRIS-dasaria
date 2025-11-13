@@ -63,6 +63,7 @@ type TabWithUnderlineProps = {
   tabs?: TabItem[];
   initialActiveId?: string;
   renderContent?: (activeId: string) => ReactNode;
+  onChangeActiveId?: (activeId: string) => void;
 };
 
 const DEFAULT_TABS: TabItem[] = [
@@ -76,6 +77,7 @@ const TabWithUnderline: React.FC<TabWithUnderlineProps> = ({
   tabs = DEFAULT_TABS,
   initialActiveId,
   renderContent,
+  onChangeActiveId,
 }) => {
   const [activeTab, setActiveTab] = useState(initialActiveId || tabs[0]?.id || "overview");
 
@@ -89,7 +91,10 @@ const TabWithUnderline: React.FC<TabWithUnderlineProps> = ({
               id={tab.id}
               label={tab.label}
               isActive={activeTab === tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => {
+                setActiveTab(tab.id);
+                onChangeActiveId?.(tab.id);
+              }}
             />
           ))}
         </nav>

@@ -78,6 +78,9 @@ import PengunduranDiri from "../features/staff/pages/pengunduran-diri/pengundura
 import FormResignPage from "../features/staff/pages/pengunduran-diri/form-resign/form-resign";
 import DetailPengunduranDiriPage from "../features/staff/pages/pengunduran-diri/detail/DetailPengunduranDiriPage";
 import PerpanjanganKontrak from "../features/staff/pages/data-karyawan/tabs/perpanjangan-kontrak";
+import DataKaryawanPelanggaran from "../features/staff/pages/data-karyawan/detail/tab/pelanggaran";
+import OrganizationHistoryPage from "../features/staff/pages/organizationHistoryPage";
+
 
 // Auth Feature Pages
 import { LoginPage, ForgotPasswordPage } from "../features/auth/pages";
@@ -107,14 +110,18 @@ export default function AppRoutes() {
           <Route path="positions" element={<PositionsTab resetKey="positions" />} />
           <Route path="employee-positions" element={<EmployeePositionsTab resetKey="employee-positions" />} />
           </Route>
+
           <Route path="/data-karyawan" element={<DataKaryawanIndexPage />} />
           <Route path="/data-karyawan/:id" element={<DetailKaryawanPage />} />
           <Route path="/data-karyawan/perpanjangan-kontrak" element={<PerpanjanganKontrak />} />
-          
+          <Route path="/data-karyawan/:id/pelanggaran" element={<DataKaryawanPelanggaran />} />
           <Route path="/pengunduran-diri" element={<PengunduranDiri />} />
           <Route path="/pengunduran-diri/form" element={<FormResignPage />} />
           <Route path="/pengunduran-diri/:id" element={<DetailPengunduranDiriPage />} />
           <Route path="/perpanjangan-kontrak" element={<PerpanjanganKontrak />} />
+          
+          <Route path="/organization-history" element={<OrganizationHistoryPage />} />
+
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/marketing" element={<Marketing />} />
           <Route path="/crm" element={<Crm />} />

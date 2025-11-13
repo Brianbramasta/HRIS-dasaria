@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import TabWithUnderline from '../../../../../components/ui/tabs/TabWithUnderline';
 // import Button from '../../../../../components/ui/button/Button';
 import { karyawanService } from '../../../../staff/services/karyawanService';
@@ -18,8 +18,11 @@ function useQuery() {
 export default function DetailKaryawanPage() {
   const { id } = useParams();
   const query = useQuery();
+  const location = useLocation();
+  const navigate = useNavigate();
   const mode = query.get('mode') || 'view';
   const isEditable = mode === 'edit';
+  const tabParam = (query.get('tab') || 'personal-information').toLowerCase();
 
   const [data, setData] = useState<Karyawan | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -103,7 +106,13 @@ export default function DetailKaryawanPage() {
       {/* Tabs */}
       <TabWithUnderline
         tabs={tabs}
-        initialActiveId={'personal-information'}
+        initialActiveId={tabs.some(t => t.id === tabParam) ? tabParam : 'personal-information'}
+        key={tabs.some(t => t.id === tabParam) ? tabParam : 'personal-information'}
+        onChangeActiveId={(activeId) => {
+          const params = new URLSearchParams(location.search);
+          params.set('tab', activeId);
+          navigate(`${location.pathname}?${params.toString()}` , { replace: true });
+        }}
         renderContent={(activeId) => {
           switch (activeId) {
             case 'personal-information':
