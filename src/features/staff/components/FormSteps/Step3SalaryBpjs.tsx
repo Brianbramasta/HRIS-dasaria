@@ -1,7 +1,8 @@
 import React from 'react';
 import { useFormulirKaryawanStore } from '../../stores/useFormulirKaryawanStore';
-import Input from '../../../../components/ui/input/Input';
-import Select from '../../../../components/ui/select/Select';
+import Input from '../../../../components/form/input/InputField';
+import Select from '../../../../components/form/Select';
+import Label from '../../../../components/form/Label';
 
 const BANK_OPTIONS = [
   { label: 'Bank Mandiri', value: 'mandiri' },
@@ -36,41 +37,52 @@ export const Step3SalaryBpjs: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Bank */}
-          <Select
-            label="Bank"
-            options={BANK_OPTIONS}
-            value={step3.bank}
-            onChange={(e) => handleChange('bank', e.target.value)}
-            placeholder="Select"
-            required
-          />
+          <div>
+            <Label>Bank</Label>
+            <Select
+              options={BANK_OPTIONS}
+              defaultValue={step3.bank}
+              onChange={(value) => handleChange('bank', value)}
+              placeholder="Select"
+              required
+            />
+          </div>
 
           {/* Nama Akun Bank */}
-          <Input
-            label="Nama Akun Bank"
-            placeholder="Masukkan nama akun"
-            value={step3.namaAkunBank}
-            onChange={(e) => handleChange('namaAkunBank', e.target.value)}
-            required
-          />
+          <div>
+            <Label htmlFor="namaAkunBank">Nama Akun Bank</Label>
+            <Input
+              id="namaAkunBank"
+              placeholder="Masukkan nama akun"
+              value={step3.namaAkunBank}
+              onChange={(e) => handleChange('namaAkunBank', e.target.value)}
+              required
+            />
+          </div>
 
           {/* No. Rekening */}
-          <Input
-            label="No. Rekening"
-            placeholder="Masukkan nomor rekening"
-            value={step3.noRekening}
-            onChange={(e) => handleChange('noRekening', e.target.value)}
-            required
-          />
+          <div>
+            <Label htmlFor="noRekening">No. Rekening</Label>
+            <Input
+              id="noRekening"
+              placeholder="Masukkan nomor rekening"
+              value={step3.noRekening}
+              onChange={(e) => handleChange('noRekening', e.target.value)}
+              required
+            />
+          </div>
 
           {/* NPWP */}
-          <Input
-            label="NPWP"
-            placeholder="Masukkan NPWP"
-            value={step3.npwp}
-            onChange={(e) => handleChange('npwp', e.target.value)}
-            required
-          />
+          <div>
+            <Label htmlFor="npwp">NPWP</Label>
+            <Input
+              id="npwp"
+              placeholder="Masukkan NPWP"
+              value={step3.npwp}
+              onChange={(e) => handleChange('npwp', e.target.value)}
+              required
+            />
+          </div>
         </div>
       </div>
 
@@ -82,47 +94,58 @@ export const Step3SalaryBpjs: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* No. BPJS Kesehatan */}
-          <Input
-            label="No. BPJS Kesehatan"
-            placeholder="Masukkan nomor"
-            value={step3.noBpjsKesehatan}
-            onChange={(e) => handleChange('noBpjsKesehatan', e.target.value)}
-            required
-          />
+          <div>
+            <Label htmlFor="noBpjsKesehatan">No. BPJS Kesehatan</Label>
+            <Input
+              id="noBpjsKesehatan"
+              placeholder="Masukkan nomor"
+              value={step3.noBpjsKesehatan}
+              onChange={(e) => handleChange('noBpjsKesehatan', e.target.value)}
+              required
+            />
+          </div>
 
           {/* Status BPJS Kesehatan */}
-          <Select
-            label="Status BPJS Kesehatan (Mandiri/PBI)"
-            options={BPJS_STATUS_OPTIONS}
-            value={step3.statusBpjsKesehatan}
-            onChange={(e) => handleChange('statusBpjsKesehatan', e.target.value)}
-            placeholder="Select"
-            required
-          />
+          <div>
+            <Label>Status BPJS Kesehatan (Mandiri/PBI)</Label>
+            <Select
+              options={BPJS_STATUS_OPTIONS}
+              defaultValue={step3.statusBpjsKesehatan}
+              onChange={(value) => handleChange('statusBpjsKesehatan', value)}
+              placeholder="Select"
+              required
+            />
+          </div>
 
           {/* No. BPJS Ketenagakerjaan */}
-          <Input
-            label="No. BPJS Ketenagakerjaan"
-            placeholder="Masukkan nomor"
-            value={step3.noBpjsKetenagakerjaan}
-            onChange={(e) => handleChange('noBpjsKetenagakerjaan', e.target.value)}
-            required
-          />
+          <div>
+            <Label htmlFor="noBpjsKetenagakerjaan">No. BPJS Ketenagakerjaan</Label>
+            <Input
+              id="noBpjsKetenagakerjaan"
+              placeholder="Masukkan nomor"
+              value={step3.noBpjsKetenagakerjaan}
+              onChange={(e) => handleChange('noBpjsKetenagakerjaan', e.target.value)}
+              required
+            />
+          </div>
 
           {/* Status BPJS Ketenagakerjaan */}
-          <Select
-            label="Status BPJS Ketenagakerjaan"
-            options={BPJS_STATUS_OPTIONS}
-            value={step3.statusBpjsKetenagakerjaan}
-            onChange={(e) => handleChange('statusBpjsKetenagakerjaan', e.target.value)}
-            placeholder="Select"
-            required
-          />
+          <div>
+            <Label>Status BPJS Ketenagakerjaan</Label>
+            <Select
+              options={BPJS_STATUS_OPTIONS}
+              defaultValue={step3.statusBpjsKetenagakerjaan}
+              onChange={(value) => handleChange('statusBpjsKetenagakerjaan', value)}
+              placeholder="Select"
+              required
+            />
+          </div>
 
           {/* Nominal BPJS TK */}
           <div className="md:col-span-2">
+            <Label htmlFor="nominalBpjsTk">Nominal BPJS TK/Nominal BPJS KS</Label>
             <Input
-              label="Nominal BPJS TK/Nominal BPJS KS"
+              id="nominalBpjsTk"
               placeholder="Masukkan nominal"
               value={step3.nominalBpjsTk}
               onChange={(e) => handleChange('nominalBpjsTk', e.target.value)}

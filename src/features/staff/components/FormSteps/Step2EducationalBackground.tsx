@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useFormulirKaryawanStore } from '../../stores/useFormulirKaryawanStore';
-import Input from '../../../../components/ui/input/Input';
-import Select from '../../../../components/ui/select/Select';
+import Input from '../../../../components/form/input/InputField';
+import Select from '../../../../components/form/Select';
+import Label from '../../../../components/form/Label';
 import Button from '../../../../components/ui/button/Button';
 import { Trash2, Plus } from 'react-feather';
 import { EducationItem } from '../../types/FormulirKaryawan';
@@ -79,55 +80,65 @@ export const Step2EducationalBackground: React.FC = () => {
           {/* Add Education Form */}
           <div className="border border-gray-300 dark:border-gray-600 rounded-lg p-4 bg-gray-50 dark:bg-gray-800">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Select
-                label="Nama Lembaga"
-                options={LEMBAGA_OPTIONS}
-                value={newEducation.namaLembaga}
-                onChange={(e) =>
-                  setNewEducation({
-                    ...newEducation,
-                    namaLembaga: e.target.value,
-                  })
-                }
-                placeholder="Select"
-              />
+              <div>
+                <Label>Nama Lembaga</Label>
+                <Select
+                  options={LEMBAGA_OPTIONS}
+                  defaultValue={newEducation.namaLembaga}
+                  onChange={(value) =>
+                    setNewEducation({
+                      ...newEducation,
+                      namaLembaga: value,
+                    })
+                  }
+                  placeholder="Select"
+                />
+              </div>
 
-              <Input
-                label="Nilai Pendidikan Terakhir"
-                placeholder="Masukkan nilai"
-                value={newEducation.nilaiPendidikan}
-                onChange={(e) =>
-                  setNewEducation({
-                    ...newEducation,
-                    nilaiPendidikan: e.target.value,
-                  })
-                }
-              />
+              <div>
+                <Label htmlFor="nilaiPendidikan">Nilai Pendidikan Terakhir</Label>
+                <Input
+                  id="nilaiPendidikan"
+                  placeholder="Masukkan nilai"
+                  value={newEducation.nilaiPendidikan}
+                  onChange={(e) =>
+                    setNewEducation({
+                      ...newEducation,
+                      nilaiPendidikan: e.target.value,
+                    })
+                  }
+                />
+              </div>
 
-              <Select
-                label="Jurusan / Keahlian"
-                options={JURUSAN_OPTIONS}
-                value={newEducation.jurusanKeahlian}
-                onChange={(e) =>
-                  setNewEducation({
-                    ...newEducation,
-                    jurusanKeahlian: e.target.value,
-                  })
-                }
-                placeholder="Select"
-              />
+              <div>
+                <Label>Jurusan / Keahlian</Label>
+                <Select
+                  options={JURUSAN_OPTIONS}
+                  defaultValue={newEducation.jurusanKeahlian}
+                  onChange={(value) =>
+                    setNewEducation({
+                      ...newEducation,
+                      jurusanKeahlian: value,
+                    })
+                  }
+                  placeholder="Select"
+                />
+              </div>
 
-              <Input
-                label="Tahun Lulus"
-                placeholder="Masukkan tahun lulus"
-                value={newEducation.tahunLulus}
-                onChange={(e) =>
-                  setNewEducation({
-                    ...newEducation,
-                    tahunLulus: e.target.value,
-                  })
-                }
-              />
+              <div>
+                <Label htmlFor="tahunLulus">Tahun Lulus</Label>
+                <Input
+                  id="tahunLulus"
+                  placeholder="Masukkan tahun lulus"
+                  value={newEducation.tahunLulus}
+                  onChange={(e) =>
+                    setNewEducation({
+                      ...newEducation,
+                      tahunLulus: e.target.value,
+                    })
+                  }
+                />
+              </div>
             </div>
 
             <Button
@@ -178,70 +189,94 @@ export const Step2EducationalBackground: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Facebook */}
-          <Input
-            label="Facebook"
-            placeholder="https://www.facebook.com/"
-            value={step2.facebook}
-            onChange={(e) => handleChange('facebook', e.target.value)}
-          />
+          <div>
+            <Label htmlFor="facebook">Facebook</Label>
+            <Input
+              id="facebook"
+              placeholder="https://www.facebook.com/"
+              value={step2.facebook}
+              onChange={(e) => handleChange('facebook', e.target.value)}
+            />
+          </div>
 
           {/* X.com */}
-          <Input
-            label="X.com"
-            placeholder="https://x.com/"
-            value={step2.xCom}
-            onChange={(e) => handleChange('xCom', e.target.value)}
-          />
+          <div>
+            <Label htmlFor="xCom">X.com</Label>
+            <Input
+              id="xCom"
+              placeholder="https://x.com/"
+              value={step2.xCom}
+              onChange={(e) => handleChange('xCom', e.target.value)}
+            />
+          </div>
 
           {/* LinkedIn */}
-          <Input
-            label="LinkedIn"
-            placeholder="https://www.linkedin.com/"
-            value={step2.linkedin}
-            onChange={(e) => handleChange('linkedin', e.target.value)}
-          />
+          <div>
+            <Label htmlFor="linkedin">LinkedIn</Label>
+            <Input
+              id="linkedin"
+              placeholder="https://www.linkedin.com/"
+              value={step2.linkedin}
+              onChange={(e) => handleChange('linkedin', e.target.value)}
+            />
+          </div>
 
           {/* Instagram */}
-          <Input
-            label="Instagram"
-            placeholder="https://instagram.com/"
-            value={step2.instagram}
-            onChange={(e) => handleChange('instagram', e.target.value)}
-          />
+          <div>
+            <Label htmlFor="instagram">Instagram</Label>
+            <Input
+              id="instagram"
+              placeholder="https://instagram.com/"
+              value={step2.instagram}
+              onChange={(e) => handleChange('instagram', e.target.value)}
+            />
+          </div>
 
           {/* Akun Sosial Media Orang Terdekat */}
-          <Input
-            label="Akun Sosial Media Orang Terdekat"
-            placeholder="https://www.linkedin.com/"
-            value={step2.akunSosialMediaTerdekat}
-            onChange={(e) => handleChange('akunSosialMediaTerdekat', e.target.value)}
-          />
+          <div>
+            <Label htmlFor="akunSosialMediaTerdekat">Akun Sosial Media Orang Terdekat</Label>
+            <Input
+              id="akunSosialMediaTerdekat"
+              placeholder="https://www.linkedin.com/"
+              value={step2.akunSosialMediaTerdekat}
+              onChange={(e) => handleChange('akunSosialMediaTerdekat', e.target.value)}
+            />
+          </div>
 
           {/* No. Kontak Darurat */}
-          <Input
-            label="No. Kontak Darurat"
-            placeholder="+62"
-            value={step2.noKontakDarurat}
-            onChange={(e) => handleChange('noKontakDarurat', e.target.value)}
-            required
-          />
+          <div>
+            <Label htmlFor="noKontakDarurat">No. Kontak Darurat</Label>
+            <Input
+              id="noKontakDarurat"
+              placeholder="+62"
+              value={step2.noKontakDarurat}
+              onChange={(e) => handleChange('noKontakDarurat', e.target.value)}
+              required
+            />
+          </div>
 
           {/* Nama No. Kontak Darurat */}
-          <Input
-            label="Nama No. Kontak Darurat"
-            placeholder="Masukkan nama"
-            value={step2.namaNoKontakDarurat}
-            onChange={(e) => handleChange('namaNoKontakDarurat', e.target.value)}
-            required
-          />
+          <div>
+            <Label htmlFor="namaNoKontakDarurat">Nama No. Kontak Darurat</Label>
+            <Input
+              id="namaNoKontakDarurat"
+              placeholder="Masukkan nama"
+              value={step2.namaNoKontakDarurat}
+              onChange={(e) => handleChange('namaNoKontakDarurat', e.target.value)}
+              required
+            />
+          </div>
 
           {/* Hubungan dengan Kontak Darurat */}
-          <Input
-            label="Hubungan dengan Kontak Darurat"
-            placeholder="Masukkan hubungan"
-            value={step2.hubunganKontakDarurat}
-            onChange={(e) => handleChange('hubunganKontakDarurat', e.target.value)}
-          />
+          <div>
+            <Label htmlFor="hubunganKontakDarurat">Hubungan dengan Kontak Darurat</Label>
+            <Input
+              id="hubunganKontakDarurat"
+              placeholder="Masukkan hubungan"
+              value={step2.hubunganKontakDarurat}
+              onChange={(e) => handleChange('hubunganKontakDarurat', e.target.value)}
+            />
+          </div>
         </div>
       </div>
     </div>

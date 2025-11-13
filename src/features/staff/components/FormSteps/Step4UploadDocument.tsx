@@ -1,6 +1,8 @@
 import React, { useRef } from 'react';
 import { useFormulirKaryawanStore } from '../../stores/useFormulirKaryawanStore';
-import Select from '../../../../components/ui/select/Select';
+import Select from '../../../../components/form/Select';
+import Label from '../../../../components/form/Label';
+// import FileInput from '../../../../components/form/input/FileInput';
 import Button from '../../../../components/ui/button/Button';
 import { Trash2, Plus } from 'react-feather';
 import { DocumentItem } from '../../types/FormulirKaryawan';
@@ -74,11 +76,11 @@ export const Step4UploadDocument: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
             {/* Document Type Select */}
             <div>
+              <Label>Tipe File</Label>
               <Select
-                label="Tipe File"
                 options={DOCUMENT_TYPE_OPTIONS}
-                value={selectedType}
-                onChange={(e) => setSelectedType(e.target.value)}
+                defaultValue={selectedType}
+                onChange={(value) => setSelectedType(value)}
                 placeholder="Pilih Jenis Dokumen"
               />
             </div>

@@ -1,8 +1,9 @@
 import React from 'react';
 import { useFormulirKaryawanStore } from '../../stores/useFormulirKaryawanStore';
-import Input from '../../../../components/ui/input/Input';
-import Select from '../../../../components/ui/select/Select';
-import TextArea from '../../../../components/ui/textarea/TextArea';
+import Input from '../../../../components/form/input/InputField';
+import Select from '../../../../components/form/Select';
+import TextArea from '../../../../components/form/input/TextArea';
+import Label from '../../../../components/form/Label';
 
 const AGAMA_OPTIONS = [
   { label: 'Islam', value: 'islam' },
@@ -68,128 +69,158 @@ export const Step1PersonalData: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Nama Lengkap */}
-          <Input
-            label="Nama Lengkap"
-            placeholder="Masukkan nama lengkap"
-            value={step1.namaLengkap}
-            onChange={(e) => handleChange('namaLengkap', e.target.value)}
-            required
-          />
+          <div>
+            <Label htmlFor="namaLengkap">Nama Lengkap</Label>
+            <Input
+              id="namaLengkap"
+              placeholder="Masukkan nama lengkap"
+              value={step1.namaLengkap}
+              onChange={(e) => handleChange('namaLengkap', e.target.value)}
+              required
+            />
+          </div>
 
           {/* Email */}
-          <Input
-            label="Email"
-            type="email"
-            placeholder="Email@example.com"
-            value={step1.email}
-            onChange={(e) => handleChange('email', e.target.value)}
-            required
-          />
+          <div>
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="Email@example.com"
+              value={step1.email}
+              onChange={(e) => handleChange('email', e.target.value)}
+              required
+            />
+          </div>
 
           {/* NIK */}
-          <Input
-            label="NIK"
-            placeholder="Masukkan NIK"
-            value={step1.nik}
-            onChange={(e) => handleChange('nik', e.target.value)}
-            required
-          />
+          <div>
+            <Label htmlFor="nik">NIK</Label>
+            <Input
+              id="nik"
+              placeholder="Masukkan NIK"
+              value={step1.nik}
+              onChange={(e) => handleChange('nik', e.target.value)}
+              required
+            />
+          </div>
 
           {/* Agama */}
-          <Select
-            label="Agama"
-            options={AGAMA_OPTIONS}
-            value={step1.agama}
-            onChange={(e) => handleChange('agama', e.target.value)}
-            placeholder="Select"
-            required
-          />
+          <div>
+            <Label>Agama</Label>
+            <Select
+              options={AGAMA_OPTIONS}
+              defaultValue={step1.agama}
+              onChange={(value) => handleChange('agama', value)}
+              placeholder="Select"
+              required
+            />
+          </div>
 
           {/* Tempat Lahir */}
-          <Input
-            label="Tempat Lahir"
-            placeholder="Masukkan tempat lahir"
-            value={step1.tempatLahir}
-            onChange={(e) => handleChange('tempatLahir', e.target.value)}
-            required
-          />
+          <div>
+            <Label htmlFor="tempatLahir">Tempat Lahir</Label>
+            <Input
+              id="tempatLahir"
+              placeholder="Masukkan tempat lahir"
+              value={step1.tempatLahir}
+              onChange={(e) => handleChange('tempatLahir', e.target.value)}
+              required
+            />
+          </div>
 
           {/* Gol. Darah */}
-          <Select
-            label="Gol. Darah"
-            options={GOLONGAN_DARAH_OPTIONS}
-            value={step1.golDarah}
-            onChange={(e) => handleChange('golDarah', e.target.value)}
-            placeholder="Select"
-            required
-          />
+          <div>
+            <Label>Gol. Darah</Label>
+            <Select
+              options={GOLONGAN_DARAH_OPTIONS}
+              defaultValue={step1.golDarah}
+              onChange={(value) => handleChange('golDarah', value)}
+              placeholder="Select"
+              required
+            />
+          </div>
 
           {/* Tanggal Lahir */}
-          <Input
-            label="Tanggal Lahir"
-            type="date"
-            value={step1.tanggalLahir}
-            onChange={(e) => handleChange('tanggalLahir', e.target.value)}
-            required
-          />
+          <div>
+            <Label htmlFor="tanggalLahir">Tanggal Lahir</Label>
+            <Input
+              id="tanggalLahir"
+              type="date"
+              value={step1.tanggalLahir}
+              onChange={(e) => handleChange('tanggalLahir', e.target.value)}
+              required
+            />
+          </div>
 
           {/* Pendidikan Terakhir */}
-          <Select
-            label="Pendidikan Terakhir"
-            options={PENDIDIKAN_OPTIONS}
-            value={step1.pendidikanTerakhir}
-            onChange={(e) => handleChange('pendidikanTerakhir', e.target.value)}
-            placeholder="Select"
-            required
-          />
+          <div>
+            <Label>Pendidikan Terakhir</Label>
+            <Select
+              options={PENDIDIKAN_OPTIONS}
+              defaultValue={step1.pendidikanTerakhir}
+              onChange={(value) => handleChange('pendidikanTerakhir', value)}
+              placeholder="Select"
+              required
+            />
+          </div>
 
           {/* Jenis Kelamin */}
-          <Select
-            label="Jenis Kelamin"
-            options={JENIS_KELAMIN_OPTIONS}
-            value={step1.jenisKelamin}
-            onChange={(e) => handleChange('jenisKelamin', e.target.value)}
-            placeholder="Select"
-            required
-          />
+          <div>
+            <Label>Jenis Kelamin</Label>
+            <Select
+              options={JENIS_KELAMIN_OPTIONS}
+              defaultValue={step1.jenisKelamin}
+              onChange={(value) => handleChange('jenisKelamin', value)}
+              placeholder="Select"
+              required
+            />
+          </div>
 
           {/* Status Menikah */}
-          <Select
-            label="Status Menikah"
-            options={STATUS_MENIKAH_OPTIONS}
-            value={step1.statusMenikah}
-            onChange={(e) => handleChange('statusMenikah', e.target.value)}
-            placeholder="Select"
-            required
-          />
+          <div>
+            <Label>Status Menikah</Label>
+            <Select
+              options={STATUS_MENIKAH_OPTIONS}
+              defaultValue={step1.statusMenikah}
+              onChange={(value) => handleChange('statusMenikah', value)}
+              placeholder="Select"
+              required
+            />
+          </div>
 
           {/* Nomor Telepon */}
-          <Input
-            label="Nomor Telepon"
-            placeholder="+62"
-            value={step1.nomorTelepon}
-            onChange={(e) => handleChange('nomorTelepon', e.target.value)}
-            required
-          />
+          <div>
+            <Label htmlFor="nomorTelepon">Nomor Telepon</Label>
+            <Input
+              id="nomorTelepon"
+              placeholder="+62"
+              value={step1.nomorTelepon}
+              onChange={(e) => handleChange('nomorTelepon', e.target.value)}
+              required
+            />
+          </div>
 
           {/* Jumlah Tanggungan sesuai KK */}
-          <Select
-            label="Jumlah Tanggungan sesuai KK"
-            options={TANGGUNGAN_OPTIONS}
-            value={step1.jumlahTanggungan}
-            onChange={(e) => handleChange('jumlahTanggungan', e.target.value)}
-            placeholder="Select"
-            required
-          />
+          <div>
+            <Label>Jumlah Tanggungan sesuai KK</Label>
+            <Select
+              options={TANGGUNGAN_OPTIONS}
+              defaultValue={step1.jumlahTanggungan}
+              onChange={(value) => handleChange('jumlahTanggungan', value)}
+              placeholder="Select"
+              required
+            />
+          </div>
         </div>
 
         {/* Alamat Domisili */}
         <div className="mt-4">
+          <Label>Alamat Domisili</Label>
           <TextArea
-            label="Alamat Domisili"
             placeholder="Enter as description ..."
             value={step1.alamatDomisili}
-            onChange={(e) => handleChange('alamatDomisili', e.target.value)}
+            onChange={(value) => handleChange('alamatDomisili', value)}
             rows={4}
             required
           />
@@ -197,11 +228,11 @@ export const Step1PersonalData: React.FC = () => {
 
         {/* Alamat KTP */}
         <div className="mt-4">
+          <Label>Alamat KTP</Label>
           <TextArea
-            label="Alamat KTP"
             placeholder="Enter as description ..."
             value={step1.alamatKtp}
-            onChange={(e) => handleChange('alamatKtp', e.target.value)}
+            onChange={(value) => handleChange('alamatKtp', value)}
             rows={4}
             required
           />
