@@ -70,13 +70,13 @@ import PositionsTab from "../features/structure-and-organize/pages/Jabatan/Posit
 import EmployeePositionsTab from "../features/structure-and-organize/pages/PosisiPegawai/EmployeePositionsTab";
 import DetailLiniBisnis from "../features/structure-and-organize/pages/LiniBisnis/DetailLiniBisnis";
 import DetailPerusahaan from "../features/structure-and-organize/pages/Perusahaan/detail/DetailPerusahaan";
-import DataKaryawan from "../features/staff/pages/data-karyawan/data-karyawan";
+import DataKaryawanIndexPage from "../features/staff/pages/data-karyawan/indexPage";
 import FormulirKaryawanPage from "../features/staff/pages/data-karyawan/FormulirKaryawanPage";
 import PendaftaranKaryawanBaru from "../features/staff/pages/data-karyawan/PendaftaranKaryawanBaru";
 import PengunduranDiri from "../features/staff/pages/pengunduran-diri/pengunduran-diri";
 import FormResignPage from "../features/staff/pages/pengunduran-diri/form-resign/form-resign";
 import DetailPengunduranDiriPage from "../features/staff/pages/pengunduran-diri/detail/DetailPengunduranDiriPage";
-import PerpanjanganKontrak from "../features/staff/pages/perpanjangan-kontrak";
+import PerpanjanganKontrak from "../features/staff/pages/data-karyawan/tabs/perpanjangan-kontrak";
 
 // Auth Feature Pages
 import { LoginPage, ForgotPasswordPage } from "../features/auth/pages";
@@ -106,7 +106,8 @@ export default function AppRoutes() {
           <Route path="positions" element={<PositionsTab resetKey="positions" />} />
           <Route path="employee-positions" element={<EmployeePositionsTab resetKey="employee-positions" />} />
           </Route>
-          <Route path="/data-karyawan" element={<DataKaryawan />} />
+          <Route path="/data-karyawan" element={<DataKaryawanIndexPage />} />
+          <Route path="/data-karyawan/perpanjangan-kontrak" element={<PerpanjanganKontrak />} />
           
           <Route path="/pengunduran-diri" element={<PengunduranDiri />} />
           <Route path="/pengunduran-diri/form" element={<FormResignPage />} />

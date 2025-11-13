@@ -2,12 +2,12 @@
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DataTable, DataTableColumn, DataTableAction } from '../../../structure-and-organize/components/datatable/DataTable';
-import { Karyawan } from '../../types/Karyawan';
-import useKaryawan from '../../hooks/useKaryawan';
+import { DataTable, DataTableColumn, DataTableAction } from '../../../../structure-and-organize/components/datatable/DataTable';
+import { Karyawan } from '../../../types/Karyawan';
+import useKaryawan from '../../../hooks/useKaryawan';
 // import { Edit2, Trash2, Eye } from 'react-feather';
-import Button from '../../../../components/ui/button/Button';
-import AddKaryawanModal from '../../components/AddKaryawanModal';
+import Button from '../../../../../components/ui/button/Button';
+import AddKaryawanModal from '../../../components/AddKaryawanModal';
 import { Edit2, Eye, Trash2 } from 'react-feather';
 
 export default function DataKaryawanPage() {

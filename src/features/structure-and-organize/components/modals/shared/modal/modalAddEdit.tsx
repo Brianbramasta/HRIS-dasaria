@@ -18,13 +18,13 @@ const ModalAddEdit: React.FC<ModalAddEditProps> = ({ title, content, isOpen, onC
   
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className={`${maxWidth || 'max-w-3xl'} p-6 zoom-50 dark:text-white`} showCloseButton>
-      <div className="space-y-6">
-        <form onSubmit={(e) => {e.preventDefault(); handleSubmit?.()}}>
+    <Modal isOpen={isOpen} onClose={onClose} className={`${maxWidth || 'max-w-3xl'} p-6 zoom-75 dark:text-white `} showCloseButton>
+      <div className="space-y-6 ">
+        <form className='' onSubmit={(e) => {e.preventDefault(); handleSubmit?.()}}>
         <h2 className="text-3xl font-bold text-center">{title}</h2>
-        
-        {content}
-        
+        <div className='max-h-[100vh] overflow-y-auto '>
+          {content}
+        </div>
         <div className="flex justify-end gap-3">
           <Button variant={'outline'} onClick={onClose} className="rounded-xl border px-5 py-2">Close</Button>
           <Button

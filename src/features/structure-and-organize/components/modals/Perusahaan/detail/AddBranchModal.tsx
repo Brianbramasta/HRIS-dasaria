@@ -90,12 +90,13 @@ const AddBranchModal: React.FC<AddBranchModalProps> = ({ isOpen, onClose, compan
       content={<>
          <div className="space-y-2">
           <label className="text-sm font-medium">Nama Perusahaan</label>
-          <Input disabled value={companyName} onChange={() => {}} className="" />
+          <Input required disabled value={companyName} onChange={() => {}} className="" />
         </div>
 
         <div className="space-y-2">
           <label className="text-sm font-medium">Nama Branch</label>
           <Select
+            required
             options={branchOptions.map(o => ({ value: o.value, label: o.label }))}
             placeholder="Select branch"
             onChange={(v) => setSelectedBranch(v)}
