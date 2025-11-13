@@ -7,7 +7,8 @@
       "description": "Divisi yang mengelola teknologi dan sistem informasi perusahaan",
       "isActive": true,
       "createdAt": "2024-01-01T00:00:00Z",
-      "updatedAt": "2024-01-01T00:00:00Z"
+      "updatedAt": "2025-11-13T00:24:45.271Z",
+      "skFile": "mhwosrd7_w0a15l.png"
     },
     {
       "id": "2",
@@ -53,7 +54,8 @@
       "description": "...",
       "isActive": true,
       "id": "5QmDHWh",
-      "updatedAt": "2025-11-11T07:12:26.681Z"
+      "updatedAt": "2025-11-12T14:55:36.358Z",
+      "skFile": "mhw4gt4i_u6bs82.jpeg"
     }
   ],
   "companies": [
@@ -123,17 +125,15 @@
     {
       "name": "test",
       "logoUrl": "https://example.com/logo-test.png",
-
       "description": "ee",
       "businessLineId": "4",
-       "businessLineName": "Operasional",
+      "businessLineName": "Operasional",
       "address": "surabaya",
       "phone": "0895222",
       "email": "info@pos.co.id",
       "website": "www.pos.co.id",
       "taxId": "5566778899001",
       "isActive": true,
- 
       "postalCode": "22222",
       "industry": "",
       "founded": "2024-01-01T00:00:00Z",
@@ -1085,7 +1085,7 @@
       "tanggalPengajuan": "23 Juli 2025",
       "alasan": "test",
       "status": "Pending",
-       "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Rain",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Rain",
       "createdAt": "2024-07-15T00:00:00Z",
       "updatedAt": "2024-07-20T00:00:00Z",
       "id": "50"
@@ -1119,7 +1119,7 @@
     {
       "id": "DOC003",
       "ownerType": "company",
-      "ownerId": "1",   
+      "ownerId": "1",
       "name": "Akta Pendirian Perusahaan (Update 2024)",
       "docNumber": "AKTA-PTN/01/2024",
       "fileName": "akta-pendirian-2024.pdf",
@@ -1199,5 +1199,59 @@
       "filePath": "https://example.com/akta-perubahan-2025.pdf",
       "size": "2.5 MB",
       "createdAt": "2025-01-15T00:00:00Z"
-    }]
+    },
+    {
+      "name": "mhw4gt4i_u6bs82.jpeg",
+      "fileName": "mhw4gt4i_u6bs82.jpeg",
+      "ownerType": "business-line",
+      "ownerId": "5QmDHWh",
+      "docNumber": "",
+      "type": "Active",
+      "filePath": "/src/documents/mhw4gt4i_u6bs82.jpeg",
+      "size": 56377,
+      "id": "1762959336359",
+      "createdAt": "2025-11-12T14:55:36.359Z",
+      "updatedAt": "2025-11-12T14:55:36.359Z"
+    },
+    {
+      "name": "mhwoaqpp_eeizdi.jpg",
+      "fileName": "mhwoaqpp_eeizdi.jpg",
+      "ownerType": "business-line",
+      "ownerId": "1",
+      "docNumber": "",
+      "type": "Active",
+      "filePath": "/src/documents/mhwoaqpp_eeizdi.jpg",
+      "size": 61234,
+      "id": "1762992644632",
+      "createdAt": "2025-11-13T00:10:44.632Z",
+      "updatedAt": "2025-11-13T00:10:44.632Z"
+    },
+    {
+      "name": "mhworpig_mt8bp8.jpg",
+      "fileName": "mhworpig_mt8bp8.jpg",
+      "ownerType": "business-line",
+      "ownerId": "1",
+      "docNumber": "",
+      "type": "Active",
+      "filePath": "/src/documents/mhworpig_mt8bp8.jpg",
+      "size": 489209,
+      "id": "1762993439436",
+      "createdAt": "2025-11-13T00:23:59.436Z",
+      "updatedAt": "2025-11-13T00:23:59.436Z"
+    },
+    {
+      "name": "mhwosrd7_w0a15l.png",
+      "fileName": "mhwosrd7_w0a15l.png",
+      "ownerType": "business-line",
+      "ownerId": "1",
+      "docNumber": "",
+      "type": "Active",
+      "filePath": "/src/documents/mhwosrd7_w0a15l.png",
+      "fileType": "image/png",
+      "size": 3579,
+      "id": "1762993485272",
+      "createdAt": "2025-11-13T00:24:45.272Z",
+      "updatedAt": "2025-11-13T00:24:45.272Z"
+    }
+  ]
 }

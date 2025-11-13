@@ -132,7 +132,8 @@ if (!fs.existsSync(documentsDir)) {
 }
 
 // Serve static files so frontend can preview via returned path
-server.use('/documents', jsonServer.defaults({ static: documentsDir }));
+// Mount under '/src/documents' to match returned filePath
+server.use('/src/documents', jsonServer.defaults({ static: documentsDir }));
 
 // Configure multer storage
 const storage = multer.diskStorage({
@@ -157,7 +158,37 @@ server.post('/api/upload', upload.single('file'), (req, res) => {
   const fileName = req.file.filename;
   const filePath = `/src/documents/${fileName}`; // public URL served by static middleware
   const size = req.file.size;
-  return res.status(200).send(JSON.stringify({ fileName, filePath, size }));
+  const fileType = req.file.mimetype;
+  return res.status(200).send(JSON.stringify({ fileName, filePath, size, fileType }));
+});
+
+// Save uploaded file metadata into db.json without touching domain entities
+server.post('/api/uploaded-files', (req, res) => {
+  const { name, path: filePath, size, context, entity, entityId, field } = req.body || {};
+  if (!name || !filePath || typeof size !== 'number') {
+    return res.status(400).send(JSON.stringify({ message: 'Invalid payload' }));
+  }
+
+  // ensure collection exists
+  const current = db.get('uploaded-files').value() || [];
+  if (!Array.isArray(current)) {
+    db.set('uploaded-files', []).write();
+  }
+
+  const record = {
+    id: Date.now().toString(),
+    name,
+    path: filePath,
+    size,
+    createdAt: new Date().toISOString(),
+    context,
+    entity,
+    entityId,
+    field,
+  };
+
+  db.get('uploaded-files').push(record).write();
+  return res.status(201).send(JSON.stringify(record));
 });
 
 // 👉 Tambahkan prefix '/api' di sini untuk resource endpoints

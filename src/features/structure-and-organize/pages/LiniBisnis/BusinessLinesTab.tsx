@@ -11,6 +11,8 @@ import DeleteBusinessLineModal from '../../components/modals/LiniBisnis/DeleteBu
 import { addNotification } from '../../../../stores/notificationStore';
 
 import type { BLRow } from '../../types/organizationTable.types';
+import fileService from '@/services/file.service';
+import { setSkFile, clearSkFile} from '@/stores/fileStore';
 
 type Props = { resetKey: string };
 
@@ -83,9 +85,14 @@ export default function BusinessLinesTab({ resetKey }: Props) {
             variant: 'outline',
             className: 'border-0',
             icon: <Edit size={16} />,
-            onClick: (row: any) => {
+            onClick: async (row: any) => {
               const idx = (row?.no ?? 0) - 1;
               setSelectedIndex(idx);
+              const files = await fileService.getByOwnerType(businessLines[idx].id, 'business-line');
+              if (files.length > 0) {
+                console.log('file', files[0]);
+                setSkFile({ ...files[0], path: files[0].filePath, size: files[0].size , name: files[0].fileName, type: files[0].fileType });
+              }
               setIsEditOpen(true);
             },
           },
@@ -129,7 +136,10 @@ export default function BusinessLinesTab({ resetKey }: Props) {
       />
       <EditBusinessLineModal
         isOpen={isEditOpen}
-        onClose={() => setIsEditOpen(false)}
+        onClose={() => {
+          setIsEditOpen(false);
+          clearSkFile();
+        }}
         businessLine={selectedIndex !== null ? (businessLines?.[selectedIndex] as any) : null}
         onSuccess={() => {
           fetchBusinessLines();

@@ -6,6 +6,7 @@ import ModalAddEdit from '../shared/modal/modalAddEdit';
 import FileInput from '../shared/field/FileInput';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
+import { useFileStore } from '@/stores/fileStore';
 
 interface AddBusinessLineModalProps {
   isOpen: boolean;
@@ -17,12 +18,11 @@ const AddBusinessLineModal: React.FC<AddBusinessLineModalProps> = ({ isOpen, onC
   const [name, setName] = useState('');
   const [memoNumber, setMemoNumber] = useState('');
   const [description, setDescription] = useState('');
-  const [skFile, setSkFile] = useState<File | null>(null);
+  const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setSkFile(file);
+  const handleFileChange = (_e: React.ChangeEvent<HTMLInputElement>) => {
+    // metadata file dikelola oleh FileInput melalui store
   };
 
   const handleSubmit = async () => {
@@ -42,7 +42,7 @@ const AddBusinessLineModal: React.FC<AddBusinessLineModalProps> = ({ isOpen, onC
       setName('');
       setMemoNumber('');
       setDescription('');
-      setSkFile(null);
+      useFileStore.getState().clearSkFile();
     } catch (err) {
       console.error('Failed to create business line', err);
     } finally {

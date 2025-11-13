@@ -7,6 +7,10 @@ import ModalAddEdit from '../shared/modal/modalAddEdit';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 // import { error } from 'console';
+import { useFileStore } from '@/stores/fileStore';
+import { fileService } from '@/services/file.service';
+
+
 
 interface EditBusinessLineModalProps {
   isOpen: boolean;
@@ -19,7 +23,8 @@ const EditBusinessLineModal: React.FC<EditBusinessLineModalProps> = ({ isOpen, o
   const [name, setName] = useState('');
   const [memoNumber, setMemoNumber] = useState('');
   const [description, setDescription] = useState('');
-  const [skFile, setSkFile] = useState<File | null>(null);
+  // const [skFile, setSkFile] = useState<File | null>(null);
+  const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -28,26 +33,41 @@ const EditBusinessLineModal: React.FC<EditBusinessLineModalProps> = ({ isOpen, o
       setMemoNumber(businessLine.memoFile || '');
       setDescription(businessLine.description || '');
       // skFile is represented as file name string; keep null until user uploads new one
-      setSkFile(null);
+      // setSkFile(null);
+      
     }
   }, [businessLine]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setSkFile(file);
+    console.log(e)
+    // const file = e.target.files?.[0] || null;
+    // setSkFile(file);
   };
 
   const handleSubmit = async () => {
     if (!businessLine) return;
     setSubmitting(true);
     try {
-      const updated = await businessLineService.update(businessLine.id, {
-        name: name.trim(),
-        description: description.trim(),
-        memoFile: memoNumber.trim() || undefined,
-        skFile: skFile ? skFile.name : businessLine.skFile,
-      });
-      onSuccess?.(updated);
+      const updated = await Promise.all([
+        businessLineService.update(businessLine.id, {
+          name: name.trim(),
+          description: description.trim(),
+          memoFile: memoNumber.trim() || undefined,
+          skFile: skFile ? skFile.name : businessLine.skFile,
+        }),
+        skFile ? fileService.create({
+          name: skFile.name,
+          fileName: skFile.name,
+          ownerType: 'business-line',
+          ownerId: businessLine.id,
+          docNumber: businessLine.memoFile || '',
+          type: 'Active',
+          filePath: skFile.path,
+          fileType: skFile.type,
+          size: skFile.size,
+        }) : Promise.resolve(),
+      ]);
+      onSuccess?.(updated[0]);
       onClose();
     } catch (err) {
       console.error('Failed to update business line', err);

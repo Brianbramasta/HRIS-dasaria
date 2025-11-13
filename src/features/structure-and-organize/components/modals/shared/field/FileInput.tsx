@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
+import { useFileStore , setSkFile } from '@/stores/fileStore';
 
 interface FileInputProps {
   skFileName: string;
@@ -9,9 +10,9 @@ interface FileInputProps {
 
 const FileInput: React.FC<FileInputProps> = ({ skFileName, onChange }) => {
   const [preview, setPreview] = useState<string | null>(null);
-  const [fileType, setFileType] = useState<string>('');
   const [savedInfo, setSavedInfo] = useState<{ fileName: string; filePath: string; size: number } | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
+  const skFile =  useFileStore((s) => s.skFile);;
 
   useEffect(() => {
     return () => {
@@ -28,7 +29,6 @@ const FileInput: React.FC<FileInputProps> = ({ skFileName, onChange }) => {
       // Local preview as immediate feedback
       const localPreview = URL.createObjectURL(file);
       setPreview(localPreview);
-      setFileType(file.type);
 
       // Emit change for parent consumers (existing behavior)
       const dataTransfer = new DataTransfer();
@@ -51,6 +51,7 @@ const FileInput: React.FC<FileInputProps> = ({ skFileName, onChange }) => {
         const data = (resp.data?.data) ?? resp.data; // server wraps responses with { data }
         if (data?.filePath) {
           setSavedInfo({ fileName: data.fileName, filePath: data.filePath, size: data.size });
+          setSkFile({ name: data.fileName, path: data.filePath, size: data.size, type: data.fileType });
           setPreview(data.filePath); // switch preview to server-served path
         }
       } catch (err) {
@@ -125,12 +126,12 @@ const FileInput: React.FC<FileInputProps> = ({ skFileName, onChange }) => {
           </div>
         </form>
       </div>
-      {preview && fileType.startsWith('image/') && (
+      {skFile?.path && skFile?.type?.startsWith('image/') && (
         <div className="mt-4">
           <div className="text-sm font-medium mb-2">Preview:</div>
           <div className="rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 p-2">
             <img 
-              src={preview} 
+              src={skFile?.path} 
               alt="Preview" 
               className="max-w-full h-auto max-h-64 mx-auto object-contain"
             />
