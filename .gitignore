@@ -1,6 +1,6 @@
 /node_modules
-*/references/*
-references
+# */references/*
+# references
 # Logs
 logs
 *.log
