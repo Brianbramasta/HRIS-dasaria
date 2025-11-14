@@ -48,9 +48,9 @@ const PersonalDocumentsModal: React.FC<Props> = ({ isOpen, initialData, onClose,
     return { tipeFile: base.tipeFile || '', pendingRows, rows } as PersonalDocumentsForm;
   });
 
-  const handleSet = (key: keyof PersonalDocumentsForm, value: any) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
-  };
+  // const handleSet = (key: keyof PersonalDocumentsForm, value: any) => {
+  //   setForm((prev) => ({ ...prev, [key]: value }));
+  // };
 
   const addPendingRow = () => {
     setForm((prev) => ({ ...prev, pendingRows: [...prev.pendingRows, { tipeFile: '', fileName: '' }] }));

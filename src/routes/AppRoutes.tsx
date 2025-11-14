@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router";
-import Ecommerce from "../pages/Dashboard/Ecommerce";
+// import Ecommerce from "../pages/Dashboard/Ecommerce";
 import Stocks from "../pages/Dashboard/Stocks";
 import Crm from "../pages/Dashboard/Crm";
 import Marketing from "../pages/Dashboard/Marketing";
@@ -80,6 +80,7 @@ import DetailPengunduranDiriPage from "../features/staff/pages/pengunduran-diri/
 import PerpanjanganKontrak from "../features/staff/pages/data-karyawan/tabs/perpanjangan-kontrak";
 import DataKaryawanPelanggaran from "../features/staff/pages/data-karyawan/detail/tab/pelanggaran";
 import OrganizationHistoryPage from "../features/staff/pages/organizationHistoryPage";
+import Dashboard from "@/features/dashboard/pages/Dashboard";
 
 
 // Auth Feature Pages
@@ -97,7 +98,7 @@ export default function AppRoutes() {
 
         {/* Protected routes */}
         <Route element={<ProtectedOutlet />}> 
-          <Route index path="/" element={<Ecommerce />} />
+          <Route index path="/" element={<Dashboard />} />
           <Route path="/structure-and-organize" element={<StructureAndOrganize />}>
             <Route path="business-lines" element={<BusinessLinesTab resetKey="business-lines" />} />
             <Route path="business-lines/:id" element={<DetailLiniBisnis />} />

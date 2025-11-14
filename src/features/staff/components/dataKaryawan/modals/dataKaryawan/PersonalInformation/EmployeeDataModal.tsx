@@ -3,6 +3,7 @@ import ModalAddEdit from '@/features/structure-and-organize/components/modals/sh
 import Label from '@/components/form/Label';
 import InputField from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
+import FileInput from '@/components/form/input/FileInput';
 
 export type EmployeeDataForm = {
   statusKaryawan?: string;
@@ -19,6 +20,10 @@ export type EmployeeDataForm = {
   kategoriKaryawan?: string;
   joinDate?: string;
   endDate?: string;
+  effectiveDate?: string; // Tanggal Efektif
+  changeReason?: string; // Alasan Perubahan
+  changeType?: string; // Jenis Perubahan
+  uploadSkFileName?: string; // Upload file SK (nama file)
 };
 
 interface Props {
@@ -66,8 +71,32 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
+  // Deteksi perubahan pada field yang mempengaruhi struktur organisasi
+  const isStructureChanged = useMemo(() => {
+    const base = initialData || {};
+    return (
+      (form.departemen ?? base.departemen) !== base.departemen ||
+      (form.position ?? base.position) !== base.position ||
+      (form.company ?? base.company) !== base.company ||
+      (form.jabatan ?? base.jabatan) !== base.jabatan ||
+      (form.office ?? base.office) !== base.office ||
+      (form.grade ?? base.grade) !== base.grade ||
+      (form.direktorate ?? base.direktorate) !== base.direktorate ||
+      (form.divisi ?? base.divisi) !== base.divisi ||
+      (form.kategoriKaryawan ?? base.kategoriKaryawan) !== base.kategoriKaryawan
+    );
+  }, [form, initialData]);
+
+  const CHANGE_TYPE_OPTIONS = [
+    { label: 'Rotasi', value: 'Rotasi' },
+    { label: 'Mutasi', value: 'Mutasi' },
+    { label: 'Promosi', value: 'Promosi' },
+    { label: 'Demosi', value: 'Demosi' },
+  ];
+
   const content = (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+    <div className="space-y-8">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
       <div>
         <Label>Status Karyawan</Label>
         <Select options={STATUS_KARYAWAN_OPTIONS} defaultValue={form.statusKaryawan || ''} onChange={(v) => handleInput('statusKaryawan', v)} placeholder="Select" />
@@ -124,6 +153,36 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
         <Label>Kategori Karyawan</Label>
         <Select options={KATEGORI_OPTIONS} defaultValue={form.kategoriKaryawan || ''} onChange={(v) => handleInput('kategoriKaryawan', v)} placeholder="Select" />
       </div>
+      </div>
+
+      {isStructureChanged && (
+        <div className="rounded-xl border border-gray-200 p-4 dark:border-gray-800">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div>
+              <Label>Tanggal Efektif<span className="text-red-600"> *</span></Label>
+              <InputField type="date" value={form.effectiveDate || ''} onChange={(e) => handleInput('effectiveDate', e.target.value)} />
+            </div>
+            <div>
+              <Label>Jenis Perubahan<span className="text-red-600"> *</span></Label>
+              <Select options={CHANGE_TYPE_OPTIONS} defaultValue={form.changeType || ''} onChange={(v) => handleInput('changeType', v)} placeholder="Select" />
+            </div>
+            <div>
+              <Label>Alasan Perubahan<span className="text-red-600"> *</span></Label>
+              <InputField value={form.changeReason || ''} onChange={(e) => handleInput('changeReason', e.target.value)} />
+            </div>
+            <div>
+              <Label>Upload file SK<span className="text-red-600"> *</span></Label>
+              <FileInput onChange={(e) => {
+                const f = e.target.files?.[0];
+                handleInput('uploadSkFileName', f ? f.name : '');
+              }} />
+            </div>
+          </div>
+          <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">
+            *Harap Melngkapi Jenis Perubahan, Tanggal Efektif, Alasan Perubahan dan Upload File Sk apabila melakukan perubahan pada struktur organisasi karyawan
+          </p>
+        </div>
+      )}
     </div>
   );
 
@@ -133,7 +192,16 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
       isOpen={isOpen}
       onClose={onClose}
       content={content}
-      handleSubmit={() => onSubmit(form)}
+      handleSubmit={() => {
+        if (isStructureChanged) {
+          const requiredFilled = form.effectiveDate && form.changeReason && form.changeType && form.uploadSkFileName;
+          if (!requiredFilled) {
+            alert('Lengkapi Tanggal Efektif, Alasan Perubahan, Jenis Perubahan, dan Upload file SK.');
+            return;
+          }
+        }
+        onSubmit(form);
+      }}
       submitting={!!submitting}
       maxWidth="max-w-5xl"
     />
