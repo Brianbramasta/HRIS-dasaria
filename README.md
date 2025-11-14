@@ -1,110 +1,281 @@
-# TailAdmin Pro - React.js (v2.0)
+# FE-HRIS (Frontend) — Project README
 
-[TailAdmin](https://tailadmin.com) is a modern, responsive, and customizable admin dashboard template built using Tailwind CSS and React.js. It is designed to help developers build beautiful and functional dashboards quickly and easily.
+## Ringkasan singkat
 
-## Quick Links
+Ini adalah frontend aplikasi HRIS (Human Resources Information System) berbasis TypeScript + React. Proyek menggunakan Vite sebagai bundler/dev server dan diorganisir dengan pola fitur di dalam folder `src/features`.
 
-- [✨ Visit Website](https://tailadmin.com)
-- [📄 Documentation](https://tailadmin.com/docs)
-- [⬇️ Download](https://tailadmin.com/download)
-- [🌐 Live Site](https://react-demo.tailadmin.com)
+Tujuan proyek: menyediakan antarmuka manajemen karyawan, otentikasi, struktur organisasi, dan modul terkait HR lainnya.
 
-## Installation
+## Teknologi utama
 
-### Prerequisites
+- TypeScript
+- React
+- Vite (dev server & build)
+- React Router (routing — lihat `src/routes`)
+- Jest (pengujian unit, konfigurasi di `jest.config.mjs`)
+- ESLint (linting, konfigurasi di `eslint.config.js`)
+- PostCSS (konfigurasi di `postcss.config.js`)
+- json-server (mock API / data; terdapat `db.json`, `json-server.json`, dan `server.js`)
+- Axios (dipakai untuk panggilan API — lihat `src/services/api.ts`)
 
-To get started with TailAdmin, ensure you have the following prerequisites installed and set up:
+Tooling & utilitas:
 
-- Node.js 18.x or later (recommended to use Node.js 20.x or later)
+- Node.js + npm (manajer paket). Periksa `package.json` untuk script yang tersedia.
 
-### Getting Started
+## Struktur proyek (ringkas)
 
-1. Install dependencies:
+Struktur utama di root yang relevan:
 
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
+- `src/` — kode sumber aplikasi React + TypeScript
+- `db.json`, `server.js`, `json-server.json`, `routes.json` — konfigurasi mock API
+- `vite.config.ts` — konfigurasi Vite
+- `jest.config.mjs`, `setupTests.ts` — konfigurasi testing
+- `eslint.config.js`, `postcss.config.js` — tooling
 
-   > Use the `--legacy-peer-deps` flag if you encounter peer-deps error during installation.
+## Struktur fitur — `src/features`
 
-2. Start the development server:
+Berikut adalah struktur folder `src/features` saat ini dan file penting di dalamnya (berdasarkan lampiran):
 
-   ```bash
-   npm start
-   # or
-   yarn start
-   ```
+- auth/
 
-   Runs the app in the development mode.\
-   Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+  - components/
+    - `ForgotPasswordForm.tsx`
+    - `LoginForm.tsx`
+    - `ProtectedOutlet.tsx`
+    - `index.ts`
+  - config/
+    - `rolePermissions.ts`
+  - hooks/
+    - `useForgotPassword.ts`
+    - `useLogin.ts`
+    - `__test__/useLogin.test.ts`
+    - `index.ts`
+  - pages/
+    - `AuthPageLayout.tsx`
+    - `ForgotPasswordPage.tsx`
+    - `LoginPage.tsx`
+    - `index.ts`
+  - services/
+    - `auth.service.ts`
+    - `index.ts`
+  - stores/
+    - `authStore.ts`
+  - types/
+    - `auth.types.ts`
+    - `index.ts`
 
-## Changelog
+- dashboard/
 
-### Version 2.1.2 - [Jun 02, 2025]
+  - components/
+    - chart/
+      - `Demographic.tsx`
+      - `EmployeeEngagement.tsx`
+      - `EmployeeMetricCard.tsx`
+      - `Statistik.tsx`
+      - `StatusKepegawaian.tsx`
+  - hooks/
+  - pages/
+    - `Dashboard.tsx`
+  - services/
+  - types/
 
-#### Update Overview
+- staff/
 
-- Basic Table 3 Dropdown (cropped) update
-- Popover and Tooltip component overflow (cropped) issue update
+  - components/
+    - `AddKaryawanModal.tsx`
+    - `FormProgressBar.tsx`
+    - `ResignKaryawanModal.tsx`
+    - `SuccessModal.tsx`
+    - dataKaryawan/
+      - card/
+      - modals/
+    - FormSteps/
+      - `Step1PersonalData.tsx`
+      - `Step2EducationalBackground.tsx`
+      - `Step3SalaryBpjs.tsx`
+      - `Step4UploadDocument.tsx`
+  - hooks/
+    - `useKaryawan.ts`
+    - `usePengunduranDiri.ts`
+  - pages/
+    - `organizationHistoryPage.tsx`
+    - data-karyawan/
+      - `FormulirKaryawanPage.tsx`
+      - `indexPage.tsx`
+      - `PendaftaranKaryawanBaru.tsx`
+      - detail/
+      - tabs/
+    - pengunduran-diri/
+      - ... (folder berisi page/komponen terkait)
+  - references/
+    - `brief.detail.pengundurandiri.md`
+    - `brief.formulir.md`
+    - `brief.md`
+  - services/
+    - `karyawanService.ts`
+    - `pengunduranDiriService.ts`
+  - stores/
+    - `useFormulirKaryawanStore.ts`
+  - types/
+    - `FormulirKaryawan.ts`
+    - `Karyawan.ts`
+    - `PengunduranDiri.ts`
 
-### Version 2.1.1 - [March 25, 2025]
+- structure-and-organize/
 
-- Upgraded to React 19
-- Included overrides for packages to prevent peer dependency errors.
-- Migrated from react-flatpickr to flatpickr package for React 19 support
+  - `index.ts`
+  - `README.md` (feature docs)
+  - components/
+    - `Tabs.tsx`
+    - card/
+      - `ExpandCard.tsx`
+    - datatable/
+    - modals/
+  - hooks/
+    - `useBusinessLines.ts`
+    - `useCompanies.ts`
+    - `useDepartments.ts`
+    - `useDirectorates.ts`
+    - `useDivisions.ts`
+    - `useEmployeePositions.ts`
+    - `useOffices.ts`
+    - `useOrganization.ts`
+    - `usePositions.ts`
+  - pages/
+    - `ExportPage.tsx`
+    - `List.tsx`
+    - `StrukturOrganisasiPage.tsx`
+    - Departemen/ Direktorat/ Divisi/ Jabatan/ Kantor/ LiniBisnis/ Perusahaan/ PosisiPegawai/
+  - references/
+    - `api-contract.md`
+    - `brief.md`
+  - services/
+    - `organization.service.ts`
+  - types/
+    - `organization.types.ts`
+    - `organizationTable.types.ts`
 
-### Version 2.1.0 - [March 10, 2025]
+- template/
+  - components/
+  - hooks/
+  - pages/
+  - services/
+  - types/
 
-#### Update Overview
+> Catatan: beberapa file/folder dinotasikan dengan `...` ketika struktur internalnya panjang atau tidak dilistakan satu-per-satu dalam lampiran.
 
-- Added new dashboard design for saas product.
-- New Metrics card
-- Product performance tab with charts
+## Cara menjalankan (singkat)
 
-### Version 2.0.1 - [February 27, 2025]
+Perintah berikut bersifat umum untuk proyek Node/Vite. Periksa `package.json` untuk script yang tepat.
 
-#### Update Overview
+1. Pasang dependensi:
 
-- Upgraded to Tailwind CSS v4 for better performance and efficiency.
-- Updated class usage to match the latest syntax and features.
-- Replaced deprecated class and optimized styles.
+```powershell
+npm install
+```
 
-#### Next Steps
+2. Jalankan aplikasi (dev server):
 
-- Run npm install or yarn install to update dependencies.
-- Check for any style changes or compatibility issues.
-- Refer to the Tailwind CSS v4 [Migration Guide](https://tailwindcss.com/docs/upgrade-guide) on this release. if needed.
-- This update keeps the project up to date with the latest Tailwind improvements. 🚀
+```powershell
+npm run dev
+```
 
-### Version 2.0.0 - [February 2025]
+3. Jalankan mock API server (project sudah menyertakan `db.json` dan `server.js`):
 
-A major update with comprehensive redesign and modern React patterns implementation.
+```powershell
+# Jika `server.js` digunakan untuk menjalankan json-server
+node server.js
+```
 
-#### Major Improvements
+4. Jalankan test:
 
-- Complete UI redesign with modern React patterns
-- New features: collapsible sidebar, chat, and calendar
-- Improved performance and accessibility
-- Updated data visualization using ApexCharts
+```powershell
+npm test
+```
 
-#### Key Features
+Catatan: Jika ada perbedaan script, gunakan nama script yang tersedia di `package.json`.
 
-- Redesigned dashboards (Ecommerce, Analytics, Marketing, CRM)
-- Enhanced navigation with React Router integration
-- Advanced tables with sorting and filtering
-- Calendar with drag-and-drop support
-- New UI components and improved existing ones
+## Kontrak singkat (inputs / outputs / sukses)
 
-#### Breaking Changes
+- Input: kode sumber di `src/` + data mock di `db.json`.
+- Output: aplikasi web React yang bisa diakses via Vite dev server dan mock API dari `server.js`.
+- Sukses: aplikasi berjalan lokal tanpa error build, halaman otentikasi dan modul staff/dashboards dapat dimuat.
 
-- Updated sidebar component API
-- Migrated charts to ApexCharts
-- Revised authentication system
+## Edge cases & catatan pengembangan
 
-[Read more](https://tailadmin.com/docs/update-logs/react) on the changelog.
+- Pastikan `node` dan `npm` versi modern (node >= 16 direkomendasikan).
+- Jika mock server tidak berjalan, jalankan `node server.js` dan periksa file `json-server.json`/`routes.json`.
+- Beberapa stores atau hook mungkin bergantung pada library state (periksa imports di `src/stores`).
 
-## License
+## Selanjutnya (saran)
 
-Refer to our [LICENSE](https://tailadmin.com/license) page for more information.
+## Komposisi struktur folder (penjelasan)
+
+Berikut penjelasan tujuan dan komposisi tiap folder utama di `src/` dan pola yang dipakai di `src/features`.
+
+- `src/features/<feature>/components` — Komponen presentasional dan UI spesifik fitur.
+
+  - Komponen di sini biasanya fokus pada UI (stateless atau menerima props) dan mudah diuji.
+  - Jika komponen digunakan lintas fitur, pindahkan ke `src/components` atau `src/common`.
+
+- `src/features/<feature>/pages` — Halaman (route-level) yang merangkai beberapa komponen dan hook.
+
+  - Halaman bertanggung jawab mengatur layout halaman dan memanggil service / store untuk data.
+
+- `src/features/<feature>/hooks` — Custom hooks khusus fitur.
+
+  - Gunakan untuk mengekstrak logika (fetching, form handling, side-effects) yang dapat dipakai ulang dalam fitur yang sama.
+
+- `src/features/<feature>/services` — Abstraksi panggilan API dan fungsi terkait remote data.
+
+  - Semua panggilan HTTP idealnya melalui `src/services/api.ts` (atau wrapper axios) untuk konfigurasi terpusat (baseURL, interceptor, auth token).
+
+- `src/features/<feature>/stores` — State lokal fitur (Zustand, Redux slice, atau store custom).
+
+  - Store menyimpan state persist / cache yang terkait fitur. Hindari menyimpan UI-only state yang lebih cocok di komponen.
+
+- `src/features/<feature>/types` — Definisi TypeScript (interface / type) yang spesifik fitur.
+
+  - Memisahkan tipe memudahkan reuse dan menjaga tipe domain terpusat.
+
+- `src/features/<feature>/references` — Dokumen terkait fitur (brief, kontrak API, catatan bisnis).
+
+- `src/features/<feature>/__test__` atau `*.test.tsx` — Unit / hook tests berdekatan dengan kode yang diuji.
+
+Konvensi dan best-practices yang dianjurkan
+
+- Penamaan: file komponen UI gunakan PascalCase (MyButton.tsx), hook gunakan camelCase diawali use (useFetchUsers.ts), service dan util gunakan camelCase (auth.service.ts).
+- Barrel exports: tambahkan `index.ts` pada subfolder untuk mengekspor simbol penting (mis. `components/index.ts`) sehingga import di tempat lain menjadi `import { LoginForm } from 'features/auth/components'`.
+- Co-location: letakkan file test, styles, dan sub-komponen dekat dengan komponen utama agar mudah navigasi.
+- Pemisahan tanggung jawab: Pages (routing + layout) vs Components (UI) vs Services (API) vs Stores (state).
+- Atomic / compositional components: pecah komponen besar menjadi bagian kecil (atom → molecule → organism) bila perlu.
+- Forms & steps: untuk alur multi-step (contoh `FormSteps`), gunakan folder `FormSteps` berisi komponen step + hook/formik logic + progress bar terpisah.
+- Modals & Overlays: kelompokkan modal di `components/modals` dalam fitur; bisa juga dikelola via store/global modal jika digunakan lintas fitur.
+
+Penempatan resource lintas fitur
+
+- `src/components` atau `src/common` — Komponen yang dapat dipakai ulang di banyak fitur (header, button, card, layout primitives).
+- `src/layout` — Komponen layout aplikasi (sidebar, header, app shell).
+- `src/context` — Context providers (theme, sidebar) yang digunakan pada level aplikasi.
+- `src/services` — Kode utilitas HTTP, konfigurasi axios, dan helper API global.
+- `src/stores` — Stores global (loading, notifications, authentication) yang diakses banyak fitur.
+
+Contoh alur kerja pengembangan fitur
+
+1. Buat folder feature baru: `src/features/<feature>`.
+2. Tambahkan `pages/`, `components/`, `services/`, `hooks/`, `types/` minimal.
+3. Implementasikan service API di `services/` dan hubungkan ke `src/services/api.ts`.
+4. Buat pages yang merakit komponen, lalu sambungkan route di `src/routes/AppRoutes.tsx`.
+5. Tambahkan unit test untuk hook / service minimal.
+6. Update `features/<feature>/README.md` singkat berisi contract / cara test.
+
+Dengan pola ini, setiap fitur menjadi self-contained dan mudah dipindahkan atau di-decompose tanpa memengaruhi fitur lain.
+
+---
+
+Saya sudah menambahkan penjelasan ini ke `README.md`. Langkah berikutnya: saya bisa menjalankan pengecekan cepat (baca file lagi atau menambahkan README per-feature). Mau saya lanjut ke verifikasi atau buat README khusus untuk salah satu fitur (mis. `staff`)?
+
+- Menambahkan skrip `mock` di `package.json` yang menjalankan `node server.js`.
+- Membuat file README per-feature (mis. `src/features/staff/README.md`) yang menjelaskan alur dan API.
+
+Sampaikan mana yang mau saya kerjakan selanjutnya.
