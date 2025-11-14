@@ -5,12 +5,33 @@ import Select from '@/components/form/Select';
 import Button from '@/components/ui/button/Button';
 import { Edit2 } from 'react-feather';
 import type { Karyawan } from '@/features/staff/types/Karyawan';
+import { useModal } from '@/hooks/useModal';
+import EmployeeDataModal, { type EmployeeDataForm } from '@/features/staff/components/dataKaryawan/modals/dataKaryawan/PersonalInformation/EmployeeDataModal';
 
 interface Props {
   data: Karyawan;
 }
 
 export default function EmployeeDataCard({ data }: Props) {
+  const { isOpen, openModal, closeModal } = useModal(false);
+
+  const initialForm: EmployeeDataForm = {
+    company: data.company || '',
+    departemen: data.department || '',
+    divisi: (data as any)?.division || '',
+    direktorate: (data as any)?.directorate || '',
+    office: data.office || '',
+    position: data.posisi || '',
+    jabatan: data.jabatan || '',
+    joinDate: data.tanggalJoin || '',
+    endDate: data.tanggalBerakhir || '',
+    grade: (data as any)?.grade || '',
+    statusKaryawan: (data as any)?.statusKaryawan || '',
+    statusPayroll: (data as any)?.statusPayroll || '',
+    userAccess: (data as any)?.userAccess || 'Employee',
+    kategoriKaryawan: (data as any)?.kategoriKaryawan || '',
+  };
+
   return (
     <ExpandCard title="Data Karyawan" withHeaderDivider>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -142,10 +163,21 @@ export default function EmployeeDataCard({ data }: Props) {
         </div>
       </div>
       <div className="mt-4 flex justify-end">
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" onClick={openModal}>
           <Edit2 size={16} className="mr-2" /> Edit
         </Button>
       </div>
+
+      <EmployeeDataModal
+        isOpen={isOpen}
+        initialData={initialForm}
+        onClose={closeModal}
+        onSubmit={(payload) => {
+          console.log('Save Employee Data', payload);
+          closeModal();
+        }}
+        submitting={false}
+      />
     </ExpandCard>
   );
 }

@@ -3,9 +3,12 @@ import { Table, TableHeader, TableBody, TableRow, TableCell } from '@/components
 import Button from '@/components/ui/button/Button';
 import { Download, Eye, Edit2 } from 'react-feather';
 import React from 'react';
+import { useModal } from '@/hooks/useModal';
+import PersonalDocumentsModal, { type PersonalDocumentsForm } from '@/features/staff/components/dataKaryawan/modals/dataKaryawan/PersonalInformation/PersonalDocumentsModal';
 
 export default function PersonalDocumentsCard() {
   const [personalFiles, setPersonalFiles] = React.useState<Array<{ no: number; namaFile: string; dokumen: string }>>([]);
+  const { isOpen, openModal, closeModal } = useModal(false);
 
   React.useEffect(() => {
     setPersonalFiles([
@@ -72,10 +75,23 @@ export default function PersonalDocumentsCard() {
         </Table>
       </div>
       <div className="mt-4 flex justify-end">
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" onClick={openModal}>
           <Edit2 size={16} className="mr-2" /> Edit
         </Button>
       </div>
+
+      <PersonalDocumentsModal
+        isOpen={isOpen}
+        initialData={{ tipeFile: '', uploadFileName: '', rows: [] } as PersonalDocumentsForm}
+        onClose={closeModal}
+        onSubmit={(payload) => {
+          // sinkronkan ke tabel dummy di card untuk preview
+          const mapped = payload.rows.map((r, idx) => ({ no: idx + 1, namaFile: r.tipeFile, dokumen: r.namaFile }));
+          setPersonalFiles(mapped);
+          closeModal();
+        }}
+        submitting={false}
+      />
     </ExpandCard>
   );
 }

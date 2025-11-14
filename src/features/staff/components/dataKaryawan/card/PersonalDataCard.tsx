@@ -5,6 +5,8 @@ import Select from '@/components/form/Select';
 import TextArea from '@/components/form/input/TextArea';
 import Button from '@/components/ui/button/Button';
 import { Edit2 } from 'react-feather';
+import { useModal } from '@/hooks/useModal';
+import PersonalDataModal, { type PersonalDataForm } from '@/features/staff/components/dataKaryawan/modals/dataKaryawan/PersonalInformation/PersonalDataModal';
 import type { Karyawan } from '@/features/staff/types/Karyawan';
 
 interface Props {
@@ -12,6 +14,14 @@ interface Props {
 }
 
 export default function PersonalDataCard({ data }: Props) {
+  const { isOpen, openModal, closeModal } = useModal(false);
+
+  const initialForm: PersonalDataForm = {
+    idKaryawan: (data as any)?.idKaryawan || '',
+    namaLengkap: data.name || '',
+    email: data.email || '',
+  };
+
   return (
     <ExpandCard title="Personal Data" withHeaderDivider>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -146,10 +156,21 @@ export default function PersonalDataCard({ data }: Props) {
         </div>
       </div>
       <div className="mt-4 flex justify-end">
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" onClick={openModal}>
           <Edit2 size={16} className="mr-2" /> Edit
         </Button>
       </div>
+
+      <PersonalDataModal
+        isOpen={isOpen}
+        initialData={initialForm}
+        onClose={closeModal}
+        onSubmit={(payload) => {
+          console.log('Save Personal Data', payload);
+          closeModal();
+        }}
+        submitting={false}
+      />
     </ExpandCard>
   );
 }
