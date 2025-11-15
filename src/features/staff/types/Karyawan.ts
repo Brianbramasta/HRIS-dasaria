@@ -18,6 +18,12 @@ export interface Karyawan {
   isActive?: boolean;
   createdAt?: string;
   updatedAt?: string;
+  // Tambahan optional untuk mendukung kolom list (alias/denormalized)
+  departement?: string; // alias tampilan untuk department
+  divisi?: string;
+  grade?: string;
+  statusPayroll?: string;
+  kategori?: string;
 }
 
 export interface CreateKaryawanDto {

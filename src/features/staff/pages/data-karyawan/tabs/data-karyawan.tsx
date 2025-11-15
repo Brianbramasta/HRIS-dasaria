@@ -126,21 +126,25 @@ export default function DataKaryawanPage() {
       label: 'Grade',
       minWidth: 130,
       sortable: true,
+      format: (value) => value || '-',
     },{
       id:'posisi',
       label: 'User Access',
       minWidth: 130,
       sortable: true,
+      format: (value, row) => row.posisi || value || '-',
     },{
       id:'departement',
       label: 'Departement',
       minWidth: 130,
       sortable: true,
+      format: (value, row) => row.departement || row.department || '-',
     },{
       id:'divisi',
       label: 'Divisi',
       minWidth: 130,
       sortable: true,
+      format: (value) => value || '-',
     },
     {
       id: 'status',
@@ -149,9 +153,9 @@ export default function DataKaryawanPage() {
       sortable: true,
       format: (value) => (
         <span className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${
-          value === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+          value === 'active' || value === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
         }`}>
-          {value}
+          {value || '-'}
         </span>
       ),
     },{
@@ -161,9 +165,9 @@ export default function DataKaryawanPage() {
       sortable: true,
       format: (value) => (
         <span className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${
-          value === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+          value === 'active' || value === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
         }`}>
-          {value}
+          {value || '-'}
         </span>
       ),
     },{
@@ -171,6 +175,7 @@ export default function DataKaryawanPage() {
       label: 'kategori karyawan',
       minWidth: 130,
       sortable: true,
+      format: (value) => value || '-',
     },
 
   ];

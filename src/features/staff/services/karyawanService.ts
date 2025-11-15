@@ -1,6 +1,47 @@
 import apiService, { ApiResponse } from '../../../services/api';
 import { Karyawan, CreateKaryawanDto, UpdateKaryawanDto, KaryawanListResponse, KaryawanFilterParams } from '../types/Karyawan';
 
+// Detail response mengikuti shape dari endpoint /api/staff/:id/detail
+export interface KaryawanDetailResponse {
+  karyawan: {
+    id: string;
+    idKaryawan: string | null;
+    name: string | null;
+    email: string | null;
+    posisi: string | null;
+    jabatan: string | null;
+    tanggalJoin: string | null;
+    tanggalBerakhir?: string | null;
+    company?: string | null;
+    companyId?: string | null;
+    department?: string | null;
+    departmentId?: string | null;
+    office?: string | null;
+    officeId?: string | null;
+    divisi?: string | null;
+    grade?: string | null;
+    status?: string | null;
+    statusPayroll?: string | null;
+    kategori?: string | null;
+    avatar?: string | null;
+  };
+  personalInformation: Record<string, string | null>;
+  financeAndCompliance: Record<string, string | null>;
+  education: Array<{
+    id: string;
+    namaLembaga: string | null;
+    nilaiPendidikan: string | null;
+    jurusanKeahlian: string | null;
+    tahunLulus: string | null;
+  }>;
+  documents: Array<{
+    id: string;
+    tipeFile: string | null;
+    namaFile: string | null;
+    filePath: string | null;
+  }>;
+}
+
 class KaryawanService {
   private baseUrl = 'staff';
 
@@ -28,8 +69,9 @@ class KaryawanService {
   /**
    * Fetch karyawan berdasarkan ID
    */
-  async getKaryawanById(id: string): Promise<ApiResponse<Karyawan>> {
-    return apiService.get<Karyawan>(`${this.baseUrl}?id=${id}`);
+  async getKaryawanById(id: string): Promise<ApiResponse<KaryawanDetailResponse>> {
+    // Gunakan endpoint detail komposit: /api/staff/:id/detail
+    return apiService.get<KaryawanDetailResponse>(`${this.baseUrl}/${id}/detail`);
   }
 
   /**
@@ -43,7 +85,8 @@ class KaryawanService {
    * Update data karyawan
    */
   async updateKaryawan(id: string, data: UpdateKaryawanDto): Promise<ApiResponse<Karyawan>> {
-    return apiService.put<Karyawan>(`${this.baseUrl}/${id}`, data);
+    // Endpoint implementasi menggunakan PATCH untuk partial update
+    return apiService.patch<Karyawan>(`${this.baseUrl}/${id}`, data);
   }
 
   /**

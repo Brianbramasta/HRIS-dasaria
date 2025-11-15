@@ -8,8 +8,30 @@ import {
   ResignStatus,
 } from '../types/PengunduranDiri';
 
+// Detail response mengikuti /api/resignations/:id/detail
+export interface ResignationDetailResponse {
+  resign: {
+    id: string;
+    karyawanId: string | null;
+    idKaryawanStr?: string | null;
+    name: string | null;
+    departmentName: string | null;
+    tanggalPengajuan: string | null;
+    tanggalEfektif?: string | null;
+    alasan: string | null;
+    status: ResignStatus | null;
+  };
+  karyawanSummary: {
+    id: string;
+    idKaryawan: string | null;
+    name: string | null;
+    email: string | null;
+    posisi: string | null;
+  } | null;
+}
+
 class PengunduranDiriService {
-  private baseUrl = 'staff-pengunduran-diri';
+  private baseUrl = 'resignations';
 
   /**
    * Fetch semua data pengunduran diri dengan optional filter dan pagination
@@ -17,16 +39,17 @@ class PengunduranDiriService {
   async getPengunduranDiri(params?: PengunduranDiriFilterParams): Promise<ApiResponse<PengunduranDiriListResponse>> {
     const queryParams = new URLSearchParams();
 
-    if (params?.search) queryParams.append('search', params.search);
+    // Map ke parameter yang dipakai endpoint: q, status, departmentId, sort, order
+    if (params?.search) queryParams.append('q', params.search);
     if (params?.status && params.status !== 'all') queryParams.append('status', params.status);
-    if (params?.department) queryParams.append('department', params.department);
+    if (params?.department) queryParams.append('departmentId', params.department);
     if (params?.page) queryParams.append('page', params.page.toString());
     if (params?.limit) queryParams.append('limit', params.limit.toString());
-    if (params?.sortBy) queryParams.append('sortBy', params.sortBy);
+    if (params?.sortBy) queryParams.append('sort', params.sortBy);
     if (params?.order) queryParams.append('order', params.order);
 
     const queryString = queryParams.toString();
-    const url = queryString ? `${this.baseUrl}?${queryString}&status=Pending` : this.baseUrl;
+    const url = queryString ? `${this.baseUrl}?${queryString}` : this.baseUrl;
 
     return apiService.get<PengunduranDiriListResponse>(url);
   }
@@ -44,8 +67,9 @@ class PengunduranDiriService {
   /**
    * Fetch pengunduran diri berdasarkan ID
    */
-  async getPengunduranDiriById(id: string): Promise<ApiResponse<PengunduranDiri>> {
-    return apiService.get<PengunduranDiri>(`${this.baseUrl}/${id}`);
+  async getPengunduranDiriById(id: string): Promise<ApiResponse<ResignationDetailResponse>> {
+    // Gunakan endpoint detail komposit: /api/resignations/:id/detail
+    return apiService.get<ResignationDetailResponse>(`${this.baseUrl}/${id}/detail`);
   }
 
   /**
@@ -59,7 +83,8 @@ class PengunduranDiriService {
    * Update data pengunduran diri
    */
   async updatePengunduranDiri(id: string, data: UpdatePengunduranDiriDto): Promise<ApiResponse<PengunduranDiri>> {
-    return apiService.put<PengunduranDiri>(`${this.baseUrl}/${id}`, data);
+    // Endpoint implementasi menggunakan PATCH
+    return apiService.patch<PengunduranDiri>(`${this.baseUrl}/${id}`, data);
   }
 
   /**
