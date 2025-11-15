@@ -1,8 +1,30 @@
 # Kontrak API – Structure and Organize (Satu Halaman Satu API)
 
-Dokumen ini merinci kontrak API untuk fitur `structure-and-organize` sesuai implementasi di proyek. Fokus pada endpoint GET dengan prinsip “satu halaman satu API” — setiap halaman (list/detail) memiliki satu endpoint utama yang mengembalikan data yang memang digunakan UI.
+Dokumen ini merinci kontrak API untuk fitur `structure-and-organize`. Fokus pada endpoint GET dengan prinsip “satu halaman satu API” — setiap halaman (list/detail) memiliki satu endpoint utama yang mengembalikan data yang digunakan UI.
 
 Konvensi parameter list mengikuti service existing: `q` (search), `_sort`, `_order`, `_page`, `_limit`.
+
+## Kebijakan dan Standarisasi Terbaru
+- Semua operasi Create, Update, dan Delete pada resource di modul ini WAJIB melampirkan:
+  - `memoNumber` (string) — nomor memo pengesahan perubahan.
+  - `skFileId` (string) — ID file SK yang diunggah via endpoint file.
+- Standar respons file yang ditampilkan di GET (bukan hanya `fileName`) harus menyertakan:
+  - `fileName` (string)
+  - `fileUrl` (string)
+  - `fileType` (string)
+  - `size` (string | number | null)
+- Untuk konsistensi, properti yang semula berupa `string` (mis. `skFile`, `memoFile`, `logo`) di respons GET diubah menjadi objek `FileSummary` dengan struktur di atas. Bila tidak ada file, nilai `null`.
+
+### Tipe: FileSummary
+Objek ringkas untuk representasi file di respons:
+```
+FileSummary {
+  fileName: string,
+  fileUrl: string,
+  fileType: string,
+  size: string | number | null
+}
+```
 
 ## Halaman: Lini Bisnis (List)
 - Endpoint: `GET /business-lines`
@@ -17,8 +39,8 @@ Konvensi parameter list mengikuti service existing: `q` (search), `_sort`, `_ord
     - `id` (string)
     - `name` (string)
     - `description` (string)
-    - `skFile` (string | null)
-    - `memoFile` (string | null)
+    - `memoNumber` (string | null)
+    - `skFile` (FileSummary | null)
   - `total` (number)
   - `page` (number)
   - `pageSize` (number)
@@ -26,12 +48,17 @@ Konvensi parameter list mengikuti service existing: `q` (search), `_sort`, `_ord
 
 ### Operasi CRUD (Halaman Lini Bisnis – List)
 - Create: `POST /business-lines`
-  - Body: `name` (required), `description?`
-  - Response: BusinessLine baru (`id`, `name`, `description`, `skFile`, `memoFile`)
+  - Body:
+    - `name` (required)
+    - `description?`
+    - `memoNumber` (required)
+    - `skFileId` (required)
+  - Response: BusinessLine baru (`id`, `name`, `description`, `memoNumber`, `skFile`)
 - Update: `PATCH /business-lines/:id`
-  - Body (partial): `name?`, `description?`
-  - Response: BusinessLine terkini
+  - Body (partial): `name?`, `description?`, `memoNumber` (required), `skFileId` (required)
+  - Response: BusinessLine terkini (dengan `memoNumber`, `skFile`)
 - Delete: `DELETE /business-lines/:id`
+  - Body: `memoNumber` (required), `skFileId` (required)
   - Response: `{ success: true }`
 
 ## Halaman: Detail Lini Bisnis
@@ -43,10 +70,15 @@ Konvensi parameter list mengikuti service existing: `q` (search), `_sort`, `_ord
     - `id` (string)
     - `name` (string)
     - `description` (string)
+     - `memoNumber` (string | null)
+     - `skFile` (FileSummary | null)
   - `personalFiles[]` (berkas milik lini bisnis)
     - `id` (string)
     - `name` (string) – ditampilkan sebagai “Nama File”
-    - `fileName` (string) – ditampilkan sebagai “Dokumen”
+    - `fileName` (string)
+    - `fileUrl` (string)
+    - `fileType` (string)
+    - `size` (string | number | null)
   - `companies[]` (daftar perusahaan di lini bisnis ini)
     - `id` (string)
     - `name` (string)
@@ -58,10 +90,10 @@ Catatan: Endpoint ini menggantikan kebutuhan multi-call (`/business-lines/:id`, 
 - File pribadi lini bisnis:
   - Create: `POST /files`
     - Body: `ownerType="business-line"`, `ownerId` (required), `name` (required), `docNumber?`, `file` (upload)
-    - Response: File baru (`id`, `name`, `fileName`, `docNumber`, `size`)
+    - Response: File baru (`id`, `name`, `docNumber`, `fileName`, `fileUrl`, `fileType`, `size`)
   - Update metadata: `PATCH /files/:id`
     - Body (partial): `name?`, `docNumber?`
-    - Response: File terkini
+    - Response: File terkini (`id`, `name`, `docNumber`, `fileName`, `fileUrl`, `fileType`, `size`)
   - Delete: `DELETE /files/:id`
     - Response: `{ success: true }`
 
@@ -80,6 +112,8 @@ Catatan: Endpoint ini menggantikan kebutuhan multi-call (`/business-lines/:id`, 
     - `description` (string) – “Deskripsi Umum”
     - `businessLineId` (string)
     - `businessLineName` (string) – “Lini Bisnis” (denormalized agar tidak perlu join di client)
+    - `memoNumber` (string | null)
+    - `skFile` (FileSummary | null)
   - `total` (number)
   - `page` (number)
   - `pageSize` (number)
@@ -88,11 +122,14 @@ Catatan: Endpoint ini menggantikan kebutuhan multi-call (`/business-lines/:id`, 
 ### Operasi CRUD (Halaman Perusahaan – List)
 - Create: `POST /companies`
   - Body: `name` (required), `businessLineId` (required), `description?`, `address?`, `employeeCount?`, `postalCode?`, `email?`, `phone?`, `industry?`, `founded?`, `type?`, `website?`, `logoFileId?`
-  - Response: Company baru (dengan `businessLineName` jika tersedia)
+    - `memoNumber` (required)
+    - `skFileId` (required)
+  - Response: Company baru (dengan `businessLineName` jika tersedia, `memoNumber`, `skFile`)
 - Update: `PATCH /companies/:id`
-  - Body (partial): field seperti Create (opsional)
+  - Body (partial): field seperti Create (opsional) ditambah `memoNumber` (required), `skFileId` (required)
   - Response: Company terkini
 - Delete: `DELETE /companies/:id`
+  - Body: `memoNumber` (required), `skFileId` (required)
   - Response: `{ success: true }`
 
 ## Halaman: Detail Perusahaan
@@ -103,7 +140,7 @@ Catatan: Endpoint ini menggantikan kebutuhan multi-call (`/business-lines/:id`, 
   - `company`
     - `id` (string)
     - `name` (string)
-    - `logo` (string | null)
+    - `logo` (FileSummary | null)
     - `businessLineName` (string | null)
     - `description` (string | null)
     - `address` (string | null)
@@ -116,6 +153,8 @@ Catatan: Endpoint ini menggantikan kebutuhan multi-call (`/business-lines/:id`, 
     - `type` (string | null)
     - `website` (string | null)
     - `createdAt` (string)
+    - `memoNumber` (string | null)
+    - `skFile` (FileSummary | null)
   - `branches[]` (kantor/branch perusahaan)
     - `id` (string)
     - `name` (string)
@@ -126,27 +165,30 @@ Catatan: Endpoint ini menggantikan kebutuhan multi-call (`/business-lines/:id`, 
     - `name` (string)
     - `docNumber` (string | null)
     - `fileName` (string)
-    - `size` (string | null)
+    - `fileUrl` (string)
+    - `fileType` (string)
+    - `size` (string | number | null)
 
 Catatan: Endpoint ini menggantikan multi-call (`/companies/:id`, `/offices?companyId=:id`, `/files?ownerType=company&ownerId=:id`) menjadi satu panggilan per halaman.
 
 ### Operasi CRUD (Halaman Detail Perusahaan)
 - Branch/Kantor perusahaan:
   - Create: `POST /offices`
-    - Body: `companyId` (required), `name` (required), `address?`, `description?`, `employeeCount?`
+    - Body: `companyId` (required), `name` (required), `address?`, `description?`, `employeeCount?`, `memoNumber` (required), `skFileId` (required)
     - Response: Office baru
   - Update: `PATCH /offices/:id`
-    - Body (partial): field seperti Create (opsional)
+    - Body (partial): field seperti Create (opsional) ditambah `memoNumber` (required), `skFileId` (required)
     - Response: Office terkini
   - Delete: `DELETE /offices/:id`
+    - Body: `memoNumber` (required), `skFileId` (required)
     - Response: `{ success: true }`
 - Dokumen perusahaan:
   - Create: `POST /files`
     - Body: `ownerType="company"`, `ownerId` (required), `name` (required), `docNumber?`, `file` (upload)
-    - Response: File baru (`id`, `name`, `docNumber`, `fileName`, `size`)
+    - Response: File baru (`id`, `name`, `docNumber`, `fileName`, `fileUrl`, `fileType`, `size`)
   - Update metadata: `PATCH /files/:id`
     - Body (partial): `name?`, `docNumber?`
-    - Response: File terkini
+    - Response: File terkini (`id`, `name`, `docNumber`, `fileName`, `fileUrl`, `fileType`, `size`)
   - Delete: `DELETE /files/:id`
     - Response: `{ success: true }`
 
@@ -158,18 +200,19 @@ Catatan: Endpoint ini menggantikan multi-call (`/companies/:id`, `/offices?compa
     - `id` (string)
     - `name` (string) – “Office”
     - `description` (string)
-    - `skFile` (string | null)
-    - `memoFile` (string | null)
+    - `memoNumber` (string | null)
+    - `skFile` (FileSummary | null)
   - `total`, `page`, `pageSize`, `totalPages`
 
 ### Operasi CRUD (Halaman Kantor – List)
 - Create: `POST /offices`
-  - Body: `companyId` (required), `name` (required), `address?`, `description?`, `employeeCount?`
+  - Body: `companyId` (required), `name` (required), `address?`, `description?`, `employeeCount?`, `memoNumber` (required), `skFileId` (required)
   - Response: Office baru
 - Update: `PATCH /offices/:id`
-  - Body (partial): field seperti Create (opsional)
+  - Body (partial): field seperti Create (opsional) ditambah `memoNumber` (required), `skFileId` (required)
   - Response: Office terkini
 - Delete: `DELETE /offices/:id`
+  - Body: `memoNumber` (required), `skFileId` (required)
   - Response: `{ success: true }`
 
 ## Halaman: Direktorat (List)
@@ -180,18 +223,19 @@ Catatan: Endpoint ini menggantikan multi-call (`/companies/:id`, `/offices?compa
     - `id` (string)
     - `name` (string) – “Nama Direktorat”
     - `description` (string) – “Deskripsi Umum”
-    - `skFile` (string | null)
-    - `memoFile` (string | null)
+    - `memoNumber` (string | null)
+    - `skFile` (FileSummary | null)
   - `total`, `page`, `pageSize`, `totalPages`
 
 ### Operasi CRUD (Halaman Direktorat – List)
 - Create: `POST /directorates`
-  - Body: `name` (required), `description?`, `skFileId?`, `memoFileId?`
+  - Body: `name` (required), `description?`, `memoNumber` (required), `skFileId` (required)
   - Response: Directorate baru
 - Update: `PATCH /directorates/:id`
-  - Body (partial): `name?`, `description?`, `skFileId?`, `memoFileId?`
+  - Body (partial): `name?`, `description?`, `memoNumber` (required), `skFileId` (required)
   - Response: Directorate terkini
 - Delete: `DELETE /directorates/:id`
+  - Body: `memoNumber` (required), `skFileId` (required)
   - Response: `{ success: true }`
 
 ## Halaman: Divisi (List)
@@ -202,18 +246,19 @@ Catatan: Endpoint ini menggantikan multi-call (`/companies/:id`, `/offices?compa
     - `id` (string)
     - `name` (string) – “Nama Divisi”
     - `description` (string)
-    - `skFile` (string | null)
-    - `memoFile` (string | null)
+    - `memoNumber` (string | null)
+    - `skFile` (FileSummary | null)
   - `total`, `page`, `pageSize`, `totalPages`
 
 ### Operasi CRUD (Halaman Divisi – List)
 - Create: `POST /divisions`
-  - Body: `directorateId` (required), `name` (required), `description?`, `skFileId?`, `memoFileId?`
+  - Body: `directorateId` (required), `name` (required), `description?`, `memoNumber` (required), `skFileId` (required)
   - Response: Division baru
 - Update: `PATCH /divisions/:id`
-  - Body (partial): `directorateId?`, `name?`, `description?`, `skFileId?`, `memoFileId?`
+  - Body (partial): `directorateId?`, `name?`, `description?`, `memoNumber` (required), `skFileId` (required)
   - Response: Division terkini
 - Delete: `DELETE /divisions/:id`
+  - Body: `memoNumber` (required), `skFileId` (required)
   - Response: `{ success: true }`
 
 ## Halaman: Departemen (List)
@@ -225,18 +270,19 @@ Catatan: Endpoint ini menggantikan multi-call (`/companies/:id`, `/offices?compa
     - `name` (string) – “Nama Departemen”
     - `divisionId` (string)
     - `divisionName` (string) – “Nama Divisi” (denormalized)
-    - `skFile` (string | null)
-    - `memoFile` (string | null)
+    - `memoNumber` (string | null)
+    - `skFile` (FileSummary | null)
   - `total`, `page`, `pageSize`, `totalPages`
 
 ### Operasi CRUD (Halaman Departemen – List)
 - Create: `POST /departments`
-  - Body: `divisionId` (required), `name` (required), `description?`, `skFileId?`, `memoFileId?`
+  - Body: `divisionId` (required), `name` (required), `description?`, `memoNumber` (required), `skFileId` (required)
   - Response: Department baru
 - Update: `PATCH /departments/:id`
-  - Body (partial): `divisionId?`, `name?`, `description?`, `skFileId?`, `memoFileId?`
+  - Body (partial): `divisionId?`, `name?`, `description?`, `memoNumber` (required), `skFileId` (required)
   - Response: Department terkini
 - Delete: `DELETE /departments/:id`
+  - Body: `memoNumber` (required), `skFileId` (required)
   - Response: `{ success: true }`
 
 ## Halaman: Jabatan (List)
@@ -249,18 +295,19 @@ Catatan: Endpoint ini menggantikan multi-call (`/companies/:id`, `/offices?compa
     - `grade` (string)
     - `jobDescription` (string)
     - `directSubordinates` (string[]) – “Bawahan Langsung”
-    - `skFile` (string | null)
-    - `memoFile` (string | null)
+    - `memoNumber` (string | null)
+    - `skFile` (FileSummary | null)
   - `total`, `page`, `pageSize`, `totalPages`
 
 ### Operasi CRUD (Halaman Jabatan – List)
 - Create: `POST /positions`
-  - Body: `name` (required), `grade?`, `jobDescription?`, `directSubordinates?`, `skFileId?`, `memoFileId?`
+  - Body: `name` (required), `grade?`, `jobDescription?`, `directSubordinates?`, `memoNumber` (required), `skFileId` (required)
   - Response: Position baru
 - Update: `PATCH /positions/:id`
-  - Body (partial): field seperti Create (opsional)
+  - Body (partial): field seperti Create (opsional) ditambah `memoNumber` (required), `skFileId` (required)
   - Response: Position terkini
 - Delete: `DELETE /positions/:id`
+  - Body: `memoNumber` (required), `skFileId` (required)
   - Response: `{ success: true }`
 
 ## Halaman: Posisi Pegawai (List)
@@ -278,19 +325,20 @@ Catatan: Endpoint ini menggantikan multi-call (`/companies/:id`, `/offices?compa
     - `divisionName` (string) – “Divisi”
     - `departmentId` (string)
     - `departmentName` (string) – “Departemen”
-    - `skFile` (string | null)
-    - `memoFile` (string | null)
+    - `memoNumber` (string | null)
+    - `skFile` (FileSummary | null)
   - `total`, `page`, `pageSize`, `totalPages`
 
 ### Operasi CRUD (Halaman Posisi Pegawai – List)
 - Create: `POST /employee-positions`
-  - Body: `name` (required), `positionId` (required), `directorateId?`, `divisionId?`, `departmentId?`, `skFileId?`, `memoFileId?`
+  - Body: `name` (required), `positionId` (required), `directorateId?`, `divisionId?`, `departmentId?`, `memoNumber` (required), `skFileId` (required)
   - Validasi: minimal salah satu dari `directorateId`, `divisionId`, atau `departmentId` harus diisi.
   - Response: EmployeePosition baru
 - Update: `PATCH /employee-positions/:id`
-  - Body (partial): field seperti Create (opsional)
+  - Body (partial): field seperti Create (opsional) ditambah `memoNumber` (required), `skFileId` (required)
   - Response: EmployeePosition terkini
 - Delete: `DELETE /employee-positions/:id`
+  - Body: `memoNumber` (required), `skFileId` (required)
   - Response: `{ success: true }`
 
 ---
@@ -299,6 +347,7 @@ Catatan Implementasi:
 - Untuk konsistensi dengan hooks dan service yang ada, parameter pagination mengikuti `_page` dan `_limit` (1-based paging di komponen).
 - Field denormalized seperti `businessLineName`, `divisionName`, `positionName`, dst. direkomendasikan muncul di response agar UI tidak perlu memanggil endpoint tambahan.
 - Endpoint `GET /offices?companyId=:id` tetap dapat disediakan sebagai utilitas, tetapi halaman detail perusahaan lebih baik menggunakan `GET /companies/:id/detail` agar tetap satu halaman satu API.
+ - Perubahan kebijakan: Create/Update/Delete wajib `memoNumber` dan `skFileId`. GET yang menampilkan file harus menyertakan `FileSummary` (fileName, fileUrl, fileType, size).
 
 ## Operasi CRUD Per Resource
 
@@ -309,17 +358,24 @@ Semua endpoint berikut memerlukan header `Authorization: Bearer <token>`.
   - Request Body:
     - `name` (string, required)
     - `description` (string, optional)
-  - Response: Objek BusinessLine yang dibuat (`id`, `name`, `description`, `skFile`, `memoFile`).
+    - `memoNumber` (string, required)
+    - `skFileId` (string, required)
+  - Response: Objek BusinessLine yang dibuat (`id`, `name`, `description`, `memoNumber`, `skFile`).
   - Status: `201 Created`
 - Update: `PATCH /business-lines/:id`
   - Path: `id` (string)
   - Request Body (partial):
     - `name` (string, optional)
     - `description` (string, optional)
+    - `memoNumber` (string, required)
+    - `skFileId` (string, required)
   - Response: Objek BusinessLine terkini.
   - Status: `200 OK`
 - Delete: `DELETE /business-lines/:id`
   - Path: `id` (string)
+  - Request Body:
+    - `memoNumber` (string, required)
+    - `skFileId` (string, required)
   - Response: `{ success: true }`
   - Status: `200 OK`
 
@@ -339,15 +395,20 @@ Semua endpoint berikut memerlukan header `Authorization: Bearer <token>`.
     - `type` (string, optional)
     - `website` (string, optional)
     - `logoFileId` (string, optional) – jika upload logo via endpoint file terpisah
+    - `memoNumber` (string, required)
+    - `skFileId` (string, required)
   - Response: Objek Company yang dibuat (dengan `businessLineName` terdenormalisasi jika tersedia).
   - Status: `201 Created`
 - Update: `PATCH /companies/:id`
   - Path: `id` (string)
-  - Request Body (partial): field yang sama seperti Create (opsional).
+  - Request Body (partial): field yang sama seperti Create (opsional) ditambah `memoNumber` (required), `skFileId` (required).
   - Response: Objek Company terkini.
   - Status: `200 OK`
 - Delete: `DELETE /companies/:id`
   - Path: `id` (string)
+  - Request Body:
+    - `memoNumber` (string, required)
+    - `skFileId` (string, required)
   - Response: `{ success: true }`
   - Status: `200 OK`
 
@@ -359,15 +420,20 @@ Semua endpoint berikut memerlukan header `Authorization: Bearer <token>`.
     - `address` (string, optional)
     - `description` (string, optional)
     - `employeeCount` (number, optional)
+    - `memoNumber` (string, required)
+    - `skFileId` (string, required)
   - Response: Objek Office yang dibuat.
   - Status: `201 Created`
 - Update: `PATCH /offices/:id`
   - Path: `id` (string)
-  - Request Body (partial): field yang sama seperti Create (opsional).
+  - Request Body (partial): field yang sama seperti Create (opsional) ditambah `memoNumber` (required), `skFileId` (required).
   - Response: Objek Office terkini.
   - Status: `200 OK`
 - Delete: `DELETE /offices/:id`
   - Path: `id` (string)
+  - Request Body:
+    - `memoNumber` (string, required)
+    - `skFileId` (string, required)
   - Response: `{ success: true }`
   - Status: `200 OK`
 
@@ -376,17 +442,20 @@ Semua endpoint berikut memerlukan header `Authorization: Bearer <token>`.
   - Request Body:
     - `name` (string, required)
     - `description` (string, optional)
-    - `skFileId` (string, optional)
-    - `memoFileId` (string, optional)
+    - `memoNumber` (string, required)
+    - `skFileId` (string, required)
   - Response: Objek Directorate yang dibuat.
   - Status: `201 Created`
 - Update: `PATCH /directorates/:id`
   - Path: `id` (string)
-  - Request Body (partial): `name`, `description`, `skFileId`, `memoFileId` (opsional).
+  - Request Body (partial): `name?`, `description?`, `memoNumber` (required), `skFileId` (required).
   - Response: Objek Directorate terkini.
   - Status: `200 OK`
 - Delete: `DELETE /directorates/:id`
   - Path: `id` (string)
+  - Request Body:
+    - `memoNumber` (string, required)
+    - `skFileId` (string, required)
   - Response: `{ success: true }`
   - Status: `200 OK`
 
@@ -396,17 +465,20 @@ Semua endpoint berikut memerlukan header `Authorization: Bearer <token>`.
     - `directorateId` (string, required)
     - `name` (string, required)
     - `description` (string, optional)
-    - `skFileId` (string, optional)
-    - `memoFileId` (string, optional)
+    - `memoNumber` (string, required)
+    - `skFileId` (string, required)
   - Response: Objek Division yang dibuat.
   - Status: `201 Created`
 - Update: `PATCH /divisions/:id`
   - Path: `id` (string)
-  - Request Body (partial): `directorateId`, `name`, `description`, `skFileId`, `memoFileId` (opsional).
+  - Request Body (partial): `directorateId?`, `name?`, `description?`, `memoNumber` (required), `skFileId` (required).
   - Response: Objek Division terkini.
   - Status: `200 OK`
 - Delete: `DELETE /divisions/:id`
   - Path: `id` (string)
+  - Request Body:
+    - `memoNumber` (string, required)
+    - `skFileId` (string, required)
   - Response: `{ success: true }`
   - Status: `200 OK`
 
@@ -416,17 +488,20 @@ Semua endpoint berikut memerlukan header `Authorization: Bearer <token>`.
     - `divisionId` (string, required)
     - `name` (string, required)
     - `description` (string, optional)
-    - `skFileId` (string, optional)
-    - `memoFileId` (string, optional)
+    - `memoNumber` (string, required)
+    - `skFileId` (string, required)
   - Response: Objek Department yang dibuat (dengan `divisionName` terdenormalisasi jika tersedia).
   - Status: `201 Created`
 - Update: `PATCH /departments/:id`
   - Path: `id` (string)
-  - Request Body (partial): `divisionId`, `name`, `description`, `skFileId`, `memoFileId` (opsional).
+  - Request Body (partial): `divisionId?`, `name?`, `description?`, `memoNumber` (required), `skFileId` (required).
   - Response: Objek Department terkini.
   - Status: `200 OK`
 - Delete: `DELETE /departments/:id`
   - Path: `id` (string)
+  - Request Body:
+    - `memoNumber` (string, required)
+    - `skFileId` (string, required)
   - Response: `{ success: true }`
   - Status: `200 OK`
 
@@ -437,17 +512,20 @@ Semua endpoint berikut memerlukan header `Authorization: Bearer <token>`.
     - `grade` (string, optional)
     - `jobDescription` (string, optional)
     - `directSubordinates` (string[], optional)
-    - `skFileId` (string, optional)
-    - `memoFileId` (string, optional)
+    - `memoNumber` (string, required)
+    - `skFileId` (string, required)
   - Response: Objek Position yang dibuat.
   - Status: `201 Created`
 - Update: `PATCH /positions/:id`
   - Path: `id` (string)
-  - Request Body (partial): field yang sama seperti Create (opsional).
+  - Request Body (partial): field yang sama seperti Create (opsional) ditambah `memoNumber` (required), `skFileId` (required).
   - Response: Objek Position terkini.
   - Status: `200 OK`
 - Delete: `DELETE /positions/:id`
   - Path: `id` (string)
+  - Request Body:
+    - `memoNumber` (string, required)
+    - `skFileId` (string, required)
   - Response: `{ success: true }`
   - Status: `200 OK`
 
@@ -459,18 +537,21 @@ Semua endpoint berikut memerlukan header `Authorization: Bearer <token>`.
     - `directorateId` (string, optional)
     - `divisionId` (string, optional)
     - `departmentId` (string, optional)
-    - `skFileId` (string, optional)
-    - `memoFileId` (string, optional)
+    - `memoNumber` (string, required)
+    - `skFileId` (string, required)
   - Validasi: minimal salah satu dari `directorateId`, `divisionId`, atau `departmentId` harus diisi.
   - Response: Objek EmployeePosition yang dibuat (dengan nama terdenormalisasi jika tersedia).
   - Status: `201 Created`
 - Update: `PATCH /employee-positions/:id`
   - Path: `id` (string)
-  - Request Body (partial): field yang sama seperti Create (opsional).
+  - Request Body (partial): field yang sama seperti Create (opsional) ditambah `memoNumber` (required), `skFileId` (required).
   - Response: Objek EmployeePosition terkini.
   - Status: `200 OK`
 - Delete: `DELETE /employee-positions/:id`
   - Path: `id` (string)
+  - Request Body:
+    - `memoNumber` (string, required)
+    - `skFileId` (string, required)
   - Response: `{ success: true }`
   - Status: `200 OK`
 
