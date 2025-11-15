@@ -1,0 +1,169 @@
+{
+  "info": {
+    "name": "HRIS - Structure & Organization API",
+    "description": "Koleksi Postman dengan URL string langsung yang tetap memakai {{baseUrl}}.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "token", "value": "" },
+    { "key": "businessLineId", "value": "bl-1" },
+    { "key": "companyId", "value": "comp-1" },
+    { "key": "officeId", "value": "off-1" },
+    { "key": "directorateId", "value": "dir-1" },
+    { "key": "divisionId", "value": "div-1" },
+    { "key": "departmentId", "value": "dep-1" },
+    { "key": "positionId", "value": "pos-1" },
+    { "key": "employeePositionId", "value": "ep-1" },
+    { "key": "memoNumber", "value": "SK-2025-0001" },
+    { "key": "skFileId", "value": "file-1" },
+    { "key": "logoFileId", "value": "file-logo-1" }
+  ],
+  "item": [
+    {
+      "name": "BusinessLines",
+      "item": [
+        {
+          "name": "GET /business-lines (list)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{baseUrl}}/api/business-lines?q=&sort=name&order=asc&page=1&limit=10"
+          }
+        },
+        {
+          "name": "GET /business-lines/:id/detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{baseUrl}}/api/business-lines/{{businessLineId}}/detail"
+          }
+        },
+        {
+          "name": "POST /business-lines",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Business Line A\",\n  \"description\": \"Deskripsi BL A\",\n  \"memoNumber\": \"{{memoNumber}}\",\n  \"skFileId\": \"{{skFileId}}\"\n}" },
+            "url": "{{baseUrl}}/api/business-lines"
+          }
+        },
+        {
+          "name": "PATCH /business-lines/:id",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Business Line A (Update)\",\n  \"description\": \"Deskripsi update\",\n  \"memoNumber\": \"{{memoNumber}}\",\n  \"skFileId\": \"{{skFileId}}\"\n}" },
+            "url": "{{baseUrl}}/api/business-lines/{{businessLineId}}"
+          }
+        },
+        {
+          "name": "DELETE /business-lines/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"memoNumber\": \"{{memoNumber}}\",\n  \"skFileId\": \"{{skFileId}}\"\n}" },
+            "url": "{{baseUrl}}/api/business-lines/{{businessLineId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Companies",
+      "item": [
+        {
+          "name": "GET /companies (list)",
+          "request": { "method": "GET", "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": "{{baseUrl}}/api/companies?q=&sort=name&order=asc&page=1&limit=10" }
+        },
+        {
+          "name": "GET /companies/:id/detail",
+          "request": { "method": "GET", "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": "{{baseUrl}}/api/companies/{{companyId}}/detail" }
+        },
+        {
+          "name": "POST /companies",
+          "request": { "method": "POST", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": "{{baseUrl}}/api/companies", "body": { "mode": "raw", "raw": "{\n  \"name\": \"Company A\",\n  \"businessLineId\": \"{{businessLineId}}\",\n  \"description\": \"Deskripsi Company A\",\n  \"address\": \"Alamat Company A\",\n  \"employeeCount\": 50,\n  \"postalCode\": \"12345\",\n  \"email\": \"company@example.com\",\n  \"phone\": \"+62-811-0000\",\n  \"industry\": \"IT\",\n  \"founded\": 2020,\n  \"type\": \"PT\",\n  \"website\": \"https://company.example.com\",\n  \"logoFileId\": \"{{logoFileId}}\",\n  \"memoNumber\": \"{{memoNumber}}\",\n  \"skFileId\": \"{{skFileId}}\"\n}" } }
+        },
+        {
+          "name": "PATCH /companies/:id",
+          "request": { "method": "PATCH", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": "{{baseUrl}}/api/companies/{{companyId}}", "body": { "mode": "raw", "raw": "{\n  \"name\": \"Company A (Update)\",\n  \"businessLineId\": \"{{businessLineId}}\",\n  \"address\": \"Alamat baru\",\n  \"memoNumber\": \"{{memoNumber}}\",\n  \"skFileId\": \"{{skFileId}}\"\n}" } }
+        },
+        {
+          "name": "DELETE /companies/:id",
+          "request": { "method": "DELETE", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": "{{baseUrl}}/api/companies/{{companyId}}", "body": { "mode": "raw", "raw": "{\n  \"memoNumber\": \"{{memoNumber}}\",\n  \"skFileId\": \"{{skFileId}}\"\n}" } }
+        }
+      ]
+    },
+    {
+      "name": "Offices",
+      "item": [
+        { "name": "GET /offices (list)", "request": { "method": "GET", "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": "{{baseUrl}}/api/offices?q=&sort=name&order=asc&page=1&limit=10" } },
+        { "name": "POST /offices", "request": { "method": "POST", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": "{{baseUrl}}/api/offices", "body": { "mode": "raw", "raw": "{\n  \"companyId\": \"{{companyId}}\",\n  \"name\": \"Office A\",\n  \"address\": \"Alamat kantor A\",\n  \"description\": \"Deskripsi kantor\",\n  \"employeeCount\": 10,\n  \"memoNumber\": \"{{memoNumber}}\",\n  \"skFileId\": \"{{skFileId}}\"\n}" } } },
+        { "name": "PATCH /offices/:id", "request": { "method": "PATCH", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": "{{baseUrl}}/api/offices/{{officeId}}", "body": { "mode": "raw", "raw": "{\n  \"name\": \"Office A (Update)\",\n  \"memoNumber\": \"{{memoNumber}}\",\n  \"skFileId\": \"{{skFileId}}\"\n}" } } },
+        { "name": "DELETE /offices/:id", "request": { "method": "DELETE", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": "{{baseUrl}}/api/offices/{{officeId}}", "body": { "mode": "raw", "raw": "{\n  \"memoNumber\": \"{{memoNumber}}\",\n  \"skFileId\": \"{{skFileId}}\"\n}" } } }
+      ]
+    },
+    {
+      "name": "Directorates",
+      "item": [
+        { "name": "GET /directorates (list)", "request": { "method": "GET", "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": "{{baseUrl}}/api/directorates?q=&sort=name&order=asc&page=1&limit=10" } },
+        { "name": "POST /directorates", "request": { "method": "POST", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": "{{baseUrl}}/api/directorates", "body": { "mode": "raw", "raw": "{\n  \"name\": \"Directorate A\",\n  \"description\": \"Deskripsi directorate\",\n  \"memoNumber\": \"{{memoNumber}}\",\n  \"skFileId\": \"{{skFileId}}\"\n}" } } },
+        { "name": "PATCH /directorates/:id", "request": { "method": "PATCH", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": "{{baseUrl}}/api/directorates/{{directorateId}}", "body": { "mode": "raw", "raw": "{\n  \"name\": \"Directorate A (Update)\",\n  \"memoNumber\": \"{{memoNumber}}\",\n  \"skFileId\": \"{{skFileId}}\"\n}" } } },
+        { "name": "DELETE /directorates/:id", "request": { "method": "DELETE", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": "{{baseUrl}}/api/directorates/{{directorateId}}", "body": { "mode": "raw", "raw": "{\n  \"memoNumber\": \"{{memoNumber}}\",\n  \"skFileId\": \"{{skFileId}}\"\n}" } } }
+      ]
+    },
+    {
+      "name": "Divisions",
+      "item": [
+        { "name": "GET /divisions (list)", "request": { "method": "GET", "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": "{{baseUrl}}/api/divisions?q=&sort=name&order=asc&page=1&limit=10" } },
+        { "name": "POST /divisions", "request": { "method": "POST", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": "{{baseUrl}}/api/divisions", "body": { "mode": "raw", "raw": "{\n  \"directorateId\": \"{{directorateId}}\",\n  \"name\": \"Division A\",\n  \"description\": \"Deskripsi division\",\n  \"memoNumber\": \"{{memoNumber}}\",\n  \"skFileId\": \"{{skFileId}}\"\n}" } } },
+        { "name": "PATCH /divisions/:id", "request": { "method": "PATCH", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": "{{baseUrl}}/api/divisions/{{divisionId}}", "body": { "mode": "raw", "raw": "{\n  \"name\": \"Division A (Update)\",\n  \"memoNumber\": \"{{memoNumber}}\",\n  \"skFileId\": \"{{skFileId}}\"\n}" } } },
+        { "name": "DELETE /divisions/:id", "request": { "method": "DELETE", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": "{{baseUrl}}/api/divisions/{{divisionId}}", "body": { "mode": "raw", "raw": "{\n  \"memoNumber\": \"{{memoNumber}}\",\n  \"skFileId\": \"{{skFileId}}\"\n}" } } }
+      ]
+    },
+    {
+      "name": "Departments",
+      "item": [
+        { "name": "GET /departments (list)", "request": { "method": "GET", "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": "{{baseUrl}}/api/departments?q=&sort=name&order=asc&page=1&limit=10" } },
+        { "name": "POST /departments", "request": { "method": "POST", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": "{{baseUrl}}/api/departments", "body": { "mode": "raw", "raw": "{\n  \"divisionId\": \"{{divisionId}}\",\n  \"name\": \"Department A\",\n  \"description\": \"Deskripsi department\",\n  \"memoNumber\": \"{{memoNumber}}\",\n  \"skFileId\": \"{{skFileId}}\"\n}" } } },
+        { "name": "PATCH /departments/:id", "request": { "method": "PATCH", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": "{{baseUrl}}/api/departments/{{departmentId}}", "body": { "mode": "raw", "raw": "{\n  \"name\": \"Department A (Update)\",\n  \"memoNumber\": \"{{memoNumber}}\",\n  \"skFileId\": \"{{skFileId}}\"\n}" } } },
+        { "name": "DELETE /departments/:id", "request": { "method": "DELETE", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": "{{baseUrl}}/api/departments/{{departmentId}}", "body": { "mode": "raw", "raw": "{\n  \"memoNumber\": \"{{memoNumber}}\",\n  \"skFileId\": \"{{skFileId}}\"\n}" } } }
+      ]
+    },
+    {
+      "name": "Positions",
+      "item": [
+        { "name": "GET /positions (list)", "request": { "method": "GET", "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": "{{baseUrl}}/api/positions?q=&sort=name&order=asc&page=1&limit=10" } },
+        { "name": "POST /positions", "request": { "method": "POST", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": "{{baseUrl}}/api/positions", "body": { "mode": "raw", "raw": "{\n  \"name\": \"Position A\",\n  \"grade\": \"Junior\",\n  \"jobDescription\": \"Deskripsi pekerjaan\",\n  \"directSubordinates\": [\"pos-2\"],\n  \"memoNumber\": \"{{memoNumber}}\",\n  \"skFileId\": \"{{skFileId}}\"\n}" } } },
+        { "name": "PATCH /positions/:id", "request": { "method": "PATCH", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": "{{baseUrl}}/api/positions/{{positionId}}", "body": { "mode": "raw", "raw": "{\n  \"name\": \"Position A (Update)\",\n  \"grade\": \"Senior\",\n  \"memoNumber\": \"{{memoNumber}}\",\n  \"skFileId\": \"{{skFileId}}\"\n}" } } },
+        { "name": "DELETE /positions/:id", "request": { "method": "DELETE", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": "{{baseUrl}}/api/positions/{{positionId}}", "body": { "mode": "raw", "raw": "{\n  \"memoNumber\": \"{{memoNumber}}\",\n  \"skFileId\": \"{{skFileId}}\"\n}" } } }
+      ]
+    },
+    {
+      "name": "EmployeePositions",
+      "item": [
+        { "name": "GET /employee-positions (list)", "request": { "method": "GET", "header": [ { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": "{{baseUrl}}/api/employee-positions?q=&sort=name&order=asc&page=1&limit=10" } },
+        { "name": "POST /employee-positions", "request": { "method": "POST", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": "{{baseUrl}}/api/employee-positions", "body": { "mode": "raw", "raw": "{\n  \"name\": \"Nama Pegawai\",\n  \"positionId\": \"{{positionId}}\",\n  \"directorateId\": \"{{directorateId}}\",\n  \"divisionId\": null,\n  \"departmentId\": null,\n  \"startDate\": \"2024-01-01\",\n  \"endDate\": null,\n  \"memoNumber\": \"{{memoNumber}}\",\n  \"skFileId\": \"{{skFileId}}\"\n}" } } },
+        { "name": "PATCH /employee-positions/:id", "request": { "method": "PATCH", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": "{{baseUrl}}/api/employee-positions/{{employeePositionId}}", "body": { "mode": "raw", "raw": "{\n  \"positionId\": \"{{positionId}}\",\n  \"memoNumber\": \"{{memoNumber}}\",\n  \"skFileId\": \"{{skFileId}}\"\n}" } } },
+        { "name": "DELETE /employee-positions/:id", "request": { "method": "DELETE", "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Accept", "value": "application/json" }, { "key": "Authorization", "value": "Bearer {{token}}" } ], "url": "{{baseUrl}}/api/employee-positions/{{employeePositionId}}", "body": { "mode": "raw", "raw": "{\n  \"memoNumber\": \"{{memoNumber}}\",\n  \"skFileId\": \"{{skFileId}}\"\n}" } } }
+      ]
+    }
+  ]
+}
