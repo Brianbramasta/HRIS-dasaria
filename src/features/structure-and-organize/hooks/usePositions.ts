@@ -1,9 +1,9 @@
 import { useState, useCallback, useEffect } from 'react';
-import { positionService } from '../services/organization.service';
-import { Position, PaginatedResponse, TableFilter } from '../types/organization.types';
+import { positionsService } from '../services/request/positions.service';
+import { PositionListItem, TableFilter } from '../types/organization.api.types';
 
 interface UsePositionsReturn {
-  positions: Position[];
+  positions: PositionListItem[];
   loading: boolean;
   error: string | null;
   total: number;
@@ -13,9 +13,9 @@ interface UsePositionsReturn {
   
   // Actions
   fetchPositions: (filter?: TableFilter) => Promise<void>;
-  createPosition: (position: Omit<Position, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
-  updatePosition: (id: string, position: Partial<Position>) => Promise<void>;
-  deletePosition: (id: string) => Promise<void>;
+  createPosition: (payload: { name: string; grade?: string | null; jobDescription?: string | null; directSubordinates?: string[]; memoNumber: string; skFileId: string; }) => Promise<void>;
+  updatePosition: (id: string, payload: { name?: string; grade?: string | null; jobDescription?: string | null; directSubordinates?: string[]; memoNumber: string; skFileId: string; }) => Promise<void>;
+  deletePosition: (id: string, payload: { memoNumber: string; skFileId: string; }) => Promise<void>;
   setPage: (page: number) => void;
   setPageSize: (pageSize: number) => void;
   setSearch: (search: string) => void;
@@ -23,7 +23,7 @@ interface UsePositionsReturn {
 }
 
 export const usePositions = (): UsePositionsReturn => {
-  const [positions, setPositions] = useState<Position[]>([]);
+  const [positions, setPositions] = useState<PositionListItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [total, setTotal] = useState(0);
@@ -39,7 +39,7 @@ export const usePositions = (): UsePositionsReturn => {
     setError(null);
     
     try {
-      const response: PaginatedResponse<Position> = await positionService.getAll({
+      const response = await positionsService.getList({
         page,
         pageSize,
         search: filter?.search ?? search,
@@ -57,12 +57,12 @@ export const usePositions = (): UsePositionsReturn => {
     }
   }, [page, pageSize, search, sortBy, sortOrder]);
 
-  const createPosition = useCallback(async (positionData: Omit<Position, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const createPosition = useCallback(async (positionData: { name: string; grade?: string | null; jobDescription?: string | null; directSubordinates?: string[]; memoNumber: string; skFileId: string; }) => {
     setLoading(true);
     setError(null);
     
     try {
-      const newPosition = await positionService.create(positionData);
+      const newPosition = await positionsService.create(positionData);
       setPositions(prev => [...prev, newPosition]);
       await fetchPositions();
     } catch (err) {
@@ -73,12 +73,12 @@ export const usePositions = (): UsePositionsReturn => {
     }
   }, [fetchPositions]);
 
-  const updatePosition = useCallback(async (id: string, positionData: Partial<Position>) => {
+  const updatePosition = useCallback(async (id: string, positionData: { name?: string; grade?: string | null; jobDescription?: string | null; directSubordinates?: string[]; memoNumber: string; skFileId: string; }) => {
     setLoading(true);
     setError(null);
     
     try {
-      const updatedPosition = await positionService.update(id, positionData);
+      const updatedPosition = await positionsService.update(id, positionData);
       setPositions(prev => prev.map(position => 
         position.id === id ? updatedPosition : position
       ));
@@ -90,12 +90,12 @@ export const usePositions = (): UsePositionsReturn => {
     }
   }, []);
 
-  const deletePosition = useCallback(async (id: string) => {
+  const deletePosition = useCallback(async (id: string, payload: { memoNumber: string; skFileId: string; }) => {
     setLoading(true);
     setError(null);
     
     try {
-      await positionService.delete(id);
+      await positionsService.delete(id, payload);
       setPositions(prev => prev.filter(position => position.id !== id));
       await fetchPositions();
     } catch (err) {

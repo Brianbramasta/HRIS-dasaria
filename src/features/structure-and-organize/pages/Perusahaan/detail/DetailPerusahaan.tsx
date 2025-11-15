@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { companyService, officeService } from '../../../services/organization.service';
-import { apiService } from '../../../../../services/api';
+import { companyService } from '../../../services/organization.service';
+// Composite detail endpoint digunakan; tidak perlu memanggil office/files manual
 import AddBranchModal from '../../../components/modals/Perusahaan/detail/AddBranchModal';
 import DeleteBranchModal from '../../../components/modals/Perusahaan/detail/DeleteBranchModal';
 import AddDocumentModal from '../../../components/modals/Perusahaan/detail/AddDocumentModal';
@@ -33,23 +33,17 @@ const DetailPerusahaan: React.FC = () => {
   const fetch = React.useCallback(async () => {
     if (!id) return;
     try {
-      const comp = await companyService.getById(id);
-      setCompany(comp);
-
-      const offices = await officeService.getByCompanyId(id);
-      // If API does not support companyId filter, fallback to filter client-side
-      console.log('offices', offices);
-      const filtered = (offices || []).filter((o: any) => (o.companyId || String(o.companyId)) === String(id));
-      setBranches(filtered);
-
-      // fetch documents from /documents?companyId=...
-      try {
-        const docsRes = await apiService.get<any>(`/files?ownerType=company&ownerId=${id}`);
-        setDocuments(docsRes.data || []);
-      } catch (e) {
-        console.error('Failed to load documents for company', e);
-        setDocuments([]);
-      }
+      // Gunakan endpoint komposit: GET /companies/:id/detail
+      const detail = await companyService.getDetail(id);
+      setCompany(detail?.company || null);
+      setBranches(detail?.branches || []);
+      // Map dokumen agar tetap kompatibel dengan UI yang memfilter berdasarkan 'type'
+      const docs = (detail?.documents || []).map((d: any) => ({
+        ...d,
+        // Jika API tidak menyediakan 'type', default-kan ke 'active' agar UI tidak kosong
+        type: d?.type ?? 'active',
+      }));
+      setDocuments(docs);
     } catch (err) {
       console.error('Failed to load company detail', err);
     }
@@ -97,7 +91,7 @@ const DetailPerusahaan: React.FC = () => {
         <div className="col-span-12 md:col-span-4 rounded-lg p-4 md:p-6 shadow-sm bg-[#F6F6F6]">
           <div className="flex flex-col items-center">
             <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center mb-4">{/* logo */}
-              <span className="text-3xl font-bold"><img src={company?.logo || '/placeholder.svg'} alt='logo' className='w-full h-full object-cover rounded-full'/></span>
+              <span className="text-3xl font-bold"><img src={company?.logo?.fileUrl || '/placeholder.svg'} alt='logo' className='w-full h-full object-cover rounded-full'/></span>
             </div>
             <h2 className="text-xl font-bold">{company?.name}</h2>
             <p className="text-sm text-gray-500">{company?.businessLineName}</p>

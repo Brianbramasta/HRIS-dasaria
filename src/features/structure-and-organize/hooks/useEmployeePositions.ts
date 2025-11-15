@@ -1,9 +1,9 @@
 import { useState, useCallback, useEffect } from 'react';
-import { employeePositionService } from '../services/organization.service';
-import { EmployeePosition, PaginatedResponse, TableFilter } from '../types/organization.types';
+import { employeePositionsService } from '../services/request/employee-positions.service';
+import { EmployeePositionListItem, TableFilter } from '../types/organization.api.types';
 
 interface UseEmployeePositionsReturn {
-  employeePositions: EmployeePosition[];
+  employeePositions: EmployeePositionListItem[];
   loading: boolean;
   error: string | null;
   total: number;
@@ -13,9 +13,29 @@ interface UseEmployeePositionsReturn {
   
   // Actions
   fetchEmployeePositions: (filter?: TableFilter) => Promise<void>;
-  createEmployeePosition: (employeePosition: Omit<EmployeePosition, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
-  updateEmployeePosition: (id: string, employeePosition: Partial<EmployeePosition>) => Promise<void>;
-  deleteEmployeePosition: (id: string) => Promise<void>;
+  createEmployeePosition: (payload: {
+    name: string;
+    positionId: string;
+    directorateId?: string | null;
+    divisionId?: string | null;
+    departmentId?: string | null;
+    startDate?: string | null;
+    endDate?: string | null;
+    memoNumber: string;
+    skFileId: string;
+  }) => Promise<void>;
+  updateEmployeePosition: (id: string, payload: {
+    name?: string;
+    positionId?: string;
+    directorateId?: string | null;
+    divisionId?: string | null;
+    departmentId?: string | null;
+    startDate?: string | null;
+    endDate?: string | null;
+    memoNumber: string;
+    skFileId: string;
+  }) => Promise<void>;
+  deleteEmployeePosition: (id: string, payload: { memoNumber: string; skFileId: string; }) => Promise<void>;
   setPage: (page: number) => void;
   setPageSize: (pageSize: number) => void;
   setSearch: (search: string) => void;
@@ -23,7 +43,7 @@ interface UseEmployeePositionsReturn {
 }
 
 export const useEmployeePositions = (): UseEmployeePositionsReturn => {
-  const [employeePositions, setEmployeePositions] = useState<EmployeePosition[]>([]);
+  const [employeePositions, setEmployeePositions] = useState<EmployeePositionListItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [total, setTotal] = useState(0);
@@ -39,7 +59,7 @@ export const useEmployeePositions = (): UseEmployeePositionsReturn => {
     setError(null);
     
     try {
-      const response: PaginatedResponse<EmployeePosition> = await employeePositionService.getAll({
+      const response = await employeePositionsService.getList({
         page,
         pageSize,
         search: filter?.search ?? search,
@@ -57,12 +77,22 @@ export const useEmployeePositions = (): UseEmployeePositionsReturn => {
     }
   }, [page, pageSize, search, sortBy, sortOrder]);
 
-  const createEmployeePosition = useCallback(async (employeePositionData: Omit<EmployeePosition, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const createEmployeePosition = useCallback(async (employeePositionData: {
+    name: string;
+    positionId: string;
+    directorateId?: string | null;
+    divisionId?: string | null;
+    departmentId?: string | null;
+    startDate?: string | null;
+    endDate?: string | null;
+    memoNumber: string;
+    skFileId: string;
+  }) => {
     setLoading(true);
     setError(null);
     
     try {
-      const newEmployeePosition = await employeePositionService.create(employeePositionData);
+      const newEmployeePosition = await employeePositionsService.create(employeePositionData);
       setEmployeePositions(prev => [...prev, newEmployeePosition]);
       await fetchEmployeePositions();
     } catch (err) {
@@ -73,12 +103,22 @@ export const useEmployeePositions = (): UseEmployeePositionsReturn => {
     }
   }, [fetchEmployeePositions]);
 
-  const updateEmployeePosition = useCallback(async (id: string, employeePositionData: Partial<EmployeePosition>) => {
+  const updateEmployeePosition = useCallback(async (id: string, employeePositionData: {
+    name?: string;
+    positionId?: string;
+    directorateId?: string | null;
+    divisionId?: string | null;
+    departmentId?: string | null;
+    startDate?: string | null;
+    endDate?: string | null;
+    memoNumber: string;
+    skFileId: string;
+  }) => {
     setLoading(true);
     setError(null);
     
     try {
-      const updatedEmployeePosition = await employeePositionService.update(id, employeePositionData);
+      const updatedEmployeePosition = await employeePositionsService.update(id, employeePositionData);
       setEmployeePositions(prev => prev.map(employeePosition => 
         employeePosition.id === id ? updatedEmployeePosition : employeePosition
       ));
@@ -90,12 +130,12 @@ export const useEmployeePositions = (): UseEmployeePositionsReturn => {
     }
   }, []);
 
-  const deleteEmployeePosition = useCallback(async (id: string) => {
+  const deleteEmployeePosition = useCallback(async (id: string, payload: { memoNumber: string; skFileId: string; }) => {
     setLoading(true);
     setError(null);
     
     try {
-      await employeePositionService.delete(id);
+      await employeePositionsService.delete(id, payload);
       setEmployeePositions(prev => prev.filter(employeePosition => employeePosition.id !== id));
       await fetchEmployeePositions();
     } catch (err) {

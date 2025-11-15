@@ -1,9 +1,9 @@
 import { useState, useCallback, useEffect } from 'react';
-import { officeService } from '../services/organization.service';
-import { Office, PaginatedResponse, TableFilter } from '../types/organization.types';
+import { officesService } from '../services/request/offices.service';
+import { OfficeListItem, TableFilter } from '../types/organization.api.types';
 
 interface UseOfficesReturn {
-  offices: Office[];
+  offices: OfficeListItem[];
   loading: boolean;
   error: string | null;
   total: number;
@@ -13,9 +13,9 @@ interface UseOfficesReturn {
   
   // Actions
   fetchOffices: (filter?: TableFilter) => Promise<void>;
-  createOffice: (office: Omit<Office, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
-  updateOffice: (id: string, office: Partial<Office>) => Promise<void>;
-  deleteOffice: (id: string) => Promise<void>;
+  createOffice: (payload: { companyId: string; name: string; address?: string | null; description?: string | null; employeeCount?: number | null; memoNumber: string; skFileId: string; }) => Promise<void>;
+  updateOffice: (id: string, payload: { companyId?: string; name?: string; address?: string | null; description?: string | null; employeeCount?: number | null; memoNumber: string; skFileId: string; }) => Promise<void>;
+  deleteOffice: (id: string, payload: { memoNumber: string; skFileId: string; }) => Promise<void>;
   setPage: (page: number) => void;
   setPageSize: (pageSize: number) => void;
   setSearch: (search: string) => void;
@@ -23,7 +23,7 @@ interface UseOfficesReturn {
 }
 
 export const useOffices = (): UseOfficesReturn => {
-  const [offices, setOffices] = useState<Office[]>([]);
+  const [offices, setOffices] = useState<OfficeListItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [total, setTotal] = useState(0);
@@ -39,7 +39,7 @@ export const useOffices = (): UseOfficesReturn => {
     setError(null);
     
     try {
-      const response: PaginatedResponse<Office> = await officeService.getAll({
+      const response = await officesService.getList({
         page,
         pageSize,
         search: filter?.search ?? search,
@@ -57,12 +57,12 @@ export const useOffices = (): UseOfficesReturn => {
     }
   }, [page, pageSize, search, sortBy, sortOrder]);
 
-  const createOffice = useCallback(async (officeData: Omit<Office, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const createOffice = useCallback(async (officeData: { companyId: string; name: string; address?: string | null; description?: string | null; employeeCount?: number | null; memoNumber: string; skFileId: string; }) => {
     setLoading(true);
     setError(null);
     
     try {
-      const newOffice = await officeService.create(officeData);
+      const newOffice = await officesService.create(officeData);
       setOffices(prev => [...prev, newOffice]);
       await fetchOffices();
     } catch (err) {
@@ -73,12 +73,12 @@ export const useOffices = (): UseOfficesReturn => {
     }
   }, [fetchOffices]);
 
-  const updateOffice = useCallback(async (id: string, officeData: Partial<Office>) => {
+  const updateOffice = useCallback(async (id: string, officeData: { companyId?: string; name?: string; address?: string | null; description?: string | null; employeeCount?: number | null; memoNumber: string; skFileId: string; }) => {
     setLoading(true);
     setError(null);
     
     try {
-      const updatedOffice = await officeService.update(id, officeData);
+      const updatedOffice = await officesService.update(id, officeData);
       setOffices(prev => prev.map(office => 
         office.id === id ? updatedOffice : office
       ));
@@ -90,12 +90,12 @@ export const useOffices = (): UseOfficesReturn => {
     }
   }, []);
 
-  const deleteOffice = useCallback(async (id: string) => {
+  const deleteOffice = useCallback(async (id: string, payload: { memoNumber: string; skFileId: string; }) => {
     setLoading(true);
     setError(null);
     
     try {
-      await officeService.delete(id);
+      await officesService.delete(id, payload);
       setOffices(prev => prev.filter(office => office.id !== id));
       await fetchOffices();
     } catch (err) {

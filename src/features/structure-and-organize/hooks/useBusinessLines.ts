@@ -1,13 +1,12 @@
 import { useState, useCallback, useEffect } from 'react';
 import { 
-  BusinessLine, 
-  // PaginatedResponse, 
-  TableFilter
-} from '../types/organization.types';
-import { businessLineService } from '../services/organization.service';
+  TableFilter,
+  BusinessLineListItem,
+} from '../types/organization.api.types';
+import { businessLinesService } from '../services/request/business-lines.service';
 
 interface UseBusinessLinesReturn {
-  businessLines: BusinessLine[];
+  businessLines: BusinessLineListItem[];
   loading: boolean;
   error: string | null;
   total: number;
@@ -17,9 +16,9 @@ interface UseBusinessLinesReturn {
   
   // Actions
   fetchBusinessLines: (filter?: Partial<TableFilter>) => Promise<void>;
-  createBusinessLine: (businessLine: Omit<BusinessLine, 'id' | 'createdAt' | 'updatedAt'>) => Promise<BusinessLine | null>;
-  updateBusinessLine: (id: string, businessLine: Partial<BusinessLine>) => Promise<BusinessLine | null>;
-  deleteBusinessLine: (id: string) => Promise<boolean>;
+  createBusinessLine: (payload: { name: string; description?: string | null; memoNumber: string; skFileId: string; }) => Promise<BusinessLineListItem | null>;
+  updateBusinessLine: (id: string, payload: { name?: string; description?: string | null; memoNumber: string; skFileId: string; }) => Promise<BusinessLineListItem | null>;
+  deleteBusinessLine: (id: string, payload: { memoNumber: string; skFileId: string; }) => Promise<boolean>;
   
   // Pagination
   setPage: (page: number) => void;
@@ -31,7 +30,7 @@ interface UseBusinessLinesReturn {
 }
 
 export const useBusinessLines = (): UseBusinessLinesReturn => {
-  const [businessLines, setBusinessLines] = useState<BusinessLine[]>([]);
+  const [businessLines, setBusinessLines] = useState<BusinessLineListItem[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [total, setTotal] = useState<number>(0);
@@ -47,14 +46,13 @@ export const useBusinessLines = (): UseBusinessLinesReturn => {
     setError(null);
     
     try {
-      const response = await businessLineService.getAll({
+      const response = await businessLinesService.getList({
         search: filter?.search ?? search,
         sortBy: filter?.sortBy ?? sortBy,
         sortOrder: filter?.sortOrder ?? sortOrder,
         page: filter?.page ?? page,
         pageSize: filter?.pageSize ?? pageSize,
       });
-      console.log('response', response);
       setBusinessLines(response.data);
       setTotal(response.total);
       setTotalPages(response.totalPages);
@@ -72,12 +70,12 @@ export const useBusinessLines = (): UseBusinessLinesReturn => {
     }
   }, [search, sortBy, sortOrder, page, pageSize]);
 
-  const createBusinessLine = useCallback(async (businessLine: Omit<BusinessLine, 'id' | 'createdAt' | 'updatedAt'>): Promise<BusinessLine | null> => {
+  const createBusinessLine = useCallback(async (payload: { name: string; description?: string | null; memoNumber: string; skFileId: string; }): Promise<BusinessLineListItem | null> => {
     setLoading(true);
     setError(null);
     
     try {
-      const newBusinessLine = await businessLineService.create(businessLine);
+      const newBusinessLine = await businessLinesService.create(payload);
       await fetchBusinessLines();
       return newBusinessLine;
     } catch (err) {
@@ -89,12 +87,12 @@ export const useBusinessLines = (): UseBusinessLinesReturn => {
     }
   }, [fetchBusinessLines]);
 
-  const updateBusinessLine = useCallback(async (id: string, businessLine: Partial<BusinessLine>): Promise<BusinessLine | null> => {
+  const updateBusinessLine = useCallback(async (id: string, payload: { name?: string; description?: string | null; memoNumber: string; skFileId: string; }): Promise<BusinessLineListItem | null> => {
     setLoading(true);
     setError(null);
     
     try {
-      const updatedBusinessLine = await businessLineService.update(id, businessLine);
+      const updatedBusinessLine = await businessLinesService.update(id, payload);
       await fetchBusinessLines();
       return updatedBusinessLine;
     } catch (err) {
@@ -106,12 +104,12 @@ export const useBusinessLines = (): UseBusinessLinesReturn => {
     }
   }, [fetchBusinessLines]);
 
-  const deleteBusinessLine = useCallback(async (id: string): Promise<boolean> => {
+  const deleteBusinessLine = useCallback(async (id: string, payload: { memoNumber: string; skFileId: string; }): Promise<boolean> => {
     setLoading(true);
     setError(null);
     
     try {
-      await businessLineService.delete(id);
+      await businessLinesService.delete(id, payload);
       await fetchBusinessLines();
       return true;
     } catch (err) {

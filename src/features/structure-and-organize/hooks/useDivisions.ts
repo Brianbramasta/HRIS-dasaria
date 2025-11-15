@@ -1,9 +1,9 @@
 import { useState, useCallback, useEffect } from 'react';
-import { divisionService } from '../services/organization.service';
-import { Division, PaginatedResponse, TableFilter } from '../types/organization.types';
+import { divisionsService } from '../services/request/divisions.service';
+import { DivisionListItem, TableFilter } from '../types/organization.api.types';
 
 interface UseDivisionsReturn {
-  divisions: Division[];
+  divisions: DivisionListItem[];
   loading: boolean;
   error: string | null;
   total: number;
@@ -13,9 +13,9 @@ interface UseDivisionsReturn {
   
   // Actions
   fetchDivisions: (filter?: TableFilter) => Promise<void>;
-  createDivision: (division: Omit<Division, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
-  updateDivision: (id: string, division: Partial<Division>) => Promise<void>;
-  deleteDivision: (id: string) => Promise<void>;
+  createDivision: (payload: { name: string; directorateId: string; description?: string | null; memoNumber: string; skFileId: string; }) => Promise<void>;
+  updateDivision: (id: string, payload: { name?: string; directorateId?: string; description?: string | null; memoNumber: string; skFileId: string; }) => Promise<void>;
+  deleteDivision: (id: string, payload: { memoNumber: string; skFileId: string; }) => Promise<void>;
   setPage: (page: number) => void;
   setPageSize: (pageSize: number) => void;
   setSearch: (search: string) => void;
@@ -23,7 +23,7 @@ interface UseDivisionsReturn {
 }
 
 export const useDivisions = (): UseDivisionsReturn => {
-  const [divisions, setDivisions] = useState<Division[]>([]);
+  const [divisions, setDivisions] = useState<DivisionListItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [total, setTotal] = useState(0);
@@ -39,7 +39,7 @@ export const useDivisions = (): UseDivisionsReturn => {
     setError(null);
     
     try {
-      const response: PaginatedResponse<Division> = await divisionService.getAll({
+      const response = await divisionsService.getList({
         page,
         pageSize,
         search: filter?.search ?? search,
@@ -57,12 +57,12 @@ export const useDivisions = (): UseDivisionsReturn => {
     }
   }, [page, pageSize, search, sortBy, sortOrder]);
 
-  const createDivision = useCallback(async (divisionData: Omit<Division, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const createDivision = useCallback(async (divisionData: { name: string; directorateId: string; description?: string | null; memoNumber: string; skFileId: string; }) => {
     setLoading(true);
     setError(null);
     
     try {
-      const newDivision = await divisionService.create(divisionData);
+      const newDivision = await divisionsService.create(divisionData);
       setDivisions(prev => [...prev, newDivision]);
       await fetchDivisions();
     } catch (err) {
@@ -73,12 +73,12 @@ export const useDivisions = (): UseDivisionsReturn => {
     }
   }, [fetchDivisions]);
 
-  const updateDivision = useCallback(async (id: string, divisionData: Partial<Division>) => {
+  const updateDivision = useCallback(async (id: string, divisionData: { name?: string; directorateId?: string; description?: string | null; memoNumber: string; skFileId: string; }) => {
     setLoading(true);
     setError(null);
     
     try {
-      const updatedDivision = await divisionService.update(id, divisionData);
+      const updatedDivision = await divisionsService.update(id, divisionData);
       setDivisions(prev => prev.map(division => 
         division.id === id ? updatedDivision : division
       ));
@@ -90,12 +90,12 @@ export const useDivisions = (): UseDivisionsReturn => {
     }
   }, []);
 
-  const deleteDivision = useCallback(async (id: string) => {
+  const deleteDivision = useCallback(async (id: string, payload: { memoNumber: string; skFileId: string; }) => {
     setLoading(true);
     setError(null);
     
     try {
-      await divisionService.delete(id);
+      await divisionsService.delete(id, payload);
       setDivisions(prev => prev.filter(division => division.id !== id));
       await fetchDivisions();
     } catch (err) {

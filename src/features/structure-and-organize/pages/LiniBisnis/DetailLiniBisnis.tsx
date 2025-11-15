@@ -4,8 +4,6 @@ import {  Eye, Download } from 'react-feather';
 import { useParams, Link } from 'react-router';
 import ExpandCard from '../../components/card/ExpandCard';
 import { businessLineService } from '../../services/organization.service';
-import { apiService } from '../../../../services/api';
-import type { Company } from '../../types/organization.types';
 import { FileText } from '@/icons/components/icons';
 export default function DetailLiniBisnis() {
   const { id } = useParams();
@@ -17,39 +15,22 @@ export default function DetailLiniBisnis() {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string | null>(null);
 
-  // Local type for files owned by business line
-  interface OwnedFile {
-    id: string;
-    ownerType: 'business-line' | 'company' | string;
-    ownerId: string;
-    name: string;
-    docNumber?: string;
-    fileName: string;
-    type?: string;
-    size?: string;
-    createdAt?: string;
-  }
-
   React.useEffect(() => {
     const loadData = async () => {
       if (!id) return;
       setLoading(true);
       setError(null);
       try {
-        // Fetch business line detail
-        const bl = await businessLineService.getById(id);
-        setTitle(bl?.name ?? 'Detail Lini Bisnis');
-        setOverviewText(bl?.description ?? '—');
+        // Gunakan endpoint komposit: GET /business-lines/:id/detail
+        const detail = await businessLineService.getDetail(id);
+        setTitle(detail?.businessLine?.name ?? 'Detail Lini Bisnis');
+        setOverviewText(detail?.businessLine?.description ?? '—');
 
-        // Fetch files for this business line
-        const filesResp = await apiService.get<OwnedFile[]>(`/files?ownerType=business-line&ownerId=${id}`);
-        const files = (filesResp?.data ?? []) as OwnedFile[];
-        setPersonalFiles(files.map((f, idx) => ({ no: idx + 1, namaFile: f.name, dokumen: f.fileName || '—' })));
+        const files = detail?.personalFiles || [];
+        setPersonalFiles(files.map((f: any, idx: number) => ({ no: idx + 1, namaFile: f.name, dokumen: f.fileName || '—' })));
 
-        // Fetch companies using this business line
-        const companiesResp = await apiService.get<Company[]>(`/companies?businessLineId=${id}`);
-        const comps = (companiesResp?.data ?? []) as Company[];
-        setCompanies(comps.map((c, idx) => ({ no: idx + 1, nama: c.name, dokumen: c.details ? c.details : '—', companyId: c.id })));
+        const comps = detail?.companies || [];
+        setCompanies(comps.map((c: any, idx: number) => ({ no: idx + 1, nama: c.name, dokumen: c.details ? c.details : '—', companyId: c.id })));
       } catch (err) {
         console.error('Failed to load business line detail:', err);
         setError(err instanceof Error ? err.message : 'Gagal memuat detail lini bisnis');

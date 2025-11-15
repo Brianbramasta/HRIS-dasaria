@@ -1,9 +1,9 @@
 import { useState, useCallback, useEffect } from 'react';
-import { departmentService } from '../services/organization.service';
-import { Department, PaginatedResponse, TableFilter } from '../types/organization.types';
+import { departmentsService } from '../services/request/departments.service';
+import { DepartmentListItem, TableFilter } from '../types/organization.api.types';
 
 interface UseDepartmentsReturn {
-  departments: Department[];
+  departments: DepartmentListItem[];
   loading: boolean;
   error: string | null;
   total: number;
@@ -13,9 +13,9 @@ interface UseDepartmentsReturn {
   
   // Actions
   fetchDepartments: (filter?: TableFilter) => Promise<void>;
-  createDepartment: (department: Omit<Department, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
-  updateDepartment: (id: string, department: Partial<Department>) => Promise<void>;
-  deleteDepartment: (id: string) => Promise<void>;
+  createDepartment: (payload: { name: string; divisionId: string; description?: string | null; memoNumber: string; skFileId: string; }) => Promise<void>;
+  updateDepartment: (id: string, payload: { name?: string; divisionId?: string; description?: string | null; memoNumber: string; skFileId: string; }) => Promise<void>;
+  deleteDepartment: (id: string, payload: { memoNumber: string; skFileId: string; }) => Promise<void>;
   setPage: (page: number) => void;
   setPageSize: (pageSize: number) => void;
   setSearch: (search: string) => void;
@@ -23,7 +23,7 @@ interface UseDepartmentsReturn {
 }
 
 export const useDepartments = (): UseDepartmentsReturn => {
-  const [departments, setDepartments] = useState<Department[]>([]);
+  const [departments, setDepartments] = useState<DepartmentListItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [total, setTotal] = useState(0);
@@ -39,7 +39,7 @@ export const useDepartments = (): UseDepartmentsReturn => {
     setError(null);
     
     try {
-      const response: PaginatedResponse<Department> = await departmentService.getAll({
+      const response = await departmentsService.getList({
         page,
         pageSize,
         search: filter?.search ?? search,
@@ -57,12 +57,12 @@ export const useDepartments = (): UseDepartmentsReturn => {
     }
   }, [page, pageSize, search, sortBy, sortOrder]);
 
-  const createDepartment = useCallback(async (departmentData: Omit<Department, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const createDepartment = useCallback(async (departmentData: { name: string; divisionId: string; description?: string | null; memoNumber: string; skFileId: string; }) => {
     setLoading(true);
     setError(null);
     
     try {
-      const newDepartment = await departmentService.create(departmentData);
+      const newDepartment = await departmentsService.create(departmentData);
       setDepartments(prev => [...prev, newDepartment]);
       await fetchDepartments();
     } catch (err) {
@@ -73,12 +73,12 @@ export const useDepartments = (): UseDepartmentsReturn => {
     }
   }, [fetchDepartments]);
 
-  const updateDepartment = useCallback(async (id: string, departmentData: Partial<Department>) => {
+  const updateDepartment = useCallback(async (id: string, departmentData: { name?: string; divisionId?: string; description?: string | null; memoNumber: string; skFileId: string; }) => {
     setLoading(true);
     setError(null);
     
     try {
-      const updatedDepartment = await departmentService.update(id, departmentData);
+      const updatedDepartment = await departmentsService.update(id, departmentData);
       setDepartments(prev => prev.map(department => 
         department.id === id ? updatedDepartment : department
       ));
@@ -90,12 +90,12 @@ export const useDepartments = (): UseDepartmentsReturn => {
     }
   }, []);
 
-  const deleteDepartment = useCallback(async (id: string) => {
+  const deleteDepartment = useCallback(async (id: string, payload: { memoNumber: string; skFileId: string; }) => {
     setLoading(true);
     setError(null);
     
     try {
-      await departmentService.delete(id);
+      await departmentsService.delete(id, payload);
       setDepartments(prev => prev.filter(department => department.id !== id));
       await fetchDepartments();
     } catch (err) {

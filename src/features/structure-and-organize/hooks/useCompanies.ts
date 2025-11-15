@@ -1,13 +1,12 @@
 import { useState, useCallback, useEffect } from 'react';
 import { 
-  Company, 
-  // PaginatedResponse, 
-  TableFilter 
-} from '../types/organization.types';
-import { companyService } from '../services/organization.service';
+  TableFilter,
+  CompanyListItem,
+} from '../types/organization.api.types';
+import { companiesService } from '../services/request/companies.service';
 
 interface UseCompaniesReturn {
-  companies: Company[];
+  companies: CompanyListItem[];
   loading: boolean;
   error: string | null;
   total: number;
@@ -17,9 +16,41 @@ interface UseCompaniesReturn {
   
   // Actions
   fetchCompanies: (filter?: Partial<TableFilter>) => Promise<void>;
-  createCompany: (company: Omit<Company, 'id' | 'createdAt' | 'updatedAt'>) => Promise<Company | null>;
-  updateCompany: (id: string, company: Partial<Company>) => Promise<Company | null>;
-  deleteCompany: (id: string) => Promise<boolean>;
+  createCompany: (payload: {
+    name: string;
+    businessLineId: string;
+    description?: string | null;
+    address?: string | null;
+    employeeCount?: number | null;
+    postalCode?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    industry?: string | null;
+    founded?: string | number | null;
+    type?: string | null;
+    website?: string | null;
+    logoFileId?: string | null;
+    memoNumber: string;
+    skFileId: string;
+  }) => Promise<CompanyListItem | null>;
+  updateCompany: (id: string, payload: {
+    name?: string;
+    businessLineId?: string;
+    description?: string | null;
+    address?: string | null;
+    employeeCount?: number | null;
+    postalCode?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    industry?: string | null;
+    founded?: string | number | null;
+    type?: string | null;
+    website?: string | null;
+    logoFileId?: string | null;
+    memoNumber: string;
+    skFileId: string;
+  }) => Promise<CompanyListItem | null>;
+  deleteCompany: (id: string, payload: { memoNumber: string; skFileId: string; }) => Promise<boolean>;
   
   // Pagination
   setPage: (page: number) => void;
@@ -31,7 +62,7 @@ interface UseCompaniesReturn {
 }
 
 export const useCompanies = (): UseCompaniesReturn => {
-  const [companies, setCompanies] = useState<Company[]>([]);
+  const [companies, setCompanies] = useState<CompanyListItem[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [total, setTotal] = useState<number>(0);
@@ -47,7 +78,7 @@ export const useCompanies = (): UseCompaniesReturn => {
     setError(null);
     
     try {
-      const response = await companyService.getAll({
+      const response = await companiesService.getList({
         search: filter?.search ?? search,
         sortBy: filter?.sortBy ?? sortBy,
         sortOrder: filter?.sortOrder ?? sortOrder,
@@ -72,12 +103,28 @@ export const useCompanies = (): UseCompaniesReturn => {
     }
   }, [search, sortBy, sortOrder, page, pageSize]);
 
-  const createCompany = useCallback(async (company: Omit<Company, 'id' | 'createdAt' | 'updatedAt'>): Promise<Company | null> => {
+  const createCompany = useCallback(async (payload: {
+    name: string;
+    businessLineId: string;
+    description?: string | null;
+    address?: string | null;
+    employeeCount?: number | null;
+    postalCode?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    industry?: string | null;
+    founded?: string | number | null;
+    type?: string | null;
+    website?: string | null;
+    logoFileId?: string | null;
+    memoNumber: string;
+    skFileId: string;
+  }): Promise<CompanyListItem | null> => {
     setLoading(true);
     setError(null);
     
     try {
-      const newCompany = await companyService.create(company);
+      const newCompany = await companiesService.create(payload);
       await fetchCompanies();
       return newCompany;
     } catch (err) {
@@ -89,12 +136,28 @@ export const useCompanies = (): UseCompaniesReturn => {
     }
   }, [fetchCompanies]);
 
-  const updateCompany = useCallback(async (id: string, company: Partial<Company>): Promise<Company | null> => {
+  const updateCompany = useCallback(async (id: string, payload: {
+    name?: string;
+    businessLineId?: string;
+    description?: string | null;
+    address?: string | null;
+    employeeCount?: number | null;
+    postalCode?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    industry?: string | null;
+    founded?: string | number | null;
+    type?: string | null;
+    website?: string | null;
+    logoFileId?: string | null;
+    memoNumber: string;
+    skFileId: string;
+  }): Promise<CompanyListItem | null> => {
     setLoading(true);
     setError(null);
     
     try {
-      const updatedCompany = await companyService.update(id, company);
+      const updatedCompany = await companiesService.update(id, payload);
       await fetchCompanies();
       return updatedCompany;
     } catch (err) {
@@ -106,12 +169,12 @@ export const useCompanies = (): UseCompaniesReturn => {
     }
   }, [fetchCompanies]);
 
-  const deleteCompany = useCallback(async (id: string): Promise<boolean> => {
+  const deleteCompany = useCallback(async (id: string, payload: { memoNumber: string; skFileId: string; }): Promise<boolean> => {
     setLoading(true);
     setError(null);
     
     try {
-      await companyService.delete(id);
+      await companiesService.delete(id, payload);
       await fetchCompanies();
       return true;
     } catch (err) {

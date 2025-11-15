@@ -1,9 +1,9 @@
 import { useState, useCallback, useEffect } from 'react';
-import { directorateService } from '../services/organization.service';
-import { Directorate, PaginatedResponse, TableFilter } from '../types/organization.types';
+import { directoratesService } from '../services/request/directorates.service';
+import { DirectorateListItem, TableFilter } from '../types/organization.api.types';
 
 interface UseDirectoratesReturn {
-  directorates: Directorate[];
+  directorates: DirectorateListItem[];
   loading: boolean;
   error: string | null;
   total: number;
@@ -13,9 +13,9 @@ interface UseDirectoratesReturn {
   
   // Actions
   fetchDirectorates: (filter?: TableFilter) => Promise<void>;
-  createDirectorate: (directorate: Omit<Directorate, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
-  updateDirectorate: (id: string, directorate: Partial<Directorate>) => Promise<void>;
-  deleteDirectorate: (id: string) => Promise<void>;
+  createDirectorate: (payload: { name: string; description?: string | null; memoNumber: string; skFileId: string; }) => Promise<void>;
+  updateDirectorate: (id: string, payload: { name?: string; description?: string | null; memoNumber: string; skFileId: string; }) => Promise<void>;
+  deleteDirectorate: (id: string, payload: { memoNumber: string; skFileId: string; }) => Promise<void>;
   setPage: (page: number) => void;
   setPageSize: (pageSize: number) => void;
   setSearch: (search: string) => void;
@@ -23,7 +23,7 @@ interface UseDirectoratesReturn {
 }
 
 export const useDirectorates = (): UseDirectoratesReturn => {
-  const [directorates, setDirectorates] = useState<Directorate[]>([]);
+  const [directorates, setDirectorates] = useState<DirectorateListItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [total, setTotal] = useState(0);
@@ -39,7 +39,7 @@ export const useDirectorates = (): UseDirectoratesReturn => {
     setError(null);
     
     try {
-      const response: PaginatedResponse<Directorate> = await directorateService.getAll({
+      const response = await directoratesService.getList({
         page,
         pageSize,
         search: filter?.search ?? search,
@@ -57,12 +57,12 @@ export const useDirectorates = (): UseDirectoratesReturn => {
     }
   }, [page, pageSize, search, sortBy, sortOrder]);
 
-  const createDirectorate = useCallback(async (directorateData: Omit<Directorate, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const createDirectorate = useCallback(async (directorateData: { name: string; description?: string | null; memoNumber: string; skFileId: string; }) => {
     setLoading(true);
     setError(null);
     
     try {
-      const newDirectorate = await directorateService.create(directorateData);
+      const newDirectorate = await directoratesService.create(directorateData);
       setDirectorates(prev => [...prev, newDirectorate]);
       await fetchDirectorates();
     } catch (err) {
@@ -73,12 +73,12 @@ export const useDirectorates = (): UseDirectoratesReturn => {
     }
   }, [fetchDirectorates]);
 
-  const updateDirectorate = useCallback(async (id: string, directorateData: Partial<Directorate>) => {
+  const updateDirectorate = useCallback(async (id: string, directorateData: { name?: string; description?: string | null; memoNumber: string; skFileId: string; }) => {
     setLoading(true);
     setError(null);
     
     try {
-      const updatedDirectorate = await directorateService.update(id, directorateData);
+      const updatedDirectorate = await directoratesService.update(id, directorateData);
       setDirectorates(prev => prev.map(directorate => 
         directorate.id === id ? updatedDirectorate : directorate
       ));
@@ -90,12 +90,12 @@ export const useDirectorates = (): UseDirectoratesReturn => {
     }
   }, []);
 
-  const deleteDirectorate = useCallback(async (id: string) => {
+  const deleteDirectorate = useCallback(async (id: string, payload: { memoNumber: string; skFileId: string; }) => {
     setLoading(true);
     setError(null);
     
     try {
-      await directorateService.delete(id);
+      await directoratesService.delete(id, payload);
       setDirectorates(prev => prev.filter(directorate => directorate.id !== id));
       await fetchDirectorates();
     } catch (err) {
