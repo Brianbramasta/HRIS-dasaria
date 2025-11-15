@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import { registerStructureAndOrganization } from './structure-and-organization/endpoints.js';
+import { registerStructureAndOrganization, registerStaffEndpoints } from './features/endpoints.js';
 
 const server = jsonServer.create();
 const router = jsonServer.router('db.json');
@@ -194,6 +194,8 @@ server.post('/api/uploaded-files', (req, res) => {
 
 // ===== Structure & Organization endpoints (code-split) =====
 registerStructureAndOrganization(server, db);
+// ===== Staff feature endpoints =====
+registerStaffEndpoints(server, db);
 
 // 👉 Tambahkan prefix '/api' di sini untuk resource endpoints
 server.use('/api', router);

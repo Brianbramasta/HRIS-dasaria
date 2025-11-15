@@ -1,6 +1,6 @@
 # Skema Database HRIS (Disesuaikan dengan Fitur Saat Ini)
 
-Dokumen ini menyajikan skema database yang hanya mencerminkan fitur yang ada di proyek saat ini: `auth`, `staff` (Data Master Karyawan, Pengunduran Diri, Perpanjangan Kontrak), dan `structure-and-organize`. Fitur `dashboard` saat ini berbasis UI/komponen dan tidak memerlukan tabel khusus.
+Dokumen ini menyajikan skema database yang hanya mencerminkan fitur yang ada di proyek saat ini: `auth`, `staff` (Data Master staff, Pengunduran Diri, Perpanjangan Kontrak), dan `structure-and-organize`. Fitur `dashboard` saat ini berbasis UI/komponen dan tidak memerlukan tabel khusus.
 
 Tipe data menggunakan SQL generik berorientasi PostgreSQL (`uuid`, `varchar`, `text`, `integer`, `numeric`, `timestamp`, `date`, `boolean`). Silakan sesuaikan detail minor jika DBMS berbeda.
 
@@ -191,12 +191,12 @@ Catatan Relasi File:
 
 ## Fitur: Staff
 
-Mengacu pada `src/features/staff/types/Karyawan.ts` dan `PengunduranDiri.ts`.
+Mengacu pada `src/features/staff/types/staff.ts` dan `PengunduranDiri.ts`.
 
-### `karyawan`
+### `staff`
 
 - `id uuid PK`
-- `id_karyawan varchar(50) UNIQUE NOT NULL`
+- `id_staff varchar(50) UNIQUE NOT NULL`
 - `name varchar(150) NOT NULL`
 - `email varchar(255) NOT NULL`
 - `posisi varchar(100) NULL`
@@ -244,23 +244,23 @@ Mengacu pada `src/features/staff/types/Karyawan.ts` dan `PengunduranDiri.ts`.
 - `updated_at timestamp NOT NULL`
 - `is_deleted boolean DEFAULT false`
 
-### `karyawan_education`
+### `staff_education`
 
 - `id uuid PK`
-- `karyawan_id uuid NOT NULL` (FK `karyawan.id`)
+- `staff_id uuid NOT NULL` (FK `staff.id`)
 - `nama_lembaga varchar(150) NOT NULL`
 - `nilai_pendidikan varchar(50) NULL`
 - `jurusan_keahlian varchar(150) NULL`
 - `tahun_lulus varchar(4) NULL`
 - `created_at timestamp NOT NULL`
 - `updated_at timestamp NOT NULL`
-- Index unik (`karyawan_id`, `nama_lembaga`, `tahun_lulus`)
+- Index unik (`staff_id`, `nama_lembaga`, `tahun_lulus`)
 - `is_deleted boolean DEFAULT false`
 
-### `karyawan_documents`
+### `staff_documents`
 
 - `id uuid PK`
-- `karyawan_id uuid NOT NULL` (FK `karyawan.id`)
+- `staff_id uuid NOT NULL` (FK `staff.id`)
 - `tipe_file varchar(50) NOT NULL`
 - `nama_file varchar(150) NOT NULL`
 - `file_path text NULL`
@@ -268,11 +268,11 @@ Mengacu pada `src/features/staff/types/Karyawan.ts` dan `PengunduranDiri.ts`.
 - `updated_at timestamp NOT NULL`
 - `is_deleted boolean DEFAULT false`
 
-### `pengunduran_diri`
+### `resignations`
 
 - `id uuid PK`
-- `karyawan_id uuid NOT NULL` (FK `karyawan.id`)
-- `id_karyawan_str varchar(50) NOT NULL`
+- `staff_id uuid NOT NULL` (FK `staff.id`)
+- `id_staff_str varchar(50) NOT NULL`
 - `name varchar(150) NOT NULL`
 - `email varchar(255) NULL`
 - `posisi varchar(100) NULL`
@@ -286,10 +286,10 @@ Mengacu pada `src/features/staff/types/Karyawan.ts` dan `PengunduranDiri.ts`.
 - `updated_at timestamp NOT NULL`
 - `is_deleted boolean DEFAULT false`
 
-### `perpanjangan_kontrak_requests`
+### `contract_extensions`
 
 - `id uuid PK`
-- `karyawan_id uuid NOT NULL` (FK `karyawan.id`)
+- `staff_id uuid NOT NULL` (FK `staff.id`)
 - `tanggal_mulai date NOT NULL`
 - `tanggal_berakhir date NOT NULL`
 - `status varchar(20) NOT NULL` (mis. `pending`, `approved`, `rejected`)
@@ -297,10 +297,26 @@ Mengacu pada `src/features/staff/types/Karyawan.ts` dan `PengunduranDiri.ts`.
 - `updated_at timestamp NOT NULL`
 - `is_deleted boolean DEFAULT false`
 
+### `organization-history`
+
+- `id uuid PK`
+- `staff_id uuid NOT NULL` (FK `staff.id`)
+- `posisi varchar(100) NULL`
+- `jabatan varchar(100) NULL`
+- `department varchar(150) NULL`
+- `department_id uuid NULL` (FK `departments.id`)
+- `office varchar(150) NULL`
+- `office_id uuid NULL` (FK `offices.id`)
+- `tanggal_mulai date NOT NULL`
+- `tanggal_berakhir date NULL`
+- `created_at timestamp NOT NULL`
+- `updated_at timestamp NOT NULL`
+- `is_deleted boolean DEFAULT false`
+
 ## Indeks & Relasi Penting
 
 - Tambahkan indeks pada kolom FK yang sering dipakai: `company_id`, `department_id`, `office_id`, `position_id`.
-- Pertahankan integritas data dengan constraint unik pada `karyawan.id_karyawan` dan kombinasi unik yang relevan.
+- Pertahankan integritas data dengan constraint unik pada `staff.id_staff` dan kombinasi unik yang relevan.
 - Simpan `positions.direct_subordinates` sebagai JSON di kolom `text` atau buat tabel relasi terpisah jika diperlukan nanti.
 
 ## Soft Delete

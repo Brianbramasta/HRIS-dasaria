@@ -4,6 +4,7 @@ import type { EmployeePosition } from '../../../types/organization.types';
 import FileInput from '../shared/field/FileInput';
 import HeaderModalDelete from '../shared/modal/HeaderModalDelete';
 import ModalDelete from '../shared/modal/ModalDelete';
+import { addNotification } from '@/stores/notificationStore';
 
 interface DeleteEmployeePositionModalProps {
   isOpen: boolean;
@@ -23,6 +24,16 @@ const DeleteEmployeePositionModal: React.FC<DeleteEmployeePositionModalProps> = 
 
   const handleSubmit = async () => {
     if (!employeePosition) return;
+    if (!skFile) {
+      addNotification({
+        variant: 'error',
+        title: 'Posisi Pegawai tidak dihapus',
+        description: 'File Wajib di isi',
+        hideDuration: 4000,
+      });
+      setSubmitting(false);
+      return;
+    }
     setSubmitting(true);
     try {
       await employeePositionService.delete(employeePosition.id);

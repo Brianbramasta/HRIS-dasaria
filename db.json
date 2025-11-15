@@ -591,7 +591,10 @@
       "name": "Manajer Produksi",
       "grade": "M2",
       "job_description": "Mengelola proses produksi energi",
-      "direct_subordinates": ["Supervisor Shift", "Teknisi Senior"],
+      "direct_subordinates": [
+        "Supervisor Shift",
+        "Teknisi Senior"
+      ],
       "sk_file": "/files/sk/positions/manager-produksi-sk.pdf",
       "memo_file": "/files/memo/positions/manager-produksi-memo.pdf",
       "memo_number": "MN-PRD-001",
@@ -605,7 +608,10 @@
       "name": "Lead Backend Engineer",
       "grade": "S3",
       "job_description": "Memimpin tim backend untuk produk SaaS",
-      "direct_subordinates": ["Backend Engineer", "DevOps Engineer"],
+      "direct_subordinates": [
+        "Backend Engineer",
+        "DevOps Engineer"
+      ],
       "sk_file": "/files/sk/positions/lead-backend-sk.pdf",
       "memo_file": "/files/memo/positions/lead-backend-memo.pdf",
       "memo_number": "MN-TEC-010",
@@ -676,10 +682,10 @@
       "sk_file_id": "a1f01818-1818-4181-8181-181818181818"
     }
   ],
-  "karyawan": [
+  "staff": [
     {
       "id": "19191919-1919-1919-1919-191919191919",
-      "id_karyawan": "EMP-0001",
+      "id_staff": "EMP-0001",
       "name": "Ahmad Fauzi",
       "email": "ahmad.fauzi@dasaria.local",
       "posisi": "Manajer Produksi – Operasional",
@@ -729,7 +735,7 @@
     },
     {
       "id": "20202020-2020-2020-2020-202020202020",
-      "id_karyawan": "EMP-0002",
+      "id_staff": "EMP-0002",
       "name": "Dewi Lestari",
       "email": "dewi.lestari@dasaria.local",
       "posisi": "Lead Backend – Teknologi",
@@ -771,7 +777,7 @@
       "status_bpjs_kesehatan": "aktif",
       "no_bpjs_ketenagakerjaan": "0006655443322",
       "status_bpjs_ketenagakerjaan": "aktif",
-      "nominal_bpjs_tk": 125000.0,
+      "nominal_bpjs_tk": 125000,
       "is_active": true,
       "created_at": "2025-10-25T09:00:00Z",
       "updated_at": "2025-11-12T10:00:00Z",
@@ -779,7 +785,7 @@
     },
     {
       "id": "21212121-2121-2121-2121-212121212121",
-      "id_karyawan": "EMP-0003",
+      "id_staff": "EMP-0003",
       "name": "Budi Santoso",
       "email": "budi.santoso@dasaria.local",
       "posisi": "QA Analyst – Teknologi",
@@ -821,17 +827,17 @@
       "status_bpjs_kesehatan": "aktif",
       "no_bpjs_ketenagakerjaan": "0007766554433",
       "status_bpjs_ketenagakerjaan": "aktif",
-      "nominal_bpjs_tk": 100000.0,
+      "nominal_bpjs_tk": 100000,
       "is_active": true,
       "created_at": "2025-10-25T10:00:00Z",
       "updated_at": "2025-11-12T10:00:00Z",
       "is_deleted": false
     }
   ],
-  "karyawan_education": [
+  "staff_education": [
     {
       "id": "23232323-2323-2323-2323-232323232323",
-      "karyawan_id": "19191919-1919-1919-1919-191919191919",
+      "staff_id": "19191919-1919-1919-1919-191919191919",
       "nama_lembaga": "Universitas Indonesia",
       "nilai_pendidikan": "S1",
       "jurusan_keahlian": "Teknik Mesin",
@@ -842,7 +848,7 @@
     },
     {
       "id": "24242424-2424-2424-2424-242424242424",
-      "karyawan_id": "20202020-2020-2020-2020-202020202020",
+      "staff_id": "20202020-2020-2020-2020-202020202020",
       "nama_lembaga": "ITB",
       "nilai_pendidikan": "S1",
       "jurusan_keahlian": "Teknik Informatika",
@@ -853,7 +859,7 @@
     },
     {
       "id": "25252525-2525-2525-2525-252525252525",
-      "karyawan_id": "21212121-2121-2121-2121-212121212121",
+      "staff_id": "21212121-2121-2121-2121-212121212121",
       "nama_lembaga": "UNPAD",
       "nilai_pendidikan": "S1",
       "jurusan_keahlian": "Sistem Informasi",
@@ -863,33 +869,33 @@
       "is_deleted": false
     }
   ],
-  "karyawan_documents": [
+  "staff_documents": [
     {
       "id": "26262626-2626-2626-2626-262626262626",
-      "karyawan_id": "19191919-1919-1919-1919-191919191919",
+      "staff_id": "19191919-1919-1919-1919-191919191919",
       "tipe_file": "KTP",
       "nama_file": "ktp_ahmad_fauzi.pdf",
-      "file_path": "/files/karyawan/ktp/ktp_ahmad_fauzi.pdf",
+      "file_path": "/files/staff/ktp/ktp_ahmad_fauzi.pdf",
       "created_at": "2025-10-27T08:00:00Z",
       "updated_at": "2025-10-27T08:00:00Z",
       "is_deleted": false
     },
     {
       "id": "27272727-2727-2727-2727-272727272727",
-      "karyawan_id": "20202020-2020-2020-2020-202020202020",
+      "staff_id": "20202020-2020-2020-2020-202020202020",
       "tipe_file": "Ijazah",
       "nama_file": "ijazah_dewi_lestari.pdf",
-      "file_path": "/files/karyawan/ijazah/ijazah_dewi_lestari.pdf",
+      "file_path": "/files/staff/ijazah/ijazah_dewi_lestari.pdf",
       "created_at": "2025-10-27T09:00:00Z",
       "updated_at": "2025-10-27T09:00:00Z",
       "is_deleted": false
     }
   ],
-  "pengunduran_diri": [
+  "resignations": [
     {
       "id": "28282828-2828-2828-2828-282828282828",
-      "karyawan_id": "21212121-2121-2121-2121-212121212121",
-      "id_karyawan_str": "EMP-0003",
+      "staff_id": "21212121-2121-2121-2121-212121212121",
+      "id_staff_str": "EMP-0003",
       "name": "Budi Santoso",
       "email": "budi.santoso@dasaria.local",
       "posisi": "QA Analyst",
@@ -904,10 +910,10 @@
       "is_deleted": false
     }
   ],
-  "perpanjangan_kontrak_requests": [
+  "contract_extensions": [
     {
       "id": "29292929-2929-2929-2929-292929292929",
-      "karyawan_id": "19191919-1919-1919-1919-191919191919",
+      "staff_id": "19191919-1919-1919-1919-191919191919",
       "tanggal_mulai": "2025-02-01",
       "tanggal_berakhir": "2026-02-01",
       "status": "pending",
@@ -917,7 +923,7 @@
     },
     {
       "id": "30303030-3030-3030-3030-303030303030",
-      "karyawan_id": "20202020-2020-2020-2020-202020202020",
+      "staff_id": "20202020-2020-2020-2020-202020202020",
       "tanggal_mulai": "2025-03-01",
       "tanggal_berakhir": "2026-03-01",
       "status": "approved",
@@ -925,5 +931,6 @@
       "updated_at": "2025-11-10T09:00:00Z",
       "is_deleted": false
     }
-  ]
+  ],
+  "organization-history": []
 }

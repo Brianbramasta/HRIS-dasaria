@@ -1,0 +1,394 @@
+{
+  "info": {
+    "name": "HRIS - Staff Feature API",
+    "description": "Koleksi Postman untuk pengujian endpoint fitur Staff (staff, education, documents, pengunduran-diri, perpanjangan-kontrak, riwayat-organisasi). Menggunakan {{baseUrl}} dan {{token}}.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "token", "value": "" },
+    { "key": "staffId", "value": "staff-1" },
+    { "key": "educationId", "value": "edu-1" },
+    { "key": "documentId", "value": "doc-1" },
+    { "key": "resignId", "value": "resign-1" },
+    { "key": "extensionId", "value": "ext-1" },
+    { "key": "historyId", "value": "hist-1" },
+    { "key": "company", "value": "Company A" },
+    { "key": "department", "value": "Department A" },
+    { "key": "status", "value": "Active" }
+  ],
+  "item": [
+    {
+      "name": "Staff",
+      "item": [
+        {
+          "name": "GET /staff (list)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{baseUrl}}/api/staff?search=&company={{company}}&department={{department}}&status={{status}}&sortBy=updated_at&order=desc&page=1&limit=10"
+          }
+        },
+        {
+          "name": "GET /staff/:id/detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{baseUrl}}/api/staff/{{staffId}}/detail"
+          }
+        },
+        {
+          "name": "POST /staff",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idKaryawan\": \"EMP-0001\",\n  \"name\": \"Nama Karyawan\",\n  \"email\": \"employee@example.com\",\n  \"tanggalJoin\": \"2024-01-01\",\n  \"company\": \"Company A\",\n  \"office\": \"Office A\",\n  \"departement\": \"Department A\",\n  \"divisi\": \"Division A\",\n  \"jabatan\": \"Jabatan A\",\n  \"posisi\": \"Posisi A\",\n  \"grade\": \"Senior\",\n  \"status\": \"Active\"\n}"
+            },
+            "url": "{{baseUrl}}/api/staff"
+          }
+        },
+        {
+          "name": "PATCH /staff/:id",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"employee.updated@example.com\",\n  \"status\": \"Inactive\"\n}"
+            },
+            "url": "{{baseUrl}}/api/staff/{{staffId}}"
+          }
+        },
+        {
+          "name": "DELETE /staff/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{baseUrl}}/api/staff/{{staffId}}"
+          }
+        },
+        {
+          "name": "POST /staff/:id/education",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"namaLembaga\": \"Universitas Contoh\",\n  \"nilaiPendidikan\": \"3.8\",\n  \"jurusanKeahlian\": \"Informatika\",\n  \"tahunLulus\": \"2020\"\n}"
+            },
+            "url": "{{baseUrl}}/api/staff/{{staffId}}/education"
+          }
+        },
+        {
+          "name": "PATCH /staff/:id/education/:educationId",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jurusanKeahlian\": \"Sistem Informasi\"\n}"
+            },
+            "url": "{{baseUrl}}/api/staff/{{staffId}}/education/{{educationId}}"
+          }
+        },
+        {
+          "name": "DELETE /staff/:id/education/:educationId",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{baseUrl}}/api/staff/{{staffId}}/education/{{educationId}}"
+          }
+        },
+        {
+          "name": "POST /staff/:id/documents",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipeFile\": \"PDF\",\n  \"namaFile\": \"CV.pdf\",\n  \"filePath\": \"/uploads/cv.pdf\"\n}"
+            },
+            "url": "{{baseUrl}}/api/staff/{{staffId}}/documents"
+          }
+        },
+        {
+          "name": "PATCH /staff/:id/documents/:documentId",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"namaFile\": \"CV_updated.pdf\"\n}"
+            },
+            "url": "{{baseUrl}}/api/staff/{{staffId}}/documents/{{documentId}}"
+          }
+        },
+        {
+          "name": "DELETE /staff/:id/documents/:documentId",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{baseUrl}}/api/staff/{{staffId}}/documents/{{documentId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Resignations",
+      "item": [
+        {
+          "name": "GET /pengunduran-diri (list)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{baseUrl}}/api/pengunduran-diri?q=&status=&departmentId=&sort=updated_at&order=desc&page=1&limit=10"
+          }
+        },
+        {
+          "name": "GET /pengunduran-diri/:id/detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{baseUrl}}/api/pengunduran-diri/{{resignId}}/detail"
+          }
+        },
+        {
+          "name": "POST /pengunduran-diri",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"karyawanId\": \"{{staffId}}\",\n  \"alasan\": \"Pindah ke perusahaan lain\",\n  \"departmentId\": \"dep-1\",\n  \"status\": \"Pending\"\n}"
+            },
+            "url": "{{baseUrl}}/api/pengunduran-diri"
+          }
+        },
+        {
+          "name": "PATCH /pengunduran-diri/:id",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Approved\",\n  \"tanggalEfektif\": \"2025-01-31\"\n}"
+            },
+            "url": "{{baseUrl}}/api/pengunduran-diri/{{resignId}}"
+          }
+        },
+        {
+          "name": "DELETE /pengunduran-diri/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{baseUrl}}/api/pengunduran-diri/{{resignId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Contract Extensions",
+      "item": [
+        {
+          "name": "GET /perpanjangan-kontrak (list)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{baseUrl}}/api/perpanjangan-kontrak?q=&status=&sort=updated_at&order=desc&page=1&limit=10"
+          }
+        },
+        {
+          "name": "GET /perpanjangan-kontrak/:id/detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{baseUrl}}/api/perpanjangan-kontrak/{{extensionId}}/detail"
+          }
+        },
+        {
+          "name": "POST /perpanjangan-kontrak",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"karyawanId\": \"{{staffId}}\",\n  \"tanggalMulai\": \"2025-02-01\",\n  \"tanggalBerakhir\": \"2026-01-31\",\n  \"status\": \"pending\"\n}"
+            },
+            "url": "{{baseUrl}}/api/perpanjangan-kontrak"
+          }
+        },
+        {
+          "name": "PATCH /perpanjangan-kontrak/:id",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"approved\"\n}"
+            },
+            "url": "{{baseUrl}}/api/perpanjangan-kontrak/{{extensionId}}"
+          }
+        },
+        {
+          "name": "DELETE /perpanjangan-kontrak/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{baseUrl}}/api/perpanjangan-kontrak/{{extensionId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Organization History",
+      "item": [
+        {
+          "name": "GET /riwayat-organisasi (list)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{baseUrl}}/api/riwayat-organisasi?search=&idKaryawan=&jenisPerubahan=&tanggalEfektifStart=&tanggalEfektifEnd=&sortBy=tanggalEfektif&order=desc&page=1&limit=10"
+          }
+        },
+        {
+          "name": "POST /riwayat-organisasi",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idKaryawan\": \"EMP-0001\",\n  \"jenisPerubahan\": \"Promosi\",\n  \"tanggalEfektif\": \"2025-03-01\",\n  \"posisiLama\": \"Staff\",\n  \"posisiBaru\": \"Supervisor\",\n  \"divisiLama\": \"Division A\",\n  \"divisiBaru\": \"Division A\",\n  \"direktoratLama\": \"Direktorat Operasional\",\n  \"direktoratBaru\": \"Direktorat Operasional\",\n  \"alasanPerubahan\": \"Kinerja baik\"\n}"
+            },
+            "url": "{{baseUrl}}/api/riwayat-organisasi"
+          }
+        },
+        {
+          "name": "PATCH /riwayat-organisasi/:id",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"alasanPerubahan\": \"Penyesuaian struktur\"\n}"
+            },
+            "url": "{{baseUrl}}/api/riwayat-organisasi/{{historyId}}"
+          }
+        },
+        {
+          "name": "DELETE /riwayat-organisasi/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{baseUrl}}/api/riwayat-organisasi/{{historyId}}"
+          }
+        },
+        {
+          "name": "GET /staff/:id/riwayat-organisasi",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{baseUrl}}/api/staff/{{staffId}}/riwayat-organisasi?page=1&limit=10"
+          }
+        }
+      ]
+    }
+  ]
+}
