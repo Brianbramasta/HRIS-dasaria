@@ -258,7 +258,7 @@ export function DataTable<T = any>({
                 </TableCell>
               ))}
               {actions && actions.length > 0 && (
-                <TableCell className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</TableCell>
+                <TableCell className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">Actions</TableCell>
               )}
             </TableRow>
           </TableHeader>

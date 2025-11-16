@@ -302,7 +302,9 @@ Mengacu pada `src/features/staff/types/staff.ts` dan `PengunduranDiri.ts`.
 - `id uuid PK`
 - `staff_id uuid NOT NULL` (FK `staff.id`)
 - `posisi varchar(100) NULL`
+- `id_posisi varchar(50) NULL`
 - `jabatan varchar(100) NULL`
+- `id_jabatan varchar(50) NULL`
 - `department varchar(150) NULL`
 - `department_id uuid NULL` (FK `departments.id`)
 - `office varchar(150) NULL`

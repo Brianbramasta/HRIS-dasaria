@@ -1,21 +1,10 @@
-import  { useMemo, useState } from 'react';
+import  { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DataTable, type DataTableColumn, type DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
+import { useOrganizationHistory } from '@/features/staff/hooks/useOrganizationHistory';
+import type { OrganizationHistoryItem } from '@/features/staff/services/organizationHistoryService';
 
-type OrgHistoryListRow = {
-  id: number; // id karyawan
-  idKaryawan: string;
-  user: { name: string; avatar?: string };
-  jenisPerubahan: string;
-  tanggalEfektif: string; // yyyy-MM-dd
-  posisiLama: string;
-  posisiBaru: string;
-  divisiLama: string;
-  divisiBaru: string;
-  direktoratLama: string;
-  direktoratBaru: string;
-  alasanPerubahan: string;
-};
+type OrgHistoryListRow = OrganizationHistoryItem;
 
 const formatDate = (iso: string) => {
   if (!iso) return '-';
@@ -26,12 +15,7 @@ const formatDate = (iso: string) => {
 
 export default function OrganizationHistoryPage() {
   const navigate = useNavigate();
-  const [rows] = useState<OrgHistoryListRow[]>([
-    { id: 1, idKaryawan: '12345678910', user: { name: 'Lindsey Curtis' }, jenisPerubahan: 'Promosi', tanggalEfektif: '2025-03-01', posisiLama: 'Staf/HR', posisiBaru: 'HR Supervisor', divisiLama: 'HRD', divisiBaru: 'HRD', direktoratLama: 'Direktorat Lama', direktoratBaru: 'Direktorat Baru', alasanPerubahan: 'Kinerja Sangat Baik' },
-    { id: 2, idKaryawan: '12345678910', user: { name: 'Dedik Mujyadi' }, jenisPerubahan: 'Promosi', tanggalEfektif: '2025-03-01', posisiLama: 'Staf/HR', posisiBaru: 'HR Supervisor', divisiLama: 'HRD', divisiBaru: 'HRD', direktoratLama: 'Direktorat Lama', direktoratBaru: 'Direktorat Baru', alasanPerubahan: 'Kinerja Sangat Baik' },
-    { id: 3, idKaryawan: '12345678910', user: { name: 'Onana' }, jenisPerubahan: 'Promosi', tanggalEfektif: '2025-03-01', posisiLama: 'Staf/HR', posisiBaru: 'HR Supervisor', divisiLama: 'HRD', divisiBaru: 'HRD', direktoratLama: 'Direktorat Lama', direktoratBaru: 'Direktorat Baru', alasanPerubahan: 'Kinerja Sangat Baik' },
-    { id: 4, idKaryawan: '12345678910', user: { name: 'Maguire' }, jenisPerubahan: 'Promosi', tanggalEfektif: '2025-03-01', posisiLama: 'Staf/HR', posisiBaru: 'HR Supervisor', divisiLama: 'HRD', divisiBaru: 'Finance', direktoratLama: 'Direktorat Lama', direktoratBaru: 'Direktorat Baru', alasanPerubahan: 'Kinerja Sangat Baik' },
-  ]);
+  const { data: rows, loading, handleSearchChange, handleSortChange } = useOrganizationHistory();
 
   const columns: DataTableColumn<OrgHistoryListRow>[] = useMemo(
     () => [
@@ -43,11 +27,11 @@ export default function OrganizationHistoryPage() {
         format: (_v, row) => (
           <div className="flex items-center gap-2">
             <img
-              src={row.user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${row.user.name}`}
-              alt={row.user.name}
+              src={(row.user?.avatar as string) || `https://api.dicebear.com/7.x/avataaars/svg?seed=${row.user?.name || 'User'}`}
+              alt={row.user?.name || 'User'}
               className="h-6 w-6 rounded-full"
             />
-            <span>{row.user.name}</span>
+            <span>{row.user?.name || '-'}</span>
           </div>
         ),
       },
@@ -70,7 +54,7 @@ export default function OrganizationHistoryPage() {
       variant: 'outline',
       onClick: (row) => {
         // Arahkan ke halaman detail karyawan dengan tab organization-history
-        navigate(`/data-karyawan/${row.id}?tab=organization-history`);
+        navigate(`/data-karyawan/${row.idKaryawan}?tab=organization-history`);
       },
     },
   ];
@@ -82,11 +66,14 @@ export default function OrganizationHistoryPage() {
         data={rows}
         columns={columns}
         actions={actions}
+        loading={loading}
         filterable
         emptyMessage="Belum ada riwayat organisasi"
         addButtonLabel="Tambah Riwayat"
         onAdd={() => {}}
         searchPlaceholder="Cari berdasarkan kata kunci"
+        onSearchChange={handleSearchChange}
+        onSortChange={handleSortChange}
       />
     </div>
   );
