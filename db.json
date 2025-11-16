@@ -1,6 +1,28 @@
 {
   "users": [
     {
+      "id": "U001",
+      "name": "Admin HR",
+      "email": "admin@hris.local",
+      "password": "admin123",
+      "role": "HR/Admin",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin",
+      "isActive": true,
+      "createdAt": "2024-01-01T00:00:00Z",
+      "updatedAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "U002",
+      "name": "Staff User",
+      "email": "staff@hris.local",
+      "password": "staff123",
+      "role": "staff",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Staff",
+      "isActive": true,
+      "createdAt": "2024-01-01T00:00:00Z",
+      "updatedAt": "2024-01-01T00:00:00Z"
+    },
+    {
       "id": "b1f3a8f1-8b6d-4c01-9e1e-1d7c2e9f0a10",
       "email": "admin@dasaria.local",
       "password_hash": "$2b$10$examplehashadmin",

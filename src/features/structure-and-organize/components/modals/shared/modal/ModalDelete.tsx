@@ -15,16 +15,17 @@ interface DeleteOfficeModalProps {
 const DeleteOfficeModal: React.FC<DeleteOfficeModalProps> = ({ content, isOpen, onClose, handleDelete, submitting=false}) => {
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="max-w-3xl p-6 zoom-75 dark:text-white max-h-[80vh] overflow-y-auto" showCloseButton>
+    <Modal isOpen={isOpen} onClose={onClose} className="max-w-lg p-6 zoom-75 dark:text-white  " showCloseButton>
       <div className="space-y-6">
         <HeaderModalDelete/>
         <form onSubmit={(e) => {e.preventDefault(); onClose?.()}}>
-        <div className='max-h-[100vh] overflow-y-auto '>
+        <div className='max-h-[100vh] overflow-y-auto pb-4'>
           {content}
+          <p className='pt-2'>*Data tidak benar-benar dihapus akan tetapi diarsipkan</p>
         </div>
         
 
-        <div className="flex justify-end gap-3">
+        <div className="flex justify-end gap-3 ">
           <button type='submit' className="rounded-xl border px-5 py-2">Close</button>
           <button
             onClick={handleDelete}
