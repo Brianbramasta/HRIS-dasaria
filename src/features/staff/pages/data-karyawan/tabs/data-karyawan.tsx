@@ -48,7 +48,7 @@ export default function DataKaryawanPage() {
       },
     },
     {
-      id: 'idKaryawan',
+      id: 'id',
       label: 'ID Karyawan',
       minWidth: 120,
       sortable: true,
@@ -186,7 +186,7 @@ export default function DataKaryawanPage() {
       label: 'Lihat Detail',
       icon: <Eye size={16} />,
       onClick: (row) => {
-        navigate(`/data-karyawan/${row.idKaryawan}?mode=view`);
+        navigate(`/data-karyawan/${row.id}?mode=view`);
       },
       variant: 'outline',
       color: 'info',
@@ -195,7 +195,7 @@ export default function DataKaryawanPage() {
       label: 'Edit',
       icon: <Edit2 size={16} />,
       onClick: (row) => {
-        navigate(`/data-karyawan/${row.idKaryawan}?mode=edit`);
+        navigate(`/data-karyawan/${row.id}?mode=edit`);
       },
       variant: 'outline',
       color: 'warning',

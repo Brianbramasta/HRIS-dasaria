@@ -1,20 +1,24 @@
 import ExpandCard from '@/features/structure-and-organize/components/card/ExpandCard';
 import Label from '@/components/form/Label';
 import InputField from '@/components/form/input/InputField';
-import Select from '@/components/form/Select';
 import Button from '@/components/ui/button/Button';
 import { Edit2 } from 'react-feather';
 import { useModal } from '@/hooks/useModal';
 import SalaryBpjsModal, { type SalaryBpjsForm } from '@/features/staff/components/dataKaryawan/modals/dataKaryawan/PersonalInformation/SalaryBpjsModal';
+import type { KaryawanDetailResponse } from '@/features/staff/services/karyawanService';
 
-export default function SalaryCard() {
+interface Props {
+  financeAndCompliance: KaryawanDetailResponse['financeAndCompliance'];
+}
+
+export default function SalaryCard({ financeAndCompliance }: Props) {
   const { isOpen, openModal, closeModal } = useModal(false);
   const initialData: SalaryBpjsForm = {
     gaji: '',
-    bank: '',
-    namaAkunBank: '',
-    noRekening: '',
-    npwp: '',
+    bank: financeAndCompliance.bank || '',
+    namaAkunBank: financeAndCompliance.namaAkunBank || '',
+    noRekening: financeAndCompliance.noRekening || '',
+    npwp: financeAndCompliance.npwp || '',
     ptkpStatus: '',
   };
   return (
@@ -26,48 +30,23 @@ export default function SalaryCard() {
         </div>
         <div>
           <Label>Bank</Label>
-          <div className="pointer-events-none opacity-60">
-            <Select
-              options={[
-                { value: 'bca', label: 'BCA' },
-                { value: 'bni', label: 'BNI' },
-                { value: 'bri', label: 'BRI' },
-                { value: 'mandiri', label: 'Mandiri' },
-              ]}
-              onChange={() => {}}
-              defaultValue={''}
-              required={false}
-            />
-          </div>
+          <InputField value={financeAndCompliance.bank || ''} disabled={true} />
         </div>
         <div>
           <Label>Nama Akun Bank</Label>
-          <InputField value={''} disabled={true} />
+          <InputField value={financeAndCompliance.namaAkunBank || ''} disabled={true} />
         </div>
         <div>
           <Label>No. Rekening</Label>
-          <InputField value={''} disabled={true} />
+          <InputField value={financeAndCompliance.noRekening || ''} disabled={true} />
         </div>
         <div>
           <Label>NPWP</Label>
-          <InputField value={''} disabled={true} />
+          <InputField value={financeAndCompliance.npwp || ''} disabled={true} />
         </div>
         <div>
           <Label>PTKP Status</Label>
-          <div className="pointer-events-none opacity-60">
-            <Select
-              options={[
-                { value: 'tk0', label: 'TK/0' },
-                { value: 'k0', label: 'K/0' },
-                { value: 'k1', label: 'K/1' },
-                { value: 'k2', label: 'K/2' },
-                { value: 'k3', label: 'K/3' },
-              ]}
-              onChange={() => {}}
-              defaultValue={''}
-              required={false}
-            />
-          </div>
+          <InputField value={''} disabled={true} />
         </div>
       </div>
       <div className="mt-4 flex justify-end">

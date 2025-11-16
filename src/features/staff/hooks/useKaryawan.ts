@@ -35,6 +35,8 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
           const items = Array.isArray(payload) ? payload : payload.items || payload.data || [];
           setData(items);
           setTotal(payload.total || 0);
+          setPage(payload.page || initialPage);
+          setLimit(payload.limit || initialLimit);
         } else {
           setError(response || 'Gagal memuat data karyawan');
         }

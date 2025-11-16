@@ -5,25 +5,20 @@ import { Download, Eye, Edit2 } from 'react-feather';
 import React from 'react';
 import { useModal } from '@/hooks/useModal';
 import PersonalDocumentsModal, { type PersonalDocumentsForm } from '@/features/staff/components/dataKaryawan/modals/dataKaryawan/PersonalInformation/PersonalDocumentsModal';
+import type { KaryawanDetailResponse } from '@/features/staff/services/karyawanService';
 
-export default function PersonalDocumentsCard() {
+interface Props {
+  documents: KaryawanDetailResponse['documents'];
+}
+
+export default function PersonalDocumentsCard({ documents }: Props) {
   const [personalFiles, setPersonalFiles] = React.useState<Array<{ no: number; namaFile: string; dokumen: string }>>([]);
   const { isOpen, openModal, closeModal } = useModal(false);
 
   React.useEffect(() => {
-    setPersonalFiles([
-      {
-        no: 1,
-        namaFile: 'KTP',
-        dokumen: 'data.ktp',
-      },
-      {
-        no: 2,
-        namaFile: 'KK',
-        dokumen: 'data.kk',
-      },
-    ]);
-  }, []);
+    const mapped = (documents || []).map((d, idx) => ({ no: idx + 1, namaFile: d.namaFile || '', dokumen: d.tipeFile || '' }));
+    setPersonalFiles(mapped);
+  }, [documents]);
 
   return (
     <ExpandCard title="Berkas/Dokumen Pribadi" withHeaderDivider>

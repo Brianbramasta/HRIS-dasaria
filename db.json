@@ -937,7 +937,10 @@
       "id": "a1a1a1a1-a1a1-a1a1-a1a1-a1a1a1a1a1a1",
       "staff_id": "10101010-1010-1010-1010-101010101010",
       "idKaryawan": "EMP-1010",
-      "user": { "name": "Lindsey Curtis", "avatar": null },
+      "user": {
+        "name": "Lindsey Curtis",
+        "avatar": null
+      },
       "jenisPerubahan": "Promosi",
       "tanggalEfektif": "2024-01-15",
       "posisiLama": "Software Engineer",
@@ -965,7 +968,10 @@
       "id": "b2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
       "staff_id": "20202020-2020-2020-2020-202020202020",
       "idKaryawan": "EMP-2020",
-      "user": { "name": "Dedik Mujyadi", "avatar": null },
+      "user": {
+        "name": "Dedik Mujyadi",
+        "avatar": null
+      },
       "jenisPerubahan": "Mutasi",
       "tanggalEfektif": "2023-07-01",
       "posisiLama": "QA Analyst",
@@ -993,7 +999,10 @@
       "id": "c3c3c3c3-c3c3-c3c3-c3c3-c3c3c3c3c3c3",
       "staff_id": "30303030-3030-3030-3030-303030303030",
       "idKaryawan": "EMP-3030",
-      "user": { "name": "Onana", "avatar": null },
+      "user": {
+        "name": "Onana",
+        "avatar": null
+      },
       "jenisPerubahan": "Promosi",
       "tanggalEfektif": "2022-03-10",
       "posisiLama": "HR Staff",
@@ -1017,5 +1026,7 @@
       "updated_at": "2025-11-16T10:10:00Z",
       "is_deleted": false
     }
-  ]
+  ],
+  "education": [],
+  "documents": []
 }

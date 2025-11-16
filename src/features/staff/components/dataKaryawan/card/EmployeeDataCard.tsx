@@ -4,12 +4,12 @@ import InputField from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
 import Button from '@/components/ui/button/Button';
 import { Edit2 } from 'react-feather';
-import type { Karyawan } from '@/features/staff/types/Karyawan';
 import { useModal } from '@/hooks/useModal';
 import EmployeeDataModal, { type EmployeeDataForm } from '@/features/staff/components/dataKaryawan/modals/dataKaryawan/PersonalInformation/EmployeeDataModal';
+import type { KaryawanDetailResponse } from '@/features/staff/services/karyawanService';
 
 interface Props {
-  data: Karyawan;
+  data: KaryawanDetailResponse['karyawan'];
 }
 
 export default function EmployeeDataCard({ data }: Props) {
@@ -18,18 +18,18 @@ export default function EmployeeDataCard({ data }: Props) {
   const initialForm: EmployeeDataForm = {
     company: data.company || '',
     departemen: data.department || '',
-    divisi: (data as any)?.division || '',
-    direktorate: (data as any)?.directorate || '',
+    divisi: (data as any)?.divisi || '',
+    direktorate: (data as any)?.direktorat || '',
     office: data.office || '',
     position: data.posisi || '',
     jabatan: data.jabatan || '',
     joinDate: data.tanggalJoin || '',
     endDate: data.tanggalBerakhir || '',
     grade: (data as any)?.grade || '',
-    statusKaryawan: (data as any)?.statusKaryawan || '',
+    statusKaryawan: (data as any)?.status || '',
     statusPayroll: (data as any)?.statusPayroll || '',
-    userAccess: (data as any)?.userAccess || 'Employee',
-    kategoriKaryawan: (data as any)?.kategoriKaryawan || '',
+    userAccess: 'Employee',
+    kategoriKaryawan: (data as any)?.kategori || '',
   };
 
   return (
@@ -37,19 +37,19 @@ export default function EmployeeDataCard({ data }: Props) {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
           <Label>ID Karyawan</Label>
-          <InputField value={data.idKaryawan} disabled={true} />
+          <InputField value={data.idKaryawan || ''} disabled={true} />
         </div>
         <div>
           <Label>Posisi</Label>
-          <InputField value={data.posisi} disabled={true} />
+          <InputField value={data.posisi || ''} disabled={true} />
         </div>
         <div>
           <Label>Jabatan</Label>
-          <InputField value={data.jabatan} disabled={true} />
+          <InputField value={data.jabatan || ''} disabled={true} />
         </div>
         <div>
           <Label>Company</Label>
-          <InputField value={data.company} disabled={true} />
+          <InputField value={data.company || ''} disabled={true} />
         </div>
         <div>
           <Label>Departemen</Label>
@@ -61,7 +61,7 @@ export default function EmployeeDataCard({ data }: Props) {
         </div>
         <div>
           <Label>Tanggal Join</Label>
-          <InputField type="date" value={data.tanggalJoin} disabled={true} />
+          <InputField type="date" value={data.tanggalJoin || ''} disabled={true} />
         </div>
         <div>
           <Label>Tanggal Berakhir</Label>

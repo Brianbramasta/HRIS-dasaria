@@ -5,8 +5,13 @@ import Button from '@/components/ui/button/Button';
 import { Edit2 } from 'react-feather';
 import { useModal } from '@/hooks/useModal';
 import SalaryBpjsModal, { type SalaryBpjsForm } from '@/features/staff/components/dataKaryawan/modals/dataKaryawan/PersonalInformation/SalaryBpjsModal';
+import type { KaryawanDetailResponse } from '@/features/staff/services/karyawanService';
 
-export default function BPJSCard() {
+interface Props {
+  financeAndCompliance: KaryawanDetailResponse['financeAndCompliance'];
+}
+
+export default function BPJSCard({ financeAndCompliance }: Props) {
   const { isOpen, openModal, closeModal } = useModal(false);
   const initialData: SalaryBpjsForm = {
     gaji: '',
@@ -15,34 +20,34 @@ export default function BPJSCard() {
     namaAkunBank: '',
     npwp: '',
     ptkpStatus: '',
-    noBpjsKS: '',
-    statusBpjsKS: '',
-    noBpjsTK: '',
-    statusBpjsTK: '',
-    nominalBpjsTK: '',
+    noBpjsKS: financeAndCompliance.noBpjsKesehatan || '',
+    statusBpjsKS: financeAndCompliance.statusBpjsKesehatan || '',
+    noBpjsTK: financeAndCompliance.noBpjsKetenagakerjaan || '',
+    statusBpjsTK: financeAndCompliance.statusBpjsKetenagakerjaan || '',
+    nominalBpjsTK: financeAndCompliance.nominalBpjsTk || '',
   };
   return (
     <ExpandCard title="BPJS" withHeaderDivider>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
           <Label>No. BPJS Kesehatan</Label>
-          <InputField value={''} disabled={true} />
+          <InputField value={financeAndCompliance.noBpjsKesehatan || ''} disabled={true} />
         </div>
         <div>
           <Label>Status BPJS Kesehatan</Label>
-          <InputField value={''} disabled={true} />
+          <InputField value={financeAndCompliance.statusBpjsKesehatan || ''} disabled={true} />
         </div>
         <div>
           <Label>No. BPJS Ketenagakerjaan</Label>
-          <InputField value={''} disabled={true} />
+          <InputField value={financeAndCompliance.noBpjsKetenagakerjaan || ''} disabled={true} />
         </div>
         <div>
           <Label>Status BPJS Ketenagakerjaan</Label>
-          <InputField value={''} disabled={true} />
+          <InputField value={financeAndCompliance.statusBpjsKetenagakerjaan || ''} disabled={true} />
         </div>
         <div>
           <Label>Nominal BPJS TK</Label>
-          <InputField value={''} disabled={true} />
+          <InputField value={financeAndCompliance.nominalBpjsTk || ''} disabled={true} />
         </div>
       </div>
       <div className="mt-4 flex justify-end">

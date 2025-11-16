@@ -8,6 +8,7 @@ import type { AppNotification } from "./stores/notificationStore";
 import { useAuthStore } from "./features/auth/stores/authStore";
 import SpinnerOne from "./components/ui/spinner/SpinnerOne";
 import { useLoadingStore } from "./stores/loadingStore";
+import PageMeta from "./components/common/PageMeta";
 
 export default function App() {
   const notifications = useNotificationStore((s) => s.notifications);
@@ -20,10 +21,15 @@ export default function App() {
 
   return (
     <>
+    <PageMeta
+            title="HRIS"
+            description="This is HRIS"
+          />
       <Router>
         <ScrollToTop />
         <AppRoutes />
       </Router>
+    
 
       {/* Global notification container so pages don't need to render it */}
       <div className="fixed right-4 top-24 flex flex-col gap-3 z-[999999999] bg-white">
