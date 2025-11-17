@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { employeePositionService } from '../../../services/organization.service';
-import type { EmployeePosition } from '../../../types/organization.types';
+import { employeePositionsService } from '../../../services/request/employee-positions.service';
+import type { EmployeePositionListItem } from '../../../types/organization.api.types';
+import { useFileStore } from '@/stores/fileStore';
 import FileInput from '../shared/field/FileInput';
 import ModalAddEdit from '../shared/modal/modalAddEdit';
 import { addNotification } from '@/stores/notificationStore';
@@ -8,7 +9,7 @@ import { addNotification } from '@/stores/notificationStore';
 interface AddEmployeePositionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess?: (created: EmployeePosition) => void;
+  onSuccess?: (created: EmployeePositionListItem) => void;
 }
 
 const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isOpen, onClose, onSuccess }) => {
@@ -19,18 +20,15 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
   const [departemen, setDepartemen] = useState('');
   const [memoNumber, setMemoNumber] = useState('');
   const [description, setDescription] = useState('');
-  const [skFile, setSkFile] = useState<File | null>(null);
+  const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setSkFile(file);
-  };
+  const handleFileChange = (/*_e: React.ChangeEvent<HTMLInputElement>*/) => {};
 
   const handleSubmit = async () => {
     console.log('submit', name, jabatan, direktorat, divisi, departemen, memoNumber, description, skFile);
     
-    if (!skFile) {
+    if (!skFile?.name) {
       addNotification({
         variant: 'error',
         title: 'Posisi Pegawai tidak ditambahkan',
@@ -41,16 +39,17 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
     }
     setSubmitting(true);
     try {
-      const created = await employeePositionService.create({
+      const created = await employeePositionsService.create({
         name: name.trim(),
         positionId: jabatan.trim(),
-        directorateId: direktorat.trim(),
-        divisionId: divisi.trim(),
-        departmentId: departemen.trim(),
-        memoFile: memoNumber.trim(),
-        description: description.trim(),
-        skFile: skFile?.name || '',
-      } as Omit<EmployeePosition, 'id' | 'createdAt' | 'updatedAt'>);
+        directorateId: direktorat.trim() || null,
+        divisionId: divisi.trim() || null,
+        departmentId: departemen.trim() || null,
+        startDate: null,
+        endDate: null,
+        memoNumber: memoNumber.trim(),
+        skFileId: skFile?.path || skFile?.name,
+      });
       onSuccess?.(created);
       setName('');
       setJabatan('');
@@ -59,7 +58,6 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
       setDepartemen('');
       setMemoNumber('');
       setDescription('');
-      setSkFile(null);
       onClose();
     } catch (err) {
       console.error('Failed to create employee position', err);

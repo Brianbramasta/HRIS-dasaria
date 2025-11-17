@@ -3,7 +3,7 @@ import DataTable, { DataTableColumn, DataTableAction } from '../../components/da
 import { Edit, Trash } from 'react-feather';
 import { useDivisions } from '../../index';
 import type { DivisionRow } from '../../types/organizationTable.types';
-import type { Division } from '../../types/organization.types';
+import type { DivisionListItem } from '../../types/organization.api.types';
 import { useModal } from '../../../../hooks/useModal';
 import AddDivisionModal from '../../components/modals/Divisi/AddDivisionModal';
 import EditDivisionModal from '../../components/modals/Divisi/EditDivisionModal';
@@ -25,7 +25,7 @@ export default function DivisionsTab({ resetKey }: Props) {
   const addModal = useModal(false);
   const editModal = useModal(false);
   const deleteModal = useModal(false);
-  const [selected, setSelected] = useState<Division | null>(null);
+  const [selected, setSelected] = useState<DivisionListItem | null>(null);
 
   const rows: any[] = useMemo(() => {
     console.log('divisions', divisions);
@@ -40,8 +40,8 @@ export default function DivisionsTab({ resetKey }: Props) {
   }, [divisions]);
 
   const actionsIconOnly = [
-    { label: '', onClick: (row: any) => { setSelected(row.raw as Division); editModal.openModal(); }, variant: 'outline', className: 'border-0', icon: <Edit size={16} /> },
-    { label: '', onClick: (row: any) => { setSelected(row.raw as Division); deleteModal.openModal(); }, variant: 'outline', className: 'border-0', color: 'error', icon: <Trash size={16} /> },
+    { label: '', onClick: (row: any) => { setSelected(row.raw as DivisionListItem); editModal.openModal(); }, variant: 'outline', className: 'border-0', icon: <Edit size={16} /> },
+    { label: '', onClick: (row: any) => { setSelected(row.raw as DivisionListItem); deleteModal.openModal(); }, variant: 'outline', className: 'border-0', color: 'error', icon: <Trash size={16} /> },
   ] as DataTableAction<any>[];
 
   const exportCSV = (filename: string, data: any[]) => {

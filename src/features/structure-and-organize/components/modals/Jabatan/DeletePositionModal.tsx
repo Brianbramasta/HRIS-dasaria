@@ -1,7 +1,9 @@
 import { useState } from "react";
 // import { Modal } from "../../../../../components/ui/modal/index";
-import { positionService } from "../../../services/organization.service";
-import { Position } from "../../../types/organization.types";
+import { positionsService } from "../../../services/request/positions.service";
+import type { PositionListItem } from "../../../types/organization.api.types";
+import Input from '@/components/form/input/InputField';
+import { useFileStore, /*setSkFile*/ } from '@/stores/fileStore';
 import { addNotification } from "@/stores/notificationStore";
 import FileInput from "../shared/field/FileInput";
 import ModalDelete from "../shared/modal/ModalDelete";
@@ -11,7 +13,7 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  position: Position | null;
+  position: PositionListItem | null;
 };
 
 export const DeletePositionModal = ({
@@ -20,19 +22,20 @@ export const DeletePositionModal = ({
   onSuccess,
   position,
 }: Props) => {
-  const [skFile, setSkFile] = useState<File | null>(null);
+  const [memoNumber, setMemoNumber] = useState('');
+  const skFile = useFileStore((s) => s.skFile);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setSkFile(e.target.files[0]);
+      // setSkFile(e.target.files[0]);
       console.log(skFile)
     }
   };
 
   const handleDelete = async () => {
     if (!position) return;
-    if (!skFile) {
+    if (!skFile?.name) {
       addNotification({
         variant: 'error',
         title: 'Jabatan tidak dihapus',
@@ -44,7 +47,7 @@ export const DeletePositionModal = ({
 
     setIsLoading(true);
     try {
-      await positionService.delete(position.id);
+      await positionsService.delete(position.id, { memoNumber: memoNumber.trim(), skFileId: skFile?.path || skFile?.name });
       onSuccess();
       onClose();
     } catch (error) {
@@ -155,6 +158,16 @@ export const DeletePositionModal = ({
       handleDelete={handleDelete}
       submitting={isLoading}
       content={<>
+        <div className="space-y-2">
+          <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
+          <Input
+            required
+            type="text"
+            value={memoNumber}
+            onChange={(e) => setMemoNumber(e.target.value)}
+            className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+        </div>
        <FileInput 
             onChange={handleFileChange}
             skFileName={skFile?.name || ''}

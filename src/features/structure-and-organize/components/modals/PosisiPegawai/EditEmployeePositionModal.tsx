@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { employeePositionService } from '../../../services/organization.service';
-import type { EmployeePosition } from '../../../types/organization.types';
+import { employeePositionsService } from '../../../services/request/employee-positions.service';
+import type { EmployeePositionListItem } from '../../../types/organization.api.types';
+import { useFileStore } from '@/stores/fileStore';
 import FileInput from '../shared/field/FileInput';
 import ModalAddEdit from '../shared/modal/modalAddEdit';
 import { addNotification } from '@/stores/notificationStore';
@@ -8,8 +9,8 @@ import { addNotification } from '@/stores/notificationStore';
 interface EditEmployeePositionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess?: (updated: EmployeePosition) => void;
-  employeePosition: EmployeePosition | null;
+  onSuccess?: (updated: EmployeePositionListItem) => void;
+  employeePosition: EmployeePositionListItem | null;
 }
 
 const EditEmployeePositionModal: React.FC<EditEmployeePositionModalProps> = ({ isOpen, onClose, onSuccess, employeePosition }) => {
@@ -20,7 +21,7 @@ const EditEmployeePositionModal: React.FC<EditEmployeePositionModalProps> = ({ i
   const [departemen, setDepartemen] = useState('');
   const [memoNumber, setMemoNumber] = useState('');
   const [description, setDescription] = useState('');
-  const [skFile, setSkFile] = useState<File | null>(null);
+  const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -30,19 +31,16 @@ const EditEmployeePositionModal: React.FC<EditEmployeePositionModalProps> = ({ i
       setDirektorat(employeePosition.directorateId);
       setDivisi(employeePosition.divisionId);
       setDepartemen(employeePosition.departmentId);
-      setMemoNumber(employeePosition.memoFile || '');
-      setDescription(employeePosition.description || '');
+      setMemoNumber((employeePosition as any).memoNumber || '');
+      setDescription((employeePosition as any).description || '');
     }
   }, [employeePosition]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setSkFile(file);
-  };
+  const handleFileChange = (/*_e: React.ChangeEvent<HTMLInputElement>*/) => {};
 
   const handleSubmit = async () => {
     if (!employeePosition || !name.trim()) return;
-    if (!skFile) {
+    if (!skFile?.name) {
       addNotification({
         variant: 'error',
         title: 'Posisi Pegawai tidak diupdate',
@@ -54,16 +52,17 @@ const EditEmployeePositionModal: React.FC<EditEmployeePositionModalProps> = ({ i
     }
     setSubmitting(true);
     try {
-      const updated = await employeePositionService.update(employeePosition.id, {
+      const updated = await employeePositionsService.update(employeePosition.id, {
         name: name.trim(),
         positionId: jabatan.trim(),
-        directorateId: direktorat.trim(),
-        divisionId: divisi.trim(),
-        departmentId: departemen.trim(),
-        memoFile: memoNumber.trim(),
-        description: description.trim(),
-        skFile: skFile?.name || employeePosition.skFile,
-      } as Omit<EmployeePosition, 'id' | 'createdAt' | 'updatedAt'>);
+        directorateId: direktorat.trim() || null,
+        divisionId: divisi.trim() || null,
+        departmentId: departemen.trim() || null,
+        startDate: null,
+        endDate: null,
+        memoNumber: memoNumber.trim(),
+        skFileId: skFile?.path || skFile?.name,
+      });
       onSuccess?.(updated);
       onClose();
     } catch (err) {
@@ -159,7 +158,7 @@ const EditEmployeePositionModal: React.FC<EditEmployeePositionModalProps> = ({ i
               placeholder="Lorem ipsum dolor sit amet consectetur. Nunc et nec vel nec."
             />
           </div>
-          <FileInput skFileName={skFile?.name || employeePosition?.skFile || ''} onChange={handleFileChange} />
+          <FileInput skFileName={skFile?.name || (employeePosition as any)?.skFile?.fileName || ''} onChange={handleFileChange} />
         </>
       }
       handleSubmit={handleSubmit}

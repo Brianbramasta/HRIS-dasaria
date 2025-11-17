@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { employeePositionService } from '../../../services/organization.service';
-import type { EmployeePosition } from '../../../types/organization.types';
+import { employeePositionsService } from '../../../services/request/employee-positions.service';
+import type { EmployeePositionListItem } from '../../../types/organization.api.types';
+import Input from '@/components/form/input/InputField';
+import { useFileStore } from '@/stores/fileStore';
 import FileInput from '../shared/field/FileInput';
-import HeaderModalDelete from '../shared/modal/HeaderModalDelete';
+// import HeaderModalDelete from '../shared/modal/HeaderModalDelete';
 import ModalDelete from '../shared/modal/ModalDelete';
 import { addNotification } from '@/stores/notificationStore';
 
@@ -10,21 +12,19 @@ interface DeleteEmployeePositionModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: (id: string) => void;
-  employeePosition: EmployeePosition | null;
+  employeePosition: EmployeePositionListItem | null;
 }
 
 const DeleteEmployeePositionModal: React.FC<DeleteEmployeePositionModalProps> = ({ isOpen, onClose, onSuccess, employeePosition }) => {
-  const [skFile, setSkFile] = useState<File | null>(null);
+  const [memoNumber, setMemoNumber] = useState('');
+  const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setSkFile(file);
-  };
+  const handleFileChange = (/*_e: React.ChangeEvent<HTMLInputElement>*/) => {};
 
   const handleSubmit = async () => {
     if (!employeePosition) return;
-    if (!skFile) {
+    if (!skFile?.name) {
       addNotification({
         variant: 'error',
         title: 'Posisi Pegawai tidak dihapus',
@@ -36,9 +36,8 @@ const DeleteEmployeePositionModal: React.FC<DeleteEmployeePositionModalProps> = 
     }
     setSubmitting(true);
     try {
-      await employeePositionService.delete(employeePosition.id);
+      await employeePositionsService.delete(employeePosition.id, { memoNumber: memoNumber.trim(), skFileId: skFile?.path || skFile?.name });
       onSuccess?.(employeePosition.id);
-      setSkFile(null);
       onClose();
     } catch (err) {
       console.error('Failed to delete employee position', err);
@@ -53,9 +52,15 @@ const DeleteEmployeePositionModal: React.FC<DeleteEmployeePositionModalProps> = 
       onClose={onClose}
       content={
         <>
-          <HeaderModalDelete title="Hapus Data Posisi" />
           <div className="space-y-2">
-            <label className="text-sm font-medium">Upload File SK</label>
+            <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
+            <Input
+              required
+              type="text"
+              value={memoNumber}
+              onChange={(e) => setMemoNumber(e.target.value)}
+              className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+            />
             <FileInput skFileName={skFile?.name || ''} onChange={handleFileChange} />
             <p className="text-xs text-gray-500">*Data tidak benar-benar dihapus akan tetapi diarsipkan</p>
           </div>

@@ -3,7 +3,7 @@ import DataTable, { DataTableColumn, DataTableAction } from '../../components/da
 import { Edit, Trash } from 'react-feather';
 import { useDepartments } from '../../index';
 import type { DepartmentRow } from '../../types/organizationTable.types';
-import type { Department } from '../../types/organization.types';
+import type { DepartmentListItem } from '../../types/organization.api.types';
 import { useModal } from '../../../../hooks/useModal';
 import AddDepartmentModal from '../../components/modals/Departemen/AddDepartmentModal';
 import EditDepartmentModal from '../../components/modals/Departemen/EditDepartmentModal';
@@ -25,7 +25,7 @@ export default function DepartmentsTab({ resetKey }: Props) {
   const addModal = useModal(false);
   const editModal = useModal(false);
   const deleteModal = useModal(false);
-  const [selected, setSelected] = useState<Department | null>(null);
+  const [selected, setSelected] = useState<DepartmentListItem | null>(null);
 
   const rows: any[] = useMemo(() => {
     return (departments || []).map((d, idx) => ({
@@ -38,8 +38,8 @@ export default function DepartmentsTab({ resetKey }: Props) {
   }, [departments]);
 
   const actionsIconOnly = [
-    { label: '', onClick: (row: any) => { setSelected(row.raw as Department); editModal.openModal(); }, variant: 'outline', className: 'border-0', icon: <Edit size={16} /> },
-    { label: '', onClick: (row: any) => { setSelected(row.raw as Department); deleteModal.openModal(); }, variant: 'outline', className: 'border-0', color: 'error', icon: <Trash size={16} /> },
+    { label: '', onClick: (row: any) => { setSelected(row.raw as DepartmentListItem); editModal.openModal(); }, variant: 'outline', className: 'border-0', icon: <Edit size={16} /> },
+    { label: '', onClick: (row: any) => { setSelected(row.raw as DepartmentListItem); deleteModal.openModal(); }, variant: 'outline', className: 'border-0', color: 'error', icon: <Trash size={16} /> },
   ] as DataTableAction<any>[];
 
   const exportCSV = (filename: string, data: any[]) => {

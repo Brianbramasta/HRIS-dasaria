@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 // import { Modal } from '../../../../../components/ui/modal/index';
-import { officeService } from '../../../services/organization.service';
-import type { Office } from '../../../types/organization.types';
+import { officesService } from '../../../services/request/offices.service';
+import type { OfficeListItem } from '../../../types/organization.api.types';
+import { useFileStore } from '@/stores/fileStore';
 import FileInput from '../shared/field/FileInput';
 import ModalAddEdit from '../shared/modal/modalAddEdit';
 import Input from '@/components/form/input/InputField';
@@ -13,24 +14,24 @@ import { addNotification } from '@/stores/notificationStore';
 interface AddOfficeModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess?: (created: Office) => void;
+  onSuccess?: (created: OfficeListItem) => void;
 }
 
 const AddOfficeModal: React.FC<AddOfficeModalProps> = ({ isOpen, onClose, onSuccess }) => {
   const [name, setName] = useState('');
+  const [companyId, setCompanyId] = useState('');
   const [memoNumber, setMemoNumber] = useState('');
   const [description, setDescription] = useState('');
-  const [skFile, setSkFile] = useState<File | null>(null);
+  const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setSkFile(file);
+  const handleFileChange = (/*_e: React.ChangeEvent<HTMLInputElement>*/) => {
+    // metadata file dikelola oleh FileInput melalui store
   };
 
   const handleSubmit = async () => {
     if (!name.trim()) return;
-    if (!skFile){
+    if (!skFile?.name){
       addNotification({
         variant: 'error',
         title: 'Office tidak ditambahkan',
@@ -39,19 +40,30 @@ const AddOfficeModal: React.FC<AddOfficeModalProps> = ({ isOpen, onClose, onSucc
       });
       return;
     }
+    if (!companyId.trim()) {
+      addNotification({
+        variant: 'error',
+        title: 'Office tidak ditambahkan',
+        description: 'Company ID wajib diisi',
+        hideDuration: 4000,
+      });
+      return;
+    }
     setSubmitting(true);
     try {
-      const created = await officeService.create({
+      const created = await officesService.create({
+        companyId: companyId.trim(),
         name: name.trim(),
-        description: description.trim(),
-        skFile: skFile?.name || '',
-        memoFile: memoNumber.trim(),
-      } as Omit<Office, 'id' | 'createdAt' | 'updatedAt'>);
+        description: description.trim() || null,
+        memoNumber: memoNumber.trim(),
+        skFileId: skFile?.path || skFile?.name,
+      });
       onSuccess?.(created);
       setName('');
+      setCompanyId('');
       setMemoNumber('');
       setDescription('');
-      setSkFile(null);
+      useFileStore.getState().clearSkFile();
       onClose();
     } catch (err) {
       console.error('Failed to create office', err);
@@ -75,6 +87,17 @@ const AddOfficeModal: React.FC<AddOfficeModalProps> = ({ isOpen, onClose, onSucc
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Company ID</label>
+          <Input
+            required
+            type="text"
+            value={companyId}
+            onChange={(e) => setCompanyId(e.target.value)}
             className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>

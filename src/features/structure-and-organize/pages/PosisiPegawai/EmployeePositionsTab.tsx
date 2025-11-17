@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '../../components/datatable/DataTable';
 import { Edit, Trash } from 'react-feather';
 import { useEmployeePositions } from '../../index';
-import type { EmployeePosition } from '../../types/organization.types';
+import type { EmployeePositionListItem } from '../../types/organization.api.types';
 import { EmployeePositionRow } from '../../types/organizationTable.types';
 import AddEmployeePositionModal from '../../components/modals/PosisiPegawai/AddEmployeePositionModal';
 import EditEmployeePositionModal from '../../components/modals/PosisiPegawai/EditEmployeePositionModal';
@@ -27,7 +27,7 @@ export default function EmployeePositionsTab({ resetKey }: Props) {
   const addModal = useModal(false);
   const editModal = useModal(false);
   const deleteModal = useModal(false);
-  const [selectedEmployeePosition, setSelectedEmployeePosition] = useState<EmployeePosition | null>(null);
+  const [selectedEmployeePosition, setSelectedEmployeePosition] = useState<EmployeePositionListItem | null>(null);
 
   const rows: EmployeePositionRow[] = useMemo(() => {
     return (employeePositions || []).map((ep, idx) => ({
@@ -59,7 +59,7 @@ export default function EmployeePositionsTab({ resetKey }: Props) {
     {
       label: '',
       onClick: (row: any) => {
-        setSelectedEmployeePosition(row.raw as EmployeePosition);
+        setSelectedEmployeePosition(row.raw as EmployeePositionListItem);
         editModal.openModal();
       },
       variant: 'outline', className: 'border-0', icon: <Edit size={16} />
@@ -67,7 +67,7 @@ export default function EmployeePositionsTab({ resetKey }: Props) {
     {
       label: '',
       onClick: (row: any) => {
-        setSelectedEmployeePosition(row.raw as EmployeePosition);
+        setSelectedEmployeePosition(row.raw as EmployeePositionListItem);
         deleteModal.openModal();
       },
       variant: 'outline', className: 'border-0', color: 'error', icon: <Trash size={16} />

@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 // import { Modal } from '../../../../../components/ui/modal/index';
-import { divisionService, directorateService } from '../../../services/organization.service';
-import type { Division, Directorate } from '../../../types/organization.types';
+import { divisionsService } from '../../../services/request/divisions.service';
+import { directoratesService } from '../../../services/request/directorates.service';
+import type { DivisionListItem, DirectorateListItem } from '../../../types/organization.api.types';
+import { useFileStore } from '@/stores/fileStore';
 import FileInput from '../shared/field/FileInput';
 import ModalAddEdit from '../shared/modal/modalAddEdit';
 import Input from '@/components/form/input/InputField';
@@ -12,7 +14,7 @@ import { addNotification } from '@/stores/notificationStore';
 interface EditDivisionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  division?: Division | null;
+  division?: DivisionListItem | null;
   onSuccess?: () => void;
 }
 
@@ -21,14 +23,14 @@ const EditDivisionModal: React.FC<EditDivisionModalProps> = ({ isOpen, onClose, 
   const [description, setDescription] = useState('');
   const [directorateId, setDirectorateId] = useState('');
   const [memoNumber, setMemoNumber] = useState('');
-  const [skFileName, setSkFileName] = useState('');
-  const [directorates, setDirectorates] = useState<Directorate[]>([]);
+  const skFile = useFileStore((s) => s.skFile);
+  const [directorates, setDirectorates] = useState<DirectorateListItem[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     const loadDirectorates = async () => {
       try {
-        const res = await directorateService.getAll({ search: '', page: 1, pageSize: 100, sortBy: 'name', sortOrder: 'asc' });
+        const res = await directoratesService.getList({ search: '', page: 1, pageSize: 100, sortBy: 'name', sortOrder: 'asc' });
         setDirectorates(res.data || []);
       } catch (err) {
         console.error('Failed to load directorates', err);
@@ -42,19 +44,15 @@ const EditDivisionModal: React.FC<EditDivisionModalProps> = ({ isOpen, onClose, 
       setName(division.name || '');
       setDescription(division.description || '');
       setDirectorateId(division.directorateId || '');
-      setMemoNumber(division.memoFile || '');
-      setSkFileName(division.skFile || '');
+      setMemoNumber((division as any).memoNumber || '');
     }
   }, [isOpen, division]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setSkFileName(file?.name || '');
-  };
+  const handleFileChange = (/*_e: React.ChangeEvent<HTMLInputElement>*/) => {};
 
   const handleSubmit = async () => {
     if (!division) return;
-    if (!skFileName) {
+    if (!skFile?.name) {
       addNotification({
         variant: 'error',
         title: 'Divisi tidak diupdate',
@@ -66,12 +64,12 @@ const EditDivisionModal: React.FC<EditDivisionModalProps> = ({ isOpen, onClose, 
     }
     setSubmitting(true);
     try {
-      await divisionService.update(division.id, {
+      await divisionsService.update(division.id, {
         name,
-        description,
         directorateId,
-        memoFile: memoNumber,
-        skFile: skFileName || division.skFile,
+        description: description || null,
+        memoNumber,
+        skFileId: skFile?.path || skFile?.name,
       });
       onSuccess?.();
       onClose();
@@ -138,7 +136,7 @@ const EditDivisionModal: React.FC<EditDivisionModalProps> = ({ isOpen, onClose, 
           />
         </div>
 
-        <FileInput skFileName={skFileName} onChange={handleFileChange} />
+        <FileInput skFileName={skFile?.name || division?.skFile?.fileName || ''} onChange={handleFileChange} />
 
         </>}
         />

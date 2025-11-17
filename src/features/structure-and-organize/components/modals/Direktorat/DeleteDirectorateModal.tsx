@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 // import { Modal } from '../../../../../components/ui/modal/index';
-import { directorateService } from '../../../services/organization.service';
-import type { Directorate } from '../../../types/organization.types';
+import { directoratesService } from '../../../services/request/directorates.service';
+import type { DirectorateListItem } from '../../../types/organization.api.types';
 import FileInput from '../shared/field/FileInput';
 import ModalDelete from '../shared/modal/ModalDelete';
 import { addNotification } from '@/stores/notificationStore';
@@ -9,7 +9,7 @@ import { addNotification } from '@/stores/notificationStore';
 interface DeleteDirectorateModalProps {
   isOpen: boolean;
   onClose: () => void;
-  directorate?: Directorate | null;
+  directorate?: DirectorateListItem | null;
   onSuccess?: () => void;
 }
 
@@ -35,7 +35,10 @@ const DeleteDirectorateModal: React.FC<DeleteDirectorateModalProps> = ({ isOpen,
           return};
     setSubmitting(true);
     try {
-      await directorateService.delete(directorate.id);
+      await directoratesService.delete(directorate.id, {
+        memoNumber: memoNumber.trim(),
+        skFileId: skFileName,
+      });
       onSuccess?.();
       onClose();
     } catch (err) {

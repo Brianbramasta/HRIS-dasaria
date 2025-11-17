@@ -7,7 +7,7 @@ import { useModal } from '../../../../hooks/useModal';
 import { AddPositionModal } from '../../components/modals/Jabatan/AddPositionModal';
 import { EditPositionModal } from '../../components/modals/Jabatan/EditPositionModal';
 import { DeletePositionModal } from '../../components/modals/Jabatan/DeletePositionModal';
-import { Position } from '../../types/organization.types';
+import type { PositionListItem } from '../../types/organization.api.types';
 import { addNotification } from '@/stores/notificationStore';
 import { FileText } from '@/icons/components/icons';
 type Props = { resetKey: string };
@@ -26,7 +26,7 @@ export default function PositionsTab({ resetKey }: Props) {
   const addModal = useModal(false);
   const editModal = useModal(false);
   const deleteModal = useModal(false);
-  const [selected, setSelected] = React.useState<Position | null>(null);
+  const [selected, setSelected] = React.useState<PositionListItem | null>(null);
 
   const rows: PositionRow[] = useMemo(() => {
     return (positions || []).map((p, idx) => ({

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 // import { Modal } from '../../../../../components/ui/modal/index';
-import { businessLineService } from '../../../services/organization.service';
-import { BusinessLine } from '../../../types/organization.types';
+import { businessLinesService } from '../../../services/request/business-lines.service';
+import { BusinessLineListItem } from '../../../types/organization.api.types';
 import FileInput from '../shared/field/FileInput';
 import ModalAddEdit from '../shared/modal/modalAddEdit';
 import Input from '@/components/form/input/InputField';
@@ -16,8 +16,8 @@ import { addNotification } from '@/stores/notificationStore';
 interface EditBusinessLineModalProps {
   isOpen: boolean;
   onClose: () => void;
-  businessLine?: BusinessLine | null;
-  onSuccess?: (updated: BusinessLine) => void;
+  businessLine?: BusinessLineListItem | null;
+  onSuccess?: (updated: BusinessLineListItem) => void;
 }
 
 const EditBusinessLineModal: React.FC<EditBusinessLineModalProps> = ({ isOpen, onClose, businessLine, onSuccess }) => {
@@ -31,11 +31,8 @@ const EditBusinessLineModal: React.FC<EditBusinessLineModalProps> = ({ isOpen, o
   useEffect(() => {
     if (businessLine) {
       setName(businessLine.name || '');
-      setMemoNumber(businessLine.memoFile || '');
+      setMemoNumber(businessLine.memoNumber || '');
       setDescription(businessLine.description || '');
-      // skFile is represented as file name string; keep null until user uploads new one
-      // setSkFile(null);
-      
     }
   }, [businessLine]);
 
@@ -65,18 +62,18 @@ const EditBusinessLineModal: React.FC<EditBusinessLineModalProps> = ({ isOpen, o
     setSubmitting(true);
     try {
       const updated = await Promise.all([
-        businessLineService.update(businessLine.id, {
+        businessLinesService.update(businessLine.id, {
           name: name.trim(),
-          description: description.trim(),
-          memoFile: memoNumber.trim() || undefined,
-          skFile: skFile ? skFile.name : businessLine.skFile,
+          description: description.trim() || null,
+          memoNumber: memoNumber.trim(),
+          skFileId: skFile?.path || skFile?.name,
         }),
         skFile ? fileService.create({
           name: skFile.name,
           fileName: skFile.name,
           ownerType: 'business-line',
           ownerId: businessLine.id,
-          docNumber: businessLine.memoFile || '',
+          docNumber: businessLine.memoNumber || '',
           type: 'Active',
           filePath: skFile.path,
           fileType: skFile.type,
@@ -140,8 +137,7 @@ const EditBusinessLineModal: React.FC<EditBusinessLineModalProps> = ({ isOpen, o
 
         <FileInput 
           onChange={handleFileChange}
-          skFileName={skFile?.name || businessLine?.skFile || ''}
-         
+          skFileName={skFile?.name || businessLine?.skFile?.fileName || ''}
         />
 
         </>}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 // import { Modal } from '../../../../../components/ui/modal/index';
-import { businessLineService } from '../../../services/organization.service';
-import { BusinessLine } from '../../../types/organization.types';
+import { businessLinesService } from '../../../services/request/business-lines.service';
+import { BusinessLineListItem } from '../../../types/organization.api.types';
 import ModalAddEdit from '../shared/modal/modalAddEdit';
 import FileInput from '../shared/field/FileInput';
 import Input from '@/components/form/input/InputField';
@@ -12,7 +12,7 @@ import { addNotification } from '@/stores/notificationStore';
 interface AddBusinessLineModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess?: (created: BusinessLine) => void;
+  onSuccess?: (created: BusinessLineListItem) => void;
 }
 
 const AddBusinessLineModal: React.FC<AddBusinessLineModalProps> = ({ isOpen, onClose, onSuccess }) => {
@@ -42,12 +42,11 @@ const AddBusinessLineModal: React.FC<AddBusinessLineModalProps> = ({ isOpen, onC
       }
     setSubmitting(true);
     try {
-      const created = await businessLineService.create({
+      const created = await businessLinesService.create({
         name: name.trim(),
-        description: description.trim(),
-        // Store memo number in memoFile for now (no dedicated field in type)
-        memoFile: memoNumber.trim() || undefined,
-        skFile: skFile ? skFile.name : undefined,
+        description: description.trim() || null,
+        memoNumber: memoNumber.trim(),
+        skFileId: skFile?.path || skFile?.name,
       });
       onSuccess?.(created);
       onClose();

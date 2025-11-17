@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 // import { Modal } from '../../../../../components/ui/modal/index';
-import { divisionService, directorateService } from '../../../services/organization.service';
-import type { Directorate } from '../../../types/organization.types';
+import { divisionsService } from '../../../services/request/divisions.service';
+import { directoratesService } from '../../../services/request/directorates.service';
+import type { DirectorateListItem } from '../../../types/organization.api.types';
+import { useFileStore } from '@/stores/fileStore';
 import FileInput from '../shared/field/FileInput';
 import ModalAddEdit from '../shared/modal/modalAddEdit';
 import Input from '@/components/form/input/InputField';
@@ -21,14 +23,14 @@ const AddDivisionModal: React.FC<AddDivisionModalProps> = ({ isOpen, onClose, on
   const [description, setDescription] = useState('');
   const [directorateId, setDirectorateId] = useState('');
   const [memoNumber, setMemoNumber] = useState('');
-  const [skFile, setSkFile] = useState<File | null>(null);
-  const [directorates, setDirectorates] = useState<Directorate[]>([]);
+  const skFile = useFileStore((s) => s.skFile);
+  const [directorates, setDirectorates] = useState<DirectorateListItem[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     const loadDirectorates = async () => {
       try {
-        const res = await directorateService.getAll({ search: '', page: 1, pageSize: 100, sortBy: 'name', sortOrder: 'asc' });
+        const res = await directoratesService.getList({ search: '', page: 1, pageSize: 100, sortBy: 'name', sortOrder: 'asc' });
         setDirectorates(res.data || []);
       } catch (err) {
         console.error('Failed to load directorates', err);
@@ -43,17 +45,14 @@ const AddDivisionModal: React.FC<AddDivisionModalProps> = ({ isOpen, onClose, on
       setDescription('');
       setDirectorateId('');
       setMemoNumber('');
-      setSkFile(null);
+      useFileStore.getState().clearSkFile();
     }
   }, [isOpen]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setSkFile(file);
-  };
+  const handleFileChange = (/*_e: React.ChangeEvent<HTMLInputElement>*/) => {};
 
   const handleSubmit = async () => {
-    if (!skFile) {
+    if (!skFile?.name) {
           addNotification({
             variant: 'error',
             title: 'Lini Bisnis tidak ditambahkan',
@@ -63,12 +62,12 @@ const AddDivisionModal: React.FC<AddDivisionModalProps> = ({ isOpen, onClose, on
           return};
     setSubmitting(true);
     try {
-      await divisionService.create({
+      await divisionsService.create({
         name,
-        description,
         directorateId,
-        skFile: skFile?.name,
-        memoFile: memoNumber,
+        description: description || null,
+        memoNumber,
+        skFileId: skFile?.path || skFile?.name,
       });
       onSuccess?.();
       onClose();

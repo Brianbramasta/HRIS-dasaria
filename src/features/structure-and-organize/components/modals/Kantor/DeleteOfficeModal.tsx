@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 // import { Modal } from '../../../../../components/ui/modal/index';
-import { officeService } from '../../../services/organization.service';
-import type { Office } from '../../../types/organization.types';
+import { officesService } from '../../../services/request/offices.service';
+import type { OfficeListItem } from '../../../types/organization.api.types';
 import FileInput from '../shared/field/FileInput';
 import ModalDelete from '../shared/modal/ModalDelete';
 import Input from '@/components/form/input/InputField';
@@ -11,7 +11,7 @@ import { addNotification } from '@/stores/notificationStore';
 interface DeleteOfficeModalProps {
   isOpen: boolean;
   onClose: () => void;
-  office?: Office | null;
+  office?: OfficeListItem | null;
   onSuccess?: () => void;
 }
 
@@ -38,7 +38,10 @@ const DeleteOfficeModal: React.FC<DeleteOfficeModalProps> = ({ isOpen, onClose, 
         }
     setSubmitting(true);
     try {
-      await officeService.delete(office.id);
+      await officesService.delete(office.id, {
+        memoNumber: memoNumber.trim(),
+        skFileId: skFileName,
+      });
       onSuccess?.();
       onClose();
     } catch (err) {

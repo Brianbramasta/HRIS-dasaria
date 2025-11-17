@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 // import { Modal } from '../../../../../components/ui/modal/index';
-import { departmentService } from '../../../services/organization.service';
-import type { Department } from '../../../types/organization.types';
+import { departmentsService } from '../../../services/request/departments.service';
+import type { DepartmentListItem } from '../../../types/organization.api.types';
 import FileInput from '../shared/field/FileInput';
 import ModalDelete from '../shared/modal/ModalDelete';
 import { addNotification } from '@/stores/notificationStore';
@@ -9,7 +9,7 @@ import { addNotification } from '@/stores/notificationStore';
 interface DeleteDepartmentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  department?: Department | null;
+  department?: DepartmentListItem | null;
   onSuccess?: () => void;
 }
 
@@ -37,7 +37,7 @@ const DeleteDepartmentModal: React.FC<DeleteDepartmentModalProps> = ({ isOpen, o
     }
     setSubmitting(true);
     try {
-      await departmentService.delete(department.id);
+      await departmentsService.delete(department.id, { memoNumber: memoNumber.trim(), skFileId: skFileName });
       onSuccess?.();
       onClose();
     } catch (err) {

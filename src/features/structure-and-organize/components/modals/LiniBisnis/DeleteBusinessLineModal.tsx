@@ -1,7 +1,7 @@
 import React from 'react';
 // import { Modal } from '../../../../../components/ui/modal/index';
-import { businessLineService } from '../../../services/organization.service';
-import { BusinessLine } from '../../../types/organization.types';
+import { businessLinesService } from '../../../services/request/business-lines.service';
+import { BusinessLineListItem } from '../../../types/organization.api.types';
 import ModalDelete from '../shared/modal/ModalDelete';
 import FileInput from '../shared/field/FileInput';
 import { addNotification } from '@/stores/notificationStore';
@@ -10,7 +10,7 @@ import Input from '@/components/form/input/InputField';
 interface DeleteBusinessLineModalProps {
   isOpen: boolean;
   onClose: () => void;
-  businessLine?: BusinessLine | null;
+  businessLine?: BusinessLineListItem | null;
   onSuccess?: () => void;
 }
 
@@ -36,7 +36,10 @@ const DeleteBusinessLineModal: React.FC<DeleteBusinessLineModalProps> = ({ isOpe
       return};
     setSubmitting(true);
     try {
-      await businessLineService.delete(businessLine.id);
+      await businessLinesService.delete(businessLine.id, {
+        memoNumber: businessLine.memoNumber || '',
+        skFileId: skFileName,
+      });
       onSuccess?.();
       onClose();
     } catch (err) {
@@ -58,7 +61,7 @@ const DeleteBusinessLineModal: React.FC<DeleteBusinessLineModalProps> = ({ isOpe
           <Input
             type="text"
             required
-            value={businessLine?.memoFile || ''}
+            value={businessLine?.memoNumber || ''}
             
             className="w-full rounded-xl border border-gray-300 bg-gray-100 px-4 py-3"
           />

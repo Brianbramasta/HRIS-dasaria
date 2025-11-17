@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Modal } from "../../../../../components/ui/modal/index";
-import { positionService } from "../../../services/organization.service";
+import { positionsService } from "../../../services/request/positions.service";
+import { useFileStore } from '@/stores/fileStore';
 import FileInput from "../shared/field/FileInput";
 import Input from "@/components/form/input/InputField";
 import { addNotification } from "@/stores/notificationStore";
@@ -23,6 +24,7 @@ export const AddPositionModal = ({ isOpen, onClose, onSuccess }: Props) => {
     skFile: null as File | null ,
   });
   const [isLoading, setIsLoading] = useState(false);
+  const skFile = useFileStore((s) => s.skFile);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -39,7 +41,7 @@ export const AddPositionModal = ({ isOpen, onClose, onSuccess }: Props) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.skFile) {
+    if (!skFile?.name) {
       addNotification({
         variant: 'error',
         title: 'Jabatan tidak ditambahkan',
@@ -51,16 +53,15 @@ export const AddPositionModal = ({ isOpen, onClose, onSuccess }: Props) => {
     setIsLoading(true);
     try {
       const { directSubordinates, ...rest } = formData;
-      // const payload = {
-      //   ...rest,
-      //   directSubordinates: directSubordinates.split(",").map((s) => s.trim()),
-      // };
       const payload = {
-          ...rest,
-          directSubordinates: directSubordinates.split(",").map((s) => s.trim()),
-          skFile: formData.skFile ? formData.skFile.name : undefined,
+          name: rest.name,
+          grade: rest.grade || null,
+          jobDescription: rest.jobDescription || null,
+          directSubordinates: directSubordinates.split(",").map((s) => s.trim()).filter(Boolean),
+          memoNumber: rest.memoNumber,
+          skFileId: skFile?.path || skFile?.name,
         };
-      await positionService.create(payload);
+      await positionsService.create(payload);
       onSuccess();
       onClose();
     } catch (error) {
@@ -221,7 +222,7 @@ export const AddPositionModal = ({ isOpen, onClose, onSuccess }: Props) => {
           </div> */}
           <FileInput 
             onChange={handleFileChange}
-            skFileName={formData.skFile?.name || ''}
+            skFileName={skFile?.name || ''}
           />
           <div className="flex justify-end space-x-4">
             <button

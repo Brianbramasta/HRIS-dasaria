@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 // import { Modal } from '../../../../../components/ui/modal/index';
-import { departmentService, divisionService } from '../../../services/organization.service';
-import type { Division } from '../../../types/organization.types';
+import { departmentsService } from '../../../services/request/departments.service';
+import { divisionsService } from '../../../services/request/divisions.service';
+import type { DivisionListItem } from '../../../types/organization.api.types';
+import { useFileStore } from '@/stores/fileStore';
 import FileInput from '../shared/field/FileInput';
 import ModalAddEdit from '../shared/modal/modalAddEdit';
 import Input from '@/components/form/input/InputField';
@@ -18,14 +20,14 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ isOpen, onClose
   const [name, setName] = useState('');
   const [divisionId, setDivisionId] = useState('');
   const [memoNumber, setMemoNumber] = useState('');
-  const [skFile, setSkFile] = useState<File | null>(null);
-  const [divisions, setDivisions] = useState<Division[]>([]);
+  const skFile = useFileStore((s) => s.skFile);
+  const [divisions, setDivisions] = useState<DivisionListItem[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     const loadDivisions = async () => {
       try {
-        const res = await divisionService.getAll({ search: '', page: 1, pageSize: 100, sortBy: 'name', sortOrder: 'asc' });
+        const res = await divisionsService.getList({ search: '', page: 1, pageSize: 100, sortBy: 'name', sortOrder: 'asc' });
         setDivisions(res.data || []);
       } catch (err) {
         console.error('Failed to load divisions', err);
@@ -39,18 +41,15 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ isOpen, onClose
       setName('');
       setDivisionId('');
       setMemoNumber('');
-      setSkFile(null);
+      useFileStore.getState().clearSkFile();
     }
   }, [isOpen]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setSkFile(file);
-  };
+  const handleFileChange = (/*_e: React.ChangeEvent<HTMLInputElement>*/) => {};
 
   const handleSubmit = async () => {
     setSubmitting(true);
-    if (!skFile) {
+    if (!skFile?.name) {
       addNotification({
         variant: 'error',
         title: 'Surat Keputusan tidak ditambahkan',
@@ -61,11 +60,12 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ isOpen, onClose
       return;
     }
     try {
-      await departmentService.create({
+      await departmentsService.create({
         name,
         divisionId,
-        skFile: skFile?.name,
-        memoFile: memoNumber,
+        description: null,
+        memoNumber,
+        skFileId: skFile?.path || skFile?.name,
       });
       onSuccess?.();
       onClose();

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 // import { Modal } from '../../../../../components/ui/modal/index';
-import { directorateService } from '../../../services/organization.service';
-import type { Directorate } from '../../../types/organization.types';
+import { directoratesService } from '../../../services/request/directorates.service';
+import type { DirectorateListItem } from '../../../types/organization.api.types';
+import { useFileStore } from '@/stores/fileStore';
 import FileInput from '../shared/field/FileInput';
 import ModalAddEdit from '../shared/modal/modalAddEdit';
 
@@ -12,7 +13,7 @@ import { addNotification } from '@/stores/notificationStore';
 interface EditDirectorateModalProps {
   isOpen: boolean;
   onClose: () => void;
-  directorate?: Directorate | null;
+  directorate?: DirectorateListItem | null;
   onSuccess?: () => void;
 }
 
@@ -20,26 +21,22 @@ const EditDirectorateModal: React.FC<EditDirectorateModalProps> = ({ isOpen, onC
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [memoNumber, setMemoNumber] = useState('');
-  const [skFileName, setSkFileName] = useState('');
+  const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (isOpen && directorate) {
       setName(directorate.name || '');
       setDescription(directorate.description || '');
-      setMemoNumber(directorate.memoFile || '');
-      setSkFileName(directorate.skFile || '');
+      setMemoNumber(directorate.memoNumber || '');
     }
   }, [isOpen, directorate]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setSkFileName(file?.name || '');
-  };
+  const handleFileChange = (/*_e: React.ChangeEvent<HTMLInputElement>*/) => {};
 
   const handleSubmit = async () => {
     if (!directorate) return;
-    if (!skFileName) {
+    if (!skFile?.name) {
           addNotification({
             variant: 'error',
             title: ' Direktorat tidak diupdate',
@@ -49,11 +46,11 @@ const EditDirectorateModal: React.FC<EditDirectorateModalProps> = ({ isOpen, onC
           return};
     setSubmitting(true);
     try {
-      await directorateService.update(directorate.id, {
+      await directoratesService.update(directorate.id, {
         name,
         description,
-        memoFile: memoNumber,
-        skFile: skFileName || directorate.skFile,
+        memoNumber,
+        skFileId: skFile?.path || skFile?.name,
       });
       onSuccess?.();
       onClose();
@@ -107,7 +104,7 @@ const EditDirectorateModal: React.FC<EditDirectorateModalProps> = ({ isOpen, onC
           />
         </div>
 
-        <FileInput skFileName={skFileName} onChange={handleFileChange} />
+        <FileInput skFileName={skFile?.name || directorate?.skFile?.fileName || ''} onChange={handleFileChange} />
 
       </>
     }

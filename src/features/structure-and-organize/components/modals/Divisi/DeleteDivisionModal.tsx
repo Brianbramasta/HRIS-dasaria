@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 // import { Modal } from '../../../../../components/ui/modal/index';
-import { divisionService } from '../../../services/organization.service';
-import type { Division } from '../../../types/organization.types';
+import { divisionsService } from '../../../services/request/divisions.service';
+import type { DivisionListItem } from '../../../types/organization.api.types';
 import FileInput from '../shared/field/FileInput';
 import ModalDelete from '../shared/modal/ModalDelete';
 import Input from '@/components/form/input/InputField';
@@ -10,7 +10,7 @@ import { addNotification } from '@/stores/notificationStore';
 interface DeleteDivisionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  division?: Division | null;
+  division?: DivisionListItem | null;
   onSuccess?: () => void;
 }
 
@@ -36,7 +36,7 @@ const DeleteDivisionModal: React.FC<DeleteDivisionModalProps> = ({ isOpen, onClo
           return};
     setSubmitting(true);
     try {
-      await divisionService.delete(division.id);
+      await divisionsService.delete(division.id, { memoNumber: memoNumber.trim(), skFileId: skFileName });
       onSuccess?.();
       onClose();
     } catch (err) {

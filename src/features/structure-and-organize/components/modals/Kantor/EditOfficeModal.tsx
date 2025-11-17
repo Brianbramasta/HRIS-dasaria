@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 // import { Modal } from '../../../../../components/ui/modal/index';
-import { officeService } from '../../../services/organization.service';
-import type { Office } from '../../../types/organization.types';
+import { officesService } from '../../../services/request/offices.service';
+import type { OfficeListItem } from '../../../types/organization.api.types';
+import { useFileStore } from '@/stores/fileStore';
 import FileInput from '../shared/field/FileInput';
 import ModalAddEdit from '../shared/modal/modalAddEdit';
 import Input from '@/components/form/input/InputField';
@@ -13,35 +14,33 @@ import { addNotification } from '@/stores/notificationStore';
 interface EditOfficeModalProps {
   isOpen: boolean;
   onClose: () => void;
-  office?: Office | null;
-  onSuccess?: (updated: Office) => void;
+  office?: OfficeListItem | null;
+  onSuccess?: (updated: OfficeListItem) => void;
 }
 
 const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, office, onSuccess }) => {
   const [name, setName] = useState('');
   const [memoNumber, setMemoNumber] = useState('');
   const [description, setDescription] = useState('');
-  const [skFileName, setSkFileName] = useState('');
+  const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (office) {
       setName(office.name || '');
-      setMemoNumber(office.memoFile || '');
+      setMemoNumber(office.memoNumber || '');
       setDescription(office.description || '');
-      setSkFileName(office.skFile || '');
     }
   }, [office]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setSkFileName(file?.name || '');
+  const handleFileChange = (/*_e: React.ChangeEvent<HTMLInputElement>*/) => {
+    // metadata file dikelola oleh FileInput melalui store
   };
 
   const handleSubmit = async () => {
     if (!office) return;
     if (!name.trim()) return;
-    if (!skFileName){
+    if (!skFile?.name){
           addNotification({
             variant: 'error',
             title: 'Office tidak ditambahkan',
@@ -52,11 +51,11 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
         }
     setSubmitting(true);
     try {
-      const updated = await officeService.update(office.id, {
+      const updated = await officesService.update(office.id, {
         name: name.trim(),
-        description: description.trim(),
-        skFile: skFileName,
-        memoFile: memoNumber.trim(),
+        description: description.trim() || null,
+        memoNumber: memoNumber.trim(),
+        skFileId: skFile?.path || skFile?.name,
       });
       onSuccess?.(updated);
       onClose();
@@ -107,7 +106,7 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
           />
         </div>
         
-        <FileInput skFileName={skFileName} onChange={handleFileChange} />
+        <FileInput skFileName={skFile?.name || office?.skFile?.fileName || ''} onChange={handleFileChange} />
 
         </>
       }

@@ -3,7 +3,7 @@ import DataTable, { DataTableColumn, DataTableAction } from '../../components/da
 import { Edit, Trash } from 'react-feather';
 import { useDirectorates } from '../../index';
 import type { DirectorateRow } from '../../types/organizationTable.types';
-import type { Directorate } from '../../types/organization.types';
+import type { DirectorateListItem } from '../../types/organization.api.types';
 import { useModal } from '../../../../hooks/useModal';
 import AddDirectorateModal from '../../components/modals/Direktorat/AddDirectorateModal';
 import EditDirectorateModal from '../../components/modals/Direktorat/EditDirectorateModal';
@@ -25,7 +25,7 @@ export default function DirectoratesTab({ resetKey }: Props) {
   const addModal = useModal(false);
   const editModal = useModal(false);
   const deleteModal = useModal(false);
-  const [selected, setSelected] = useState<Directorate | null>(null);
+  const [selected, setSelected] = useState<DirectorateListItem | null>(null);
 
   const rows: any[] = useMemo(() => {
     return (directorates || []).map((d, idx) => ({
@@ -38,8 +38,8 @@ export default function DirectoratesTab({ resetKey }: Props) {
   }, [directorates]);
 
   const actionsIconOnly = [
-    { label: '', onClick: (row: any) => { setSelected(row.raw as Directorate); editModal.openModal(); }, variant: 'outline', className: 'border-0', icon: <Edit size={16} /> },
-    { label: '', onClick: (row: any) => { setSelected(row.raw as Directorate); deleteModal.openModal(); }, variant: 'outline', className: 'border-0', color: 'error', icon: <Trash size={16} /> },
+    { label: '', onClick: (row: any) => { setSelected(row.raw as DirectorateListItem); editModal.openModal(); }, variant: 'outline', className: 'border-0', icon: <Edit size={16} /> },
+    { label: '', onClick: (row: any) => { setSelected(row.raw as DirectorateListItem); deleteModal.openModal(); }, variant: 'outline', className: 'border-0', color: 'error', icon: <Trash size={16} /> },
   ] as DataTableAction<any>[];
 
   const exportCSV = (filename: string, data: any[]) => {

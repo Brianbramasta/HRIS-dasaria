@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 // import { Modal } from '../../../../../components/ui/modal/index';
-import { directorateService } from '../../../services/organization.service';
+import { directoratesService } from '../../../services/request/directorates.service';
+import { useFileStore } from '@/stores/fileStore';
 import FileInput from '../shared/field/FileInput';
 import ModalAddEdit from '../shared/modal/modalAddEdit';
 import Input from '@/components/form/input/InputField';
@@ -17,7 +18,7 @@ const AddDirectorateModal: React.FC<AddDirectorateModalProps> = ({ isOpen, onClo
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [memoNumber, setMemoNumber] = useState('');
-  const [skFile, setSkFile] = useState<File | null>(null);
+  const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -25,17 +26,14 @@ const AddDirectorateModal: React.FC<AddDirectorateModalProps> = ({ isOpen, onClo
       setName('');
       setDescription('');
       setMemoNumber('');
-      setSkFile(null);
+      useFileStore.getState().clearSkFile();
     }
   }, [isOpen]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setSkFile(file);
-  };
+  const handleFileChange = (/*_e: React.ChangeEvent<HTMLInputElement>*/) => {};
 
   const handleSubmit = async () => {
-    if (!skFile) {
+    if (!skFile?.name) {
       addNotification({
         variant: 'error',
         title: 'Surat Keputusan tidak ditambahkan',
@@ -47,11 +45,11 @@ const AddDirectorateModal: React.FC<AddDirectorateModalProps> = ({ isOpen, onClo
     }
     setSubmitting(true);
     try {
-      await directorateService.create({
+      await directoratesService.create({
         name,
-        description,
-        skFile: skFile?.name,
-        memoFile: memoNumber,
+        description: description || null,
+        memoNumber,
+        skFileId: skFile?.path || skFile?.name,
       });
       onSuccess?.();
       onClose();

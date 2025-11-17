@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Modal } from "../../../../../components/ui/modal/index";
-import { positionService } from "../../../services/organization.service";
-import { Position } from "../../../types/organization.types";
+import { positionsService } from "../../../services/request/positions.service";
+import type { PositionListItem } from "../../../types/organization.api.types";
+import { useFileStore } from '@/stores/fileStore';
 import FileInput from "../shared/field/FileInput";
 
 import Input from "@/components/form/input/InputField";
@@ -11,7 +12,7 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
-  position?: Position | null;
+  position?: PositionListItem | null;
 };
 
 export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Props) => {
@@ -24,6 +25,7 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
     skFile: null as File | null,
   });
   const [isLoading, setIsLoading] = useState(false);
+  const skFile = useFileStore((s) => s.skFile);
 
   useEffect(() => {
     if (position) {
@@ -56,7 +58,7 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!position) return;
-    if (!formData.skFile) {
+    if (!skFile?.name) {
       addNotification({
         variant: 'error',
         title: 'Jabatan tidak diupdate',
@@ -69,16 +71,15 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
     setIsLoading(true);
     try {
       const { directSubordinates, ...rest } = formData;
-      // const payload = {
-      //   ...rest,
-      //   directSubordinates: directSubordinates.split(",").map((s) => s.trim()),
-      // };
       const payload = {
-          ...rest,
-          directSubordinates: directSubordinates.split(",").map((s) => s.trim()),
-          skFile: formData.skFile ? formData.skFile.name : undefined,
+          name: rest.name,
+          grade: rest.grade || null,
+          jobDescription: rest.jobDescription || null,
+          directSubordinates: directSubordinates.split(",").map((s) => s.trim()).filter(Boolean),
+          memoNumber: rest.memoNumber,
+          skFileId: skFile?.path || skFile?.name,
         };
-      await positionService.update(position.id, payload);
+      await positionsService.update(position.id, payload);
       onSuccess();
       onClose();
     } catch (error) {
@@ -236,7 +237,7 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
           </div> */}
           < FileInput
             onChange={handleFileChange}
-            skFileName={formData.skFile ? formData.skFile.name : ''}
+            skFileName={skFile?.name || position?.skFile?.fileName || ''}
           />
           <div className="flex justify-end space-x-4">
             <button
