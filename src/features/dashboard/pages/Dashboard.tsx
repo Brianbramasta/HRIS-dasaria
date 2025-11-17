@@ -9,7 +9,7 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       {/* Top metrics and status section */}
-      <div className="grid grid-cols-1 gap-4 xl:grid-cols-12 md:gap-6">
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-12 md:gap-6 items-center">
         {/* Metrics grid */}
         <div className="xl:col-span-8">
           {(() => {

@@ -1,26 +1,57 @@
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 
-export default function PieChartOne() {
+type PieChartOneProps = {
+  labels: string[];
+  series: number[];
+  colors?: string[];
+  height?: number | string;
+  width?: number | string;
+  donutSize?: string;
+  showLegend?: boolean;
+  totalValue?: number;
+  className?: string;
+};
+
+export default function PieChartOne({
+  labels,
+  series,
+  colors = ["#3641f5", "#1976ff", "#dde9ff"],
+  height = 320,
+  width = "100%",
+  donutSize = "65%",
+  showLegend = false,
+  totalValue,
+  className,
+}: PieChartOneProps) {
   const options: ApexOptions = {
-    colors: ["#3641f5", "#7592ff", "#dde9ff"],
-    labels: ["Desktop", "Mobile", "Tablet"],
+    colors,
+    labels,
     chart: {
       fontFamily: "Outfit, sans-serif",
       type: "donut",
-      width: 445,
-      height: 290,
+      height: typeof height === "number" ? height : undefined,
+      width: typeof width === "number" ? width : undefined,
     },
     plotOptions: {
       pie: {
         donut: {
-          size: "65%",
+          size: donutSize,
           background: "transparent",
           labels: {
             show: true,
             value: {
               show: true,
               offsetY: 0,
+            },
+            total: {
+              show: true,
+              label: "",
+              formatter: () => {
+                if (typeof totalValue === "number") return `${totalValue}`;
+                const sum = series.reduce((a, b) => a + b, 0);
+                return `${sum}`;
+              },
             },
           },
         },
@@ -43,49 +74,49 @@ export default function PieChartOne() {
       enabled: false,
     },
     tooltip: {
-      enabled: false,
+      enabled: true,
+      fillSeriesColor: true,
+      y: {
+        formatter: (val: number) => val.toFixed(2),
+      },
     },
     stroke: {
       show: false,
-      width: 4, // Creates a gap between the series
+      width: 4,
     },
-
     legend: {
-      show: true,
-      position: "bottom",
+      show: showLegend,
+      position: "right",
       horizontalAlign: "center",
       fontFamily: "Outfit",
       fontSize: "14px",
       fontWeight: 400,
       markers: {
-        size: 4,
+        size: 6,
         shape: "circle",
-
         strokeWidth: 0,
       },
       itemMargin: {
         horizontal: 10,
         vertical: 0,
       },
+      onItemClick: {
+        toggleDataSeries: true,
+      },
     },
-
     responsive: [
       {
         breakpoint: 640,
         options: {
-          chart: {
-            width: 370,
-            height: 290,
-          },
+          chart: { height, width },
         },
       },
     ],
   };
-  const series = [45, 65, 25];
   return (
-    <div className="flex justify-center">
-      <div id="chartDarkStyle">
-        <Chart options={options} series={series} type="donut" height={290} />
+    <div className={className ? className : "w-full"}>
+      <div id="chartDarkStyle" className="w-full">
+        <Chart options={options} series={series} type="donut" height={height} width={width} />
       </div>
     </div>
   );
