@@ -183,7 +183,7 @@ export default function DataKaryawanPage() {
   // Define actions untuk DataTable
   const actions: DataTableAction<Karyawan>[] = [
     {
-      label: 'Lihat Detail',
+      label: '',
       icon: <Eye size={16} />,
       onClick: (row) => {
         navigate(`/data-karyawan/${row.id}?mode=view`);
@@ -192,7 +192,7 @@ export default function DataKaryawanPage() {
       color: 'info',
     },
     {
-      label: 'Edit',
+      label: '',
       icon: <Edit2 size={16} />,
       onClick: (row) => {
         navigate(`/data-karyawan/${row.id}?mode=edit`);
@@ -201,7 +201,7 @@ export default function DataKaryawanPage() {
       color: 'warning',
     },
     {
-      label: 'Hapus',
+      label: '',
       icon: <Trash2 size={16} />,
       onClick: (row) => {
         console.log('Delete karyawan:', row);

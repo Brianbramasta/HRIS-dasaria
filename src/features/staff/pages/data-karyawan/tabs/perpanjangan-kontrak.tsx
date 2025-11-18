@@ -74,7 +74,7 @@ export default function PerpanjanganKontrak() {
 
   const actions: DataTableAction<KontrakRow>[] = [
     {
-      label: 'Detail',
+      label: '',
       icon: <Eye size={16} />,
       onClick: (row) => {
         console.log('Lihat detail kontrak:', row);

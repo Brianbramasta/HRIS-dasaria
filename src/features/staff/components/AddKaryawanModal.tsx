@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal } from '../../../components/ui/modal';
 import Button from '../../../components/ui/button/Button';
-import { Plus, Upload } from 'react-feather';
+// import { Plus, Upload } from 'react-feather';
 
 interface AddKaryawanModalProps {
   isOpen: boolean;
@@ -23,10 +23,10 @@ export const AddKaryawanModal: React.FC<AddKaryawanModalProps> = ({
       showCloseButton={true}
       className="max-w-md"
     >
-      <div className="space-y-6 p-8">
+      <div className="space-y-6 p-8 px-[90px]">
         {/* Header */}
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <h2 className="text-3xl font-bold text-[#006896] dark:text-white">
             Tambah Karyawan
           </h2>
         </div>
@@ -36,11 +36,11 @@ export const AddKaryawanModal: React.FC<AddKaryawanModalProps> = ({
           {/* Registrasi Terima Button */}
           <Button
             onClick={onImportFile}
-            variant="primary"
-            className="w-full flex items-center justify-center gap-2 py-3"
+            variant="custom"
+            className="w-full flex items-center justify-center gap-2 py-3 bg-[#006896] text-white"
           >
-            <Plus size={18} />
-            Registrasi Terima
+            <img src="/images/icons/share.svg" alt="Import" className="w-5 h-5" />
+            Bagikan Tautan
           </Button>
 
           {/* Tambah Manual Button */}
@@ -49,7 +49,7 @@ export const AddKaryawanModal: React.FC<AddKaryawanModalProps> = ({
             variant="outline"
             className="w-full flex items-center justify-center gap-2 py-3"
           >
-            <Upload size={18} />
+            <img src="/images/icons/note.svg" alt="Import" className="w-5 h-5" />
             Tambah Manual
           </Button>
         </div>
