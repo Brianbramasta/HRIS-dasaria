@@ -1,6 +1,6 @@
 import React from 'react';
-import { Modal } from '../../../components/ui/modal';
-import Button from '../../../components/ui/button/Button';
+import { Modal } from '../../../../components/ui/modal';
+import Button from '../../../../components/ui/button/Button';
 // import { Plus, Upload } from 'react-feather';
 
 interface AddKaryawanModalProps {

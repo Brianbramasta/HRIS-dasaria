@@ -4,39 +4,25 @@ import { Plus } from 'react-feather';
 import TabPendingReview from './TabPendingReview';
 import TabReviewed from './TabReviewed';
 import Button from '../../../../components/ui/button/Button';
-import ResignKaryawanModal from '../../components/ResignKaryawanModal';
-import { addNotification } from '../../../../stores/notificationStore';
+import ResignKaryawanModal from '../../components/modals/ResignKaryawanModal';
+// import { addNotification } from '../../../../stores/notificationStore';
+import ShareLinkModal from '../../components/modals/sharelink/shareLink';
 
 type TabType = 'pending' | 'reviewed';
 
 export default function PengunduranDiriPage() {
   const [activeTab, setActiveTab] = useState<TabType>('pending');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isShareOpen, setIsShareOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleAddResign = () => {
     setIsModalOpen(true);
   };
 
-  const handleShareLink = async () => {
-    const url = `${window.location.origin}/pengunduran-diri/form`;
-    try {
-      await navigator.clipboard.writeText(url);
-      addNotification({
-        title: 'Tautan disalin',
-        description: 'Link formulir resign berhasil disalin ke clipboard.',
-        variant: 'success',
-      });
-    } catch (err) {
-    console.log('error',err)
-      addNotification({
-        title: 'Gagal menyalin tautan',
-        description: 'Silakan salin manual: ' + url,
-        variant: 'warning',
-      });
-    } finally {
-      setIsModalOpen(false);
-    }
+  const handleShareLink = () => {
+    setIsModalOpen(false);
+    setIsShareOpen(true);
   };
 
   const goToFormResign = () => {
@@ -102,6 +88,14 @@ export default function PengunduranDiriPage() {
         onClose={() => setIsModalOpen(false)}
         onShareLink={handleShareLink}
         onFormResign={goToFormResign}
+      />
+
+      {/* Share Link Modal */}
+      <ShareLinkModal
+        isOpen={isShareOpen}
+        onClose={() => setIsShareOpen(false)}
+        link={`${window.location.origin}/pengunduran-diri/form`}
+        message={'Silakan isi data karyawan melalui tautan berikut'}
       />
     </div>
   );

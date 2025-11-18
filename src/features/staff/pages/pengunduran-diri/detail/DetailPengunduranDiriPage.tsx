@@ -4,6 +4,11 @@ import Button from '../../../../../components/ui/button/Button';
 import { PengunduranDiri } from '../../../types/PengunduranDiri';
 import pengunduranDiriService from '../../../services/pengunduranDiriService';
 import { addNotification } from '../../../../../stores/notificationStore';
+import Label from '../../../../../components/form/Label';
+import Input from '../../../../../components/form/input/InputField';
+import TextArea from '../../../../../components/form/input/TextArea';
+import FileInput from '../../../../../components/form/input/FileInput';
+import { Table, TableHeader, TableBody, TableRow, TableCell } from '../../../../../components/ui/table';
 
 export default function DetailPengunduranDiriPage() {
   const { id } = useParams();
@@ -11,7 +16,31 @@ export default function DetailPengunduranDiriPage() {
   const [data, setData] = useState<PengunduranDiri | null>(null);
   const [loading, setLoading] = useState(false);
   const [tanggalEfektif, setTanggalEfektif] = useState('');
-  const [docs, setDocs] = useState<Array<{ tipeFile: string; namaFile: string }>>([]);
+  const [docs, setDocs] = useState<Array<{ tipeFile: string; namaFile: string }>>([
+    { tipeFile: 'Form Exit Discussion', namaFile: 'Form Exit Discussion.pdf' },
+    { tipeFile: 'Surat Balasan Resign', namaFile: 'Surat Balasan Resign.pdf' },
+    { tipeFile: 'Berita Acara Serah Terima (BAST)', namaFile: 'BAST.pdf' },
+    { tipeFile: 'Form Exit Clearance', namaFile: 'Form Exit Clearance.pdf' },
+    { tipeFile: 'Form Exit Interview', namaFile: 'Form Exit Interview.pdf' },
+    { tipeFile: 'Form Exit Questionnaire', namaFile: 'Form Exit Questionnaire.pdf' },
+    { tipeFile: 'Informasi Garden Leave', namaFile: 'Informasi Garden Leave.pdf' },
+    { tipeFile: 'Paklaring (jika ada)', namaFile: 'Paklaring.pdf' },
+  ]);
+
+  const docTypes = [
+    'Form Exit Discussion',
+    'Surat Balasan Resign',
+    'Berita Acara Serah Terima (BAST)',
+    'Form Exit Clearance',
+    'Form Exit Interview',
+    'Form Exit Questionnaire',
+    'Informasi Garden Leave',
+    'Paklaring (jika ada)',
+  ];
+
+  const [uploadRows, setUploadRows] = useState<{ id: number; type: string; file?: File }[]>([
+    { id: 1, type: '' },
+  ]);
 
   useEffect(() => {
     const fetch = async () => {
@@ -57,9 +86,36 @@ export default function DetailPengunduranDiriPage() {
     }
   };
 
-  const handleUploadDoc = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAddRow = () => {
+    setUploadRows((prev) => {
+      const nextId = prev.length ? Math.max(...prev.map((r) => r.id)) + 1 : 1;
+      return [...prev, { id: nextId, type: '' }];
+    });
+  };
+
+  const handleRemoveRow = (id: number) => {
+    setUploadRows((prev) => prev.filter((r) => r.id !== id));
+  };
+
+  const handleRowTypeChange = (id: number, type: string) => {
+    setUploadRows((prev) => prev.map((r) => (r.id === id ? { ...r, type } : r)));
+  };
+
+  const handleRowFileChange = (id: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) setDocs((prev) => [...prev, { tipeFile: 'Surat', namaFile: file.name }]);
+    setUploadRows((prev) => prev.map((r) => (r.id === id ? { ...r, file } : r)));
+  };
+
+  const handleUploadRows = () => {
+    const newItems = uploadRows
+      .filter((r) => r.type && r.file)
+      .map((r) => ({ tipeFile: r.type, namaFile: r.file!.name }));
+    if (!newItems.length) {
+      addNotification({ title: 'Tidak ada file', description: 'Pilih tipe dan file sebelum upload.', variant: 'warning' });
+      return;
+    }
+    setDocs((prev) => [...newItems, ...prev]);
+    addNotification({ title: 'Berhasil', description: 'File ditambahkan ke daftar secara lokal.', variant: 'success' });
   };
 
   if (loading) {
@@ -76,75 +132,134 @@ export default function DetailPengunduranDiriPage() {
 
       {/* Header card */}
       <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          <div className="flex items-center gap-3">
-            <img src={data.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${data.name}`} className="h-14 w-14 rounded" />
-            <div>
-              <div className="font-semibold">{data.name}</div>
-              <div className="text-sm text-gray-600">ID: {data.idKaryawan}</div>
-            </div>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          {/* Left: Preview image + button */}
+          <div className="flex flex-col items-center gap-3">
+            <img
+              src={
+                data.avatar ||
+                'https://images.unsplash.com/photo-1544511852-3dfd9dcbf5a0?q=80&w=540&auto=format&fit=crop'
+              }
+              alt="Preview"
+              className="h-full w-40 rounded object-cover"
+            />
+            <Button size="sm" variant="primary" onClick={() => addNotification({ title: 'Preview PDF', description: 'Static preview only.', variant: 'info' })}>
+              Preview PDF
+            </Button>
           </div>
-          <div>
-            <div className="text-sm text-gray-600">Tanggal Pengajuan</div>
-            <div className="font-medium">{data.tanggalPengajuan}</div>
-          </div>
-          <div>
-            <div className="text-sm text-gray-600">Posisi</div>
-            <div className="font-medium">{data.posisi || '-'}</div>
-          </div>
-          <div>
-            <div className="text-sm text-gray-600">Departemen</div>
-            <div className="font-medium">{data.department}</div>
-          </div>
+
+          {/* Right: Details */}
           <div className="md:col-span-2">
-            <div className="text-sm text-gray-600">Alasan Pengunduran Diri</div>
-            <textarea readOnly value={data.alasan} className="mt-1 w-full rounded border px-3 py-2" rows={3} />
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <div>
+                <div className="text-sm text-gray-600">Nama Lengkap</div>
+                <div className="font-medium">{data.name}</div>
+              </div>
+              <div>
+                <div className="text-sm text-gray-600">ID Karyawan</div>
+                <div className="font-medium">{data.idKaryawan}</div>
+              </div>
+              <div>
+                <div className="text-sm text-gray-600">Tanggal Pengajuan</div>
+                <div className="font-medium">{data.tanggalPengajuan}</div>
+              </div>
+              <div>
+                <div className="text-sm text-gray-600">Sisa Kontrak</div>
+                <div className="font-medium">5 Bulan</div>
+              </div>
+              <div>
+                <div className="text-sm text-gray-600">Posisi</div>
+                <div className="font-medium">{data.posisi || '-'}</div>
+              </div>
+              <div>
+                <div className="text-sm text-gray-600">Jenis Kontrak</div>
+                <div className="font-medium">PKWT</div>
+              </div>
+            </div>
+            <div className="mt-6">
+              <Label>Alasan Pengunduran Diri</Label>
+              <TextArea placeholder="Enter as description ..." value={data.alasan} disabled rows={3} />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Berkas/Dokumen */}
       <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-        <div className="mb-4 flex items-center justify-between">
-          <div className="font-semibold">Berkas / Dokumen</div>
-          <div className="flex items-center gap-3">
-            <input type="file" onChange={handleUploadDoc} />
-            <Button size="sm" variant="primary">Upload</Button>
-          </div>
+        <div className="font-semibold mb-4">Berkas / Dokumen</div>
+        <div className="space-y-3">
+          {uploadRows.map((row, index) => (
+            <div key={row.id} className="grid grid-cols-1 items-center gap-3 md:grid-cols-[1fr_1fr_auto]">
+              <div>
+                <Label>Tipe File</Label>
+                <select
+                  value={row.type}
+                  onChange={(e) => handleRowTypeChange(row.id, e.target.value)}
+                  className="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-3 text-sm shadow-theme-xs focus:border-brand-300 focus:outline-hidden focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"
+                >
+                  <option value="">Pilih Jenis Dokumen</option>
+                  {docTypes.map((t) => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <Label>Upload file</Label>
+                <div className="grid grid-cols-1 gap-3  items-center">
+                  <FileInput onChange={(e) => handleRowFileChange(row.id, e)} />
+                </div>
+              </div>
+              <div className="self-end md:self-auto">
+                {index === 0 ? (
+                  <Button type="button" size="sm" variant="custom" className="px-3 py-3 rounded-full bg-green-500 text-white" onClick={handleAddRow}>+</Button>
+                ) : (
+                  <Button type="button" size="sm" variant="custom" className="px-3 py-3 rounded-full bg-red-500 text-white" onClick={() => handleRemoveRow(row.id)}>🗑️</Button>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
+        <div className="mt-4 flex justify-end">
+          <Button type="button" size="sm" variant="primary" onClick={handleUploadRows}>Upload</Button>
+        </div>
+      </div>
 
+      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="px-4 py-2 text-left">No.</th>
-                <th className="px-4 py-2 text-left">Tipe File</th>
-                <th className="px-4 py-2 text-left">Nama File</th>
-              </tr>
-            </thead>
-            <tbody>
+          <Table className='border'>
+            <TableHeader>
+              <TableRow className='bg-[#004969] text-white'>
+                <TableCell isHeader className="px-4 py-2 ">No.</TableCell>
+                <TableCell isHeader className="px-4 py-2 text-start ">Tipe File</TableCell>
+                <TableCell isHeader className="px-4 py-2 text-start ">Nama File</TableCell>
+                <TableCell isHeader className="px-4 py-2 text-start ">Action</TableCell>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {docs.length === 0 && (
-                <tr>
-                  <td className="px-4 py-3" colSpan={3}>Belum ada dokumen</td>
-                </tr>
+                <TableRow>
+                  <TableCell className="px-4 py-3" colSpan={4}>Belum ada dokumen</TableCell>
+                </TableRow>
               )}
               {docs.map((d, i) => (
-                <tr key={`${d.namaFile}-${i}`} className="border-t">
-                  <td className="px-4 py-3">{i + 1}</td>
-                  <td className="px-4 py-3">{d.tipeFile}</td>
-                  <td className="px-4 py-3">{d.namaFile}</td>
-                </tr>
+                <TableRow key={`${d.namaFile}-${i}`} className="border-t border-gray-200 dark:border-gray-800">
+                  <TableCell className="px-4 py-3">{i + 1}</TableCell>
+                  <TableCell className="px-4 py-3">{d.tipeFile}</TableCell>
+                  <TableCell className="px-4 py-3">{d.namaFile}</TableCell>
+                  <TableCell className="px-4 py-3">
+                    <Button variant="outline" size="sm" className="btn-danger" onClick={() => setDocs((prev) => prev.filter((_, idx) => idx !== i))}>Hapus</Button>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </div>
 
       {/* Action buttons */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <label className="text-sm">Tanggal Efektif</label>
-          <input type="text" placeholder="contoh: 28 Januari 2025" value={tanggalEfektif} onChange={(e) => setTanggalEfektif(e.target.value)} className="rounded border px-3 py-2" />
+          <Label>Tanggal Efektif</Label>
+          <Input type="text" placeholder="28 Januari 1999" value={tanggalEfektif} onChange={(e) => setTanggalEfektif(e.target.value)} />
         </div>
         <div className="flex items-center gap-3">
           <Button variant="outline" onClick={() => navigate('/pengunduran-diri')}>Save Draft</Button>

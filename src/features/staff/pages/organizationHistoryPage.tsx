@@ -69,8 +69,8 @@ export default function OrganizationHistoryPage() {
         loading={loading}
         filterable
         emptyMessage="Belum ada riwayat organisasi"
-        addButtonLabel="Tambah Riwayat"
-        onAdd={() => {}}
+        // addButtonLabel="Tambah Riwayat"
+        // onAdd={() => {}}
         searchPlaceholder="Cari berdasarkan kata kunci"
         onSearchChange={handleSearchChange}
         onSortChange={handleSortChange}

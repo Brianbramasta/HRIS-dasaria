@@ -7,7 +7,7 @@ import { Karyawan } from '../../../types/Karyawan';
 import useKaryawan from '../../../hooks/useKaryawan';
 // import { Edit2, Trash2, Eye } from 'react-feather';
 import Button from '../../../../../components/ui/button/Button';
-import AddKaryawanModal from '../../../components/AddKaryawanModal';
+import AddKaryawanModal from '../../../components/modals/AddKaryawanModal';
 import { Edit2, Eye, Trash2 } from 'react-feather';
 import ShareLinkModal from '../../../components/modals/sharelink/shareLink';
 
