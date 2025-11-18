@@ -2,7 +2,7 @@ import ExpandCard from '@/features/structure-and-organize/components/card/Expand
 import type { Karyawan } from '@/features/staff/types/Karyawan';
 import { useMemo, useState } from 'react';
 import { DataTable, type DataTableColumn, type DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
-import PelanggaranModal, { type PelanggaranEntry } from '@/features/staff/components/dataKaryawan/modals/dataKaryawan/pelanggaran/PelanggaranModal';
+import PelanggaranModal, { type PelanggaranEntry } from '@/features/staff/components/modals/dataKaryawan/pelanggaran/PelanggaranModal';
 
 interface Props {
   data?: Karyawan;

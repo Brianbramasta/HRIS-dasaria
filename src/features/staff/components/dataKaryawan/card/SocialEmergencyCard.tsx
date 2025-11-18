@@ -4,7 +4,7 @@ import InputField from '@/components/form/input/InputField';
 import Button from '@/components/ui/button/Button';
 import { Edit2 } from 'react-feather';
 import { useModal } from '@/hooks/useModal';
-import EducationalBackgroundModal, { type EducationSocialForm } from '@/features/staff/components/dataKaryawan/modals/dataKaryawan/PersonalInformation/EducationalBackgroundModal';
+import EducationalBackgroundModal, { type EducationSocialForm } from '@/features/staff/components/modals/dataKaryawan/PersonalInformation/EducationalBackgroundModal';
 import type { KaryawanDetailResponse } from '@/features/staff/services/karyawanService';
 
 interface Props {

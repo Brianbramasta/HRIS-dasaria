@@ -6,7 +6,7 @@ import TextArea from '@/components/form/input/TextArea';
 import Button from '@/components/ui/button/Button';
 import { Edit2 } from 'react-feather';
 import { useModal } from '@/hooks/useModal';
-import PersonalDataModal, { type PersonalDataForm } from '@/features/staff/components/dataKaryawan/modals/dataKaryawan/PersonalInformation/PersonalDataModal';
+import PersonalDataModal, { type PersonalDataForm } from '@/features/staff/components/modals/dataKaryawan/PersonalInformation/PersonalDataModal';
 import type { KaryawanDetailResponse } from '@/features/staff/services/karyawanService';
 
 interface Props {

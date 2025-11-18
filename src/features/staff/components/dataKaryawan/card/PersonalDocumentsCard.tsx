@@ -4,7 +4,7 @@ import Button from '@/components/ui/button/Button';
 import { Download, Eye, Edit2 } from 'react-feather';
 import React from 'react';
 import { useModal } from '@/hooks/useModal';
-import PersonalDocumentsModal, { type PersonalDocumentsForm } from '@/features/staff/components/dataKaryawan/modals/dataKaryawan/PersonalInformation/PersonalDocumentsModal';
+import PersonalDocumentsModal, { type PersonalDocumentsForm } from '@/features/staff/components/modals/dataKaryawan/PersonalInformation/PersonalDocumentsModal';
 import type { KaryawanDetailResponse } from '@/features/staff/services/karyawanService';
 
 interface Props {

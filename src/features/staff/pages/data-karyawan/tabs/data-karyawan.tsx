@@ -9,6 +9,7 @@ import useKaryawan from '../../../hooks/useKaryawan';
 import Button from '../../../../../components/ui/button/Button';
 import AddKaryawanModal from '../../../components/AddKaryawanModal';
 import { Edit2, Eye, Trash2 } from 'react-feather';
+import ShareLinkModal from '../../../components/modals/sharelink/shareLink';
 
 export default function DataKaryawanPage() {
   const navigate = useNavigate();
@@ -33,6 +34,8 @@ export default function DataKaryawanPage() {
   const [selectedKaryawan, setSelectedKaryawan] = useState<Karyawan | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/data-karyawan/form` : '/data-karyawan/form';
 
   // Define columns untuk DataTable
   const columns: DataTableColumn<Karyawan>[] = [
@@ -280,9 +283,15 @@ export default function DataKaryawanPage() {
           navigate('/data-karyawan/form');
         }}
         onImportFile={() => {
-          // TODO: handle import file flow (not implemented yet)
           setShowAddModal(false);
+          setShowShareModal(true);
         }}
+      />
+
+      <ShareLinkModal
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        link={shareUrl}
       />
 
       {/* Detail Modal */}

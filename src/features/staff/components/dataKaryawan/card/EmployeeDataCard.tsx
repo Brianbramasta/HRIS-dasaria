@@ -5,7 +5,7 @@ import Select from '@/components/form/Select';
 import Button from '@/components/ui/button/Button';
 import { Edit2 } from 'react-feather';
 import { useModal } from '@/hooks/useModal';
-import EmployeeDataModal, { type EmployeeDataForm } from '@/features/staff/components/dataKaryawan/modals/dataKaryawan/PersonalInformation/EmployeeDataModal';
+import EmployeeDataModal, { type EmployeeDataForm } from '@/features/staff/components/modals/dataKaryawan/PersonalInformation/EmployeeDataModal';
 import type { KaryawanDetailResponse } from '@/features/staff/services/karyawanService';
 
 interface Props {

@@ -3,7 +3,7 @@ import ExpandCard from '@/features/structure-and-organize/components/card/Expand
 import type { Karyawan } from '@/features/staff/types/Karyawan';
 import Button from '@/components/ui/button/Button';
 import { DataTable, type DataTableColumn, type DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
-import ContractModal, { type ContractEntry } from '@/features/staff/components/dataKaryawan/modals/dataKaryawan/contract/ContractModal';
+import ContractModal, { type ContractEntry } from '@/features/staff/components/modals/dataKaryawan/contract/ContractModal';
 
 interface Props {
   data?: Karyawan;
