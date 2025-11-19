@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { divisionsService } from '../services/request/divisions.service';
 import { DivisionListItem, TableFilter } from '../types/organization.api.types';
+import useFilterStore from '../../../stores/filterStore';
 
 interface UseDivisionsReturn {
   divisions: DivisionListItem[];
@@ -33,6 +34,7 @@ export const useDivisions = (): UseDivisionsReturn => {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const filterValue = useFilterStore((s) => s.filters['Divisi'] ?? '');
 
   const fetchDivisions = useCallback(async (filter?: TableFilter) => {
     setLoading(true);
@@ -43,6 +45,7 @@ export const useDivisions = (): UseDivisionsReturn => {
         page,
         pageSize,
         search: filter?.search ?? search,
+        filter: filter?.filter ?? filterValue,
         sortBy: filter?.sortBy ?? sortBy,
         sortOrder: filter?.sortOrder ?? sortOrder,
       });
@@ -55,7 +58,7 @@ export const useDivisions = (): UseDivisionsReturn => {
     } finally {
       setLoading(false);
     }
-  }, [page, pageSize, search, sortBy, sortOrder]);
+  }, [page, pageSize, search, sortBy, sortOrder, filterValue]);
 
   const createDivision = useCallback(async (divisionData: { name: string; directorateId: string; description?: string | null; memoNumber: string; skFileId: string; }) => {
     setLoading(true);
@@ -127,7 +130,7 @@ export const useDivisions = (): UseDivisionsReturn => {
 
   useEffect(() => {
     fetchDivisions();
-  }, [fetchDivisions]);
+  }, [fetchDivisions, filterValue]);
 
   return {
     divisions,

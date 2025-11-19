@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { officesService } from '../services/request/offices.service';
 import { OfficeListItem, TableFilter } from '../types/organization.api.types';
+import useFilterStore from '../../../stores/filterStore';
 
 interface UseOfficesReturn {
   offices: OfficeListItem[];
@@ -33,6 +34,7 @@ export const useOffices = (): UseOfficesReturn => {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const filterValue = useFilterStore((s) => s.filters['Office'] ?? '');
 
   const fetchOffices = useCallback(async (filter?: TableFilter) => {
     setLoading(true);
@@ -43,6 +45,7 @@ export const useOffices = (): UseOfficesReturn => {
         page,
         pageSize,
         search: filter?.search ?? search,
+        filter: filter?.filter ?? filterValue,
         sortBy: filter?.sortBy ?? sortBy,
         sortOrder: filter?.sortOrder ?? sortOrder,
       });
@@ -55,7 +58,7 @@ export const useOffices = (): UseOfficesReturn => {
     } finally {
       setLoading(false);
     }
-  }, [page, pageSize, search, sortBy, sortOrder]);
+  }, [page, pageSize, search, sortBy, sortOrder, filterValue]);
 
   const createOffice = useCallback(async (officeData: { companyId: string; name: string; address?: string | null; description?: string | null; employeeCount?: number | null; memoNumber: string; skFileId: string; }) => {
     setLoading(true);
@@ -127,7 +130,7 @@ export const useOffices = (): UseOfficesReturn => {
 
   useEffect(() => {
     fetchOffices();
-  }, [fetchOffices]);
+  }, [fetchOffices, filterValue]);
 
   return {
     offices,

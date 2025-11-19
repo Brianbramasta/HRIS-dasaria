@@ -4,6 +4,7 @@ import {
   CompanyListItem,
 } from '../types/organization.api.types';
 import { companiesService } from '../services/request/companies.service';
+import useFilterStore from '../../../stores/filterStore';
 
 interface UseCompaniesReturn {
   companies: CompanyListItem[];
@@ -72,6 +73,7 @@ export const useCompanies = (): UseCompaniesReturn => {
   const [search, setSearch] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const filterValue = useFilterStore((s) => s.filters['Perusahaan'] ?? '');
 
   const fetchCompanies = useCallback(async (filter?: Partial<TableFilter>) => {
     setLoading(true);
@@ -80,6 +82,7 @@ export const useCompanies = (): UseCompaniesReturn => {
     try {
       const response = await companiesService.getList({
         search: filter?.search ?? search,
+        filter: filter?.filter ?? filterValue,
         sortBy: filter?.sortBy ?? sortBy,
         sortOrder: filter?.sortOrder ?? sortOrder,
         page: filter?.page ?? page,
@@ -101,7 +104,7 @@ export const useCompanies = (): UseCompaniesReturn => {
     } finally {
       setLoading(false);
     }
-  }, [search, sortBy, sortOrder, page, pageSize]);
+  }, [search, sortBy, sortOrder, page, pageSize, filterValue]);
 
   const createCompany = useCallback(async (payload: {
     name: string;
@@ -189,7 +192,7 @@ export const useCompanies = (): UseCompaniesReturn => {
   // Initialize data on mount
   useEffect(() => {
     fetchCompanies();
-  }, []);
+  }, [filterValue]);
 
   return {
     companies,

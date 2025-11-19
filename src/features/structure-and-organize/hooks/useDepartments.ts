@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { departmentsService } from '../services/request/departments.service';
 import { DepartmentListItem, TableFilter } from '../types/organization.api.types';
+import useFilterStore from '../../../stores/filterStore';
 
 interface UseDepartmentsReturn {
   departments: DepartmentListItem[];
@@ -33,6 +34,7 @@ export const useDepartments = (): UseDepartmentsReturn => {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const filterValue = useFilterStore((s) => s.filters['Departemen'] ?? '');
 
   const fetchDepartments = useCallback(async (filter?: TableFilter) => {
     setLoading(true);
@@ -43,6 +45,7 @@ export const useDepartments = (): UseDepartmentsReturn => {
         page,
         pageSize,
         search: filter?.search ?? search,
+        filter: filter?.filter ?? filterValue,
         sortBy: filter?.sortBy ?? sortBy,
         sortOrder: filter?.sortOrder ?? sortOrder,
       });
@@ -55,7 +58,7 @@ export const useDepartments = (): UseDepartmentsReturn => {
     } finally {
       setLoading(false);
     }
-  }, [page, pageSize, search, sortBy, sortOrder]);
+  }, [page, pageSize, search, sortBy, sortOrder, filterValue]);
 
   const createDepartment = useCallback(async (departmentData: { name: string; divisionId: string; description?: string | null; memoNumber: string; skFileId: string; }) => {
     setLoading(true);
@@ -127,7 +130,7 @@ export const useDepartments = (): UseDepartmentsReturn => {
 
   useEffect(() => {
     fetchDepartments();
-  }, [fetchDepartments]);
+  }, [fetchDepartments, filterValue]);
 
   return {
     departments,

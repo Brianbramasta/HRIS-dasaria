@@ -4,6 +4,7 @@ import {
   BusinessLineListItem,
 } from '../types/organization.api.types';
 import { businessLinesService } from '../services/request/business-lines.service';
+import useFilterStore from '../../../stores/filterStore';
 
 interface UseBusinessLinesReturn {
   businessLines: BusinessLineListItem[];
@@ -40,6 +41,7 @@ export const useBusinessLines = (): UseBusinessLinesReturn => {
   const [search, setSearch] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const filterValue = useFilterStore((s) => s.filters['Lini Bisnis'] ?? '');
 
   const fetchBusinessLines = useCallback(async (filter?: Partial<TableFilter>) => {
     setLoading(true);
@@ -48,6 +50,7 @@ export const useBusinessLines = (): UseBusinessLinesReturn => {
     try {
       const response = await businessLinesService.getList({
         search: filter?.search ?? search,
+        filter: filter?.filter ?? filterValue,
         sortBy: filter?.sortBy ?? sortBy,
         sortOrder: filter?.sortOrder ?? sortOrder,
         page: filter?.page ?? page,
@@ -68,7 +71,7 @@ export const useBusinessLines = (): UseBusinessLinesReturn => {
     } finally {
       setLoading(false);
     }
-  }, [search, sortBy, sortOrder, page, pageSize]);
+  }, [search, sortBy, sortOrder, page, pageSize, filterValue]);
 
   const createBusinessLine = useCallback(async (payload: { name: string; description?: string | null; memoNumber: string; skFileId: string; }): Promise<BusinessLineListItem | null> => {
     setLoading(true);
@@ -124,7 +127,7 @@ export const useBusinessLines = (): UseBusinessLinesReturn => {
   // Initialize data on mount
   useEffect(() => {
     fetchBusinessLines();
-  }, []);
+  }, [filterValue]);
 
   return {
     businessLines,

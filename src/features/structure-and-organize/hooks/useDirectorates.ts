@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { directoratesService } from '../services/request/directorates.service';
 import { DirectorateListItem, TableFilter } from '../types/organization.api.types';
+import useFilterStore from '../../../stores/filterStore';
 
 interface UseDirectoratesReturn {
   directorates: DirectorateListItem[];
@@ -33,6 +34,7 @@ export const useDirectorates = (): UseDirectoratesReturn => {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const filterValue = useFilterStore((s) => s.filters['Direktorat'] ?? '');
 
   const fetchDirectorates = useCallback(async (filter?: TableFilter) => {
     setLoading(true);
@@ -43,6 +45,7 @@ export const useDirectorates = (): UseDirectoratesReturn => {
         page,
         pageSize,
         search: filter?.search ?? search,
+        filter: filter?.filter ?? filterValue,
         sortBy: filter?.sortBy ?? sortBy,
         sortOrder: filter?.sortOrder ?? sortOrder,
       });
@@ -55,7 +58,7 @@ export const useDirectorates = (): UseDirectoratesReturn => {
     } finally {
       setLoading(false);
     }
-  }, [page, pageSize, search, sortBy, sortOrder]);
+  }, [page, pageSize, search, sortBy, sortOrder, filterValue]);
 
   const createDirectorate = useCallback(async (directorateData: { name: string; description?: string | null; memoNumber: string; skFileId: string; }) => {
     setLoading(true);
@@ -127,7 +130,7 @@ export const useDirectorates = (): UseDirectoratesReturn => {
 
   useEffect(() => {
     fetchDirectorates();
-  }, [fetchDirectorates]);
+  }, [fetchDirectorates, filterValue]);
 
   return {
     directorates,

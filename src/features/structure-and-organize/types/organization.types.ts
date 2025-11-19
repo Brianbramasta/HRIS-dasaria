@@ -109,6 +109,7 @@ export interface TableColumn<T> {
 
 export interface TableFilter {
   search: string;
+  filter?: string;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
   page: number;

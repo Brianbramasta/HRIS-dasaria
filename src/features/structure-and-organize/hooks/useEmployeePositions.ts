@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { employeePositionsService } from '../services/request/employee-positions.service';
 import { EmployeePositionListItem, TableFilter } from '../types/organization.api.types';
+import useFilterStore from '../../../stores/filterStore';
 
 interface UseEmployeePositionsReturn {
   employeePositions: EmployeePositionListItem[];
@@ -53,6 +54,7 @@ export const useEmployeePositions = (): UseEmployeePositionsReturn => {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('employeeName');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const filterValue = useFilterStore((s) => s.filters['Posisi Pegawai'] ?? '');
 
   const fetchEmployeePositions = useCallback(async (filter?: TableFilter) => {
     setLoading(true);
@@ -63,6 +65,7 @@ export const useEmployeePositions = (): UseEmployeePositionsReturn => {
         page,
         pageSize,
         search: filter?.search ?? search,
+        filter: filter?.filter ?? filterValue,
         sortBy: filter?.sortBy ?? sortBy,
         sortOrder: filter?.sortOrder ?? sortOrder,
       });
@@ -75,7 +78,7 @@ export const useEmployeePositions = (): UseEmployeePositionsReturn => {
     } finally {
       setLoading(false);
     }
-  }, [page, pageSize, search, sortBy, sortOrder]);
+  }, [page, pageSize, search, sortBy, sortOrder, filterValue]);
 
   const createEmployeePosition = useCallback(async (employeePositionData: {
     name: string;
@@ -167,7 +170,7 @@ export const useEmployeePositions = (): UseEmployeePositionsReturn => {
 
   useEffect(() => {
     fetchEmployeePositions();
-  }, [fetchEmployeePositions]);
+  }, [fetchEmployeePositions, filterValue]);
 
   return {
     employeePositions,

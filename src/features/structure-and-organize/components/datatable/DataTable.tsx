@@ -6,6 +6,7 @@ import Button from '../../../../components/ui/button/Button';
 import {Modal} from '../../../../components/ui/modal/index';
 import { Plus, Download } from 'react-feather';
 import { FilterLineIcon } from '../../../../icons/index';
+import { setFilterFor } from '../../../../stores/filterStore';
 
 export interface DataTableColumn<T = any> {
   id: string;
@@ -52,6 +53,7 @@ interface DataTableProps<T = any> {
   onColumnVisibilityChange?: (visibleColumnIds: string[]) => void;
   // Use resetKey to force resetting internal filters when parent context changes (e.g., tab switch)
   resetKey?: string;
+  onFilter?: (filter: string) => void;
 }
 
 export function DataTable<T = any>({
@@ -92,6 +94,7 @@ export function DataTable<T = any>({
     columns.map((c) => c.id)
   );
   const [exportSearchTerm, setExportSearchTerm] = useState('');
+  const [modalFilterTerm, setModalFilterTerm] = useState('');
   const navigate = useNavigate();
 
   // Reset visible columns when resetKey changes (e.g., on tab switch)
@@ -336,7 +339,7 @@ export function DataTable<T = any>({
         />
       </div>
       
-      <Modal className="max-w-md" isOpen={isFilterModalOpen} onClose={() => setFilterModalOpen(false)} >
+      <Modal className="max-w-md" isOpen={isFilterModalOpen} onClose={() => { setFilterModalOpen(false); setModalFilterTerm(''); }} >
         <div className="p-6">
           <div className="mb-4">
             <div className='text-center'>
@@ -374,11 +377,9 @@ export function DataTable<T = any>({
               <input
                 type="text"
                 placeholder="Cari berdasarkan kata kunci"
-                value={searchTerm}
+                value={modalFilterTerm}
                 onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  setPage(0);
-                  onSearchChange?.(e.target.value);
+                  setModalFilterTerm(e.target.value);
                 }}
                 className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 pl-10 text-sm text-gray-900 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-brand-400"
               />
@@ -390,8 +391,18 @@ export function DataTable<T = any>({
             </div>
           </div>
           <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setFilterModalOpen(false)}>Close</Button>
-            <Button variant="primary" onClick={() => setFilterModalOpen(false)}>Search</Button>
+            <Button variant="outline" onClick={() => { setFilterModalOpen(false); setModalFilterTerm(''); }}>Close</Button>
+            <Button
+              variant="primary"
+              onClick={() => {
+                const key = title ?? 'global';
+                setFilterFor(key, modalFilterTerm);
+                setFilterModalOpen(false);
+                setModalFilterTerm('');
+              }}
+            >
+              Search
+            </Button>
           </div>
         </div>
       </Modal>
