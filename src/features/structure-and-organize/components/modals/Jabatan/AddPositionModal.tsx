@@ -4,6 +4,7 @@ import { positionsService } from "../../../services/request/positions.service";
 import { useFileStore } from '@/stores/fileStore';
 import FileInput from "../shared/field/FileInput";
 import Input from "@/components/form/input/InputField";
+import Select from "@/components/form/Select";
 import { addNotification } from "@/stores/notificationStore";
 
 
@@ -25,6 +26,7 @@ export const AddPositionModal = ({ isOpen, onClose, onSuccess }: Props) => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const skFile = useFileStore((s) => s.skFile);
+  const gradeOptions = Array.from({ length: 10 }, (_, i) => ({ value: `D${i}`, label: `D${i}` }));
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -109,16 +111,13 @@ export const AddPositionModal = ({ isOpen, onClose, onSuccess }: Props) => {
             >
               Grade
             </label>
-            <Input
+            <Select
+              options={gradeOptions}
+              placeholder="Pilih Grade"
+              onChange={(value) => setFormData((prev) => ({ ...prev, grade: value }))}
+              className=""
+              defaultValue={formData.grade}
               required
-              type="text"
-              name="grade"
-              id="grade"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-              placeholder="DO"
-              value={formData.grade}
-              onChange={handleInputChange}
-              
             />
           </div>
           <div>
