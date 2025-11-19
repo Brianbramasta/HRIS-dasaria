@@ -141,7 +141,7 @@ export default function DataKaryawanPage() {
       label: 'Departement',
       minWidth: 130,
       sortable: true,
-      format: (value, row) => row.departement || row.department || '-',
+      format: (_, row) => row.departement || row.department || '-',
     },{
       id:'divisi',
       label: 'Divisi',

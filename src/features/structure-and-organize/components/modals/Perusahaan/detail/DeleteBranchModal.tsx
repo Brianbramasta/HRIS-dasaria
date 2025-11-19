@@ -16,7 +16,7 @@ const DeleteBranchModal: React.FC<DeleteBranchModalProps> = ({ isOpen, onClose, 
     if (!branch) return;
     setSubmitting(true);
     try {
-      await officeService.delete(branch.id);
+      await officeService.delete(branch.id, { memoNumber: branch.memoNumber || '', skFileId: branch.skFile?.fileName || '' });
       onSuccess?.();
       onClose();
     } catch (err) {

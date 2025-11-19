@@ -127,7 +127,7 @@ export const useBusinessLines = (): UseBusinessLinesReturn => {
   // Initialize data on mount
   useEffect(() => {
     fetchBusinessLines();
-  }, [filterValue]);
+  }, [fetchBusinessLines, filterValue]);
 
   return {
     businessLines,

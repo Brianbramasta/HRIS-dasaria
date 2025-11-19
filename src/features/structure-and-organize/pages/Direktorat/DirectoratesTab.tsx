@@ -57,7 +57,7 @@ export default function DirectoratesTab({ resetKey }: Props) {
     URL.revokeObjectURL(url);
   };
 
-  React.useEffect(() => { fetchDirectorates(); }, []);
+  React.useEffect(() => { fetchDirectorates(); }, [fetchDirectorates]);
 
   return (
     <>

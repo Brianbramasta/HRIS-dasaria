@@ -89,7 +89,7 @@ export default function EmployeePositionsTab({ resetKey }: Props) {
     URL.revokeObjectURL(url);
   };
 
-  React.useEffect(() => { fetchEmployeePositions(); }, []);
+  React.useEffect(() => { fetchEmployeePositions(); }, [fetchEmployeePositions]);
 
   return (
     <>

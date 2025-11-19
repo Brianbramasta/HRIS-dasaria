@@ -59,7 +59,7 @@ export default function DivisionsTab({ resetKey }: Props) {
     URL.revokeObjectURL(url);
   };
 
-  React.useEffect(() => { fetchDivisions(); }, []);
+  React.useEffect(() => { fetchDivisions(); }, [fetchDivisions]);
 
   return (
     <>

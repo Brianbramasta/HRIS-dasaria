@@ -25,7 +25,7 @@ export default function PesonalInformationTab({ data }: Props) {
       try {
         setLoading(true);
         setError(null);
-        const res = await karyawanService.getKaryawanById(data.karyawan.id);
+        const res = await karyawanService.getKaryawanById(data.id);
         if (!active) return;
         setDetail(res.data);
       } catch (err) {

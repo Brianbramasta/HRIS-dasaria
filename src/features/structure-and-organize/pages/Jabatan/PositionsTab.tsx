@@ -79,7 +79,7 @@ export default function PositionsTab({ resetKey }: Props) {
     URL.revokeObjectURL(url);
   };
 
-  React.useEffect(() => { fetchPositions(); }, []);
+  React.useEffect(() => { fetchPositions(); }, [fetchPositions]);
 
   return (
     <>

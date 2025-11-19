@@ -4,7 +4,7 @@ import Button from '@/components/ui/button/Button';
 import { Download, Eye, Edit2 } from 'react-feather';
 import React from 'react';
 import { useModal } from '@/hooks/useModal';
-import PersonalDocumentsModal, { type PersonalDocumentsForm } from '@/features/staff/components/modals/dataKaryawan/PersonalInformation/PersonalDocumentsModal';
+import PersonalDocumentsModal from '@/features/staff/components/modals/dataKaryawan/PersonalInformation/PersonalDocumentsModal';
 import type { KaryawanDetailResponse } from '@/features/staff/services/karyawanService';
 
 interface Props {
@@ -77,7 +77,7 @@ export default function PersonalDocumentsCard({ documents }: Props) {
 
       <PersonalDocumentsModal
         isOpen={isOpen}
-        initialData={{ tipeFile: '', uploadFileName: '', rows: [] } as PersonalDocumentsForm}
+        initialData={{ tipeFile: '', pendingRows: [{ tipeFile: '', fileName: '' }], rows: [] }}
         onClose={closeModal}
         onSubmit={(payload) => {
           // sinkronkan ke tabel dummy di card untuk preview

@@ -50,7 +50,7 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
         setLoading(false);
       }
     },
-    [page, limit, filterValue]
+    [page, limit, filterValue, initialPage, initialLimit]
   );
 
   useEffect(() => {
@@ -77,7 +77,6 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan saat membuat karyawan';
         setError(errorMessage);
-        throw err;
       } finally {
         setLoading(false);
       }
@@ -103,7 +102,6 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan saat memperbarui karyawan';
         setError(errorMessage);
-        throw err;
       } finally {
         setLoading(false);
       }
@@ -128,7 +126,6 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan saat menghapus karyawan';
         setError(errorMessage);
-        throw err;
       } finally {
         setLoading(false);
       }

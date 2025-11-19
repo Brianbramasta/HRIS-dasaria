@@ -14,7 +14,7 @@ export default function PieChart() {
       <PageBreadcrumb pageTitle="Pie Chart" />
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
         <ComponentCard title="Bar Chart 1">
-          <PieChartOne />
+          <PieChartOne labels={["A", "B", "C"]} series={[30, 40, 30]} />
         </ComponentCard>
         <ComponentCard title="Bar Chart 2">
           <PieChartTwo />

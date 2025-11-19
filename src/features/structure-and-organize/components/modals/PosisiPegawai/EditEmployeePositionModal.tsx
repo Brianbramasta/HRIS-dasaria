@@ -27,10 +27,10 @@ const EditEmployeePositionModal: React.FC<EditEmployeePositionModalProps> = ({ i
   useEffect(() => {
     if (employeePosition) {
       setName(employeePosition.name);
-      setJabatan(employeePosition.positionId);
-      setDirektorat(employeePosition.directorateId);
-      setDivisi(employeePosition.divisionId);
-      setDepartemen(employeePosition.departmentId);
+      setJabatan(employeePosition.positionId || '');
+      setDirektorat(employeePosition.directorateId || '');
+      setDivisi(employeePosition.divisionId || '');
+      setDepartemen(employeePosition.departmentId || '');
       setMemoNumber((employeePosition as any).memoNumber || '');
       setDescription((employeePosition as any).description || '');
     }

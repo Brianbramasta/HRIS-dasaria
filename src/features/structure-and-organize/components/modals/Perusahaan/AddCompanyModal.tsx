@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { companyService, businessLineService } from '../../../services/organization.service';
-import type { Company, BusinessLine } from '../../../types/organization.types';
+import type { CompanyListItem, BusinessLineListItem } from '../../../types/organization.api.types';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 import FileInput from '@/components/form/input/FileInput';
@@ -13,13 +13,13 @@ import { PlusIcon, TrashBinIcon } from '@/icons';
 interface AddCompanyModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess?: (created: Company) => void;
+  onSuccess?: (created: CompanyListItem) => void;
 }
 
 const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSuccess }) => {
   const [name, setName] = useState('');
   const [businessLineId, setBusinessLineId] = useState('');
-  const [businessLines, setBusinessLines] = useState<BusinessLine[]>([]);
+  const [businessLines, setBusinessLines] = useState<BusinessLineListItem[]>([]);
   const [description, setDescription] = useState('');
   // Dokumen dinamis: minimal satu baris wajib dengan file
   const [documents, setDocuments] = useState<{ name: string; number: string; file: File | null }[]>([
@@ -32,7 +32,7 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
     // load business lines for selection
     (async () => {
       try {
-        const res = await businessLineService.getAll({ search: '', page: 1, pageSize: 100, sortBy: 'name', sortOrder: 'asc' });
+        const res = await businessLineService.getList({ search: '', page: 1, pageSize: 100, sortBy: 'name', sortOrder: 'asc' });
         setBusinessLines(res.data);
       } catch (e) {
         console.error('Failed to load business lines', e);
@@ -76,16 +76,14 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
     }
     setSubmitting(true);
     try {
-      const details = documents
-        .map((d) => [d.name.trim(), d.number.trim(), d.file?.name || ''].filter(Boolean).join(' | '))
-        .filter(Boolean)
-        .join(' ; ');
-
+      const memoNumber = documents[0].number.trim();
+      const skFileId = documents[0].file?.name || '';
       const created = await companyService.create({
         name: name.trim(),
         description: description.trim(),
         businessLineId: businessLineId || '',
-        details: details,
+        memoNumber,
+        skFileId,
       });
       onSuccess?.(created);
       // reset and close

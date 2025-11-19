@@ -50,12 +50,12 @@ const AddBranchModal: React.FC<AddBranchModalProps> = ({ isOpen, onClose, compan
       try {
         // load company name
         if (companyId) {
-          const c = await companyService.getById(companyId);
-          setCompanyName(c?.name || '');
+          const c = await companyService.getDetail(companyId);
+          setCompanyName(c.company?.name || '');
         }
 
         // load offices as branch options (prefer same company offices)
-        const res = await officeService.getAll({ search: '', page: 1, pageSize: 200, sortBy: 'name', sortOrder: 'asc' });
+        const res = await officeService.getList({ search: '', page: 1, pageSize: 200, sortBy: 'name', sortOrder: 'asc' });
         const all = res.data || [];
         // prefer offices of same company
         const same = all.filter((o: any) => String(o.companyId) === String(companyId));

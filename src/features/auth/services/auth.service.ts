@@ -14,46 +14,27 @@ class AuthService {
 
   // Login user
   async login(data: LoginRequest): Promise<LoginResponse> {
-    try {
-      const response = await apiService.post<LoginResponse>(`${this.basePath}/login`, data);
-      
-      // Simpan tokens ke localStorage
-      setAuthTokens(response.data.accessToken, response.data.refreshToken);
-      
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+    const response = await apiService.post<LoginResponse>(`${this.basePath}/login`, data);
+    setAuthTokens(response.data.accessToken, response.data.refreshToken);
+    return response.data;
   }
 
   // Forgot password
   async forgotPassword(data: ForgotPasswordRequest): Promise<ForgotPasswordResponse> {
-    try {
-      const response = await apiService.post<ForgotPasswordResponse>(`${this.basePath}/forgot-password`, data);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+    const response = await apiService.post<ForgotPasswordResponse>(`${this.basePath}/forgot-password`, data);
+    return response.data;
   }
 
   // Reset password
   async resetPassword(data: ResetPasswordRequest): Promise<ResetPasswordResponse> {
-    try {
-      const response = await apiService.post<ResetPasswordResponse>(`${this.basePath}/reset-password`, data);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+    const response = await apiService.post<ResetPasswordResponse>(`${this.basePath}/reset-password`, data);
+    return response.data;
   }
 
   // Get current user
   async getCurrentUser(): Promise<User> {
-    try {
-      const response = await apiService.get<{ user: User }>(`${this.basePath}/me`);
-      return response.data.user;
-    } catch (error) {
-      throw error;
-    }
+    const response = await apiService.get<{ user: User }>(`${this.basePath}/me`);
+    return response.data.user;
   }
 
   // Logout user
@@ -89,26 +70,18 @@ class AuthService {
 
   // Verify email
   async verifyEmail(token: string): Promise<{ message: string }> {
-    try {
-      const response = await apiService.post<{ message: string }>(`${this.basePath}/verify-email`, {
-        token,
-      });
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+    const response = await apiService.post<{ message: string }>(`${this.basePath}/verify-email`, {
+      token,
+    });
+    return response.data;
   }
 
   // Resend verification email
   async resendVerificationEmail(email: string): Promise<{ message: string }> {
-    try {
-      const response = await apiService.post<{ message: string }>(`${this.basePath}/resend-verification`, {
-        email,
-      });
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+    const response = await apiService.post<{ message: string }>(`${this.basePath}/resend-verification`, {
+      email,
+    });
+    return response.data;
   }
 }
 

@@ -2,7 +2,6 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { startLoading, stopLoading } from '../stores/loadingStore';
 
 // Interface untuk response API
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface ApiResponse<T = any> {
   success: boolean;
   message: string;
@@ -136,19 +135,16 @@ class ApiService {
     return response.data;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
     const response = await this.instance.post(url, data, config);
     return response.data;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public async put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
     const response = await this.instance.put(url, data, config);
     return response.data;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public async patch<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
     const response = await this.instance.patch(url, data, config);
     // const response = {data:{}}
@@ -161,7 +157,6 @@ class ApiService {
   }
 
   // Utility method untuk upload file
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public async uploadFile<T>(url: string, file: File, additionalData?: Record<string, any>): Promise<ApiResponse<T>> {
     const formData = new FormData();
     formData.append('file', file);

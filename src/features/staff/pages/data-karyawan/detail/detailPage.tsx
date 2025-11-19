@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import TabWithUnderline from '../../../../../components/ui/tabs/TabWithUnderline';
 // import Button from '../../../../../components/ui/button/Button';
@@ -122,7 +122,7 @@ export default function DetailKaryawanPage() {
             case 'organization-history':
               return <OrganizationHistoryTab data={data} isEditable={isEditable} />;
             case 'pelanggaran':
-              return <PelanggaranTab data={data} isEditable={isEditable} />;
+              return <PelanggaranTab />;
             case 'story-payroll':
               return <StoryPayrollTab data={data} isEditable={isEditable} />;
             default:

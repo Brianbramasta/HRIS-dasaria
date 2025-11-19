@@ -1,6 +1,5 @@
 
 
-import React from 'react';
 import { DataTable, DataTableColumn, DataTableAction } from '../../../../structure-and-organize/components/datatable/DataTable';
 import { Eye } from 'react-feather';
 import Tabs from '../../../../structure-and-organize/components/Tabs';

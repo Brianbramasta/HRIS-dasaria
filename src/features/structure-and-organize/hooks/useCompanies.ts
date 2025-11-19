@@ -192,7 +192,7 @@ export const useCompanies = (): UseCompaniesReturn => {
   // Initialize data on mount
   useEffect(() => {
     fetchCompanies();
-  }, [filterValue]);
+  }, [fetchCompanies, filterValue]);
 
   return {
     companies,

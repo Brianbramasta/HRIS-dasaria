@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import ExpandCard from '@/features/structure-and-organize/components/card/ExpandCard';
 import type { Karyawan } from '@/features/staff/types/Karyawan';
 import Button from '@/components/ui/button/Button';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { companyService } from '../../../services/organization.service';
-import type { Company } from '../../../types/organization.types';
+import type { CompanyListItem } from '../../../types/organization.api.types';
 import Input from '@/components/form/input/InputField';
 import { addNotification } from '@/stores/notificationStore';
 import FileInput from '../shared/field/FileInput';
@@ -11,7 +11,7 @@ import ModalDelete from '../shared/modal/ModalDelete';
 interface DeleteCompanyModalProps {
   isOpen: boolean;
   onClose: () => void;
-  company?: Company | null;
+  company?: CompanyListItem | null;
   onSuccess?: () => void;
 }
 
@@ -37,7 +37,7 @@ const DeleteCompanyModal: React.FC<DeleteCompanyModalProps> = ({ isOpen, onClose
         }
     setSubmitting(true);
     try {
-      await companyService.delete(company.id);
+      await companyService.delete(company.id, { memoNumber: company.memoNumber || '', skFileId: skFileName });
       onSuccess?.();
       onClose();
     } catch (err) {
@@ -59,7 +59,7 @@ const DeleteCompanyModal: React.FC<DeleteCompanyModalProps> = ({ isOpen, onClose
           <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
           <Input
             type="text"
-            value={(company?.details || '').split(' | ')[1] || ''}
+            value={company?.memoNumber || ''}
             className="w-full rounded-xl border border-gray-300 bg-gray-100 px-4 py-3"
           />
         </div>

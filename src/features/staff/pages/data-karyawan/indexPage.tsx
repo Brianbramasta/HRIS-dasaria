@@ -1,4 +1,3 @@
-import React from 'react';
 import { useLocation } from 'react-router-dom';
 import Tabs from '../../../structure-and-organize/components/Tabs';
 import DataKaryawanPage from './tabs/data-karyawan';

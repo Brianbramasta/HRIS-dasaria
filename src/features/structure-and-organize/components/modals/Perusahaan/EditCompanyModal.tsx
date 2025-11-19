@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { companyService, businessLineService } from '../../../services/organization.service';
-import type { Company, BusinessLine } from '../../../types/organization.types';
+import type { CompanyListItem, BusinessLineListItem } from '../../../types/organization.api.types';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 import FileInput from '../shared/field/FileInput';
@@ -10,18 +10,17 @@ import ModalAddEdit from '../shared/modal/modalAddEdit';
 interface EditCompanyModalProps {
   isOpen: boolean;
   onClose: () => void;
-  company?: Company | null;
-  onSuccess?: (updated: Company) => void;
+  company?: CompanyListItem | null;
+  onSuccess?: (updated: CompanyListItem) => void;
 }
 
 const EditCompanyModal: React.FC<EditCompanyModalProps> = ({ isOpen, onClose, company, onSuccess }) => {
   const [name, setName] = useState('');
   const [businessLineId, setBusinessLineId] = useState('');
-  const [businessLines, setBusinessLines] = useState<BusinessLine[]>([]);
+  const [businessLines, setBusinessLines] = useState<BusinessLineListItem[]>([]);
   const [description, setDescription] = useState('');
 
-  // Document fields parsed from details
-  const [docName, setDocName] = useState('');
+  // Document fields
   const [docNumber, setDocNumber] = useState('');
   const [skFile, setSkFile] = useState<File | null>(null);
 
@@ -30,7 +29,7 @@ const EditCompanyModal: React.FC<EditCompanyModalProps> = ({ isOpen, onClose, co
   useEffect(() => {
     (async () => {
       try {
-        const res = await businessLineService.getAll({ search: '', page: 1, pageSize: 100, sortBy: 'name', sortOrder: 'asc' });
+        const res = await businessLineService.getList({ search: '', page: 1, pageSize: 100, sortBy: 'name', sortOrder: 'asc' });
         setBusinessLines(res.data);
       } catch (e) {
         console.error('Failed to load business lines', e);
@@ -43,11 +42,9 @@ const EditCompanyModal: React.FC<EditCompanyModalProps> = ({ isOpen, onClose, co
       setName(company.name || '');
       setBusinessLineId(company.businessLineId || '');
       setDescription(company.description || '');
-      // Parse details into doc fields: "name | number | filename"
-      const parts = (company.details || '').split(' | ');
-      setDocName(parts[0] || '');
-      setDocNumber(parts[1] || '');
-      // keep skFile null until new upload; existing filename retained via details
+      // Initialize doc fields from API fields
+      setDocNumber(company.memoNumber || '');
+      // keep skFile null until new upload
       setSkFile(null);
     }
   }, [company]);
@@ -61,16 +58,13 @@ const EditCompanyModal: React.FC<EditCompanyModalProps> = ({ isOpen, onClose, co
     if (!company) return;
     setSubmitting(true);
     try {
-      const existingFileName = (company.details || '').split(' | ')[2] || '';
-      const details = [docName.trim(), docNumber.trim(), skFile?.name || existingFileName]
-        .filter(Boolean)
-        .join(' | ');
-
+      const skFileId = skFile?.name || company.skFile?.fileName || '';
       const updated = await companyService.update(company.id, {
         name: name.trim(),
         description: description.trim(),
-        businessLineId: businessLineId || company.businessLineId,
-        details,
+        businessLineId: businessLineId || company.businessLineId || undefined,
+        memoNumber: docNumber.trim(),
+        skFileId,
       });
       onSuccess?.(updated);
       onClose();

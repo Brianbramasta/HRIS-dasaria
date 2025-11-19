@@ -4,7 +4,7 @@ import DataTable, { DataTableColumn, DataTableAction } from '../../components/da
 import { /*Edit,*/ Trash } from 'react-feather';
 import { useCompanies } from '../../index';
 import type { CompanyRow } from '../../types/organizationTable.types';
-import type { Company } from '../../types/organization.types';
+import type { CompanyListItem } from '../../types/organization.api.types';
 import AddCompanyModal from '../../components/modals/Perusahaan/AddCompanyModal';
 import EditCompanyModal from '../../components/modals/Perusahaan/EditCompanyModal';
 import DeleteCompanyModal from '../../components/modals/Perusahaan/DeleteCompanyModal';
@@ -31,7 +31,7 @@ export default function CompaniesTab({ resetKey }: Props) {
   const [isAddOpen, setAddOpen] = React.useState(false);
   const [isEditOpen, setEditOpen] = React.useState(false);
   const [isDeleteOpen, setDeleteOpen] = React.useState(false);
-  const [selectedCompany, setSelectedCompany] = React.useState<Company | null>(null);
+  const [selectedCompany, setSelectedCompany] = React.useState<CompanyListItem | null>(null);
 
   const rows: (CompanyRow & { id?: string })[] = useMemo(() => {
     return (companies || []).map((c, idx) => ({

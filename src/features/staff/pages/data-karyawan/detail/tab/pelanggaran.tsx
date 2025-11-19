@@ -1,15 +1,12 @@
 import ExpandCard from '@/features/structure-and-organize/components/card/ExpandCard';
-import type { Karyawan } from '@/features/staff/types/Karyawan';
+ 
 import { useMemo, useState } from 'react';
 import { DataTable, type DataTableColumn, type DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
 import PelanggaranModal, { type PelanggaranEntry } from '@/features/staff/components/modals/dataKaryawan/pelanggaran/PelanggaranModal';
 
-interface Props {
-  data?: Karyawan;
-  isEditable?: boolean;
-}
+ 
 
-export default function PelanggaranTab(_: Props) {
+export default function PelanggaranTab() {
   const [list, setList] = useState<PelanggaranEntry[]>([
     {
       id: 1,
@@ -45,7 +42,7 @@ export default function PelanggaranTab(_: Props) {
 
   const columns: DataTableColumn<PelanggaranEntry>[] = useMemo(
     () => [
-      { id: 'no', label: 'No.', align: 'center', format: (_v, row) => list.findIndex((r) => r.id === row.id) + 1 },
+      { id: 'no', label: 'No.', align: 'center', format: (v, row) => { void v; return list.findIndex((r) => r.id === row.id) + 1; } },
       { id: 'jenisPelanggaran', label: 'Jenis Pelanggaran' },
       { id: 'tanggalKejadian', label: 'Tanggal Kejadian', format: (v) => new Date(v).toLocaleDateString('id-ID') },
       
@@ -86,7 +83,7 @@ export default function PelanggaranTab(_: Props) {
       if (entry.id) {
         return prev.map((r) => (r.id === entry.id ? { ...r, ...entry } : r));
       }
-      const nextId = (prev.at(-1)?.id ?? 0) + 1;
+      const nextId = ((prev[prev.length - 1]?.id) ?? 0) + 1;
       return [...prev, { ...entry, id: nextId }];
     });
     setIsOpen(false);

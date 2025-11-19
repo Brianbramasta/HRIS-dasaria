@@ -4,7 +4,7 @@ import { Edit, Trash } from 'react-feather';
 import { useOffices } from '../../index';
 import type { OfficeRow } from '../../types/organizationTable.types';
 import { useModal } from '../../../../hooks/useModal';
-import type { Office } from '../../types/organization.types';
+import type { OfficeListItem } from '../../types/organization.api.types';
 import AddOfficeModal from '../../components/modals/Kantor/AddOfficeModal';
 import EditOfficeModal from '../../components/modals/Kantor/EditOfficeModal';
 import DeleteOfficeModal from '../../components/modals/Kantor/DeleteOfficeModal';
@@ -24,7 +24,7 @@ export default function OfficesTab({ resetKey }: Props) {
   const addModal = useModal(false);
   const editModal = useModal(false);
   const deleteModal = useModal(false);
-  const [selected, setSelected] = useState<Office | null>(null);
+  const [selected, setSelected] = useState<OfficeListItem | null>(null);
 
   const rows: OfficeRow[] = useMemo(() => {
     return (offices || []).map((o, idx) => ({
@@ -37,8 +37,8 @@ export default function OfficesTab({ resetKey }: Props) {
   }, [offices]);
 
   const actionsIconOnly = [
-    { label: '', onClick: (row: any) => { setSelected(row.raw as Office); editModal.openModal(); }, variant: 'outline', className: 'border-0', icon: <Edit size={16} /> },
-    { label: '', onClick: (row: any) => { setSelected(row.raw as Office); deleteModal.openModal(); }, variant: 'outline', className: 'border-0', color: 'error', icon: <Trash size={16} /> },
+    { label: '', onClick: (row: any) => { setSelected(row.raw as OfficeListItem); editModal.openModal(); }, variant: 'outline', className: 'border-0', icon: <Edit size={16} /> },
+    { label: '', onClick: (row: any) => { setSelected(row.raw as OfficeListItem); deleteModal.openModal(); }, variant: 'outline', className: 'border-0', color: 'error', icon: <Trash size={16} /> },
   ] as DataTableAction<any>[];
 
   const exportCSV = (filename: string, data: any[]) => {
@@ -56,7 +56,7 @@ export default function OfficesTab({ resetKey }: Props) {
     URL.revokeObjectURL(url);
   };
 
-  React.useEffect(() => { fetchOffices(); }, []);
+  React.useEffect(() => { fetchOffices(); }, [fetchOffices]);
 
   return (
     <>

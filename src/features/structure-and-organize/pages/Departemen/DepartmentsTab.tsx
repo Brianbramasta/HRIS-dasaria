@@ -57,7 +57,7 @@ export default function DepartmentsTab({ resetKey }: Props) {
     URL.revokeObjectURL(url);
   };
 
-  React.useEffect(() => { fetchDepartments(); }, []);
+  React.useEffect(() => { fetchDepartments(); }, [fetchDepartments]);
 
   return (
     <>
