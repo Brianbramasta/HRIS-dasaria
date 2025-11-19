@@ -1,0 +1,223 @@
+import React from 'react';
+import { useFormulirKaryawanStore } from '../../stores/useFormulirKaryawanStore';
+import Input from '../../../../components/form/input/InputField';
+import Select from '../../../../components/form/Select';
+import Label from '../../../../components/form/Label';
+
+const STATUS_KARYAWAN_OPTIONS = [
+  { label: 'Aktif', value: 'aktif' },
+  { label: 'Cuti', value: 'cuti' },
+  { label: 'Nonaktif', value: 'nonaktif' },
+];
+
+const DIVISI_OPTIONS = [
+  { label: 'Umum', value: 'umum' },
+  { label: 'Teknologi', value: 'teknologi' },
+  { label: 'Keuangan', value: 'keuangan' },
+];
+
+const POSITION_OPTIONS = [
+  { label: 'Staff', value: 'staff' },
+  { label: 'Supervisor', value: 'supervisor' },
+  { label: 'Manager', value: 'manager' },
+];
+
+const JABATAN_OPTIONS = [
+  { label: 'Karyawan', value: 'karyawan' },
+  { label: 'Kepala Bagian', value: 'kepala_bagian' },
+];
+
+const GRADE_OPTIONS = [
+  { label: 'G1', value: 'G1' },
+  { label: 'G2', value: 'G2' },
+  { label: 'G3', value: 'G3' },
+];
+
+const STATUS_PAYROLL_OPTIONS = [
+  { label: 'Tetap', value: 'tetap' },
+  { label: 'Kontrak', value: 'kontrak' },
+];
+
+const KATEGORI_KARYAWAN_OPTIONS = [
+  { label: 'Full-time', value: 'full_time' },
+  { label: 'Part-time', value: 'part_time' },
+  { label: 'Magang', value: 'magang' },
+];
+
+const PERUSAHAAN_OPTIONS = [
+  { label: 'PT. Default', value: 'PT. Default' },
+];
+
+const KANTOR_OPTIONS = [
+  { label: 'Kantor Pusat', value: 'kantor_pusat' },
+  { label: 'Cabang Jakarta', value: 'cabang_jakarta' },
+];
+
+const DIREKTORAT_OPTIONS = [
+  { label: 'Operasional', value: 'operasional' },
+  { label: 'Pengembangan', value: 'pengembangan' },
+];
+
+const DEPARTEMEN_OPTIONS = [
+  { label: 'IT', value: 'it' },
+  { label: 'Finance', value: 'finance' },
+  { label: 'HR', value: 'hr' },
+];
+
+export const Step03EmployeeData: React.FC = () => {
+  const { formData, updateStep3Employee } = useFormulirKaryawanStore();
+  const step3 = formData.step3Employee;
+
+  const handleChange = (field: string, value: string) => {
+    updateStep3Employee({ [field]: value } as any);
+  };
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          Data Karyawan
+        </h3>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label>Status Karyawan</Label>
+            <Select
+              options={STATUS_KARYAWAN_OPTIONS}
+              defaultValue={step3.statusKaryawan}
+              onChange={(value) => handleChange('statusKaryawan', value)}
+              placeholder="Select"
+              required
+            />
+          </div>
+
+          <div>
+            <Label>Divisi</Label>
+            <Select
+              options={DIVISI_OPTIONS}
+              defaultValue={step3.divisi}
+              onChange={(value) => handleChange('divisi', value)}
+              placeholder="Select"
+            />
+          </div>
+
+          <div>
+            <Label>Position</Label>
+            <Select
+              options={POSITION_OPTIONS}
+              defaultValue={step3.position}
+              onChange={(value) => handleChange('position', value)}
+              placeholder="Select"
+              required
+            />
+          </div>
+
+          <div>
+            <Label>Jabatan</Label>
+            <Select
+              options={JABATAN_OPTIONS}
+              defaultValue={step3.jabatan}
+              onChange={(value) => handleChange('jabatan', value)}
+              placeholder="Select"
+              required
+            />
+          </div>
+
+          <div>
+            <Label>Grade</Label>
+            <Select
+              options={GRADE_OPTIONS}
+              defaultValue={step3.grade}
+              onChange={(value) => handleChange('grade', value)}
+              placeholder="Select"
+            />
+          </div>
+
+          <div>
+            <Label>Status PayRoll</Label>
+            <Select
+              options={STATUS_PAYROLL_OPTIONS}
+              defaultValue={step3.statusPayroll}
+              onChange={(value) => handleChange('statusPayroll', value)}
+              placeholder="Select"
+            />
+          </div>
+
+          <div>
+            <Label>Kategori Karyawan</Label>
+            <Select
+              options={KATEGORI_KARYAWAN_OPTIONS}
+              defaultValue={step3.kategoriKaryawan}
+              onChange={(value) => handleChange('kategoriKaryawan', value)}
+              placeholder="Select"
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="tanggalMasuk">Tanggal Masuk</Label>
+            <Input
+              id="tanggalMasuk"
+              type="date"
+              value={step3.tanggalMasuk}
+              onChange={(e) => handleChange('tanggalMasuk', e.target.value)}
+              required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="tanggalAkhir">Tanggal Akhir</Label>
+            <Input
+              id="tanggalAkhir"
+              type="date"
+              value={step3.tanggalAkhir}
+              onChange={(e) => handleChange('tanggalAkhir', e.target.value)}
+            />
+          </div>
+
+          <div>
+            <Label>Perusahaan</Label>
+            <Select
+              options={PERUSAHAAN_OPTIONS}
+              defaultValue={step3.company}
+              onChange={(value) => handleChange('company', value)}
+              placeholder="Select"
+              required
+            />
+          </div>
+
+          <div>
+            <Label>Kantor</Label>
+            <Select
+              options={KANTOR_OPTIONS}
+              defaultValue={step3.kantor}
+              onChange={(value) => handleChange('kantor', value)}
+              placeholder="Select"
+            />
+          </div>
+
+          <div>
+            <Label>Direktorat</Label>
+            <Select
+              options={DIREKTORAT_OPTIONS}
+              defaultValue={step3.direktorat}
+              onChange={(value) => handleChange('direktorat', value)}
+              placeholder="Select"
+            />
+          </div>
+
+          <div>
+            <Label>Departemen</Label>
+            <Select
+              options={DEPARTEMEN_OPTIONS}
+              defaultValue={step3.departemen}
+              onChange={(value) => handleChange('departemen', value)}
+              placeholder="Select"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Step03EmployeeData;

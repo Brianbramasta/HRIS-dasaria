@@ -6,11 +6,13 @@ import {
   Step3FormData,
   Step4FormData,
   StepCompletionStatus,
+  EmployeeDataFormData,
 } from '../types/FormulirKaryawan';
 
 interface FormulirStore {
   // State
   currentStep: number;
+  totalSteps: number;
   formData: FormulirKaryawanData;
   stepCompleted: StepCompletionStatus;
   isLoading: boolean;
@@ -18,9 +20,11 @@ interface FormulirStore {
 
   // Actions
   setCurrentStep: (step: number) => void;
+  setTotalSteps: (count: number) => void;
   updateStep1: (data: Partial<PersonalDataFormData>) => void;
   updateStep2: (data: Partial<Step2FormData>) => void;
   updateStep3: (data: Partial<Step3FormData>) => void;
+  updateStep3Employee: (data: Partial<EmployeeDataFormData>) => void;
   updateStep4: (data: Partial<Step4FormData>) => void;
   markStepAsCompleted: (step: number) => void;
   goToNextStep: () => boolean;
@@ -60,6 +64,21 @@ const initialFormData: FormulirKaryawanData = {
     namaNoKontakDarurat: '',
     hubunganKontakDarurat: '',
   },
+  step3Employee: {
+    statusKaryawan: '',
+    divisi: '',
+    position: '',
+    jabatan: '',
+    grade: '',
+    statusPayroll: '',
+    kategoriKaryawan: '',
+    tanggalMasuk: '',
+    tanggalAkhir: '',
+    company: '',
+    kantor: '',
+    direktorat: '',
+    departemen: '',
+  },
   step3: {
     bank: '',
     namaAkunBank: '',
@@ -81,11 +100,13 @@ const initialStepCompleted: StepCompletionStatus = {
   step2: false,
   step3: false,
   step4: false,
+  step5: false,
 };
 
 export const useFormulirKaryawanStore = create<FormulirStore>((set, get) => ({
   // Initial state
   currentStep: 1,
+  totalSteps: 4,
   formData: initialFormData,
   stepCompleted: initialStepCompleted,
   isLoading: false,
@@ -94,6 +115,10 @@ export const useFormulirKaryawanStore = create<FormulirStore>((set, get) => ({
   // Actions
   setCurrentStep: (step) => {
     set({ currentStep: step });
+  },
+
+  setTotalSteps: (count) => {
+    set({ totalSteps: count });
   },
 
   updateStep1: (data) => {
@@ -132,6 +157,18 @@ export const useFormulirKaryawanStore = create<FormulirStore>((set, get) => ({
     }));
   },
 
+  updateStep3Employee: (data) => {
+    set((state) => ({
+      formData: {
+        ...state.formData,
+        step3Employee: {
+          ...state.formData.step3Employee,
+          ...data,
+        },
+      },
+    }));
+  },
+
   updateStep4: (data) => {
     set((state) => ({
       formData: {
@@ -157,14 +194,14 @@ export const useFormulirKaryawanStore = create<FormulirStore>((set, get) => ({
   },
 
   goToNextStep: () => {
-    const { currentStep, isStepValid } = get();
+    const { currentStep, isStepValid, totalSteps } = get();
 
     if (!isStepValid(currentStep)) {
       set({ error: `Harap lengkapi semua field di Step ${currentStep}` });
       return false;
     }
 
-    if (currentStep < 4) {
+    if (currentStep < totalSteps) {
       get().markStepAsCompleted(currentStep);
       set({ currentStep: currentStep + 1, error: null });
       return true;
@@ -200,7 +237,7 @@ export const useFormulirKaryawanStore = create<FormulirStore>((set, get) => ({
   },
 
   isStepValid: (step) => {
-    const { formData } = get();
+    const { formData, totalSteps } = get();
 
     switch (step) {
       case 1:
@@ -232,19 +269,50 @@ export const useFormulirKaryawanStore = create<FormulirStore>((set, get) => ({
         ); }
 
       case 3:
-        { const step3 = formData.step3;
-        return !!(
-          step3.bank &&
-          step3.namaAkunBank &&
-          step3.noRekening &&
-          step3.npwp &&
-          step3.noBpjsKesehatan &&
-          step3.statusBpjsKesehatan
-        ); }
+        {
+          if (totalSteps === 5) {
+            const s = formData.step3Employee;
+            return !!(
+              s.statusKaryawan &&
+              s.position &&
+              s.jabatan &&
+              s.tanggalMasuk &&
+              s.company
+            );
+          }
+          const step3 = formData.step3;
+          return !!(
+            step3.bank &&
+            step3.namaAkunBank &&
+            step3.noRekening &&
+            step3.npwp &&
+            step3.noBpjsKesehatan &&
+            step3.statusBpjsKesehatan
+          );
+        }
 
       case 4:
-        { const step4 = formData.step4;
-        return step4.documents && step4.documents.length > 0; }
+        {
+          if (totalSteps === 5) {
+            const step3 = formData.step3;
+            return !!(
+              step3.bank &&
+              step3.namaAkunBank &&
+              step3.noRekening &&
+              step3.npwp &&
+              step3.noBpjsKesehatan &&
+              step3.statusBpjsKesehatan
+            );
+          }
+          const step4 = formData.step4;
+          return step4.documents && step4.documents.length > 0;
+        }
+
+      case 5:
+        {
+          const step4 = formData.step4;
+          return step4.documents && step4.documents.length > 0;
+        }
 
       default:
         return false;
@@ -252,8 +320,8 @@ export const useFormulirKaryawanStore = create<FormulirStore>((set, get) => ({
   },
 
   getFormProgress: () => {
-    const { stepCompleted } = get();
-    const completedSteps = Object.values(stepCompleted).filter((v) => v).length;
-    return Math.round((completedSteps / 4) * 100);
+    const { stepCompleted, totalSteps } = get();
+    const completedSteps = Object.values(stepCompleted).slice(0, totalSteps).filter((v) => v).length;
+    return Math.round((completedSteps / totalSteps) * 100);
   },
 }));

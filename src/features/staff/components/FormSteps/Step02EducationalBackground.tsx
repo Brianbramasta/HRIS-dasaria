@@ -27,7 +27,7 @@ const JURUSAN_OPTIONS = [
   { label: 'Lainnya', value: 'lainnya' },
 ];
 
-export const Step2EducationalBackground: React.FC = () => {
+export const Step02EducationalBackground: React.FC = () => {
   const { formData, updateStep2 } = useFormulirKaryawanStore();
   const step2 = formData.step2;
   const [newEducation, setNewEducation] = useState<EducationItem>({
@@ -283,4 +283,4 @@ export const Step2EducationalBackground: React.FC = () => {
   );
 };
 
-export default Step2EducationalBackground;
+export default Step02EducationalBackground;

@@ -80,11 +80,29 @@ export interface Step4FormData {
   documents: DocumentItem[];
 }
 
+// Step 3 (Login only): Data Karyawan/Organisasi
+export interface EmployeeDataFormData {
+  statusKaryawan: string;
+  divisi: string;
+  position: string;
+  jabatan: string;
+  grade: string;
+  statusPayroll: string;
+  kategoriKaryawan: string;
+  tanggalMasuk: string;
+  tanggalAkhir: string;
+  company: string;
+  kantor: string;
+  direktorat: string;
+  departemen: string;
+}
+
 // Combined Formulir Data
 export interface FormulirKaryawanData {
   step1: PersonalDataFormData;
   step2: Step2FormData;
   step3: Step3FormData;
+  step3Employee: EmployeeDataFormData;
   step4: Step4FormData;
 }
 
@@ -102,4 +120,5 @@ export interface StepCompletionStatus {
   step2: boolean;
   step3: boolean;
   step4: boolean;
+  step5: boolean;
 }

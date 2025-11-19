@@ -2,7 +2,6 @@ import React, { useRef } from 'react';
 import { useFormulirKaryawanStore } from '../../stores/useFormulirKaryawanStore';
 import Select from '../../../../components/form/Select';
 import Label from '../../../../components/form/Label';
-// import FileInput from '../../../../components/form/input/FileInput';
 import Button from '../../../../components/ui/button/Button';
 import { Trash2, Plus } from 'react-feather';
 import { DocumentItem } from '../../types/FormulirKaryawan';
@@ -18,7 +17,7 @@ const DOCUMENT_TYPE_OPTIONS = [
   { label: 'Dokumen Lainnya', value: 'lainnya' },
 ];
 
-export const Step4UploadDocument: React.FC = () => {
+export const Step05UploadDocument: React.FC = () => {
   const { formData, updateStep4 } = useFormulirKaryawanStore();
   const step4 = formData.step4;
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -176,4 +175,4 @@ export const Step4UploadDocument: React.FC = () => {
   );
 };
 
-export default Step4UploadDocument;
+export default Step05UploadDocument;

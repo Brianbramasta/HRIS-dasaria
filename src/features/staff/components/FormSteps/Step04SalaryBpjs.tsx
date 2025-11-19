@@ -19,7 +19,7 @@ const BPJS_STATUS_OPTIONS = [
   { label: 'PBI', value: 'pbi' },
 ];
 
-export const Step3SalaryBpjs: React.FC = () => {
+export const Step04SalaryBpjs: React.FC = () => {
   const { formData, updateStep3 } = useFormulirKaryawanStore();
   const step3 = formData.step3;
 
@@ -158,4 +158,4 @@ export const Step3SalaryBpjs: React.FC = () => {
   );
 };
 
-export default Step3SalaryBpjs;
+export default Step04SalaryBpjs;

@@ -51,7 +51,7 @@ const TANGGUNGAN_OPTIONS = [
   { label: '4+', value: '4' },
 ];
 
-export const Step1PersonalData: React.FC = () => {
+export const Step01PersonalData: React.FC = () => {
   const { formData, updateStep1 } = useFormulirKaryawanStore();
   const step1 = formData.step1;
 
@@ -242,4 +242,4 @@ export const Step1PersonalData: React.FC = () => {
   );
 };
 
-export default Step1PersonalData;
+export default Step01PersonalData;
