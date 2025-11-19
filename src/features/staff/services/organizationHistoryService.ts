@@ -32,6 +32,7 @@ export interface OrganizationHistoryFilterParams {
   order?: 'asc' | 'desc';
   page?: number;
   limit?: number;
+  filter?: string;
 }
 
 class OrganizationHistoryService {
@@ -48,6 +49,7 @@ class OrganizationHistoryService {
     if (params?.order) q.append('order', params.order);
     if (params?.page) q.append('page', params.page.toString());
     if (params?.limit) q.append('limit', params.limit.toString());
+    if (params?.filter) q.append('filter', params.filter);
     const url = q.toString() ? `${this.baseUrl}?${q.toString()}` : this.baseUrl;
     return apiService.get<OrganizationHistoryListResponse>(url);
   }

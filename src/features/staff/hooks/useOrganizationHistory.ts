@@ -3,6 +3,7 @@ import organizationHistoryService, {
   OrganizationHistoryItem,
   OrganizationHistoryFilterParams,
 } from '../services/organizationHistoryService';
+import useFilterStore from '../../../stores/filterStore';
 
 export interface UseOrganizationHistoryOptions {
   initialPage?: number;
@@ -19,6 +20,7 @@ export function useOrganizationHistory(options: UseOrganizationHistoryOptions = 
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(initialPage);
   const [limit, setLimit] = useState(initialLimit);
+  const filterValue = useFilterStore((s) => s.filters['Organization History'] ?? '');
 
   const fetchOrganizationHistory = useCallback(
     async (params?: OrganizationHistoryFilterParams) => {
@@ -29,6 +31,7 @@ export function useOrganizationHistory(options: UseOrganizationHistoryOptions = 
         const response = await organizationHistoryService.list({
           page,
           limit,
+          filter: params?.filter ?? filterValue,
           ...params,
         });
 
@@ -43,14 +46,14 @@ export function useOrganizationHistory(options: UseOrganizationHistoryOptions = 
         setLoading(false);
       }
     },
-    [page, limit]
+    [page, limit, filterValue]
   );
 
   useEffect(() => {
     if (autoFetch) {
       fetchOrganizationHistory();
     }
-  }, [fetchOrganizationHistory, autoFetch]);
+  }, [fetchOrganizationHistory, autoFetch, filterValue]);
 
   const createOrganizationHistory = useCallback(
     async (payload: Omit<OrganizationHistoryItem, 'id'>) => {

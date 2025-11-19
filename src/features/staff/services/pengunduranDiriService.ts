@@ -47,6 +47,7 @@ class PengunduranDiriService {
     if (params?.limit) queryParams.append('limit', params.limit.toString());
     if (params?.sortBy) queryParams.append('sort', params.sortBy);
     if (params?.order) queryParams.append('order', params.order);
+    if (params?.filter) queryParams.append('filter', params.filter);
 
     const queryString = queryParams.toString();
     const url = queryString ? `${this.baseUrl}?${queryString}` : this.baseUrl;

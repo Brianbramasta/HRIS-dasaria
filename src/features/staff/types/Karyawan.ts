@@ -114,4 +114,5 @@ export interface KaryawanFilterParams {
   limit?: number;
   sortBy?: string;
   order?: 'asc' | 'desc';
+  filter?: string;
 }

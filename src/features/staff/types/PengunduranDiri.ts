@@ -58,4 +58,5 @@ export interface PengunduranDiriFilterParams {
   limit?: number;
   sortBy?: string;
   order?: 'asc' | 'desc';
+  filter?: string;
 }

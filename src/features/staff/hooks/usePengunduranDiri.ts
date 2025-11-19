@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { PengunduranDiri, PengunduranDiriFilterParams, ResignStatus } from '../types/PengunduranDiri';
 import pengunduranDiriService from '../services/pengunduranDiriService';
+import useFilterStore from '../../../stores/filterStore';
 
 export interface UsePengunduranDiriOptions {
   initialPage?: number;
@@ -19,6 +20,7 @@ export function usePengunduranDiri(options: UsePengunduranDiriOptions = {}) {
   const [page, setPage] = useState(initialPage);
   const [limit, setLimit] = useState(initialLimit);
   const [currentStatus, setCurrentStatus] = useState<ResignStatus | 'all'>(status);
+  const filterValue = useFilterStore((s) => s.filters['global'] ?? '');
 
   const fetchPengunduranDiri = useCallback(
     async (params?: PengunduranDiriFilterParams) => {
@@ -30,6 +32,7 @@ export function usePengunduranDiri(options: UsePengunduranDiriOptions = {}) {
           page,
           limit,
           status: currentStatus,
+          filter: params?.filter ?? filterValue,
           ...params,
         });
 
@@ -48,14 +51,14 @@ export function usePengunduranDiri(options: UsePengunduranDiriOptions = {}) {
         setLoading(false);
       }
     },
-    [page, limit, currentStatus]
+    [page, limit, currentStatus, filterValue]
   );
 
   useEffect(() => {
     if (autoFetch) {
       fetchPengunduranDiri();
     }
-  }, [fetchPengunduranDiri, autoFetch]);
+  }, [fetchPengunduranDiri, autoFetch, filterValue]);
 
   const createPengunduranDiri = useCallback(
     async (data: any) => {

@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Karyawan, KaryawanFilterParams } from '../types/Karyawan';
 import karyawanService from '../services/karyawanService';
+import useFilterStore from '../../../stores/filterStore';
 
 export interface UseKaryawanOptions {
   initialPage?: number;
@@ -17,6 +18,7 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(initialPage);
   const [limit, setLimit] = useState(initialLimit);
+  const filterValue = useFilterStore((s) => s.filters['Data Master Karyawan'] ?? '');
 
   const fetchKaryawan = useCallback(
     async (params?: KaryawanFilterParams) => {
@@ -27,6 +29,7 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
         const response = await karyawanService.getKaryawan({
           page,
           limit,
+          filter: params?.filter ?? filterValue,
           ...params,
         });
         console.log('Fetched karyawan response:', response.data);
@@ -47,14 +50,14 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
         setLoading(false);
       }
     },
-    [page, limit]
+    [page, limit, filterValue]
   );
 
   useEffect(() => {
     if (autoFetch) {
       fetchKaryawan();
     }
-  }, [fetchKaryawan, autoFetch]);
+  }, [fetchKaryawan, autoFetch, filterValue]);
 
   const createKaryawan = useCallback(
     async (karyawanData: any) => {
