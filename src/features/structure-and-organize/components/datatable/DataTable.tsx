@@ -4,7 +4,7 @@ import { Table, TableHeader, TableBody, TableRow, TableCell } from '../../../../
 import PaginationWithIcon from '../../../../components/tables/DataTables/TableOne/PaginationWithIcon';
 import Button from '../../../../components/ui/button/Button';
 import {Modal} from '../../../../components/ui/modal/index';
-import { Plus, Download } from 'react-feather';
+import { Plus,  Upload } from 'react-feather';
 import { FilterLineIcon } from '../../../../icons/index';
 import { setFilterFor, getFilterFor } from '../../../../stores/filterStore';
 import Checkbox from '../../../../components/form/input/Checkbox';
@@ -210,7 +210,7 @@ export function DataTable<T = any>({
           <div className="flex items-center gap-3">
             {onExport && (
               <Button className='bg-success text-white dark:text-white' onClick={() => setExportModalOpen(true)} variant="outline" size="sm">
-                <Download size={16} className="mr-2" />
+                <Upload size={16} className="mr-2" />
                 {exportButtonLabel}
               </Button>
             )}

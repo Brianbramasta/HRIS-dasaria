@@ -74,13 +74,17 @@ import DataKaryawanIndexPage from "../features/staff/pages/data-karyawan/indexPa
 import DetailKaryawanPage from "../features/staff/pages/data-karyawan/detail/detailPage";
 import FormulirKaryawanPage from "../features/staff/pages/data-karyawan/FormulirKaryawanPage";
 import PendaftaranKaryawanBaru from "../features/staff/pages/data-karyawan/PendaftaranKaryawanBaru";
-import PengunduranDiri from "../features/staff/pages/pengunduran-diri/pengunduran-diri";
-import FormResignPage from "../features/staff/pages/pengunduran-diri/form-resign/form-resign";
+import PengunduranDiri from "../features/staff/pages/pengunduran-diri/pengunduranDiri";
+import FormResignPage from "../features/staff/pages/pengunduran-diri/form-resign/formResign";
 import DetailPengunduranDiriPage from "../features/staff/pages/pengunduran-diri/detail/DetailPengunduranDiriPage";
-import PerpanjanganKontrak from "../features/staff/pages/data-karyawan/tabs/perpanjangan-kontrak";
+import PerpanjanganKontrak from "../features/staff/pages/data-karyawan/tabs/perpanjanganKontrak";
 import DataKaryawanPelanggaran from "../features/staff/pages/data-karyawan/detail/tab/pelanggaran";
 import OrganizationHistoryPage from "../features/staff/pages/organizationHistoryPage";
 import Dashboard from "@/features/dashboard/pages/Dashboard";
+import DaftarPenggajianPage from "@/features/penggajian/pages/daftarPenggajianPage";
+import KonfigurasiPenggajianPage from "@/features/penggajian/pages/konfigurasiPenggajianPage";
+import PeriodePenggajianPage from "@/features/penggajian/pages/periodePenggajianPage";
+
 
 
 // Auth Feature Pages
@@ -111,6 +115,10 @@ export default function AppRoutes() {
           <Route path="positions" element={<PositionsTab resetKey="positions" />} />
           <Route path="employee-positions" element={<EmployeePositionsTab resetKey="employee-positions" />} />
           </Route>
+          {/* Penggajian */}
+          <Route path="/periode-gajian" element={<DaftarPenggajianPage />} />
+          <Route path="/konfigurasi-penggajian" element={<KonfigurasiPenggajianPage />} />
+          <Route path="/daftar-penggajian" element={<PeriodePenggajianPage />} />
 
           <Route path="/data-karyawan" element={<DataKaryawanIndexPage />} />
           <Route path="/data-karyawan/:id" element={<DetailKaryawanPage />} />

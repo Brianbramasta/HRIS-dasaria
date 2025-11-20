@@ -29,6 +29,7 @@ export default function DetailKaryawanPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log('id',id)
     let active = true;
     async function fetchDetail() {
       if (!id) return;

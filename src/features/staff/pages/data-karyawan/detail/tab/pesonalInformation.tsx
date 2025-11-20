@@ -1,4 +1,4 @@
-import type { Karyawan } from '@/features/staff/types/Karyawan';
+// import type { Karyawan } from '@/features/staff/types/Karyawan';
 import React from 'react';
 import PersonalDataCard from '@/features/staff/components/dataKaryawan/card/PersonalDataCard';
 import EducationalBackgroundCard from '@/features/staff/components/dataKaryawan/card/EducationalBackgroundCard';
@@ -10,7 +10,7 @@ import PersonalDocumentsCard from '@/features/staff/components/dataKaryawan/card
 import { karyawanService, type KaryawanDetailResponse } from '@/features/staff/services/karyawanService';
 
 interface Props {
-  data: Karyawan;
+  data: KaryawanDetailResponse;
   isEditable: boolean;
 }
 
@@ -21,11 +21,14 @@ export default function PesonalInformationTab({ data }: Props) {
 
   React.useEffect(() => {
     let active = true;
+    console.log('data karyawan',data)
+    console.log('data karyawan2',data.karyawan)
+    console.log('data karyawan3',data.karyawan.id)
     async function fetchDetail() {
       try {
         setLoading(true);
         setError(null);
-        const res = await karyawanService.getKaryawanById(data.id);
+        const res = await karyawanService.getKaryawanById(data.karyawan.id);
         if (!active) return;
         setDetail(res.data);
       } catch (err) {
@@ -40,7 +43,7 @@ export default function PesonalInformationTab({ data }: Props) {
     return () => {
       active = false;
     };
-  }, [data.id]);
+  }, [data.karyawan.id]);
 
   if (loading) {
     return <div className="p-4">Memuat detail…</div>;

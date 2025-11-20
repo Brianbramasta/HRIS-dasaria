@@ -1,15 +1,14 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, cloneElement, isValidElement } from "react";
 import { Link, useLocation } from "react-router";
 
 // Assume these icons are imported from an icon library
 import {
   CalenderIcon,
   ChevronDownIcon,
-  GridIcon,
   HorizontaLDots,
-  StructureIcon,
  
 } from "../icons";
+import { iconPenggajian, iconKaryawan, iconStrukturOrganisasi }   from '@/icons/components/icons'
 import { useSidebar } from "../context/SidebarContext";
 // import SidebarWidget from "./SidebarWidget";
 import { useAuthStore } from "../features/auth/stores/authStore";
@@ -22,23 +21,35 @@ type NavItem = {
   subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
 };
 
+
+
 const navItems: NavItem[] = [
   {
     icon: <CalenderIcon />,
     name: "Dashboard",
     path: "/",
   },{
-    icon: <StructureIcon/>,
+    icon: <> {iconStrukturOrganisasi({ size: 16 })} </>,
     name: "Struktur dan Organisasi",
     path: "/structure-and-organize/business-lines",
   },
   {
-    icon: <GridIcon />,
+    icon: <> {iconKaryawan({ size: 16 })} </>,
     name: "Data Master Karyawan",
     subItems: [
       { name: "Data Karyawan", path: "/data-karyawan", pro: false },
       { name: "Pengunduran Diri", path: "/pengunduran-diri", pro: false },
       { name: "Organization History", path: "/organization-history", pro: false },
+    
+    ],
+  },
+  {
+    icon: <> {iconPenggajian({ size: 16 })} </>,
+    name: "Penggajian",
+    subItems: [
+      { name: "Periode Gajian", path: "/periode-gajian", pro: false },
+       { name: "Konfigurasi Penggajian", path: "/konfigurasi-penggajian", pro: false },
+      { name: "Daftar Penggajian", path: "/daftar-penggajian", pro: false },
     
     ],
   }
@@ -145,15 +156,31 @@ const AppSidebar: React.FC = () => {
                   : "lg:justify-start"
               }`}
             >
-              <span
-                className={`menu-item-icon-size  ${
+              {(() => {
+                const sectionActive = (
                   openSubmenu?.type === menuType && openSubmenu?.index === index
-                    ? "menu-item-icon-active"
-                    : "menu-item-icon-inactive"
-                }`}
-              >
-                {nav.icon}
-              </span>
+                ) || nav.subItems?.some((s) => isActive(s.path));
+                const color = sectionActive ? 'var(--color-brand-500)' : '#6C757D';
+                const iconNode =
+                  nav.name === "Data Master Karyawan"
+                    ? iconKaryawan({ size: 16, color })
+                    : nav.name === "Penggajian"
+                    ? iconPenggajian({ size: 16, color })
+                    : nav.name === "Struktur dan Organisasi"
+                    ? iconStrukturOrganisasi({ size: 16, color })
+                    : isValidElement(nav.icon)
+                    ? cloneElement(nav.icon as any, { style: { color } })
+                    : nav.icon;
+                return (
+                  <span
+                    className={`menu-item-icon-size  ${
+                      sectionActive ? "menu-item-icon-active" : "menu-item-icon-inactive"
+                    }`}
+                  >
+                    {iconNode}
+                  </span>
+                );
+              })()}
               {(isExpanded || isHovered || isMobileOpen) && (
                 <span className="menu-item-text">{nav.name}</span>
               )}
@@ -176,15 +203,22 @@ const AppSidebar: React.FC = () => {
                   isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
                 }`}
               >
-                <span
-                  className={`menu-item-icon-size ${
-                    isActive(nav.path)
-                      ? "menu-item-icon-active"
-                      : "menu-item-icon-inactive"
-                  }`}
-                >
-                  {nav.icon}
-                </span>
+                {(() => {
+                  const active = isActive(nav.path);
+                  const color = active ? 'var(--color-brand-500)' : '#6C757D';
+                  const iconNode = isValidElement(nav.icon)
+                    ? cloneElement(nav.icon as any, { style: { color } })
+                    : nav.icon;
+                  return (
+                    <span
+                      className={`menu-item-icon-size ${
+                        active ? "menu-item-icon-active" : "menu-item-icon-inactive"
+                      }`}
+                    >
+                      {iconNode}
+                    </span>
+                  );
+                })()}
                 {(isExpanded || isHovered || isMobileOpen) && (
                   <span className="menu-item-text">{nav.name}</span>
                 )}
