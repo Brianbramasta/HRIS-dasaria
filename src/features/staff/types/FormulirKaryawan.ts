@@ -27,6 +27,7 @@ export interface PersonalDataFormData {
 
 // Step 2: Educational Background & Media Sosial
 export interface EducationItem {
+  jenjang: string;
   namaLembaga: string;
   nilaiPendidikan: string;
   jurusanKeahlian: string;

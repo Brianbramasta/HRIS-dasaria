@@ -6,6 +6,7 @@ import Select from '@/components/form/Select';
 import { Plus, Trash2 } from 'react-feather';
 
 export type EducationItem = {
+  jenjang: string;
   namaLembaga: string;
   nilaiPendidikan: string;
   jurusanKeahlian: string;
@@ -32,22 +33,21 @@ interface Props {
   submitting?: boolean;
 }
 
-const LEMBAGA_OPTIONS = [
-  { label: 'Universitas Brawijaya', value: 'Universitas Brawijaya' },
-  { label: 'Universitas Indonesia', value: 'Universitas Indonesia' },
-  { label: 'Institut Teknologi Bandung', value: 'Institut Teknologi Bandung' },
+const JENJANG_OPTIONS = [
+  { label: 'SD/MI', value: 'SD' },
+  { label: 'SMP/MTs', value: 'SMP' },
+  { label: 'SMA/SMK/MA', value: 'SMA' },
+  { label: 'Diploma (D3)', value: 'D3' },
+  { label: 'Sarjana (S1)', value: 'S1' },
+  { label: 'Magister (S2)', value: 'S2' },
+  { label: 'Doktor (S3)', value: 'S3' },
 ];
 
-const JURUSAN_OPTIONS = [
-  { label: 'Teknik Informatika', value: 'Teknik Informatika' },
-  { label: 'Manajemen', value: 'Manajemen' },
-  { label: 'Akuntansi', value: 'Akuntansi' },
-  { label: 'Administrasi Bisnis', value: 'Administrasi Bisnis' },
-];
+// Jurusan/Keahlian menjadi input biasa
 
 const emptyForm: EducationSocialForm = {
   education: [
-    { namaLembaga: '', nilaiPendidikan: '', jurusanKeahlian: '', tahunLulus: '' },
+    { jenjang: '', namaLembaga: '', nilaiPendidikan: '', jurusanKeahlian: '', tahunLulus: '' },
   ],
   facebook: '',
   linkedin: '',
@@ -64,7 +64,7 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
   const title = useMemo(() => 'Edit Educational Background & Sosial Media', []);
 
   useEffect(() => {
-    const defaultRow: EducationItem = { namaLembaga: '', nilaiPendidikan: '', jurusanKeahlian: '', tahunLulus: '' };
+    const defaultRow: EducationItem = { jenjang: '', namaLembaga: '', nilaiPendidikan: '', jurusanKeahlian: '', tahunLulus: '' };
     const base = initialData ? { ...emptyForm, ...initialData } : emptyForm;
     const ensuredEducation = Array.isArray(base.education) && base.education.length > 0 ? base.education : [defaultRow];
     setForm({ ...base, education: ensuredEducation });
@@ -81,7 +81,7 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
   const addEducationRow = () => {
     setForm((prev) => ({
       ...prev,
-      education: [...prev.education, { namaLembaga: '', nilaiPendidikan: '', jurusanKeahlian: '', tahunLulus: '' }],
+      education: [...prev.education, { jenjang: '', namaLembaga: '', nilaiPendidikan: '', jurusanKeahlian: '', tahunLulus: '' }],
     }));
   };
 
@@ -99,10 +99,14 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
         <div className="space-y-6">
           {form.education.map((_, idx) => (
             <div className="flex gap-4">
-              <div key={idx} className="grid grid-cols-1 gap-4 md:grid-cols-4 items-end">
+              <div key={idx} className="grid grid-cols-1 gap-4 md:grid-cols-5 items-end">
+              <div>
+                <Label>Jenjang</Label>
+                <Select options={JENJANG_OPTIONS} defaultValue={form.education[idx]?.jenjang || ''} onChange={(v) => handleEducationChange(idx, 'jenjang', v)} placeholder="Select" />
+              </div>
               <div>
                 <Label>Nama Lembaga</Label>
-                <Select options={LEMBAGA_OPTIONS} defaultValue={form.education[idx]?.namaLembaga || ''} onChange={(v) => handleEducationChange(idx, 'namaLembaga', v)} placeholder="Select" />
+                <InputField value={form.education[idx]?.namaLembaga || ''} onChange={(e) => handleEducationChange(idx, 'namaLembaga', e.target.value)} placeholder="Masukkan nama lembaga" />
               </div>
               <div>
                 <Label>Nilai Pendidikan Terakhir</Label>
@@ -110,7 +114,7 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
               </div>
               <div>
                 <Label>Jurusan / Keahlian</Label>
-                <Select options={JURUSAN_OPTIONS} defaultValue={form.education[idx]?.jurusanKeahlian || ''} onChange={(v) => handleEducationChange(idx, 'jurusanKeahlian', v)} placeholder="Select" />
+                <InputField value={form.education[idx]?.jurusanKeahlian || ''} onChange={(e) => handleEducationChange(idx, 'jurusanKeahlian', e.target.value)} placeholder="Masukkan jurusan/keahlian" />
               </div>
               <div>
                 <Label>Tahun Lulus</Label>
@@ -118,15 +122,14 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
               </div>
              
             </div>
-              <div className="flex items-center gap-2 md:pt-6">
-                {idx === form.education.length - 1 && (
-                  <button type="button" onClick={addEducationRow} title="Tambah" className="rounded-xl bg-green-600 px-3 py-2 text-white">
-                    <Plus size={16} />
+              <div className="md:col-span-1 flex md:justify-end items-end">
+                {idx === 0 ? (
+                  <button type="button" onClick={addEducationRow} title="Tambah" className="h-10 w-10 rounded-lg bg-emerald-600 text-white flex items-center justify-center">
+                    <Plus size={18} />
                   </button>
-                )}
-                {form.education.length > 1 && (
-                  <button type="button" onClick={() => removeEducationRow(idx)} title="Hapus" className="rounded-xl bg-red-600 px-3 py-2 text-white">
-                    <Trash2 size={16} />
+                ) : (
+                  <button type="button" onClick={() => removeEducationRow(idx)} title="Hapus" className="h-10 w-10 rounded-lg bg-red-600 text-white flex items-center justify-center">
+                    <Trash2 size={18} />
                   </button>
                 )}
               </div>
