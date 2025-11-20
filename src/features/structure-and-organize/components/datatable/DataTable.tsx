@@ -7,6 +7,7 @@ import {Modal} from '../../../../components/ui/modal/index';
 import { Plus, Download } from 'react-feather';
 import { FilterLineIcon } from '../../../../icons/index';
 import { setFilterFor } from '../../../../stores/filterStore';
+import Checkbox from '../../../../components/form/input/Checkbox';
 
 export interface DataTableColumn<T = any> {
   id: string;
@@ -95,6 +96,7 @@ export function DataTable<T = any>({
   );
   const [exportSearchTerm, setExportSearchTerm] = useState('');
   const [modalFilterTerm, setModalFilterTerm] = useState('');
+  const [modalFilterItems, setModalFilterItems] = useState<string[]>([]);
   const navigate = useNavigate();
 
   // Reset visible columns when resetKey changes (e.g., on tab switch)
@@ -347,39 +349,42 @@ export function DataTable<T = any>({
             </div>
             <div className="flex justify-between items-center mb-2">
               <h4 className="font-semibold">Kolom</h4>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={visibleColumns.length === columns.length}
-                  onChange={(e) => handleSelectAllColumns(e.target.checked)}
-                />
-                Select All
-              </label>
+              <Checkbox
+                label="Select All"
+                checked={visibleColumns.length === columns.length}
+                onChange={(checked) => handleSelectAllColumns(checked)}
+              />
             </div>
             <div className="grid grid-cols-2 gap-2">
               {columns.map((col) => (
-                <div className='border border-gray-300 rounded-md p-2'>
-                <label key={col.id} className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
+                <div key={col.id} className='border border-gray-300 rounded-md p-2'>
+                  <Checkbox
+                    label={col.label}
                     checked={visibleColumns.includes(col.id)}
                     onChange={() => handleColumnVisibilityChange(col.id)}
                   />
-                  {col.label}
-                </label>
                 </div>
               ))}
             </div>
           </div>
           <div className="mb-4">
-            <h4 className="font-semibold mb-2">Data</h4>
             <div className="relative">
               <input
                 type="text"
-                placeholder="Cari berdasarkan kata kunci"
+                placeholder="Tambah filter lalu tekan Enter"
                 value={modalFilterTerm}
                 onChange={(e) => {
                   setModalFilterTerm(e.target.value);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    const v = modalFilterTerm.trim();
+                    if (v.length > 0 && !modalFilterItems.includes(v)) {
+                      setModalFilterItems((prev) => [...prev, v]);
+                    }
+                    setModalFilterTerm('');
+                    e.preventDefault();
+                  }
                 }}
                 className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 pl-10 text-sm text-gray-900 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-brand-400"
               />
@@ -389,6 +394,22 @@ export function DataTable<T = any>({
                 </svg>
               </div>
             </div>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {modalFilterItems.map((item, idx) => (
+                <span key={`${item}_${idx}`} className="inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-sm text-gray-700 dark:bg-gray-800 dark:text-gray-200">
+                  {item}
+                  <button
+                    type="button"
+                    className="ml-2 text-red-500 hover:text-red-600"
+                    onClick={() => {
+                      setModalFilterItems((prev) => prev.filter((x) => x !== item));
+                    }}
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+            </div>
           </div>
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={() => { setFilterModalOpen(false); setModalFilterTerm(''); }}>Close</Button>
@@ -396,9 +417,12 @@ export function DataTable<T = any>({
               variant="primary"
               onClick={() => {
                 const key = title ?? 'global';
-                setFilterFor(key, modalFilterTerm);
+                const terms = modalFilterItems.length > 0 ? modalFilterItems : (modalFilterTerm.trim() ? [modalFilterTerm.trim()] : []);
+                const value = terms.join(',');
+                setFilterFor(key, value);
                 setFilterModalOpen(false);
                 setModalFilterTerm('');
+                setModalFilterItems([]);
               }}
             >
               Search

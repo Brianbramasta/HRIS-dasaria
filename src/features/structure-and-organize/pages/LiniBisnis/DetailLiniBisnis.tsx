@@ -111,7 +111,7 @@ export default function DetailLiniBisnis() {
               <TableRow className="bg-brand-900 text-white">
                 <TableCell isHeader className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">No.</TableCell>
                 <TableCell isHeader className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Nama</TableCell>
-                <TableCell isHeader className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Dokumen</TableCell>
+                <TableCell isHeader className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Deskripsi</TableCell>
                 <TableCell isHeader className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">Action</TableCell>
               </TableRow>
             </TableHeader>
