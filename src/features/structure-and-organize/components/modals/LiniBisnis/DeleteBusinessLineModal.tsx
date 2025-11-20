@@ -1,6 +1,6 @@
 import React from 'react';
 // import { Modal } from '../../../../../components/ui/modal/index';
-import { businessLinesService } from '../../../services/request/business-lines.service';
+import { businessLinesService } from '../../../services/request/businessLines.service';
 import { BusinessLineListItem } from '../../../types/organization.api.types';
 import ModalDelete from '../shared/modal/ModalDelete';
 import FileInput from '../shared/field/FileInput';

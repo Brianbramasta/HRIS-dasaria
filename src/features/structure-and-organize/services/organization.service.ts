@@ -1,6 +1,6 @@
 // Barrel re-exports: pisahkan per fitur dan ekspor ulang dengan alias
-export { businessLinesService } from './request/business-lines.service';
-export { businessLinesService as businessLineService } from './request/business-lines.service';
+export { businessLinesService } from './request/businessLines.service';
+export { businessLinesService as businessLineService } from './request/businessLines.service';
 
 export { companiesService } from './request/companies.service';
 export { companiesService as companyService } from './request/companies.service';
@@ -20,5 +20,5 @@ export { departmentsService as departmentService } from './request/departments.s
 export { positionsService } from './request/positions.service';
 export { positionsService as positionService } from './request/positions.service';
 
-export { employeePositionsService } from './request/employee-positions.service';
-export { employeePositionsService as employeePositionService } from './request/employee-positions.service';
+export { employeePositionsService } from './request/employeePositions.service';
+export { employeePositionsService as employeePositionService } from './request/employeePositions.service';

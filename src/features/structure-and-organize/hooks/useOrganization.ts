@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { businessLinesService } from '../services/request/business-lines.service';
+import { businessLinesService } from '../services/request/businessLines.service';
 import { companiesService } from '../services/request/companies.service';
 import { BusinessLineDetailResponse, CompanyDetailResponse } from '../types/organization.api.types';
 

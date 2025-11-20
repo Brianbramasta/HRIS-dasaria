@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { employeePositionsService } from '../../../services/request/employee-positions.service';
+import { employeePositionsService } from '../../../services/request/employeePositions.service';
 import type { EmployeePositionListItem } from '../../../types/organization.api.types';
 import { useFileStore } from '@/stores/fileStore';
 import FileInput from '../shared/field/FileInput';

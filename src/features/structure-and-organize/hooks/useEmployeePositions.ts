@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { employeePositionsService } from '../services/request/employee-positions.service';
+import { employeePositionsService } from '../services/request/employeePositions.service';
 import { EmployeePositionListItem, TableFilter } from '../types/organization.api.types';
 import useFilterStore from '../../../stores/filterStore';
 

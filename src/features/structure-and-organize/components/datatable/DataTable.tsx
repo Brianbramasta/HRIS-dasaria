@@ -6,7 +6,7 @@ import Button from '../../../../components/ui/button/Button';
 import {Modal} from '../../../../components/ui/modal/index';
 import { Plus, Download } from 'react-feather';
 import { FilterLineIcon } from '../../../../icons/index';
-import { setFilterFor } from '../../../../stores/filterStore';
+import { setFilterFor, getFilterFor } from '../../../../stores/filterStore';
 import Checkbox from '../../../../components/form/input/Checkbox';
 
 export interface DataTableColumn<T = any> {
@@ -106,6 +106,18 @@ export function DataTable<T = any>({
   useEffect(() => {
     setExportVisibleColumns(columns.map((c) => c.id));
   }, [resetKey, columns]);
+
+  useEffect(() => {
+    const key = title ?? 'global';
+    const existing = getFilterFor(key);
+    console.log('existing', existing);
+    console.log('key', key);
+    if (existing) {
+      
+      const items = existing.split(',').map((v) => v.trim()).filter((v) => v.length > 0);
+      setModalFilterItems(items);
+    }
+  }, [resetKey]);
 
   const handleSort = (columnId: string) => {
     const isAsc = orderBy === columnId && order === 'asc';
@@ -422,7 +434,6 @@ export function DataTable<T = any>({
                 setFilterFor(key, value);
                 setFilterModalOpen(false);
                 setModalFilterTerm('');
-                setModalFilterItems([]);
               }}
             >
               Search

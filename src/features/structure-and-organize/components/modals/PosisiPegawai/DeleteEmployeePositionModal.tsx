@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { employeePositionsService } from '../../../services/request/employee-positions.service';
+import { employeePositionsService } from '../../../services/request/employeePositions.service';
 import type { EmployeePositionListItem } from '../../../types/organization.api.types';
 import Input from '@/components/form/input/InputField';
 import { useFileStore } from '@/stores/fileStore';
