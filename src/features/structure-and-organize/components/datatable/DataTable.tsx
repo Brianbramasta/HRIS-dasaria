@@ -94,7 +94,7 @@ export function DataTable<T = any>({
   const [exportVisibleColumns, setExportVisibleColumns] = useState<string[]>(() =>
     columns.map((c) => c.id)
   );
-  const [exportSearchTerm, setExportSearchTerm] = useState('');
+  const [exportSearchTerm, /*setExportSearchTerm*/] = useState('');
   const [modalFilterTerm, setModalFilterTerm] = useState('');
   const [modalFilterItems, setModalFilterItems] = useState<string[]>([]);
   const navigate = useNavigate();
@@ -451,37 +451,31 @@ export function DataTable<T = any>({
             </div>
             <div className="flex justify-between items-center mb-2">
               <h4 className="font-semibold">Kolom</h4>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={exportVisibleColumns.length === columns.length}
-                  onChange={(e) => setExportVisibleColumns(e.target.checked ? columns.map((c) => c.id) : [])}
-                />
-                Select All
-              </label>
+              <Checkbox
+                label="Select All"
+                checked={exportVisibleColumns.length === columns.length}
+                onChange={(checked) => setExportVisibleColumns(checked ? columns.map((c) => c.id) : [])}
+              />
             </div>
             <div className="grid grid-cols-2 gap-2">
               {columns.map((col) => (
                 <div key={col.id} className='border border-gray-300 rounded-md p-2'>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={exportVisibleColumns.includes(col.id)}
-                      onChange={() =>
-                        setExportVisibleColumns((prev) =>
-                          prev.includes(col.id)
-                            ? prev.filter((id) => id !== col.id)
-                            : [...prev, col.id]
-                        )
-                      }
-                    />
-                    {col.label}
-                  </label>
+                  <Checkbox
+                    label={col.label}
+                    checked={exportVisibleColumns.includes(col.id)}
+                    onChange={() =>
+                      setExportVisibleColumns((prev) =>
+                        prev.includes(col.id)
+                          ? prev.filter((id) => id !== col.id)
+                          : [...prev, col.id]
+                      )
+                    }
+                  />
                 </div>
               ))}
             </div>
           </div>
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <h4 className="font-semibold mb-2">Data</h4>
             <div className="relative">
               <input
@@ -497,7 +491,7 @@ export function DataTable<T = any>({
                 </svg>
               </div>
             </div>
-          </div>
+          </div> */}
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={() => setExportModalOpen(false)}>Close</Button>
             <Button
