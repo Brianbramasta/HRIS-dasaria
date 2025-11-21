@@ -8,9 +8,10 @@ import AddDocumentModal from '../../../components/modals/Perusahaan/detail/AddDo
 import DeleteDocumentModal from '../../../components/modals/Perusahaan/detail/DeleteDocumentModal';
 import EditDetailCompany from '../../../components/modals/Perusahaan/detail/EditDetailCompany';
 import Button from '@/components/ui/button/Button';
-import { TrashBinIcon, PencilIcon, AngleUpIcon, AngleDownIcon, FileIcon, ArrowRightIcon } from '@/icons/index';
+import { TrashBinIcon } from '@/icons/index';
 import { addNotification } from '@/stores/notificationStore';
 import { iconPlus } from '@/icons/components/icons';
+import DocumentsTable from '../../../components/table/TableGlobal';
 
 const DetailPerusahaan: React.FC = () => {
   const { id } = useParams();
@@ -28,8 +29,7 @@ const DetailPerusahaan: React.FC = () => {
   const [isDeleteDocOpen, setDeleteDocOpen] = React.useState(false);
   const [selectedDoc, setSelectedDoc] = React.useState<any | null>(null);
   const [isEditOpen, setEditOpen] = React.useState(false);
-  const [expandActive, setExpandActive] = React.useState(true);
-  const [expandArchive, setExpandArchive] = React.useState(true);
+  
 
   const fetch = React.useCallback(async () => {
     if (!id) return;
@@ -71,6 +71,21 @@ const DetailPerusahaan: React.FC = () => {
       { label: 'Type', value: company?.type || '—' },
       { label: 'Website', value: company?.website || '—' },
     ];
+
+    const docColumns = React.useMemo(() => ([
+      { id: 'no', label: 'No.', align: 'center', render: (_: any, __: any, idx: number) => idx + 1 },
+      { id: 'fileName', label: 'Nama Dokumen' },
+      { id: 'name', label: 'Jenis' },
+      { id: 'size', label: 'Ukuran' },
+      { id: 'type', label: 'Status', render: (v: string) => (v === 'active' ? 'Dokumen Aktif' : v === 'archive' ? 'Arsip' : '—') },
+    ]), []);
+
+    const dummyDocuments = React.useMemo(() => ([
+      { id: 1, fileName: 'Dokumen.pdf', name: 'Akta Pendirian Perusahaan (Update 2025)', size: '1MB', type: 'active' },
+      { id: 2, fileName: 'Dokumen.pdf', name: 'Dokumen2', size: '1MB', type: 'active' },
+      { id: 3, fileName: 'Dokumen.pdf', name: 'Dokumen2', size: '1MB', type: 'active' },
+      { id: 4, fileName: 'Dokumen.pdf', name: 'Akta Pendirian Perusahaan', size: '1MB', type: 'archive' },
+    ]), []);
 
     
   //   return (
@@ -185,93 +200,12 @@ const DetailPerusahaan: React.FC = () => {
                   Dokumen Baru</Button>
               </div>
 
-              {/* Dokumen Berlaku - collapsible */}
-              <div className="mb-4 rounded-lg">
-                <div className="flex items-center justify-between px-4 py-3 bg-gray-50">
-                  <h4 className="font-semibold">Dokumen Berlaku</h4>
-                  <button
-                    type="button"
-                    onClick={() => setExpandActive((v) => !v)}
-                    className="h-8 w-8 flex items-center justify-center rounded-md border hover:bg-gray-100"
-                    aria-label={expandActive ? 'Collapse Dokumen Berlaku' : 'Expand Dokumen Berlaku'}
-                  >
-                    {expandActive ? <AngleUpIcon className="h-4 w-4"/> : <AngleDownIcon className="h-4 w-4"/>}
-                  </button>
-                </div>
-                {expandActive && (<>
-                  {documents?.length ? 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4">
-                    {documents.filter(d=>d.type === 'active').map(d => (
-                      <div key={d.id} className=" p-4">
-                        <div className="mb-3 font-medium line-clamp-1">{d.name}</div>
-                        <div className="flex items-center justify-between gap-3 rounded border p-2">
-                          <div className="flex items-center gap-2">
-                            <div className="h-12 w-12 rounded bg-gray-200 flex items-center justify-center">
-                              <FileIcon className="h-6 w-6 text-gray-500" />
-                            </div>
-                            <div>
-                              <div className="text-sm font-medium line-clamp-2">{d.fileName || '—'}</div>
-                              <div className="text-xs text-gray-500">{d.size || ''}</div>
-                            </div>
-                          </div>
-                          <div className="flex gap-2">
-                            <button onClick={() => { setSelectedDoc(d); setDeleteDocOpen(true); }} className="h-9 w-9 flex items-center justify-center rounded-lg bg-red-500 text-white hover:bg-red-600"><TrashBinIcon className="h-5 w-5"/></button>
-                            <button onClick={() => { setSelectedDoc(d); setAddDocOpen(true); }} className="h-9 w-9 flex items-center justify-center rounded-lg bg-blue-600 text-white hover:bg-blue-700"><PencilIcon className="h-5 w-5"/></button>
-                          </div>
-                        </div>
-                        <button className="mt-3 inline-flex items-center gap-1 text-sm text-blue-600 hover:underline" onClick={() => {/* TODO: navigate to detail */}}>
-                          Detail <ArrowRightIcon className="h-4 w-4" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>:<p className={'text-center w-full'}>Tidak ada dokumen Berlaku</p>}
-                </>)}
-              </div>
-
-              {/* Riwayat dan Arsip - collapsible */}
-              <div className="rounded-lg">
-                <div className="flex items-center justify-between px-4 py-3 bg-gray-50">
-                  <h4 className="font-semibold">Riwayat dan Arsip</h4>
-                  <button
-                    type="button"
-                    onClick={() => setExpandArchive((v) => !v)}
-                    className="h-8 w-8 flex items-center justify-center rounded-md border hover:bg-gray-100"
-                    aria-label={expandArchive ? 'Collapse Riwayat dan Arsip' : 'Expand Riwayat dan Arsip'}
-                  >
-                    {expandArchive ? <AngleUpIcon className="h-4 w-4"/> : <AngleDownIcon className="h-4 w-4"/>}
-                  </button>
-                </div>
-                {expandArchive && (
-                  <>
-                  {documents?.length ? 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4">
-                    {documents.filter(d=>d.type === 'archive').map(d => (
-                      <div key={d.id} className=" p-4">
-                        <div className="mb-3 font-medium line-clamp-1">{d.name}</div>
-                        <div className="flex items-center justify-between gap-3">
-                          <div className="flex items-center gap-2 rounded border p-2">
-                            <div className="h-12 w-12 rounded bg-gray-200 flex items-center justify-center">
-                              <FileIcon className="h-6 w-6 text-gray-500" />
-                            </div>
-                            <div>
-                              <div className="text-sm font-medium line-clamp-2">{d.fileName || '—'}</div>
-                              <div className="text-xs text-gray-500">{d.size || ''}</div>
-                            </div>
-                          </div>
-                          <div className="flex gap-2">
-                            <button onClick={() => { setSelectedDoc(d); setDeleteDocOpen(true); }} className="h-9 w-9 flex items-center justify-center rounded-lg bg-red-500 text-white hover:bg-red-600"><TrashBinIcon className="h-5 w-5"/></button>
-                            <button onClick={() => { setSelectedDoc(d); setAddDocOpen(true); }} className="h-9 w-9 flex items-center justify-center rounded-lg bg-blue-600 text-white hover:bg-blue-700"><PencilIcon className="h-5 w-5"/></button>
-                          </div>
-                        </div>
-                        <button className="mt-3 inline-flex items-center gap-1 text-sm text-blue-600 hover:underline" onClick={() => {/* TODO: navigate to detail */}}>
-                          Detail <ArrowRightIcon className="h-4 w-4" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>:<p className={'text-center w-full'}>Tidak ada dokumen Arsip</p>}
-                  </>
-                )}
-              </div>
+              <DocumentsTable
+                items={documents?.length ? documents : dummyDocuments}
+                columns={docColumns as any}
+                onDelete={(d) => { setSelectedDoc(d); setDeleteDocOpen(true); }}
+                onEdit={(d) => { setSelectedDoc(d); setAddDocOpen(true); }}
+              />
             </div>
           )}
 
@@ -336,3 +270,4 @@ const DetailPerusahaan: React.FC = () => {
 };
 
 export default DetailPerusahaan;
+    

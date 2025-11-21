@@ -1,11 +1,12 @@
 import React from 'react';
-import { Table, TableHeader, TableBody, TableRow, TableCell } from '../../../../components/ui/table';
-import {  Eye, Download } from 'react-feather';
-import { useParams, Link } from 'react-router';
+import { Eye, Download } from 'react-feather';
+import { useParams, useNavigate } from 'react-router';
 import ExpandCard from '../../components/card/ExpandCard';
 import { businessLineService } from '../../services/organization.service';
+import DocumentsTable from '../../components/table/TableGlobal';
 export default function DetailLiniBisnis() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [title, setTitle] = React.useState<string>('Detail Lini Bisnis');
   const [overviewText, setOverviewText] = React.useState<string>('');
@@ -63,90 +64,51 @@ export default function DetailLiniBisnis() {
 
       {/* Berkas/Dokumen Pribadi */}
       <ExpandCard title="Berkas/Dokumen Pribadi" withHeaderDivider defaultOpen>
-        <div className="p-0 overflow-x-auto">
-          <Table className="min-w-[640px] md:min-w-full">
-            <TableHeader>
-              <TableRow className="bg-brand-900 text-white">
-                <TableCell isHeader className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">No.</TableCell>
-                <TableCell isHeader className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Nama File</TableCell>
-                <TableCell isHeader className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Dokumen</TableCell>
-                <TableCell isHeader className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">Action</TableCell>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {personalFiles?.length ? personalFiles.map((f) => (
-                <TableRow key={f.no} className="border-b border-gray-100 dark:border-gray-800">
-                  <TableCell className="px-6 py-4 text-center text-sm">{f.no}</TableCell>
-                  <TableCell className="px-6 py-4 text-sm">{f.namaFile}</TableCell>
-                  <TableCell className="px-6 py-4 text-sm">{f.dokumen}</TableCell>
-                  <TableCell className="px-6 py-4 text-center">
-                    <div className="flex items-center justify-center gap-2">
-                      <button className="rounded-md border border-gray-300 px-2 py-1 text-sm hover:bg-gray-50">
-                        <Eye size={16} />
-                      </button>
-                      <button className="rounded-md border border-gray-300 px-2 py-1 text-sm hover:bg-gray-50">
-                        <Download size={16} />
-                      </button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              )) : (
-                <TableRow key="no-files" className="border-b border-gray-100 dark:border-gray-800">
-                  <TableCell colSpan={4} className="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
-                    Tidak ada berkas/dokumen pribadi
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
+        <DocumentsTable
+          items={personalFiles as any}
+          columns={[
+            { id: 'no', label: 'No.', align: 'center' },
+            { id: 'namaFile', label: 'Nama File' },
+            { id: 'dokumen', label: 'Dokumen' },
+          ] as any}
+          actions={[
+            {
+              icon: <Eye size={16} />,
+              className: 'rounded-md border border-gray-300 px-2 py-1 text-sm hover:bg-gray-50',
+              onClick: (row: any) => { /* preview */ console.log('preview', row); },
+            },
+            {
+              icon: <Download size={16} />,
+              className: 'rounded-md border border-gray-300 px-2 py-1 text-sm hover:bg-gray-50',
+              onClick: (row: any) => { /* download */ console.log('download', row); },
+            },
+          ]}
+        />
       </ExpandCard>
 
       {/* Daftar Perusahaan */}
       <ExpandCard title="Daftar Perusahaan" withHeaderDivider defaultOpen>
-        <div className="p-0 overflow-x-auto">
-          <Table className="min-w-[640px] md:min-w-full">
-            <TableHeader>
-              <TableRow className="bg-brand-900 text-white">
-                <TableCell isHeader className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">No.</TableCell>
-                <TableCell isHeader className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Nama</TableCell>
-                <TableCell isHeader className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Deskripsi</TableCell>
-                <TableCell isHeader className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">Action</TableCell>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {companies?.length ? companies.map((c) => (
-                <TableRow key={c.no} className="border-b border-gray-100 dark:border-gray-800">
-                  <TableCell className="px-6 py-4 text-center text-sm">{c.no}</TableCell>
-                  <TableCell className="px-6 py-4 text-sm">{c.nama}</TableCell>
-                  <TableCell className="px-6 py-4 text-sm">{c.dokumen}</TableCell>
-                  <TableCell className="px-6 py-4 text-center">
-                    <div className="flex items-center justify-center gap-2">
-                      <Link to={`/structure-and-organize/companies/${c.companyId}`} className="rounded-md border border-gray-300 px-2 py-1 text-sm hover:bg-gray-50">
-                        <Eye size={16} />
-                      </Link>
-                      <button className="rounded-md border border-gray-300 px-2 py-1 text-sm hover:bg-gray-50">
-                        <Download size={16} />
-                      </button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              )) : (
-                <TableRow key="no-companies" className="border-b border-gray-100 dark:border-gray-800">
-                  <TableCell colSpan={4} className="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
-                    Tidak ada perusahaan
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
+        <DocumentsTable
+          items={companies as any}
+          columns={[
+            { id: 'no', label: 'No.', align: 'center' },
+            { id: 'nama', label: 'Nama' },
+            { id: 'dokumen', label: 'Deskripsi' },
+          ] as any}
+          actions={[
+            {
+              icon: <Eye size={16} />,
+              className: 'rounded-md border border-gray-300 px-2 py-1 text-sm hover:bg-gray-50',
+              onClick: (row: any) => navigate(`/structure-and-organize/companies/${row.companyId}`),
+            }
+          ]}
+        />
       </ExpandCard>
 
 
       {/* Back link to list */}
       <div className="flex justify-end">
-        <Link to="/structure-and-organize/business-lines" className="rounded-md border border-gray-300 px-3 py-2 text-sm hover:bg-gray-50">Kembali ke daftar Lini Bisnis</Link>
+        <button onClick={() => navigate('/structure-and-organize/business-lines')} className="rounded-md border border-gray-300 px-3 py-2 text-sm hover:bg-gray-50">Kembali ke daftar Lini Bisnis</button>
       </div>
     </div>
   );
