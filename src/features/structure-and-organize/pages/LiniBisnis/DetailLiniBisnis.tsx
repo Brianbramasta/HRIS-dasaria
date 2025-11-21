@@ -4,7 +4,6 @@ import {  Eye, Download } from 'react-feather';
 import { useParams, Link } from 'react-router';
 import ExpandCard from '../../components/card/ExpandCard';
 import { businessLineService } from '../../services/organization.service';
-import { FileText } from '@/icons/components/icons';
 export default function DetailLiniBisnis() {
   const { id } = useParams();
 
@@ -48,7 +47,7 @@ export default function DetailLiniBisnis() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">{title}</h1>
-        <p className="text-gray-500 dark:text-gray-400 text-sm">Detail Lini Bisnis {id ? `#${id}` : ''}</p>
+        {/* <p className="text-gray-500 dark:text-gray-400 text-sm">Detail Lini Bisnis {id ? `#${id}` : ''}</p> */}
         {loading && (
           <p className="text-gray-500 dark:text-gray-400 text-sm">Memuat data…</p>
         )}
@@ -58,7 +57,7 @@ export default function DetailLiniBisnis() {
       </div>
 
       {/* Overview */}
-      <ExpandCard title="Overview" leftIcon={<FileText size={18}  />} defaultOpen contentClassName="px-6 pb-6">
+      <ExpandCard title="Overview"  defaultOpen contentClassName="px-6 pb-6">
         <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">{overviewText}</p>
       </ExpandCard>
 

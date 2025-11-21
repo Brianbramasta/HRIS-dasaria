@@ -3,10 +3,12 @@ import { companyService, businessLineService } from '../../../services/organizat
 import type { CompanyListItem, BusinessLineListItem } from '../../../types/organization.api.types';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
+import Select from '@/components/form/Select';
 import FileInput from '@/components/form/input/FileInput';
 import ModalAddEdit from '../shared/modal/modalAddEdit';
 import { addNotification } from '@/stores/notificationStore';
-import { PlusIcon, TrashBinIcon } from '@/icons';
+import {  TrashBinIcon } from '@/icons';
+import { iconPlus } from '@/icons/components/icons';
 
 
 
@@ -122,17 +124,13 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
 
           <div className="space-y-2">
             <label className="text-sm font-medium">Lini Bisnis</label>
-            <select
+            <Select
               required
-              value={businessLineId}
-              onChange={(e) => setBusinessLineId(e.target.value)}
-              className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              <option value="">Pilih Lini Bisnis</option>
-              {businessLines.map((bl) => (
-                <option key={bl.id} value={bl.id}>{bl.name}</option>
-              ))}
-            </select>
+              options={businessLines.map((bl) => ({ label: bl.name, value: bl.id }))}
+              placeholder="Pilih Lini Bisnis"
+              defaultValue={businessLineId}
+              onChange={(value) => setBusinessLineId(value)}
+            />
           </div>
 
           <div className="space-y-2">
@@ -155,7 +153,7 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
 
           {/* Baris dokumen dinamis */}
           {documents.map((doc, idx) => (
-            <div key={idx} className="grid grid-cols-12 items-center gap-3">
+            <div key={idx} className="grid grid-cols-12 items-center gap-3 mb-2">
               <div className="col-span-4">
                 <Input
                   required
@@ -188,7 +186,7 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
                     className="ml-1 flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500 text-white hover:bg-emerald-600"
                     aria-label="Tambah dokumen"
                   >
-                    <PlusIcon className="h-5 w-5 text-white" />
+                    {iconPlus({size:24})}
                   </button>
                 ) : (
                   <button

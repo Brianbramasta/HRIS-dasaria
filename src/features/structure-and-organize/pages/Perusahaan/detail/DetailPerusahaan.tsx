@@ -10,6 +10,7 @@ import EditDetailCompany from '../../../components/modals/Perusahaan/detail/Edit
 import Button from '@/components/ui/button/Button';
 import { TrashBinIcon, PencilIcon, AngleUpIcon, AngleDownIcon, FileIcon, ArrowRightIcon } from '@/icons/index';
 import { addNotification } from '@/stores/notificationStore';
+import { iconPlus } from '@/icons/components/icons';
 
 const DetailPerusahaan: React.FC = () => {
   const { id } = useParams();
@@ -154,11 +155,7 @@ const DetailPerusahaan: React.FC = () => {
               <div className="flex items-center justify-between mb-3">
                 <h4 className="text-3xl font-semibold text-[#004969]">Branch</h4>
                 <Button onClick={() => setAddBranchOpen(true)} className="flex items-center justify-center bg-blue-600 text-white  rounded">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="2" y="2" width="20" height="20" rx="10" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1 3"/>
-                  <path d="M11.9987 7.33301V16.6663M7.33203 11.9997H16.6654" stroke="white" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-
+                  {iconPlus({size:24})}
                   Tambah Branch</Button>
               </div>
 
@@ -183,10 +180,8 @@ const DetailPerusahaan: React.FC = () => {
             <div>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-3xl  font-semibold text-[#004969]">Dokumen & Arsip</h3>
-                <Button onClick={() => setAddDocOpen(true)} className="bg-blue-600 text-white px-3 py-1 rounded"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="2" y="2" width="20" height="20" rx="10" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1 3"/>
-                  <path d="M11.9987 7.33301V16.6663M7.33203 11.9997H16.6654" stroke="white" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
+                <Button onClick={() => setAddDocOpen(true)} className="bg-blue-600 text-white px-3 py-1 rounded">
+                  {iconPlus({size:24})}
                   Dokumen Baru</Button>
               </div>
 

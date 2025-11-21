@@ -26,9 +26,10 @@ export default function DatePicker({
   useEffect(() => {
     const flatPickr = flatpickr(`#${id}`, {
       mode: mode || "single",
-      static: true,
+      static: false,
+      position: "above",
       monthSelectorType: "static",
-      dateFormat: "Y-m-d",
+      dateFormat: "d/m/Y",
       defaultDate,
       onChange,
     });

@@ -12,9 +12,10 @@ interface ModalAddEditProps {
   handleSubmit?: () => void;
   submitting: boolean;
   maxWidth?: string;
+  confirmTitleButton?: string;
 }
 
-const ModalAddEdit: React.FC<ModalAddEditProps> = ({ title, content, isOpen, onClose,  handleSubmit, submitting, maxWidth }) => {
+const ModalAddEdit: React.FC<ModalAddEditProps> = ({ title, content, isOpen, onClose,  handleSubmit, submitting, maxWidth, confirmTitleButton = 'Save' }) => {
   
 
   return (
@@ -22,7 +23,7 @@ const ModalAddEdit: React.FC<ModalAddEditProps> = ({ title, content, isOpen, onC
       <div className="space-y-6 ">
         <form className='' onSubmit={(e) => {e.preventDefault(); handleSubmit?.()}}>
         <h2 className="text-3xl font-bold text-center">{title}</h2>
-        <div className='max-h-[100vh] overflow-y-auto '>
+        <div className='max-h-[100vh] overflow-y-auto mb-4'>
           {content}
         </div>
         <div className="flex justify-end gap-3">
@@ -34,7 +35,7 @@ const ModalAddEdit: React.FC<ModalAddEditProps> = ({ title, content, isOpen, onC
             disabled={submitting}
             className="rounded-xl bg-blue-600 px-5 py-2 text-white disabled:opacity-60"
           >
-            Save
+            {confirmTitleButton}
           </Button>
         </div>
         </form>
