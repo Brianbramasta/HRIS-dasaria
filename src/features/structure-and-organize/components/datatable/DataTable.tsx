@@ -67,7 +67,7 @@ export function DataTable<T = any>({
   pageSize = 10,
   pageSizeOptions = [5, 10, 25, 50],
   onAdd,
-  addButtonLabel = 'Tambah Lini Bisnis',
+  addButtonLabel,
   onExport,
   exportButtonLabel = 'Ekspor',
   filterable = true,
@@ -217,7 +217,7 @@ export function DataTable<T = any>({
             {onAdd && (
               <Button onClick={onAdd} variant="primary" size="sm">
                 <Plus size={16} className="mr-2" />
-                {addButtonLabel}
+                {addButtonLabel||'Tambah '+title}
               </Button>
             )}
           </div>

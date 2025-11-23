@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-// import { Modal } from '../../../../../components/ui/modal/index';
 import { officesService } from '../../../services/request/offices.service';
+import { companiesService } from '../../../services/request/companies.service';
 import type { OfficeListItem } from '../../../types/organization.api.types';
 import { useFileStore } from '@/stores/fileStore';
 import FileInput from '../shared/field/FileInput';
@@ -8,6 +8,7 @@ import ModalAddEdit from '../shared/modal/modalAddEdit';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 import { addNotification } from '@/stores/notificationStore';
+import MultiSelect from '@/components/form/MultiSelect';
 
 
 
@@ -24,14 +25,29 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
   const [description, setDescription] = useState('');
   const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
+  const [companyIds, setCompanyIds] = useState<string[]>([]);
+  const [companyOptions, setCompanyOptions] = useState<{ value: string; text: string }[]>([]);
 
   useEffect(() => {
     if (office) {
       setName(office.name || '');
       setMemoNumber(office.memoNumber || '');
       setDescription(office.description || '');
+      const cid = (office as any)?.companyId;
+      setCompanyIds(cid ? [cid] : []);
     }
   }, [office]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await companiesService.getList({ search: '', page: 1, pageSize: 100, sortBy: 'name', sortOrder: 'asc' });
+        setCompanyOptions(res.data.map((c) => ({ value: c.id, text: c.name })));
+      } catch (e) {
+        console.error('Failed to fetch companies', e);
+      }
+    })();
+  }, []);
 
   const handleFileChange = (/*_e: React.ChangeEvent<HTMLInputElement>*/) => {
     // metadata file dikelola oleh FileInput melalui store
@@ -52,6 +68,7 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
     setSubmitting(true);
     try {
       const updated = await officesService.update(office.id, {
+        companyId: companyIds[0],
         name: name.trim(),
         description: description.trim() || null,
         memoNumber: memoNumber.trim(),
@@ -83,6 +100,13 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
             className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
+
+        <MultiSelect
+          label="Perusahaan"
+          options={companyOptions}
+          defaultSelected={companyIds}
+          onChange={setCompanyIds}
+        />
 
         <div className="space-y-2">
           <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>

@@ -14,7 +14,7 @@ type Props = { resetKey: string };
 
 const officeColumns: DataTableColumn<OfficeRow>[] = [
   { id: 'no', label: 'No', sortable: true },
-  { id: 'Office', label: 'Office', sortable: true },
+  { id: 'Office', label: 'Kantor', sortable: true },
   { id: 'Deskripsi Umum', label: 'Deskripsi Umum', sortable: true },
   { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: true, format: () => <FileText size={16} /> },
 ];
@@ -61,7 +61,7 @@ export default function OfficesTab({ resetKey }: Props) {
   return (
     <>
     <DataTable
-      title="Office"
+      title="Kantor"
       data={rows}
       columns={officeColumns}
       actions={actionsIconOnly}

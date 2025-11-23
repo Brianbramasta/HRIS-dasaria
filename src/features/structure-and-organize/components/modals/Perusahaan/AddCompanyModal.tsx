@@ -140,21 +140,20 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
               value={description}
               onChange={(e) => setDescription(e)}
               className="w-full min-h-28 rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="Enter as description ..."
+              placeholder="Enter as Deskripsi ..."
             />
           </div>
 
-          {/* Header kolom dokumen */}
-          <div className="mt-4 grid grid-cols-12 gap-3 text-sm font-medium">
-            <div className="col-span-4">Nama Dokumen</div>
-            <div className="col-span-4">No. Dokumen</div>
-            <div className="col-span-4">Upload file</div>
+          <div className="mt-4 hidden md:grid md:grid-cols-12 gap-3 text-sm font-medium">
+            <div className="md:col-span-4">Nama Dokumen</div>
+            <div className="md:col-span-4">No. Dokumen</div>
+            <div className="md:col-span-4">Unggah file</div>
           </div>
 
-          {/* Baris dokumen dinamis */}
           {documents.map((doc, idx) => (
-            <div key={idx} className="grid grid-cols-12 items-center gap-3 mb-2">
-              <div className="col-span-4">
+            <div key={idx} className="grid grid-cols-12 items-start gap-3 mb-3">
+              <div className="col-span-12 md:col-span-4">
+                <label className="text-sm font-medium md:hidden">Nama Dokumen</label>
                 <Input
                   required
                   type="text"
@@ -163,7 +162,8 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
                   className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
-              <div className="col-span-4">
+              <div className="col-span-12 md:col-span-4">
+                <label className="text-sm font-medium md:hidden">No. Dokumen</label>
                 <Input
                   required
                   type="text"
@@ -172,32 +172,34 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
                   className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
-              <div className="col-span-4 flex items-center gap-2">
-                <div className="flex-1">
-                  <FileInput onChange={(e) => handleDocFileChange(idx, e)} />
+              <div className="col-span-12 md:col-span-4">
+                <label className="text-sm font-medium md:hidden">Unggah file</label>
+                <div className="flex flex-col gap-2 md:flex-row md:items-center">
+                  <div className="flex-1">
+                    <FileInput onChange={(e) => handleDocFileChange(idx, e)} />
+                  </div>
+                  {idx === 0 ? (
+                    <button
+                      type="button"
+                      onClick={addDocumentRow}
+                      className="ml-0 h-11 w-full rounded-lg bg-emerald-500 px-4 text-sm font-medium text-white hover:bg-emerald-600 md:ml-1 md:h-9 md:w-9 md:px-0"
+                      aria-label="Tambah dokumen"
+                    >
+                      <span className="inline md:hidden">Tambah</span>
+                      <span className="hidden  md:flex md:items-center md:justify-center">{iconPlus({ size: 24 })}</span>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => removeDocumentRow(idx)}
+                      className="ml-0 h-11 w-full rounded-lg bg-rose-500 px-4 text-sm font-medium text-white hover:bg-rose-600 md:ml-1 md:h-9 md:w-9 md:px-0"
+                      aria-label="Hapus baris dokumen"
+                    >
+                      <span className="inline md:hidden">Hapus</span>
+                      <TrashBinIcon className="hidden md:inline h-5 w-5" />
+                    </button>
+                  )}
                 </div>
-                {/* <span className="text-sm text-gray-500">
-                  {doc.file?.name || 'Tidak ada file yang dipilih'}
-                </span> */}
-                {idx === 0 ? (
-                  <button
-                    type="button"
-                    onClick={addDocumentRow}
-                    className="ml-1 flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500 text-white hover:bg-emerald-600"
-                    aria-label="Tambah dokumen"
-                  >
-                    {iconPlus({size:24})}
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => removeDocumentRow(idx)}
-                    className="ml-1 flex h-9 w-9 items-center justify-center rounded-lg bg-rose-500 text-white hover:bg-rose-600"
-                    aria-label="Hapus baris dokumen"
-                  >
-                    <TrashBinIcon className="h-5 w-5" />
-                  </button>
-                )}
               </div>
             </div>
           ))}

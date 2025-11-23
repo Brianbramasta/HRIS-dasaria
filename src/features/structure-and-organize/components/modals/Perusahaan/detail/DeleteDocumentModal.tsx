@@ -1,6 +1,9 @@
 import React from 'react';
 import { apiService } from '../../../../../../services/api';
 import ModalDelete from '../../shared/modal/ModalDelete';
+import Input from '@/components/form/input/InputField';
+import FileInput from '../../shared/field/FileInput';
+import { addNotification } from '@/stores/notificationStore';
 
 interface DeleteDocumentModalProps {
   isOpen: boolean;
@@ -11,12 +14,35 @@ interface DeleteDocumentModalProps {
 
 const DeleteDocumentModal: React.FC<DeleteDocumentModalProps> = ({ isOpen, onClose, document, onSuccess }) => {
   const [submitting, setSubmitting] = React.useState(false);
+  const [memoNumber, setMemoNumber] = React.useState('');
+  const [skFileName, setSkFileName] = React.useState('');
+
+  React.useEffect(() => {
+    if (document) {
+      setMemoNumber(document?.memoNumber || document?.memo_number || document?.docNumber || '');
+      setSkFileName('');
+    }
+  }, [document, isOpen]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    setSkFileName(file?.name || '');
+  };
 
   const handleDelete = async () => {
     if (!document) return;
+    if (!skFileName){
+      addNotification({
+        variant: 'error',
+        title: 'Dokumen tidak dihapus',
+        description: 'File SK Wajib di isi',
+        hideDuration: 4000,
+      });
+      return;
+    }
     setSubmitting(true);
     try {
-      await apiService.delete(`/documents/${document.id}` as any);
+      await apiService.patch(`/files/${document.id}` as any, { is_deleted: true, memo_number: memoNumber, sk_file_id: skFileName } as any);
       onSuccess?.();
       onClose();
     } catch (err) {
@@ -34,7 +60,16 @@ const DeleteDocumentModal: React.FC<DeleteDocumentModalProps> = ({ isOpen, onClo
       handleDelete={handleDelete}
       submitting={submitting}
       content={<>
-        <p className='text-center'>Apakah anda yakin ingin menghapus dokumen <strong>{document?.name}</strong> ?</p>
+        <div className="space-y-2">
+          <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
+          <Input
+            type="text"
+            value={memoNumber}
+            onChange={(e:any) => setMemoNumber(e.target.value)}
+            className="w-full rounded-xl border border-gray-300 bg-gray-100 px-4 py-3"
+          />
+        </div>
+        <FileInput onChange={handleFileChange} skFileName={skFileName} />
       </>}
     />
   );
