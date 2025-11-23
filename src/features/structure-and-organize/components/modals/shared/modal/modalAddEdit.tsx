@@ -13,9 +13,10 @@ interface ModalAddEditProps {
   submitting: boolean;
   maxWidth?: string;
   confirmTitleButton?: string;
+  closeTitleButton?: string;
 }
 
-const ModalAddEdit: React.FC<ModalAddEditProps> = ({ title, content, isOpen, onClose,  handleSubmit, submitting, maxWidth, confirmTitleButton = 'Save' }) => {
+const ModalAddEdit: React.FC<ModalAddEditProps> = ({ title, content, isOpen, onClose,  handleSubmit, submitting, maxWidth, confirmTitleButton = 'Simpan', closeTitleButton = 'Tutup' }) => {
   
 
   return (
@@ -27,7 +28,7 @@ const ModalAddEdit: React.FC<ModalAddEditProps> = ({ title, content, isOpen, onC
           {content}
         </div>
         <div className="flex justify-end gap-3">
-          <Button variant={'outline'} onClick={onClose} className="rounded-xl border px-5 py-2">Close</Button>
+          <Button variant={'outline'} onClick={onClose} className="rounded-xl border px-5 py-2">{closeTitleButton}</Button>
           <Button
             
             // onClick={handleSubmit}

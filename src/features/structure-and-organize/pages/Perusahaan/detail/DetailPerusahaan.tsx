@@ -5,6 +5,7 @@ import { companyService } from '../../../services/organization.service';
 import AddBranchModal from '../../../components/modals/Perusahaan/detail/AddBranchModal';
 import DeleteBranchModal from '../../../components/modals/Perusahaan/detail/DeleteBranchModal';
 import AddDocumentModal from '../../../components/modals/Perusahaan/detail/AddDocumentModal';
+import EditDocumentModal from '../../../components/modals/Perusahaan/detail/EditDocumentModal';
 import DeleteDocumentModal from '../../../components/modals/Perusahaan/detail/DeleteDocumentModal';
 import EditDetailCompany from '../../../components/modals/Perusahaan/detail/EditDetailCompany';
 import Button from '@/components/ui/button/Button';
@@ -27,6 +28,7 @@ const DetailPerusahaan: React.FC = () => {
 
   const [isAddDocOpen, setAddDocOpen] = React.useState(false);
   const [isDeleteDocOpen, setDeleteDocOpen] = React.useState(false);
+  const [isEditDocOpen, setEditDocOpen] = React.useState(false);
   const [selectedDoc, setSelectedDoc] = React.useState<any | null>(null);
   const [isEditOpen, setEditOpen] = React.useState(false);
   
@@ -104,16 +106,18 @@ const DetailPerusahaan: React.FC = () => {
       {/* <h1 className="text-3xl font-semibold mb-4">{company?.name || 'Detail Perusahaan'}</h1> */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
         {/* card kiri */}
-        <div className="col-span-12 md:col-span-4 rounded-lg p-4 md:p-6 shadow-sm bg-[#F6F6F6]">
+        <div className="col-span-12 md:col-span-4 rounded-lg p-4 md:p-6 shadow-sm bg-white">
           <div className="flex flex-col items-center">
             <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center mb-4">{/* logo */}
-              <span className="text-3xl font-bold"><img src={company?.logo?.fileUrl || '/placeholder.svg'} alt='logo' className='w-full h-full object-cover rounded-full'/></span>
+              <span className="text-3xl font-bold"><img src={company?.logo?.fileUrl || '/images/logo/logo-icon.svg'} alt='logo' className='w-32 h-32 object-cover rounded-full'/></span>
             </div>
             <h2 className="text-xl font-bold">{company?.name}</h2>
-            <p className="text-sm text-gray-500">{company?.businessLineName}</p>
+            <p className="text-md font-medium">{company?.businessLineName}</p>
           </div>
 
-          <div className="mt-6 text-sm">
+          <hr className='my-6'/>
+
+          <div className=" text-sm">
             {/* Address */}
             <div className='flex gap-2 justify-between mb-6 items-start flex-wrap sm:flex-nowrap'>
               <div className='min-w-[120px] text-gray-600'>Alamat</div> <div>:</div> 
@@ -126,8 +130,8 @@ const DetailPerusahaan: React.FC = () => {
               <div className="w-full max-w-full break-words md:max-w-[200px] md:w-[200px]">{companySizeValue}</div>
             </div>
 
-            <hr className="my-4 border-gray-200" />
-            <div className="text-gray-800 font-semibold mb-2">Contact Information</div>
+            
+            <div className="text-gray-600 font-semibold mb-2">Contact Information</div>
             {contactInformation.map((data, idx) => (
               <div key={`contact-${idx}`} className='flex gap-2 justify-between mb-6 items-start flex-wrap sm:flex-nowrap'>
                 <div className='min-w-[120px] text-gray-600'>{data.label}</div> <div>:</div> 
@@ -135,8 +139,8 @@ const DetailPerusahaan: React.FC = () => {
               </div>
             ))}
 
-            <hr className="my-4 border-gray-200" />
-            <div className="text-gray-800 font-semibold mb-2">Custom Information</div>
+            
+            <div className="text-gray-600 font-semibold mb-2">Custom Information</div>
             {customInformation.map((data, idx) => (
               <div key={`custom-${idx}`} className='flex gap-2 justify-between mb-6 items-start flex-wrap sm:flex-nowrap'>
                 <div className='min-w-[120px] text-gray-600'>{data.label}</div> <div>:</div> 
@@ -144,8 +148,8 @@ const DetailPerusahaan: React.FC = () => {
               </div>
             ))}
           </div>
-          <div className="mt-6 flex justify-end">
-            <Button size='sm' onClick={() => setEditOpen(true)} startIcon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z" fill="currentColor"/><path d="M20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/></svg>}>
+          <div className="mt-6 flex justify-end ">
+            <Button className="w-full" size='sm' onClick={() => setEditOpen(true)} startIcon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z" fill="currentColor"/><path d="M20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/></svg>}>
               Edit
             </Button>
           </div>
@@ -204,7 +208,7 @@ const DetailPerusahaan: React.FC = () => {
                 items={documents?.length ? documents : dummyDocuments}
                 columns={docColumns as any}
                 onDelete={(d) => { setSelectedDoc(d); setDeleteDocOpen(true); }}
-                onEdit={(d) => { setSelectedDoc(d); setAddDocOpen(true); }}
+                onEdit={(d) => { setSelectedDoc(d); setEditDocOpen(true); }}
               />
             </div>
           )}
@@ -255,6 +259,14 @@ const DetailPerusahaan: React.FC = () => {
           variant: 'success',
           hideDuration: 4000,
           title: 'Dokumen dihapus',
+        });
+      }} />
+      <EditDocumentModal isOpen={isEditDocOpen} onClose={() => setEditDocOpen(false)} companyId={id || ''} companyName={company?.name || ''} document={selectedDoc} onSuccess={() => {fetch();
+        addNotification({
+          description: 'Dokumen berhasil diupdate',
+          variant: 'success',
+          hideDuration: 4000,
+          title: 'Dokumen diupdate',
         });
       }} />
       <EditDetailCompany isOpen={isEditOpen} onClose={() => setEditOpen(false)} company={company} onSuccess={() => {fetch();

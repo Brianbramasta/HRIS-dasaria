@@ -44,14 +44,14 @@ const defaultActions = (
 ): Action<DocumentItem>[] => [
   {
     label: 'Delete',
-    icon: <TrashBinIcon className="h-5 w-5" />,
-    className: 'h-9 w-9 flex items-center justify-center rounded-lg bg-red-500 text-white hover:bg-red-600',
+    icon: <TrashBinIcon className="h-5 w-5 text-[#000]" />,
+    className: 'h-9 w-9 flex items-center justify-center rounded-lg  text-white ',
     onClick: (row) => onDelete && onDelete(row),
   },
   {
     label: 'Edit',
-    icon: <PencilIcon className="h-5 w-5" />,
-    className: 'h-9 w-9 flex items-center justify-center rounded-lg bg-blue-600 text-white hover:bg-blue-700',
+    icon: <PencilIcon className="h-5 w-5 text-[#000]" />,
+    className: 'h-9 w-9 flex items-center justify-center rounded-lg  text-white ',
     onClick: (row) => onEdit && onEdit(row),
   },
 ];
