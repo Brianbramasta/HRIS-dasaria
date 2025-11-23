@@ -8,6 +8,7 @@ import FileInput from '../shared/field/FileInput';
 import ModalAddEdit from '../shared/modal/modalAddEdit';
 import Input from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
+import TextArea from '@/components/form/input/TextArea';
 import { addNotification } from '@/stores/notificationStore';
 
 interface EditDepartmentModalProps {
@@ -20,6 +21,7 @@ interface EditDepartmentModalProps {
 const EditDepartmentModal: React.FC<EditDepartmentModalProps> = ({ isOpen, onClose, department, onSuccess }) => {
   const [name, setName] = useState('');
   const [divisionId, setDivisionId] = useState('');
+  const [description, setDescription] = useState('');
   const [memoNumber, setMemoNumber] = useState('');
   const skFile = useFileStore((s) => s.skFile);
   const [divisions, setDivisions] = useState<DivisionListItem[]>([]);
@@ -41,6 +43,7 @@ const EditDepartmentModal: React.FC<EditDepartmentModalProps> = ({ isOpen, onClo
     if (isOpen && department) {
       setName(department.name || '');
       setDivisionId(department.divisionId || '');
+      setDescription((department as any).description || '');
       setMemoNumber((department as any).memoNumber || '');
     }
   }, [isOpen, department]);
@@ -62,7 +65,7 @@ const EditDepartmentModal: React.FC<EditDepartmentModalProps> = ({ isOpen, onClo
       await departmentsService.update(department.id, {
         name,
         divisionId,
-        description: (department as any).description ?? null,
+        description: description || null,
         memoNumber,
         skFileId: skFile?.path || skFile?.name,
       });
@@ -112,6 +115,17 @@ const EditDepartmentModal: React.FC<EditDepartmentModalProps> = ({ isOpen, onClo
             value={memoNumber}
             onChange={(e) => setMemoNumber(e.target.value)}
             className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Deskripsi Umum</label>
+          <TextArea
+            required
+            value={description}
+            onChange={(value) => setDescription(value)}
+            className="w-full rounded-xl border border-gray-300 px-4 py-3 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder="Enter as Deskripsi ..."
           />
         </div>
 

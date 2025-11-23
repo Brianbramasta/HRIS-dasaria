@@ -53,7 +53,8 @@ const DeleteDivisionModal: React.FC<DeleteDivisionModalProps> = ({ isOpen, onClo
       handleDelete={handleDelete}
       submitting={submitting}
       content={
-        <><div className="space-y-2">
+        <>
+        <div className="space-y-2 hidden">
           <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
           <Input
             required

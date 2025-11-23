@@ -86,7 +86,7 @@ const EditDivisionModal: React.FC<EditDivisionModalProps> = ({ isOpen, onClose, 
       onClose={onClose}
       handleSubmit={handleSubmit}
       submitting={submitting}
-      title="Edit Division"
+      title="Update Divisi"
       content={
         <>
           <div className="space-y-2">
@@ -113,6 +113,17 @@ const EditDivisionModal: React.FC<EditDivisionModalProps> = ({ isOpen, onClose, 
           />
         </div>
 
+          <div className="space-y-2">
+          <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
+          <Input
+            required
+            type="text"
+            value={memoNumber}
+            onChange={(e) => setMemoNumber(e.target.value)}
+            className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+        </div>
+
         <div className="space-y-2">
           <label className="text-sm font-medium">Deskripsi Umum</label>
           
@@ -125,16 +136,7 @@ const EditDivisionModal: React.FC<EditDivisionModalProps> = ({ isOpen, onClose, 
           
         </div>
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
-          <Input
-            required
-            type="text"
-            value={memoNumber}
-            onChange={(e) => setMemoNumber(e.target.value)}
-            className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-        </div>
+      
 
         <FileInput skFileName={skFile?.name || division?.skFile?.fileName || ''} onChange={handleFileChange} />
 

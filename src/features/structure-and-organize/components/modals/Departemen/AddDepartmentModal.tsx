@@ -8,6 +8,7 @@ import FileInput from '../shared/field/FileInput';
 import ModalAddEdit from '../shared/modal/modalAddEdit';
 import Input from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
+import TextArea from '@/components/form/input/TextArea';
 import { addNotification } from '@/stores/notificationStore';
 
 interface AddDepartmentModalProps {
@@ -19,6 +20,7 @@ interface AddDepartmentModalProps {
 const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ isOpen, onClose, onSuccess }) => {
   const [name, setName] = useState('');
   const [divisionId, setDivisionId] = useState('');
+  const [description, setDescription] = useState('');
   const [memoNumber, setMemoNumber] = useState('');
   const skFile = useFileStore((s) => s.skFile);
   const [divisions, setDivisions] = useState<DivisionListItem[]>([]);
@@ -40,6 +42,7 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ isOpen, onClose
     if (!isOpen) {
       setName('');
       setDivisionId('');
+      setDescription('');
       setMemoNumber('');
       useFileStore.getState().clearSkFile();
     }
@@ -63,7 +66,7 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ isOpen, onClose
       await departmentsService.create({
         name,
         divisionId,
-        description: null,
+        description: description || null,
         memoNumber,
         skFileId: skFile?.path || skFile?.name,
       });
@@ -114,6 +117,17 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ isOpen, onClose
             value={memoNumber}
             onChange={(e) => setMemoNumber(e.target.value)}
             className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Deskripsi Umum</label>
+          <TextArea
+            required
+            value={description}
+            onChange={(value) => setDescription(value)}
+            className="w-full rounded-xl border border-gray-300 px-4 py-3 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder="Enter as Deskripsi ..."
           />
         </div>
 
