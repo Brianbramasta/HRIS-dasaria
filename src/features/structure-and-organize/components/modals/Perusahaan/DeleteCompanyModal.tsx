@@ -1,10 +1,9 @@
 import React from 'react';
 import { companyService } from '../../../services/organization.service';
 import type { CompanyListItem } from '../../../types/organization.api.types';
-import Input from '@/components/form/input/InputField';
 import { addNotification } from '@/stores/notificationStore';
-import FileInput from '../shared/field/FileInput';
 import ModalDelete from '../shared/modal/ModalDelete';
+import ModalDeleteContent from '../shared/modal/ModalDeleteContent';
 
 
 
@@ -54,21 +53,8 @@ const DeleteCompanyModal: React.FC<DeleteCompanyModalProps> = ({ isOpen, onClose
       onClose={onClose}
       handleDelete={handleDelete}
       submitting={submitting}
-      content={<>
-      <div className="space-y-2">
-          <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
-          <Input
-            type="text"
-            value={company?.memoNumber || ''}
-            className="w-full rounded-xl border border-gray-300 bg-gray-100 px-4 py-3"
-          />
-        </div>
-
-        < FileInput
-        onChange={handleFileChange}
-        skFileName={skFileName}
-        />
-      </>}
+      content={<ModalDeleteContent memoNumber={company?.memoNumber || ''} memoNumberReadOnly={true} skFileName={skFileName} onFileChange={handleFileChange} />}
+      title="Hapus Data Perusahaan"
     />
   );
 };

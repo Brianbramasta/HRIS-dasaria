@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 // import { Modal } from '../../../../../components/ui/modal/index';
 import { departmentsService } from '../../../services/request/departments.service';
 import type { DepartmentListItem } from '../../../types/organization.api.types';
-import FileInput from '../shared/field/FileInput';
 import ModalDelete from '../shared/modal/ModalDelete';
+import ModalDeleteContent from '../shared/modal/ModalDeleteContent';
 import { addNotification } from '@/stores/notificationStore';
 
 interface DeleteDepartmentModalProps {
@@ -53,19 +53,8 @@ const DeleteDepartmentModal: React.FC<DeleteDepartmentModalProps> = ({ isOpen, o
       onClose={onClose}
       handleDelete={handleDelete}
       submitting={submitting}
-      content={
-        <><div className="space-y-2">
-          <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
-          <input
-            type="text"
-            value={memoNumber}
-            onChange={(e) => setMemoNumber(e.target.value)}
-            className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-        </div>
-
-            <FileInput skFileName={skFileName} onChange={handleFileChange} /></>
-      }
+      content={<ModalDeleteContent memoNumber={memoNumber} onMemoNumberChange={(e) => setMemoNumber(e.target.value)} skFileName={skFileName} onFileChange={handleFileChange} />}
+      title="Hapus Data Departemen"
     />
   );
 };

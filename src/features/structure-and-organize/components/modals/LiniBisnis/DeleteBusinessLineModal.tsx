@@ -3,9 +3,8 @@ import React from 'react';
 import { businessLinesService } from '../../../services/request/businessLines.service';
 import { BusinessLineListItem } from '../../../types/organization.api.types';
 import ModalDelete from '../shared/modal/ModalDelete';
-import FileInput from '../shared/field/FileInput';
+import ModalDeleteContent from '../shared/modal/ModalDeleteContent';
 import { addNotification } from '@/stores/notificationStore';
-import Input from '@/components/form/input/InputField';
 
 interface DeleteBusinessLineModalProps {
   isOpen: boolean;
@@ -55,20 +54,16 @@ const DeleteBusinessLineModal: React.FC<DeleteBusinessLineModalProps> = ({ isOpe
       onClose={onClose}
       handleDelete={handleDelete}
       submitting={submitting}
-      content={<>
-      <div className="space-y-2">
-          <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
-          <Input
-            type="text"
-            required
-            value={businessLine?.memoNumber || ''}
-            
-            className="w-full rounded-xl border border-gray-300 bg-gray-100 px-4 py-3"
-          />
-        </div>
-
-        <FileInput skFileName={skFileName} onChange={handleFileChange} />
-      </>}
+      content={
+        <ModalDeleteContent
+          memoNumber={businessLine?.memoNumber || ''}
+          memoNumberReadOnly={true}
+          skFileName={skFileName}
+          onFileChange={handleFileChange}
+          
+        />
+      }
+      title="Hapus Data Lini Bisnis"
       />
   );
 };

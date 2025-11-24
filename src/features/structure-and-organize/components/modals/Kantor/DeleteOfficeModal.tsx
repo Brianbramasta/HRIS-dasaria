@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 // import { Modal } from '../../../../../components/ui/modal/index';
 import { officesService } from '../../../services/request/offices.service';
 import type { OfficeListItem } from '../../../types/organization.api.types';
-import FileInput from '../shared/field/FileInput';
 import ModalDelete from '../shared/modal/ModalDelete';
-import Input from '@/components/form/input/InputField';
+import ModalDeleteContent from '../shared/modal/ModalDeleteContent';
 import { addNotification } from '@/stores/notificationStore';
 
 
@@ -58,19 +57,14 @@ const DeleteOfficeModal: React.FC<DeleteOfficeModalProps> = ({ isOpen, onClose, 
       handleDelete={handleDelete}
       submitting={submitting}
       content={
-        <><div className="space-y-2">
-          <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
-          <Input
-            required
-            type="text"
-            value={memoNumber}
-            onChange={(e) => setMemoNumber(e.target.value)}
-            className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-        </div>
-
-            <FileInput skFileName={skFileName} onChange={handleFileChange} /></>
+        <ModalDeleteContent
+          memoNumber={memoNumber}
+          onMemoNumberChange={(e) => setMemoNumber(e.target.value)}
+          skFileName={skFileName}
+          onFileChange={handleFileChange}
+        />
       }
+      title="Hapus Data Kantor"
     />
   );
 };

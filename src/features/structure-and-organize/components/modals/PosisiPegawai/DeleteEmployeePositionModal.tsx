@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { employeePositionsService } from '../../../services/request/employeePositions.service';
 import type { EmployeePositionListItem } from '../../../types/organization.api.types';
-import Input from '@/components/form/input/InputField';
 import { useFileStore } from '@/stores/fileStore';
-import FileInput from '../shared/field/FileInput';
 // import HeaderModalDelete from '../shared/modal/HeaderModalDelete';
 import ModalDelete from '../shared/modal/ModalDelete';
 import { addNotification } from '@/stores/notificationStore';
+import ModalDeleteContent from '../shared/modal/ModalDeleteContent';
 
 interface DeleteEmployeePositionModalProps {
   isOpen: boolean;
@@ -50,24 +49,10 @@ const DeleteEmployeePositionModal: React.FC<DeleteEmployeePositionModalProps> = 
     <ModalDelete
       isOpen={isOpen}
       onClose={onClose}
-      content={
-        <>
-          <div className="space-y-2">
-            <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
-            <Input
-              required
-              type="text"
-              value={memoNumber}
-              onChange={(e) => setMemoNumber(e.target.value)}
-              className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-            <FileInput skFileName={skFile?.name || ''} onChange={handleFileChange} />
-            <p className="text-xs text-gray-500">*Data tidak benar-benar dihapus akan tetapi diarsipkan</p>
-          </div>
-        </>
-      }
+      content={<ModalDeleteContent memoNumber={memoNumber} onMemoNumberChange={(e) => setMemoNumber(e.target.value)} skFileName={skFile?.name || ''} onFileChange={handleFileChange} note={"*Data tidak benar-benar dihapus akan tetapi diarsipkan"} />}
       handleDelete={handleSubmit}
       submitting={submitting}
+      title="Hapus Data Posisi Pegawai"
     />
   );
 };
