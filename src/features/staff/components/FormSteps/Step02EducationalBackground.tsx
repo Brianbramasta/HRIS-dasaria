@@ -4,7 +4,8 @@ import Input from '../../../../components/form/input/InputField';
 import Select from '../../../../components/form/Select';
 import Label from '../../../../components/form/Label';
 import Button from '../../../../components/ui/button/Button';
-import { Trash2, Plus } from 'react-feather';
+import { Trash2 } from 'react-feather';
+import { iconPlus as Plus } from '@/icons/components/icons';
 import { EducationItem } from '../../types/FormulirKaryawan';
 
 const JENJANG_OPTIONS = [
@@ -26,7 +27,7 @@ export const Step02EducationalBackground: React.FC = () => {
     if (!step2.education || step2.education.length === 0) {
       updateStep2({
         education: [
-          { jenjang: '', namaLembaga: '', nilaiPendidikan: '', jurusanKeahlian: '', tahunLulus: '' },
+          { jenjang: '', namaLembaga: '', gelar: '', nilaiPendidikan: '', jurusanKeahlian: '', tahunLulus: '' },
         ],
       });
     }
@@ -37,7 +38,7 @@ export const Step02EducationalBackground: React.FC = () => {
     updateStep2({
       education: [
         ...education,
-        { jenjang: '', namaLembaga: '', nilaiPendidikan: '', jurusanKeahlian: '', tahunLulus: '' },
+        { jenjang: '', namaLembaga: '', gelar: '', nilaiPendidikan: '', jurusanKeahlian: '', tahunLulus: '' },
       ],
     });
   };
@@ -72,7 +73,7 @@ export const Step02EducationalBackground: React.FC = () => {
           {(step2.education || []).map((edu, index) => (
             <>
             <div className="flex gap-4">
-              <div key={index} className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+              <div key={index} className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
                 <div className="md:col-span-1">
                   <Label>Jenjang</Label>
                   <Select
@@ -82,6 +83,7 @@ export const Step02EducationalBackground: React.FC = () => {
                     placeholder="Select"
                   />
                 </div>
+                
                 <div className="md:col-span-1">
                   <Label htmlFor={`namaLembaga-${index}`}>Nama Lembaga</Label>
                   <Input
@@ -89,6 +91,15 @@ export const Step02EducationalBackground: React.FC = () => {
                     placeholder="Masukkan nama lembaga"
                     value={edu.namaLembaga}
                     onChange={(e) => updateEducationField(index, 'namaLembaga', e.target.value)}
+                  />
+                </div>
+                <div className="md:col-span-1">
+                  <Label htmlFor={`gelar-${index}`}>Gelar</Label>
+                  <Input
+                    id={`gelar-${index}`}
+                    placeholder="Masukkan gelar"
+                    value={edu.gelar}
+                    onChange={(e) => updateEducationField(index, 'gelar', e.target.value)}
                   />
                 </div>
                 
@@ -127,17 +138,17 @@ export const Step02EducationalBackground: React.FC = () => {
                     <Button
                       onClick={addEducationRow}
                       variant="custom"
-                      size="sm"
+                      size="custom"
                       className="bg-emerald-500 text-white ring-1 ring-inset ring-emerald-500 hover:bg-emerald-600 h-10 w-10 p-0 flex items-center justify-center"
                       aria-label="Tambah Pendidikan"
                     >
-                      <Plus size={18} />
+                      <Plus size={24} />
                     </Button>
                   ) : (
                     <Button
                       onClick={() => removeEducationRow(index)}
                       variant="custom"
-                      size="sm"
+                      size="custom"
                       className="bg-red-500 text-white ring-1 ring-inset ring-red-500 hover:bg-red-600 h-10 w-10 p-0 flex items-center justify-center"
                       aria-label="Hapus Pendidikan"
                     >

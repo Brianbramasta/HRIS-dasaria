@@ -27,6 +27,7 @@ function mapStaffListItem(rec) {
     kategori: rec.kategori || null,
     tanggalJoin: rec.tanggalJoin || rec.tanggal_join || null,
     tanggalBerakhir: rec.tanggalBerakhir || rec.tanggal_berakhir || null,
+    sisaKontrak: rec.sisaKontrak || rec.sisaKontrak || null,
   };
 }
 

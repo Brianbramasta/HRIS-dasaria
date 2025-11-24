@@ -84,6 +84,7 @@ const initialFormData: FormulirKaryawanData = {
     namaAkunBank: '',
     noRekening: '',
     npwp: '',
+    ptkpStatus: '',
     noBpjsKesehatan: '',
     statusBpjsKesehatan: '',
     noBpjsKetenagakerjaan: '',

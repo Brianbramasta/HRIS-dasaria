@@ -1,7 +1,8 @@
 import React from 'react';
 import { useFormulirKaryawanStore } from '../../stores/useFormulirKaryawanStore';
-import Input from '../../../../components/form/input/InputField';
+import DatePicker from '../../../../components/form/date-picker';
 import Select from '../../../../components/form/Select';
+import MultiSelect from '../../../../components/form/MultiSelect';
 import Label from '../../../../components/form/Label';
 
 const STATUS_KARYAWAN_OPTIONS = [
@@ -92,23 +93,41 @@ export const Step03EmployeeData: React.FC = () => {
           </div>
 
           <div>
-            <Label>Divisi</Label>
+            <Label>Departemen</Label>
             <Select
-              options={DIVISI_OPTIONS}
-              defaultValue={step3.divisi}
-              onChange={(value) => handleChange('divisi', value)}
+              options={DEPARTEMEN_OPTIONS}
+              defaultValue={step3.departemen}
+              onChange={(value) => handleChange('departemen', value)}
               placeholder="Select"
             />
           </div>
 
           <div>
-            <Label>Position</Label>
-            <Select
-              options={POSITION_OPTIONS}
-              defaultValue={step3.position}
-              onChange={(value) => handleChange('position', value)}
-              placeholder="Select"
-              required
+            <Label htmlFor="tanggalMasuk">Tanggal Masuk</Label>
+            <DatePicker
+              id="tanggalMasuk"
+              placeholder="hh/bb/tttt"
+              defaultDate={step3.tanggalMasuk as any}
+              onChange={(selectedDates, dateStr) => handleChange('tanggalMasuk', dateStr)}
+            />
+          </div>
+
+          <div>
+            <MultiSelect
+              label="Position"
+              options={POSITION_OPTIONS.map(o => ({ value: o.value, text: o.label }))}
+              defaultSelected={step3.position ? [step3.position] : []}
+              onChange={(selected) => handleChange('position', selected[selected.length - 1] ?? '')}
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="tanggalAkhir">Tanggal Akhir</Label>
+            <DatePicker
+              id="tanggalAkhir"
+              placeholder="hh/bb/tttt"
+              defaultDate={step3.tanggalAkhir as any}
+              onChange={(selectedDates, dateStr) => handleChange('tanggalAkhir', dateStr)}
             />
           </div>
 
@@ -124,11 +143,32 @@ export const Step03EmployeeData: React.FC = () => {
           </div>
 
           <div>
-            <Label>Grade</Label>
+            <Label>Perusahaan</Label>
+            <Select
+              options={PERUSAHAAN_OPTIONS}
+              defaultValue={step3.company}
+              onChange={(value) => handleChange('company', value)}
+              placeholder="Select"
+              required
+            />
+          </div>
+
+          <div>
+            <Label>Tingkat</Label>
             <Select
               options={GRADE_OPTIONS}
               defaultValue={step3.grade}
               onChange={(value) => handleChange('grade', value)}
+              placeholder="Select"
+            />
+          </div>
+
+          <div>
+            <Label>Kantor</Label>
+            <Select
+              options={KANTOR_OPTIONS}
+              defaultValue={step3.kantor}
+              onChange={(value) => handleChange('kantor', value)}
               placeholder="Select"
             />
           </div>
@@ -144,58 +184,6 @@ export const Step03EmployeeData: React.FC = () => {
           </div>
 
           <div>
-            <Label>Kategori Karyawan</Label>
-            <Select
-              options={KATEGORI_KARYAWAN_OPTIONS}
-              defaultValue={step3.kategoriKaryawan}
-              onChange={(value) => handleChange('kategoriKaryawan', value)}
-              placeholder="Select"
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="tanggalMasuk">Tanggal Masuk</Label>
-            <Input
-              id="tanggalMasuk"
-              type="date"
-              value={step3.tanggalMasuk}
-              onChange={(e) => handleChange('tanggalMasuk', e.target.value)}
-              required
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="tanggalAkhir">Tanggal Akhir</Label>
-            <Input
-              id="tanggalAkhir"
-              type="date"
-              value={step3.tanggalAkhir}
-              onChange={(e) => handleChange('tanggalAkhir', e.target.value)}
-            />
-          </div>
-
-          <div>
-            <Label>Perusahaan</Label>
-            <Select
-              options={PERUSAHAAN_OPTIONS}
-              defaultValue={step3.company}
-              onChange={(value) => handleChange('company', value)}
-              placeholder="Select"
-              required
-            />
-          </div>
-
-          <div>
-            <Label>Kantor</Label>
-            <Select
-              options={KANTOR_OPTIONS}
-              defaultValue={step3.kantor}
-              onChange={(value) => handleChange('kantor', value)}
-              placeholder="Select"
-            />
-          </div>
-
-          <div>
             <Label>Direktorat</Label>
             <Select
               options={DIREKTORAT_OPTIONS}
@@ -206,11 +194,21 @@ export const Step03EmployeeData: React.FC = () => {
           </div>
 
           <div>
-            <Label>Departemen</Label>
+            <Label>Kategori Karyawan</Label>
             <Select
-              options={DEPARTEMEN_OPTIONS}
-              defaultValue={step3.departemen}
-              onChange={(value) => handleChange('departemen', value)}
+              options={KATEGORI_KARYAWAN_OPTIONS}
+              defaultValue={step3.kategoriKaryawan}
+              onChange={(value) => handleChange('kategoriKaryawan', value)}
+              placeholder="Select"
+            />
+          </div>
+
+          <div>
+            <Label>Divisi</Label>
+            <Select
+              options={DIVISI_OPTIONS}
+              defaultValue={step3.divisi}
+              onChange={(value) => handleChange('divisi', value)}
               placeholder="Select"
             />
           </div>

@@ -29,6 +29,7 @@ export interface PersonalDataFormData {
 export interface EducationItem {
   jenjang: string;
   namaLembaga: string;
+  gelar: string;
   nilaiPendidikan: string;
   jurusanKeahlian: string;
   tahunLulus: string;
@@ -57,6 +58,7 @@ export interface SalaryFormData {
   namaAkunBank: string;
   noRekening: string;
   npwp: string;
+  ptkpStatus: string;
 }
 
 export interface BpjsFormData {

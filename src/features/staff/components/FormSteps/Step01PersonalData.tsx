@@ -4,6 +4,7 @@ import Input from '../../../../components/form/input/InputField';
 import Select from '../../../../components/form/Select';
 import TextArea from '../../../../components/form/input/TextArea';
 import Label from '../../../../components/form/Label';
+import DatePicker from '../../../../components/form/date-picker';
 
 const AGAMA_OPTIONS = [
   { label: 'Islam', value: 'islam' },
@@ -143,13 +144,11 @@ export const Step01PersonalData: React.FC = () => {
 
           {/* Tanggal Lahir */}
           <div>
-            <Label htmlFor="tanggalLahir">Tanggal Lahir</Label>
-            <Input
+            <DatePicker
               id="tanggalLahir"
-              type="date"
-              value={step1.tanggalLahir}
-              onChange={(e) => handleChange('tanggalLahir', e.target.value)}
-              required
+              label="Tanggal Lahir"
+              defaultDate={step1.tanggalLahir}
+              onChange={(_, dateStr) => handleChange('tanggalLahir', dateStr)}
             />
           </div>
 
@@ -212,9 +211,7 @@ export const Step01PersonalData: React.FC = () => {
               required
             />
           </div>
-        </div>
-
-        {/* Alamat Domisili */}
+          {/* Alamat Domisili */}
         <div className="mt-4">
           <Label>Alamat Domisili</Label>
           <TextArea
@@ -237,6 +234,9 @@ export const Step01PersonalData: React.FC = () => {
             required
           />
         </div>
+        </div>
+
+        
       </div>
     </div>
   );

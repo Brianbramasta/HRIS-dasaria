@@ -14,17 +14,17 @@ import { ChevronLeft } from 'react-feather';
 import { useAuthStore } from '../../../auth/stores/authStore';
 
 const TITLES_WITH_LOGIN = [
-  'Personal Data',
-  'Educational Background & Media Sosial',
+  'Data Pribadi',
+  'Riwayat Pendidikan & Media Sosial ',
   'Data Karyawan',
-  'Salary & BPJS',
-  'Upload Dokumen',
+  'Gaji & BPJS',
+  'Unggah Dokumen',
 ];
 const TITLES_PUBLIC = [
-  'Personal Data',
-  'Educational Background & Media Sosial',
-  'Salary & BPJS',
-  'Upload Dokumen',
+  'Data Pribadi',
+  'Riwayat Pendidikan & Media Sosial ',
+  'Gaji & BPJS',
+  'Unggah Dokumen',
 ];
 
 export default function FormulirKaryawanPage() {
@@ -169,16 +169,16 @@ export default function FormulirKaryawanPage() {
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
+      <div className=" mx-auto">
         {/* Page Title */}
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
-          Form Pendaftaran Karyawan
+        <h1 className="text-xl font-bold text-gray-900 dark:text-white mb-8">
+          {isAuthenticated ? 'Tambah Data Karyawan' : 'Form Pendaftaran Karyawan (Public)'}
         </h1>
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 sm:p-8 mb-4">
             {/* Progress Bar */}
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Step {currentStep} of {totalSteps}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Langkah {currentStep} dari {totalSteps}</p>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white">{(isAuthenticated ? TITLES_WITH_LOGIN : TITLES_PUBLIC)[currentStep - 1]}</h3>
             </div>
             <div className="w-1/2">
@@ -202,14 +202,13 @@ export default function FormulirKaryawanPage() {
           <div className="mt-8">{renderStep()}</div>
 
           {/* Navigation Buttons */}
-          <div className="mt-8 flex items-center justify-between gap-4">
+          <div className="mt-8 flex items-center justify-end gap-4">
             {currentStep === 1 ? (
               <Button
                 onClick={handleBackToDataPage}
-                variant="outline"
-                className="flex items-center gap-2"
+                variant="custom"
+                className="flex items-center gap-2 border border-[#007BFF] text-[#007BFF]"
               >
-                <ChevronLeft size={18} />
                 Back to Home Page
               </Button>
             ) : (
@@ -219,7 +218,7 @@ export default function FormulirKaryawanPage() {
                 className="flex items-center gap-2"
               >
                 <ChevronLeft size={18} />
-                Previous
+                Sebelumnya
               </Button>
             )}
 

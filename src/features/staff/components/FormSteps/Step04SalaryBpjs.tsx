@@ -19,6 +19,11 @@ const BPJS_STATUS_OPTIONS = [
   { label: 'PBI', value: 'pbi' },
 ];
 
+const BPJS_TK_STATUS_OPTIONS = [
+  { label: 'Aktif', value: 'aktif' },
+  { label: 'Nonaktif', value: 'nonaktif' },
+];
+
 export const Step04SalaryBpjs: React.FC = () => {
   const { formData, updateStep3 } = useFormulirKaryawanStore();
   const step3 = formData.step3;
@@ -34,16 +39,30 @@ export const Step04SalaryBpjs: React.FC = () => {
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
           Salary
         </h3>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
           {/* Bank */}
-          <div>
+          <div className="grid grid-cols-1 mb-4">
             <Label>Bank</Label>
             <Select
               options={BANK_OPTIONS}
               defaultValue={step3.bank}
               onChange={(value) => handleChange('bank', value)}
               placeholder="Select"
+              required
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          
+
+          {/* No. Rekening */}
+          <div>
+            <Label htmlFor="noRekening">No. Rekening</Label>
+            <Input
+              id="noRekening"
+              placeholder="Masukkan nomor rekening"
+              value={step3.noRekening}
+              onChange={(e) => handleChange('noRekening', e.target.value)}
               required
             />
           </div>
@@ -60,18 +79,6 @@ export const Step04SalaryBpjs: React.FC = () => {
             />
           </div>
 
-          {/* No. Rekening */}
-          <div>
-            <Label htmlFor="noRekening">No. Rekening</Label>
-            <Input
-              id="noRekening"
-              placeholder="Masukkan nomor rekening"
-              value={step3.noRekening}
-              onChange={(e) => handleChange('noRekening', e.target.value)}
-              required
-            />
-          </div>
-
           {/* NPWP */}
           <div>
             <Label htmlFor="npwp">NPWP</Label>
@@ -80,6 +87,18 @@ export const Step04SalaryBpjs: React.FC = () => {
               placeholder="Masukkan NPWP"
               value={step3.npwp}
               onChange={(e) => handleChange('npwp', e.target.value)}
+              required
+            />
+          </div>
+
+          {/* PTKP Status */}
+          <div>
+            <Label htmlFor="ptkpStatus">PTKP Status</Label>
+            <Input
+              id="ptkpStatus"
+              placeholder="Masukkan status PTKP"
+              value={step3.ptkpStatus as any}
+              onChange={(e) => handleChange('ptkpStatus', e.target.value)}
               required
             />
           </div>
@@ -93,6 +112,30 @@ export const Step04SalaryBpjs: React.FC = () => {
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* No. BPJS Ketenagakerjaan */}
+          <div>
+            <Label htmlFor="noBpjsKetenagakerjaan">No. BPJS Ketenagakerjaan</Label>
+            <Input
+              id="noBpjsKetenagakerjaan"
+              placeholder="Masukkan nomor"
+              value={step3.noBpjsKetenagakerjaan}
+              onChange={(e) => handleChange('noBpjsKetenagakerjaan', e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Status BPJS Ketenagakerjaan */}
+          <div>
+            <Label>Status BPJS Ketenagakerjaan</Label>
+            <Select
+              options={BPJS_TK_STATUS_OPTIONS}
+              defaultValue={step3.statusBpjsKetenagakerjaan}
+              onChange={(value) => handleChange('statusBpjsKetenagakerjaan', value)}
+              placeholder="Select"
+              required
+            />
+          </div>
+
           {/* No. BPJS Kesehatan */}
           <div>
             <Label htmlFor="noBpjsKesehatan">No. BPJS Kesehatan</Label>
@@ -113,42 +156,6 @@ export const Step04SalaryBpjs: React.FC = () => {
               defaultValue={step3.statusBpjsKesehatan}
               onChange={(value) => handleChange('statusBpjsKesehatan', value)}
               placeholder="Select"
-              required
-            />
-          </div>
-
-          {/* No. BPJS Ketenagakerjaan */}
-          <div>
-            <Label htmlFor="noBpjsKetenagakerjaan">No. BPJS Ketenagakerjaan</Label>
-            <Input
-              id="noBpjsKetenagakerjaan"
-              placeholder="Masukkan nomor"
-              value={step3.noBpjsKetenagakerjaan}
-              onChange={(e) => handleChange('noBpjsKetenagakerjaan', e.target.value)}
-              required
-            />
-          </div>
-
-          {/* Status BPJS Ketenagakerjaan */}
-          <div>
-            <Label>Status BPJS Ketenagakerjaan</Label>
-            <Select
-              options={BPJS_STATUS_OPTIONS}
-              defaultValue={step3.statusBpjsKetenagakerjaan}
-              onChange={(value) => handleChange('statusBpjsKetenagakerjaan', value)}
-              placeholder="Select"
-              required
-            />
-          </div>
-
-          {/* Nominal BPJS TK */}
-          <div className="md:col-span-2">
-            <Label htmlFor="nominalBpjsTk">Nominal BPJS TK/Nominal BPJS KS</Label>
-            <Input
-              id="nominalBpjsTk"
-              placeholder="Masukkan nominal"
-              value={step3.nominalBpjsTk}
-              onChange={(e) => handleChange('nominalBpjsTk', e.target.value)}
               required
             />
           </div>
