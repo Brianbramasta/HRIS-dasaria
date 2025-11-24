@@ -32,7 +32,7 @@ export default function StrukturOrganisasiPage() {
           <Tabs tabs={tabs} activeTab={activeTab} />
         </>
       )}
-      <div className="p-4">
+      <div className="py-4">
         <Outlet />
       </div>
     </div>

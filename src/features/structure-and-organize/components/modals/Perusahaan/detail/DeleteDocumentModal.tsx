@@ -1,8 +1,7 @@
 import React from 'react';
 import { apiService } from '../../../../../../services/api';
 import ModalDelete from '../../shared/modal/ModalDelete';
-import Input from '@/components/form/input/InputField';
-import FileInput from '../../shared/field/FileInput';
+import ModalDeleteContent from '../../shared/modal/ModalDeleteContent';
 import { addNotification } from '@/stores/notificationStore';
 
 interface DeleteDocumentModalProps {
@@ -59,18 +58,7 @@ const DeleteDocumentModal: React.FC<DeleteDocumentModalProps> = ({ isOpen, onClo
       onClose={onClose}
       handleDelete={handleDelete}
       submitting={submitting}
-      content={<>
-        <div className="space-y-2">
-          <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
-          <Input
-            type="text"
-            value={memoNumber}
-            onChange={(e:any) => setMemoNumber(e.target.value)}
-            className="w-full rounded-xl border border-gray-300 bg-gray-100 px-4 py-3"
-          />
-        </div>
-        <FileInput onChange={handleFileChange} skFileName={skFileName} />
-      </>}
+      content={<ModalDeleteContent memoNumber={memoNumber} memoNumberReadOnly={true} skFileName={skFileName} onFileChange={handleFileChange} />}
     />
   );
 };
