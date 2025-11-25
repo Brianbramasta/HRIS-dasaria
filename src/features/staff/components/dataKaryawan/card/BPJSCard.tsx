@@ -45,13 +45,13 @@ export default function BPJSCard({ financeAndCompliance }: Props) {
           <Label>Status BPJS Ketenagakerjaan</Label>
           <InputField value={financeAndCompliance.statusBpjsKetenagakerjaan || ''} disabled={true} />
         </div>
-        <div>
+        {/* <div>
           <Label>Nominal BPJS TK</Label>
           <InputField value={financeAndCompliance.nominalBpjsTk || ''} disabled={true} />
-        </div>
+        </div> */}
       </div>
       <div className="mt-4 flex justify-end">
-        <Button variant="outline" size="sm" onClick={openModal}>
+        <Button variant="primary" size="sm" onClick={openModal}>
           <Edit2 size={16} className="mr-2" /> Edit
         </Button>
       </div>

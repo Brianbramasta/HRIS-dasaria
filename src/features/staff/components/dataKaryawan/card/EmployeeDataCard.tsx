@@ -34,136 +34,113 @@ export default function EmployeeDataCard({ data }: Props) {
 
   return (
     <ExpandCard title="Data Karyawan" withHeaderDivider>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div>
-          <Label>ID Karyawan</Label>
-          <InputField value={data.idKaryawan || ''} disabled={true} />
-        </div>
-        <div>
-          <Label>Posisi</Label>
-          <InputField value={data.posisi || ''} disabled={true} />
-        </div>
-        <div>
-          <Label>Jabatan</Label>
-          <InputField value={data.jabatan || ''} disabled={true} />
-        </div>
-        <div>
-          <Label>Company</Label>
-          <InputField value={data.company || ''} disabled={true} />
-        </div>
-        <div>
-          <Label>Departemen</Label>
-          <InputField value={data.department || ''} disabled={true} />
-        </div>
-        <div>
-          <Label>Office</Label>
-          <InputField value={data.office || ''} disabled={true} />
-        </div>
-        <div>
-          <Label>Tanggal Join</Label>
-          <InputField type="date" value={data.tanggalJoin || ''} disabled={true} />
-        </div>
-        <div>
-          <Label>Tanggal Berakhir</Label>
-          <InputField type="date" value={data.tanggalBerakhir || ''} disabled={true} />
-        </div>
-        <div>
-          <Label>Status Karyawan</Label>
-          <div className="pointer-events-none opacity-60">
-            <Select
-              options={[
-                { value: 'tetap', label: 'Karyawan Tetap' },
-                { value: 'kontrak', label: 'Karyawan Kontrak' },
-                { value: 'magang', label: 'Magang' },
-              ]}
-              onChange={() => {}}
-              defaultValue={''}
-              required={false}
-            />
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div className="space-y-4">
+          <div>
+            <Label>Status Karyawan</Label>
+            <div className="pointer-events-none opacity-60">
+              <Select
+                options={[
+                  { label: 'Aktif', value: 'aktif' },
+                  { label: 'Cuti', value: 'cuti' },
+                  { label: 'Nonaktif', value: 'nonaktif' },
+                ]}
+                onChange={() => {}}
+                defaultValue={(data as any)?.status || ''}
+                required={false}
+              />
+            </div>
+          </div>
+          <div>
+            <Label>Tanggal Masuk</Label>
+            <InputField type="date" value={data.tanggalJoin || ''} disabled={true} />
+          </div>
+          <div>
+            <Label>Tanggal Akhir</Label>
+            <InputField type="date" value={data.tanggalBerakhir || ''} disabled={true} />
+          </div>
+          <div>
+            <Label>Perusahaan</Label>
+            <InputField value={data.company || ''} disabled={true} />
+          </div>
+          <div>
+            <Label>Kantor</Label>
+            <InputField value={data.office || ''} disabled={true} />
+          </div>
+          <div>
+            <Label>Direktorat</Label>
+            <InputField value={(data as any)?.direktorat || ''} disabled={true} />
+          </div>
+          <div>
+            <Label>Divisi</Label>
+            <InputField value={(data as any)?.divisi || ''} disabled={true} />
           </div>
         </div>
-        <div>
-          <Label>User Access</Label>
-          <InputField value={'Employee'} disabled={true} />
-        </div>
-        <div>
-          <Label>Grade</Label>
-          <div className="pointer-events-none opacity-60">
-            <Select
-              options={[
-                { value: 'D1', label: 'D1' },
-                { value: 'D2', label: 'D2' },
-                { value: 'D3', label: 'D3' },
-                { value: 'D5', label: 'D5' },
-              ]}
-              onChange={() => {}}
-              defaultValue={''}
-              required={false}
-            />
+
+        <div className="space-y-4">
+          <div>
+            <Label>Departemen</Label>
+            <InputField value={data.department || ''} disabled={true} />
           </div>
-        </div>
-        <div>
-          <Label>Status Payroll</Label>
-          <div className="pointer-events-none opacity-60">
-            <Select
-              options={[
-                { value: 'aktif', label: 'Aktif' },
-                { value: 'nonaktif', label: 'Nonaktif' },
-              ]}
-              onChange={() => {}}
-              defaultValue={''}
-              required={false}
-            />
+          <div>
+            <Label>Position</Label>
+            <InputField value={data.posisi || ''} disabled={true} />
           </div>
-        </div>
-        <div>
-          <Label>Kategori Karyawan</Label>
-          <div className="pointer-events-none opacity-60">
-            <Select
-              options={[
-                { value: 'staff', label: 'Staff' },
-                { value: 'manager', label: 'Manager' },
-                { value: 'direktur', label: 'Direktur' },
-              ]}
-              onChange={() => {}}
-              defaultValue={''}
-              required={false}
-            />
+          <div>
+            <Label>Jabatan</Label>
+            <InputField value={data.jabatan || ''} disabled={true} />
           </div>
-        </div>
-        <div>
-          <Label>Direktorat</Label>
-          <div className="pointer-events-none opacity-60">
-            <Select
-              options={[
-                { value: 'sdm', label: 'SDM' },
-                { value: 'keu', label: 'Keuangan' },
-                { value: 'ops', label: 'Operasional' },
-              ]}
-              onChange={() => {}}
-              defaultValue={''}
-              required={false}
-            />
+          <div>
+            <Label>Tingkat</Label>
+            <div className="pointer-events-none opacity-60">
+              <Select
+                options={[
+                  { value: 'D1', label: 'D1' },
+                  { value: 'D2', label: 'D2' },
+                  { value: 'D3', label: 'D3' },
+                  { value: 'D4', label: 'D4' },
+                  { value: 'D5', label: 'D5' },
+                ]}
+                onChange={() => {}}
+                defaultValue={(data as any)?.grade || ''}
+                required={false}
+              />
+            </div>
           </div>
-        </div>
-        <div>
-          <Label>Divisi</Label>
-          <div className="pointer-events-none opacity-60">
-            <Select
-              options={[
-                { value: 'hr', label: 'HR' },
-                { value: 'it', label: 'IT' },
-                { value: 'marketing', label: 'Marketing' },
-              ]}
-              onChange={() => {}}
-              defaultValue={''}
-              required={false}
-            />
+          <div>
+            <Label>Status Penggajian</Label>
+            <div className="pointer-events-none opacity-60">
+              <Select
+                options={[
+                  { value: 'Aktif', label: 'Aktif' },
+                  { value: 'Nonaktif', label: 'Nonaktif' },
+                ]}
+                onChange={() => {}}
+                defaultValue={(data as any)?.statusPayroll || ''}
+                required={false}
+              />
+            </div>
+          </div>
+          <div>
+            <Label>Kategori Karyawan</Label>
+            <div className="pointer-events-none opacity-60">
+              <Select
+                options={[
+                  { value: 'Staff', label: 'Staff' },
+                  { value: 'Manager', label: 'Manager' },
+                  { value: 'Direktur', label: 'Direktur' },
+                ]}
+                onChange={() => {}}
+                defaultValue={(data as any)?.kategori || ''}
+                required={false}
+              />
+            </div>
           </div>
         </div>
       </div>
+
       <div className="mt-4 flex justify-end">
-        <Button variant="outline" size="sm" onClick={openModal}>
+        <Button variant="primary" size="sm" onClick={openModal}>
           <Edit2 size={16} className="mr-2" /> Edit
         </Button>
       </div>

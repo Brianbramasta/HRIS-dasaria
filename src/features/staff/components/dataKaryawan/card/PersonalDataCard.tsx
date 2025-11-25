@@ -105,7 +105,7 @@ export default function PersonalDataCard({ data, personalInformation }: Props) {
         </div>
       </div>
       <div className="mt-4 flex justify-end">
-        <Button variant="outline" size="sm" onClick={openModal}>
+        <Button variant="primary" size="sm" onClick={openModal}>
           <Edit2 size={16} className="mr-2" /> Edit
         </Button>
       </div>

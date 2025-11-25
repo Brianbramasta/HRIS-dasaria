@@ -7,6 +7,7 @@ import { Table, TableHeader, TableBody, TableRow, TableCell } from '@/components
 // import { Plus } from 'lucide-react';
 import { Plus } from 'react-feather';
 import TrashIcon from '@/icons/trash.svg';
+import Button from '@/components/ui/button/Button';
 
 type DocumentRow = {
   id: number;
@@ -92,6 +93,10 @@ const PersonalDocumentsModal: React.FC<Props> = ({ isOpen, initialData, onClose,
 
   const content = (
     <div className="space-y-8">
+      <div>
+        <h2 className="text-3xl font-bold text-start">{title}</h2>
+        <h4 className="text-sm text-grey-200 font-semibold">Update your details to keep your profile up-to-date.</h4>
+      </div>
       <div className="rounded-xl border border-gray-200 p-4 dark:border-gray-800">
         <h3 className="text-xl font-semibold mb-4">Berkas / Dokumen</h3>
         <div className="space-y-4">
@@ -124,7 +129,7 @@ const PersonalDocumentsModal: React.FC<Props> = ({ isOpen, initialData, onClose,
           ))}
         </div>
         <div className="mt-4 flex justify-end">
-          <button type="button" onClick={handleUploadAdd} className="rounded-xl bg-brand-600 px-5 py-2 text-white">Upload</button>
+          <Button variant='primary' onClick={handleUploadAdd} className="rounded-xl bg-brand-600 px-5 py-2 text-white">Unggah</Button>
         </div>
       </div>
 
@@ -167,7 +172,6 @@ const PersonalDocumentsModal: React.FC<Props> = ({ isOpen, initialData, onClose,
 
   return (
     <ModalAddEdit
-      title={title}
       isOpen={isOpen}
       onClose={onClose}
       content={content}

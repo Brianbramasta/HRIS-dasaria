@@ -24,11 +24,11 @@ export default function SalaryCard({ financeAndCompliance }: Props) {
   return (
     <ExpandCard title="Gaji" withHeaderDivider>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div>
+        {/* <div>
           <Label>Gaji</Label>
           <InputField value={''} disabled={true} />
-        </div>
-        <div>
+        </div> */}
+        <div className="md:col-span-2">
           <Label>Bank</Label>
           <InputField value={financeAndCompliance.bank || ''} disabled={true} />
         </div>
@@ -50,7 +50,7 @@ export default function SalaryCard({ financeAndCompliance }: Props) {
         </div>
       </div>
       <div className="mt-4 flex justify-end">
-        <Button variant="outline" size="sm" onClick={openModal}>
+        <Button variant="primary" size="sm" onClick={openModal}>
           <Edit2 size={16} className="mr-2" /> Edit
         </Button>
       </div>

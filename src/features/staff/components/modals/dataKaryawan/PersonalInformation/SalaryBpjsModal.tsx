@@ -68,11 +68,11 @@ const SalaryBpjsModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSubm
       <div>
         <h3 className="text-xl font-semibold">Salary</h3>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <div>
+          {/* <div>
             <Label>Gaji</Label>
             <InputField value={form.gaji || ''} onChange={(e) => handleInput('gaji', e.target.value)} />
-          </div>
-          <div>
+          </div> */}
+          <div className="md:col-span-2">
             <Label>Bank</Label>
             <Select options={BANK_OPTIONS} defaultValue={form.bank || ''} onChange={(v) => handleInput('bank', v)} placeholder="Select" />
           </div>
@@ -114,10 +114,10 @@ const SalaryBpjsModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSubm
             <Label>Status BPJS Kesehatan (Mandiri/PBI)</Label>
             <Select options={STATUS_BPJS_KS_OPTIONS} defaultValue={form.statusBpjsKS || ''} onChange={(v) => handleInput('statusBpjsKS', v)} placeholder="Select" />
           </div>
-          <div>
+          {/* <div>
             <Label>Nominal BPJS TK</Label>
             <InputField value={form.nominalBpjsTK || ''} onChange={(e) => handleInput('nominalBpjsTK', e.target.value)} />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
