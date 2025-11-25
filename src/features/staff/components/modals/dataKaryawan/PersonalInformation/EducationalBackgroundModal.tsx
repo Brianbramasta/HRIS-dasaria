@@ -8,6 +8,7 @@ import { Plus, Trash2 } from 'react-feather';
 export type EducationItem = {
   jenjang: string;
   namaLembaga: string;
+  gelar: string;
   nilaiPendidikan: string;
   jurusanKeahlian: string;
   tahunLulus: string;
@@ -47,7 +48,7 @@ const JENJANG_OPTIONS = [
 
 const emptyForm: EducationSocialForm = {
   education: [
-    { jenjang: '', namaLembaga: '', nilaiPendidikan: '', jurusanKeahlian: '', tahunLulus: '' },
+    { jenjang: '', namaLembaga: '', gelar: '', nilaiPendidikan: '', jurusanKeahlian: '', tahunLulus: '' },
   ],
   facebook: '',
   linkedin: '',
@@ -64,7 +65,7 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
   const title = useMemo(() => 'Edit Educational Background & Sosial Media', []);
 
   useEffect(() => {
-    const defaultRow: EducationItem = { jenjang: '', namaLembaga: '', nilaiPendidikan: '', jurusanKeahlian: '', tahunLulus: '' };
+    const defaultRow: EducationItem = { jenjang: '', namaLembaga: '', gelar: '', nilaiPendidikan: '', jurusanKeahlian: '', tahunLulus: '' };
     const base = initialData ? { ...emptyForm, ...initialData } : emptyForm;
     const ensuredEducation = Array.isArray(base.education) && base.education.length > 0 ? base.education : [defaultRow];
     setForm({ ...base, education: ensuredEducation });
@@ -81,7 +82,7 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
   const addEducationRow = () => {
     setForm((prev) => ({
       ...prev,
-      education: [...prev.education, { jenjang: '', namaLembaga: '', nilaiPendidikan: '', jurusanKeahlian: '', tahunLulus: '' }],
+      education: [...prev.education, { jenjang: '', namaLembaga: '', gelar: '', nilaiPendidikan: '', jurusanKeahlian: '', tahunLulus: '' }],
     }));
   };
 
@@ -92,14 +93,26 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
     }));
   };
 
+  const updateEducationField = (index: number, field: keyof EducationItem, value: any) => {
+    setForm((prev) => {
+      const next = [...prev.education];
+      next[index] = { ...next[index], [field]: value } as EducationItem;
+      return { ...prev, education: next };
+    });
+  };
+
   const content = (
     <div className="space-y-8">
       <div>
-        <h3 className="text-xl font-semibold">Educational Background</h3>
+        <h2 className="text-3xl font-bold text-start">{title}</h2>
+        <h4 className="text-sm text-grey-200 font-semibold">Update your details to keep your profile up-to-date.</h4>
+      </div>
+      <div>
+        <h3 className="text-2xl text-grey-200 font-semibold">Educational Background</h3>
         <div className="space-y-6">
           {form.education.map((_, idx) => (
             <div className="flex gap-4">
-              <div key={idx} className="grid grid-cols-1 gap-4 md:grid-cols-5 items-end">
+              <div key={idx} className="grid grid-cols-1 gap-4 md:grid-cols-6 items-end">
               <div>
                 <Label>Jenjang</Label>
                 <Select options={JENJANG_OPTIONS} defaultValue={form.education[idx]?.jenjang || ''} onChange={(v) => handleEducationChange(idx, 'jenjang', v)} placeholder="Select" />
@@ -107,6 +120,10 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
               <div>
                 <Label>Nama Lembaga</Label>
                 <InputField value={form.education[idx]?.namaLembaga || ''} onChange={(e) => handleEducationChange(idx, 'namaLembaga', e.target.value)} placeholder="Masukkan nama lembaga" />
+              </div>
+              <div>
+                <Label>Gelar</Label>
+                <InputField placeholder="Masukkan gelar" value={form.education[idx]?.gelar || ''} onChange={(e) => updateEducationField(idx, 'gelar', e.target.value)} />
               </div>
               <div>
                 <Label>Nilai Pendidikan Terakhir</Label>
@@ -120,7 +137,7 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
                 <Label>Tahun Lulus</Label>
                 <InputField value={form.education[idx]?.tahunLulus || ''} onChange={(e) => handleEducationChange(idx, 'tahunLulus', e.target.value)} />
               </div>
-             
+              
             </div>
               <div className="md:col-span-1 flex md:justify-end items-end">
                 {idx === 0 ? (
@@ -140,7 +157,7 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
       </div>
 
       <div>
-        <h3 className="text-xl font-semibold">Sosial Media & Kontak darurat</h3>
+        <h3 className="text-2xl text-grey-200 font-semibold">Sosial Media & Kontak darurat</h3>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
             <Label>Facebook</Label>
@@ -158,19 +175,20 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
             <Label>Instagram</Label>
             <InputField value={form.instagram || ''} onChange={(e) => setForm((p) => ({ ...p, instagram: e.target.value }))} placeholder="https://instagram.com/username" />
           </div>
-          <div className="md:col-span-2">
+          <div className="">
             <Label>Akun Sosial Media Orang Terdekat</Label>
             <InputField value={form.akunSosmedOrangTerdekat || ''} onChange={(e) => setForm((p) => ({ ...p, akunSosmedOrangTerdekat: e.target.value }))} placeholder="https://..." />
-          </div>
-          <div>
-            <Label>Nama No. Kontak Darurat</Label>
-            <InputField value={form.namaKontakDarurat || ''} onChange={(e) => setForm((p) => ({ ...p, namaKontakDarurat: e.target.value }))} />
           </div>
           <div>
             <Label>No. Kontak Darurat</Label>
             <InputField value={form.nomorKontakDarurat || ''} onChange={(e) => setForm((p) => ({ ...p, nomorKontakDarurat: e.target.value }))} />
           </div>
-          <div className="md:col-span-2">
+          <div>
+            <Label>Nama No. Kontak Darurat</Label>
+            <InputField value={form.namaKontakDarurat || ''} onChange={(e) => setForm((p) => ({ ...p, namaKontakDarurat: e.target.value }))} />
+          </div>
+          
+          <div className="">
             <Label>Hubungan dengan Kontak Darurat</Label>
             <InputField value={form.hubunganKontakDarurat || ''} onChange={(e) => setForm((p) => ({ ...p, hubunganKontakDarurat: e.target.value }))} />
           </div>
@@ -179,9 +197,10 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
     </div>
   );
 
+
   return (
     <ModalAddEdit
-      title={title}
+      // title={title}
       isOpen={isOpen}
       onClose={onClose}
       content={content}

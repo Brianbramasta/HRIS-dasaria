@@ -14,7 +14,7 @@ interface Props {
 export default function EducationalBackgroundCard({ education }: Props) {
   const { isOpen, openModal, closeModal } = useModal(false);
   const initialData: EducationSocialForm = {
-    education: [{ namaLembaga: '', nilaiPendidikan: '', jurusanKeahlian: '', tahunLulus: '' }],
+    education: [{ jenjang: '', namaLembaga: '', nilaiPendidikan: '', jurusanKeahlian: '', tahunLulus: '' }],
     facebook: '',
     instagram: '',
     linkedin: '',
@@ -24,30 +24,59 @@ export default function EducationalBackgroundCard({ education }: Props) {
     nomorKontakDarurat: '',
     hubunganKontakDarurat: '',
   };
-  const latest = education && education.length ? education[education.length - 1] : null;
+  const defaultEducation: Array<Record<string, any>> = [
+    {
+      jenjang: 'S1',
+      namaLembaga: 'Universitas Brawijaya',
+      gelar: 'S.KOM',
+      nilaiPendidikan: '4.0',
+      jurusanKeahlian: 'Manajemen',
+      tahunLulus: '2020',
+    },
+    {
+      jenjang: 'S1',
+      namaLembaga: 'Universitas Brawijaya',
+      gelar: 'S.KOM',
+      nilaiPendidikan: '4.0',
+      jurusanKeahlian: 'Manajemen',
+      tahunLulus: '2020',
+    },
+  ];
+  const displayEducation = Array.isArray(education) && education.length > 0 ? education : defaultEducation;
   return (
     <ExpandCard title="Riwayat Pendidikan" withHeaderDivider>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div>
-          <Label>Pendidikan Terakhir</Label>
-          <InputField value={(latest?.nilaiPendidikan || '') as string} disabled={true} />
-        </div>
-        <div>
-          <Label>Jurusan / Keahlian</Label>
-          <InputField value={(latest?.jurusanKeahlian || '') as string} disabled={true} />
-        </div>
-        <div>
-          <Label>Nama Lembaga</Label>
-          <InputField value={(latest?.namaLembaga || '') as string} disabled={true} />
-        </div>
-        <div>
-          <Label>Nilai Pendidikan Terakhir</Label>
-          <InputField value={(latest?.nilaiPendidikan || '') as string} disabled={true} />
-        </div>
-        <div>
-          <Label>Tahun Lulus</Label>
-          <InputField value={(latest?.tahunLulus || '') as string} disabled={true} />
-        </div>
+      <div className="space-y-6">
+        {displayEducation.map((item, idx) => {
+          const anyItem = item as unknown as Record<string, any>;
+          return (
+            <div key={idx} className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              <div>
+                <Label>Jenjang</Label>
+                <InputField value={(anyItem.jenjang || '') as string} disabled={true} />
+              </div>
+              <div>
+                <Label>Nama Lembaga</Label>
+                <InputField value={(item?.namaLembaga || '') as string} disabled={true} />
+              </div>
+              <div>
+                <Label>Gelar</Label>
+                <InputField value={(anyItem.gelar || '') as string} disabled={true} />
+              </div>
+              <div>
+                <Label>Nilai Pendidikan Terakhir</Label>
+                <InputField value={(item?.nilaiPendidikan || '') as string} disabled={true} />
+              </div>
+              <div>
+                <Label>Jurusan / Keahlian</Label>
+                <InputField value={(item?.jurusanKeahlian || '') as string} disabled={true} />
+              </div>
+              <div>
+                <Label>Tahun Lulus</Label>
+                <InputField value={(item?.tahunLulus || '') as string} disabled={true} />
+              </div>
+            </div>
+          );
+        })}
       </div>
       <div className="mt-4 flex justify-end">
         <Button variant="outline" size="sm" onClick={openModal}>

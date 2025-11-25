@@ -95,7 +95,7 @@ const TANGGUNGAN_OPTIONS = [
 
 const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialData, onClose, onSubmit, submitting = false }) => {
   const [form, setForm] = useState<PersonalDataForm>(emptyForm);
-  const title = useMemo(() => 'Edit Personal Data', []);
+  const title = useMemo(() => 'Edit Data Pribadi', []);
 
   useEffect(() => {
     setForm(initialData ? { ...emptyForm, ...initialData } : emptyForm);
@@ -106,80 +106,86 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
   };
 
   const content = (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-      <div>
-        <Label>Nama Lengkap</Label>
-        <InputField value={form.namaLengkap} onChange={(e) => handleInput('namaLengkap', e.target.value)} required />
+    <div>
+      <div className='mb-4'>
+        <h2 className="text-3xl font-bold text-start mb-2">{title}</h2>
+        <h4 className="text-sm text-grey-200 font-semibold">Update your details to keep your profile up-to-date.</h4>
       </div>
-      <div>
-        <Label>Email</Label>
-        <InputField type="email" value={form.email} onChange={(e) => handleInput('email', e.target.value)} required />
-      </div>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div>
+          <Label>Nama Lengkap</Label>
+          <InputField value={form.namaLengkap} onChange={(e) => handleInput('namaLengkap', e.target.value)} required />
+        </div>
+        <div>
+          <Label>Email</Label>
+          <InputField type="email" value={form.email} onChange={(e) => handleInput('email', e.target.value)} required />
+        </div>
 
-      <div>
-        <Label>NIK</Label>
-        <InputField value={form.nik || ''} onChange={(e) => handleInput('nik', e.target.value)} />
-      </div>
-      <div>
-        <Label>Agama</Label>
-        <Select options={AGAMA_OPTIONS} defaultValue={form.agama || ''} onChange={(v) => handleInput('agama', v)} placeholder="Select" />
-      </div>
+        <div>
+          <Label>NIK</Label>
+          <InputField value={form.nik || ''} onChange={(e) => handleInput('nik', e.target.value)} />
+        </div>
+        <div>
+          <Label>Agama</Label>
+          <Select options={AGAMA_OPTIONS} defaultValue={form.agama || ''} onChange={(v) => handleInput('agama', v)} placeholder="Select" />
+        </div>
 
-      <div>
-        <Label>Tempat Lahir</Label>
-        <InputField value={form.tempatLahir || ''} onChange={(e) => handleInput('tempatLahir', e.target.value)} />
-      </div>
-      <div>
-        <Label>Gol. Darah</Label>
-        <Select options={GOL_DARAH_OPTIONS} defaultValue={form.golDarah || ''} onChange={(v) => handleInput('golDarah', v)} placeholder="Select" />
-      </div>
+        <div>
+          <Label>Tempat Lahir</Label>
+          <InputField value={form.tempatLahir || ''} onChange={(e) => handleInput('tempatLahir', e.target.value)} />
+        </div>
+        <div>
+          <Label>Gol. Darah</Label>
+          <Select options={GOL_DARAH_OPTIONS} defaultValue={form.golDarah || ''} onChange={(v) => handleInput('golDarah', v)} placeholder="Select" />
+        </div>
 
-      <div>
-        <DatePicker
-          id="tanggalLahir"
-          label="Tanggal Lahir"
-          placeholder="Pilih tanggal"
-          defaultDate={form.tanggalLahir || undefined}
-          onChange={(_, dateStr) => handleInput('tanggalLahir', dateStr)}
-        />
-      </div>
-      <div>
-        <Label>Pendidikan Terakhir</Label>
-        <Select options={PENDIDIKAN_OPTIONS} defaultValue={form.pendidikanTerakhir || ''} onChange={(v) => handleInput('pendidikanTerakhir', v)} placeholder="Select" />
-      </div>
+        <div>
+          <DatePicker
+            id="tanggalLahir"
+            label="Tanggal Lahir"
+            placeholder="Pilih tanggal"
+            defaultDate={form.tanggalLahir || undefined}
+            onChange={(_, dateStr) => handleInput('tanggalLahir', dateStr)}
+          />
+        </div>
+        <div>
+          <Label>Pendidikan Terakhir</Label>
+          <Select options={PENDIDIKAN_OPTIONS} defaultValue={form.pendidikanTerakhir || ''} onChange={(v) => handleInput('pendidikanTerakhir', v)} placeholder="Select" />
+        </div>
 
-      <div>
-        <Label>Jenis Kelamin</Label>
-        <Select options={JK_OPTIONS} defaultValue={form.jenisKelamin || ''} onChange={(v) => handleInput('jenisKelamin', v)} placeholder="Select" />
-      </div>
-      <div>
-        <Label>Status Menikah</Label>
-        <Select options={STATUS_MENIKAH_OPTIONS} defaultValue={form.statusMenikah || ''} onChange={(v) => handleInput('statusMenikah', v)} placeholder="Select" />
-      </div>
+        <div>
+          <Label>Jenis Kelamin</Label>
+          <Select options={JK_OPTIONS} defaultValue={form.jenisKelamin || ''} onChange={(v) => handleInput('jenisKelamin', v)} placeholder="Select" />
+        </div>
+        <div>
+          <Label>Status Menikah</Label>
+          <Select options={STATUS_MENIKAH_OPTIONS} defaultValue={form.statusMenikah || ''} onChange={(v) => handleInput('statusMenikah', v)} placeholder="Select" />
+        </div>
 
-      <div>
-        <Label>Nomor Telepon</Label>
-        <InputField value={form.nomorTelepon || ''} onChange={(e) => handleInput('nomorTelepon', e.target.value)} />
-      </div>
-      <div>
-        <Label>Jumlah Tanggungan sesuai KK</Label>
-        <Select options={TANGGUNGAN_OPTIONS} defaultValue={form.jumlahTanggungan || ''} onChange={(v) => handleInput('jumlahTanggungan', v)} placeholder="Select" />
-      </div>
+        <div>
+          <Label>Nomor Telepon</Label>
+          <InputField value={form.nomorTelepon || ''} onChange={(e) => handleInput('nomorTelepon', e.target.value)} />
+        </div>
+        <div>
+          <Label>Jumlah Tanggungan sesuai KK</Label>
+          <Select options={TANGGUNGAN_OPTIONS} defaultValue={form.jumlahTanggungan || ''} onChange={(v) => handleInput('jumlahTanggungan', v)} placeholder="Select" />
+        </div>
 
-      <div>
-        <Label>Alamat Domisili</Label>
-        <TextArea rows={3} value={form.alamatDomisili || ''} onChange={(v) => handleInput('alamatDomisili', v)} />
-      </div>
-      <div>
-        <Label>Alamat KTP</Label>
-        <TextArea rows={3} value={form.alamatKtp || ''} onChange={(v) => handleInput('alamatKtp', v)} />
+        <div>
+          <Label>Alamat Domisili</Label>
+          <TextArea rows={3} value={form.alamatDomisili || ''} onChange={(v) => handleInput('alamatDomisili', v)} />
+        </div>
+        <div>
+          <Label>Alamat KTP</Label>
+          <TextArea rows={3} value={form.alamatKtp || ''} onChange={(v) => handleInput('alamatKtp', v)} />
+        </div>
       </div>
     </div>
   );
 
   return (
     <ModalAddEdit
-      title={title}
+      // title={title}
       isOpen={isOpen}
       onClose={onClose}
       content={content}

@@ -5,7 +5,7 @@ import Button from '@/components/ui/button/Button';
 
 
 interface ModalAddEditProps {
-  title: string;
+  title?: string | null;
   isOpen: boolean;
   onClose: () => void;
   content: React.ReactNode;
@@ -16,14 +16,14 @@ interface ModalAddEditProps {
   closeTitleButton?: string;
 }
 
-const ModalAddEdit: React.FC<ModalAddEditProps> = ({ title, content, isOpen, onClose,  handleSubmit, submitting, maxWidth, confirmTitleButton = 'Simpan', closeTitleButton = 'Tutup' }) => {
+const ModalAddEdit: React.FC<ModalAddEditProps> = ({ title=null, content, isOpen, onClose,  handleSubmit, submitting, maxWidth, confirmTitleButton = 'Simpan', closeTitleButton = 'Tutup' }) => {
   
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} className={`${maxWidth || 'max-w-xl'} p-6 zoom-75 dark:text-white `} showCloseButton>
       <div className="space-y-6 ">
         <form className='' onSubmit={(e) => {e.preventDefault(); handleSubmit?.()}}>
-        <h2 className="text-3xl font-bold text-center">{title}</h2>
+        {title && <h2 className="text-3xl font-bold text-center">{title}</h2>}
         <div className='max-h-[100vh] overflow-y-auto mb-4'>
           {content}
         </div>
