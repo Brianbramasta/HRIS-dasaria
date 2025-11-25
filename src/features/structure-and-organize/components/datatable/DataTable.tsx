@@ -20,7 +20,7 @@ export interface DataTableColumn<T = any> {
 }
 
 export interface DataTableAction<T = any> {
-  label: string;
+  label?: string;
   icon?: React.ReactNode;
   onClick: (row: T) => void;
   color?: 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info';
@@ -306,18 +306,28 @@ export function DataTable<T = any>({
                       <div className="flex items-center justify-center gap-2">
                         {actions
                           .filter((action) => !action.condition || action.condition(row))
-                          .map((action, actionIndex) => (
-                            <Button
-                            className={action.className}
-                              key={actionIndex}
-                              onClick={() => action.onClick(row)}
-                              variant={action.variant as 'primary' | 'outline' || 'outline'}
-                              size="sm"
-                            >
-                              {action.icon && <span className="mr-1">{action.icon}</span>}
-                              {action.label}
-                            </Button>
-                          ))}
+                          .map((action, actionIndex) =>
+                            action.label ? (
+                              <Button
+                                className={action.className}
+                                key={actionIndex}
+                                onClick={() => action.onClick(row)}
+                                variant={action.variant as 'primary' | 'outline' || 'outline'}
+                                size="sm"
+                              >
+                                {action.icon && <span className="mr-1">{action.icon}</span>}
+                                {action.label}
+                              </Button>
+                            ) : (
+                              <button
+                                key={actionIndex}
+                                onClick={() => action.onClick(row)}
+                                className={`p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 ${action.className}`}
+                              >
+                                {action.icon}
+                              </button>
+                            )
+                          )}
                       </div>
                     </TableCell>
                   )}

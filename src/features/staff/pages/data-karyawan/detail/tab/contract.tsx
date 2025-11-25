@@ -1,9 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import ExpandCard from '@/features/structure-and-organize/components/card/ExpandCard';
 import type { Karyawan } from '@/features/staff/types/Karyawan';
 import Button from '@/components/ui/button/Button';
 import { DataTable, type DataTableColumn, type DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
 import ContractModal, { type ContractEntry } from '@/features/staff/components/modals/dataKaryawan/contract/ContractModal';
+import { IconPencil, IconFileDetail } from '@/icons/components/icons';
 
 interface Props {
   data?: Karyawan;
@@ -24,6 +25,15 @@ const formatDate = (iso: string) => {
   const fmt = new Intl.DateTimeFormat('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
   return fmt.format(d);
 };
+
+function SummaryItem({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div className="h-fit rounded-lg border border-gray-200 bg-white p-3">
+      <div className="text-sm font-bold ">{label}</div>
+      <div className="mt-1 text-xs ">{children}</div>
+    </div>
+  );
+}
 
 export default function ContractTab({ data }: Props) {
   const defaultName = useMemo(() => (data as any)?.name ?? (data as any)?.fullName ?? '', [data]);
@@ -108,8 +118,7 @@ export default function ContractTab({ data }: Props) {
   };
 
   const columns: DataTableColumn<HistoryRow>[] = [
-    { id: 'no', label: 'No.', align: 'center', format: (_v, row) => rows.findIndex((r) => r.id === row.id) + 1 },
-    { id: 'deskripsi', label: 'Deskripsi' },
+    { id: 'no', label: 'No.', align: 'center', format: (_v, row) => rows.findIndex((r) => r.id === row.id) + 1 , sortable: false},
     { id: 'jenisKontrak', label: 'Jenis Kontrak' },
     { id: 'ttdKontrakTerakhir', label: 'TTD Kontrak Terakhir', format: (v) => formatDate(v) },
     { id: 'berakhirKontrak', label: 'Berakhir Kontrak', format: (v) => (v ? formatDate(v) : '-') },
@@ -117,70 +126,51 @@ export default function ContractTab({ data }: Props) {
 
   const actions: DataTableAction<HistoryRow>[] = [
     {
-      label: 'Edit',
-      variant: 'outline',
-      onClick: (row) => handleEditRow(row),
-    },
-    {
-      label: 'Delete',
+      // label: '',
       variant: 'outline',
       color: 'error',
-      onClick: (row) => setRows((prev) => prev.filter((r) => r.id !== row.id)),
+      icon: <IconFileDetail />,
+      onClick: (row) => console.log(row),
     },
+    {
+      // label: '',
+      variant: 'outline',
+      icon: <IconPencil />,
+      onClick: (row) => handleEditRow(row),
+    },
+    
   ];
 
   return (
     <>
-      <ExpandCard title="Contract" withHeaderDivider>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+      <ExpandCard title="Kontrak" withHeaderDivider>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-5">
           {/* Left Image + Preview */}
           <div className="col-span-1">
             <div className="rounded-xl overflow-hidden border border-gray-200 bg-gray-50">
               <img src="/images/user/user-10.png" alt="Preview" className="w-full h-56 object-cover" />
             </div>
             <div className="mt-3 w-full flex justify-center">
-              <Button variant="primary" >Preview PDF</Button>
+              <Button variant="primary" >Pratinjau PDF</Button>
             </div>
           </div>
 
           {/* Summary Fields */}
-          <div className="col-span-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <div className="space-y-1">
-              <div className="text-xs text-gray-500">Status Kontrak</div>
-              <div className="text-sm font-medium">{summary.statusKontrak}</div>
-            </div>
-            <div className="space-y-1">
-              <div className="text-xs text-gray-500">TTD Kontrak Terakhir</div>
-              <div className="text-sm font-medium">{formatDate(summary.ttdKontrakTerakhir)}</div>
-            </div>
-            <div className="space-y-1">
-              <div className="text-xs text-gray-500">Berakhir Kontrak</div>
-              <div className="text-sm font-medium">{formatDate(summary.berakhirKontrak)}</div>
-            </div>
-            <div className="space-y-1">
-              <div className="text-xs text-gray-500">Lama Bekerja</div>
-              <div className="text-sm font-medium">{summary.lamaBekerja}</div>
-            </div>
-            <div className="space-y-1">
-              <div className="text-xs text-gray-500">Sisa Kontrak</div>
-              <div className="text-sm font-medium">5 Bulan</div>
-            </div>
-            <div className="space-y-1">
-              <div className="text-xs text-gray-500">Jenis Kontrak</div>
-              <div className="text-sm font-medium">{summary.jenisKontrak}</div>
-            </div>
-            <div className="space-y-1">
-              <div className="text-xs text-gray-500">Kontrak ke</div>
-              <div className="text-sm font-medium">{summary.kontrakKe}</div>
-            </div>
-            <div className="space-y-1">
-              <div className="text-xs text-gray-500">Status Berakhir</div>
-              <div className="text-sm font-medium">{summary.statusBerakhir}</div>
-            </div>
-            <div className="col-span-2">
-              <div className="text-xs text-gray-500 mb-1">Deskripsi</div>
-              <div className="rounded-lg border border-gray-200 p-2 text-sm text-gray-700 min-h-[80px]">{summary.deskripsi || '-'}</div>
-            </div>
+          <div className="col-span-4 grid grid-cols-1 gap-4 sm:grid-cols-3 h-fit">
+            <SummaryItem label="Status Kontrak">{summary.statusKontrak}</SummaryItem>
+            <SummaryItem label="TTD Kontrak Terakhir">{formatDate(summary.ttdKontrakTerakhir)}</SummaryItem>
+            <SummaryItem label="Berakhir Kontrak">{formatDate(summary.berakhirKontrak)}</SummaryItem>
+            <SummaryItem label="Lama Bekerja">{summary.lamaBekerja}</SummaryItem>
+            <SummaryItem label="Sisa Kontrak">5 Bulan</SummaryItem>
+            <SummaryItem label="Jenis Kontrak">{summary.jenisKontrak}</SummaryItem>
+            <SummaryItem label="Kontrak ke">{summary.kontrakKe}</SummaryItem>
+            <SummaryItem label="Status Berakhir">{summary.statusBerakhir}</SummaryItem>
+            {/* <div className="col-span-2">
+              <div className="rounded-lg border border-gray-200 bg-white p-3">
+                <div className="text-xs text-gray-500 mb-1">Deskripsi</div>
+                <div className="text-sm text-gray-700 min-h-[80px]">{summary.deskripsi || '-'}</div>
+              </div>
+            </div> */}
           </div>
         </div>
       </ExpandCard>

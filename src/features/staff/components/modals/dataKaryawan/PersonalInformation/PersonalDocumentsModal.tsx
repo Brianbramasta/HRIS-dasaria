@@ -4,9 +4,10 @@ import Label from '@/components/form/Label';
 import Select from '@/components/form/Select';
 import FileInput from '@/components/form/input/FileInput';
 import { Table, TableHeader, TableBody, TableRow, TableCell } from '@/components/ui/table';
+import {iconPlus as Plus} from '@/icons/components/icons'
 // import { Plus } from 'lucide-react';
-import { Plus } from 'react-feather';
-import TrashIcon from '@/icons/trash.svg';
+// import { Plus } from 'react-feather';
+import { TrashBinIcon } from '@/icons/index';
 import Button from '@/components/ui/button/Button';
 
 type DocumentRow = {
@@ -114,14 +115,14 @@ const PersonalDocumentsModal: React.FC<Props> = ({ isOpen, initialData, onClose,
                 }} />
               </div>
               <div className="flex items-center gap-2 md:pt-6">
-                {idx === form.pendingRows?.length - 1 && (
-                  <button type="button" title="Tambah baris" onClick={addPendingRow} className="rounded-xl bg-green-600 px-3 py-2 text-white">
+                {idx === 0 && (
+                  <button type="button" title="Tambah baris" onClick={addPendingRow} className="rounded-xl bg-green-600 px-3 py-3 text-white">
                     <Plus size={16} />
                   </button>
                 )}
-                {form.pendingRows?.length > 1 && (
-                  <button type="button" title="Hapus baris" onClick={() => removePendingRow(idx)} className="rounded-xl bg-red-600 px-3 py-2 text-white">
-                    <img src={TrashIcon} alt="trash" className="h-4 w-4" />
+                {form.pendingRows?.length > 1 && idx > 0 && (
+                  <button type="button" title="Hapus baris" onClick={() => removePendingRow(idx)} className="rounded-xl bg-red-600 px-3 py-3 text-white">
+                    <TrashBinIcon className="h-4 w-4 text-white" />
                   </button>
                 )}
               </div>
@@ -153,7 +154,7 @@ const PersonalDocumentsModal: React.FC<Props> = ({ isOpen, initialData, onClose,
               <TableCell className="px-6 py-4 text-center">
                 <div className="flex items-center justify-center">
                   <button className="rounded-md p-2 hover:bg-gray-100 dark:hover:bg-white/[0.04]" onClick={() => handleDeleteRow(r.id)} title="Hapus">
-                    <img src={TrashIcon} alt="trash" className="h-4 w-4" />
+                    <TrashBinIcon className="h-4 w-4" />
                   </button>
                 </div>
               </TableCell>
