@@ -3,6 +3,7 @@ import { useFormulirKaryawanStore } from '../../stores/useFormulirKaryawanStore'
 import Input from '../../../../components/form/input/InputField';
 import Select from '../../../../components/form/Select';
 import Label from '../../../../components/form/Label';
+import { useAuthStore } from '../../../auth/stores/authStore';
 
 const BANK_OPTIONS = [
   { label: 'Bank Mandiri', value: 'mandiri' },
@@ -27,6 +28,7 @@ const BPJS_TK_STATUS_OPTIONS = [
 export const Step04SalaryBpjs: React.FC = () => {
   const { formData, updateStep3 } = useFormulirKaryawanStore();
   const step3 = formData.step3;
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
   const handleChange = (field: string, value: string) => {
     updateStep3({ [field]: value } as any);
@@ -41,7 +43,8 @@ export const Step04SalaryBpjs: React.FC = () => {
         </h3>
         <div>
           {/* Bank */}
-          <div className="grid grid-cols-1 mb-4">
+        {isAuthenticated &&  
+        (<div className="grid grid-cols-1 mb-4">
             <Label>Bank</Label>
             <Select
               options={BANK_OPTIONS}
@@ -50,10 +53,21 @@ export const Step04SalaryBpjs: React.FC = () => {
               placeholder="Select"
               required
             />
-          </div>
+          </div>)}
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          
+          {/* No. Rekening */}
+          {!isAuthenticated && (
+          <div>
+            <Label>Bank</Label>
+            <Select
+              options={BANK_OPTIONS}
+              defaultValue={step3.bank}
+              onChange={(value) => handleChange('bank', value)}
+              placeholder="Select"
+              required
+            />
+          </div>)}
 
           {/* No. Rekening */}
           <div>
@@ -92,16 +106,18 @@ export const Step04SalaryBpjs: React.FC = () => {
           </div>
 
           {/* PTKP Status */}
-          <div>
-            <Label htmlFor="ptkpStatus">PTKP Status</Label>
-            <Input
-              id="ptkpStatus"
-              placeholder="Masukkan status PTKP"
-              value={step3.ptkpStatus as any}
-              onChange={(e) => handleChange('ptkpStatus', e.target.value)}
-              required
-            />
-          </div>
+          {isAuthenticated && (
+            <div>
+              <Label htmlFor="ptkpStatus">PTKP Status</Label>
+              <Input
+                id="ptkpStatus"
+                placeholder="Masukkan status PTKP"
+                value={step3.ptkpStatus as any}
+                onChange={(e) => handleChange('ptkpStatus', e.target.value)}
+                required
+              />
+            </div>
+          )}
         </div>
       </div>
 

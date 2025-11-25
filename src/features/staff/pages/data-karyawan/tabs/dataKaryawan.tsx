@@ -8,6 +8,7 @@ import useKaryawan from '../../../hooks/useKaryawan';
 // import { Edit2, Trash2, Eye } from 'react-feather';
 import Button from '../../../../../components/ui/button/Button';
 import AddKaryawanModal from '../../../components/modals/AddKaryawanModal';
+import DeleteKaryawanModal from '../../../components/modals/dataKaryawan/DeleteKaryawanModal';
 import { Edit2, Eye, Trash2 } from 'react-feather';
 import ShareLinkModal from '../../../components/modals/sharelink/shareLink';
 
@@ -25,6 +26,7 @@ export default function DataKaryawanPage() {
     handlePageChange,
     handleRowsPerPageChange,
     exportKaryawan,
+    deleteKaryawan,
   } = useKaryawan({
     initialPage: 1,
     initialLimit: 10,
@@ -35,6 +37,8 @@ export default function DataKaryawanPage() {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteSubmitting, setDeleteSubmitting] = useState(false);
   const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/data-karyawan/form` : '/data-karyawan/form';
 
   const parseIndonesianDate = (dateStr: string | null | undefined) => {
@@ -169,7 +173,7 @@ export default function DataKaryawanPage() {
       label: 'Sisa Kontrak',
       minWidth: 130,
       sortable: false,
-      format: (_, row) => renderSisaKontrakBadge(row.sisaKontrak),
+      format: (_, row) => renderSisaKontrakBadge(row.tanggalBerakhir),
     },
     {
       id: 'company',
@@ -276,8 +280,8 @@ export default function DataKaryawanPage() {
       label: '',
       icon: <Trash2 size={16} />,
       onClick: (row) => {
-        console.log('Delete karyawan:', row);
-        // TODO: Show delete confirmation modal
+        setSelectedKaryawan(row);
+        setShowDeleteModal(true);
       },
       variant: 'outline',
       color: 'error',
@@ -294,6 +298,20 @@ export default function DataKaryawanPage() {
       await exportKaryawan('csv');
     } catch (err) {
       console.error('Export failed:', err);
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!selectedKaryawan) return;
+    try {
+      setDeleteSubmitting(true);
+      await deleteKaryawan(selectedKaryawan.id);
+      setShowDeleteModal(false);
+      setSelectedKaryawan(null);
+    } catch (err) {
+      console.error('Delete failed:', err);
+    } finally {
+      setDeleteSubmitting(false);
     }
   };
 
@@ -361,6 +379,14 @@ export default function DataKaryawanPage() {
         isOpen={showShareModal}
         onClose={() => setShowShareModal(false)}
         link={shareUrl}
+      />
+
+      <DeleteKaryawanModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        karyawan={selectedKaryawan || undefined}
+        handleDelete={handleConfirmDelete}
+        submitting={deleteSubmitting}
       />
 
       {/* Detail Modal */}
