@@ -4,6 +4,7 @@ import Label from '@/components/form/Label';
 import InputField from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
 import TextArea from '@/components/form/input/TextArea';
+import DatePicker from '@/components/form/date-picker';
 
 export type PersonalDataForm = {
   idKaryawan?: string;
@@ -107,8 +108,8 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
   const content = (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
       <div>
-        <Label>ID Karyawan</Label>
-        <InputField value={form.idKaryawan || ''} onChange={(e) => handleInput('idKaryawan', e.target.value)} />
+        <Label>Nama Lengkap</Label>
+        <InputField value={form.namaLengkap} onChange={(e) => handleInput('namaLengkap', e.target.value)} required />
       </div>
       <div>
         <Label>Email</Label>
@@ -116,8 +117,8 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
       </div>
 
       <div>
-        <Label>Nama Lengkap</Label>
-        <InputField value={form.namaLengkap} onChange={(e) => handleInput('namaLengkap', e.target.value)} required />
+        <Label>NIK</Label>
+        <InputField value={form.nik || ''} onChange={(e) => handleInput('nik', e.target.value)} />
       </div>
       <div>
         <Label>Agama</Label>
@@ -125,8 +126,8 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
       </div>
 
       <div>
-        <Label>NIK</Label>
-        <InputField value={form.nik || ''} onChange={(e) => handleInput('nik', e.target.value)} />
+        <Label>Tempat Lahir</Label>
+        <InputField value={form.tempatLahir || ''} onChange={(e) => handleInput('tempatLahir', e.target.value)} />
       </div>
       <div>
         <Label>Gol. Darah</Label>
@@ -134,8 +135,13 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
       </div>
 
       <div>
-        <Label>Tempat Lahir</Label>
-        <InputField value={form.tempatLahir || ''} onChange={(e) => handleInput('tempatLahir', e.target.value)} />
+        <DatePicker
+          id="tanggalLahir"
+          label="Tanggal Lahir"
+          placeholder="Pilih tanggal"
+          defaultDate={form.tanggalLahir || undefined}
+          onChange={(_, dateStr) => handleInput('tanggalLahir', dateStr)}
+        />
       </div>
       <div>
         <Label>Pendidikan Terakhir</Label>
@@ -143,8 +149,8 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
       </div>
 
       <div>
-        <Label>Tanggal Lahir</Label>
-        <InputField type="date" value={form.tanggalLahir || ''} onChange={(e) => handleInput('tanggalLahir', e.target.value)} />
+        <Label>Jenis Kelamin</Label>
+        <Select options={JK_OPTIONS} defaultValue={form.jenisKelamin || ''} onChange={(v) => handleInput('jenisKelamin', v)} placeholder="Select" />
       </div>
       <div>
         <Label>Status Menikah</Label>
@@ -152,8 +158,8 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
       </div>
 
       <div>
-        <Label>Jenis Kelamin</Label>
-        <Select options={JK_OPTIONS} defaultValue={form.jenisKelamin || ''} onChange={(v) => handleInput('jenisKelamin', v)} placeholder="Select" />
+        <Label>Nomor Telepon</Label>
+        <InputField value={form.nomorTelepon || ''} onChange={(e) => handleInput('nomorTelepon', e.target.value)} />
       </div>
       <div>
         <Label>Jumlah Tanggungan sesuai KK</Label>
@@ -161,15 +167,10 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
       </div>
 
       <div>
-        <Label>Nomor Telepon</Label>
-        <InputField value={form.nomorTelepon || ''} onChange={(e) => handleInput('nomorTelepon', e.target.value)} />
-      </div>
-
-      <div className="col-span-1 md:col-span-2">
         <Label>Alamat Domisili</Label>
         <TextArea rows={3} value={form.alamatDomisili || ''} onChange={(v) => handleInput('alamatDomisili', v)} />
       </div>
-      <div className="col-span-1 md:col-span-2">
+      <div>
         <Label>Alamat KTP</Label>
         <TextArea rows={3} value={form.alamatKtp || ''} onChange={(v) => handleInput('alamatKtp', v)} />
       </div>

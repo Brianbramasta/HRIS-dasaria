@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import TabWithUnderline from '../../../../../components/ui/tabs/TabWithUnderline';
+import { useLocation, useParams } from 'react-router-dom';
+import Tabs from '../../../../structure-and-organize/components/Tabs';
 // import Button from '../../../../../components/ui/button/Button';
 import { karyawanService } from '../../../../staff/services/karyawanService';
 import type { Karyawan } from '../../../../staff/types/Karyawan';
@@ -19,7 +19,6 @@ export default function DetailKaryawanPage() {
   const { id } = useParams();
   const query = useQuery();
   const location = useLocation();
-  const navigate = useNavigate();
   const mode = query.get('mode') || 'view';
   const isEditable = mode === 'edit';
   const tabParam = (query.get('tab') || 'personal-information').toLowerCase();
@@ -55,11 +54,15 @@ export default function DetailKaryawanPage() {
 
   const tabs = [
     { id: 'personal-information', label: 'Personal Information' },
-    { id: 'contract', label: 'Contract' },
-    { id: 'organization-history', label: 'Organization History' },
+    { id: 'contract', label: 'Kontrak' },
+    { id: 'organization-history', label: 'Riwayat Organisasi' },
     { id: 'pelanggaran', label: 'Pelanggaran' },
-    { id: 'story-payroll', label: 'Story Payroll' },
-  ];
+    { id: 'story-payroll', label: 'Riwayat Penggajian' },
+  ].map(t => {
+    const params = new URLSearchParams(location.search);
+    params.set('tab', t.id);
+    return { id: t.id, label: t.label, link: `${location.pathname}?${params.toString()}` };
+  });
 
   if (loading) {
     return <div className="p-6">Memuat detail…</div>;
@@ -82,7 +85,7 @@ export default function DetailKaryawanPage() {
   return (
     <div className="space-y-6 p-4">
       {/* Header */}
-      <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
+      <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900 mb-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img
@@ -104,33 +107,23 @@ export default function DetailKaryawanPage() {
         </div>
       </div>
 
-      {/* Tabs */}
-      <TabWithUnderline
-        tabs={tabs}
-        initialActiveId={tabs.some(t => t.id === tabParam) ? tabParam : 'personal-information'}
-        key={tabs.some(t => t.id === tabParam) ? tabParam : 'personal-information'}
-        onChangeActiveId={(activeId) => {
-          const params = new URLSearchParams(location.search);
-          params.set('tab', activeId);
-          navigate(`${location.pathname}?${params.toString()}` , { replace: true });
-        }}
-        renderContent={(activeId) => {
-          switch (activeId) {
-            case 'personal-information':
-              return <PesonalInformationTab data={data} isEditable={isEditable} />;
-            case 'contract':
-              return <ContractTab data={data} isEditable={isEditable} />;
-            case 'organization-history':
-              return <OrganizationHistoryTab data={data} isEditable={isEditable} />;
-            case 'pelanggaran':
-              return <PelanggaranTab />;
-            case 'story-payroll':
-              return <StoryPayrollTab data={data} isEditable={isEditable} />;
-            default:
-              return null;
-          }
-        }}
-      />
+      <Tabs tabs={tabs} activeTab={tabs.some(t => t.id === tabParam) ? tabParam : 'personal-information'} className="justify-start mb-4" />
+      {(() => {
+        switch (tabs.some(t => t.id === tabParam) ? tabParam : 'personal-information') {
+          case 'personal-information':
+            return <PesonalInformationTab data={data} isEditable={isEditable} />;
+          case 'contract':
+            return <ContractTab data={data} isEditable={isEditable} />;
+          case 'organization-history':
+            return <OrganizationHistoryTab data={data} isEditable={isEditable} />;
+          case 'pelanggaran':
+            return <PelanggaranTab />;
+          case 'story-payroll':
+            return <StoryPayrollTab data={data} isEditable={isEditable} />;
+          default:
+            return null;
+        }
+      })()}
     </div>
   );
 }

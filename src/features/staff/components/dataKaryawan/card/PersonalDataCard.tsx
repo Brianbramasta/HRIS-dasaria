@@ -24,75 +24,84 @@ export default function PersonalDataCard({ data, personalInformation }: Props) {
   };
 
   return (
-    <ExpandCard title="Personal Data" withHeaderDivider>
+    <ExpandCard title="Data Pribadi" withHeaderDivider>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div>
-          <Label htmlFor="namaLengkap">Nama Lengkap</Label>
-          <InputField id="namaLengkap" value={data.name || ''} disabled={true} />
-        </div>
-        <div>
-          <Label htmlFor="email">Email</Label>
-          <InputField id="email" type="email" value={data.email || ''} disabled={true} />
-        </div>
-        <div>
-          <Label htmlFor="nik">NIK</Label>
-          <InputField id="nik" value={personalInformation.nik || ''} disabled={true} />
-        </div>
-        <div>
-          <Label htmlFor="agama">Agama</Label>
-          <div className="pointer-events-none opacity-60">
-            <InputField id="agama" value={personalInformation.agama || ''} disabled={true} />
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="idKaryawan">ID Karyawan</Label>
+            <InputField id="idKaryawan" value={data.idKaryawan || ''} disabled={true} />
+          </div>
+          <div>
+            <Label htmlFor="namaLengkap">Nama Lengkap</Label>
+            <InputField id="namaLengkap" value={data.name || ''} disabled={true} />
+          </div>
+          <div>
+            <Label htmlFor="nik">NIK</Label>
+            <InputField id="nik" value={personalInformation.nik || ''} disabled={true} />
+          </div>
+          <div>
+            <Label htmlFor="tempatLahir">Tempat Lahir</Label>
+            <InputField id="tempatLahir" value={personalInformation.tempatLahir || ''} disabled={true} />
+          </div>
+          <div>
+            <Label htmlFor="tanggalLahir">Tanggal Lahir</Label>
+            <InputField id="tanggalLahir" type="date" value={personalInformation.tanggalLahir || ''} disabled={true} />
+          </div>
+          <div>
+            <Label htmlFor="jenisKelamin">Jenis Kelamin</Label>
+            <div className="pointer-events-none opacity-60">
+              <InputField id="jenisKelamin" value={personalInformation.jenisKelamin || ''} disabled={true} />
+            </div>
+          </div>
+          <div>
+            <Label htmlFor="nomorTelepon">Nomor Telepon</Label>
+            <InputField id="nomorTelepon" value={personalInformation.nomorTelepon || ''} disabled={true} />
+          </div>
+          <div>
+            <Label htmlFor="alamatDomisili">Alamat Domisili</Label>
+            <TextArea value={personalInformation.alamatDomisili || ''} disabled={true} rows={3} />
           </div>
         </div>
-        <div>
-          <Label htmlFor="tempatLahir">Tempat Lahir</Label>
-          <InputField id="tempatLahir" value={personalInformation.tempatLahir || ''} disabled={true} />
-        </div>
-        <div>
-          <Label htmlFor="tanggalLahir">Tanggal Lahir</Label>
-          <InputField id="tanggalLahir" type="date" value={personalInformation.tanggalLahir || ''} disabled={true} />
-        </div>
-        <div>
-          <Label htmlFor="jenisKelamin">Jenis Kelamin</Label>
-          <div className="pointer-events-none opacity-60">
-            <InputField id="jenisKelamin" value={personalInformation.jenisKelamin || ''} disabled={true} />
+
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="email">Email</Label>
+            <InputField id="email" type="email" value={data.email || ''} disabled={true} />
           </div>
-        </div>
-        <div>
-          <Label htmlFor="golDarah">Gol. Darah</Label>
-          <div className="pointer-events-none opacity-60">
-            <InputField id="golDarah" value={''} disabled={true} />
+          <div>
+            <Label htmlFor="agama">Agama</Label>
+            <div className="pointer-events-none opacity-60">
+              <InputField id="agama" value={personalInformation.agama || ''} disabled={true} />
+            </div>
           </div>
-        </div>
-        <div>
-          <Label htmlFor="pendidikanTerakhir">Pendidikan Terakhir</Label>
-          <div className="pointer-events-none opacity-60">
-            <InputField id="pendidikanTerakhir" value={''} disabled={true} />
+          <div>
+            <Label htmlFor="golDarah">Gol. Darah</Label>
+            <div className="pointer-events-none opacity-60">
+              <InputField id="golDarah" value={''} disabled={true} />
+            </div>
           </div>
-        </div>
-        <div>
-          <Label htmlFor="statusMenikah">Status Menikah</Label>
-          <div className="pointer-events-none opacity-60">
-            <InputField id="statusMenikah" value={personalInformation.statusMenikah || ''} disabled={true} />
+          <div>
+            <Label htmlFor="pendidikanTerakhir">Pendidikan Terakhir</Label>
+            <div className="pointer-events-none opacity-60">
+              <InputField id="pendidikanTerakhir" value={''} disabled={true} />
+            </div>
           </div>
-        </div>
-        <div>
-          <Label htmlFor="nomorTelepon">Nomor Telepon</Label>
-          <InputField id="nomorTelepon" value={personalInformation.nomorTelepon || ''} disabled={true} />
-        </div>
-        <div>
-          <Label htmlFor="jumlahTanggungan">Jumlah Tanggungan sesuai KK</Label>
-          <div className="pointer-events-none opacity-60">
-            <InputField id="jumlahTanggungan" value={''} disabled={true} />
+          <div>
+            <Label htmlFor="statusMenikah">Status Menikah</Label>
+            <div className="pointer-events-none opacity-60">
+              <InputField id="statusMenikah" value={personalInformation.statusMenikah || ''} disabled={true} />
+            </div>
           </div>
-        </div>
-        <div>
-          <Label htmlFor="alamatDomisili">Alamat Domisili</Label>
-          <TextArea value={personalInformation.alamatDomisili || ''} disabled={true} rows={3} />
-        </div>
-        <div>
-          <Label htmlFor="alamatKtp">Alamat KTP</Label>
-          <TextArea value={personalInformation.alamatKTP || ''} disabled={true} rows={3} />
+          <div>
+            <Label htmlFor="jumlahTanggungan">Jumlah Tanggungan sesuai KK</Label>
+            <div className="pointer-events-none opacity-60">
+              <InputField id="jumlahTanggungan" value={''} disabled={true} />
+            </div>
+          </div>
+          <div>
+            <Label htmlFor="alamatKtp">Alamat KTP</Label>
+            <TextArea value={personalInformation.alamatKTP || ''} disabled={true} rows={3} />
+          </div>
         </div>
       </div>
       <div className="mt-4 flex justify-end">

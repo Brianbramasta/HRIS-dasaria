@@ -26,7 +26,7 @@ export default function EducationalBackgroundCard({ education }: Props) {
   };
   const latest = education && education.length ? education[education.length - 1] : null;
   return (
-    <ExpandCard title="Educational Background" withHeaderDivider>
+    <ExpandCard title="Riwayat Pendidikan" withHeaderDivider>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
           <Label>Pendidikan Terakhir</Label>

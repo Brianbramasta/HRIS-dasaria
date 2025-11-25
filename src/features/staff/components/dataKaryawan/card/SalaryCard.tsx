@@ -22,7 +22,7 @@ export default function SalaryCard({ financeAndCompliance }: Props) {
     ptkpStatus: '',
   };
   return (
-    <ExpandCard title="Salary" withHeaderDivider>
+    <ExpandCard title="Gaji" withHeaderDivider>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
           <Label>Gaji</Label>
