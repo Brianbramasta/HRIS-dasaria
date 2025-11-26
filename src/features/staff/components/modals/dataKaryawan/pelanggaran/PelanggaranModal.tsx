@@ -5,6 +5,7 @@ import InputField from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 import Select from '@/components/form/Select';
 import FileInput from '@/features/structure-and-organize/components/modals/shared/field/FileInput';
+import DatePicker from '@/components/form/date-picker';
 
 export type PelanggaranEntry = {
   id?: number;
@@ -39,12 +40,7 @@ const optionJenisTindakan = [
   { value: 'Pemberhentian', label: 'Pemberhentian' },
 ];
 
-const optionMasaBerlaku = [
-  { value: '1 Bulan', label: '1 Bulan' },
-  { value: '3 Bulan', label: '3 Bulan' },
-  { value: '6 Bulan', label: '6 Bulan' },
-  { value: 'Tidak terikat', label: 'Tidak terikat' },
-];
+// removed masa berlaku select options in favor of date input
 
 const emptyForm: PelanggaranEntry = {
   namaLengkap: '',
@@ -80,7 +76,12 @@ const PelanggaranModal: React.FC<PelanggaranModalProps> = ({ isOpen, mode, initi
       </div>
       <div>
         <Label>Tanggal Kejadian</Label>
-        <InputField type="date" value={form.tanggalKejadian} onChange={(e) => handleInput('tanggalKejadian', e.target.value)} required />
+        <DatePicker
+          id="tanggalKejadian"
+          placeholder="hh/bb/tttt"
+          defaultDate={form.tanggalKejadian}
+          onChange={(_, dateStr) => handleInput('tanggalKejadian', dateStr)}
+        />
       </div>
 
       <div>
@@ -88,8 +89,13 @@ const PelanggaranModal: React.FC<PelanggaranModalProps> = ({ isOpen, mode, initi
         <Select options={optionJenisTindakan} placeholder="Select" defaultValue={form.jenisTindakan} onChange={(v) => handleInput('jenisTindakan', v)} required />
       </div>
       <div>
-        <Label>Masa Berlaku</Label>
-        <Select options={optionMasaBerlaku} placeholder="Select" defaultValue={form.masaBerlaku} onChange={(v) => handleInput('masaBerlaku', v)} required />
+        <Label>Masa Berlaku Tindakan</Label>
+        <DatePicker
+          id="masaBerlakuTindakan"
+          placeholder="hh/bb/tttt"
+          defaultDate={form.masaBerlaku}
+          onChange={(_, dateStr) => handleInput('masaBerlaku', dateStr)}
+        />
       </div>
 
       <div className="col-span-2">
@@ -98,7 +104,6 @@ const PelanggaranModal: React.FC<PelanggaranModalProps> = ({ isOpen, mode, initi
       </div>
 
       <div className="col-span-2">
-        <Label>Upload Dokumen terbaru</Label>
         <FileInput skFileName={form.fileName || ''} onChange={(e) => {
           const file = e.target.files?.[0];
           if (file) handleInput('fileName', file.name);

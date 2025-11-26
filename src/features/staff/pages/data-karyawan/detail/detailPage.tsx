@@ -107,7 +107,7 @@ export default function DetailKaryawanPage() {
         </div>
       </div>
 
-      <Tabs tabs={tabs} activeTab={tabs.some(t => t.id === tabParam) ? tabParam : 'personal-information'} className="justify-start mb-4" />
+      <Tabs tabs={tabs} activeTab={tabs.some(t => t.id === tabParam) ? tabParam : 'personal-information'} className="justify-between mb-4" />
       {(() => {
         switch (tabs.some(t => t.id === tabParam) ? tabParam : 'personal-information') {
           case 'personal-information':

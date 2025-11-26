@@ -1,9 +1,9 @@
-import ExpandCard from '@/features/structure-and-organize/components/card/ExpandCard';
+// import ExpandCard from '@/features/structure-and-organize/components/card/ExpandCard';
  
 import { useMemo, useState } from 'react';
 import { DataTable, type DataTableColumn, type DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
 import PelanggaranModal, { type PelanggaranEntry } from '@/features/staff/components/modals/dataKaryawan/pelanggaran/PelanggaranModal';
-
+import { IconPencil } from '@/icons/components/icons';  
  
 
 export default function PelanggaranTab() {
@@ -57,20 +57,20 @@ export default function PelanggaranTab() {
 
   const actions: DataTableAction<PelanggaranEntry>[] = [
     {
-      label: 'Edit',
       variant: 'outline',
+      icon: <IconPencil/>,
       onClick: (row) => {
         setEditing(row);
         setIsOpen(true);
       },
-    },
-    {
-      label: 'Delete',
-      variant: 'primary',
-      onClick: (row) => {
-        setList((prev) => prev.filter((r) => r.id !== row.id));
-      },
-    },
+    }
+    // {
+    //   label: 'Delete',
+    //   variant: 'primary',
+    //   onClick: (row) => {
+    //     setList((prev) => prev.filter((r) => r.id !== row.id));
+    //   },
+    // },
   ];
 
   const handleAdd = () => {
@@ -91,7 +91,8 @@ export default function PelanggaranTab() {
   };
 
   return (
-    <ExpandCard title="Pelanggaran" withHeaderDivider>
+    <>
+     {/* <ExpandCard title="Pelanggaran" withHeaderDivider> */}
       <DataTable<PelanggaranEntry>
         title="Pelanggaran"
         data={list}
@@ -113,6 +114,8 @@ export default function PelanggaranTab() {
         }}
         onSubmit={handleSave}
       />
-    </ExpandCard>
+      {/*  </ExpandCard> */}
+    </>
+    
   );
 }

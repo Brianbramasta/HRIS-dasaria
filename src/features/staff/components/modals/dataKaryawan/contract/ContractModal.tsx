@@ -78,14 +78,14 @@ const ContractModal: React.FC<ContractModalProps> = ({ isOpen, mode, initialData
         <InputField placeholder="Nama Lengkap" value={form.namaLengkap} onChange={(e) => handleInput('namaLengkap', e.target.value)} required />
       </div>
 
-      <div>
+      <div className='md:col-span-2'>
         <Label>Status Kontrak</Label>
         <Select options={optionsStatusKontrak} placeholder="Select" defaultValue={form.statusKontrak} onChange={(v) => handleInput('statusKontrak', v)} required />
       </div>
-      <div>
+      {/* <div>
         <Label>Lama Bekerja</Label>
         <InputField placeholder="mis. 3 Tahun" value={form.lamaBekerja} onChange={(e) => handleInput('lamaBekerja', e.target.value)} />
-      </div>
+      </div> */}
 
       <div>
         <Label>TTD Kontrak Terakhir</Label>
@@ -105,7 +105,7 @@ const ContractModal: React.FC<ContractModalProps> = ({ isOpen, mode, initialData
         <InputField type="number" min="0" value={form.kontrakKe} onChange={(e) => handleInput('kontrakKe', Number(e.target.value))} />
       </div>
 
-      <div>
+      <div className='md:col-span-2'>
         <Label>Status Berakhir</Label>
         <Select options={optionsStatusBerakhir} placeholder="Select" defaultValue={form.statusBerakhir} onChange={(v) => handleInput('statusBerakhir', v)} />
       </div>

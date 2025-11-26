@@ -1,10 +1,10 @@
 import { useMemo, useState, type ReactNode } from 'react';
-import ExpandCard from '@/features/structure-and-organize/components/card/ExpandCard';
 import type { Karyawan } from '@/features/staff/types/Karyawan';
 import Button from '@/components/ui/button/Button';
 import { DataTable, type DataTableColumn, type DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
 import ContractModal, { type ContractEntry } from '@/features/staff/components/modals/dataKaryawan/contract/ContractModal';
 import { IconPencil, IconFileDetail } from '@/icons/components/icons';
+import ComponentCard from '@/components/common/ComponentCard';
 
 interface Props {
   data?: Karyawan;
@@ -143,7 +143,7 @@ export default function ContractTab({ data }: Props) {
 
   return (
     <>
-      <ExpandCard title="Kontrak" withHeaderDivider>
+      <ComponentCard title="Kontrak">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-5">
           {/* Left Image + Preview */}
           <div className="col-span-1">
@@ -173,7 +173,7 @@ export default function ContractTab({ data }: Props) {
             </div> */}
           </div>
         </div>
-      </ExpandCard>
+      </ComponentCard>
 
       {/* History Table */}
       <div className="mt-6">
