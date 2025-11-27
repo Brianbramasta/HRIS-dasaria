@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { DataTable, DataTableColumn, DataTableAction } from '../../../../features/structure-and-organize/components/datatable/DataTable';
 import { PengunduranDiri } from '../../types/PengunduranDiri';
 import usePengunduranDiri from '../../hooks/usePengunduranDiri';
-import { Edit2, ChevronDown } from 'react-feather';
+import { ChevronDown } from 'react-feather';
 import { IconForm } from '@/icons/components/icons';
 import Button from '../../../../components/ui/button/Button';
 import { Dropdown } from '../../../../components/ui/dropdown/Dropdown';
+import { IconPencil } from '@/icons/components/icons';
 
 export default function TabPendingReview({ onOpenForm }: { onOpenForm?: () => void }) {
   const navigate = useNavigate();
@@ -116,8 +117,7 @@ export default function TabPendingReview({ onOpenForm }: { onOpenForm?: () => vo
   // Define actions untuk DataTable
   const actions: DataTableAction<PengunduranDiri>[] = [
     {
-      label: 'Edit',
-      icon: <Edit2 size={16} />,
+      icon: <IconPencil />,
       onClick: (row) => {
         navigate(`/pengunduran-diri/${row.id}`);
       },

@@ -14,8 +14,6 @@ export const FileText = ({ size = 16 }: { size?: number }) => (
   </>
 );
 
-
-
 export const iconPenggajian = ({ size = 16 , color = '#6C757D' }: { size?: number, color?: string }) => (
    <><svg width={size} height={size} viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
   <g clip-path="url(#clip0_4022_16646)">

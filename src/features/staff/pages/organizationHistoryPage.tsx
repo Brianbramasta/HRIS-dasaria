@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { DataTable, type DataTableColumn, type DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
 import { useOrganizationHistory } from '@/features/staff/hooks/useOrganizationHistory';
 import type { OrganizationHistoryItem } from '@/features/staff/services/organizationHistoryService';
+import { IconPencil, IconFileDetail } from '@/icons/components/icons';
 
-type OrgHistoryListRow = OrganizationHistoryItem;
+type OrgHistoryListRow = OrganizationHistoryItem & { statusPerubahan: 'Rekomendasi' | 'Selesai' };
 
 const formatDate = (iso: string) => {
   if (!iso) return '-';
@@ -16,6 +17,10 @@ const formatDate = (iso: string) => {
 export default function OrganizationHistoryPage() {
   const navigate = useNavigate();
   const { data: rows, loading, handleSearchChange, handleSortChange } = useOrganizationHistory();
+  const rowsWithStatus: OrgHistoryListRow[] = useMemo(
+    () => (rows || []).map((r, idx) => ({ ...r, statusPerubahan: idx % 2 === 0 ? 'Rekomendasi' : 'Selesai' })),
+    [rows]
+  );
 
   const columns: DataTableColumn<OrgHistoryListRow>[] = useMemo(
     () => [
@@ -44,18 +49,38 @@ export default function OrganizationHistoryPage() {
       { id: 'direktoratLama', label: 'Direktorat Lama' },
       { id: 'direktoratBaru', label: 'Direktorat Baru' },
       { id: 'alasanPerubahan', label: 'Alasan Perubahan' },
+      {
+        id: 'statusPerubahan',
+        label: 'Status Perubahan',
+        align: 'center',
+        format: (v) => {
+          const val = (v as string) || '-';
+          const isRekom = val === 'Rekomendasi';
+          const base = 'inline-flex items-center rounded-lg px-3 py-1 text-xs font-medium';
+          const cls = isRekom ? 'bg-orange-100 text-orange-600' : 'bg-green-100 text-green-600';
+          return <span className={`${base} ${cls}`}>{val}</span>;
+        },
+      },
     ],
     [rows]
   );
 
   const actions: DataTableAction<OrgHistoryListRow>[] = [
     {
-      label: 'Detail',
-      variant: 'outline',
+      icon: <IconPencil />,
+      className: 'text-gray-700',
       onClick: (row) => {
-        // Arahkan ke halaman detail karyawan dengan tab organization-history
-        navigate(`/data-karyawan/${row.idKaryawan}?tab=organization-history`);
+        navigate(`/organization-history/edit?id=${row.id}`);
       },
+      condition: (row) => row.statusPerubahan === 'Rekomendasi',
+    },
+    {
+      icon: <IconFileDetail />,
+      className: 'text-gray-700',
+      onClick: (row) => {
+        navigate(`/organization-history/preview?id=${row.id}`);
+      },
+      condition: (row) => row.statusPerubahan === 'Selesai',
     },
   ];
 
@@ -63,14 +88,16 @@ export default function OrganizationHistoryPage() {
     <div className="p-4">
       <DataTable<OrgHistoryListRow>
         title="Organization History"
-        data={rows}
+        data={rowsWithStatus}
         columns={columns}
         actions={actions}
         loading={loading}
         filterable
         emptyMessage="Belum ada riwayat organisasi"
-        // addButtonLabel="Tambah Riwayat"
-        // onAdd={() => {}}
+        addButtonLabel="Tambah Organisasi"
+        onAdd={() => {
+          navigate('/organization-history?action=add');
+        }}
         searchPlaceholder="Cari berdasarkan kata kunci"
         onSearchChange={handleSearchChange}
         onSortChange={handleSortChange}

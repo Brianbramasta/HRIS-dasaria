@@ -49,7 +49,7 @@ export default function TabReviewed() {
     },
     {
       id: 'name',
-      label: 'User',
+      label: 'Pengguna',
       minWidth: 150,
       sortable: true,
       format: (value, row) => (
