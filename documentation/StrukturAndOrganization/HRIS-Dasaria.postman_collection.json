@@ -1,0 +1,741 @@
+{
+	"info": {
+		"_postman_id": "b22a0d3f-84f7-48ca-91ff-48d789eb7ae6",
+		"name": "HRIS-Dasaria",
+		"description": "# 🚀 Get started here\n\nThis template guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this template**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these [request](https://learning.postman.com/docs/sending-requests/requests/) types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT request.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n ```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a [variable](https://learning.postman.com/docs/sending-requests/variables/) called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Scripts\" tab**\n\nAdding tests to your requests can help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/fa30ea0a-373d-4545-a668-e7b283cca343/aW1hZ2UucG5n\" width=\"2162\" height=\"1530\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n    \n- Add more [scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/) to verify if the API works as expected and execute workflows.\n    \n\n## 💡Related templates\n\n[API testing basics](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9a37a28-055b-49cd-8c7e-97494a21eb54&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[API documentation](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9c28f47-1253-44af-a2f3-20dce4da1f18&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Authorization methods](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=31a9a6ed-4cdf-4ced-984c-d12c9aec1c27&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "50366378",
+		"_collection_link": "https://capstone-plant.postman.co/workspace/d22d6bd7-c43b-4ba9-83d2-840395817c64/collection/24391851-b22a0d3f-84f7-48ca-91ff-48d789eb7ae6?action=share&source=collection_link&creator=50366378"
+	},
+	"item": [
+		{
+			"name": "Index",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/lini-bisnis?q=aa&filter%5B%5D=test&filter%5B%5D=cek&_sort=name&_order=asc&_page=1&_limit=10",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"lini-bisnis"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "aa"
+						},
+						{
+							"key": "filter%5B%5D",
+							"value": "test"
+						},
+						{
+							"key": "filter%5B%5D",
+							"value": "cek"
+						},
+						{
+							"key": "_sort",
+							"value": "name"
+						},
+						{
+							"key": "_order",
+							"value": "asc"
+						},
+						{
+							"key": "_page",
+							"value": "1"
+						},
+						{
+							"key": "_limit",
+							"value": "10"
+						}
+					]
+				},
+				"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+			},
+			"response": [
+				{
+					"name": "Index",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/lini-bisnis",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"lini-bisnis"
+							]
+						}
+					},
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [
+						{
+							"expires": "Invalid Date",
+							"domain": "",
+							"path": ""
+						}
+					],
+					"body": "{\r\n    \"success\": true,\r\n    \"message\": \"List Lini Bisnis\",\r\n    \"data\": [\r\n        {\r\n            \"uuid_lini_bisnis\": \"019abe86-2217-71cc-8803-4eb968699c93\",\r\n            \"nama_lini_bisnis\": \"Financial Technology Division\",\r\n            \"no_sk_lini_bisnis\": \"SK/FINTECH/2024/001\",\r\n            \"deskripsi_lini_bisnis\": null,\r\n            \"file_url_sk_lini_bisnis\": \"/storage/lini-bisnis/sk/1037cd8e-407f-4267-908b-f1e8f3cd4250.pdf\",\r\n            \"no_sk_hapus_lini_bisnis\": null,\r\n            \"file_url_sk_hapus_lini_bisnis\": null,\r\n            \"deleted_at\": null,\r\n            \"created_at\": \"2025-11-26T04:57:32.000000Z\",\r\n            \"updated_at\": \"2025-11-26T04:57:32.000000Z\"\r\n        }\r\n    ],\r\n    \"pagination\": {\r\n        \"current_page\": 1,\r\n        \"per_page\": 10,\r\n        \"total\": 1,\r\n        \"last_page\": 1,\r\n        \"from\": 1,\r\n        \"to\": 1\r\n    }\r\n}"
+				}
+			]
+		},
+		{
+			"name": "Get Data by uuid",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/lini-bisnis/019abe86-2217-71cc-8803-4eb968699c93",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"lini-bisnis",
+						"019abe86-2217-71cc-8803-4eb968699c93"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get Data by uuid",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/lini-bisnis/019abe86-2217-71cc-8803-4eb968699c93",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"lini-bisnis",
+								"019abe86-2217-71cc-8803-4eb968699c93"
+							]
+						}
+					},
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [
+						{
+							"expires": "Invalid Date",
+							"domain": "",
+							"path": ""
+						}
+					],
+					"body": "{\n    \"success\": true,\n    \"message\": \"Lini Bisnis found\",\n    \"data\": {\n        \"uuid_lini_bisnis\": \"019abe86-2217-71cc-8803-4eb968699c93\",\n        \"nama_lini_bisnis\": \"Financial Technology Division\",\n        \"no_sk_lini_bisnis\": \"SK/FINTECH/2024/001\",\n        \"deskripsi_lini_bisnis\": null,\n        \"file_url_sk_lini_bisnis\": \"/storage/lini-bisnis/sk/1037cd8e-407f-4267-908b-f1e8f3cd4250.pdf\",\n        \"no_sk_hapus_lini_bisnis\": null,\n        \"file_url_sk_hapus_lini_bisnis\": null,\n        \"deleted_at\": null,\n        \"created_at\": \"2025-11-26T04:57:32.000000Z\",\n        \"updated_at\": \"2025-11-26T04:57:32.000000Z\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Menyimpan Data Lini Bisnis",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "nama_lini_bisnis",
+							"value": "Financial Technology Division",
+							"type": "text"
+						},
+						{
+							"key": "no_sk_lini_bisnis",
+							"value": "SK/FINTECH/2024/001",
+							"type": "text"
+						},
+						{
+							"key": "deskripsi_lini_bisnis",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "file_url_sk_lini_bisnis",
+							"type": "file",
+							"src": "/D:/tes1.pdf"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/lini-bisnis/store",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"lini-bisnis",
+						"store"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": [
+				{
+					"name": "Menyimpan Data Lini Bisnis",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "nama_lini_bisnis",
+									"value": "Financial Technology Division",
+									"type": "text"
+								},
+								{
+									"key": "no_sk_lini_bisnis",
+									"value": "SK/FINTECH/2024/001",
+									"type": "text"
+								},
+								{
+									"key": "deskripsi_lini_bisnis",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "file_url_sk_lini_bisnis",
+									"type": "file",
+									"src": "/D:/tes1.pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/lini-bisnis/store",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"lini-bisnis",
+								"store"
+							]
+						}
+					},
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [
+						{
+							"expires": "Invalid Date",
+							"domain": "",
+							"path": ""
+						}
+					],
+					"body": "{\r\n    \"success\": true,\r\n    \"message\": \"Lini Bisnis berhasil dibuat\",\r\n    \"data\": {\r\n        \"nama_lini_bisnis\": \"Bisnsi Digital\",\r\n        \"no_sk_lini_bisnis\": \"SK/BD/2024/001\",\r\n        \"deskripsi_lini_bisnis\": null,\r\n        \"file_url_sk_lini_bisnis\": \"/storage/Lini-Bisnis/sk/68193621-54d8-4f35-9f16-893ac479be57.pdf\",\r\n        \"uuid_lini_bisnis\": \"019abf52-66af-7340-a2e1-01eca2417786\",\r\n        \"updated_at\": \"2025-11-26T08:40:39.000000Z\",\r\n        \"created_at\": \"2025-11-26T08:40:39.000000Z\"\r\n    }\r\n}"
+				}
+			]
+		},
+		{
+			"name": "Update data Lini Bisnis By Uuid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful PUT request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "nama_lini_bisnis",
+							"value": "Digital Business Unit ",
+							"type": "text"
+						},
+						{
+							"key": "no_sk_lini_bisnis",
+							"value": "SK/DBU/2024/001",
+							"type": "text"
+						},
+						{
+							"key": "deskripsi_lini_bisnis",
+							"value": "digital bisnis",
+							"type": "text"
+						},
+						{
+							"key": "file_url_sk_lini_bisnis",
+							"type": "file",
+							"src": "/D:/detail.pdf"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/lini-bisnis/019aba13-4d9c-7138-af92-221af98f4bd6/update",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"lini-bisnis",
+						"019aba13-4d9c-7138-af92-221af98f4bd6",
+						"update"
+					]
+				},
+				"description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
+			},
+			"response": [
+				{
+					"name": "Update data Lini Bisnis By Uuid",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "nama_lini_bisnis",
+									"value": "Digital Business Unit ",
+									"type": "text"
+								},
+								{
+									"key": "no_sk_lini_bisnis",
+									"value": "SK/DBU/2024/001",
+									"type": "text"
+								},
+								{
+									"key": "deskripsi_lini_bisnis",
+									"value": "digital bisnis",
+									"type": "text"
+								},
+								{
+									"key": "file_url_sk_lini_bisnis",
+									"type": "file",
+									"src": "/D:/detail.pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/lini-bisnis/019aba13-4d9c-7138-af92-221af98f4bd6/update",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"lini-bisnis",
+								"019aba13-4d9c-7138-af92-221af98f4bd6",
+								"update"
+							]
+						}
+					},
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [
+						{
+							"expires": "Invalid Date",
+							"domain": "",
+							"path": ""
+						}
+					],
+					"body": "{\n    \"success\": true,\n    \"message\": \"Lini Bisnis berhasil diupdate\",\n    \"data\": {\n        \"uuid_lini_bisnis\": \"019abe86-2217-71cc-8803-4eb968699c93\",\n        \"nama_lini_bisnis\": \"Financial Technology Division 2\",\n        \"no_sk_lini_bisnis\": \"SK/FINTECH/2024/002\",\n        \"deskripsi_lini_bisnis\": \"fintect\",\n        \"file_url_sk_lini_bisnis\": \"/storage/Lini-Bisnis/sk/63a86b4d-0f12-4f78-82cb-c55e60b7b42a.pdf\",\n        \"no_sk_hapus_lini_bisnis\": null,\n        \"file_url_sk_hapus_lini_bisnis\": null,\n        \"deleted_at\": null,\n        \"created_at\": \"2025-11-26T04:57:32.000000Z\",\n        \"updated_at\": \"2025-11-26T08:36:37.000000Z\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Delete data By Uuid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful DELETE request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 202, 204]);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "no_sk_hapus_lini_bisnis",
+							"value": "SK-PH/BU/2024/001",
+							"type": "text"
+						},
+						{
+							"key": "file_url_sk_hapus_lini_bisnis",
+							"type": "file",
+							"src": "/D:/tes1.pdf"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/lini-bisnis/019aba13-4d9c-7138-af92-221af98f4bd6/delete",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"lini-bisnis",
+						"019aba13-4d9c-7138-af92-221af98f4bd6",
+						"delete"
+					]
+				},
+				"description": "This is a DELETE request, and it is used to delete data that was previously created via a POST request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful DELETE request typically returns a `200 OK`, `202 Accepted`, or `204 No Content` response code."
+			},
+			"response": [
+				{
+					"name": "Delete data By Uuid",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "no_sk_hapus_lini_bisnis",
+									"value": "SK-PH/BU/2024/001",
+									"type": "text"
+								},
+								{
+									"key": "file_url_sk_hapus_lini_bisnis",
+									"type": "file",
+									"src": "/D:/tes1.pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/lini-bisnis/019aba13-4d9c-7138-af92-221af98f4bd6/delete",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"lini-bisnis",
+								"019aba13-4d9c-7138-af92-221af98f4bd6",
+								"delete"
+							]
+						}
+					},
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [
+						{
+							"expires": "Invalid Date",
+							"domain": "",
+							"path": ""
+						}
+					],
+					"body": "{\n    \"success\": true,\n    \"message\": \"Lini Bisnis berhasil dihapus\",\n    \"data\": null\n}"
+				}
+			]
+		},
+		{
+			"name": "Dropdwon Lini-Bisnis",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/dropdown-lini-bisnis",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"dropdown-lini-bisnis"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Dropdwon Lini-Bisnis",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/dropdown-lini-bisnis",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"dropdown-lini-bisnis"
+							]
+						}
+					},
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [
+						{
+							"expires": "Invalid Date",
+							"domain": "",
+							"path": ""
+						}
+					],
+					"body": "{\n    \"success\": true,\n    \"message\": \"Dropdown Lini Bisnis\",\n    \"data\": [\n        {\n            \"uuid_lini_bisnis\": \"019abe86-2217-71cc-8803-4eb968699c93\",\n            \"nama_lini_bisnis\": \"Financial Technology Division\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Menyimpan Data Perusahaan",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "nama_perusahaan",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "uuid_lini_bisnis",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/perusahaan/store",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"perusahaan",
+						"store"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Menyimpan Data Perusahaan",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "nama_perusahaan",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "uuid_lini_bisnis",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/perusahaan/store",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"perusahaan",
+								"store"
+							]
+						}
+					},
+					"_postman_previewlanguage": "",
+					"header": [],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": "1"
+		},
+		{
+			"key": "base_url",
+			"value": "https://template.postman-echo.com"
+		}
+	]
+}

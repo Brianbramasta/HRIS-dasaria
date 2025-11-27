@@ -84,6 +84,7 @@ import Dashboard from "@/features/dashboard/pages/Dashboard";
 import DaftarPenggajianPage from "@/features/penggajian/pages/daftarPenggajianPage";
 import KonfigurasiPenggajianPage from "@/features/penggajian/pages/konfigurasiPenggajianPage";
 import PeriodePenggajianPage from "@/features/penggajian/pages/periodePenggajianPage";
+import HakAksesPage from "@/features/hakAkses/pages/hakAksesPage";
 
 
 
@@ -130,6 +131,7 @@ export default function AppRoutes() {
           <Route path="/perpanjangan-kontrak" element={<PerpanjanganKontrak />} />
           
           <Route path="/organization-history" element={<OrganizationHistoryPage />} />
+          <Route path="/hak-akses" element={<HakAksesPage />} />
 
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/marketing" element={<Marketing />} />

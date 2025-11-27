@@ -8,7 +8,7 @@ import {
   HorizontaLDots,
  
 } from "../icons";
-import { iconPenggajian, iconKaryawan, iconStrukturOrganisasi }   from '@/icons/components/icons'
+import { iconPenggajian, iconKaryawan, iconStrukturOrganisasi, IconHakAksesMenu }   from '@/icons/components/icons'
 import { useSidebar } from "../context/SidebarContext";
 // import SidebarWidget from "./SidebarWidget";
 import { useAuthStore } from "../features/auth/stores/authStore";
@@ -52,7 +52,11 @@ const navItems: NavItem[] = [
       { name: "Daftar Penggajian", path: "/daftar-penggajian", pro: false },
     
     ],
-  }
+  },{
+    icon: <> {IconHakAksesMenu({ size: 16 })} </>,
+    name: "Hak Akses",
+    path: "/hak-akses",
+  },
 ];
 
 
@@ -161,6 +165,7 @@ const AppSidebar: React.FC = () => {
                   openSubmenu?.type === menuType && openSubmenu?.index === index
                 ) || nav.subItems?.some((s) => isActive(s.path));
                 const color = sectionActive ? 'var(--color-brand-500)' : '#6C757D';
+                console.log('nav name', nav.name)
                 const iconNode =
                   nav.name === "Data Master Karyawan"
                     ? iconKaryawan({ size: 16, color })
@@ -168,6 +173,8 @@ const AppSidebar: React.FC = () => {
                     ? iconPenggajian({ size: 16, color })
                     : nav.name === "Struktur dan Organisasi"
                     ? iconStrukturOrganisasi({ size: 16, color })
+                    : nav.name === "Hak Akses"
+                    ? IconHakAksesMenu({ size: 16, color })
                     : isValidElement(nav.icon)
                     ? cloneElement(nav.icon as any, { style: { color } })
                     : nav.icon;
@@ -206,9 +213,18 @@ const AppSidebar: React.FC = () => {
                 {(() => {
                   const active = isActive(nav.path);
                   const color = active ? 'var(--color-brand-500)' : '#6C757D';
-                  const iconNode = isValidElement(nav.icon)
-                    ? cloneElement(nav.icon as any, { style: { color } })
-                    : nav.icon;
+                  const iconNode =
+                    nav.name === "Data Master Karyawan"
+                      ? iconKaryawan({ size: 16, color })
+                      : nav.name === "Penggajian"
+                      ? iconPenggajian({ size: 16, color })
+                      : nav.name === "Struktur dan Organisasi"
+                      ? iconStrukturOrganisasi({ size: 16, color })
+                      : nav.name === "Hak Akses"
+                      ? IconHakAksesMenu({ size: 16, color })
+                      : isValidElement(nav.icon)
+                      ? cloneElement(nav.icon as any, { style: { color } })
+                      : nav.icon;
                   return (
                     <span
                       className={`menu-item-icon-size ${

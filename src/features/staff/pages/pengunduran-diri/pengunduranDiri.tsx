@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Plus } from 'react-feather';
+import { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+// import { Plus } from 'react-feather';
 import TabPendingReview from './TabPendingReview';
 import TabReviewed from './TabReviewed';
-import Button from '../../../../components/ui/button/Button';
+// import Button from '../../../../components/ui/button/Button';
 import ResignKaryawanModal from '../../components/modals/ResignKaryawanModal';
 // import { addNotification } from '../../../../stores/notificationStore';
 import ShareLinkModal from '../../components/modals/sharelink/shareLink';
@@ -15,6 +15,12 @@ export default function PengunduranDiriPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const view = searchParams.get('view');
+    setActiveTab(view === 'reviewed' ? 'reviewed' : 'pending');
+  }, [searchParams]);
 
   const handleAddResign = () => {
     setIsModalOpen(true);
@@ -34,53 +40,18 @@ export default function PengunduranDiriPage() {
     <div className="space-y-6">
       
 
-      {/* Tabs */}
-      <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
-        {/* Page Header */}
-      <div className="p-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Pengunduran Diri</h1>
-          {/* <p className="text-sm text-gray-500 dark:text-gray-400">
-            Kelola pengajuan pengunduran diri karyawan
-          </p> */}
-        </div>
-        <Button onClick={handleAddResign} variant="primary" size="sm">
-          <Plus size={16} className="mr-2" />
-          Form Resign
-        </Button>
-      </div>
-
-        <div className="px-6  w-1/2">
-          <div className="flex gap-0">
-            <button
-              onClick={() => setActiveTab('pending')}
-              className={`flex-1 px-6 py-4 text-center font-medium transition-colors ${
-                activeTab === 'pending'
-                  ? 'border-b-2 border-blue-600 text-blue-600 dark:border-blue-500 dark:text-blue-500'
-                  : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300'
-              }`}
-            >
-              Pending Review <span className="ml-2 inline-block rounded-full bg-blue-100 px-2 py-0.5 text-sm text-blue-800 dark:bg-blue-900 dark:text-blue-200">10</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('reviewed')}
-              className={`flex-1 px-6 py-4 text-center font-medium transition-colors ${
-                activeTab === 'reviewed'
-                  ? 'border-b-2 border-blue-600 text-blue-600 dark:border-blue-500 dark:text-blue-500'
-                  : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300'
-              }`}
-            >
-              Reviewed <span className="ml-2 inline-block rounded-full bg-blue-100 px-2 py-0.5 text-sm text-blue-800 dark:bg-blue-900 dark:text-blue-200">99</span>
-            </button>
+      {/* <div className="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900"> */}
+        {/* <div className="p-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Pengunduran Diri</h1>
           </div>
-        </div>
+        </div> */}
 
-        {/* Tab Content */}
         <div className="p-6">
-          {activeTab === 'pending' && <TabPendingReview />}
+          {activeTab === 'pending' && <TabPendingReview onOpenForm={handleAddResign} />}
           {activeTab === 'reviewed' && <TabReviewed />}
         </div>
-      </div>
+      {/* </div> */}
 
       {/* Modal Resign */}
       <ResignKaryawanModal

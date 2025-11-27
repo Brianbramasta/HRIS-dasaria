@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { DataTable, DataTableColumn, DataTableAction } from '../../../../features/structure-and-organize/components/datatable/DataTable';
 import { PengunduranDiri } from '../../types/PengunduranDiri';
 import usePengunduranDiri from '../../hooks/usePengunduranDiri';
-import { Edit2} from 'react-feather';
+import { Edit2, ChevronDown } from 'react-feather';
+import { IconForm } from '@/icons/components/icons';
 import Button from '../../../../components/ui/button/Button';
+import { Dropdown } from '../../../../components/ui/dropdown/Dropdown';
 
-export default function TabPendingReview() {
+export default function TabPendingReview({ onOpenForm }: { onOpenForm?: () => void }) {
   const navigate = useNavigate();
   const {
     data,
@@ -32,6 +34,7 @@ export default function TabPendingReview() {
   const [showApproveModal, setShowApproveModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [tanggalEfektif, setTanggalEfektif] = useState('');
+  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
 
   // Define columns untuk DataTable
   const columns: DataTableColumn<PengunduranDiri>[] = [
@@ -173,6 +176,7 @@ export default function TabPendingReview() {
     <div className="space-y-6">
       {/* Data Table */}
       <DataTable
+        title="Pengunduran Diri"
         data={data}
         columns={columns}
         actions={actions}
@@ -181,6 +185,44 @@ export default function TabPendingReview() {
         pageSize={limit}
         pageSizeOptions={[5, 10, 25, 50]}
         filterable={true}
+        onAdd={onOpenForm}
+        addButtonLabel="Form Pengunduran Diri"
+        addButtonIcon={<IconForm />}
+        toolbarRightSlot={
+          <div className="relative">
+            <Button
+              onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-1 dropdown-toggle"
+            >
+              Ditinjau
+              <ChevronDown size={16} />
+            </Button>
+            <Dropdown isOpen={isStatusDropdownOpen} onClose={() => setIsStatusDropdownOpen(false)}>
+              <div className="p-2 w-40">
+                <button
+                  className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100"
+                  onClick={() => {
+                    setIsStatusDropdownOpen(false);
+                    navigate('/pengunduran-diri?view=pending');
+                  }}
+                >
+                  Ditinjau
+                </button>
+                <button
+                  className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100"
+                  onClick={() => {
+                    setIsStatusDropdownOpen(false);
+                    navigate('/pengunduran-diri?view=reviewed');
+                  }}
+                >
+                  Selesai
+                </button>
+              </div>
+            </Dropdown>
+          </div>
+        }
         loading={loading}
         emptyMessage="Tidak ada data pengunduran diri yang pending"
         onSearchChange={handleSearchChange}

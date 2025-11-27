@@ -33,6 +33,28 @@ export interface BusinessLineListItem {
   skFile: FileSummary | null;
 }
 
+export interface BusinessLineApiItem {
+  uuid_lini_bisnis: string;
+  nama_lini_bisnis: string;
+  deskripsi_lini_bisnis: string | null;
+  no_sk_lini_bisnis: string | null;
+  file_url_sk_lini_bisnis: string | null;
+  no_sk_hapus_lini_bisnis: string | null;
+  file_url_sk_hapus_lini_bisnis: string | null;
+  deleted_at: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+}
+
+export interface ApiPagination {
+  current_page: number;
+  per_page: number;
+  total: number;
+  last_page: number;
+  from: number;
+  to: number;
+}
+
 export interface CompanyListItem {
   id: string;
   name: string;

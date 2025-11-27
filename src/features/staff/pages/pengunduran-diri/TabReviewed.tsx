@@ -1,9 +1,15 @@
+import { useState } from 'react';
 import { DataTable, DataTableColumn } from '../../../../features/structure-and-organize/components/datatable/DataTable';
 import { PengunduranDiri } from '../../types/PengunduranDiri';
 import usePengunduranDiri from '../../hooks/usePengunduranDiri';
 import Button from '../../../../components/ui/button/Button';
+import { useNavigate } from 'react-router-dom';
+import { ChevronDown } from 'react-feather';
+import { Dropdown } from '../../../../components/ui/dropdown/Dropdown';
 
 export default function TabReviewed() {
+  const navigate = useNavigate();
+  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
   const {
     data,
     loading,
@@ -104,6 +110,7 @@ export default function TabReviewed() {
     <div className="space-y-6">
       {/* Data Table */}
       <DataTable
+        title="Pengunduran Diri"
         data={data}
         columns={columns}
         searchable={true}
@@ -111,6 +118,41 @@ export default function TabReviewed() {
         pageSize={limit}
         pageSizeOptions={[5, 10, 25, 50]}
         filterable={true}
+        toolbarRightSlot={
+          <div className="relative">
+            <Button
+              onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-1 dropdown-toggle"
+            >
+              Selesai
+              <ChevronDown size={16} />
+            </Button>
+            <Dropdown isOpen={isStatusDropdownOpen} onClose={() => setIsStatusDropdownOpen(false)}>
+              <div className="p-2 w-40">
+                <button
+                  className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100"
+                  onClick={() => {
+                    setIsStatusDropdownOpen(false);
+                    navigate('/pengunduran-diri?view=pending');
+                  }}
+                >
+                  Ditinjau
+                </button>
+                <button
+                  className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100"
+                  onClick={() => {
+                    setIsStatusDropdownOpen(false);
+                    navigate('/pengunduran-diri?view=reviewed');
+                  }}
+                >
+                  Selesai
+                </button>
+              </div>
+            </Dropdown>
+          </div>
+        }
         loading={loading}
         emptyMessage="Tidak ada data pengunduran diri yang sudah di-review"
         onSearchChange={handleSearchChange}

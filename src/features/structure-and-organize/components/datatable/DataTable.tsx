@@ -40,6 +40,7 @@ interface DataTableProps<T = any> {
   pageSizeOptions?: number[];
   onAdd?: () => void;
   addButtonLabel?: string;
+  addButtonIcon?: React.ReactNode;
   onExport?: () => void;
   exportButtonLabel?: string;
   filterable?: boolean;
@@ -55,6 +56,7 @@ interface DataTableProps<T = any> {
   // Use resetKey to force resetting internal filters when parent context changes (e.g., tab switch)
   resetKey?: string;
   onFilter?: (filter: string) => void;
+  toolbarRightSlot?: React.ReactNode;
 }
 
 export function DataTable<T = any>({
@@ -68,6 +70,7 @@ export function DataTable<T = any>({
   pageSizeOptions = [5, 10, 25, 50],
   onAdd,
   addButtonLabel,
+  addButtonIcon,
   onExport,
   exportButtonLabel = 'Ekspor',
   filterable = true,
@@ -80,6 +83,7 @@ export function DataTable<T = any>({
   onRowsPerPageChangeExternal,
   onColumnVisibilityChange,
   resetKey,
+  toolbarRightSlot,
 }: DataTableProps<T>) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(pageSize);
@@ -216,8 +220,8 @@ export function DataTable<T = any>({
             )}
             {onAdd && (
               <Button onClick={onAdd} variant="primary" size="sm">
-                <Plus size={16} className="mr-2" />
-                {addButtonLabel||'Tambah '+title}
+                {addButtonIcon ? <span className="mr-2">{addButtonIcon}</span> : <Plus size={16} className="mr-2" />}
+                {addButtonLabel || ('Tambah ' + (title ?? ''))}
               </Button>
             )}
           </div>
@@ -252,6 +256,7 @@ export function DataTable<T = any>({
                 Filter
               </Button>
             )}
+            {toolbarRightSlot}
           </div>
         </div>
       </div>
@@ -275,7 +280,7 @@ export function DataTable<T = any>({
                 </TableCell>
               ))}
               {actions && actions.length > 0 && (
-                <TableCell className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">Actions</TableCell>
+                <TableCell className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">Aksi</TableCell>
               )}
             </TableRow>
           </TableHeader>
