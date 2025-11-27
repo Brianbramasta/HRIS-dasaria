@@ -25,9 +25,10 @@ export default function DetailLiniBisnis() {
         const detail = await businessLineService.getDetail(id);
         setTitle(detail?.businessLine?.name ?? 'Detail Lini Bisnis');
         setOverviewText(detail?.businessLine?.description ?? '—');
-
+        console.log('detail',detail)
         const files = detail?.personalFiles || [];
-        setPersonalFiles(files.map((f: any, idx: number) => ({ no: idx + 1, namaFile: f.name, dokumen: f.fileName || '—' })));
+        console.log('files',files)
+        setPersonalFiles(files.map((f: any, idx: number) => ({ no: idx + 1, namaFile: f.fileName || '—', dokumen: f.fileName || '—', memoNumber:detail?.businessLine?.memoNumber || '—' })));
 
         const comps = detail?.companies || [];
         setCompanies(comps.map((c: any, idx: number) => ({ no: idx + 1, nama: c.name, dokumen: c.details ? c.details : '—', companyId: c.id })));
@@ -68,8 +69,8 @@ export default function DetailLiniBisnis() {
           items={personalFiles as any}
           columns={[
             { id: 'no', label: 'No.', align: 'center' },
+            { id: 'memoNumber', label: 'Surat Keputusan / Memo Internal' },
             { id: 'namaFile', label: 'Nama File' },
-            { id: 'dokumen', label: 'Dokumen' },
           ] as any}
           actions={[
             {

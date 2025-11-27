@@ -8,8 +8,8 @@ import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 // import { error } from 'console';
 import { useFileStore } from '@/stores/fileStore';
-import { fileService } from '@/services/file.service';
-import { addNotification } from '@/stores/notificationStore';
+// import { fileService } from '@/services/file.service';
+// import { addNotification } from '@/stores/notificationStore';
 
 
 
@@ -48,39 +48,26 @@ const EditBusinessLineModal: React.FC<EditBusinessLineModalProps> = ({ isOpen, o
   
     // Jika file wajib diunggah, blokir submit bila belum ada
     console.log('skFile', skFile)
-    if (!skFile?.name) {
-    console.log('skFile2', skFile)
-    addNotification({
-      variant: 'error',
-      title: 'Lini Bisnis tidak ditambahkan',
-      description: 'File Wajib di isi',
-      hideDuration: 4000,
-    });
+    // if (!skFile?.file) {
+    // console.log('skFile2', skFile)
+    // addNotification({
+    //   variant: 'error',
+    //   title: 'Lini Bisnis tidak ditambahkan',
+    //   description: 'File Wajib di isi',
+    //   hideDuration: 4000,
+    // });
       // optional: bisa menambahkan notifikasi di sini
-      return;
-    }
+    //   return;
+    // }
     setSubmitting(true);
     try {
-      const updated = await Promise.all([
-        businessLinesService.update(businessLine.id, {
-          name: name.trim(),
-          description: description.trim() || null,
-          memoNumber: memoNumber.trim(),
-          skFileId: skFile?.path || skFile?.name,
-        }),
-        skFile ? fileService.create({
-          name: skFile.name,
-          fileName: skFile.name,
-          ownerType: 'business-line',
-          ownerId: businessLine.id,
-          docNumber: businessLine.memoNumber || '',
-          type: 'Active',
-          filePath: skFile.path,
-          fileType: skFile.type,
-          size: skFile.size,
-        }) : Promise.resolve(),
-      ]);
-      onSuccess?.(updated[0]);
+      const updated = await businessLinesService.update(businessLine.id, {
+        name: name.trim(),
+        description: description.trim() || null,
+        memoNumber: memoNumber.trim(),
+        skFile: skFile?.file || null,
+      });
+      onSuccess?.(updated);
       onClose();
     } catch (err) {
       console.error('Failed to update business line', err);

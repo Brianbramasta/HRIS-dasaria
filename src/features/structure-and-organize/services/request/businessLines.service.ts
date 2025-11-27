@@ -46,10 +46,34 @@ export const businessLinesService = {
     };
   },
 
+  getDropdown: async (): Promise<BusinessLineListItem[]> => {
+    const result = await apiService.get<{ data: { uuid_lini_bisnis: string; nama_lini_bisnis: string }[] }>(`/dropdown-lini-bisnis`);
+    const items = (result as any).data as { uuid_lini_bisnis: string; nama_lini_bisnis: string }[];
+    return (items || []).map((i) => ({
+      id: i.uuid_lini_bisnis,
+      name: i.nama_lini_bisnis,
+      description: null,
+      memoNumber: null,
+      skFile: null,
+    }));
+  },
+
   getDetail: async (id: string): Promise<BusinessLineDetailResponse> => {
-    const result = await apiService.get<{ data: BusinessLineApiItem }>(`/lini-bisnis/${id}`);
-    const item = (result as any).data as BusinessLineApiItem;
+    const result = await apiService.get<{ data: BusinessLineApiItem & { perusahaan?: any[] } }>(`/lini-bisnis/${id}/detail`);
+    const item = (result as any).data as BusinessLineApiItem & { perusahaan?: any[] };
     const bl = mapToBusinessLine(item);
+    const activeSk = toFileSummary(item.file_url_sk_lini_bisnis);
+    const deleteSk = toFileSummary(item.file_url_sk_hapus_lini_bisnis);
+    const personalFiles: FileSummary[] = [];
+    if (activeSk) personalFiles.push(activeSk);
+    if (deleteSk) personalFiles.push(deleteSk);
+    const companies = Array.isArray(item.perusahaan)
+      ? item.perusahaan.map((c: any) => ({
+          id: c.uuid_perusahaan || c.id || '',
+          name: c.nama_perusahaan || c.name || '',
+          details: c.deskripsi_perusahaan || c.details || null,
+        }))
+      : [];
     return {
       businessLine: {
         id: bl.id,
@@ -58,41 +82,54 @@ export const businessLinesService = {
         memoNumber: bl.memoNumber,
         skFile: bl.skFile,
       },
-      personalFiles: [],
-      companies: [],
+      personalFiles,
+      companies,
     };
   },
 
-  create: async (payload: { name: string; description?: string | null; memoNumber: string; skFileId: string; }): Promise<BusinessLineListItem> => {
-    const body: Record<string, any> = {
-      nama_lini_bisnis: payload.name,
-      no_sk_lini_bisnis: payload.memoNumber,
-      deskripsi_lini_bisnis: payload.description ?? null,
-      file_url_sk_lini_bisnis: payload.skFileId,
-    };
-    const created = await apiService.post<{ data: BusinessLineApiItem }>(`/lini-bisnis/store`, body);
+  getById: async (id: string): Promise<BusinessLineListItem> => {
+    const result = await apiService.get<{ data: BusinessLineApiItem }>(`/lini-bisnis/${id}`);
+    const item = (result as any).data as BusinessLineApiItem;
+    return mapToBusinessLine(item);
+  },
+
+  create: async (payload: { name: string; description?: string | null; memoNumber: string; skFile?: File; }): Promise<BusinessLineListItem> => {
+    const formData = new FormData();
+    formData.append('nama_lini_bisnis', payload.name);
+    formData.append('no_sk_lini_bisnis', payload.memoNumber);
+    if (payload.description !== undefined && payload.description !== null) {
+      formData.append('deskripsi_lini_bisnis', payload.description);
+    }
+    if (payload.skFile) {
+      formData.append('file_url_sk_lini_bisnis', payload.skFile);
+    }
+    const created = await apiService.post<{ data: BusinessLineApiItem }>(`/lini-bisnis/store`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
     const item = (created as any).data as BusinessLineApiItem;
     return mapToBusinessLine(item);
   },
 
-  update: async (id: string, payload: { name?: string; description?: string | null; memoNumber: string; skFileId: string; }): Promise<BusinessLineListItem> => {
-    const body: Record<string, any> = {
-      nama_lini_bisnis: payload.name,
-      no_sk_lini_bisnis: payload.memoNumber,
-      deskripsi_lini_bisnis: payload.description ?? null,
-      file_url_sk_lini_bisnis: payload.skFileId,
-    };
-    const updated = await apiService.post<{ data: BusinessLineApiItem }>(`/lini-bisnis/${id}/update`, body);
+  update: async (id: string, payload: { name?: string; description?: string | null; memoNumber: string; skFile?: File | null; }): Promise<BusinessLineListItem> => {
+    const formData = new FormData();
+    if (payload.name !== undefined) formData.append('nama_lini_bisnis', payload.name);
+    formData.append('no_sk_lini_bisnis', payload.memoNumber);
+    if (payload.description !== undefined && payload.description !== null) {
+      formData.append('deskripsi_lini_bisnis', payload.description);
+    }
+    if (payload.skFile) {
+      formData.append('file_url_sk_lini_bisnis', payload.skFile);
+    }
+    const updated = await apiService.post<{ data: BusinessLineApiItem }>(`/lini-bisnis/${id}/update`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
     const item = (updated as any).data as BusinessLineApiItem;
     return mapToBusinessLine(item);
   },
 
-  delete: async (id: string, payload: { memoNumber: string; skFileId: string; }): Promise<{ success: true }> => {
-    const body: Record<string, any> = {
-      no_sk_hapus_lini_bisnis: payload.memoNumber,
-      file_url_sk_hapus_lini_bisnis: payload.skFileId,
-    };
-    const resp = await apiService.post<{ data: null; success: boolean }>(`/lini-bisnis/${id}/delete`, body);
+  delete: async (id: string, payload: { memoNumber: string; skFile?: File; }): Promise<{ success: true }> => {
+    const formData = new FormData();
+    formData.append('no_sk_hapus_lini_bisnis', payload.memoNumber);
+    if (payload.skFile) {
+      formData.append('file_url_sk_hapus_lini_bisnis', payload.skFile);
+    }
+    const resp = await apiService.post<{ data: null; success: boolean }>(`/lini-bisnis/${id}/delete`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
     return { success: !!(resp as any).success } as { success: true };
   },
 };

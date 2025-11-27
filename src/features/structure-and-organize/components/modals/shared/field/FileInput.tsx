@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
-import axios from 'axios';
 import { useFileStore , setSkFile } from '@/stores/fileStore';
+import { clearSkFile } from '@/stores/fileStore';
 
 interface FileInputProps {
   skFileName: string;
@@ -11,7 +11,6 @@ interface FileInputProps {
 const FileInput: React.FC<FileInputProps> = ({ skFileName, onChange }) => {
   const [preview, setPreview] = useState<string | null>(null);
   const [savedInfo, setSavedInfo] = useState<{ fileName: string; filePath: string; size: number } | null>(null);
-  const [uploading, setUploading] = useState<boolean>(false);
   const skFile =  useFileStore((s) => s.skFile);;
 
   useEffect(() => {
@@ -40,26 +39,9 @@ const FileInput: React.FC<FileInputProps> = ({ skFileName, onChange }) => {
       } as unknown as React.ChangeEvent<HTMLInputElement>;
       onChange(syntheticEvent);
 
-      // Upload to API to store in local folder and get public path
-      try {
-        setUploading(true);
-        const formData = new FormData();
-        formData.append('file', file);
-        const resp = await axios.post('http://localhost:3001/api/upload', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
-        const data = (resp.data?.data) ?? resp.data; // server wraps responses with { data }
-        if (data?.filePath) {
-          setSavedInfo({ fileName: data.fileName, filePath: data.filePath, size: data.size });
-          setSkFile({ name: data.fileName, path: data.filePath, size: data.size, type: data.fileType });
-          setPreview(data.filePath); // switch preview to server-served path
-        }
-      } catch (err) {
-        // fallback: keep local preview; optionally log
-        console.error('Upload failed:', err);
-      } finally {
-        setUploading(false);
-      }
+      // Store file locally in state/store; actual upload happens on Save
+      setSavedInfo({ fileName: file.name, filePath: localPreview, size: file.size });
+      setSkFile({ name: file.name, path: localPreview, size: file.size, type: file.type, file });
     }
   };
 
@@ -70,9 +52,16 @@ const FileInput: React.FC<FileInputProps> = ({ skFileName, onChange }) => {
       'image/jpeg': [],
       'image/webp': [],
       'image/svg+xml': [],
+      'application/pdf': [],
     },
     noClick: false,
   });
+
+  const handleClear = () => {
+    setPreview(null);
+    setSavedInfo(null);
+    clearSkFile();
+  };
 
   return (
     <div className="space-y-2">
@@ -143,6 +132,23 @@ const FileInput: React.FC<FileInputProps> = ({ skFileName, onChange }) => {
           )}
         </div>
       )}
+      {skFile?.path && !skFile?.type?.startsWith('image/') && (
+        <div className="mt-4">
+          <div className="text-sm font-medium mb-2">Preview:</div>
+          <div className="rounded-lg bg-gray-100 dark:bg-gray-800 p-4 flex items-center gap-3">
+            <img
+              src={skFile?.type === 'application/pdf' ? '/images/icons/file-pdf.svg' : '/images/icons/file-image.svg'}
+              alt="File"
+              className="w-8 h-8"
+            />
+            <div className="flex-1">
+              <div className="text-sm font-semibold text-gray-800 dark:text-white/90">{skFile?.name}</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400">{Math.round((savedInfo?.size || skFile.size) / 1024)} KB · {skFile?.type}</div>
+            </div>
+            <a href={skFile?.path} target="_blank" rel="noreferrer" className="text-xs text-blue-600 underline">Open</a>
+          </div>
+        </div>
+      )}
       {(savedInfo?.fileName || skFileName) && (
         <div className="mt-2 flex items-center justify-between bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
           <div className="flex items-center gap-2">
@@ -153,9 +159,7 @@ const FileInput: React.FC<FileInputProps> = ({ skFileName, onChange }) => {
               <span className="font-medium">Selected:</span> {savedInfo?.fileName || skFileName}
             </p>
           </div>
-          {uploading && (
-            <div className="text-xs text-blue-600 dark:text-blue-400">Uploading...</div>
-          )}
+          <button type="button" onClick={handleClear} className="text-xs text-red-600 hover:underline">Remove</button>
         </div>
       )}
     </div>

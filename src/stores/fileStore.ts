@@ -5,6 +5,7 @@ export interface UploadedFileMeta {
   path: string;
   size: number;
   type: string;
+  file?: File;
 }
 
 interface FileState {

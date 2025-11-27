@@ -28,7 +28,7 @@ const DeleteOfficeModal: React.FC<DeleteOfficeModalProps> = ({ content, isOpen, 
           </div>
           <h2 className="text-2xl font-bold">{title}</h2>
         </div>
-        <form onSubmit={(e) => {e.preventDefault(); onClose?.()}}>
+        <form onSubmit={(e) => {e.preventDefault(); handleDelete?.()}}>
         <div className='max-h-[100vh] overflow-y-auto pb-4'>
           {content}
           <p className='pt-2'>*Data tidak benar-benar dihapus akan tetapi diarsipkan</p>
@@ -38,7 +38,7 @@ const DeleteOfficeModal: React.FC<DeleteOfficeModalProps> = ({ content, isOpen, 
         <div className="flex justify-end gap-3 ">
           <button type='submit' className="rounded-xl border px-5 py-2">{closeTitleButton}</button>
           <button
-            onClick={handleDelete}
+          type='submit'
             disabled={submitting}
             className="rounded-xl bg-red-600 px-5 py-2 text-white disabled:opacity-60"
           >

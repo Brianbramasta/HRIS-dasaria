@@ -5,6 +5,7 @@ import { BusinessLineListItem } from '../../../types/organization.api.types';
 import ModalDelete from '../shared/modal/ModalDelete';
 import ModalDeleteContent from '../shared/modal/ModalDeleteContent';
 import { addNotification } from '@/stores/notificationStore';
+import { useFileStore } from '@/stores/fileStore';
 
 interface DeleteBusinessLineModalProps {
   isOpen: boolean;
@@ -15,17 +16,14 @@ interface DeleteBusinessLineModalProps {
 
 const DeleteBusinessLineModal: React.FC<DeleteBusinessLineModalProps> = ({ isOpen, onClose, businessLine, onSuccess }) => {
   const [submitting, setSubmitting] = React.useState(false);
-  const [skFileName, setSkFileName] = React.useState('');
+  const skFile = useFileStore((s) => s.skFile);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setSkFileName(file?.name || '');
-  };
+  const handleFileChange = (/*_e: React.ChangeEvent<HTMLInputElement>*/) => {};
   
 
   const handleDelete = async () => {
     if (!businessLine) return;
-    if (!skFileName) {
+    if (!skFile?.file) {
       addNotification({
         variant: 'error',
         title: 'Lini Bisnis tidak ditambahkan',
@@ -37,7 +35,7 @@ const DeleteBusinessLineModal: React.FC<DeleteBusinessLineModalProps> = ({ isOpe
     try {
       await businessLinesService.delete(businessLine.id, {
         memoNumber: businessLine.memoNumber || '',
-        skFileId: skFileName,
+        skFile: skFile.file,
       });
       onSuccess?.();
       onClose();
@@ -58,7 +56,7 @@ const DeleteBusinessLineModal: React.FC<DeleteBusinessLineModalProps> = ({ isOpe
         <ModalDeleteContent
           memoNumber={businessLine?.memoNumber || ''}
           memoNumberReadOnly={true}
-          skFileName={skFileName}
+          skFileName={skFile?.name || ''}
           onFileChange={handleFileChange}
           
         />

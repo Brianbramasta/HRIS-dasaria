@@ -158,3 +158,51 @@ respone:
   ]
 }
 ```
+
+# Dropdwon Lini-Bisnis
+
+[Dropdwon Lini-Bisnis](http://127.0.0.1:8000/api/dropdown-lini-bisnis)
+
+```
+respone:
+{
+    "success": true,
+    "message": "Dropdown Lini Bisnis",
+    "data": [
+        {
+            "uuid_lini_bisnis": "019ac38f-9ac8-715e-bf8e-385335f9b9d2",
+            "nama_lini_bisnis": "Financial Technology Division"
+        },
+        {
+            "uuid_lini_bisnis": "019ac433-79e6-7195-b71b-466e14705111",
+            "nama_lini_bisnis": "ISP"
+        }
+    ]
+}
+```
+
+# Get Detail Lini Bisnis
+
+http://127.0.0.1:8000/api/lini-bisnis/019ac38f-9ac8-715e-bf8e-385335f9b9d2/detail
+methode: GET
+
+```
+respone:
+{
+    "success": true,
+    "message": "Lini Bisnis detail found",
+    "data": {
+        "uuid_lini_bisnis": "019ac38f-9ac8-715e-bf8e-385335f9b9d2",
+        "nama_lini_bisnis": "Financial Technology Division",
+        "no_sk_lini_bisnis": "SK/FINTECH/2024/001",
+        "deskripsi_lini_bisnis": "test description",
+        "file_url_sk_lini_bisnis": "/storage/Lini-Bisnis/sk/ede0476f-3012-4a18-a5f8-30e398313b86.pdf",
+        "no_sk_hapus_lini_bisnis": null,
+        "file_url_sk_hapus_lini_bisnis": null,
+        "deleted_at": null,
+        "created_at": "2025-11-27T04:25:59.000000Z",
+        "updated_at": "2025-11-27T07:19:51.000000Z",
+        "perusahaan": []
+    }
+}
+```

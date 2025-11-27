@@ -30,7 +30,7 @@ const AddBusinessLineModal: React.FC<AddBusinessLineModalProps> = ({ isOpen, onC
   const handleSubmit = async () => {
     if (!name.trim()) return;
     // Jika file wajib diunggah, blokir submit bila belum ada
-    if (!skFile?.name) {
+    if (!skFile?.file) {
         console.log('skFile2', skFile)
         addNotification({
           variant: 'error',
@@ -46,7 +46,7 @@ const AddBusinessLineModal: React.FC<AddBusinessLineModalProps> = ({ isOpen, onC
         name: name.trim(),
         description: description.trim() || null,
         memoNumber: memoNumber.trim(),
-        skFileId: skFile?.path || skFile?.name,
+        skFile: skFile.file,
       });
       onSuccess?.(created);
       onClose();

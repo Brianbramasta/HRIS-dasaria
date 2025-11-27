@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import  { useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import DataTable, { DataTableColumn } from '../../components/datatable/DataTable';
 import { Edit, Trash } from 'react-feather';
@@ -11,8 +11,9 @@ import DeleteBusinessLineModal from '../../components/modals/LiniBisnis/DeleteBu
 import { addNotification } from '../../../../stores/notificationStore';
 
 import type { BLRow } from '../../types/organizationTable.types';
-import fileService from '@/services/file.service';
-import { setSkFile, clearSkFile} from '@/stores/fileStore';
+import { clearSkFile} from '@/stores/fileStore';
+import { businessLinesService } from '../../services/request/businessLines.service';
+import type { BusinessLineListItem } from '../../types/organization.api.types';
 import { FileText } from '@/icons/components/icons';
 
 type Props = { resetKey: string };
@@ -35,6 +36,7 @@ export default function BusinessLinesTab({ resetKey }: Props) {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [selectedBusinessLine, setSelectedBusinessLine] = useState<BusinessLineListItem | null>(null);
 
   const {
     businessLines,
@@ -72,9 +74,7 @@ export default function BusinessLinesTab({ resetKey }: Props) {
     URL.revokeObjectURL(url);
   };
 
-  React.useEffect(() => {
-    fetchBusinessLines();
-  }, [fetchBusinessLines]);
+  
 
   return (
     <>
@@ -91,11 +91,9 @@ export default function BusinessLinesTab({ resetKey }: Props) {
             onClick: async (row: any) => {
               const idx = (row?.no ?? 0) - 1;
               setSelectedIndex(idx);
-              const files = await fileService.getByOwnerType(businessLines[idx].id, 'business-line');
-              if (files.length > 0) {
-                console.log('file', files[0]);
-                setSkFile({ ...files[0], path: files[0].filePath, size: files[0].size , name: files[0].fileName, type: files[0].fileType });
-              }
+              const detail = await businessLinesService.getDetail(businessLines[idx].id);
+              console.log('detail',detail)
+              setSelectedBusinessLine(detail.businessLine as BusinessLineListItem);
               setIsEditOpen(true);
             },
           },
@@ -115,11 +113,12 @@ export default function BusinessLinesTab({ resetKey }: Props) {
         searchable
         filterable
         resetKey={resetKey}
-        onSearchChange={(val) => { setSearch(val); fetchBusinessLines(); }}
-        onSortChange={() => { setSort('name', 'asc'); fetchBusinessLines(); }}
-        onPageChangeExternal={(p) => { setPage(p); fetchBusinessLines(); }}
-        onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); fetchBusinessLines(); }}
-        onColumnVisibilityChange={() => { fetchBusinessLines(); }}
+        onSearchChange={(val) => { setSearch(val); }}
+        onSortChange={() => { setSort('name', 'asc'); }}
+        onPageChangeExternal={(p) => { setPage(p); }}
+        onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); }}
+        onColumnVisibilityChange={() => {}}
+      
         onAdd={() => setIsAddOpen(true)}
         onExport={() => exportCSV('lini-bisnis.csv', rows)}
       />
@@ -143,7 +142,7 @@ export default function BusinessLinesTab({ resetKey }: Props) {
           setIsEditOpen(false);
           clearSkFile();
         }}
-        businessLine={selectedIndex !== null ? (businessLines?.[selectedIndex] as any) : null}
+        businessLine={selectedBusinessLine}
         onSuccess={() => {
           fetchBusinessLines();
           addNotification({

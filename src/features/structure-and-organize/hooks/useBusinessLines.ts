@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { 
   TableFilter,
   BusinessLineListItem,
+  BusinessLineDetailResponse,
 } from '../types/organization.api.types';
 import { businessLinesService } from '../services/request/businessLines.service';
 import useFilterStore from '../../../stores/filterStore';
@@ -20,6 +21,9 @@ interface UseBusinessLinesReturn {
   createBusinessLine: (payload: { name: string; description?: string | null; memoNumber: string; skFileId: string; }) => Promise<BusinessLineListItem | null>;
   updateBusinessLine: (id: string, payload: { name?: string; description?: string | null; memoNumber: string; skFileId: string; }) => Promise<BusinessLineListItem | null>;
   deleteBusinessLine: (id: string, payload: { memoNumber: string; skFileId: string; }) => Promise<boolean>;
+  getDetail: (id: string) => Promise<BusinessLineDetailResponse | null>;
+  getDropdown: () => Promise<BusinessLineListItem[]>;
+  getById: (id: string) => Promise<BusinessLineListItem | null>;
   
   // Pagination
   setPage: (page: number) => void;
@@ -124,10 +128,49 @@ export const useBusinessLines = (): UseBusinessLinesReturn => {
     }
   }, [fetchBusinessLines]);
 
-  // Initialize data on mount
+  const getDetail = useCallback(async (id: string): Promise<BusinessLineDetailResponse | null> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const detail = await businessLinesService.getDetail(id);
+      return detail;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to get detail');
+      console.error('Error getting business line detail:', err);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const getDropdown = useCallback(async (): Promise<BusinessLineListItem[]> => {
+    try {
+      const items = await businessLinesService.getDropdown();
+      return items;
+    } catch (err) {
+      console.error('Error fetching dropdown business lines:', err);
+      return [];
+    }
+  }, []);
+
+  const getById = useCallback(async (id: string): Promise<BusinessLineListItem | null> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const item = await businessLinesService.getById(id);
+      return item;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to get business line');
+      console.error('Error getting business line by id:', err);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchBusinessLines();
-  }, [fetchBusinessLines, filterValue]);
+  }, [search, sortBy, sortOrder, page, pageSize, filterValue]);
 
   return {
     businessLines,
@@ -142,6 +185,9 @@ export const useBusinessLines = (): UseBusinessLinesReturn => {
     createBusinessLine,
     updateBusinessLine,
     deleteBusinessLine,
+    getDetail,
+    getDropdown,
+    getById,
     
     setPage,
     setPageSize,
@@ -149,7 +195,6 @@ export const useBusinessLines = (): UseBusinessLinesReturn => {
     setSort: (newSortBy: string, newSortOrder: 'asc' | 'desc') => {
       setSortBy(newSortBy);
       setSortOrder(newSortOrder);
-      fetchBusinessLines({ sortBy: newSortBy, sortOrder: newSortOrder });
     },
   };
 };
