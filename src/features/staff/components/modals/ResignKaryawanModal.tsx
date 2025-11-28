@@ -34,7 +34,7 @@ export const ResignKaryawanModal: React.FC<ResignKaryawanModalProps> = ({
           {/* Form Resign */}
           <Button onClick={onFormResign} variant="outline" className="w-full flex items-center justify-center gap-2 py-3">
             <img src="/images/icons/note.svg" alt="Import" className="w-5 h-5" />
-            Form Resign
+            Form Pengunduran Diri
           </Button>
         </div>
       </div>

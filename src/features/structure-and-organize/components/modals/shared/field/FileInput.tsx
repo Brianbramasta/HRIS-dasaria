@@ -6,9 +6,10 @@ import { clearSkFile } from '@/stores/fileStore';
 interface FileInputProps {
   skFileName: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  isLabel?: boolean;
 }
 
-const FileInput: React.FC<FileInputProps> = ({ skFileName, onChange }) => {
+const FileInput: React.FC<FileInputProps> = ({ skFileName, onChange, isLabel=true }) => {
   const [preview, setPreview] = useState<string | null>(null);
   const [savedInfo, setSavedInfo] = useState<{ fileName: string; filePath: string; size: number } | null>(null);
   const skFile =  useFileStore((s) => s.skFile);;
@@ -65,7 +66,7 @@ const FileInput: React.FC<FileInputProps> = ({ skFileName, onChange }) => {
 
   return (
     <div className="space-y-2">
-      <label className="text-sm font-medium">Upload File SK terbaru</label>
+      {isLabel && <label className="text-sm font-medium">Upload File SK terbaru</label>}
       <div className="transition border border-gray-300 border-dashed cursor-pointer dark:hover:border-brand-500 dark:border-gray-700 rounded-xl hover:border-brand-500">
         <form
           {...getRootProps()}

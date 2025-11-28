@@ -100,7 +100,7 @@ export default function AppRoutes() {
         {/* Public route: pendaftaran karyawan baru */}
         <Route path="/data-karyawan/pendaftaran" element={<PendaftaranKaryawanBaru />} />
         <Route path="/data-karyawan/form" element={<FormulirKaryawanPage />} />
-
+        <Route path="/pengunduran-diri/form" element={<FormResignPage />} />
         {/* Protected routes */}
         <Route element={<ProtectedOutlet />}> 
           <Route index path="/" element={<Dashboard />} />
@@ -126,7 +126,7 @@ export default function AppRoutes() {
           <Route path="/data-karyawan/perpanjangan-kontrak" element={<PerpanjanganKontrak />} />
           <Route path="/data-karyawan/:id/pelanggaran" element={<DataKaryawanPelanggaran />} />
           <Route path="/pengunduran-diri" element={<PengunduranDiri />} />
-          <Route path="/pengunduran-diri/form" element={<FormResignPage />} />
+          
           <Route path="/pengunduran-diri/:id" element={<DetailPengunduranDiriPage />} />
           <Route path="/perpanjangan-kontrak" element={<PerpanjanganKontrak />} />
           
