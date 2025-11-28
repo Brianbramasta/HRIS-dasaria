@@ -1,7 +1,8 @@
 import  { useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import DataTable, { DataTableColumn } from '../../components/datatable/DataTable';
-import { Edit, Trash } from 'react-feather';
+// import { Edit, Trash } from 'react-feather';
+import { IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
 import {
   useBusinessLines,
 } from '../../index';
@@ -21,7 +22,7 @@ type Props = { resetKey: string };
 
 
 const businessLineColumns: DataTableColumn<BLRow>[] = [
-  { id: 'no', label: 'No', sortable: true },
+  { id: 'no', label: 'No', sortable: false },
   { id: 'Lini Bisnis', label: 'Lini Bisnis', sortable: true },
   { id: 'Deskripsi Umum', label: 'Deskripsi Umum', sortable: true },
   { id: 'File SK dan Memo', label: 'Detail', sortable: true, format: (_val, row) => (
@@ -87,7 +88,7 @@ export default function BusinessLinesTab({ resetKey }: Props) {
             label: '',
             variant: 'outline',
             className: 'border-0',
-            icon: <Edit size={16} />,
+            icon: <Edit />,
             onClick: async (row: any) => {
               const idx = (row?.no ?? 0) - 1;
               setSelectedIndex(idx);
@@ -102,7 +103,7 @@ export default function BusinessLinesTab({ resetKey }: Props) {
             variant: 'outline',
             className: 'border-0',
             color: 'error',
-            icon: <Trash size={16} />,
+            icon: <Trash />,
             onClick: (row: any) => {
               const idx = (row?.no ?? 0) - 1;
               setSelectedIndex(idx);

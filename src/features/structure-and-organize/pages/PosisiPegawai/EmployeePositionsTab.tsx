@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '../../components/datatable/DataTable';
-import { Edit, Trash } from 'react-feather';
+// import { Edit, Trash } from 'react-feather';
+import { IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
 import { useEmployeePositions } from '../../index';
 import type { EmployeePositionListItem } from '../../types/organization.api.types';
 import { EmployeePositionRow } from '../../types/organizationTable.types';
@@ -13,7 +14,7 @@ import { FileText } from '@/icons/components/icons';
 type Props = { resetKey: string };
 
 const employeePositionColumns: DataTableColumn<EmployeePositionRow>[] = [
-  { id: 'no', label: 'No', sortable: true },
+  { id: 'no', label: 'No', sortable: false },
   { id: 'Nama Posisi', label: 'Nama Posisi', sortable: true },
   { id: 'Jabatan', label: 'Jabatan', sortable: true },
   { id: 'Direktorat', label: 'Direktorat', sortable: true },
@@ -62,7 +63,7 @@ export default function EmployeePositionsTab({ resetKey }: Props) {
         setSelectedEmployeePosition(row.raw as EmployeePositionListItem);
         editModal.openModal();
       },
-      variant: 'outline', className: 'border-0', icon: <Edit size={16} />
+      variant: 'outline', className: 'border-0', icon: <Edit  />
     },
     {
       label: '',
@@ -70,7 +71,7 @@ export default function EmployeePositionsTab({ resetKey }: Props) {
         setSelectedEmployeePosition(row.raw as EmployeePositionListItem);
         deleteModal.openModal();
       },
-      variant: 'outline', className: 'border-0', color: 'error', icon: <Trash size={16} />
+      variant: 'outline', className: 'border-0', color: 'error', icon: <Trash  />
     },
   ] as DataTableAction<any>[];
 

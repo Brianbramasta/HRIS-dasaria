@@ -8,6 +8,7 @@ import { Plus,  Upload } from 'react-feather';
 import { FilterLineIcon } from '../../../../icons/index';
 import { setFilterFor, getFilterFor } from '../../../../stores/filterStore';
 import Checkbox from '../../../../components/form/input/Checkbox';
+import {IconExport} from '@/icons/components/icons'
 
 export interface DataTableColumn<T = any> {
   id: string;
@@ -206,20 +207,20 @@ export function DataTable<T = any>({
 
   return (
     <div className={`rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900 ${className}`}>
-      <div className="border-b border-gray-200 p-6 dark:border-gray-800">
+      <div className=" border-gray-200 p-6 dark:border-gray-800">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center items-center sm:justify-between mb-4">
           {title && (
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white ">{title}</h2>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white text-start w-full">{title}</h2>
           )}
           <div className="flex items-center gap-3">
             {onExport && (
               <Button className='bg-success text-white dark:text-white' onClick={() => setExportModalOpen(true)} variant="outline" size="sm">
-                <Upload size={16} className="mr-2" />
+                <IconExport size={16}  />
                 {exportButtonLabel}
               </Button>
             )}
             {onAdd && (
-              <Button onClick={onAdd} variant="primary" size="sm">
+              <Button onClick={onAdd} variant="primary" size="sm" className="w-max">
                 {addButtonIcon ? <span className="mr-2">{addButtonIcon}</span> : <Plus size={16} className="mr-2" />}
                 {addButtonLabel || ('Tambah ' + (title ?? ''))}
               </Button>
@@ -229,7 +230,7 @@ export function DataTable<T = any>({
         </div>
         
 
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="relative">
           <input
             type="text"
@@ -261,7 +262,7 @@ export function DataTable<T = any>({
         </div>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto mx-6 border rounded-sm">
         <Table className="min-w-full">
           <TableHeader>
             <TableRow className="border-b border-gray-200 bg-[#004969] dark:border-gray-700 dark:bg-gray-800">
@@ -343,7 +344,7 @@ export function DataTable<T = any>({
         </Table>
       </div>
 
-      <div className="flex items-center justify-between border-t border-gray-200 px-6 py-4 dark:border-gray-800">
+      <div className="flex flex-col md:flex-row items-center justify-between  border-gray-200 px-6 py-4 dark:border-gray-800 gap-2">
         <div className="flex items-center gap-2 text-sm">
           <span>Show</span>
           <select
@@ -357,7 +358,7 @@ export function DataTable<T = any>({
               </option>
             ))}
           </select>
-          <span>rows</span>
+          <span>1 - {Math.min((page + 1) * rowsPerPage, sortedData.length)} of {sortedData.length}</span>
         </div>
         <PaginationWithIcon
           initialPage={page + 1}
@@ -374,7 +375,7 @@ export function DataTable<T = any>({
             <div className='text-center'>
               <h1 className='text-2xl font-bold'>Filter</h1>
             </div>
-            <div className="flex justify-between items-center mb-2">
+            <div className="flex justify-between items-center mb-2 ">
               <h4 className="font-semibold">Kolom</h4>
               <Checkbox
                 label="Select All"
@@ -382,7 +383,7 @@ export function DataTable<T = any>({
                 onChange={(checked) => handleSelectAllColumns(checked)}
               />
             </div>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 overflow-x-auto max-h-[200px]">
               {columns.map((col) => (
                 <div key={col.id} className='border border-gray-300 rounded-md p-2'>
                   <Checkbox
@@ -395,10 +396,11 @@ export function DataTable<T = any>({
             </div>
           </div>
           <div className="mb-4">
+            <h4 className="font-semibold">Data</h4>
             <div className="relative">
               <input
                 type="text"
-                placeholder="Tambah filter lalu tekan Enter"
+                placeholder="Cari berdasarkan kata kunci"
                 value={modalFilterTerm}
                 onChange={(e) => {
                   setModalFilterTerm(e.target.value);
@@ -472,7 +474,7 @@ export function DataTable<T = any>({
                 onChange={(checked) => setExportVisibleColumns(checked ? columns.map((c) => c.id) : [])}
               />
             </div>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 overflow-x-auto max-h-[200px]">
               {columns.map((col) => (
                 <div key={col.id} className='border border-gray-300 rounded-md p-2'>
                   <Checkbox

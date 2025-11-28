@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '../../components/datatable/DataTable';
-import { Edit, Trash } from 'react-feather';
+// import { Edit, Trash } from 'react-feather';
+import { IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
 import { useDivisions } from '../../index';
 import type { DivisionRow } from '../../types/organizationTable.types';
 import type { DivisionListItem } from '../../types/organization.api.types';
@@ -13,7 +14,7 @@ import { FileText } from '@/icons/components/icons';
 type Props = { resetKey: string };
 
 const divisionColumns: DataTableColumn<DivisionRow>[] = [
-  { id: 'no', label: 'No', sortable: true },
+  { id: 'no', label: 'No', sortable: false },
   { id: 'Nama Divisi', label: 'Nama Divisi', sortable: true },
   { id: 'Direktorat', label: 'Direktorat', sortable: true },
   { id: 'Deskripsi Umum', label: 'Deskripsi Umum', sortable: true },
@@ -40,8 +41,8 @@ export default function DivisionsTab({ resetKey }: Props) {
   }, [divisions]);
 
   const actionsIconOnly = [
-    { label: '', onClick: (row: any) => { setSelected(row.raw as DivisionListItem); editModal.openModal(); }, variant: 'outline', className: 'border-0', icon: <Edit size={16} /> },
-    { label: '', onClick: (row: any) => { setSelected(row.raw as DivisionListItem); deleteModal.openModal(); }, variant: 'outline', className: 'border-0', color: 'error', icon: <Trash size={16} /> },
+    { label: '', onClick: (row: any) => { setSelected(row.raw as DivisionListItem); editModal.openModal(); }, variant: 'outline', className: 'border-0', icon: <Edit /> },
+    { label: '', onClick: (row: any) => { setSelected(row.raw as DivisionListItem); deleteModal.openModal(); }, variant: 'outline', className: 'border-0', color: 'error', icon: <Trash /> },
   ] as DataTableAction<any>[];
 
   const exportCSV = (filename: string, data: any[]) => {

@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '../../components/datatable/DataTable';
-import { Edit, Trash } from 'react-feather';
+// import { Edit, Trash } from 'react-feather';
+import { IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
 import { useDepartments } from '../../index';
 import type { DepartmentRow } from '../../types/organizationTable.types';
 import type { DepartmentListItem } from '../../types/organization.api.types';
@@ -14,7 +15,7 @@ import { addNotification } from '@/stores/notificationStore';
 type Props = { resetKey: string };
 
 const departmentColumns: DataTableColumn<DepartmentRow>[] = [
-  { id: 'no', label: 'No', sortable: true },
+  { id: 'no', label: 'No', sortable: false },
   { id: 'Nama Departemen', label: 'Nama Departemen', sortable: true },
   { id: 'Nama Divisi', label: 'Divisi', sortable: true },
   { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: true, format: () => <FileText size={16} /> },
@@ -38,8 +39,8 @@ export default function DepartmentsTab({ resetKey }: Props) {
   }, [departments]);
 
   const actionsIconOnly = [
-    { label: '', onClick: (row: any) => { setSelected(row.raw as DepartmentListItem); editModal.openModal(); }, variant: 'outline', className: 'border-0', icon: <Edit size={16} /> },
-    { label: '', onClick: (row: any) => { setSelected(row.raw as DepartmentListItem); deleteModal.openModal(); }, variant: 'outline', className: 'border-0', color: 'error', icon: <Trash size={16} /> },
+    { label: '', onClick: (row: any) => { setSelected(row.raw as DepartmentListItem); editModal.openModal(); }, variant: 'outline', className: 'border-0', icon: <Edit/> },
+    { label: '', onClick: (row: any) => { setSelected(row.raw as DepartmentListItem); deleteModal.openModal(); }, variant: 'outline', className: 'border-0', color: 'error', icon: <Trash/> },
   ] as DataTableAction<any>[];
 
   const exportCSV = (filename: string, data: any[]) => {

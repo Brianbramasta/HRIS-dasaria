@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router';
 import DataTable, { DataTableColumn, DataTableAction } from '../../components/datatable/DataTable';
-import { /*Edit,*/ Trash } from 'react-feather';
+// import { /*Edit,*/ Trash } from 'react-feather';
+import {  IconHapus as Trash } from '@/icons/components/icons';
 import { useCompanies } from '../../index';
 import type { CompanyRow } from '../../types/organizationTable.types';
 import type { CompanyListItem } from '../../types/organization.api.types';
@@ -14,7 +15,7 @@ import { FileText } from '@/icons/components/icons';
 type Props = { resetKey: string };
 
 const companyColumns: DataTableColumn<CompanyRow>[] = [
-  { id: 'no', label: 'No', sortable: true },
+  { id: 'no', label: 'No', sortable: false },
   { id: 'Nama Perusahaan', label: 'Nama Perusahaan', sortable: true },
   { id: 'Deskripsi Umum', label: 'Deskripsi Umum', sortable: true },
   { id: 'Lini Bisnis', label: 'Lini Bisnis', sortable: true },
@@ -54,7 +55,7 @@ export default function CompaniesTab({ resetKey }: Props) {
         const comp = companies.find((c) => c.id === row.id) || null;
         setSelectedCompany(comp);
         setDeleteOpen(true);
-      }, variant: 'outline', className: 'border-0', color: 'error', icon: <Trash size={16} /> },
+      }, variant: 'outline', className: 'border-0', color: 'error', icon: <Trash  /> },
   ] as DataTableAction<any>[];
 
   const exportCSV = (filename: string, data: any[]) => {

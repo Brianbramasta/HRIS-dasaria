@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '../../components/datatable/DataTable';
-import { Edit, Trash } from 'react-feather';
+// import { Edit, Trash } from 'react-feather';
+import { IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
 import { usePositions } from '../../index';
 import type { PositionRow } from '../../types/organizationTable.types';
 import { useModal } from '../../../../hooks/useModal';
@@ -13,7 +14,7 @@ import { FileText } from '@/icons/components/icons';
 type Props = { resetKey: string };
 
 const positionColumns: DataTableColumn<PositionRow>[] = [
-  { id: 'no', label: 'No', sortable: true },
+  { id: 'no', label: 'No', sortable: false },
   { id: 'Nama Jabatan', label: 'Nama Jabatan', sortable: true },
   { id: 'Grade', label: 'Grade', sortable: true },
   { id: 'Deskripsi Tugas', label: 'Deskripsi Tugas', sortable: true },
@@ -49,7 +50,7 @@ export default function PositionsTab({ resetKey }: Props) {
       },
       variant: 'outline',
       className: 'border-0',
-      icon: <Edit size={16} />,
+      icon: <Edit />,
     },
     {
       label: '',
@@ -60,7 +61,7 @@ export default function PositionsTab({ resetKey }: Props) {
       variant: 'outline',
       className: 'border-0',
       color: 'error',
-      icon: <Trash size={16} />,
+      icon: <Trash />,
     },
   ] as DataTableAction<any>[];
 

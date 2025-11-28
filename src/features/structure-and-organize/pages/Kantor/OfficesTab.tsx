@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '../../components/datatable/DataTable';
-import { Edit, Trash } from 'react-feather';
+// import { Edit, Trash } from 'react-feather';
+import { IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
 import { useOffices } from '../../index';
 import type { OfficeRow } from '../../types/organizationTable.types';
 import { useModal } from '../../../../hooks/useModal';
@@ -13,10 +14,10 @@ import { FileText } from '@/icons/components/icons';
 type Props = { resetKey: string };
 
 const officeColumns: DataTableColumn<OfficeRow>[] = [
-  { id: 'no', label: 'No', sortable: true },
+  { id: 'no', label: 'No', sortable: false },
   { id: 'Office', label: 'Kantor', sortable: true },
   { id: 'Deskripsi Umum', label: 'Deskripsi Umum', sortable: true },
-  { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: true, format: () => <FileText size={16} /> },
+  { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: true, format: () => (<div className='w-full flex justify-center items-center'><FileText size={16} /></div>) },
 ];
 
 export default function OfficesTab({ resetKey }: Props) {
@@ -37,8 +38,8 @@ export default function OfficesTab({ resetKey }: Props) {
   }, [offices]);
 
   const actionsIconOnly = [
-    { label: '', onClick: (row: any) => { setSelected(row.raw as OfficeListItem); editModal.openModal(); }, variant: 'outline', className: 'border-0', icon: <Edit size={16} /> },
-    { label: '', onClick: (row: any) => { setSelected(row.raw as OfficeListItem); deleteModal.openModal(); }, variant: 'outline', className: 'border-0', color: 'error', icon: <Trash size={16} /> },
+    { label: '', onClick: (row: any) => { setSelected(row.raw as OfficeListItem); editModal.openModal(); }, variant: 'outline', className: 'border-0', icon: <Edit /> },
+    { label: '', onClick: (row: any) => { setSelected(row.raw as OfficeListItem); deleteModal.openModal(); }, variant: 'outline', className: 'border-0', color: 'error', icon: <Trash /> },
   ] as DataTableAction<any>[];
 
   const exportCSV = (filename: string, data: any[]) => {
