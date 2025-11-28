@@ -1,5 +1,6 @@
 import React from 'react';
-import { Eye, Download } from 'react-feather';
+import { Eye } from 'react-feather';
+import { IconFileDetail } from '@/icons/components/icons';
 import { useParams, useNavigate } from 'react-router';
 import ExpandCard from '../../components/card/ExpandCard';
 import { businessLineService } from '../../services/organization.service';
@@ -74,15 +75,9 @@ export default function DetailLiniBisnis() {
           ] as any}
           actions={[
             {
-              icon: <Eye size={16} />,
-              className: 'rounded-md border border-gray-300 px-2 py-1 text-sm hover:bg-gray-50',
+              icon: <IconFileDetail  />,
               onClick: (row: any) => { /* preview */ console.log('preview', row); },
-            },
-            {
-              icon: <Download size={16} />,
-              className: 'rounded-md border border-gray-300 px-2 py-1 text-sm hover:bg-gray-50',
-              onClick: (row: any) => { /* download */ console.log('download', row); },
-            },
+            }
           ]}
         />
       </ExpandCard>
@@ -108,9 +103,9 @@ export default function DetailLiniBisnis() {
 
 
       {/* Back link to list */}
-      <div className="flex justify-end">
+      {/* <div className="flex justify-end">
         <button onClick={() => navigate('/structure-and-organize/business-lines')} className="rounded-md border border-gray-300 px-3 py-2 text-sm hover:bg-gray-50">Kembali ke daftar Lini Bisnis</button>
-      </div>
+      </div> */}
     </div>
   );
 }
