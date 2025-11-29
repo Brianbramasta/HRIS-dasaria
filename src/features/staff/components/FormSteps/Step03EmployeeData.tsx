@@ -2,7 +2,6 @@ import React from 'react';
 import { useFormulirKaryawanStore } from '../../stores/useFormulirKaryawanStore';
 import DatePicker from '../../../../components/form/date-picker';
 import Select from '../../../../components/form/Select';
-import MultiSelect from '../../../../components/form/MultiSelect';
 import Label from '../../../../components/form/Label';
 
 const STATUS_KARYAWAN_OPTIONS = [
@@ -113,11 +112,12 @@ export const Step03EmployeeData: React.FC = () => {
           </div>
 
           <div>
-            <MultiSelect
-              label="Position"
-              options={POSITION_OPTIONS.map(o => ({ value: o.value, text: o.label }))}
-              defaultSelected={step3.position ? [step3.position] : []}
-              onChange={(selected) => handleChange('position', selected[selected.length - 1] ?? '')}
+            <Label>Position</Label>
+            <Select
+              options={POSITION_OPTIONS}
+              defaultValue={step3.position}
+              onChange={(value) => handleChange('position', value)}
+              placeholder="Select"
             />
           </div>
 

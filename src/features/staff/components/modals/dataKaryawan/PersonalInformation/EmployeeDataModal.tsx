@@ -4,12 +4,11 @@ import Label from '@/components/form/Label';
 import Select from '@/components/form/Select';
 // removed FileInput import as feature deleted
 import DatePicker from '@/components/form/date-picker';
-import MultiSelect from '@/components/form/MultiSelect';
 
 export type EmployeeDataForm = {
   statusKaryawan?: string;
   departemen?: string;
-  position?: string[] | string;
+  position?: string;
   userAccess?: string;
   jabatan?: string;
   company?: string;
@@ -94,9 +93,9 @@ const DIVISI_OPTIONS = [
 ];
 
 const POSITION_OPTIONS = [
-  { value: 'HR', text: 'HR' },
-  { value: 'Finance', text: 'Finance' },
-  { value: 'IT Support', text: 'IT Support' },
+  { label: 'HR', value: 'HR' },
+  { label: 'Finance', value: 'Finance' },
+  { label: 'IT Support', value: 'IT Support' },
 ];
 
 const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSubmit, submitting = false }) => {
@@ -141,12 +140,8 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
           />
         </div>
         <div>
-          <MultiSelect
-            label="Position"
-            options={POSITION_OPTIONS}
-            defaultSelected={Array.isArray(form.position) ? form.position : []}
-            onChange={(selected) => handleInput('position', selected)}
-          />
+          <Label>Position</Label>
+          <Select options={POSITION_OPTIONS} defaultValue={form.position || ''} onChange={(v) => handleInput('position', v)} placeholder="Select" />
         </div>
         <div>
           <DatePicker

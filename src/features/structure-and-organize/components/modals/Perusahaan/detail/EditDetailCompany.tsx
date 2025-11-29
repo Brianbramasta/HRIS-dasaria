@@ -95,7 +95,7 @@ const EditDetailCompany: React.FC<EditDetailCompanyProps> = ({ isOpen, onClose, 
       confirmTitleButton={'Simpan Perubahan'}
       content={
         <div className="space-y-6">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="text-sm font-medium">Id Perusahaan</label>
               <Input disabled value={form.id} onChange={() => {}} />
@@ -114,11 +114,11 @@ const EditDetailCompany: React.FC<EditDetailCompanyProps> = ({ isOpen, onClose, 
               <FileInput onChange={handleFile} />
             </div>
 
-            <div className="col-span-2">
+            <div className="md:col-span-2">
               <label className="text-sm font-medium">Deskripsi Umum</label>
               <TextArea rows={4} value={form.description} onChange={(v:any) => handleChange('description', v)} />
             </div>
-            <div className="col-span-2 text-gray-500 font-medium text-md  mt-2">Informasi Kontak</div>
+            <div className="md:col-span-2 text-gray-500 font-medium text-md  mt-2">Informasi Kontak</div>
             <div>
               <label className="text-sm font-medium">Alamat</label>
               <Input value={form.address} onChange={(e:any) => handleChange('address', e.target.value)} />
@@ -135,7 +135,7 @@ const EditDetailCompany: React.FC<EditDetailCompanyProps> = ({ isOpen, onClose, 
               <label className="text-sm font-medium">Nomor Telepon</label>
               <Input value={form.phone} onChange={(e:any) => handleChange('phone', e.target.value)} />
             </div>
-            <div className="col-span-2 text-gray-500 font-medium text-md  mt-2">Informasi Tambahan</div>
+            <div className="md:col-span-2 text-gray-500 font-medium text-md  mt-2">Informasi Tambahan</div>
             <div>
               <label className="text-sm font-medium">Type Company</label>
               <Input value={form.type} onChange={(e:any) => handleChange('type', e.target.value)} />

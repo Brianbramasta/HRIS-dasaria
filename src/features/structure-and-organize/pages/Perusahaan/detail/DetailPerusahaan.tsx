@@ -11,7 +11,7 @@ import EditDetailCompany from '../../../components/modals/Perusahaan/detail/Edit
 import Button from '@/components/ui/button/Button';
 import { TrashBinIcon } from '@/icons/index';
 import { addNotification } from '@/stores/notificationStore';
-import { iconPlus } from '@/icons/components/icons';
+import { IconPencil, iconPlus } from '@/icons/components/icons';
 import DocumentsTable from '../../../components/table/TableGlobal';
 
 const DetailPerusahaan: React.FC = () => {
@@ -119,13 +119,13 @@ const DetailPerusahaan: React.FC = () => {
 
           <div className=" text-sm">
             {/* Address */}
-            <div className='flex gap-2 justify-between mb-6 items-start flex-wrap sm:flex-nowrap'>
+            <div className='flex gap-2 justify-between mb-6 items-start '>
               <div className='min-w-[120px] text-gray-600'>Alamat</div> <div>:</div> 
               <div className="w-full max-w-full break-words md:max-w-[200px] md:w-[200px]">{alamatValue}</div>
             </div>
 
             {/* Company Size */}
-            <div className='flex gap-2 justify-between mb-6 items-start flex-wrap sm:flex-nowrap'>
+            <div className='flex gap-2 justify-between mb-6 items-start '>
               <div className='min-w-[120px] text-gray-600'>Company Size</div> <div>:</div> 
               <div className="w-full max-w-full break-words md:max-w-[200px] md:w-[200px]">{companySizeValue}</div>
             </div>
@@ -133,7 +133,7 @@ const DetailPerusahaan: React.FC = () => {
             
             <div className="text-gray-600 font-semibold mb-2">Contact Information</div>
             {contactInformation.map((data, idx) => (
-              <div key={`contact-${idx}`} className='flex gap-2 justify-between mb-6 items-start flex-wrap sm:flex-nowrap'>
+              <div key={`contact-${idx}`} className='flex gap-2 justify-between mb-6 items-start '>
                 <div className='min-w-[120px] text-gray-600'>{data.label}</div> <div>:</div> 
                 <div className="w-full max-w-full break-words md:max-w-[200px] md:w-[200px]">{data.value}</div>
               </div>
@@ -142,14 +142,14 @@ const DetailPerusahaan: React.FC = () => {
             
             <div className="text-gray-600 font-semibold mb-2">Custom Information</div>
             {customInformation.map((data, idx) => (
-              <div key={`custom-${idx}`} className='flex gap-2 justify-between mb-6 items-start flex-wrap sm:flex-nowrap'>
+              <div key={`custom-${idx}`} className='flex gap-2 justify-between mb-6 items-start '>
                 <div className='min-w-[120px] text-gray-600'>{data.label}</div> <div>:</div> 
                 <div className="w-full max-w-full break-words md:max-w-[200px] md:w-[200px]">{data.value}</div>
               </div>
             ))}
           </div>
           <div className="mt-6 flex justify-end ">
-            <Button className="w-full" size='sm' onClick={() => setEditOpen(true)} startIcon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z" fill="currentColor"/><path d="M20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/></svg>}>
+            <Button className="w-full" size='sm' onClick={() => setEditOpen(true)} startIcon={<IconPencil color='white'/>}>
               Edit
             </Button>
           </div>
@@ -158,7 +158,7 @@ const DetailPerusahaan: React.FC = () => {
         {/* card kanan */}
         <div className="col-span-12 md:col-span-8 bg-white rounded-lg p-4 md:p-6 shadow-sm">
           <div className="border-b mb-4">
-            <nav className="flex gap-4 -mb-px">
+            <nav className="flex gap-4 -mb-px overflow-x-auto">
               <button onClick={() => setTab('profile')} className={`py-2 px-3 ${tab==='profile'? 'border-b-2 border-blue-600 text-blue-600':'text-gray-600'}`}>Profil Perusahaan</button>
               <button onClick={() => setTab('dokumen')} className={`py-2 px-3 ${tab==='dokumen'? 'border-b-2 border-blue-600 text-blue-600':'text-gray-600'}`}>Dokumen</button>
               <button onClick={() => setTab('hierarki')} className={`py-2 px-3 ${tab==='hierarki'? 'border-b-2 border-blue-600 text-blue-600':'text-gray-600'}`}>Hierarki</button>
@@ -174,8 +174,8 @@ const DetailPerusahaan: React.FC = () => {
               <div className="flex items-center justify-between mb-3">
                 <h4 className="text-3xl font-semibold text-[#004969]">Branch</h4>
                 <Button onClick={() => setAddBranchOpen(true)} className="flex items-center justify-center bg-blue-600 text-white  rounded">
-                  {iconPlus({size:24})}
-                  Tambah Branch</Button>
+                  {iconPlus({size:24})} <span className='hidden md:inline'>Tambah Branch</span>
+                </Button>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -201,7 +201,8 @@ const DetailPerusahaan: React.FC = () => {
                 <h3 className="text-3xl  font-semibold text-[#004969]">Dokumen & Arsip</h3>
                 <Button onClick={() => setAddDocOpen(true)} className="bg-blue-600 text-white px-3 py-1 rounded">
                   {iconPlus({size:24})}
-                  Dokumen Baru</Button>
+                  <span className='hidden md:inline'>Dokumen Baru</span>
+                </Button>
               </div>
 
               <DocumentsTable

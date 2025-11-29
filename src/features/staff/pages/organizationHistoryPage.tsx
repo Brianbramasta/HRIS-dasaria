@@ -1,9 +1,10 @@
-import  { useMemo } from 'react';
+import  { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DataTable, type DataTableColumn, type DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
 import { useOrganizationHistory } from '@/features/staff/hooks/useOrganizationHistory';
 import type { OrganizationHistoryItem } from '@/features/staff/services/organizationHistoryService';
 import { IconPencil, IconFileDetail } from '@/icons/components/icons';
+import EditRiwayatOrganisasiModal from '@/features/staff/components/riwayatOrganisasi/editRiwayatOrganisasiModal';
 
 type OrgHistoryListRow = OrganizationHistoryItem & { statusPerubahan: 'Rekomendasi' | 'Selesai' };
 
@@ -17,6 +18,7 @@ const formatDate = (iso: string) => {
 export default function OrganizationHistoryPage() {
   const navigate = useNavigate();
   const { data: rows, loading, handleSearchChange, handleSortChange } = useOrganizationHistory();
+  const [isEditOrgOpen, setIsEditOrgOpen] = useState(false);
   const rowsWithStatus: OrgHistoryListRow[] = useMemo(
     () => (rows || []).map((r, idx) => ({ ...r, statusPerubahan: idx % 2 === 0 ? 'Rekomendasi' : 'Selesai' })),
     [rows]
@@ -96,11 +98,20 @@ export default function OrganizationHistoryPage() {
         emptyMessage="Belum ada riwayat organisasi"
         addButtonLabel="Tambah Organisasi"
         onAdd={() => {
-          navigate('/organization-history?action=add');
+          setIsEditOrgOpen(true);
         }}
         searchPlaceholder="Cari berdasarkan kata kunci"
         onSearchChange={handleSearchChange}
         onSortChange={handleSortChange}
+      />
+
+      <EditRiwayatOrganisasiModal
+        isOpen={isEditOrgOpen}
+        onClose={() => setIsEditOrgOpen(false)}
+        onSubmit={() => {
+          setIsEditOrgOpen(false);
+        }}
+        submitting={false}
       />
     </div>
   );

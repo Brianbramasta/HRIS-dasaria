@@ -23,7 +23,7 @@ export const AddKaryawanModal: React.FC<AddKaryawanModalProps> = ({
       showCloseButton={true}
       className="max-w-md"
     >
-      <div className="space-y-6 p-8 px-[90px]">
+      <div className="space-y-6 p-8 md:px-[90px]">
         {/* Header */}
         <div className="text-center">
           <h2 className="text-3xl font-bold text-[#006896] dark:text-white">
