@@ -11,6 +11,7 @@ import AddKaryawanModal from '../../../components/modals/AddKaryawanModal';
 import DeleteKaryawanModal from '../../../components/modals/dataKaryawan/DeleteKaryawanModal';
 import { Edit2, Eye, Trash2 } from 'react-feather';
 import ShareLinkModal from '../../../components/modals/sharelink/shareLink';
+import { IconFileDetail,IconHapus } from '@/icons/components/icons';
 
 export default function DataKaryawanPage() {
   const navigate = useNavigate();
@@ -246,7 +247,8 @@ export default function DataKaryawanPage() {
           {value || '-'}
         </span>
       ),
-    },{
+    },
+    {
       id:'kategori',
       label: 'kategori karyawan',
       minWidth: 130,
@@ -259,26 +261,23 @@ export default function DataKaryawanPage() {
   // Define actions untuk DataTable
   const actions: DataTableAction<Karyawan>[] = [
     {
-      label: '',
-      icon: <Eye size={16} />,
+      icon: <IconFileDetail  />,
       onClick: (row) => {
         navigate(`/data-karyawan/${row.id}?mode=view`);
       },
       variant: 'outline',
       color: 'info',
     },
+    // {
+    //   icon: <Edit2 size={16} />,
+    //   onClick: (row) => {
+    //     navigate(`/data-karyawan/${row.id}?mode=edit`);
+    //   },
+    //   variant: 'outline',
+    //   color: 'warning',
+    // },
     {
-      label: '',
-      icon: <Edit2 size={16} />,
-      onClick: (row) => {
-        navigate(`/data-karyawan/${row.id}?mode=edit`);
-      },
-      variant: 'outline',
-      color: 'warning',
-    },
-    {
-      label: '',
-      icon: <Trash2 size={16} />,
+      icon: <IconHapus />,
       onClick: (row) => {
         setSelectedKaryawan(row);
         setShowDeleteModal(true);

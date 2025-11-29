@@ -6,6 +6,7 @@ import { Edit2 } from 'react-feather';
 import { useModal } from '@/hooks/useModal';
 import EducationalBackgroundModal, { type EducationSocialForm } from '@/features/staff/components/modals/dataKaryawan/PersonalInformation/EducationalBackgroundModal';
 import type { KaryawanDetailResponse } from '@/features/staff/services/karyawanService';
+import { IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
 
 interface Props {
   education: KaryawanDetailResponse['education'];
@@ -24,6 +25,9 @@ export default function EducationalBackgroundCard({ education }: Props) {
     nomorKontakDarurat: '',
     hubunganKontakDarurat: '',
   };
+  const isComplete = Array.isArray(education) && education.length > 0 && education.every((e: any) =>
+    !!e?.jenjang && !!e?.namaLembaga && !!e?.nilaiPendidikan && !!e?.jurusanKeahlian && !!e?.tahunLulus
+  );
   const defaultEducation: Array<Record<string, any>> = [
     {
       jenjang: 'S1',
@@ -44,7 +48,7 @@ export default function EducationalBackgroundCard({ education }: Props) {
   ];
   const displayEducation = Array.isArray(education) && education.length > 0 ? education : defaultEducation;
   return (
-    <ExpandCard title="Riwayat Pendidikan" withHeaderDivider>
+    <ExpandCard title="Riwayat Pendidikan" leftIcon={isComplete ? <IconLengkap /> : <IconTidakLengkap />} withHeaderDivider>
       <div className="space-y-6">
         {displayEducation.map((item, idx) => {
           const anyItem = item as unknown as Record<string, any>;

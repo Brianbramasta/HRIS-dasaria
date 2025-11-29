@@ -8,6 +8,7 @@ import { Edit2 } from 'react-feather';
 import { useModal } from '@/hooks/useModal';
 import PersonalDataModal, { type PersonalDataForm } from '@/features/staff/components/modals/dataKaryawan/PersonalInformation/PersonalDataModal';
 import type { KaryawanDetailResponse } from '@/features/staff/services/karyawanService';
+import { IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
 
 interface Props {
   data: KaryawanDetailResponse['karyawan'];
@@ -22,9 +23,22 @@ export default function PersonalDataCard({ data, personalInformation }: Props) {
     namaLengkap: data.name || '',
     email: data.email || '',
   };
+  const pi = personalInformation as any;
+  const isComplete = !!data.idKaryawan &&
+    !!data.name &&
+    !!data.email &&
+    !!pi?.nik &&
+    !!pi?.tempatLahir &&
+    !!pi?.tanggalLahir &&
+    !!pi?.jenisKelamin &&
+    !!pi?.nomorTelepon &&
+    !!pi?.alamatDomisili &&
+    !!pi?.agama &&
+    !!pi?.statusMenikah &&
+    !!pi?.alamatKTP;
 
   return (
-    <ExpandCard title="Data Pribadi" withHeaderDivider>
+    <ExpandCard title="Data Pribadi" leftIcon={isComplete ? <IconLengkap /> : <IconTidakLengkap />} withHeaderDivider>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="space-y-4">
           <div>

@@ -7,6 +7,7 @@ import { Edit2 } from 'react-feather';
 import { useModal } from '@/hooks/useModal';
 import EmployeeDataModal, { type EmployeeDataForm } from '@/features/staff/components/modals/dataKaryawan/PersonalInformation/EmployeeDataModal';
 import type { KaryawanDetailResponse } from '@/features/staff/services/karyawanService';
+import { IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
 
 interface Props {
   data: KaryawanDetailResponse['karyawan'];
@@ -31,9 +32,22 @@ export default function EmployeeDataCard({ data }: Props) {
     userAccess: 'Employee',
     kategoriKaryawan: (data as any)?.kategori || '',
   };
+  const anyData = data as any;
+  const isComplete = !!data.company &&
+    !!data.department &&
+    !!data.posisi &&
+    !!data.jabatan &&
+    !!data.tanggalJoin &&
+    !!data.office &&
+    !!anyData?.direktorat &&
+    !!anyData?.divisi &&
+    !!anyData?.grade &&
+    !!anyData?.status &&
+    !!anyData?.statusPayroll &&
+    !!anyData?.kategori;
 
   return (
-    <ExpandCard title="Data Karyawan" withHeaderDivider>
+    <ExpandCard title="Data Karyawan" leftIcon={isComplete ? <IconLengkap /> : <IconTidakLengkap />} withHeaderDivider>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="space-y-4">
           <div>

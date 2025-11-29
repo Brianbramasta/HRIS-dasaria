@@ -6,6 +6,7 @@ import { Edit2 } from 'react-feather';
 import { useModal } from '@/hooks/useModal';
 import EducationalBackgroundModal, { type EducationSocialForm } from '@/features/staff/components/modals/dataKaryawan/PersonalInformation/EducationalBackgroundModal';
 import type { KaryawanDetailResponse } from '@/features/staff/services/karyawanService';
+import { IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
 
 interface Props {
   personalInformation: KaryawanDetailResponse['personalInformation'];
@@ -24,8 +25,17 @@ export default function SocialEmergencyCard({ personalInformation }: Props) {
     nomorKontakDarurat: '',
     hubunganKontakDarurat: '',
   };
+  const pi = personalInformation as any;
+  const isComplete = !!pi?.facebook &&
+    !!pi?.xCom &&
+    !!pi?.linkedin &&
+    !!pi?.instagram &&
+    !!pi?.namaNoKontakDarurat &&
+    !!pi?.noKontakDarurat &&
+    !!pi?.hubunganKontakDarurat &&
+    !!pi?.akunSosialMediaTerdekat;
   return (
-    <ExpandCard title="Media Sosial & Kontak Darurat" withHeaderDivider>
+    <ExpandCard title="Media Sosial & Kontak Darurat" leftIcon={isComplete ? <IconLengkap /> : <IconTidakLengkap />} withHeaderDivider>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
           <Label>Facebook</Label>

@@ -6,6 +6,7 @@ import { Edit2 } from 'react-feather';
 import { useModal } from '@/hooks/useModal';
 import SalaryBpjsModal, { type SalaryBpjsForm } from '@/features/staff/components/modals/dataKaryawan/PersonalInformation/SalaryBpjsModal';
 import type { KaryawanDetailResponse } from '@/features/staff/services/karyawanService';
+import { IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
 
 interface Props {
   financeAndCompliance: KaryawanDetailResponse['financeAndCompliance'];
@@ -26,8 +27,12 @@ export default function BPJSCard({ financeAndCompliance }: Props) {
     statusBpjsTK: financeAndCompliance.statusBpjsKetenagakerjaan || '',
     nominalBpjsTK: financeAndCompliance.nominalBpjsTk || '',
   };
+  const isComplete = !!financeAndCompliance.noBpjsKesehatan &&
+    !!financeAndCompliance.statusBpjsKesehatan &&
+    !!financeAndCompliance.noBpjsKetenagakerjaan &&
+    !!financeAndCompliance.statusBpjsKetenagakerjaan;
   return (
-    <ExpandCard title="BPJS" withHeaderDivider>
+    <ExpandCard title="BPJS" leftIcon={isComplete ? <IconLengkap /> : <IconTidakLengkap />} withHeaderDivider>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
           <Label>No. BPJS Kesehatan</Label>

@@ -86,14 +86,14 @@ export default function DetailKaryawanPage() {
     <div className="space-y-6 p-4">
       {/* Header */}
       <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900 mb-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex flex-col md:flex-row items-center gap-3">
             <img
               src={data.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${data.name}`}
               alt={data.name}
               className="h-12 w-12 rounded-full"
             />
-            <div>
+            <div className='text-center md:text-left'>
               <div className="text-base font-semibold">{data.name || 'Megawati'}</div>
               <div className="text-sm text-gray-500">{data.posisi || 'Staff'} | {data.company || 'PT. Dasaria Indonesia'}</div>
             </div>

@@ -6,6 +6,7 @@ import { Edit2 } from 'react-feather';
 import { useModal } from '@/hooks/useModal';
 import SalaryBpjsModal, { type SalaryBpjsForm } from '@/features/staff/components/modals/dataKaryawan/PersonalInformation/SalaryBpjsModal';
 import type { KaryawanDetailResponse } from '@/features/staff/services/karyawanService';
+import { IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
 
 interface Props {
   financeAndCompliance: KaryawanDetailResponse['financeAndCompliance'];
@@ -21,8 +22,12 @@ export default function SalaryCard({ financeAndCompliance }: Props) {
     npwp: financeAndCompliance.npwp || '',
     ptkpStatus: '',
   };
+  const isComplete = !!financeAndCompliance.bank &&
+    !!financeAndCompliance.namaAkunBank &&
+    !!financeAndCompliance.noRekening &&
+    !!financeAndCompliance.npwp;
   return (
-    <ExpandCard title="Gaji" withHeaderDivider>
+    <ExpandCard title="Gaji" leftIcon={isComplete ? <IconLengkap /> : <IconTidakLengkap />} withHeaderDivider>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {/* <div>
           <Label>Gaji</Label>
