@@ -1,32 +1,25 @@
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
-
-export default function BarChartTwo() {
-  const series = [
-    {
-      name: "Direct",
-      data: [44, 55, 41, 67, 22, 43, 55, 41],
-    },
-    {
-      name: "Referral",
-      data: [13, 23, 20, 8, 13, 27, 13, 23],
-    },
-    {
-      name: "Organic Search",
-      data: [11, 17, 15, 15, 21, 14, 18, 20],
-    },
-    {
-      name: "Social",
-      data: [21, 7, 25, 13, 22, 8, 18, 20],
-    },
-  ];
+export type BarSeries = { name: string; data: number[] };
+interface BarChartTwoProps {
+  series: BarSeries[];
+  categories?: string[];
+  colors?: string[];
+  height?: number;
+}
+export default function BarChartTwo({
+  series,
+  categories = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"],
+  colors = ["#2a31d8", "#465fff", "#7592ff", "#c2d6ff"],
+  height = 315,
+}: BarChartTwoProps) {
   const options: ApexOptions = {
-    colors: ["#2a31d8", "#465fff", "#7592ff", "#c2d6ff"],
+    colors,
     chart: {
       fontFamily: "Outfit, sans-serif",
       type: "bar",
       stacked: true,
-      height: 315,
+      height,
       toolbar: {
         show: false,
       },
@@ -47,7 +40,7 @@ export default function BarChartTwo() {
       enabled: false,
     },
     xaxis: {
-      categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"],
+      categories,
       axisBorder: {
         show: false,
       },
@@ -100,7 +93,7 @@ export default function BarChartTwo() {
   return (
     <div className="max-w-full overflow-x-auto custom-scrollbar">
       <div id="chartSix" className="min-w-[1000px]">
-        <Chart options={options} series={series} type="bar" height={315} />
+        <Chart options={options} series={series} type="bar" height={height} />
       </div>
     </div>
   );

@@ -2,25 +2,64 @@ import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import ChartTab from "../common/ChartTab";
 
-export default function StatisticsChart() {
+export type LineSeries = { name: string; data: number[] };
+
+interface StatisticsChartProps {
+  title?: string;
+  desc?: string;
+  series: LineSeries[];
+  categories?: string[];
+  colors?: string[];
+  height?: number;
+  curve?: "straight" | "smooth" | "stepline";
+  tabOptions?: { id: string; label: string }[];
+  selectedTab?: string;
+  onTabChange?: (id: string) => void;
+}
+
+export default function StatisticsChart({
+  title = "Statistics",
+  desc = "Target you’ve set for each month",
+  series,
+  categories = [
+    "JAN",
+    "FEB",
+    "MAR",
+    "APR",
+    "MEI",
+    "JUN",
+    "JUL",
+    "AGT",
+    "SEP",
+    "OKT",
+    "NOV",
+    "DES",
+  ],
+  colors = ["#465FFF", "#9CB9FF"],
+  height = 310,
+  curve = "straight",
+  tabOptions,
+  selectedTab,
+  onTabChange,
+}: StatisticsChartProps) {
   const options: ApexOptions = {
     legend: {
       show: false, // Hide legend
       position: "top",
       horizontalAlign: "left",
     },
-    colors: ["#465FFF", "#9CB9FF"], // Define line colors
+    colors, // Define line colors
     chart: {
       fontFamily: "Outfit, sans-serif",
-      height: 310,
-      type: "line", // Set the chart type to 'line'
+      height,
+      type: "area", // area chart with gradient fill
       toolbar: {
         show: false, // Hide chart toolbar
       },
     },
     stroke: {
-      curve: "straight", // Define the line style (straight, smooth, or step)
-      width: [2, 2], // Line width for each dataset
+      curve, // Define the line style (straight, smooth, or step)
+      width: new Array(series.length).fill(2), // Line width for each dataset
     },
 
     fill: {
@@ -61,20 +100,7 @@ export default function StatisticsChart() {
     },
     xaxis: {
       type: "category", // Category-based x-axis
-      categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ],
+      categories,
       axisBorder: {
         show: false, // Hide x-axis border
       },
@@ -101,35 +127,27 @@ export default function StatisticsChart() {
     },
   };
 
-  const series = [
-    {
-      name: "Sales",
-      data: [180, 190, 170, 160, 175, 165, 170, 205, 230, 210, 240, 235],
-    },
-    {
-      name: "Revenue",
-      data: [40, 30, 50, 40, 55, 40, 70, 100, 110, 120, 150, 140],
-    },
-  ];
   return (
     <div className="rounded-2xl border border-gray-200 bg-white px-5 pb-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
       <div className="flex flex-col gap-5 mb-6 sm:flex-row sm:justify-between">
         <div className="w-full">
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            Statistics
+            {title}
           </h3>
-          <p className="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
-            Target you’ve set for each month
-          </p>
+          {desc && (
+            <p className="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
+              {desc}
+            </p>
+          )}
         </div>
-        <div className="flex items-start w-full gap-3 sm:justify-end">
-          <ChartTab />
-        </div>
+      <div className="flex items-start w-full gap-3 sm:justify-end">
+          <ChartTab options={tabOptions} selected={selectedTab} onChange={onTabChange} />
+      </div>
       </div>
 
       <div className="max-w-full overflow-x-auto custom-scrollbar">
         <div className="min-w-[1000px] xl:min-w-full">
-          <Chart options={options} series={series} type="area" height={310} />
+          <Chart options={options} series={series} type="area" height={height} />
         </div>
       </div>
     </div>

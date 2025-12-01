@@ -196,6 +196,11 @@ export default function DataKaryawanPage() {
       label: 'Jabatan',
       minWidth: 130,
       sortable: true,
+    },{
+      id:'jabatan',
+      label: 'Jenjang Jabatan',
+      minWidth: 130,
+      sortable: true,
     },
     {
       id:'grade',
@@ -254,19 +259,27 @@ export default function DataKaryawanPage() {
       sortable: true,
       format: (value) => value || '-',
     },
+    {
+      id: 'detail',
+      label: 'Detail Profile',
+      minWidth: 80,
+      align: 'center',
+      sortable: false,
+      format: (_, row) => (
+        <button
+          onClick={() => navigate(`/data-karyawan/${row.id}?mode=view`)}
+          className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
+          aria-label="Detail Profile"
+        >
+          <IconFileDetail />
+        </button>
+      ),
+    },
 
   ];
 
   // Define actions untuk DataTable
   const actions: DataTableAction<Karyawan>[] = [
-    {
-      icon: <IconFileDetail  />,
-      onClick: (row) => {
-        navigate(`/data-karyawan/${row.id}?mode=view`);
-      },
-      variant: 'outline',
-      color: 'info',
-    },
     // {
     //   icon: <Edit2 size={16} />,
     //   onClick: (row) => {

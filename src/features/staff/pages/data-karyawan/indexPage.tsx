@@ -1,6 +1,6 @@
 // import { useLocation } from 'react-router-dom';
 // import Tabs from '../../../structure-and-organize/components/Tabs';
-import DataKaryawanPage from './tabs/dataKaryawan';
+import DataKaryawanPage from './tabs/dataKaryawanPage';
 
 export default function DataKaryawanIndexPage() {
   // const location = useLocation();
