@@ -16,7 +16,7 @@ export default function DetailPengunduranDiriPage() {
   const navigate = useNavigate();
   const [data, setData] = useState<PengunduranDiri | null>(null);
   const [loading, setLoading] = useState(false);
-  const [tanggalEfektif, setTanggalEfektif] = useState('');
+  const [tanggalEfektif] = useState('');
   const [docs, setDocs] = useState<Array<{ tipeFile: string; namaFile: string }>>([
     { tipeFile: 'Form Exit Discussion', namaFile: 'Form Exit Discussion.pdf' },
     { tipeFile: 'Surat Balasan Resign', namaFile: 'Surat Balasan Resign.pdf' },

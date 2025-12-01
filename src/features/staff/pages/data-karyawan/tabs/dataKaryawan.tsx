@@ -9,7 +9,6 @@ import useKaryawan from '../../../hooks/useKaryawan';
 import Button from '../../../../../components/ui/button/Button';
 import AddKaryawanModal from '../../../components/modals/AddKaryawanModal';
 import DeleteKaryawanModal from '../../../components/modals/dataKaryawan/DeleteKaryawanModal';
-import { Edit2, Eye, Trash2 } from 'react-feather';
 import ShareLinkModal from '../../../components/modals/sharelink/shareLink';
 import { IconFileDetail,IconHapus } from '@/icons/components/icons';
 

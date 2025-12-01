@@ -2,8 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import Tabs from '../../../../structure-and-organize/components/Tabs';
 // import Button from '../../../../../components/ui/button/Button';
-import { karyawanService } from '../../../../staff/services/karyawanService';
-import type { Karyawan } from '../../../../staff/types/Karyawan';
+import { karyawanService, type KaryawanDetailResponse } from '../../../../staff/services/karyawanService';
 import PesonalInformationTab from './tab/pesonalInformation';
 import ContractTab from './tab/contract';
 import OrganizationHistoryTab from './tab/organizationHistory';
@@ -23,7 +22,7 @@ export default function DetailKaryawanPage() {
   const isEditable = mode === 'edit';
   const tabParam = (query.get('tab') || 'personal-information').toLowerCase();
 
-  const [data, setData] = useState<Karyawan | null>(null);
+  const [data, setData] = useState<KaryawanDetailResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,7 +36,7 @@ export default function DetailKaryawanPage() {
         setError(null);
         const res = await karyawanService.getKaryawanById(id);
         if (!active) return;
-        setData(res.data as unknown as Karyawan);
+        setData(res.data);
       } catch (err) {
         if (!active) return;
         const msg = err instanceof Error ? err.message : 'Gagal memuat detail karyawan';
@@ -89,13 +88,13 @@ export default function DetailKaryawanPage() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex flex-col md:flex-row items-center gap-3">
             <img
-              src={data.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${data.name}`}
-              alt={data.name}
+              src={data.karyawan.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${data.karyawan.name}`}
+              alt={data.karyawan.name || ''}
               className="h-12 w-12 rounded-full"
             />
             <div className='text-center md:text-left'>
-              <div className="text-base font-semibold">{data.name || 'Megawati'}</div>
-              <div className="text-sm text-gray-500">{data.posisi || 'Staff'} | {data.company || 'PT. Dasaria Indonesia'}</div>
+              <div className="text-base font-semibold">{data.karyawan.name || 'Megawati'}</div>
+              <div className="text-sm text-gray-500">{data.karyawan.posisi || 'Staff'} | {data.karyawan.company || 'PT. Dasaria Indonesia'}</div>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -113,13 +112,13 @@ export default function DetailKaryawanPage() {
           case 'personal-information':
             return <PesonalInformationTab data={data} isEditable={isEditable} />;
           case 'contract':
-            return <ContractTab data={data} isEditable={isEditable} />;
+            return <ContractTab data={data.karyawan as any} isEditable={isEditable} />;
           case 'organization-history':
-            return <OrganizationHistoryTab data={data} isEditable={isEditable} />;
+            return <OrganizationHistoryTab data={data.karyawan as any} isEditable={isEditable} />;
           case 'pelanggaran':
             return <PelanggaranTab />;
           case 'story-payroll':
-            return <StoryPayrollTab data={data} isEditable={isEditable} />;
+            return <StoryPayrollTab data={data.karyawan as any} isEditable={isEditable} />;
           default:
             return null;
         }

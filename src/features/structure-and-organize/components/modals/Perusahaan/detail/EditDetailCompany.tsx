@@ -149,7 +149,7 @@ const EditDetailCompany: React.FC<EditDetailCompanyProps> = ({ isOpen, onClose, 
                 id="company-founded"
                 label="Tanggal Didirikan"
                 defaultDate={form.founded?.slice?.(0,10) || form.founded || undefined}
-                onChange={(selectedDates:any, dateStr:string) => handleChange('founded', dateStr)}
+                onChange={(...args) => handleChange('founded', args[1] as string)}
                 placeholder="hh/bb/tttt"
               />
             </div>

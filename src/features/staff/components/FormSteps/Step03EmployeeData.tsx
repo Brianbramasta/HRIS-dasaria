@@ -27,11 +27,6 @@ const JABATAN_OPTIONS = [
   { label: 'Kepala Bagian', value: 'kepala_bagian' },
 ];
 
-const GRADE_OPTIONS = [
-  { label: 'G1', value: 'G1' },
-  { label: 'G2', value: 'G2' },
-  { label: 'G3', value: 'G3' },
-];
 
 const JENJANG_JABATAN_OPTIONS = [
   { label: 'Junior', value: 'junior' },
@@ -115,7 +110,7 @@ export const Step03EmployeeData: React.FC = () => {
                 id="tanggalMasuk"
                 placeholder="hh/bb/tttt"
                 defaultDate={step3.tanggalMasuk as any}
-                onChange={(selectedDates, dateStr) => handleChange('tanggalMasuk', dateStr)}
+                onChange={(...args) => handleChange('tanggalMasuk', args[1] as string)}
               />
             </div>
             <div>
@@ -124,7 +119,7 @@ export const Step03EmployeeData: React.FC = () => {
                 id="tanggalAkhir"
                 placeholder="hh/bb/tttt"
                 defaultDate={step3.tanggalAkhir as any}
-                onChange={(selectedDates, dateStr) => handleChange('tanggalAkhir', dateStr)}
+                onChange={(...args) => handleChange('tanggalAkhir', args[1] as string)}
               />
             </div>
             <div>

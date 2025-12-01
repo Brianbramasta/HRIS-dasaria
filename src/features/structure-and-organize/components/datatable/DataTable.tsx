@@ -4,7 +4,7 @@ import { Table, TableHeader, TableBody, TableRow, TableCell } from '../../../../
 import PaginationWithIcon from '../../../../components/tables/DataTables/TableOne/PaginationWithIcon';
 import Button from '../../../../components/ui/button/Button';
 import {Modal} from '../../../../components/ui/modal/index';
-import { Plus,  Upload } from 'react-feather';
+import { Plus } from 'react-feather';
 import { FilterLineIcon } from '../../../../icons/index';
 import { setFilterFor, getFilterFor } from '../../../../stores/filterStore';
 import Checkbox from '../../../../components/form/input/Checkbox';

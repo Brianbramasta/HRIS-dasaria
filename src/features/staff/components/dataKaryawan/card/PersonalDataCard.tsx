@@ -73,7 +73,7 @@ export default function PersonalDataCard({ data, personalInformation }: Props) {
           </div>
           <div>
             <Label htmlFor="alamatDomisili">Alamat Domisili</Label>
-            <TextArea value={personalInformation.alamatDomisili || ''} readonly={true} rows={3} />
+            <TextArea value={personalInformation.alamatDomisili || ''} disabled={true} rows={3} />
           </div>
         </div>
 
@@ -114,7 +114,7 @@ export default function PersonalDataCard({ data, personalInformation }: Props) {
           </div>
           <div>
             <Label htmlFor="alamatKtp">Alamat KTP</Label>
-            <TextArea value={personalInformation.alamatKTP || ''} readonly={true} rows={3} />
+            <TextArea value={personalInformation.alamatKTP || ''} disabled={true} rows={3} />
           </div>
         </div>
       </div>

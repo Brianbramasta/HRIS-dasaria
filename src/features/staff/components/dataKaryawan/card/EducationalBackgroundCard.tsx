@@ -15,7 +15,7 @@ interface Props {
 export default function EducationalBackgroundCard({ education }: Props) {
   const { isOpen, openModal, closeModal } = useModal(false);
   const initialData: EducationSocialForm = {
-    education: [{ jenjang: '', namaLembaga: '', nilaiPendidikan: '', jurusanKeahlian: '', tahunLulus: '' }],
+    education: [{ jenjang: '', namaLembaga: '', gelar: '', nilaiPendidikan: '', jurusanKeahlian: '', tahunLulus: '' }],
     facebook: '',
     instagram: '',
     linkedin: '',

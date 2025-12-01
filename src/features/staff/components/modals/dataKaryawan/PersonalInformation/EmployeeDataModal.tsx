@@ -49,13 +49,6 @@ const KATEGORI_OPTIONS = [
   { label: 'Direktur', value: 'Direktur' },
 ];
 
-const GRADE_OPTIONS = [
-  { label: '1', value: '1' },
-  { label: '2', value: '2' },
-  { label: '3', value: '3' },
-  { label: '4', value: '4' },
-  { label: '5', value: '5' },
-];
 
 const DEPARTEMEN_OPTIONS = [
   { label: 'HR', value: 'HR' },
@@ -149,7 +142,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               label="Tanggal Masuk"
               defaultDate={form.joinDate || undefined}
               placeholder="Pilih tanggal"
-              onChange={(selectedDates, dateStr) => handleInput('joinDate', dateStr)}
+              onChange={(...args) => handleInput('joinDate', args[1])}
             />
           </div>
           <div>
@@ -158,7 +151,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               label="Tanggal Akhir"
               defaultDate={form.endDate || undefined}
               placeholder="— (masih aktif)"
-              onChange={(selectedDates, dateStr) => handleInput('endDate', dateStr)}
+              onChange={(...args) => handleInput('endDate', args[1])}
             />
           </div>
           <div>

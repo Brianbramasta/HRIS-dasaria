@@ -15,7 +15,7 @@ interface Props {
 export default function SocialEmergencyCard({ personalInformation }: Props) {
   const { isOpen, openModal, closeModal } = useModal(false);
   const initialData: EducationSocialForm = {
-    education: [{ namaLembaga: '', nilaiPendidikan: '', jurusanKeahlian: '', tahunLulus: '' }],
+    education: [{ jenjang: '', namaLembaga: '', gelar: '', nilaiPendidikan: '', jurusanKeahlian: '', tahunLulus: '' }],
     facebook: '',
     linkedin: '',
     xcom: '',

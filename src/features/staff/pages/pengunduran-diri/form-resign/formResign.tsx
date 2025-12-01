@@ -50,7 +50,7 @@ export default function FormResignPage() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (_e: React.ChangeEvent<HTMLInputElement>) => {};
+  const handleFileChange = () => {};
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

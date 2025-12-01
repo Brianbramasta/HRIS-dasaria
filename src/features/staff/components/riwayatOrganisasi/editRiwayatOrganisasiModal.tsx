@@ -128,7 +128,7 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
             label="Tanggal Efektif"
             defaultDate={form.tanggalEfektif || undefined}
             placeholder="— (masih aktif)"
-            onChange={(selectedDates, dateStr) => handleInput('tanggalEfektif', dateStr)}
+            onChange={(...args) => handleInput('tanggalEfektif', args[1])}
           />
         </div>
         <div>
