@@ -74,11 +74,11 @@ import DataKaryawanIndexPage from "../features/staff/pages/data-karyawan/indexPa
 import DetailKaryawanPage from "../features/staff/pages/data-karyawan/detail/detailPage";
 import FormulirKaryawanPage from "../features/staff/pages/data-karyawan/FormulirKaryawanPage";
 import PendaftaranKaryawanBaru from "../features/staff/pages/data-karyawan/PendaftaranKaryawanBaru";
-import PengunduranDiri from "../features/staff/pages/pengunduran-diri/pengunduranDiri";
-import FormResignPage from "../features/staff/pages/pengunduran-diri/form-resign/formResign";
+import PengunduranDiri from "../features/staff/pages/pengunduran-diri/pengunduranDiriPage";
+import FormResignPage from "../features/staff/pages/pengunduran-diri/form-resign/formResignPage";
 import DetailPengunduranDiriPage from "../features/staff/pages/pengunduran-diri/detail/DetailPengunduranDiriPage";
-import PerpanjanganKontrak from "../features/staff/pages/data-karyawan/tabs/perpanjanganKontrak";
-import DataKaryawanPelanggaran from "../features/staff/pages/data-karyawan/detail/tab/pelanggaran";
+import PerpanjanganKontrak from "../features/staff/pages/data-karyawan/tabs/perpanjanganKontrakPage";
+import DataKaryawanPelanggaran from "../features/staff/components/dataKaryawan/tab/pelanggaran";
 import OrganizationHistoryPage from "../features/staff/pages/organizationHistoryPage";
 import Dashboard from "@/features/dashboard/pages/Dashboard";
 import DaftarPenggajianPage from "@/features/penggajian/pages/daftarPenggajianPage";

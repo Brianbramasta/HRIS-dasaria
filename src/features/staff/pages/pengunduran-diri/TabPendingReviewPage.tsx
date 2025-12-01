@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DataTable, DataTableColumn, DataTableAction } from '../../../../features/structure-and-organize/components/datatable/DataTable';
+import { DataTable, DataTableColumn, DataTableAction } from '../../../structure-and-organize/components/datatable/DataTable';
 import { PengunduranDiri } from '../../types/PengunduranDiri';
 import usePengunduranDiri from '../../hooks/usePengunduranDiri';
 import { ChevronDown } from 'react-feather';

@@ -1,5 +1,5 @@
 import ExpandCard from '@/features/structure-and-organize/components/card/ExpandCard';
-interface Props { data: import('../../../../types/Karyawan').Karyawan; isEditable: boolean }
+interface Props { data: import('../../../types/Karyawan').Karyawan; isEditable: boolean }
 export default function StoryPayrollTab({ isEditable }: Props) {
   return (
     <ExpandCard title={isEditable ? 'Story Payroll (Edit)' : 'Story Payroll'} withHeaderDivider>

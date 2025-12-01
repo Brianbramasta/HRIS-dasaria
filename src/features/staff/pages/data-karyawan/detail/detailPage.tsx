@@ -3,11 +3,11 @@ import { useLocation, useParams } from 'react-router-dom';
 import Tabs from '../../../../structure-and-organize/components/Tabs';
 // import Button from '../../../../../components/ui/button/Button';
 import { karyawanService, type KaryawanDetailResponse } from '../../../../staff/services/karyawanService';
-import PesonalInformationTab from './tab/pesonalInformation';
-import ContractTab from './tab/contract';
-import OrganizationHistoryTab from './tab/organizationHistory';
-import PelanggaranTab from './tab/pelanggaran';
-import StoryPayrollTab from './tab/storyPayroll';
+import PesonalInformationTab from '../../../components/dataKaryawan/tab/pesonalInformation';
+import ContractTab from '../../../components/dataKaryawan/tab/contract';
+import OrganizationHistoryTab from '../../../components/dataKaryawan/tab/organizationHistory';
+import PelanggaranTab from '../../../components/dataKaryawan/tab/pelanggaran';
+import StoryPayrollTab from '../../../components/dataKaryawan/tab/storyPayroll';
 
 function useQuery() {
   const { search } = useLocation();

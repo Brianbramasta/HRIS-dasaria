@@ -25,7 +25,7 @@ const formatDate = (iso: string) => {
   return fmt.format(d);
 };
 
-interface Props { data: import('../../../../types/Karyawan').Karyawan; isEditable: boolean }
+interface Props { data: import('../../../types/Karyawan').Karyawan; isEditable: boolean }
 export default function OrganizationHistoryTab({ isEditable }: Props) {
   console.log(isEditable);
   const [rows] = useState<OrgHistoryRow[]>([

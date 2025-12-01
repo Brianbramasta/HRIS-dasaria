@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { DataTable, DataTableColumn } from '../../../../features/structure-and-organize/components/datatable/DataTable';
+import { DataTable, DataTableColumn } from '../../../structure-and-organize/components/datatable/DataTable';
 import { PengunduranDiri } from '../../types/PengunduranDiri';
 import usePengunduranDiri from '../../hooks/usePengunduranDiri';
 import Button from '../../../../components/ui/button/Button';
