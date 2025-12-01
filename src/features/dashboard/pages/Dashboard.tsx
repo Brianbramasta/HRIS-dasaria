@@ -1,5 +1,4 @@
 import EmployeeMetricCard from "../components/chart/EmployeeMetricCard";
-import { GroupIcon, BoxIconLine } from "@/icons";
 import StatusKepegawaian from "../components/chart/StatusKepegawaian";
 import Demographic from "../components/chart/Demographic";
 import EmployeeEngagement from "../components/chart/EmployeeEngagement";

@@ -53,7 +53,7 @@ export default function EmployeeEngagement() {
   return (
     <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] h-full">
       <div className="px-5 pt-5 pb-6 sm:px-6 sm:pt-6">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90"> Survei Kepuasan Karyawan</h3>
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">Survei Kepuasan Karyawan</h3>
         <div className="relative mt-4">
           <div id="chartDarkStyle">
             <Chart options={options} series={series} type="radialBar" height={260} />
