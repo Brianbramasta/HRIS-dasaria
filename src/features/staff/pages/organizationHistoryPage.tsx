@@ -4,7 +4,7 @@ import { DataTable, type DataTableColumn, type DataTableAction } from '@/feature
 import { useOrganizationHistory } from '@/features/staff/hooks/useOrganizationHistory';
 import type { OrganizationHistoryItem } from '@/features/staff/services/organizationHistoryService';
 import { IconPencil, IconFileDetail } from '@/icons/components/icons';
-import EditRiwayatOrganisasiModal from '@/features/staff/components/riwayatOrganisasi/editRiwayatOrganisasiModal';
+import EditRiwayatOrganisasiModal from '@/features/staff/components/modals/riwayatOrganisasi/editRiwayatOrganisasiModal';
 
 type OrgHistoryListRow = OrganizationHistoryItem & { statusPerubahan: 'Rekomendasi' | 'Selesai' };
 
