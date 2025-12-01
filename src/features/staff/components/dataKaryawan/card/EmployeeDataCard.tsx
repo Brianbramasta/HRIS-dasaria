@@ -9,6 +9,25 @@ import EmployeeDataModal, { type EmployeeDataForm } from '@/features/staff/compo
 import type { KaryawanDetailResponse } from '@/features/staff/services/karyawanService';
 import { IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
 
+const JENJANG_JABATAN_OPTIONS = [
+  { label: 'Junior', value: 'junior' },
+  { label: 'Middle', value: 'middle' },
+  { label: 'Senior', value: 'senior' },
+];
+
+const GOLONGAN_OPTIONS = [
+  { label: 'I', value: 'I' },
+  { label: 'II', value: 'II' },
+  { label: 'III', value: 'III' },
+  { label: 'IV', value: 'IV' },
+];
+
+const HAK_AKSES_OPTIONS = [
+  { label: 'HR/Admin', value: 'hr/admin' },
+  { label: 'Employee', value: 'employee' },
+  { label: 'Staff', value: 'staff' },
+];
+
 interface Props {
   data: KaryawanDetailResponse['karyawan'];
 }
@@ -52,7 +71,7 @@ export default function EmployeeDataCard({ data }: Props) {
         <div className="space-y-4">
           <div>
             <Label>Status Karyawan</Label>
-            <div className="pointer-events-none opacity-60">
+            <div className="pointer-events-none ">
               <Select
                 options={[
                   { label: 'Aktif', value: 'aktif' },
@@ -67,67 +86,83 @@ export default function EmployeeDataCard({ data }: Props) {
           </div>
           <div>
             <Label>Tanggal Masuk</Label>
-            <InputField type="date" value={data.tanggalJoin || ''} disabled={true} />
+            <InputField type="date" value={data.tanggalJoin || ''} readonly={true} />
           </div>
           <div>
             <Label>Tanggal Akhir</Label>
-            <InputField type="date" value={data.tanggalBerakhir || ''} disabled={true} />
+            <InputField type="date" value={data.tanggalBerakhir || ''} readonly={true} />
           </div>
           <div>
             <Label>Perusahaan</Label>
-            <InputField value={data.company || ''} disabled={true} />
+            <InputField value={data.company || ''} readonly={true} />
           </div>
           <div>
             <Label>Kantor</Label>
-            <InputField value={data.office || ''} disabled={true} />
+            <InputField value={data.office || ''} readonly={true} />
           </div>
           <div>
             <Label>Direktorat</Label>
-            <InputField value={(data as any)?.direktorat || ''} disabled={true} />
+            <InputField value={(data as any)?.direktorat || ''} readonly={true} />
           </div>
           <div>
             <Label>Divisi</Label>
-            <InputField value={(data as any)?.divisi || ''} disabled={true} />
+            <InputField value={(data as any)?.divisi || ''} readonly={true} />
+          </div>
+          <div>
+            <Label>Departemen</Label>
+            <InputField value={data.department || ''} readonly={true} />
           </div>
         </div>
 
         <div className="space-y-4">
           <div>
-            <Label>Departemen</Label>
-            <InputField value={data.department || ''} disabled={true} />
-          </div>
-          <div>
             <Label>Position</Label>
-            <InputField value={data.posisi || ''} disabled={true} />
+            <InputField value={data.posisi || ''} readonly={true} />
           </div>
           <div>
             <Label>Jabatan</Label>
-            <InputField value={data.jabatan || ''} disabled={true} />
+            <InputField value={data.jabatan || ''} readonly={true} />
           </div>
           <div>
-            <Label>Tingkat</Label>
-            <div className="pointer-events-none opacity-60">
+            <Label>Jenjang Jabatan</Label>
+            <div className="pointer-events-none ">
               <Select
-                options={[
-                  { value: 'D1', label: 'D1' },
-                  { value: 'D2', label: 'D2' },
-                  { value: 'D3', label: 'D3' },
-                  { value: 'D4', label: 'D4' },
-                  { value: 'D5', label: 'D5' },
-                ]}
+                options={JENJANG_JABATAN_OPTIONS}
                 onChange={() => {}}
-                defaultValue={(data as any)?.grade || ''}
+                defaultValue={(data as any)?.jenjangJabatan || ''}
                 required={false}
               />
             </div>
           </div>
           <div>
-            <Label>Status Penggajian</Label>
-            <div className="pointer-events-none opacity-60">
+            <Label>Golongan</Label>
+            <div className="pointer-events-none ">
+              <Select
+                options={GOLONGAN_OPTIONS}
+                onChange={() => {}}
+                defaultValue={(data as any)?.golongan || ''}
+                required={false}
+              />
+            </div>
+          </div>
+          <div>
+            <Label>Hak Akses Pengguna</Label>
+            <div className="pointer-events-none ">
+              <Select
+                options={HAK_AKSES_OPTIONS}
+                onChange={() => {}}
+                defaultValue={(data as any)?.userAccess || 'employee'}
+                required={false}
+              />
+            </div>
+          </div>
+          <div>
+            <Label>Status PayRoll</Label>
+            <div className="pointer-events-none ">
               <Select
                 options={[
-                  { value: 'Aktif', label: 'Aktif' },
-                  { value: 'Nonaktif', label: 'Nonaktif' },
+                  { value: 'Tetap', label: 'Tetap' },
+                  { value: 'Kontrak', label: 'Kontrak' },
                 ]}
                 onChange={() => {}}
                 defaultValue={(data as any)?.statusPayroll || ''}
@@ -137,7 +172,7 @@ export default function EmployeeDataCard({ data }: Props) {
           </div>
           <div>
             <Label>Kategori Karyawan</Label>
-            <div className="pointer-events-none opacity-60">
+            <div className="pointer-events-none ">
               <Select
                 options={[
                   { value: 'Staff', label: 'Staff' },

@@ -56,27 +56,27 @@ export default function EducationalBackgroundCard({ education }: Props) {
             <div key={idx} className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <div>
                 <Label>Jenjang</Label>
-                <InputField value={(anyItem.jenjang || '') as string} disabled={true} />
+                <InputField value={(anyItem.jenjang || '') as string} readonly={true} />
               </div>
               <div>
                 <Label>Nama Lembaga</Label>
-                <InputField value={(item?.namaLembaga || '') as string} disabled={true} />
+                <InputField value={(item?.namaLembaga || '') as string} readonly={true} />
               </div>
               <div>
                 <Label>Gelar</Label>
-                <InputField value={(anyItem.gelar || '') as string} disabled={true} />
+                <InputField value={(anyItem.gelar || '') as string} readonly={true} />
               </div>
               <div>
                 <Label>Nilai Pendidikan Terakhir</Label>
-                <InputField value={(item?.nilaiPendidikan || '') as string} disabled={true} />
+                <InputField value={(item?.nilaiPendidikan || '') as string} readonly={true} />
               </div>
               <div>
                 <Label>Jurusan / Keahlian</Label>
-                <InputField value={(item?.jurusanKeahlian || '') as string} disabled={true} />
+                <InputField value={(item?.jurusanKeahlian || '') as string} readonly={true} />
               </div>
               <div>
                 <Label>Tahun Lulus</Label>
-                <InputField value={(item?.tahunLulus || '') as string} disabled={true} />
+                <InputField value={(item?.tahunLulus || '') as string} readonly={true} />
               </div>
             </div>
           );

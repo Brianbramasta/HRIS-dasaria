@@ -31,27 +31,27 @@ export default function SalaryCard({ financeAndCompliance }: Props) {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {/* <div>
           <Label>Gaji</Label>
-          <InputField value={''} disabled={true} />
+          <InputField value={''} readonly={true} />
         </div> */}
         <div className="md:col-span-2">
           <Label>Bank</Label>
-          <InputField value={financeAndCompliance.bank || ''} disabled={true} />
+          <InputField value={financeAndCompliance.bank || ''} readonly={true} />
         </div>
         <div>
           <Label>Nama Akun Bank</Label>
-          <InputField value={financeAndCompliance.namaAkunBank || ''} disabled={true} />
+          <InputField value={financeAndCompliance.namaAkunBank || ''} readonly={true} />
         </div>
         <div>
           <Label>No. Rekening</Label>
-          <InputField value={financeAndCompliance.noRekening || ''} disabled={true} />
+          <InputField value={financeAndCompliance.noRekening || ''} readonly={true} />
         </div>
         <div>
           <Label>NPWP</Label>
-          <InputField value={financeAndCompliance.npwp || ''} disabled={true} />
+          <InputField value={financeAndCompliance.npwp || ''} readonly={true} />
         </div>
         <div>
           <Label>PTKP Status</Label>
-          <InputField value={''} disabled={true} />
+          <InputField value={''} readonly={true} />
         </div>
       </div>
       <div className="mt-4 flex justify-end">

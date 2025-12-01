@@ -36,23 +36,23 @@ export default function BPJSCard({ financeAndCompliance }: Props) {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
           <Label>No. BPJS Kesehatan</Label>
-          <InputField value={financeAndCompliance.noBpjsKesehatan || ''} disabled={true} />
+          <InputField value={financeAndCompliance.noBpjsKesehatan || ''} readonly={true} />
         </div>
         <div>
           <Label>Status BPJS Kesehatan</Label>
-          <InputField value={financeAndCompliance.statusBpjsKesehatan || ''} disabled={true} />
+          <InputField value={financeAndCompliance.statusBpjsKesehatan || ''} readonly={true} />
         </div>
         <div>
           <Label>No. BPJS Ketenagakerjaan</Label>
-          <InputField value={financeAndCompliance.noBpjsKetenagakerjaan || ''} disabled={true} />
+          <InputField value={financeAndCompliance.noBpjsKetenagakerjaan || ''} readonly={true} />
         </div>
         <div>
           <Label>Status BPJS Ketenagakerjaan</Label>
-          <InputField value={financeAndCompliance.statusBpjsKetenagakerjaan || ''} disabled={true} />
+          <InputField value={financeAndCompliance.statusBpjsKetenagakerjaan || ''} readonly={true} />
         </div>
         {/* <div>
           <Label>Nominal BPJS TK</Label>
-          <InputField value={financeAndCompliance.nominalBpjsTk || ''} disabled={true} />
+          <InputField value={financeAndCompliance.nominalBpjsTk || ''} readonly={true} />
         </div> */}
       </div>
       <div className="mt-4 flex justify-end">

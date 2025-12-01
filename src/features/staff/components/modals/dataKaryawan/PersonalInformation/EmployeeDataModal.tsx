@@ -16,6 +16,8 @@ export type EmployeeDataForm = {
   direktorate?: string;
   divisi?: string;
   grade?: string;
+  jenjangJabatan?: string;
+  golongan?: string;
   statusPayroll?: string;
   kategoriKaryawan?: string;
   joinDate?: string;
@@ -98,6 +100,20 @@ const POSITION_OPTIONS = [
   { label: 'IT Support', value: 'IT Support' },
 ];
 
+const JENJANG_JABATAN_OPTIONS = [
+  { label: 'Junior', value: 'Junior' },
+  { label: 'Middle', value: 'Middle' },
+  { label: 'Senior', value: 'Senior' },
+];
+
+const GOLONGAN_OPTIONS = [
+  { label: 'I', value: 'I' },
+  { label: 'II', value: 'II' },
+  { label: 'III', value: 'III' },
+  { label: 'IV', value: 'IV' },
+  { label: 'V', value: 'V' },
+];
+
 const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSubmit, submitting = false }) => {
   const [form, setForm] = useState<EmployeeDataForm>({});
   const title = useMemo(() => 'Edit Data Karyawan', []);
@@ -122,71 +138,80 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
       </div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <div>
-          <Label>Status Karyawan</Label>
-          <Select options={STATUS_KARYAWAN_OPTIONS} defaultValue={form.statusKaryawan || ''} onChange={(v) => handleInput('statusKaryawan', v)} placeholder="Select" />
+        <div className="space-y-4">
+          <div>
+            <Label>Status Karyawan</Label>
+            <Select options={STATUS_KARYAWAN_OPTIONS} defaultValue={form.statusKaryawan || ''} onChange={(v) => handleInput('statusKaryawan', v)} placeholder="Select" />
+          </div>
+          <div>
+            <DatePicker
+              id="joinDatePicker"
+              label="Tanggal Masuk"
+              defaultDate={form.joinDate || undefined}
+              placeholder="Pilih tanggal"
+              onChange={(selectedDates, dateStr) => handleInput('joinDate', dateStr)}
+            />
+          </div>
+          <div>
+            <DatePicker
+              id="endDatePicker"
+              label="Tanggal Akhir"
+              defaultDate={form.endDate || undefined}
+              placeholder="— (masih aktif)"
+              onChange={(selectedDates, dateStr) => handleInput('endDate', dateStr)}
+            />
+          </div>
+          <div>
+            <Label>Perusahaan</Label>
+            <Select options={COMPANY_OPTIONS} defaultValue={form.company || ''} onChange={(v) => handleInput('company', v)} placeholder="Select" />
+          </div>
+          <div>
+            <Label>Kantor</Label>
+            <Select options={OFFICE_OPTIONS} defaultValue={form.office || ''} onChange={(v) => handleInput('office', v)} placeholder="Select" />
+          </div>
+          <div>
+            <Label>Direktorat</Label>
+            <Select options={DIREKTORAT_OPTIONS} defaultValue={form.direktorate || ''} onChange={(v) => handleInput('direktorate', v)} placeholder="Select" />
+          </div>
+          <div>
+            <Label>Divisi</Label>
+            <Select options={DIVISI_OPTIONS} defaultValue={form.divisi || ''} onChange={(v) => handleInput('divisi', v)} placeholder="Select" />
+          </div>
+          <div>
+            <Label>Departemen</Label>
+            <Select options={DEPARTEMEN_OPTIONS} defaultValue={form.departemen || ''} onChange={(v) => handleInput('departemen', v)} placeholder="Select" />
+          </div>
         </div>
-        <div>
-          <Label>Departemen</Label>
-          <Select options={DEPARTEMEN_OPTIONS} defaultValue={form.departemen || ''} onChange={(v) => handleInput('departemen', v)} placeholder="Select" />
-        </div>
-        <div>
-          <DatePicker
-            id="joinDatePicker"
-            label="Tanggal Masuk"
-            defaultDate={form.joinDate || undefined}
-            placeholder="Pilih tanggal"
-            onChange={(selectedDates, dateStr) => handleInput('joinDate', dateStr)}
-          />
-        </div>
-        <div>
-          <Label>Position</Label>
-          <Select options={POSITION_OPTIONS} defaultValue={form.position || ''} onChange={(v) => handleInput('position', v)} placeholder="Select" />
-        </div>
-        <div>
-          <DatePicker
-            id="endDatePicker"
-            label="Tanggal Akhir"
-            defaultDate={form.endDate || undefined}
-            placeholder="— (masih aktif)"
-            onChange={(selectedDates, dateStr) => handleInput('endDate', dateStr)}
-          />
-        </div>
-        <div>
-          <Label>Jabatan</Label>
-          <Select options={JABATAN_OPTIONS} defaultValue={form.jabatan || ''} onChange={(v) => handleInput('jabatan', v)} placeholder="Select" />
-        </div>
-        <div>
-          <Label>Perusahaan</Label>
-          <Select options={COMPANY_OPTIONS} defaultValue={form.company || ''} onChange={(v) => handleInput('company', v)} placeholder="Select" />
-        </div>
-        <div>
-          <Label>Tingkat</Label>
-          <Select options={GRADE_OPTIONS} defaultValue={form.grade || ''} onChange={(v) => handleInput('grade', v)} placeholder="Select" />
-        </div>
-        <div>
-          <Label>Kantor</Label>
-          <Select options={OFFICE_OPTIONS} defaultValue={form.office || ''} onChange={(v) => handleInput('office', v)} placeholder="Select" />
-        </div>
-        <div>
-          <Label>Hak Akses Pengguna</Label>
-          <Select options={USER_ACCESS_OPTIONS} defaultValue={form.userAccess || 'Employee'} onChange={(v) => handleInput('userAccess', v)} placeholder="Select" />
-        </div>
-        <div>
-          <Label>Direktorat</Label>
-          <Select options={DIREKTORAT_OPTIONS} defaultValue={form.direktorate || ''} onChange={(v) => handleInput('direktorate', v)} placeholder="Select" />
-        </div>
-        <div>
-          <Label>Status Payroll</Label>
-          <Select options={STATUS_PAYROLL_OPTIONS} defaultValue={form.statusPayroll || ''} onChange={(v) => handleInput('statusPayroll', v)} placeholder="Select" />
-        </div>
-        <div>
-          <Label>Divisi</Label>
-          <Select options={DIVISI_OPTIONS} defaultValue={form.divisi || ''} onChange={(v) => handleInput('divisi', v)} placeholder="Select" />
-        </div>
-        <div>
-          <Label>Kategori Karyawan</Label>
-          <Select options={KATEGORI_OPTIONS} defaultValue={form.kategoriKaryawan || ''} onChange={(v) => handleInput('kategoriKaryawan', v)} placeholder="Select" />
+
+        <div className="space-y-4">
+          <div>
+            <Label>Position</Label>
+            <Select options={POSITION_OPTIONS} defaultValue={form.position || ''} onChange={(v) => handleInput('position', v)} placeholder="Select" />
+          </div>
+          <div>
+            <Label>Jabatan</Label>
+            <Select options={JABATAN_OPTIONS} defaultValue={form.jabatan || ''} onChange={(v) => handleInput('jabatan', v)} placeholder="Select" />
+          </div>
+          <div>
+            <Label>Jenjang Jabatan</Label>
+            <Select options={JENJANG_JABATAN_OPTIONS} defaultValue={form.jenjangJabatan || ''} onChange={(v) => handleInput('jenjangJabatan', v)} placeholder="Select" />
+          </div>
+          <div>
+            <Label>Golongan</Label>
+            <Select options={GOLONGAN_OPTIONS} defaultValue={form.golongan || ''} onChange={(v) => handleInput('golongan', v)} placeholder="Select" />
+          </div>
+          <div>
+            <Label>Hak Akses Pengguna</Label>
+            <Select options={USER_ACCESS_OPTIONS} defaultValue={form.userAccess || 'Employee'} onChange={(v) => handleInput('userAccess', v)} placeholder="Select" />
+          </div>
+          <div>
+            <Label>Status Payroll</Label>
+            <Select options={STATUS_PAYROLL_OPTIONS} defaultValue={form.statusPayroll || ''} onChange={(v) => handleInput('statusPayroll', v)} placeholder="Select" />
+          </div>
+          <div>
+            <Label>Kategori Karyawan</Label>
+            <Select options={KATEGORI_OPTIONS} defaultValue={form.kategoriKaryawan || ''} onChange={(v) => handleInput('kategoriKaryawan', v)} placeholder="Select" />
+          </div>
         </div>
       </div>
 

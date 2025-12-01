@@ -89,6 +89,9 @@ export interface EmployeeDataFormData {
   divisi: string;
   position: string;
   jabatan: string;
+  jenjangJabatan: string;
+  golongan: string;
+  userAccess?: string;
   grade: string;
   statusPayroll: string;
   kategoriKaryawan: string;

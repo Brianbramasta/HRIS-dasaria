@@ -39,35 +39,35 @@ export default function SocialEmergencyCard({ personalInformation }: Props) {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
           <Label>Facebook</Label>
-          <InputField value={personalInformation.facebook || ''} disabled={true} />
+          <InputField value={personalInformation.facebook || ''} readonly={true} />
         </div>
         <div>
           <Label>X.com</Label>
-          <InputField value={personalInformation.xCom || ''} disabled={true} />
+          <InputField value={personalInformation.xCom || ''} readonly={true} />
         </div>
         <div>
           <Label>LinkedIn</Label>
-          <InputField value={personalInformation.linkedin || ''} disabled={true} />
+          <InputField value={personalInformation.linkedin || ''} readonly={true} />
         </div>
         <div>
           <Label>Instagram</Label>
-          <InputField value={personalInformation.instagram || ''} disabled={true} />
+          <InputField value={personalInformation.instagram || ''} readonly={true} />
         </div>
         <div>
           <Label>Nama Kontak Darurat</Label>
-          <InputField value={personalInformation.namaNoKontakDarurat || ''} disabled={true} />
+          <InputField value={personalInformation.namaNoKontakDarurat || ''} readonly={true} />
         </div>
         <div>
           <Label>No. Kontak Darurat</Label>
-          <InputField value={personalInformation.noKontakDarurat || ''} disabled={true} />
+          <InputField value={personalInformation.noKontakDarurat || ''} readonly={true} />
         </div>
         <div>
           <Label>Akun Sosial Media Orang Terdekat</Label>
-          <InputField value={personalInformation.akunSosialMediaTerdekat || ''} disabled={true} />
+          <InputField value={personalInformation.akunSosialMediaTerdekat || ''} readonly={true} />
         </div>
         <div>
           <Label>Hubungan dengan Kontak Darurat</Label>
-          <InputField value={personalInformation.hubunganKontakDarurat || ''} disabled={true} />
+          <InputField value={personalInformation.hubunganKontakDarurat || ''} readonly={true} />
         </div>
       </div>
       <div className="mt-4 flex justify-end">

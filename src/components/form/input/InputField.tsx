@@ -17,6 +17,7 @@ interface InputProps {
   error?: boolean;
   hint?: string;
   required?: boolean;
+  readonly?: boolean;
 }
 
 const Input: FC<InputProps> = ({
@@ -33,6 +34,7 @@ const Input: FC<InputProps> = ({
   disabled = false,
   success = false,
   error = false,
+  readonly = false,
   hint,
   ...rest
 }) => {
@@ -44,6 +46,8 @@ const Input: FC<InputProps> = ({
     inputClasses += `  border-error-500 focus:border-error-300 focus:ring-error-500/20 dark:text-error-400 dark:border-error-500 dark:focus:border-error-800`;
   } else if (success) {
     inputClasses += `  border-success-500 focus:border-success-300 focus:ring-success-500/20 dark:text-success-400 dark:border-success-500 dark:focus:border-success-800`;
+  } else if (readonly) {
+    inputClasses += ` bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20 dark:border-gray-700 dark:text-white/90  dark:focus:border-brand-800`;
   } else {
     inputClasses += ` bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20 dark:border-gray-700 dark:text-white/90  dark:focus:border-brand-800`;
   }
@@ -61,6 +65,7 @@ const Input: FC<InputProps> = ({
         max={max}
         step={step}
         disabled={disabled}
+        readOnly={readonly}
         className={inputClasses}
         {...rest}
       />

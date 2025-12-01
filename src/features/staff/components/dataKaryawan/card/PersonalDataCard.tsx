@@ -43,78 +43,78 @@ export default function PersonalDataCard({ data, personalInformation }: Props) {
         <div className="space-y-4">
           <div>
             <Label htmlFor="idKaryawan">ID Karyawan</Label>
-            <InputField id="idKaryawan" value={data.idKaryawan || ''} disabled={true} />
+            <InputField id="idKaryawan" value={data.idKaryawan || ''} readonly={true} />
           </div>
           <div>
             <Label htmlFor="namaLengkap">Nama Lengkap</Label>
-            <InputField id="namaLengkap" value={data.name || ''} disabled={true} />
+            <InputField id="namaLengkap" value={data.name || ''} readonly={true} />
           </div>
           <div>
             <Label htmlFor="nik">NIK</Label>
-            <InputField id="nik" value={personalInformation.nik || ''} disabled={true} />
+            <InputField id="nik" value={personalInformation.nik || ''} readonly={true} />
           </div>
           <div>
             <Label htmlFor="tempatLahir">Tempat Lahir</Label>
-            <InputField id="tempatLahir" value={personalInformation.tempatLahir || ''} disabled={true} />
+            <InputField id="tempatLahir" value={personalInformation.tempatLahir || ''} readonly={true} />
           </div>
           <div>
             <Label htmlFor="tanggalLahir">Tanggal Lahir</Label>
-            <InputField id="tanggalLahir" type="date" value={personalInformation.tanggalLahir || ''} disabled={true} />
+            <InputField id="tanggalLahir" type="date" value={personalInformation.tanggalLahir || ''} readonly={true} />
           </div>
           <div>
             <Label htmlFor="jenisKelamin">Jenis Kelamin</Label>
             <div className="pointer-events-none opacity-60">
-              <InputField id="jenisKelamin" value={personalInformation.jenisKelamin || ''} disabled={true} />
+              <InputField id="jenisKelamin" value={personalInformation.jenisKelamin || ''} readonly={true} />
             </div>
           </div>
           <div>
             <Label htmlFor="nomorTelepon">Nomor Telepon</Label>
-            <InputField id="nomorTelepon" value={personalInformation.nomorTelepon || ''} disabled={true} />
+            <InputField id="nomorTelepon" value={personalInformation.nomorTelepon || ''} readonly={true} />
           </div>
           <div>
             <Label htmlFor="alamatDomisili">Alamat Domisili</Label>
-            <TextArea value={personalInformation.alamatDomisili || ''} disabled={true} rows={3} />
+            <TextArea value={personalInformation.alamatDomisili || ''} readonly={true} rows={3} />
           </div>
         </div>
 
         <div className="space-y-4">
           <div>
             <Label htmlFor="email">Email</Label>
-            <InputField id="email" type="email" value={data.email || ''} disabled={true} />
+            <InputField id="email" type="email" value={data.email || ''} readonly={true} />
           </div>
           <div>
             <Label htmlFor="agama">Agama</Label>
             <div className="pointer-events-none opacity-60">
-              <InputField id="agama" value={personalInformation.agama || ''} disabled={true} />
+              <InputField id="agama" value={personalInformation.agama || ''} readonly={true} />
             </div>
           </div>
           <div>
             <Label htmlFor="golDarah">Gol. Darah</Label>
             <div className="pointer-events-none opacity-60">
-              <InputField id="golDarah" value={''} disabled={true} />
+              <InputField id="golDarah" value={''} readonly={true} />
             </div>
           </div>
           <div>
             <Label htmlFor="pendidikanTerakhir">Pendidikan Terakhir</Label>
             <div className="pointer-events-none opacity-60">
-              <InputField id="pendidikanTerakhir" value={''} disabled={true} />
+              <InputField id="pendidikanTerakhir" value={''} readonly={true} />
             </div>
           </div>
           <div>
             <Label htmlFor="statusMenikah">Status Menikah</Label>
             <div className="pointer-events-none opacity-60">
-              <InputField id="statusMenikah" value={personalInformation.statusMenikah || ''} disabled={true} />
+              <InputField id="statusMenikah" value={personalInformation.statusMenikah || ''} readonly={true} />
             </div>
           </div>
           <div>
             <Label htmlFor="jumlahTanggungan">Jumlah Tanggungan sesuai KK</Label>
             <div className="pointer-events-none opacity-60">
-              <InputField id="jumlahTanggungan" value={''} disabled={true} />
+              <InputField id="jumlahTanggungan" value={''} readonly={true} />
             </div>
           </div>
           <div>
             <Label htmlFor="alamatKtp">Alamat KTP</Label>
-            <TextArea value={personalInformation.alamatKTP || ''} disabled={true} rows={3} />
+            <TextArea value={personalInformation.alamatKTP || ''} readonly={true} rows={3} />
           </div>
         </div>
       </div>
