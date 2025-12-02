@@ -66,7 +66,7 @@ const AddBusinessLineModal: React.FC<AddBusinessLineModalProps> = ({ isOpen, onC
     <ModalAddEdit
       isOpen={isOpen}
       onClose={onClose}
-      title="Add Lini Bisnis"
+      title="Tambah Lini Bisnis"
       handleSubmit={handleSubmit}
       submitting={submitting}
       content={

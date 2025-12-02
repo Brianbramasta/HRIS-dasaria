@@ -30,8 +30,8 @@ class ApiService {
 
     // Tentukan baseURL berdasarkan apakah path termasuk dalam daftar
     this.baseURL = viteUrlPaths.some(path => currentPath.startsWith(path))
-      ? import.meta.env.VITE_API_URL || 'http://localhost:3001/api/'
-      : import.meta.env.apiUrl || 'http://localhost:3001/api/';
+      ? import.meta.env.VITE_API_URL || 'http://192.168.1.44:3001/api'
+      : import.meta.env.apiUrl || 'http://192.168.1.44:3001/api';
     
     this.instance = axios.create({
       baseURL: this.baseURL,

@@ -108,7 +108,7 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
       onClose={onClose}
       handleSubmit={handleSubmit}
       submitting={submitting}
-      maxWidth="max-w-6xl"
+      maxWidth="max-w-3xl"
       content={
         <>
           <div className="space-y-2">

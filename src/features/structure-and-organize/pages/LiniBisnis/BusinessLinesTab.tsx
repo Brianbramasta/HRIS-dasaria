@@ -92,9 +92,9 @@ export default function BusinessLinesTab({ resetKey }: Props) {
             onClick: async (row: any) => {
               const idx = (row?.no ?? 0) - 1;
               setSelectedIndex(idx);
-              const detail = await businessLinesService.getDetail(businessLines[idx].id);
+              const detail = await businessLinesService.getById(businessLines[idx].id);
               console.log('detail',detail)
-              setSelectedBusinessLine(detail.businessLine as BusinessLineListItem);
+              setSelectedBusinessLine(detail as BusinessLineListItem);
               setIsEditOpen(true);
             },
           },

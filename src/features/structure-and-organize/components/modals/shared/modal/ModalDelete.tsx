@@ -17,7 +17,7 @@ interface DeleteOfficeModalProps {
 const DeleteOfficeModal: React.FC<DeleteOfficeModalProps> = ({ content, isOpen, onClose, handleDelete, submitting=false, confirmTitleButton = 'Hapus', closeTitleButton = 'Tutup', title = 'Hapus Data' }) => {
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="max-w-lg p-6 zoom-75 dark:text-white  " showCloseButton>
+    <Modal isOpen={isOpen} onClose={onClose} className="max-w-md p-6 zoom-75 dark:text-white  " showCloseButton>
       <div className="space-y-6">
         <div className="flex flex-col items-center">
           <div className="mb-3 text-4xl">

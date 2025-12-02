@@ -201,7 +201,12 @@ registerStaffEndpoints(server, db);
 server.use('/api', router);
 
 const PORT = 3001;
-server.listen(PORT, () => {
+// server.listen(PORT, () => {
+//   console.log(`🚀 JSON Server running on port ${PORT}`);
+//   console.log(`📡 Endpoint base URL: http://localhost:${PORT}/api`);
+// });
+
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 JSON Server running on port ${PORT}`);
-  console.log(`📡 Endpoint base URL: http://localhost:${PORT}/api`);
+  console.log(`📡 Endpoint base URL: http://192.168.1.44:${PORT}/api`);
 });
