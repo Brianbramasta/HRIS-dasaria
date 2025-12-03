@@ -22,7 +22,7 @@ interface UseBusinessLinesReturn {
   updateBusinessLine: (id: string, payload: { name?: string; description?: string | null; memoNumber: string; skFileId: string; }) => Promise<BusinessLineListItem | null>;
   deleteBusinessLine: (id: string, payload: { memoNumber: string; skFileId: string; }) => Promise<boolean>;
   getDetail: (id: string) => Promise<BusinessLineDetailResponse | null>;
-  getDropdown: () => Promise<BusinessLineListItem[]>;
+  getDropdown: (search?: string) => Promise<BusinessLineListItem[]>;
   getById: (id: string) => Promise<BusinessLineListItem | null>;
   
   // Pagination
@@ -144,9 +144,9 @@ export const useBusinessLines = (): UseBusinessLinesReturn => {
     }
   }, []);
 
-  const getDropdown = useCallback(async (): Promise<BusinessLineListItem[]> => {
+  const getDropdown = useCallback(async (search?: string): Promise<BusinessLineListItem[]> => {
     try {
-      const items = await businessLinesService.getDropdown();
+      const items = await businessLinesService.getDropdown(search);
       return items;
     } catch (err) {
       console.error('Error fetching dropdown business lines:', err);

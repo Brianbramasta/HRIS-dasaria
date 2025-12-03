@@ -80,7 +80,6 @@ export default function PositionsTab({ resetKey }: Props) {
     URL.revokeObjectURL(url);
   };
 
-  React.useEffect(() => { fetchPositions(); }, [fetchPositions]);
 
   return (
     <>
@@ -96,7 +95,7 @@ export default function PositionsTab({ resetKey }: Props) {
         onSortChange={() => { setSort('name', 'asc'); fetchPositions(); }}
         onPageChangeExternal={(p) => { setPage(p); fetchPositions(); }}
         onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); fetchPositions(); }}
-        onColumnVisibilityChange={() => { fetchPositions(); }}
+        
         onAdd={()=>addModal.openModal()}
         onExport={() => exportCSV('jabatan.csv', rows)}
       />

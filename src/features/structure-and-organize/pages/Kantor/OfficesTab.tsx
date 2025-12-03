@@ -57,7 +57,6 @@ export default function OfficesTab({ resetKey }: Props) {
     URL.revokeObjectURL(url);
   };
 
-  React.useEffect(() => { fetchOffices(); }, [fetchOffices]);
 
   return (
     <>
@@ -73,7 +72,7 @@ export default function OfficesTab({ resetKey }: Props) {
       onSortChange={() => { setSort('name', 'asc'); fetchOffices(); }}
       onPageChangeExternal={(p) => { setPage(p); fetchOffices(); }}
       onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); fetchOffices(); }}
-      onColumnVisibilityChange={() => { fetchOffices(); }}
+      
       onAdd={() => addModal.openModal()}
       onExport={() => exportCSV('office.csv', rows)}
     />

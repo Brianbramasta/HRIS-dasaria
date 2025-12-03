@@ -28,6 +28,7 @@ interface DocumentsTableProps {
   onEdit?: (doc: DocumentItem) => void;
   onDelete?: (doc: DocumentItem) => void;
   className?: string;
+  actionsForRow?: (row: DocumentItem) => Action<DocumentItem>[] | null | undefined;
 }
 
 const defaultColumns: Column<DocumentItem>[] = [
@@ -56,7 +57,7 @@ const defaultActions = (
   },
 ];
 
-const DocumentsTable: React.FC<DocumentsTableProps> = ({ items, columns, actions, onEdit, onDelete, className }) => {
+const DocumentsTable: React.FC<DocumentsTableProps> = ({ items, columns, actions, onEdit, onDelete, className, actionsForRow }) => {
   const cols = columns && columns.length ? columns : defaultColumns;
   const acts = actions && actions.length ? actions : defaultActions(onEdit, onDelete);
 
@@ -94,7 +95,7 @@ const DocumentsTable: React.FC<DocumentsTableProps> = ({ items, columns, actions
               ))}
               <TableCell className="px-6 py-4 text-center">
                 <div className="flex items-center justify-center gap-2">
-                  {acts.map((a, i) => (
+                  {(actionsForRow ? (actionsForRow(row) ?? acts) : acts).map((a, i) => (
                     <button key={i} className={a.className} onClick={() => a.onClick(row)}>{a.icon || a.label}</button>
                   ))}
                 </div>

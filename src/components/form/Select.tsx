@@ -12,6 +12,7 @@ interface SelectProps {
   className?: string;
   defaultValue?: string;
   required?: boolean;
+  onSearch?: (query: string) => void;
 }
 
 const Select: React.FC<SelectProps> = ({
@@ -21,6 +22,7 @@ const Select: React.FC<SelectProps> = ({
   className = "",
   defaultValue = "",
   required = false,
+  onSearch,
 }) => {
   const [selectedValue, setSelectedValue] = useState<string>(defaultValue);
   const [open, setOpen] = useState(false);
@@ -30,7 +32,9 @@ const Select: React.FC<SelectProps> = ({
   const selectedLabel =
     options.find((o) => o.value === selectedValue)?.label || placeholder;
 
-  const filtered = query
+  const filtered = onSearch
+    ? options
+    : query
     ? options.filter(
         (o) =>
           o.label.toLowerCase().includes(query.toLowerCase()) ||
@@ -85,7 +89,11 @@ const Select: React.FC<SelectProps> = ({
             <input
               type="text"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => {
+                const q = e.target.value;
+                setQuery(q);
+                if (onSearch) onSearch(q);
+              }}
               className="h-9 w-full rounded-md border border-gray-300 bg-transparent px-3 text-sm focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"
               placeholder="Cari..."
             />

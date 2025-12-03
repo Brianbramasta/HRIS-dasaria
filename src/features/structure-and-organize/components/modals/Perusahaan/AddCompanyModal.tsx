@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { companyService, businessLineService } from '../../../services/organization.service';
+import { companyService } from '../../../services/organization.service';
+import { useBusinessLines } from '../../../hooks/useBusinessLines';
 import type { CompanyListItem, BusinessLineListItem } from '../../../types/organization.api.types';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
@@ -29,18 +30,19 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
   ]);
 
   const [submitting, setSubmitting] = useState(false);
+  const { getDropdown } = useBusinessLines();
 
   React.useEffect(() => {
-    // load business lines for selection
+    if (!isOpen) return;
     (async () => {
       try {
-        const res = await businessLineService.getList({ search: '', page: 1, pageSize: 100, sortBy: 'name', sortOrder: 'asc' });
-        setBusinessLines(res.data);
+        const items = await getDropdown();
+        setBusinessLines(items);
       } catch (e) {
         console.error('Failed to load business lines', e);
       }
     })();
-  }, []);
+  }, [isOpen, getDropdown]);
   const handleDocChange = (index: number, key: 'name' | 'number', value: string) => {
     setDocuments((prev) => {
       const next = [...prev];
@@ -79,13 +81,13 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
     setSubmitting(true);
     try {
       const memoNumber = documents[0].number.trim();
-      const skFileId = documents[0].file?.name || '';
+      const skFile = documents[0].file || null;
       const created = await companyService.create({
         name: name.trim(),
         description: description.trim(),
         businessLineId: businessLineId || '',
         memoNumber,
-        skFileId,
+        skFile,
       });
       onSuccess?.(created);
       // reset and close
@@ -130,6 +132,14 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
               placeholder="Pilih Lini Bisnis"
               defaultValue={businessLineId}
               onChange={(value) => setBusinessLineId(value)}
+              onSearch={async (q) => {
+                try {
+                  const items = await getDropdown(q);
+                  setBusinessLines(items);
+                } catch (e) {
+                  console.error('Failed to search business lines', e);
+                }
+              }}
             />
           </div>
 

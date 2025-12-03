@@ -39,6 +39,7 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
   }, [office]);
 
   useEffect(() => {
+    if (!isOpen) return;
     (async () => {
       try {
         const res = await companiesService.getList({ search: '', page: 1, pageSize: 100, sortBy: 'name', sortOrder: 'asc' });
@@ -47,7 +48,7 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
         console.error('Failed to fetch companies', e);
       }
     })();
-  }, []);
+  }, [isOpen]);
 
   const handleFileChange = (/*_e: React.ChangeEvent<HTMLInputElement>*/) => {
     // metadata file dikelola oleh FileInput melalui store

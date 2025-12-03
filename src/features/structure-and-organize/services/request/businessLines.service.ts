@@ -50,8 +50,9 @@ export const businessLinesService = {
     };
   },
 
-  getDropdown: async (): Promise<BusinessLineListItem[]> => {
-    const result = await apiService.get<any>(`/organizational-structure/business-lines-dropdown`);
+  getDropdown: async (search?: string): Promise<BusinessLineListItem[]> => {
+    const qs = search ? `?search=${encodeURIComponent(search)}` : '';
+    const result = await apiService.get<any>(`/organizational-structure/business-lines-dropdown${qs}`);
     const items = (result as any).data as { id_bl: string; bl_name: string }[];
     return (items || []).map((i) => ({
       id: i.id_bl,

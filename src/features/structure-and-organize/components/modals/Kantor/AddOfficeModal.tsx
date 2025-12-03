@@ -28,6 +28,7 @@ const AddOfficeModal: React.FC<AddOfficeModalProps> = ({ isOpen, onClose, onSucc
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
+    if (!isOpen) return;
     (async () => {
       try {
         const res = await companiesService.getList({ search: '', page: 1, pageSize: 100, sortBy: 'name', sortOrder: 'asc' });
@@ -36,7 +37,7 @@ const AddOfficeModal: React.FC<AddOfficeModalProps> = ({ isOpen, onClose, onSucc
         console.error('Failed to fetch companies', e);
       }
     })();
-  }, []);
+  }, [isOpen]);
 
   const handleFileChange = (/*_e: React.ChangeEvent<HTMLInputElement>*/) => {
     // metadata file dikelola oleh FileInput melalui store

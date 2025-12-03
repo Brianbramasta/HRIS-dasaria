@@ -60,7 +60,6 @@ export default function DivisionsTab({ resetKey }: Props) {
     URL.revokeObjectURL(url);
   };
 
-  React.useEffect(() => { fetchDivisions(); }, [fetchDivisions]);
 
   return (
     <>
@@ -76,7 +75,7 @@ export default function DivisionsTab({ resetKey }: Props) {
       onSortChange={() => { setSort('name', 'asc'); fetchDivisions(); }}
       onPageChangeExternal={(p) => { setPage(p); fetchDivisions(); }}
       onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); fetchDivisions(); }}
-      onColumnVisibilityChange={() => { fetchDivisions(); }}
+      
       onAdd={() => addModal.openModal()}
       onExport={() => exportCSV('divisi.csv', rows)}
     />

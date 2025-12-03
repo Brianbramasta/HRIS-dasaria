@@ -63,6 +63,7 @@ export interface CompanyListItem {
   businessLineName: string | null;
   memoNumber: string | null;
   skFile: FileSummary | null;
+  logo: string | FileSummary | null;
 }
 
 export interface OfficeListItem {
@@ -145,7 +146,7 @@ export interface CompanyDetailResponse {
   company: {
     id: string;
     name: string;
-    logo: FileSummary | null;
+    logo: string | FileSummary | null;
     businessLineName: string | null;
     description: string | null;
     address: string | null;

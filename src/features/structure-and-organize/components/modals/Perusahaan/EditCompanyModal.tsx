@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { companyService, businessLineService } from '../../../services/organization.service';
+import { companyService } from '../../../services/organization.service';
+import { useBusinessLines } from '../../../hooks/useBusinessLines';
 import type { CompanyListItem, BusinessLineListItem } from '../../../types/organization.api.types';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 import FileInput from '../shared/field/FileInput';
+import Select from '@/components/form/Select';
 import ModalAddEdit from '../shared/modal/modalAddEdit';
 
 
@@ -25,17 +27,19 @@ const EditCompanyModal: React.FC<EditCompanyModalProps> = ({ isOpen, onClose, co
   const [skFile, setSkFile] = useState<File | null>(null);
 
   const [submitting, setSubmitting] = useState(false);
+  const { getDropdown } = useBusinessLines();
 
   useEffect(() => {
+    if (!isOpen) return;
     (async () => {
       try {
-        const res = await businessLineService.getList({ search: '', page: 1, pageSize: 100, sortBy: 'name', sortOrder: 'asc' });
-        setBusinessLines(res.data);
+        const items = await getDropdown();
+        setBusinessLines(items);
       } catch (e) {
         console.error('Failed to load business lines', e);
       }
     })();
-  }, []);
+  }, [isOpen, getDropdown]);
 
   useEffect(() => {
     if (company) {
@@ -58,13 +62,13 @@ const EditCompanyModal: React.FC<EditCompanyModalProps> = ({ isOpen, onClose, co
     if (!company) return;
     setSubmitting(true);
     try {
-      const skFileId = skFile?.name || company.skFile?.fileName || '';
+      const skFilePayload = skFile || null;
       const updated = await companyService.update(company.id, {
         name: name.trim(),
         description: description.trim(),
         businessLineId: businessLineId || company.businessLineId || undefined,
         memoNumber: docNumber.trim(),
-        skFileId,
+        skFile: skFilePayload,
       });
       onSuccess?.(updated);
       onClose();
@@ -98,17 +102,21 @@ const EditCompanyModal: React.FC<EditCompanyModalProps> = ({ isOpen, onClose, co
 
         <div className="space-y-2">
           <label className="text-sm font-medium">Lini Bisnis</label>
-          <select
+          <Select
             required
-            value={businessLineId}
-            onChange={(e) => setBusinessLineId(e.target.value)}
-            className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-          >
-            <option value="">Pilih Lini Bisnis</option>
-            {businessLines.map((bl) => (
-              <option key={bl.id} value={bl.id}>{bl.name}</option>
-            ))}
-          </select>
+            options={businessLines.map((bl) => ({ label: bl.name, value: bl.id }))}
+            placeholder="Pilih Lini Bisnis"
+            defaultValue={businessLineId}
+            onChange={(value) => setBusinessLineId(value)}
+            onSearch={async (q) => {
+              try {
+                const items = await getDropdown(q);
+                setBusinessLines(items);
+              } catch (e) {
+                console.error('Failed to search business lines', e);
+              }
+            }}
+          />
         </div>
 
         <div className="space-y-2">

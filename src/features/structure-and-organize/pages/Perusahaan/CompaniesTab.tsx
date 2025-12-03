@@ -73,7 +73,6 @@ export default function CompaniesTab({ resetKey }: Props) {
     URL.revokeObjectURL(url);
   };
 
-  React.useEffect(() => { fetchCompanies(); }, [fetchCompanies]);
 
   return (
     <div>
@@ -89,7 +88,7 @@ export default function CompaniesTab({ resetKey }: Props) {
       onSortChange={() => { setSort('name', 'asc'); fetchCompanies(); }}
       onPageChangeExternal={(p) => { setPage(p); fetchCompanies(); }}
       onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); fetchCompanies(); }}
-      onColumnVisibilityChange={() => { fetchCompanies(); }}
+      
       onAdd={() => setAddOpen(true)}
       onExport={() => exportCSV('perusahaan.csv', rows)}
     />

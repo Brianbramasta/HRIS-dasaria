@@ -9,10 +9,14 @@ import EditDocumentModal from '../../../components/modals/Perusahaan/detail/Edit
 import DeleteDocumentModal from '../../../components/modals/Perusahaan/detail/DeleteDocumentModal';
 import EditDetailCompany from '../../../components/modals/Perusahaan/detail/EditDetailCompany';
 import Button from '@/components/ui/button/Button';
-import { TrashBinIcon } from '@/icons/index';
+// import { TrashBinIcon } from '@/icons/index';
+import { IconHapus as  TrashBinIcon} from '@/icons/components/icons';
 import { addNotification } from '@/stores/notificationStore';
-import { IconPencil, iconPlus } from '@/icons/components/icons';
+import { IconPencil, IconHapus, iconPlus, IconFileDetail } from '@/icons/components/icons';
+// import { TrashBinIcon as TrashIcon, PencilIcon as EditIcon, EyeIcon } from '@/icons/index';
 import DocumentsTable from '../../../components/table/TableGlobal';
+import { formatDate } from '@/utils/formatDate';
+import { formatImage } from '@/utils/formatImage';
 
 const DetailPerusahaan: React.FC = () => {
   const { id } = useParams();
@@ -67,27 +71,54 @@ const DetailPerusahaan: React.FC = () => {
       { label: 'Phone', value: company?.phone || '—' },
     ];
 
-    const customInformation = [
+  const customInformation = [
       { label: 'Industry', value: company?.industry || company?.businessLineName || '—' },
-      { label: 'Founded', value: company?.founded || new Date(company?.createdAt || '').getFullYear() || '—' },
+      { label: 'Didirikan', value: formatDate(company?.founded) || '—' },
       { label: 'Type', value: company?.type || '—' },
       { label: 'Website', value: company?.website || '—' },
-    ];
+  ];
 
-    const docColumns = React.useMemo(() => ([
+  const docColumns = React.useMemo(() => ([
       { id: 'no', label: 'No.', align: 'center', render: (_: any, __: any, idx: number) => idx + 1 },
       { id: 'fileName', label: 'Nama Dokumen' },
-      { id: 'name', label: 'Jenis' },
-      { id: 'size', label: 'Ukuran' },
+      { id: 'number', label: 'Nomor Dokumen' },
+      // { id: 'name', label: 'Jenis' },
+      // { id: 'size', label: 'Ukuran' },
       { id: 'type', label: 'Status', render: (v: string) => (v === 'active' ? 'Dokumen Aktif' : v === 'archive' ? 'Arsip' : '—') },
-    ]), []);
+  ]), []);
 
-    const dummyDocuments = React.useMemo(() => ([
-      { id: 1, fileName: 'Dokumen.pdf', name: 'Akta Pendirian Perusahaan (Update 2025)', size: '1MB', type: 'active' },
-      { id: 2, fileName: 'Dokumen.pdf', name: 'Dokumen2', size: '1MB', type: 'active' },
-      { id: 3, fileName: 'Dokumen.pdf', name: 'Dokumen2', size: '1MB', type: 'active' },
-      { id: 4, fileName: 'Dokumen.pdf', name: 'Akta Pendirian Perusahaan', size: '1MB', type: 'archive' },
-    ]), []);
+  const docActions = React.useMemo(() => ((row: any) => {
+    if (row?.type === 'archive') return [];
+    return [
+      {
+        label: 'Delete',
+        icon: <IconHapus />,
+        className: 'h-9 w-9 flex items-center justify-center rounded-lg  text-white ',
+        onClick: (r: any) => { setSelectedDoc(r); setDeleteDocOpen(true); },
+      },
+      {
+        label: 'Detail',
+        icon: <IconFileDetail />,
+        className: 'h-9 w-9 flex items-center justify-center rounded-lg  text-white ',
+        onClick: (r: any) => { const url = r?.fileUrl || r?.url || r?.link; if (url) window.open(url, '_blank'); },
+      },
+      {
+        label: 'Edit',
+        icon: <IconPencil />,
+        className: 'h-9 w-9 flex items-center justify-center rounded-lg  text-white ',
+        onClick: (r: any) => { setSelectedDoc(r); setEditDocOpen(true); },
+      }
+    ];
+  }), []);
+
+  
+
+    // const dummyDocuments = React.useMemo(() => ([
+    //   { id: 1, fileName: 'Dokumen.pdf', name: 'Akta Pendirian Perusahaan (Update 2025)', size: '1MB', type: 'active' },
+    //   { id: 2, fileName: 'Dokumen.pdf', name: 'Dokumen2', size: '1MB', type: 'active' },
+    //   { id: 3, fileName: 'Dokumen.pdf', name: 'Dokumen2', size: '1MB', type: 'active' },
+    //   { id: 4, fileName: 'Dokumen.pdf', name: 'Akta Pendirian Perusahaan', size: '1MB', type: 'archive' },
+    // ]), []);
 
     
   //   return (
@@ -109,10 +140,12 @@ const DetailPerusahaan: React.FC = () => {
         <div className="col-span-12 md:col-span-4 rounded-lg p-4 md:p-6 shadow-sm bg-white">
           <div className="flex flex-col items-center">
             <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center mb-4">{/* logo */}
-              <span className="text-3xl font-bold"><img src={company?.logo?.fileUrl || '/images/logo/logo-icon.svg'} alt='logo' className='w-32 h-32 object-cover rounded-full'/></span>
+              <span className="text-3xl font-bold">
+                {formatImage(company?.logo, company?.name || '')}
+              </span>
             </div>
             <h2 className="text-xl font-bold">{company?.name}</h2>
-            <p className="text-md font-medium">{company?.businessLineName}</p>
+            <p className="text-md font-medium">{company?.businessLineName || '—'}</p>
           </div>
 
           <hr className='my-6'/>
@@ -126,7 +159,7 @@ const DetailPerusahaan: React.FC = () => {
 
             {/* Company Size */}
             <div className='flex gap-2 justify-between mb-6 items-start '>
-              <div className='min-w-[120px] text-gray-600'>Company Size</div> <div>:</div> 
+              <div className='min-w-[120px] text-gray-600'>Jumlah Karyawan</div> <div>:</div> 
               <div className="w-full max-w-full break-words md:max-w-[200px] md:w-[200px]">{companySizeValue}</div>
             </div>
 
@@ -161,7 +194,7 @@ const DetailPerusahaan: React.FC = () => {
             <nav className="flex gap-4 -mb-px overflow-x-auto">
               <button onClick={() => setTab('profile')} className={`py-2 px-3 ${tab==='profile'? 'border-b-2 border-blue-600 text-blue-600':'text-gray-600'}`}>Profil Perusahaan</button>
               <button onClick={() => setTab('dokumen')} className={`py-2 px-3 ${tab==='dokumen'? 'border-b-2 border-blue-600 text-blue-600':'text-gray-600'}`}>Dokumen</button>
-              <button onClick={() => setTab('hierarki')} className={`py-2 px-3 ${tab==='hierarki'? 'border-b-2 border-blue-600 text-blue-600':'text-gray-600'}`}>Hierarki</button>
+              {/* <button onClick={() => setTab('hierarki')} className={`py-2 px-3 ${tab==='hierarki'? 'border-b-2 border-blue-600 text-blue-600':'text-gray-600'}`}>Hierarki</button> */}
               <button onClick={() => setTab('karyawan')} className={`py-2 px-3 ${tab==='karyawan'? 'border-b-2 border-blue-600 text-blue-600':'text-gray-600'}`}>Data Karyawan</button>
             </nav>
           </div>
@@ -183,11 +216,11 @@ const DetailPerusahaan: React.FC = () => {
                   <div key={b.id} className="p-3 border rounded flex justify-between items-center gap-3 flex-wrap sm:flex-nowrap">
                     <div>
                       <div className="font-semibold">{b.name}</div>
-                      <div className="text-sm text-gray-500">{b.address}</div>
+                      {/* <div className="text-sm text-gray-500">{b.address}</div> */}
                       <div className="text-sm text-gray-500">{b.employeeCount ? `${b.employeeCount} Employees` : '0 Employees'}</div>
                     </div>
                     <div>
-                      <button onClick={() => { setSelectedBranch(b); setDeleteBranchOpen(true); }} className="bg-red-500 text-white rounded px-2 py-1"><TrashBinIcon/></button>
+                      <button onClick={() => { setSelectedBranch(b); setDeleteBranchOpen(true); }} className="bg-red-500 text-white rounded p-2"><TrashBinIcon color='white'/></button>
                     </div>
                   </div>
                 ))}
@@ -206,10 +239,11 @@ const DetailPerusahaan: React.FC = () => {
               </div>
 
               <DocumentsTable
-                items={documents?.length ? documents : dummyDocuments}
+                items={ documents }
                 columns={docColumns as any}
-                onDelete={(d) => { setSelectedDoc(d); setDeleteDocOpen(true); }}
-                onEdit={(d) => { setSelectedDoc(d); setEditDocOpen(true); }}
+                actionsForRow={docActions as any}
+                // onDelete={(d) => { setSelectedDoc(d); setDeleteDocOpen(true); }}
+                // onEdit={(d) => { setSelectedDoc(d); setEditDocOpen(true); }}
               />
             </div>
           )}

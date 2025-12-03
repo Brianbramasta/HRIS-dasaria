@@ -58,7 +58,6 @@ export default function DepartmentsTab({ resetKey }: Props) {
     URL.revokeObjectURL(url);
   };
 
-  React.useEffect(() => { fetchDepartments(); }, [fetchDepartments]);
 
   return (
     <>
@@ -74,7 +73,7 @@ export default function DepartmentsTab({ resetKey }: Props) {
       onSortChange={() => { setSort('name', 'asc'); fetchDepartments(); }}
       onPageChangeExternal={(p) => { setPage(p); fetchDepartments(); }}
       onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); fetchDepartments(); }}
-      onColumnVisibilityChange={() => { fetchDepartments(); }}
+      
       onAdd={() => addModal.openModal()}
       onExport={() => exportCSV('departemen.csv', rows)}
     />

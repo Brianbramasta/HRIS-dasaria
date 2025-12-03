@@ -11,7 +11,7 @@ interface TabProps {
 const Tabs: React.FC<TabProps> = ({ tabs, activeTab, className }) => {
 
   return (
-    <div className={`px-6 flex ${className || 'justify-between'} overflow-x-auto rounded-lg bg-gray-200  p-1 dark:bg-gray-900 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-track]:bg-white dark:[&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-200 dark:[&::-webkit-scrollbar-thumb]:bg-gray-600 mb-0`}>
+    <div className={`px-6 flex ${className || 'justify-between'} overflow-x-auto rounded-lg bg-gray-200  py-[10px] dark:bg-gray-900 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-track]:bg-white dark:[&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-200 dark:[&::-webkit-scrollbar-thumb]:bg-gray-600 mb-0`}>
             {tabs.map((tab) => (
               <Link
                 key={tab.id}

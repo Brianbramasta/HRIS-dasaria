@@ -58,7 +58,6 @@ export default function DirectoratesTab({ resetKey }: Props) {
     URL.revokeObjectURL(url);
   };
 
-  React.useEffect(() => { fetchDirectorates(); }, [fetchDirectorates]);
 
   return (
     <>
@@ -74,7 +73,7 @@ export default function DirectoratesTab({ resetKey }: Props) {
       onSortChange={() => { setSort('name', 'asc'); fetchDirectorates(); }}
       onPageChangeExternal={(p) => { setPage(p); fetchDirectorates(); }}
       onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); fetchDirectorates(); }}
-      onColumnVisibilityChange={() => { fetchDirectorates(); }}
+      
       onAdd={() => addModal.openModal()}
       onExport={() => exportCSV('direktorat.csv', rows)}
     />
