@@ -4,6 +4,7 @@ import type { CompanyListItem } from '../../../types/organization.api.types';
 import { addNotification } from '@/stores/notificationStore';
 import ModalDelete from '../shared/modal/ModalDelete';
 import ModalDeleteContent from '../shared/modal/ModalDeleteContent';
+import { useFileStore } from '@/stores/fileStore';
 
 
 
@@ -16,16 +17,18 @@ interface DeleteCompanyModalProps {
 
 const DeleteCompanyModal: React.FC<DeleteCompanyModalProps> = ({ isOpen, onClose, company, onSuccess }) => {
   const [submitting, setSubmitting] = React.useState(false);
-  const [skFileName, setSkFileName] = React.useState('');
+  const skFile = useFileStore((s) => s.skFile);
+  const [memoNumber, setMemoNumber] = React.useState<string>(company?.memoNumber || '');
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setSkFileName(file?.name || '');
-  };
+  React.useEffect(() => {
+    setMemoNumber(company?.memoNumber || '');
+  }, [company, isOpen]);
+
+  const handleFileChange = (/*_e: React.ChangeEvent<HTMLInputElement>*/) => {};
 
   const handleDelete = async () => {
     if (!company) return;
-    if (!skFileName){
+    if (!skFile?.file){
           addNotification({
             variant: 'error',
             title: 'Company tidak ditambahkan',
@@ -34,9 +37,18 @@ const DeleteCompanyModal: React.FC<DeleteCompanyModalProps> = ({ isOpen, onClose
           });
           return;
         }
+    if (!memoNumber){
+      addNotification({
+        variant: 'error',
+        title: 'Company tidak ditambahkan',
+        description: 'No. Surat Keputusan wajib diisi',
+        hideDuration: 4000,
+      });
+      return;
+    }
     setSubmitting(true);
     try {
-      await companyService.delete(company.id, { memoNumber: company.memoNumber || '', skFileId: skFileName });
+      await companyService.delete(company.id, { memoNumber, skFile: skFile.file as File });
       onSuccess?.();
       onClose();
     } catch (err) {
@@ -53,7 +65,7 @@ const DeleteCompanyModal: React.FC<DeleteCompanyModalProps> = ({ isOpen, onClose
       onClose={onClose}
       handleDelete={handleDelete}
       submitting={submitting}
-      content={<ModalDeleteContent memoNumber={company?.memoNumber || ''} memoNumberReadOnly={true} skFileName={skFileName} onFileChange={handleFileChange} />}
+      content={<ModalDeleteContent memoNumber={memoNumber} onMemoNumberChange={(e) => setMemoNumber(e.target.value)} memoNumberReadOnly={false} skFileName={skFile?.name || ''} onFileChange={handleFileChange} />}
       title="Hapus Data Perusahaan"
     />
   );

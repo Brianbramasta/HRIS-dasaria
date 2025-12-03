@@ -27,7 +27,7 @@ const EditCompanyModal: React.FC<EditCompanyModalProps> = ({ isOpen, onClose, co
   const [skFile, setSkFile] = useState<File | null>(null);
 
   const [submitting, setSubmitting] = useState(false);
-  const { getDropdown } = useBusinessLines();
+  const { getDropdown } = useBusinessLines({ autoFetch: false });
 
   useEffect(() => {
     if (!isOpen) return;

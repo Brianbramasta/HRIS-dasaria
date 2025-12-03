@@ -30,6 +30,7 @@ const ModalDeleteContent: React.FC<Props> = ({
           value={memoNumber}
           onChange={onMemoNumberChange}
           className={inputClass}
+          readonly={memoNumberReadOnly}
         />
       </div>
       <FileInput skFileName={skFileName} onChange={onFileChange} />

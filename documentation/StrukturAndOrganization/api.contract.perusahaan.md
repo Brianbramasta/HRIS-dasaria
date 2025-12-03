@@ -6,8 +6,10 @@ URL: `http://127.0.0.1:8000/api/organizational-structure/companies`
 Method: GET
 Query (opsional):
 - `per_page`
-- `filter[company_name]`
+- `filter[]`
 - `columns`
+- `sort`
+- `search`
 
 ```
 response:

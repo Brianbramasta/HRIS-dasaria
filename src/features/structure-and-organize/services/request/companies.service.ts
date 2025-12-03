@@ -12,27 +12,63 @@ const mapToCompany = (item: any): CompanyListItem => ({
   description: item.company_description ?? item.deskripsi_perusahaan ?? item.description ?? null,
   businessLineId: item.id_bl ?? item.fk_uuid_lini_bisnis ?? item.businessLineId ?? null,
   businessLineName:
-    item.business_line_name ?? item.businessLineName ?? item.lini_bisnis?.nama_lini_bisnis ?? null,
+    item.business_line_name ?? item.businessLineName ?? item.lini_bisnis?.nama_lini_bisnis ?? item.bl_name ?? null,
   memoNumber: item.company_decree_number ?? item.memoNumber ?? null,
   skFile: null,
   logo: item.logo ?? null,
 });
+
+const toSortField = (field?: string): string => {
+  const map: Record<string, string> = {
+    name: 'company_name',
+    'Nama Perusahaan': 'company_name',
+    'Deskripsi Umum': 'company_description',
+    'Lini Bisnis': 'business_line_name',
+  };
+  return map[field || ''] || 'company_name';
+};
+
+const appendFilters = (params: URLSearchParams, filter?: string | string[]) => {
+  if (!filter) return;
+  const values = Array.isArray(filter)
+    ? filter
+    : String(filter)
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+  values.forEach((v) => params.append('filter[]', v));
+};
 
 export const companiesService = {
   getList: async (filter: TableFilter): Promise<PaginatedResponse<CompanyListItem>> => {
     const params = new URLSearchParams();
     if (filter.page) params.append('page', String(filter.page));
     if (filter.pageSize) params.append('per_page', String(filter.pageSize));
-    if (filter.search) params.append('filter[company_name]', filter.search);
+    if (filter.search) params.append('search', filter.search);
+    appendFilters(params, filter.filter);
+    if (filter.sortBy && filter.sortOrder) {
+      params.append('column', toSortField(filter.sortBy));
+      params.append('sort', filter.sortOrder);
+    }
     const qs = params.toString();
     const result = await apiService.get<any>(`/organizational-structure/companies${qs ? `?${qs}` : ''}`);
-    const body = (result as any).data ?? {};
-    const items = Array.isArray(body.data) ? body.data : Array.isArray(body?.data?.data) ? body.data.data : [];
-    const pagination = body.pagination ?? body?.data?.pagination ?? {};
-    const total = pagination.total ?? items.length ?? 0;
-    const page = pagination.current_page ?? filter.page;
-    const perPage = pagination.per_page ?? filter.pageSize;
-    const totalPages = pagination.last_page ?? (perPage ? Math.ceil(total / perPage) : 1);
+    const payload = (result as any);
+    const topData = payload?.data;
+    const items = Array.isArray(topData)
+      ? topData
+      : Array.isArray(topData?.data)
+        ? topData.data
+        : Array.isArray(payload?.data?.data)
+          ? payload.data.data
+          : [];
+    const pagination = payload?.pagination ?? (Array.isArray(topData) ? undefined : topData) ?? {};
+    const total = pagination?.total ?? items.length ?? 0;
+    const page = pagination?.current_page ?? filter.page ?? 1;
+    const perPage = pagination?.per_page ?? filter.pageSize ?? items.length;
+    const totalPages = pagination?.last_page ?? (perPage ? Math.ceil(total / perPage) : 1);
+
+    console.log('data1', items);
+    console.log('mapToCompany1', mapToCompany);
     return {
       data: (items || []).map(mapToCompany),
       total,
@@ -87,33 +123,28 @@ export const companiesService = {
     };
   },
 
-  create: async (payload: {
-    name: string;
-    businessLineId: string;
-    description?: string | null;
-    address?: string | null;
-    employeeCount?: number | null;
-    postalCode?: string | null;
-    email?: string | null;
-    phone?: string | null;
-    industry?: string | null;
-    founded?: string | number | null;
-    type?: string | null;
-    website?: string | null;
-    logoFileId?: string | null;
-    memoNumber: string;
-    skFile?: File | null;
-  }): Promise<CompanyListItem> => {
+  create: async (payload: any): Promise<CompanyListItem> => {
     const formData = new FormData();
     formData.append('company_name', payload.name);
     formData.append('id_bl', payload.businessLineId);
     if (payload.description !== undefined && payload.description !== null) {
       formData.append('company_description', payload.description);
     }
-    formData.append('documents[0][cd_name]', 'Dokumen');
-    formData.append('documents[0][cd_decree_number]', payload.memoNumber);
-    if (payload.skFile) {
-      formData.append('documents[0][cd_file]', payload.skFile);
+    const docs: Array<{ name: string; number: string; file: File }> = Array.isArray(payload.documents)
+      ? payload.documents
+      : [];
+    if (docs.length > 0) {
+      docs.forEach((d, i) => {
+        formData.append(`documents[${i}][cd_name]`, d.name);
+        formData.append(`documents[${i}][cd_decree_number]`, d.number);
+        formData.append(`documents[${i}][cd_file]`, d.file);
+      });
+    } else {
+      if (payload.memoNumber) formData.append('documents[0][cd_decree_number]', payload.memoNumber);
+      formData.append('documents[0][cd_name]', payload.documentName || 'Dokumen');
+      if (payload.skFile) {
+        formData.append('documents[0][cd_file]', payload.skFile);
+      }
     }
     const created = await apiService.post<any>(
       '/organizational-structure/companies',
@@ -168,11 +199,11 @@ export const companiesService = {
     return mapToCompany(comp);
   },
 
-  delete: async (id: string, payload: { memoNumber: string; skFileId: string; }): Promise<{ success: true }> => {
+  delete: async (id: string, payload: { memoNumber: string; skFile: File; }): Promise<{ success: true }> => {
     const formData = new FormData();
     formData.append('_method', 'DELETE');
     if (payload.memoNumber) formData.append('company_delete_decree_number', payload.memoNumber);
-    if (payload.skFileId) formData.append('company_delete_decree_file', payload.skFileId);
+    if (payload.skFile) formData.append('company_delete_decree_file', payload.skFile);
     const resp = await apiService.post<any>(
       `/organizational-structure/companies/${id}`,
       formData,

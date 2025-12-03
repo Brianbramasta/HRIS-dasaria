@@ -51,7 +51,7 @@ interface UseCompaniesReturn {
     memoNumber: string;
     skFileId: string;
   }) => Promise<CompanyListItem | null>;
-  deleteCompany: (id: string, payload: { memoNumber: string; skFileId: string; }) => Promise<boolean>;
+  deleteCompany: (id: string, payload: { memoNumber: string; skFile: File; }) => Promise<boolean>;
   
   // Pagination
   setPage: (page: number) => void;
@@ -92,6 +92,7 @@ export const useCompanies = (): UseCompaniesReturn => {
       setCompanies(response.data);
       setTotal(response.total);
       setTotalPages(response.totalPages);
+      if (response.pageSize && response.pageSize !== pageSize) setPageSize(response.pageSize);
       
       if (filter?.page) setPage(filter.page);
       if (filter?.pageSize) setPageSize(filter.pageSize);
@@ -172,7 +173,7 @@ export const useCompanies = (): UseCompaniesReturn => {
     }
   }, [fetchCompanies]);
 
-  const deleteCompany = useCallback(async (id: string, payload: { memoNumber: string; skFileId: string; }): Promise<boolean> => {
+  const deleteCompany = useCallback(async (id: string, payload: { memoNumber: string; skFile: File; }): Promise<boolean> => {
     setLoading(true);
     setError(null);
     
@@ -189,10 +190,9 @@ export const useCompanies = (): UseCompaniesReturn => {
     }
   }, [fetchCompanies]);
 
-  // Initialize data on mount
   useEffect(() => {
     fetchCompanies();
-  }, [fetchCompanies, filterValue]);
+  }, [search, sortBy, sortOrder, page, pageSize, filterValue]);
 
   return {
     companies,
@@ -214,7 +214,6 @@ export const useCompanies = (): UseCompaniesReturn => {
     setSort: (newSortBy: string, newSortOrder: 'asc' | 'desc') => {
       setSortBy(newSortBy);
       setSortOrder(newSortOrder);
-      fetchCompanies({ sortBy: newSortBy, sortOrder: newSortOrder });
     },
   };
 };

@@ -28,11 +28,37 @@ const mapToBusinessLine = (item: any): BusinessLineListItem => ({
   skFile: toFileSummary(item.bl_decree_file_url ?? item.bl_decree_file ?? null),
 });
 
+const toSortField = (field?: string): string => {
+  const map: Record<string, string> = {
+    name: 'bl_name',
+    'Lini Bisnis': 'bl_name',
+    'Deskripsi Umum': 'bl_description',
+  };
+  return map[field || ''] || 'bl_name';
+};
+
+const appendFilters = (params: URLSearchParams, filter?: string | string[]) => {
+  if (!filter) return;
+  const values = Array.isArray(filter)
+    ? filter
+    : String(filter)
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+  values.forEach((v) => params.append('filter[]', v));
+};
+
 export const businessLinesService = {
   getList: async (filter: TableFilter): Promise<PaginatedResponse<BusinessLineListItem>> => {
     const params = new URLSearchParams();
     if (filter.page) params.append('page', String(filter.page));
     if (filter.pageSize) params.append('per_page', String(filter.pageSize));
+    if (filter.search) params.append('search', filter.search);
+    appendFilters(params, filter.filter);
+    if (filter.sortBy && filter.sortOrder) {
+      params.append('column', toSortField(filter.sortBy));
+      params.append('sort', filter.sortOrder);
+    }
     const qs = params.toString();
     const result = await apiService.get<any>(`/organizational-structure/business-lines${qs ? `?${qs}` : ''}`);
     const payload = (result as any);
@@ -41,6 +67,7 @@ export const businessLinesService = {
     const page = payload?.data?.current_page ?? filter.page;
     const perPage = payload?.data?.per_page ?? filter.pageSize;
     const totalPages = perPage ? Math.ceil(total / perPage) : 1;
+    console.log('Business lines list:', { total, page, pageSize: perPage, totalPages });
     return {
       data: (items || []).map(mapToBusinessLine),
       total,

@@ -18,6 +18,7 @@ export interface DataTableColumn<T = any> {
   format?: (value: any, row: T) => React.ReactNode;
   sortable?: boolean;
   filterable?: boolean;
+  isAction?: boolean;
 }
 
 export interface DataTableAction<T = any> {
@@ -34,6 +35,7 @@ interface DataTableProps<T = any> {
   data: T[];
   columns: DataTableColumn<T>[];
   actions?: DataTableAction<T>[];
+  secondaryActions?: DataTableAction<T>[];
   title?: string;
   searchable?: boolean;
   searchPlaceholder?: string;
@@ -58,17 +60,22 @@ interface DataTableProps<T = any> {
   resetKey?: string;
   onFilter?: (filter: string) => void;
   toolbarRightSlot?: React.ReactNode;
+  // External pagination support (server-side)
+  useExternalPagination?: boolean;
+  externalPage?: number;
+  externalTotal?: number;
 }
 
 export function DataTable<T = any>({
   data,
   columns,
   actions,
+  secondaryActions,
   title,
   // searchable = true,
   searchPlaceholder = 'Cari berdasarkan kata kunci',
   pageSize = 10,
-  pageSizeOptions = [5, 10, 25, 50],
+  pageSizeOptions = [2, 5, 10, 25, 50],
   onAdd,
   addButtonLabel,
   addButtonIcon,
@@ -85,6 +92,9 @@ export function DataTable<T = any>({
   onColumnVisibilityChange,
   resetKey,
   toolbarRightSlot,
+  useExternalPagination = false,
+  externalPage,
+  externalTotal,
 }: DataTableProps<T>) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(pageSize);
@@ -94,10 +104,16 @@ export function DataTable<T = any>({
   const [isFilterModalOpen, setFilterModalOpen] = useState(false);
   const [isExportModalOpen, setExportModalOpen] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState<string[]>(() =>
-    columns.map((c) => c.id)
+    columns.filter((c) => !c.isAction).map((c) => c.id)
   );
   const [exportVisibleColumns, setExportVisibleColumns] = useState<string[]>(() =>
-    columns.map((c) => c.id)
+    columns.filter((c) => c.id !== 'no' && !c.isAction).map((c) => c.id)
+  );
+  const [tempVisibleColumns, setTempVisibleColumns] = useState<string[]>(() =>
+    columns.filter((c) => !c.isAction).map((c) => c.id)
+  );
+  const [tempExportVisibleColumns, setTempExportVisibleColumns] = useState<string[]>(() =>
+    columns.filter((c) => c.id !== 'no' && !c.isAction).map((c) => c.id)
   );
   const [exportSearchTerm, /*setExportSearchTerm*/] = useState('');
   const [modalFilterTerm, setModalFilterTerm] = useState('');
@@ -106,11 +122,40 @@ export function DataTable<T = any>({
 
   // Reset visible columns when resetKey changes (e.g., on tab switch)
   useEffect(() => {
-    setVisibleColumns(columns.map((c) => c.id));
+    setVisibleColumns(columns.filter((c) => !c.isAction).map((c) => c.id));
   }, [resetKey, columns]);
   useEffect(() => {
-    setExportVisibleColumns(columns.map((c) => c.id));
+    setExportVisibleColumns(columns.filter((c) => c.id !== 'no' && !c.isAction).map((c) => c.id));
   }, [resetKey, columns]);
+
+  useEffect(() => {
+    if (isFilterModalOpen) {
+      setTempVisibleColumns(visibleColumns);
+      const key = title ?? 'global';
+      const existing = getFilterFor(key);
+      const items = existing ? existing.split(',').map((v) => v.trim()).filter((v) => v.length > 0) : [];
+      setModalFilterItems(items);
+    }
+  }, [isFilterModalOpen]);
+
+  useEffect(() => {
+    if (isExportModalOpen) {
+      setTempExportVisibleColumns(exportVisibleColumns);
+    }
+  }, [isExportModalOpen]);
+
+  // Keep internal page in sync with external page when using server-side pagination
+  useEffect(() => {
+    if (useExternalPagination && typeof externalPage === 'number') {
+      setPage(Math.max(0, externalPage - 1));
+    }
+  }, [useExternalPagination, externalPage]);
+
+  useEffect(() => {
+    if (useExternalPagination) {
+      setRowsPerPage(pageSize);
+    }
+  }, [useExternalPagination, pageSize]);
 
   useEffect(() => {
     const key = title ?? 'global';
@@ -160,13 +205,15 @@ export function DataTable<T = any>({
   }, [filteredData, orderBy, order]);
 
   const paginatedData = useMemo(() => {
+    if (useExternalPagination) {
+      return sortedData;
+    }
     const startIndex = page * rowsPerPage;
     return sortedData.slice(startIndex, startIndex + rowsPerPage);
-  }, [sortedData, page, rowsPerPage]);
+  }, [sortedData, page, rowsPerPage, useExternalPagination]);
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage - 1);
-    // Notify parent for refetch on page changes
     onPageChangeExternal?.(newPage);
   };
 
@@ -178,7 +225,10 @@ export function DataTable<T = any>({
   };
 
   const handleColumnVisibilityChange = (columnId: string) => {
-    setVisibleColumns((prev) =>
+    if (columnId === 'no') return;
+    const col = columns.find((c) => c.id === columnId);
+    if (col?.isAction) return;
+    setTempVisibleColumns((prev) =>
       prev.includes(columnId)
         ? prev.filter((id) => id !== columnId)
         : [...prev, columnId]
@@ -192,8 +242,9 @@ export function DataTable<T = any>({
   // };
   
   const handleSelectAllColumns = (checked: boolean) => {
-    setVisibleColumns(checked ? columns.map((c) => c.id) : []);
-    onColumnVisibilityChange?.(checked ? columns.map((c) => c.id) : []);
+    const nonNoIds = columns.filter((c) => c.id !== 'no' && !c.isAction).map((c) => c.id);
+    const next = checked ? [...nonNoIds, 'no'] : ['no'];
+    setTempVisibleColumns(next);
   };
 
   const getSortIcon = (columnId: string) => {
@@ -202,7 +253,7 @@ export function DataTable<T = any>({
   };
   
   const displayColumns = useMemo(() => {
-    return columns.filter((c) => visibleColumns.includes(c.id));
+    return columns.filter((c) => c.isAction || visibleColumns.includes(c.id));
   }, [columns, visibleColumns]);
 
   return (
@@ -283,16 +334,19 @@ export function DataTable<T = any>({
               {actions && actions.length > 0 && (
                 <TableCell className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">Aksi</TableCell>
               )}
+              {secondaryActions && secondaryActions.length > 0 && (
+                <TableCell className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">Aksi</TableCell>
+              )}
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={displayColumns.length + (actions ? 1 : 0)} className="px-6 py-8 text-center text-gray-500">Loading...</TableCell>
+                <TableCell colSpan={displayColumns.length + (actions ? 1 : 0) + (secondaryActions ? 1 : 0)} className="px-6 py-8 text-center text-gray-500">Loading...</TableCell>
               </TableRow>
             ) : paginatedData.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={displayColumns.length + (actions ? 1 : 0)} className="px-6 py-8 text-center text-gray-500">{emptyMessage}</TableCell>
+                <TableCell colSpan={displayColumns.length + (actions ? 1 : 0) + (secondaryActions ? 1 : 0)} className="px-6 py-8 text-center text-gray-500">{emptyMessage}</TableCell>
               </TableRow>
             ) : (
               paginatedData.map((row, index) => (
@@ -304,13 +358,47 @@ export function DataTable<T = any>({
                         column.align === 'center' ? 'text-center' : column.align === 'right' ? 'text-right' : 'text-left'
                       }`}
                     >
-                      {column.format ? column.format(row[column.id as keyof T], row) : (row[column.id as keyof T] as React.ReactNode)}
+                      {column.id === 'no'
+                        ? (page * rowsPerPage + index + 1)
+                        : column.format
+                          ? column.format(row[column.id as keyof T], row)
+                          : (row[column.id as keyof T] as React.ReactNode)}
                     </TableCell>
                   ))}
                   {actions && actions.length > 0 && (
                     <TableCell className="px-6 py-4 text-center">
                       <div className="flex items-center justify-center gap-2">
                         {actions
+                          .filter((action) => !action.condition || action.condition(row))
+                          .map((action, actionIndex) =>
+                            action.label ? (
+                              <Button
+                                className={action.className}
+                                key={actionIndex}
+                                onClick={() => action.onClick(row)}
+                                variant={action.variant as 'primary' | 'outline' || 'outline'}
+                                size="sm"
+                              >
+                                {action.icon && <span className="mr-1">{action.icon}</span>}
+                                {action.label}
+                              </Button>
+                            ) : (
+                              <button
+                                key={actionIndex}
+                                onClick={() => action.onClick(row)}
+                                className={`p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 ${action.className}`}
+                              >
+                                {action.icon}
+                              </button>
+                            )
+                          )}
+                      </div>
+                    </TableCell>
+                  )}
+                  {secondaryActions && secondaryActions.length > 0 && (
+                    <TableCell className="px-6 py-4 text-center">
+                      <div className="flex items-center justify-center gap-2">
+                        {secondaryActions
                           .filter((action) => !action.condition || action.condition(row))
                           .map((action, actionIndex) =>
                             action.label ? (
@@ -358,11 +446,17 @@ export function DataTable<T = any>({
               </option>
             ))}
           </select>
-          <span>1 - {Math.min((page + 1) * rowsPerPage, sortedData.length)} of {sortedData.length}</span>
+          <span>
+            {useExternalPagination
+              ? `1 - ${Math.min((page + 1) * rowsPerPage, externalTotal ?? sortedData.length)} of ${externalTotal ?? sortedData.length}`
+              : `1 - ${Math.min((page + 1) * rowsPerPage, sortedData.length)} of ${sortedData.length}`}
+          </span>
         </div>
         <PaginationWithIcon
           initialPage={page + 1}
-          totalPages={Math.ceil(sortedData.length / rowsPerPage) || 1}
+          totalPages={useExternalPagination
+            ? (Math.ceil(((externalTotal ?? sortedData.length) || 0) / rowsPerPage) || 1)
+            : (Math.ceil(sortedData.length / rowsPerPage) || 1)}
           onPageChange={handlePageChange}
           // showInfo={true}
           // infoText={`${sortedData.length === 0 ? 0 : page * rowsPerPage + 1}-${Math.min((page + 1) * rowsPerPage, sortedData.length)} of ${sortedData.length}`}
@@ -379,16 +473,16 @@ export function DataTable<T = any>({
               <h4 className="font-semibold">Kolom</h4>
               <Checkbox
                 label="Select All"
-                checked={visibleColumns.length === columns.length}
+                checked={tempVisibleColumns.filter((id) => id !== 'no').length === columns.filter((c) => c.id !== 'no' && !c.isAction).length}
                 onChange={(checked) => handleSelectAllColumns(checked)}
               />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 overflow-x-auto max-h-[200px]">
-              {columns.map((col) => (
+              {columns.filter((c) => c.id !== 'no' && !c.isAction).map((col) => (
                 <div key={col.id} className='border border-gray-300 rounded-md p-2'>
                   <Checkbox
                     label={col.label}
-                    checked={visibleColumns.includes(col.id)}
+                    checked={tempVisibleColumns.includes(col.id)}
                     onChange={() => handleColumnVisibilityChange(col.id)}
                   />
                 </div>
@@ -449,6 +543,8 @@ export function DataTable<T = any>({
                 const terms = modalFilterItems.length > 0 ? modalFilterItems : (modalFilterTerm.trim() ? [modalFilterTerm.trim()] : []);
                 const value = terms.join(',');
                 setFilterFor(key, value);
+                setVisibleColumns(tempVisibleColumns);
+                onColumnVisibilityChange?.(tempVisibleColumns);
                 setFilterModalOpen(false);
                 setModalFilterTerm('');
               }}
@@ -470,18 +566,18 @@ export function DataTable<T = any>({
               <h4 className="font-semibold">Kolom</h4>
               <Checkbox
                 label="Select All"
-                checked={exportVisibleColumns.length === columns.length}
-                onChange={(checked) => setExportVisibleColumns(checked ? columns.map((c) => c.id) : [])}
+                checked={tempExportVisibleColumns.length === columns.filter((c) => c.id !== 'no' && !c.isAction).length}
+                onChange={(checked) => setTempExportVisibleColumns(checked ? columns.filter((c) => c.id !== 'no' && !c.isAction).map((c) => c.id) : [])}
               />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 overflow-x-auto max-h-[200px]">
-              {columns.map((col) => (
+              {columns.filter((c) => c.id !== 'no' && !c.isAction).map((col) => (
                 <div key={col.id} className='border border-gray-300 rounded-md p-2'>
                   <Checkbox
                     label={col.label}
-                    checked={exportVisibleColumns.includes(col.id)}
+                    checked={tempExportVisibleColumns.includes(col.id)}
                     onChange={() =>
-                      setExportVisibleColumns((prev) =>
+                      setTempExportVisibleColumns((prev) =>
                         prev.includes(col.id)
                           ? prev.filter((id) => id !== col.id)
                           : [...prev, col.id]
@@ -514,7 +610,7 @@ export function DataTable<T = any>({
             <Button
               variant="primary"
               onClick={() => {
-                const selectedColumns = columns.filter((c) => exportVisibleColumns.includes(c.id));
+                const selectedColumns = columns.filter((c) => tempExportVisibleColumns.includes(c.id));
                 // const hasNo = selectedColumns.some((c) => c.id === 'no' || c.label.toLowerCase() === 'no.' || c.label.toLowerCase() === 'no');
                 const selectedWithoutNo = selectedColumns.filter((c) => c.id !== 'no');
 
@@ -538,13 +634,15 @@ export function DataTable<T = any>({
                   return record;
                 });
 
+                setExportVisibleColumns(tempExportVisibleColumns);
                 navigate('/export', {
                   state: {
                     title: title || 'Struktur Organisasi',
-                    columns: ['No.', ...selectedWithoutNo.map((c) => c.label)],
+                    columns: ['No.', ...selectedColumns.map((c) => c.label)],
                     rows: exportRows,
                   },
                 });
+                setExportModalOpen(false);
               }}
             >
               Confirm

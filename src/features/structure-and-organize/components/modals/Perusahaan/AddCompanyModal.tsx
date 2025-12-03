@@ -30,7 +30,7 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
   ]);
 
   const [submitting, setSubmitting] = useState(false);
-  const { getDropdown } = useBusinessLines();
+  const { getDropdown } = useBusinessLines({ autoFetch: false });
 
   React.useEffect(() => {
     if (!isOpen) return;
@@ -80,15 +80,16 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
     }
     setSubmitting(true);
     try {
-      const memoNumber = documents[0].number.trim();
-      const skFile = documents[0].file || null;
+      const validDocs = documents
+        .filter((d) => d.file && d.name.trim())
+        .map((d) => ({ name: d.name.trim(), number: d.number.trim(), file: d.file as File }));
+
       const created = await companyService.create({
         name: name.trim(),
-        description: description.trim(),
         businessLineId: businessLineId || '',
-        memoNumber,
-        skFile,
-      });
+        description: description.trim(),
+        documents: validDocs,
+      } as any);
       onSuccess?.(created);
       // reset and close
       setName('');

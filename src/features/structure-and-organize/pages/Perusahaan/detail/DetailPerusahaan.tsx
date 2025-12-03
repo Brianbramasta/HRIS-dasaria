@@ -60,16 +60,16 @@ const DetailPerusahaan: React.FC = () => {
 
   
   // const elementCardKiri = () => {
-    const alamatValue = company?.address || '—';
-    const companySizeValue = (company?.employeeCount || company?.employees || '')
-      ? `${company?.employeeCount || company?.employees} Employes`
-      : '—';
+  const alamatValue = company?.address || '—';
+  const companySizeValue = (company?.employeeCount || company?.employees || '')
+    ? `${company?.employeeCount || company?.employees} Employes`
+    : '—';
 
-    const contactInformation = [
-      { label: 'Kode Pos', value: company?.postalCode || company?.postal || '—' },
-      { label: 'Gmail', value: company?.email || '—' },
-      { label: 'Phone', value: company?.phone || '—' },
-    ];
+  const contactInformation = [
+    { label: 'Kode Pos', value: company?.postalCode || company?.postal || '—' },
+    { label: 'Gmail', value: company?.email || '—' },
+    { label: 'Phone', value: company?.phone || '—' },
+  ];
 
   const customInformation = [
       { label: 'Industry', value: company?.industry || company?.businessLineName || '—' },
@@ -212,7 +212,8 @@ const DetailPerusahaan: React.FC = () => {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {branches.map((b) => (
+                {
+                  branches?.length ? branches.map((b) => (
                   <div key={b.id} className="p-3 border rounded flex justify-between items-center gap-3 flex-wrap sm:flex-nowrap">
                     <div>
                       <div className="font-semibold">{b.name}</div>
@@ -223,7 +224,7 @@ const DetailPerusahaan: React.FC = () => {
                       <button onClick={() => { setSelectedBranch(b); setDeleteBranchOpen(true); }} className="bg-red-500 text-white rounded p-2"><TrashBinIcon color='white'/></button>
                     </div>
                   </div>
-                ))}
+                )): <div className="text-center text-gray-500">Belum ada branch</div>}
               </div>
             </div>
           )}
@@ -239,7 +240,7 @@ const DetailPerusahaan: React.FC = () => {
               </div>
 
               <DocumentsTable
-                items={ documents }
+                items={ documents || [] }
                 columns={docColumns as any}
                 actionsForRow={docActions as any}
                 // onDelete={(d) => { setSelectedDoc(d); setDeleteDocOpen(true); }}

@@ -109,7 +109,7 @@ export interface TableColumn<T> {
 
 export interface TableFilter {
   search: string;
-  filter?: string;
+  filter?: string | string[];
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
   page: number;

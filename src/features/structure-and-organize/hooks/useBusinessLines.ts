@@ -34,7 +34,7 @@ interface UseBusinessLinesReturn {
   setSort: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
 }
 
-export const useBusinessLines = (): UseBusinessLinesReturn => {
+export const useBusinessLines = (options?: { autoFetch?: boolean }): UseBusinessLinesReturn => {
   const [businessLines, setBusinessLines] = useState<BusinessLineListItem[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -169,9 +169,12 @@ export const useBusinessLines = (): UseBusinessLinesReturn => {
     }
   }, []);
 
+  const autoFetch = options?.autoFetch ?? true;
   useEffect(() => {
-    fetchBusinessLines();
-  }, [search, sortBy, sortOrder, page, pageSize, filterValue]);
+    if (autoFetch) {
+      fetchBusinessLines();
+    }
+  }, [search, sortBy, sortOrder, page, pageSize, filterValue, autoFetch]);
 
   return {
     businessLines,

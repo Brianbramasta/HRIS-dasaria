@@ -4,6 +4,12 @@
 
 URL: `http://127.0.0.1:8000/api/organizational-structure/business-lines`
 Method: GET
+Query (opsional):
+- `per_page`
+- `filter[]`
+- `columns`
+- `sort`
+- `search`
 
 ```
 response:

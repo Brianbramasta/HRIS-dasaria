@@ -25,7 +25,7 @@ const businessLineColumns: DataTableColumn<BLRow>[] = [
   { id: 'no', label: 'No', sortable: false },
   { id: 'Lini Bisnis', label: 'Lini Bisnis', sortable: true },
   { id: 'Deskripsi Umum', label: 'Deskripsi Umum', sortable: true },
-  { id: 'File SK dan Memo', label: 'Detail', sortable: true, format: (_val, row) => (
+  { id: 'File SK dan Memo', label: 'Detail', sortable: false, isAction: true, format: (_val, row) => (
     <Link to={`/structure-and-organize/business-lines/${(row as any).id ?? (row as any).no}`} className="text-center text-brand-600 hover:underline">
       <FileText size={16} />
     </Link>
@@ -42,6 +42,10 @@ export default function BusinessLinesTab({ resetKey }: Props) {
   const {
     businessLines,
     fetchBusinessLines,
+    loading,
+    total,
+    page,
+    pageSize,
     setSearch,
     setPage,
     setPageSize,
@@ -83,6 +87,11 @@ export default function BusinessLinesTab({ resetKey }: Props) {
         title="Lini Bisnis"
         data={rows}
         columns={businessLineColumns}
+        loading={loading}
+        pageSize={pageSize}
+        useExternalPagination
+        externalPage={page}
+        externalTotal={total}
         actions={[
           {
             label: '',
@@ -115,11 +124,11 @@ export default function BusinessLinesTab({ resetKey }: Props) {
         filterable
         resetKey={resetKey}
         onSearchChange={(val) => { setSearch(val); }}
-        onSortChange={() => { setSort('name', 'asc'); }}
+        onSortChange={(columnId, order) => { setSort(columnId, order); }}
         onPageChangeExternal={(p) => { setPage(p); }}
         onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); }}
         onColumnVisibilityChange={() => {}}
-      
+
         onAdd={() => setIsAddOpen(true)}
         onExport={() => exportCSV('lini-bisnis.csv', rows)}
       />

@@ -19,7 +19,7 @@ const companyColumns: DataTableColumn<CompanyRow>[] = [
   { id: 'Nama Perusahaan', label: 'Nama Perusahaan', sortable: true },
   { id: 'Deskripsi Umum', label: 'Deskripsi Umum', sortable: true },
   { id: 'Lini Bisnis', label: 'Lini Bisnis', sortable: true },
-  { id: 'Detail', label: 'Detail', sortable: true, format: (_val, row) => (
+  { id: 'Detail', label: 'Detail', sortable: false, isAction: true, format: (_val, row) => (
     <Link to={`/structure-and-organize/companies/${(row as any).id ?? (row as any).no}`} className="text-brand-600 hover:underline">
       <FileText size={16} />
     </Link>
@@ -27,7 +27,7 @@ const companyColumns: DataTableColumn<CompanyRow>[] = [
 ];
 
 export default function CompaniesTab({ resetKey }: Props) {
-  const { companies, fetchCompanies, setSearch, setPage, setPageSize, setSort } = useCompanies();
+  const { companies, fetchCompanies, setSearch, setPage, setPageSize, setSort, page, pageSize, total, loading } = useCompanies();
 
   const [isAddOpen, setAddOpen] = React.useState(false);
   const [isEditOpen, setEditOpen] = React.useState(false);
@@ -81,13 +81,18 @@ export default function CompaniesTab({ resetKey }: Props) {
       data={rows}
       columns={companyColumns}
       actions={actionsIconOnly}
+      loading={loading}
+      pageSize={pageSize}
+      useExternalPagination
+      externalPage={page}
+      externalTotal={total}
       searchable
       filterable
       resetKey={resetKey}
-      onSearchChange={(val) => { setSearch(val); fetchCompanies(); }}
-      onSortChange={() => { setSort('name', 'asc'); fetchCompanies(); }}
-      onPageChangeExternal={(p) => { setPage(p); fetchCompanies(); }}
-      onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); fetchCompanies(); }}
+      onSearchChange={(val) => { setSearch(val); }}
+      onSortChange={(columnId, order) => { setSort(columnId, order); }}
+      onPageChangeExternal={(p) => { setPage(p); }}
+      onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); }}
       
       onAdd={() => setAddOpen(true)}
       onExport={() => exportCSV('perusahaan.csv', rows)}
