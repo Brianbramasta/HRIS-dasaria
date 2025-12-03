@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import  { useMemo, useState } from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '../../components/datatable/DataTable';
 // import { Edit, Trash } from 'react-feather';
 import { IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
