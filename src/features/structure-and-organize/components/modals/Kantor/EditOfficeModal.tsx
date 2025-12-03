@@ -42,7 +42,7 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
     if (!isOpen) return;
     (async () => {
       try {
-        const res = await companiesService.getList({ search: '', page: 1, pageSize: 100, sortBy: 'name', sortOrder: 'asc' });
+        const res = await companiesService.getList({ search: '', page: 1, pageSize: 20, sortBy: 'name', sortOrder: 'asc' });
         setCompanyOptions(res.data.map((c) => ({ value: c.id, text: c.name })));
       } catch (e) {
         console.error('Failed to fetch companies', e);
@@ -73,7 +73,7 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
         name: name.trim(),
         description: description.trim() || null,
         memoNumber: memoNumber.trim(),
-        skFileId: skFile?.path || skFile?.name,
+        skFile: skFile?.file || null,
       });
       onSuccess?.(updated);
       onClose();
@@ -107,6 +107,14 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
           options={companyOptions}
           defaultSelected={companyIds}
           onChange={setCompanyIds}
+          onSearch={async (q) => {
+            try {
+              const res = await companiesService.getList({ search: q, page: 1, pageSize: 20, sortBy: 'name', sortOrder: 'asc' });
+              setCompanyOptions(res.data.map((c) => ({ value: c.id, text: c.name })));
+            } catch (e) {
+              console.error('Failed to search companies', e);
+            }
+          }}
         />
 
         <div className="space-y-2">

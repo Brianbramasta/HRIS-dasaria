@@ -14,9 +14,9 @@ interface UseDirectoratesReturn {
   
   // Actions
   fetchDirectorates: (filter?: TableFilter) => Promise<void>;
-  createDirectorate: (payload: { name: string; description?: string | null; memoNumber: string; skFileId: string; }) => Promise<void>;
-  updateDirectorate: (id: string, payload: { name?: string; description?: string | null; memoNumber: string; skFileId: string; }) => Promise<void>;
-  deleteDirectorate: (id: string, payload: { memoNumber: string; skFileId: string; }) => Promise<void>;
+  createDirectorate: (payload: { name: string; description?: string | null; memoNumber: string; skFile?: File | null; }) => Promise<void>;
+  updateDirectorate: (id: string, payload: { name?: string; description?: string | null; memoNumber: string; skFile?: File | null; }) => Promise<void>;
+  deleteDirectorate: (id: string, payload: { memoNumber: string; skFile: File; }) => Promise<void>;
   setPage: (page: number) => void;
   setPageSize: (pageSize: number) => void;
   setSearch: (search: string) => void;
@@ -60,7 +60,7 @@ export const useDirectorates = (): UseDirectoratesReturn => {
     }
   }, [page, pageSize, search, sortBy, sortOrder, filterValue]);
 
-  const createDirectorate = useCallback(async (directorateData: { name: string; description?: string | null; memoNumber: string; skFileId: string; }) => {
+  const createDirectorate = useCallback(async (directorateData: { name: string; description?: string | null; memoNumber: string; skFile?: File | null; }) => {
     setLoading(true);
     setError(null);
     
@@ -76,7 +76,7 @@ export const useDirectorates = (): UseDirectoratesReturn => {
     }
   }, [fetchDirectorates]);
 
-  const updateDirectorate = useCallback(async (id: string, directorateData: { name?: string; description?: string | null; memoNumber: string; skFileId: string; }) => {
+  const updateDirectorate = useCallback(async (id: string, directorateData: { name?: string; description?: string | null; memoNumber: string; skFile?: File | null; }) => {
     setLoading(true);
     setError(null);
     
@@ -93,7 +93,7 @@ export const useDirectorates = (): UseDirectoratesReturn => {
     }
   }, []);
 
-  const deleteDirectorate = useCallback(async (id: string, payload: { memoNumber: string; skFileId: string; }) => {
+  const deleteDirectorate = useCallback(async (id: string, payload: { memoNumber: string; skFile: File; }) => {
     setLoading(true);
     setError(null);
     

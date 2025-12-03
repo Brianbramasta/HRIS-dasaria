@@ -1,5 +1,5 @@
 import type React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Option {
   value: string;
@@ -12,6 +12,7 @@ interface MultiSelectProps {
   defaultSelected?: string[];
   onChange?: (selected: string[]) => void;
   disabled?: boolean;
+  onSearch?: (query: string) => void;
 }
 
 const MultiSelect: React.FC<MultiSelectProps> = ({
@@ -20,10 +21,16 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   defaultSelected = [],
   onChange,
   disabled = false,
+  onSearch,
 }) => {
   const [selectedOptions, setSelectedOptions] =
     useState<string[]>(defaultSelected);
   const [isOpen, setIsOpen] = useState(false);
+  const [query, setQuery] = useState("");
+
+  useEffect(() => {
+    setSelectedOptions(defaultSelected);
+  }, [defaultSelected]);
 
   const toggleDropdown = () => {
     if (!disabled) setIsOpen((prev) => !prev);
@@ -47,6 +54,21 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   const selectedValuesText = selectedOptions.map(
     (value) => options.find((option) => option.value === value)?.text || ""
   );
+
+  const filteredOptions = onSearch
+    ? options
+    : query
+    ? options.filter(
+        (o) =>
+          o.text.toLowerCase().includes(query.toLowerCase()) ||
+          o.value.toLowerCase().includes(query.toLowerCase())
+      )
+    : options;
+
+  const commitSearch = (value: string) => {
+    setQuery(value);
+    if (onSearch) onSearch(value);
+  };
 
   return (
     <div className="w-full">
@@ -133,8 +155,17 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
               className="absolute left-0 z-40 w-full overflow-y-auto bg-white rounded-lg shadow-sm top-full max-h-select dark:bg-gray-900"
               onClick={(e) => e.stopPropagation()}
             >
+              <div className="p-2 border-b border-gray-200 dark:border-gray-800">
+                <input
+                  type="text"
+                  value={query}
+                  onChange={(e) => commitSearch(e.target.value)}
+                  className="h-9 w-full rounded-md border border-gray-300 bg-transparent px-3 text-sm focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"
+                  placeholder="Cari..."
+                />
+              </div>
               <div className="flex flex-col">
-                {options.map((option, index) => (
+                {filteredOptions.map((option, index) => (
                   <div
                     key={index}
                     className={`hover:bg-primary/5 w-full cursor-pointer rounded-t border-b border-gray-200 dark:border-gray-800`}
@@ -153,6 +184,9 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
                     </div>
                   </div>
                 ))}
+                {filteredOptions.length === 0 && (
+                  <div className="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">Tidak ada hasil</div>
+                )}
               </div>
             </div>
           )}

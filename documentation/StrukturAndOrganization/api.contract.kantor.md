@@ -32,7 +32,7 @@ response:
 
 ## Get Detail Kantor by ID
 
-URL: `http://127.0.0.1:8000/api/organizational-structure/offices/{id_office}/detail`
+URL: `http://127.0.0.1:8000/api/organizational-structure/offices/{id_office}`
 Method: GET
 
 ```
@@ -73,3 +73,15 @@ response:
   }
 }
 ```
+
+## List Kantor
+
+URL: `http://127.0.0.1:8000/api/organizational-structure/offices`
+Method: GET
+Query params (optional):
+- `search`
+- `sort`
+- `column`
+- `per_page`
+- `page`
+- `filter[]` (multiple)

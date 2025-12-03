@@ -14,9 +14,9 @@ interface UseOfficesReturn {
   
   // Actions
   fetchOffices: (filter?: TableFilter) => Promise<void>;
-  createOffice: (payload: { companyId: string; name: string; address?: string | null; description?: string | null; employeeCount?: number | null; memoNumber: string; skFileId: string; }) => Promise<void>;
-  updateOffice: (id: string, payload: { companyId?: string; name?: string; address?: string | null; description?: string | null; employeeCount?: number | null; memoNumber: string; skFileId: string; }) => Promise<void>;
-  deleteOffice: (id: string, payload: { memoNumber: string; skFileId: string; }) => Promise<void>;
+  createOffice: (payload: { companyId: string; name: string; description?: string | null; memoNumber: string; skFile?: File | null; }) => Promise<void>;
+  updateOffice: (id: string, payload: { companyId?: string; name?: string; description?: string | null; memoNumber: string; skFile?: File | null; }) => Promise<void>;
+  deleteOffice: (id: string, payload: { memoNumber: string; skFile: File; }) => Promise<void>;
   setPage: (page: number) => void;
   setPageSize: (pageSize: number) => void;
   setSearch: (search: string) => void;
@@ -60,7 +60,7 @@ export const useOffices = (): UseOfficesReturn => {
     }
   }, [page, pageSize, search, sortBy, sortOrder, filterValue]);
 
-  const createOffice = useCallback(async (officeData: { companyId: string; name: string; address?: string | null; description?: string | null; employeeCount?: number | null; memoNumber: string; skFileId: string; }) => {
+  const createOffice = useCallback(async (officeData: { companyId: string; name: string; description?: string | null; memoNumber: string; skFile?: File | null; }) => {
     setLoading(true);
     setError(null);
     
@@ -76,7 +76,7 @@ export const useOffices = (): UseOfficesReturn => {
     }
   }, [fetchOffices]);
 
-  const updateOffice = useCallback(async (id: string, officeData: { companyId?: string; name?: string; address?: string | null; description?: string | null; employeeCount?: number | null; memoNumber: string; skFileId: string; }) => {
+  const updateOffice = useCallback(async (id: string, officeData: { companyId?: string; name?: string; description?: string | null; memoNumber: string; skFile?: File | null; }) => {
     setLoading(true);
     setError(null);
     
@@ -93,7 +93,7 @@ export const useOffices = (): UseOfficesReturn => {
     }
   }, []);
 
-  const deleteOffice = useCallback(async (id: string, payload: { memoNumber: string; skFileId: string; }) => {
+  const deleteOffice = useCallback(async (id: string, payload: { memoNumber: string; skFile: File; }) => {
     setLoading(true);
     setError(null);
     
