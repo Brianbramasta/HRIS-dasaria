@@ -18,7 +18,7 @@ const directorateColumns: DataTableColumn<DirectorateRow>[] = [
   { id: 'no', label: 'No', sortable: false },
   { id: 'Nama Direktorat', label: 'Nama Direktorat', sortable: true },
   { id: 'Deskripsi Umum', label: 'Deskripsi Umum', sortable: true },
-  { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: true, format: () => <FileText size={16} /> },
+  { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: false, isAction: true, format: () => <FileText size={16} /> },
 ];
 
 export default function DirectoratesTab({ resetKey }: Props) {

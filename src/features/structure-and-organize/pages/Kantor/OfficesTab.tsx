@@ -17,7 +17,7 @@ const officeColumns: DataTableColumn<OfficeRow>[] = [
   { id: 'no', label: 'No', sortable: false },
   { id: 'Office', label: 'Kantor', sortable: true },
   { id: 'Deskripsi Umum', label: 'Deskripsi Umum', sortable: true },
-  { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: true, format: () => (<div className='w-full flex justify-center items-center'><FileText size={16} /></div>) },
+  { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: false, isAction: true, format: () => (<div className='w-full flex justify-center items-center'><FileText size={16} /></div>) },
 ];
 
 export default function OfficesTab({ resetKey }: Props) {

@@ -137,10 +137,10 @@ const DetailPerusahaan: React.FC = () => {
       {/* <h1 className="text-3xl font-semibold mb-4">{company?.name || 'Detail Perusahaan'}</h1> */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
         {/* card kiri */}
-        <div className="col-span-12 md:col-span-4 rounded-lg p-4 md:p-6 shadow-sm bg-white">
+        <div className="col-span-12 md:col-span-4 rounded-lg p-4 md:p-6 shadow-sm bg-white dark:border-gray-800 dark:bg-gray-900 dark:text-white">
           <div className="flex flex-col items-center">
             <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center mb-4">{/* logo */}
-              <span className="text-3xl font-bold">
+              <span className="text-3xl font-bold dark:text-black">
                 {formatImage(company?.logo, company?.name || '')}
               </span>
             </div>
@@ -189,7 +189,7 @@ const DetailPerusahaan: React.FC = () => {
         </div>
 
         {/* card kanan */}
-        <div className="col-span-12 md:col-span-8 bg-white rounded-lg p-4 md:p-6 shadow-sm">
+        <div className="col-span-12 md:col-span-8 bg-white rounded-lg p-4 md:p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900 dark:text-white">
           <div className="border-b mb-4">
             <nav className="flex gap-4 -mb-px overflow-x-auto">
               <button onClick={() => setTab('profile')} className={`py-2 px-3 ${tab==='profile'? 'border-b-2 border-blue-600 text-blue-600':'text-gray-600'}`}>Profil Perusahaan</button>
@@ -202,7 +202,7 @@ const DetailPerusahaan: React.FC = () => {
           {tab === 'profile' && (
             <div>
               <h3 className="text-3xl font-semibold mb-2 text-[#004969]">Profil Perusahaan</h3>
-              <p className="text-[#000] mb-4">{company?.description || '—'}</p>
+              <p className="text-[#000] dark:text-white mb-4">{company?.description || '—'}</p>
 
               <div className="flex items-center justify-between mb-3">
                 <h4 className="text-3xl font-semibold text-[#004969]">Branch</h4>

@@ -20,7 +20,7 @@ const employeePositionColumns: DataTableColumn<EmployeePositionRow>[] = [
   { id: 'Direktorat', label: 'Direktorat', sortable: true },
   { id: 'Divisi', label: 'Divisi', sortable: true },
   { id: 'Departemen', label: 'Departemen', sortable: true },
-  { id: 'File SK & MoU', label: 'File SK & MoU', sortable: true, format: () => <FileText size={16} /> },
+  { id: 'File SK & MoU', label: 'File SK & MoU', sortable: false, isAction: true, format: () => <FileText size={16} /> },
 ];
 
 export default function EmployeePositionsTab({ resetKey }: Props) {

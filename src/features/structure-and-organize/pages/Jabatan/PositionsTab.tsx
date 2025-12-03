@@ -19,7 +19,7 @@ const positionColumns: DataTableColumn<PositionRow>[] = [
   { id: 'Grade', label: 'Grade', sortable: true },
   { id: 'Deskripsi Tugas', label: 'Deskripsi Tugas', sortable: true },
   { id: 'Bawahan Langsung', label: 'Bawahan Langsung', sortable: true },
-  { id: 'File SK & MoU', label: 'File SK & MoU', sortable: true, format: () => <FileText size={16} /> },
+  { id: 'File SK & MoU', label: 'File SK & MoU', sortable: false, isAction: true, format: () => <FileText size={16} /> },
 ];
 
 export default function PositionsTab({ resetKey }: Props) {

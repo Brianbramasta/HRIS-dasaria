@@ -18,7 +18,7 @@ const departmentColumns: DataTableColumn<DepartmentRow>[] = [
   { id: 'no', label: 'No', sortable: false },
   { id: 'Nama Departemen', label: 'Nama Departemen', sortable: true },
   { id: 'Nama Divisi', label: 'Divisi', sortable: true },
-  { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: true, format: () => <FileText size={16} /> },
+  { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: false, isAction: true, format: () => <FileText size={16} /> },
 ];
 
 export default function DepartmentsTab({ resetKey }: Props) {
