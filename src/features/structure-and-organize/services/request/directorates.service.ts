@@ -75,6 +75,19 @@ export const directoratesService = {
     };
   },
 
+  getDropdown: async (search?: string): Promise<DirectorateListItem[]> => {
+    const qs = search ? `?search=${encodeURIComponent(search)}` : '';
+    const result = await apiService.get<any>(`/organizational-structure/directorates-dropdown${qs}`);
+    const items = (result as any).data as { id_directorate: string; directorate_name: string }[];
+    return (items || []).map((i) => ({
+      id: i.id_directorate,
+      name: i.directorate_name,
+      description: null,
+      memoNumber: null,
+      skFile: null,
+    }));
+  },
+
   create: async (payload: { name: string; description?: string | null; memoNumber: string; skFile?: File | null; }): Promise<DirectorateListItem> => {
     const formData = new FormData();
     formData.append('directorate_name', payload.name);

@@ -11,6 +11,7 @@ import EditDepartmentModal from '../../components/modals/Departemen/EditDepartme
 import DeleteDepartmentModal from '../../components/modals/Departemen/DeleteDepartmentModal';
 import { FileText } from '@/icons/components/icons';
 import { addNotification } from '@/stores/notificationStore';
+import { useFileStore } from '@/stores/fileStore';
 
 type Props = { resetKey: string };
 
@@ -27,6 +28,7 @@ export default function DepartmentsTab({ resetKey }: Props) {
   const editModal = useModal(false);
   const deleteModal = useModal(false);
   const [selected, setSelected] = useState<DepartmentListItem | null>(null);
+  const fileStore = useFileStore();
 
   const rows: any[] = useMemo(() => {
     return (departments || []).map((d, idx) => ({
@@ -79,7 +81,7 @@ export default function DepartmentsTab({ resetKey }: Props) {
     />
     <AddDepartmentModal
       isOpen={addModal.isOpen}
-      onClose={addModal.closeModal}
+      onClose={() => { addModal.closeModal(); fileStore.clearSkFile(); }}
       onSuccess={() => {
         fetchDepartments();
         addModal.closeModal();
@@ -93,7 +95,7 @@ export default function DepartmentsTab({ resetKey }: Props) {
     />
     <EditDepartmentModal
       isOpen={editModal.isOpen}
-      onClose={() => { editModal.closeModal(); setSelected(null); }}
+      onClose={() => { editModal.closeModal(); setSelected(null); fileStore.clearSkFile(); }} 
       department={selected}
       onSuccess={() => {
         fetchDepartments();
@@ -108,7 +110,7 @@ export default function DepartmentsTab({ resetKey }: Props) {
     />
     <DeleteDepartmentModal
       isOpen={deleteModal.isOpen}
-      onClose={() => { deleteModal.closeModal(); setSelected(null); }}
+      onClose={() => { deleteModal.closeModal(); setSelected(null); fileStore.clearSkFile(); }}
       department={selected}
       onSuccess={() => {
         fetchDepartments();

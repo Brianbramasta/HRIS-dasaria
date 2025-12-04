@@ -1407,6 +1407,141 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "Dropdown Directorate",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/directorates-dropdown?search=ini nama direktorat 3 jadi 4",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"directorates-dropdown"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "ini nama direktorat 3 jadi 4"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Division",
+					"item": [
+						{
+							"name": "Menyimpan data Division",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "division_name",
+											"value": "ini divis 1",
+											"type": "text"
+										},
+										{
+											"key": "id_directorate",
+											"value": "019ae273-ff4f-7384-acb7-44b31ab476f7",
+											"type": "text"
+										},
+										{
+											"key": "division_decree_number",
+											"value": "ini sk 1",
+											"type": "text"
+										},
+										{
+											"key": "division_description",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "division_decree_file",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/divisions",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"divisions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Data Division by uuid",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "_method",
+											"value": "DELETE",
+											"type": "text"
+										},
+										{
+											"key": "division_deleted_decree_number",
+											"value": "ini sk hapus ",
+											"type": "text"
+										},
+										{
+											"key": "division_deleted_decree_file",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/divisions/019ae778-9bf9-7021-80ab-f7ef64e7e1a2",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"divisions",
+										"019ae778-9bf9-7021-80ab-f7ef64e7e1a2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Data by uuid",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "Update Data Division by uuid",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
 						}
 					]
 				}

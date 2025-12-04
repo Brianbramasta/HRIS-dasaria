@@ -11,6 +11,7 @@ import { DeletePositionModal } from '../../components/modals/Jabatan/DeletePosit
 import type { PositionListItem } from '../../types/organization.api.types';
 import { addNotification } from '@/stores/notificationStore';
 import { FileText } from '@/icons/components/icons';
+import { useFileStore } from '@/stores/fileStore';
 type Props = { resetKey: string };
 
 const positionColumns: DataTableColumn<PositionRow>[] = [
@@ -28,6 +29,7 @@ export default function PositionsTab({ resetKey }: Props) {
   const editModal = useModal(false);
   const deleteModal = useModal(false);
   const [selected, setSelected] = React.useState<PositionListItem | null>(null);
+  const fileStore = useFileStore();
 
   const rows: PositionRow[] = useMemo(() => {
     return (positions || []).map((p, idx) => ({
@@ -101,7 +103,7 @@ export default function PositionsTab({ resetKey }: Props) {
       />
       <AddPositionModal
         isOpen={addModal.isOpen}
-        onClose={addModal.closeModal}
+        onClose={() => { addModal.closeModal(); fileStore.clearSkFile(); }}
         onSuccess={() => {
           fetchPositions();
           addModal.closeModal();
@@ -115,7 +117,7 @@ export default function PositionsTab({ resetKey }: Props) {
       />
       <EditPositionModal
         isOpen={editModal.isOpen}
-        onClose={editModal.closeModal}
+        onClose={() => { editModal.closeModal(); fileStore.clearSkFile(); }}
         onSuccess={() => {
           fetchPositions();
           editModal.closeModal();
@@ -130,7 +132,7 @@ export default function PositionsTab({ resetKey }: Props) {
       />
       <DeletePositionModal
         isOpen={deleteModal.isOpen}
-        onClose={deleteModal.closeModal}
+        onClose={() => { deleteModal.closeModal(); fileStore.clearSkFile(); }}
         onSuccess={() => {
           fetchPositions();
           deleteModal.closeModal();

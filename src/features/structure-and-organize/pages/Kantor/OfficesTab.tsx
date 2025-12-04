@@ -12,6 +12,7 @@ import DeleteOfficeModal from '../../components/modals/Kantor/DeleteOfficeModal'
 import { addNotification } from '@/stores/notificationStore';
 import { FileText } from '@/icons/components/icons';
 import { formatUrlFile } from '@/utils/formatUrlFile';
+import { useFileStore } from '@/stores/fileStore';
 type Props = { resetKey: string };
 
 const officeColumns: DataTableColumn<OfficeRow>[] = [
@@ -35,6 +36,7 @@ export default function OfficesTab({ resetKey }: Props) {
   const editModal = useModal(false);
   const deleteModal = useModal(false);
   const [selected, setSelected] = useState<OfficeListItem | null>(null);
+  const fileStore = useFileStore();
 
   const rows: OfficeRow[] = useMemo(() => {
     return (offices || []).map((o, idx) => ({
@@ -91,7 +93,7 @@ export default function OfficesTab({ resetKey }: Props) {
     />
     <AddOfficeModal
       isOpen={addModal.isOpen}
-      onClose={addModal.closeModal}
+      onClose={() => { addModal.closeModal(); fileStore.clearSkFile(); }} 
       onSuccess={() => {fetchOffices();
         addNotification({
           description: 'Kantor berhasil ditambahkan',
@@ -103,7 +105,7 @@ export default function OfficesTab({ resetKey }: Props) {
     />
     <EditOfficeModal
       isOpen={editModal.isOpen}
-      onClose={() => { editModal.closeModal(); setSelected(null); }}
+      onClose={() => { editModal.closeModal(); setSelected(null); fileStore.clearSkFile(); }}
       office={selected}
       onSuccess={() => {fetchOffices();
         addNotification({

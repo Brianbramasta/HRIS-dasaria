@@ -50,3 +50,11 @@ Query params (optional):
 - `per_page`
 - `page`
 - `filter[]` (multiple)
+
+## Dropdown Direktorat
+
+URL: `http://127.0.0.1:8000/api/organizational-structure/directorates-dropdown`
+Method: GET
+Query params (optional):
+
+- `search`

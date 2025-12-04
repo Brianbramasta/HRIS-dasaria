@@ -11,6 +11,8 @@ import EditDirectorateModal from '../../components/modals/Direktorat/EditDirecto
 import DeleteDirectorateModal from '../../components/modals/Direktorat/DeleteDirectorateModal';
 import { FileText } from '@/icons/components/icons';
 import { addNotification } from '@/stores/notificationStore';
+import { formatUrlFile } from '@/utils/formatUrlFile';
+import { useFileStore } from '@/stores/fileStore';
 
 type Props = { resetKey: string };
 
@@ -18,7 +20,8 @@ const directorateColumns: DataTableColumn<DirectorateRow>[] = [
   { id: 'no', label: 'No', sortable: false },
   { id: 'Nama Direktorat', label: 'Nama Direktorat', sortable: true },
   { id: 'Deskripsi Umum', label: 'Deskripsi Umum', sortable: true },
-  { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: false, isAction: true, format: () => <FileText size={16} /> },
+  { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: false, isAction: true, format: (row: DirectorateRow) => (
+    row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer"><FileText size={16} /></a> : '—' )},
 ];
 
 export default function DirectoratesTab({ resetKey }: Props) {
@@ -27,13 +30,14 @@ export default function DirectoratesTab({ resetKey }: Props) {
   const editModal = useModal(false);
   const deleteModal = useModal(false);
   const [selected, setSelected] = useState<DirectorateListItem | null>(null);
+  const fileStore = useFileStore();
 
   const rows: any[] = useMemo(() => {
     return (directorates || []).map((d, idx) => ({
       no: idx + 1,
       'Nama Direktorat': (d as any).name ?? '—',
       'Deskripsi Umum': (d as any).description ?? '—',
-      'File SK dan Memo': ((d as any).skFile || (d as any).memoFile) ? 'Ada' : '—',
+      'File SK dan Memo': (d as any).skFile ??'-',
       raw: d,
     }));
   }, [directorates]);
@@ -83,7 +87,7 @@ export default function DirectoratesTab({ resetKey }: Props) {
     />
     <AddDirectorateModal
       isOpen={addModal.isOpen}
-      onClose={addModal.closeModal}
+      onClose={() => { addModal.closeModal(); fileStore.clearSkFile(); }}
       onSuccess={() => {
         fetchDirectorates();
         addModal.closeModal();
@@ -97,7 +101,7 @@ export default function DirectoratesTab({ resetKey }: Props) {
     />
     <EditDirectorateModal
       isOpen={editModal.isOpen}
-      onClose={() => { editModal.closeModal(); setSelected(null); }}
+      onClose={() => { editModal.closeModal(); setSelected(null); fileStore.clearSkFile(); }}
       directorate={selected}
       onSuccess={() => {
         fetchDirectorates();
@@ -112,7 +116,7 @@ export default function DirectoratesTab({ resetKey }: Props) {
     />
     <DeleteDirectorateModal
       isOpen={deleteModal.isOpen}
-      onClose={() => { deleteModal.closeModal(); setSelected(null); }}
+      onClose={() => { deleteModal.closeModal(); setSelected(null);fileStore.clearSkFile();  }}
       directorate={selected}
       onSuccess={() => {
         fetchDirectorates();

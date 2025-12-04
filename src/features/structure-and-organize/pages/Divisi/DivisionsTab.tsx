@@ -12,6 +12,8 @@ import DeleteDivisionModal from '../../components/modals/Divisi/DeleteDivisionMo
 import { addNotification } from '@/stores/notificationStore';
 import { FileText } from '@/icons/components/icons';
 type Props = { resetKey: string };
+import { useFileStore } from '@/stores/fileStore';
+
 
 const divisionColumns: DataTableColumn<DivisionRow>[] = [
   { id: 'no', label: 'No', sortable: false },
@@ -27,6 +29,7 @@ export default function DivisionsTab({ resetKey }: Props) {
   const editModal = useModal(false);
   const deleteModal = useModal(false);
   const [selected, setSelected] = useState<DivisionListItem | null>(null);
+  const fileStore = useFileStore();
 
   const rows: any[] = useMemo(() => {
     console.log('divisions', divisions);
@@ -81,7 +84,7 @@ export default function DivisionsTab({ resetKey }: Props) {
     />
     <AddDivisionModal
       isOpen={addModal.isOpen}
-      onClose={addModal.closeModal}
+      onClose={() => { addModal.closeModal(); fileStore.clearSkFile(); }}
       onSuccess={() => {
         fetchDivisions();
         addModal.closeModal();
@@ -95,7 +98,7 @@ export default function DivisionsTab({ resetKey }: Props) {
     />
     <EditDivisionModal
       isOpen={editModal.isOpen}
-      onClose={() => { editModal.closeModal(); setSelected(null); }}
+      onClose={() => { editModal.closeModal(); setSelected(null); fileStore.clearSkFile(); }}
       division={selected}
       onSuccess={() => {
         fetchDivisions();
@@ -110,7 +113,7 @@ export default function DivisionsTab({ resetKey }: Props) {
     />
     <DeleteDivisionModal
       isOpen={deleteModal.isOpen}
-      onClose={() => { deleteModal.closeModal(); setSelected(null); }}
+      onClose={() => { deleteModal.closeModal(); setSelected(null); fileStore.clearSkFile(); }}
       division={selected}
       onSuccess={() => {
         fetchDivisions();

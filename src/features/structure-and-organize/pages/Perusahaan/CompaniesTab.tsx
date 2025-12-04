@@ -11,6 +11,7 @@ import EditCompanyModal from '../../components/modals/Perusahaan/EditCompanyModa
 import DeleteCompanyModal from '../../components/modals/Perusahaan/DeleteCompanyModal';
 import { addNotification } from '@/stores/notificationStore';
 import { FileText } from '@/icons/components/icons';
+import { useFileStore } from '@/stores/fileStore';
 
 type Props = { resetKey: string };
 
@@ -33,6 +34,7 @@ export default function CompaniesTab({ resetKey }: Props) {
   const [isEditOpen, setEditOpen] = React.useState(false);
   const [isDeleteOpen, setDeleteOpen] = React.useState(false);
   const [selectedCompany, setSelectedCompany] = React.useState<CompanyListItem | null>(null);
+  const fileStore = useFileStore();
 
   const rows: (CompanyRow & { id?: string })[] = useMemo(() => {
     return (companies || []).map((c, idx) => ({
@@ -99,7 +101,7 @@ export default function CompaniesTab({ resetKey }: Props) {
     />
     <AddCompanyModal
       isOpen={isAddOpen}
-      onClose={() => setAddOpen(false)}
+      onClose={() => { setAddOpen(false); fileStore.clearSkFile(); }} 
       onSuccess={() => {fetchCompanies();
         addNotification({
           description: 'Perusahaan berhasil ditambahkan',
@@ -111,7 +113,7 @@ export default function CompaniesTab({ resetKey }: Props) {
     />
     <EditCompanyModal
       isOpen={isEditOpen}
-      onClose={() => { setEditOpen(false); setSelectedCompany(null); }}
+      onClose={() => { setEditOpen(false); setSelectedCompany(null); fileStore.clearSkFile(); }}
       company={selectedCompany}
       onSuccess={() => {fetchCompanies();
         addNotification({

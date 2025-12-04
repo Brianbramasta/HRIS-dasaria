@@ -12,10 +12,10 @@ import DeleteBusinessLineModal from '../../components/modals/LiniBisnis/DeleteBu
 import { addNotification } from '../../../../stores/notificationStore';
 
 import type { BLRow } from '../../types/organizationTable.types';
-import { clearSkFile} from '@/stores/fileStore';
 import { businessLinesService } from '../../services/request/businessLines.service';
 import type { BusinessLineListItem } from '../../types/organization.api.types';
 import { FileText } from '@/icons/components/icons';
+import { useFileStore } from '@/stores/fileStore';
 
 type Props = { resetKey: string };
 
@@ -38,6 +38,7 @@ export default function BusinessLinesTab({ resetKey }: Props) {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [selectedBusinessLine, setSelectedBusinessLine] = useState<BusinessLineListItem | null>(null);
+  const fileStore = useFileStore();
 
   const {
     businessLines,
@@ -135,7 +136,7 @@ export default function BusinessLinesTab({ resetKey }: Props) {
 
       <AddBusinessLineModal
         isOpen={isAddOpen}
-        onClose={() => setIsAddOpen(false)}
+        onClose={() => { setIsAddOpen(false); fileStore.clearSkFile(); }}
         onSuccess={() => {
           fetchBusinessLines();
           addNotification({
@@ -150,7 +151,7 @@ export default function BusinessLinesTab({ resetKey }: Props) {
         isOpen={isEditOpen}
         onClose={() => {
           setIsEditOpen(false);
-          clearSkFile();
+          fileStore.clearSkFile();
         }}
         businessLine={selectedBusinessLine}
         onSuccess={() => {
@@ -165,7 +166,7 @@ export default function BusinessLinesTab({ resetKey }: Props) {
       />
       <DeleteBusinessLineModal
         isOpen={isDeleteOpen}
-        onClose={() => setIsDeleteOpen(false)}
+        onClose={() => { setIsDeleteOpen(false); fileStore.clearSkFile(); }}
         businessLine={selectedIndex !== null ? (businessLines?.[selectedIndex] as any) : null}
         onSuccess={() => {
           fetchBusinessLines();

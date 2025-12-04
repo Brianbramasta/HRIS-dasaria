@@ -8,7 +8,7 @@ import ModalAddEdit from '../shared/modal/modalAddEdit';
 
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
-import { addNotification } from '@/stores/notificationStore';
+// import { addNotification } from '@/stores/notificationStore';
 
 interface EditDirectorateModalProps {
   isOpen: boolean;
@@ -36,14 +36,14 @@ const EditDirectorateModal: React.FC<EditDirectorateModalProps> = ({ isOpen, onC
 
   const handleSubmit = async () => {
     if (!directorate) return;
-    if (!skFile?.file) {
-          addNotification({
-            variant: 'error',
-            title: ' Direktorat tidak diupdate',
-            description: 'File Wajib di isi',
-            hideDuration: 4000,
-          });
-          return};
+    // if (!skFile?.file) {
+    //       addNotification({
+    //         variant: 'error',
+    //         title: ' Direktorat tidak diupdate',
+    //         description: 'File Wajib di isi',
+    //         hideDuration: 4000,
+    //       });
+    //       return};
     setSubmitting(true);
     try {
       await directoratesService.update(directorate.id, {

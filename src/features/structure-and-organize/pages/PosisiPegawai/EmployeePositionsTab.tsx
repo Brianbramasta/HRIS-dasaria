@@ -11,6 +11,8 @@ import DeleteEmployeePositionModal from '../../components/modals/PosisiPegawai/D
 import { useModal } from '../../../../hooks/useModal';
 import { addNotification } from '@/stores/notificationStore';
 import { FileText } from '@/icons/components/icons';
+import { useFileStore } from '@/stores/fileStore';
+
 type Props = { resetKey: string };
 
 const employeePositionColumns: DataTableColumn<EmployeePositionRow>[] = [
@@ -29,6 +31,7 @@ export default function EmployeePositionsTab({ resetKey }: Props) {
   const editModal = useModal(false);
   const deleteModal = useModal(false);
   const [selectedEmployeePosition, setSelectedEmployeePosition] = useState<EmployeePositionListItem | null>(null);
+  const fileStore = useFileStore();
 
   const rows: EmployeePositionRow[] = useMemo(() => {
     return (employeePositions || []).map((ep, idx) => ({
@@ -112,7 +115,7 @@ export default function EmployeePositionsTab({ resetKey }: Props) {
       />
       <AddEmployeePositionModal
         isOpen={addModal.isOpen}
-        onClose={addModal.closeModal}
+        onClose={() => { addModal.closeModal(); fileStore.clearSkFile(); }}
         onSuccess={() => {
           handleAddSuccess();
           addModal.closeModal();
@@ -126,7 +129,7 @@ export default function EmployeePositionsTab({ resetKey }: Props) {
       />
       <EditEmployeePositionModal
         isOpen={editModal.isOpen}
-        onClose={() => { editModal.closeModal(); setSelectedEmployeePosition(null); }}
+        onClose={() => { editModal.closeModal(); setSelectedEmployeePosition(null); fileStore.clearSkFile(); }}
         onSuccess={() => {
           handleUpdateSuccess();
           editModal.closeModal();
@@ -141,7 +144,7 @@ export default function EmployeePositionsTab({ resetKey }: Props) {
       />
       <DeleteEmployeePositionModal
         isOpen={deleteModal.isOpen}
-        onClose={() => { deleteModal.closeModal(); setSelectedEmployeePosition(null); }}
+        onClose={() => { deleteModal.closeModal(); setSelectedEmployeePosition(null); fileStore.clearSkFile(); }}
         onSuccess={() => {
           handleDeleteSuccess();
           deleteModal.closeModal();
