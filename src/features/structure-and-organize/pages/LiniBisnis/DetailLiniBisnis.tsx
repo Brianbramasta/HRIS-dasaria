@@ -5,6 +5,7 @@ import { useParams, useNavigate } from 'react-router';
 import ExpandCard from '../../components/card/ExpandCard';
 import { businessLineService } from '../../services/organization.service';
 import DocumentsTable from '../../components/table/TableGlobal';
+import { formatUrlFile } from '@/utils/formatUrlFile';
 export default function DetailLiniBisnis() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ export default function DetailLiniBisnis() {
         console.log('detail',detail)
         const files = detail?.personalFiles || [];
         console.log('files',files)
-        setPersonalFiles(files.map((f: any, idx: number) => ({ no: idx + 1, namaFile: f.fileName || '—', dokumen: f.fileName || '—', memoNumber:detail?.businessLine?.memoNumber || '—' })));
+        setPersonalFiles(files.map((f: any, idx: number) => ({ no: idx + 1, namaFile: f.fileName || '—', dokumen: f.fileName || '—', memoNumber:detail?.businessLine?.memoNumber || '—', fileUrl: formatUrlFile(f.fileUrl) || '—' })));
 
         const comps = detail?.companies || [];
         setCompanies(comps.map((c: any, idx: number) => ({ no: idx + 1, nama: c.name, dokumen: c.details ? c.details : '—', companyId: c.id })));
@@ -76,7 +77,7 @@ export default function DetailLiniBisnis() {
           actions={[
             {
               icon: <IconFileDetail  />,
-              onClick: (row: any) => { /* preview */ console.log('preview', row); },
+              onClick: (row: any) => { window.open(row.fileUrl, '_blank'); /* preview */ console.log('preview', row); },
             }
           ]}
         />
@@ -85,6 +86,7 @@ export default function DetailLiniBisnis() {
       {/* Daftar Perusahaan */}
       <ExpandCard title="Daftar Perusahaan" withHeaderDivider defaultOpen>
         <DocumentsTable
+        title='Perusahaan'
           items={companies as any}
           columns={[
             { id: 'no', label: 'No.', align: 'center' },

@@ -290,7 +290,11 @@ export function DataTable<T = any>({
             onChange={(e) => {
               setSearchTerm(e.target.value);
               setPage(0);
-              onSearchChange?.(e.target.value);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                onSearchChange?.(searchTerm);
+              }
             }}
             className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 pl-10 text-sm text-gray-900 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-brand-400"
           />

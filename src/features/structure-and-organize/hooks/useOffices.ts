@@ -34,7 +34,7 @@ export const useOffices = (): UseOfficesReturn => {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
-  const filterValue = useFilterStore((s) => s.filters['Office'] ?? '');
+  const filterValue = useFilterStore((s) => s.filters['Kantor'] ?? '');
 
   const fetchOffices = useCallback(async (filter?: TableFilter) => {
     setLoading(true);

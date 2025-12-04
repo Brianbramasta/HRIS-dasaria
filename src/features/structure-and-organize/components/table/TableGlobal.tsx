@@ -29,6 +29,7 @@ interface DocumentsTableProps {
   onDelete?: (doc: DocumentItem) => void;
   className?: string;
   actionsForRow?: (row: DocumentItem) => Action<DocumentItem>[] | null | undefined;
+  title?: string;
 }
 
 const defaultColumns: Column<DocumentItem>[] = [
@@ -57,7 +58,7 @@ const defaultActions = (
   },
 ];
 
-const DocumentsTable: React.FC<DocumentsTableProps> = ({ items, columns, actions, onEdit, onDelete, className, actionsForRow }) => {
+const DocumentsTable: React.FC<DocumentsTableProps> = ({ items, columns, actions, onEdit, onDelete, className, actionsForRow, title }) => {
   const cols = columns && columns.length ? columns : defaultColumns;
   const acts = actions && actions.length ? actions : defaultActions(onEdit, onDelete);
 
@@ -65,7 +66,7 @@ const DocumentsTable: React.FC<DocumentsTableProps> = ({ items, columns, actions
     <div className={`p-0 overflow-x-auto ${className || ''}`}>
       <Table className="min-w-[640px] md:min-w-full">
         <TableHeader>
-          <TableRow className="bg-brand-900 text-white">
+          <TableRow className="bg-[#004969] text-white">
             {cols.map((c) => (
               <TableCell
                 key={c.id}
@@ -104,7 +105,7 @@ const DocumentsTable: React.FC<DocumentsTableProps> = ({ items, columns, actions
           )) : (
             <TableRow key="no-docs" className="border-b border-gray-100 dark:border-gray-800">
               <TableCell colSpan={cols.length + 1} className="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
-                Tidak ada dokumen
+                {title ? `Tidak ada ${title}` : 'Tidak ada Data'}
               </TableCell>
             </TableRow>
           )}
