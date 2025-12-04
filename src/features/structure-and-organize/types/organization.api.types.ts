@@ -19,7 +19,7 @@ export interface TableFilter {
   search: string;
   filter?: string | string[];
   sortBy?: string;
-  sortOrder?: 'asc' | 'desc';
+  sortOrder?: 'asc' | 'desc' | null;
   page: number;
   pageSize: number;
 }
@@ -72,6 +72,8 @@ export interface OfficeListItem {
   description: string | null;
   memoNumber: string | null;
   skFile: FileSummary | null;
+  companyId?: string | null;
+  companyIds?: string[];
 }
 
 export interface DirectorateListItem {

@@ -11,13 +11,22 @@ import EditOfficeModal from '../../components/modals/Kantor/EditOfficeModal';
 import DeleteOfficeModal from '../../components/modals/Kantor/DeleteOfficeModal';
 import { addNotification } from '@/stores/notificationStore';
 import { FileText } from '@/icons/components/icons';
+import { formatUrlFile } from '@/utils/formatUrlFile';
 type Props = { resetKey: string };
 
 const officeColumns: DataTableColumn<OfficeRow>[] = [
   { id: 'no', label: 'No', sortable: false },
   { id: 'Office', label: 'Kantor', sortable: true },
   { id: 'Deskripsi Umum', label: 'Deskripsi Umum', sortable: true },
-  { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: false, isAction: true, format: () => (<div className='w-full flex justify-center items-center'><FileText size={16} /></div>) },
+  { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: false, isAction: true, format: (row: OfficeRow) => (
+    // <div onClick={() => {
+    //   console.log(formatUrlFile(row.fileUrl as string));
+    //   if (row.fileUrl) {
+    //     window.open(formatUrlFile(row.fileUrl as string));
+    //   }
+    // }} className='w-full flex justify-center items-center'><FileText size={16} /></div>
+    row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer"><FileText size={16} /></a> : '—'
+  ) },
 ];
 
 export default function OfficesTab({ resetKey }: Props) {
@@ -32,7 +41,7 @@ export default function OfficesTab({ resetKey }: Props) {
       no: idx + 1,
       Office: (o as any).name ?? '—',
       'Deskripsi Umum': (o as any).description ?? '—',
-      'File SK dan Memo': ((o as any).skFile || (o as any).memoFile) ? 'Ada' : '—',
+      'File SK dan Memo': (o as any).skFile ??'-',
       raw: o,
     }));
   }, [offices]);

@@ -44,7 +44,7 @@ export const useBusinessLines = (options?: { autoFetch?: boolean }): UseBusiness
   const [totalPages, setTotalPages] = useState<number>(0);
   const [search, setSearch] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('name');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
   const filterValue = useFilterStore((s) => s.filters['Lini Bisnis'] ?? '');
 
   const fetchBusinessLines = useCallback(async (filter?: Partial<TableFilter>) => {

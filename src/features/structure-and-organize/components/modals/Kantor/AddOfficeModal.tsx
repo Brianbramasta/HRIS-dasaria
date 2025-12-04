@@ -31,8 +31,8 @@ const AddOfficeModal: React.FC<AddOfficeModalProps> = ({ isOpen, onClose, onSucc
     if (!isOpen) return;
     (async () => {
       try {
-        const res = await companiesService.getList({ search: '', page: 1, pageSize: 20, sortBy: 'name', sortOrder: 'asc' });
-        setCompanyOptions(res.data.map((c) => ({ value: c.id, text: c.name })));
+        const res = await companiesService.getDropdown();
+        setCompanyOptions(res.map((c) => ({ value: c.id, text: c.name })));
       } catch (e) {
         console.error('Failed to fetch companies', e);
       }
@@ -66,7 +66,7 @@ const AddOfficeModal: React.FC<AddOfficeModalProps> = ({ isOpen, onClose, onSucc
     setSubmitting(true);
     try {
       const created = await officesService.create({
-        companyId: companyIds[0],
+        companyIds: companyIds,
         name: name.trim(),
         description: description.trim() || null,
         memoNumber: memoNumber.trim(),
@@ -110,14 +110,6 @@ const AddOfficeModal: React.FC<AddOfficeModalProps> = ({ isOpen, onClose, onSucc
           options={companyOptions}
           defaultSelected={companyIds}
           onChange={setCompanyIds}
-          onSearch={async (q) => {
-            try {
-              const res = await companiesService.getList({ search: q, page: 1, pageSize: 20, sortBy: 'name', sortOrder: 'asc' });
-              setCompanyOptions(res.data.map((c) => ({ value: c.id, text: c.name })));
-            } catch (e) {
-              console.error('Failed to search companies', e);
-            }
-          }}
         />
 
         <div className="space-y-2">

@@ -20,7 +20,7 @@ interface UseDirectoratesReturn {
   setPage: (page: number) => void;
   setPageSize: (pageSize: number) => void;
   setSearch: (search: string) => void;
-  setSort: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
+  setSort: (sortBy: string, sortOrder: 'asc' | 'desc' ) => void;
 }
 
 export const useDirectorates = (): UseDirectoratesReturn => {

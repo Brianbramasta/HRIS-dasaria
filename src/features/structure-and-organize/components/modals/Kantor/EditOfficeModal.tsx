@@ -7,7 +7,6 @@ import FileInput from '../shared/field/FileInput';
 import ModalAddEdit from '../shared/modal/modalAddEdit';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
-import { addNotification } from '@/stores/notificationStore';
 import MultiSelect from '@/components/form/MultiSelect';
 
 
@@ -29,26 +28,39 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
   const [companyOptions, setCompanyOptions] = useState<{ value: string; text: string }[]>([]);
 
   useEffect(() => {
-    if (office) {
-      setName(office.name || '');
-      setMemoNumber(office.memoNumber || '');
-      setDescription(office.description || '');
-      const cid = (office as any)?.companyId;
-      setCompanyIds(cid ? [cid] : []);
-    }
-  }, [office]);
-
-  useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || !office?.id) return;
     (async () => {
       try {
-        const res = await companiesService.getList({ search: '', page: 1, pageSize: 20, sortBy: 'name', sortOrder: 'asc' });
-        setCompanyOptions(res.data.map((c) => ({ value: c.id, text: c.name })));
+        const fresh = await officesService.getById(office.id);
+        setName(fresh.name || '');
+        setMemoNumber(fresh.memoNumber || '');
+        setDescription(fresh.description || '');
+
+        const initialIds = (fresh as any)?.companyIds ?? ((office as any)?.companyIds ?? []);
+        const fallbackId = (fresh as any)?.companyId ?? (office as any)?.companyId;
+        const selectedIds = Array.isArray(initialIds) && initialIds.length > 0
+          ? initialIds
+          : (fallbackId ? [fallbackId] : []);
+        setCompanyIds(selectedIds);
+
+        const res = await companiesService.getDropdown();
+        const opts = res.map((c) => ({ value: c.id, text: c.name }));
+        // ensure all selected ids exist in options
+        const missing = selectedIds.filter((id) => !opts.some((o) => o.value === id));
+        for (const id of missing) {
+          try {
+            const detail = await companiesService.getDetail(id);
+            opts.push({ value: id, text: detail.company.name });
+          } catch (e) {
+            void e;
+          }
+        }
+        setCompanyOptions(opts);
       } catch (e) {
-        console.error('Failed to fetch companies', e);
+        console.error('Failed to fetch office detail', e);
       }
     })();
-  }, [isOpen]);
+  }, [isOpen, office]);
 
   const handleFileChange = (/*_e: React.ChangeEvent<HTMLInputElement>*/) => {
     // metadata file dikelola oleh FileInput melalui store
@@ -57,19 +69,19 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
   const handleSubmit = async () => {
     if (!office) return;
     if (!name.trim()) return;
-    if (!skFile?.name){
-          addNotification({
-            variant: 'error',
-            title: 'Office tidak ditambahkan',
-            description: 'File Wajib di isi',
-            hideDuration: 4000,
-          });
-          return;
-        }
+    // if (!skFile?.name){
+    //       addNotification({
+    //         variant: 'error',
+    //         title: 'Office tidak ditambahkan',
+    //         description: 'File Wajib di isi',
+    //         hideDuration: 4000,
+    //       });
+    //       return;
+    //     }
     setSubmitting(true);
     try {
       const updated = await officesService.update(office.id, {
-        companyId: companyIds[0],
+        companyIds: companyIds,
         name: name.trim(),
         description: description.trim() || null,
         memoNumber: memoNumber.trim(),
@@ -107,14 +119,6 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
           options={companyOptions}
           defaultSelected={companyIds}
           onChange={setCompanyIds}
-          onSearch={async (q) => {
-            try {
-              const res = await companiesService.getList({ search: q, page: 1, pageSize: 20, sortBy: 'name', sortOrder: 'asc' });
-              setCompanyOptions(res.data.map((c) => ({ value: c.id, text: c.name })));
-            } catch (e) {
-              console.error('Failed to search companies', e);
-            }
-          }}
         />
 
         <div className="space-y-2">

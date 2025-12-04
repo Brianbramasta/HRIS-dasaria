@@ -27,10 +27,21 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
     useState<string[]>(defaultSelected);
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [labelMap, setLabelMap] = useState<Record<string, string>>({});
 
   useEffect(() => {
     setSelectedOptions(defaultSelected);
   }, [defaultSelected]);
+
+  useEffect(() => {
+    setLabelMap((prev) => {
+      const next = { ...prev };
+      for (const o of options) {
+        next[o.value] = o.text;
+      }
+      return next;
+    });
+  }, [options]);
 
   const toggleDropdown = () => {
     if (!disabled) setIsOpen((prev) => !prev);
@@ -42,6 +53,10 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
       : [...selectedOptions, optionValue];
 
     setSelectedOptions(newSelectedOptions);
+    const found = options.find((o) => o.value === optionValue);
+    if (found) {
+      setLabelMap((prev) => ({ ...prev, [found.value]: found.text }));
+    }
     onChange?.(newSelectedOptions);
   };
 
@@ -52,7 +67,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   };
 
   const selectedValuesText = selectedOptions.map(
-    (value) => options.find((option) => option.value === value)?.text || ""
+    (value) => labelMap[value] ?? options.find((option) => option.value === value)?.text ?? value
   );
 
   const filteredOptions = onSearch
@@ -79,7 +94,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
       <div className="relative z-20 inline-block w-full">
         <div className="relative flex flex-col items-center">
           <div onClick={toggleDropdown} className="w-full">
-            <div className="mb-2 flex h-11 rounded-lg border border-gray-300 py-1.5 pl-3 pr-3 shadow-theme-xs outline-hidden transition focus:border-brand-300 focus:shadow-focus-ring dark:border-gray-700 dark:bg-gray-900 dark:focus:border-brand-300">
+            <div className="mb-2 flex h-auto min-h-11 rounded-lg border border-gray-300 py-1.5 pl-3 pr-3 shadow-theme-xs outline-hidden transition focus:border-brand-300 focus:shadow-focus-ring dark:border-gray-700 dark:bg-gray-900 dark:focus:border-brand-300">
               <div className="flex flex-wrap flex-auto gap-2">
                 {selectedValuesText.length > 0 ? (
                   selectedValuesText.map((text, index) => (

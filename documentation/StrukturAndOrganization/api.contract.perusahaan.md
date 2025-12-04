@@ -7,9 +7,10 @@ Method: GET
 Query (opsional):
 - `per_page`
 - `filter[]`
-- `columns`
+- `column`
 - `sort`
 - `search`
+- `page`
 
 ```
 response:
@@ -22,6 +23,8 @@ response:
       "nama_perusahaan": "PT. Digital Innovation Indonesia",
       "fk_uuid_lini_bisnis": "019ac88e-ef31-7264-b1f7-bd67a1b80b03",
       "deskripsi_perusahaan": "Perusahaan teknologi yang fokus pada transformasi digital",
+      "no_sk_hapus_perusahaan": null,
+      "file_url_sk_hapus_perusahaan": null,
       "deleted_at": null,
       "created_at": "2025-11-28T03:56:48.000000Z",
       "updated_at": "2025-11-28T03:56:48.000000Z",
@@ -64,7 +67,7 @@ response:
   "data": {
     "company": {
       "company_name": "PT. Artificial Intelligence Indonesia",
-      "company_description": "Pengembang solusi AI dan robotic process automation",
+      "company_description": "Pengembang solusi AI dan robotic process automation untuk meningkatkan efisiensi bisnis perusahaan di Indonesia",
       "id_bl": "019ad2e7-1c4f-7056-9b0b-7b0bdf62cf2d",
       "id_company": "019ad7eb-5df0-7383-b933-c4f1c208db39",
       "updated_at": "2025-12-01T03:18:37.000000Z",
@@ -77,6 +80,15 @@ response:
         "cd_file": "company/decree/67a22979-66d3-45ca-a361-c2fad0b61094.pdf",
         "id_company": "019ad7eb-5df0-7383-b933-c4f1c208db39",
         "id_cd": "019ad7eb-5e0c-7000-8794-4cf8751c7445",
+        "updated_at": "2025-12-01T03:18:37.000000Z",
+        "created_at": "2025-12-01T03:18:37.000000Z"
+      },
+      {
+        "cd_name": "document 2",
+        "cd_decree_number": "ini sk 2",
+        "cd_file": "company/decree/8ce0ac2b-99b9-478d-99fd-b01cde44f8ef.pdf",
+        "id_company": "019ad7eb-5df0-7383-b933-c4f1c208db39",
+        "id_cd": "019ad7eb-5e11-736d-9d6b-4576682d650e",
         "updated_at": "2025-12-01T03:18:37.000000Z",
         "created_at": "2025-12-01T03:18:37.000000Z"
       }

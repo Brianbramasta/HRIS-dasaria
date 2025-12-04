@@ -78,6 +78,22 @@ export const companiesService = {
     };
   },
 
+  getDropdown: async (): Promise<Array<{ id: string; name: string }>> => {
+    const result = await apiService.get<any>(`/organizational-structure/companies-dropdown`);
+    const body = (result as any)?.data ?? {};
+    const items = Array.isArray(body)
+      ? body
+      : Array.isArray(body?.data)
+        ? body.data
+        : Array.isArray((result as any)?.data?.data)
+          ? (result as any).data.data
+          : [];
+    return (items || []).map((it: any) => ({
+      id: it.id_company ?? it.uuid_perusahaan ?? it.id ?? '',
+      name: it.company_name ?? it.nama_perusahaan ?? it.name ?? '',
+    }));
+  },
+
   getDetail: async (id: string): Promise<CompanyDetailResponse> => {
     const result = await apiService.get<any>(`/organizational-structure/companies/${id}/detail`);
     const body = (result as any).data ?? {};
@@ -209,6 +225,8 @@ export const companiesService = {
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
-    return { success: !!(resp as any).success } as { success: true };
+    const body = (resp as any)?.data ?? {};
+    const status = body?.meta?.status ?? (resp as any)?.status ?? 200;
+    return { success: status === 200 } as { success: true };
   },
 };

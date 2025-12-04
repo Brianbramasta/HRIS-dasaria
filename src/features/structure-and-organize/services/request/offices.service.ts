@@ -25,6 +25,7 @@ const mapToOffice = (item: any): OfficeListItem => ({
   description: item.office_description ?? item.description ?? null,
   memoNumber: item.office_decree_number ?? item.memoNumber ?? null,
   skFile: toFileSummary(item.office_decree_file_url ?? item.office_decree_file ?? null),
+  companyId: item.id_company ?? null,
 });
 
 const toSortField = (field?: string): string => {
@@ -75,8 +76,20 @@ export const officesService = {
     };
   },
 
+  getById: async (id: string): Promise<OfficeListItem> => {
+    const result = await apiService.get<any>(`/organizational-structure/offices/${id}`);
+    const body = (result as any)?.data ?? {};
+    const item = body?.data ?? body;
+    const office = mapToOffice(item);
+    const comps = Array.isArray(item?.companies) ? item.companies : [];
+    const ids = comps.map((c: any) => c?.id_company ?? c?.pivot?.id_company).filter(Boolean);
+    const cid = ids.length > 0 ? ids[0] : null;
+    return { ...office, companyId: cid, companyIds: ids };
+  },
+
   create: async (payload: {
-    companyId: string;
+    companyId?: string;
+    companyIds?: string[];
     name: string;
     description?: string | null;
     memoNumber: string;
@@ -84,7 +97,14 @@ export const officesService = {
   }): Promise<OfficeListItem> => {
     const formData = new FormData();
     formData.append('office_name', payload.name);
-    formData.append('id_company', payload.companyId);
+    const ids = Array.isArray(payload.companyIds) && payload.companyIds.length > 0
+      ? payload.companyIds
+      : (payload.companyId ? [payload.companyId] : []);
+    if (ids.length > 1) {
+      ids.forEach((id) => formData.append('id_company[]', id));
+    } else if (ids.length === 1) {
+      formData.append('id_company', ids[0]);
+    }
     formData.append('office_decree_number', payload.memoNumber);
     if (payload.description !== undefined && payload.description !== null) {
       formData.append('office_description', payload.description);
@@ -103,6 +123,7 @@ export const officesService = {
 
   update: async (id: string, payload: {
     companyId?: string;
+    companyIds?: string[];
     name?: string;
     description?: string | null;
     memoNumber: string;
@@ -111,7 +132,11 @@ export const officesService = {
     const formData = new FormData();
     formData.append('_method', 'PATCH');
     if (payload.name !== undefined) formData.append('office_name', payload.name);
-    if (payload.companyId !== undefined) formData.append('id_company', payload.companyId);
+    if (Array.isArray(payload.companyIds) && payload.companyIds.length > 0) {
+      payload.companyIds.forEach((id) => formData.append('id_company[]', id));
+    } else if (payload.companyId !== undefined) {
+      formData.append('id_company', payload.companyId);
+    }
     formData.append('office_decree_number', payload.memoNumber);
     if (payload.description !== undefined && payload.description !== null) {
       formData.append('office_description', payload.description);
@@ -138,6 +163,8 @@ export const officesService = {
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
-    return { success: !!(resp as any).success } as { success: true };
+    const body = (resp as any)?.data ?? {};
+    const status = body?.meta?.status ?? (resp as any)?.status ?? 200;
+    return { success: status === 200 } as { success: true };
   },
 };

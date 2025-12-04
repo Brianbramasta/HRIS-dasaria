@@ -5,6 +5,7 @@ import type { OfficeListItem } from '../../../types/organization.api.types';
 import ModalDelete from '../shared/modal/ModalDelete';
 import ModalDeleteContent from '../shared/modal/ModalDeleteContent';
 import { addNotification } from '@/stores/notificationStore';
+import { useFileStore } from '@/stores/fileStore';
 
 
 interface DeleteOfficeModalProps {
@@ -17,6 +18,7 @@ interface DeleteOfficeModalProps {
 const DeleteOfficeModal: React.FC<DeleteOfficeModalProps> = ({ isOpen, onClose, office, onSuccess }) => {
   const [memoNumber, setMemoNumber] = useState('');
   const [skFileName, setSkFileName] = useState('');
+  const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,7 +28,7 @@ const DeleteOfficeModal: React.FC<DeleteOfficeModalProps> = ({ isOpen, onClose, 
 
   const handleDelete = async () => {
     if (!office) return;
-    if (!skFileName){
+    if (!skFile?.file){
           addNotification({
             variant: 'error',
             title: 'Office tidak ditambahkan',
@@ -39,7 +41,7 @@ const DeleteOfficeModal: React.FC<DeleteOfficeModalProps> = ({ isOpen, onClose, 
     try {
       await officesService.delete(office.id, {
         memoNumber: memoNumber.trim(),
-        skFileId: skFileName,
+        skFile: skFile.file as File,
       });
       onSuccess?.();
       onClose();

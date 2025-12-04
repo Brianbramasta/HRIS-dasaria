@@ -33,7 +33,7 @@ export const useOffices = (): UseOfficesReturn => {
   const [totalPages, setTotalPages] = useState(0);
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('name');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
   const filterValue = useFilterStore((s) => s.filters['Office'] ?? '');
 
   const fetchOffices = useCallback(async (filter?: TableFilter) => {

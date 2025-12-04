@@ -72,7 +72,7 @@ export const useCompanies = (): UseCompaniesReturn => {
   const [totalPages, setTotalPages] = useState<number>(0);
   const [search, setSearch] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('name');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
   const filterValue = useFilterStore((s) => s.filters['Perusahaan'] ?? '');
 
   const fetchCompanies = useCallback(async (filter?: Partial<TableFilter>) => {
