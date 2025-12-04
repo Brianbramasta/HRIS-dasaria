@@ -36,7 +36,7 @@ const EditDirectorateModal: React.FC<EditDirectorateModalProps> = ({ isOpen, onC
 
   const handleSubmit = async () => {
     if (!directorate) return;
-    if (!skFile?.name) {
+    if (!skFile?.file) {
           addNotification({
             variant: 'error',
             title: ' Direktorat tidak diupdate',
@@ -50,7 +50,7 @@ const EditDirectorateModal: React.FC<EditDirectorateModalProps> = ({ isOpen, onC
         name,
         description,
         memoNumber,
-        skFileId: skFile?.path || skFile?.name,
+        skFile: skFile?.file || null,
       });
       onSuccess?.();
       onClose();

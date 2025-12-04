@@ -3,6 +3,7 @@ import { officeService } from '../../../../services/organization.service';
 import ModalDelete from '../../shared/modal/ModalDelete';
 import ModalDeleteContent from '../../shared/modal/ModalDeleteContent';
 import { addNotification } from '@/stores/notificationStore';
+import { useFileStore } from '@/stores/fileStore';
 
 interface DeleteBranchModalProps {
   isOpen: boolean;
@@ -14,6 +15,7 @@ interface DeleteBranchModalProps {
 const DeleteBranchModal: React.FC<DeleteBranchModalProps> = ({ isOpen, onClose, branch, onSuccess }) => {
   const [submitting, setSubmitting] = React.useState(false);
   const [skFileName, setSkFileName] = React.useState('');
+  const skFile = useFileStore((s) => s.skFile);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
@@ -22,7 +24,7 @@ const DeleteBranchModal: React.FC<DeleteBranchModalProps> = ({ isOpen, onClose, 
 
   const handleDelete = async () => {
     if (!branch) return;
-    if (!skFileName) {
+    if (!skFile?.file) {
       addNotification({
         variant: 'error',
         title: 'Branch tidak dihapus',
@@ -33,7 +35,7 @@ const DeleteBranchModal: React.FC<DeleteBranchModalProps> = ({ isOpen, onClose, 
     }
     setSubmitting(true);
     try {
-      await officeService.delete(branch.id, { memoNumber: branch.memoNumber || '', skFileId: skFileName });
+      await officeService.delete(branch.id, { memoNumber: branch.memoNumber || '', skFile: skFile.file as File });
       onSuccess?.();
       onClose();
     } catch (err) {

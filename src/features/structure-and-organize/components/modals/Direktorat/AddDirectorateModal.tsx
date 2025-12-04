@@ -49,7 +49,7 @@ const AddDirectorateModal: React.FC<AddDirectorateModalProps> = ({ isOpen, onClo
         name,
         description: description || null,
         memoNumber,
-        skFileId: skFile?.path || skFile?.name,
+        skFile: skFile?.file || undefined,
       });
       onSuccess?.();
       onClose();

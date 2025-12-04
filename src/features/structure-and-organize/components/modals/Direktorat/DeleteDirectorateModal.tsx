@@ -5,6 +5,7 @@ import type { DirectorateListItem } from '../../../types/organization.api.types'
 import ModalDelete from '../shared/modal/ModalDelete';
 import ModalDeleteContent from '../shared/modal/ModalDeleteContent';
 import { addNotification } from '@/stores/notificationStore';
+import { useFileStore } from '@/stores/fileStore';
 
 interface DeleteDirectorateModalProps {
   isOpen: boolean;
@@ -16,6 +17,7 @@ interface DeleteDirectorateModalProps {
 const DeleteDirectorateModal: React.FC<DeleteDirectorateModalProps> = ({ isOpen, onClose, directorate, onSuccess }) => {
   const [memoNumber, setMemoNumber] = useState('');
   const [skFileName, setSkFileName] = useState('');
+  const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,7 +27,7 @@ const DeleteDirectorateModal: React.FC<DeleteDirectorateModalProps> = ({ isOpen,
 
   const handleDelete = async () => {
     if (!directorate) return;
-    if (!skFileName) {
+    if (!skFile?.file) {
           addNotification({
             variant: 'error',
             title: ' Direktorat tidak dihapus',
@@ -37,7 +39,7 @@ const DeleteDirectorateModal: React.FC<DeleteDirectorateModalProps> = ({ isOpen,
     try {
       await directoratesService.delete(directorate.id, {
         memoNumber: memoNumber.trim(),
-        skFileId: skFileName,
+        skFile: skFile.file as File,
       });
       onSuccess?.();
       onClose();
