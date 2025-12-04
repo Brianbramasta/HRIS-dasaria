@@ -5,6 +5,7 @@ import type { DivisionListItem } from '../../../types/organization.api.types';
 import ModalDelete from '../shared/modal/ModalDelete';
 import ModalDeleteContent from '../shared/modal/ModalDeleteContent';
 import { addNotification } from '@/stores/notificationStore';
+import { useFileStore } from '@/stores/fileStore';
 
 interface DeleteDivisionModalProps {
   isOpen: boolean;
@@ -17,6 +18,7 @@ const DeleteDivisionModal: React.FC<DeleteDivisionModalProps> = ({ isOpen, onClo
   const [memoNumber, setMemoNumber] = useState('');
   const [skFileName, setSkFileName] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const skFileMeta = useFileStore((s) => s.skFile);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
@@ -25,7 +27,7 @@ const DeleteDivisionModal: React.FC<DeleteDivisionModalProps> = ({ isOpen, onClo
 
   const handleDelete = async () => {
     if (!division) return;
-    if (!skFileName) {
+    if (!skFileMeta?.file) {
           addNotification({
             variant: 'error',
             title: 'Divisi tidak dihapus',
@@ -35,7 +37,7 @@ const DeleteDivisionModal: React.FC<DeleteDivisionModalProps> = ({ isOpen, onClo
           return};
     setSubmitting(true);
     try {
-      await divisionsService.delete(division.id, { memoNumber: memoNumber.trim(), skFileId: skFileName });
+      await divisionsService.delete(division.id, { memoNumber: memoNumber.trim(), skFile: skFileMeta.file as File });
       onSuccess?.();
       onClose();
     } catch (err) {
