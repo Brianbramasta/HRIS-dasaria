@@ -20,8 +20,8 @@ const directorateColumns: DataTableColumn<DirectorateRow>[] = [
   { id: 'no', label: 'No', sortable: false },
   { id: 'Nama Direktorat', label: 'Nama Direktorat', sortable: true },
   { id: 'Deskripsi Umum', label: 'Deskripsi Umum', sortable: true },
-  { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: false, isAction: true, format: (row: DirectorateRow) => (
-    row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer"><FileText size={16} /></a> : '—' )},
+  { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: false, align: 'center', isAction: true, format: (row: DirectorateRow) => (
+    row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer" className='flex justify-center items-center'><FileText size={16} /></a> : '—' )},  
 ];
 
 export default function DirectoratesTab({ resetKey }: Props) {

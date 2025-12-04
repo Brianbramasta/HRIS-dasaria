@@ -30,8 +30,9 @@ const AddDivisionModal: React.FC<AddDivisionModalProps> = ({ isOpen, onClose, on
   useEffect(() => {
     const loadDirectorates = async () => {
       try {
-        const res = await directoratesService.getList({ search: '', page: 1, pageSize: 100, sortBy: 'name', sortOrder: 'asc' });
-        setDirectorates(res.data || []);
+        // Menggunakan endpoint dropdown direktorat untuk mengambil opsi lebih ringan
+        const res = await directoratesService.getDropdown('');
+        setDirectorates(res || []);
       } catch (err) {
         console.error('Failed to load directorates', err);
       }
@@ -52,14 +53,16 @@ const AddDivisionModal: React.FC<AddDivisionModalProps> = ({ isOpen, onClose, on
   const handleFileChange = (/*_e: React.ChangeEvent<HTMLInputElement>*/) => {};
 
   const handleSubmit = async () => {
-    if (!skFile?.name) {
-          addNotification({
-            variant: 'error',
-            title: 'Lini Bisnis tidak ditambahkan',
-            description: 'File Wajib di isi',
-            hideDuration: 4000,
-          });
-          return};
+    // Validasi: kirim File SK sesuai kontrak API terbaru
+    if (!skFile?.file) {
+      addNotification({
+        variant: 'error',
+        title: 'Divisi tidak ditambahkan',
+        description: 'File Wajib di isi',
+        hideDuration: 4000,
+      });
+      return;
+    }
     setSubmitting(true);
     try {
       await divisionsService.create({
@@ -67,7 +70,8 @@ const AddDivisionModal: React.FC<AddDivisionModalProps> = ({ isOpen, onClose, on
         directorateId,
         description: description || null,
         memoNumber,
-        skFileId: skFile?.path || skFile?.name,
+        // Kirim file SK sebagai File
+        skFile: skFile.file as File,
       });
       onSuccess?.();
       onClose();

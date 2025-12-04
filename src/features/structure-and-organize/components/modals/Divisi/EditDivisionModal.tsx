@@ -9,7 +9,6 @@ import ModalAddEdit from '../shared/modal/modalAddEdit';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 import Select from '@/components/form/Select';
-import { addNotification } from '@/stores/notificationStore';
 
 interface EditDivisionModalProps {
   isOpen: boolean;
@@ -30,8 +29,9 @@ const EditDivisionModal: React.FC<EditDivisionModalProps> = ({ isOpen, onClose, 
   useEffect(() => {
     const loadDirectorates = async () => {
       try {
-        const res = await directoratesService.getList({ search: '', page: 1, pageSize: 100, sortBy: 'name', sortOrder: 'asc' });
-        setDirectorates(res.data || []);
+        // Menggunakan endpoint dropdown direktorat untuk mengambil opsi lebih ringan
+        const res = await directoratesService.getDropdown('');
+        setDirectorates(res || []);
       } catch (err) {
         console.error('Failed to load directorates', err);
       }
@@ -52,16 +52,6 @@ const EditDivisionModal: React.FC<EditDivisionModalProps> = ({ isOpen, onClose, 
 
   const handleSubmit = async () => {
     if (!division) return;
-    if (!skFile?.name) {
-      addNotification({
-        variant: 'error',
-        title: 'Divisi tidak diupdate',
-        description: 'File Wajib di isi',
-        hideDuration: 4000,
-      });
-      setSubmitting(false);
-      return;
-    }
     setSubmitting(true);
     try {
       await divisionsService.update(division.id, {
@@ -69,7 +59,8 @@ const EditDivisionModal: React.FC<EditDivisionModalProps> = ({ isOpen, onClose, 
         directorateId,
         description: description || null,
         memoNumber,
-        skFileId: skFile?.path || skFile?.name,
+        // Kirim file SK jika ada perubahan
+        ...(skFile?.file ? { skFile: skFile.file as File } : {}),
       });
       onSuccess?.();
       onClose();

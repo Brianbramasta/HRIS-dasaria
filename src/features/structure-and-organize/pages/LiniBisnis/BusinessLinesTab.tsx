@@ -25,8 +25,8 @@ const businessLineColumns: DataTableColumn<BLRow>[] = [
   { id: 'no', label: 'No', sortable: false },
   { id: 'Lini Bisnis', label: 'Lini Bisnis', sortable: true },
   { id: 'Deskripsi Umum', label: 'Deskripsi Umum', sortable: true },
-  { id: 'File SK dan Memo', label: 'Detail', sortable: false, isAction: true, format: (_val, row) => (
-    <Link to={`/structure-and-organize/business-lines/${(row as any).id ?? (row as any).no}`} className="text-center text-brand-600 hover:underline">
+  { id: 'File SK dan Memo', label: 'Detail', sortable: false, align: 'center', isAction: true, format: (_val, row) => (
+    <Link to={`/structure-and-organize/business-lines/${(row as any).id ?? (row as any).no}`} className="flex justify-center items-center">
       <FileText size={16} />
     </Link>
   ) },

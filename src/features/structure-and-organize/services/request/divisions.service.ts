@@ -78,6 +78,12 @@ export const divisionsService = {
     };
   },
 
+  getById: async (id: string): Promise<DivisionListItem> => {
+    const result = await apiService.get<any>(`/organizational-structure/divisions/${id}`);
+    const item = (result as any).data as any;
+    return mapToDivision(item);
+  },
+
   create: async (payload: { name: string; directorateId: string; description?: string | null; memoNumber: string; skFile: File; }): Promise<DivisionListItem> => {
     const form = new FormData();
     form.append('division_name', payload.name);
@@ -95,7 +101,7 @@ export const divisionsService = {
     return mapToDivision(item);
   },
 
-  update: async (id: string, payload: { name?: string; directorateId?: string; description?: string | null; memoNumber: string; skFile: File; }): Promise<DivisionListItem> => {
+  update: async (id: string, payload: { name?: string; directorateId?: string; description?: string | null; memoNumber: string; skFile?: File | null; }): Promise<DivisionListItem> => {
     const form = new FormData();
     form.append('_method', 'PATCH');
     if (payload.name !== undefined) form.append('division_name', payload.name);

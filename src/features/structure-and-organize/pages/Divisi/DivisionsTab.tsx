@@ -14,6 +14,7 @@ import { FileText } from '@/icons/components/icons';
 type Props = { resetKey: string };
 import { useFileStore } from '@/stores/fileStore';
 import { formatUrlFile } from '@/utils/formatUrlFile';
+import { divisionsService } from '../../services/request/divisions.service';
 
 
 const divisionColumns: DataTableColumn<DivisionRow>[] = [
@@ -21,9 +22,9 @@ const divisionColumns: DataTableColumn<DivisionRow>[] = [
   { id: 'Nama Divisi', label: 'Nama Divisi', sortable: true },
   { id: 'Direktorat', label: 'Direktorat', sortable: true },
   { id: 'Deskripsi Umum', label: 'Deskripsi Umum', sortable: true },
-  { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: false, isAction: true, format: (row: DivisionRow) => (
+  { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: false, isAction: true, align: 'center', format: (row: DivisionRow) => (
      
-      row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer"><FileText size={16} /></a> : '—'
+      row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer" className='flex items-center justify-center'><FileText size={16} /></a> : '—'
     )  },
 ];
 
@@ -48,8 +49,33 @@ export default function DivisionsTab({ resetKey }: Props) {
   }, [divisions]);
 
   const actionsIconOnly = [
-    { label: '', onClick: (row: any) => { setSelected(row.raw as DivisionListItem); editModal.openModal(); }, variant: 'outline', className: 'border-0', icon: <Edit /> },
-    { label: '', onClick: (row: any) => { setSelected(row.raw as DivisionListItem); deleteModal.openModal(); }, variant: 'outline', className: 'border-0', color: 'error', icon: <Trash /> },
+    {
+      label: '',
+      variant: 'outline',
+      className: 'border-0',
+      icon: <Edit />,
+      onClick: async (row: any) => {
+        const id = row?.raw?.id;
+        if (id) {
+          const detail = await divisionsService.getById(id);
+          setSelected(detail as DivisionListItem);
+        } else {
+          setSelected(row.raw as DivisionListItem);
+        }
+        editModal.openModal();
+      },
+    },
+    {
+      label: '',
+      variant: 'outline',
+      className: 'border-0',
+      color: 'error',
+      icon: <Trash />,
+      onClick: (row: any) => {
+        setSelected(row.raw as DivisionListItem);
+        deleteModal.openModal();
+      },
+    },
   ] as DataTableAction<any>[];
 
   const exportCSV = (filename: string, data: any[]) => {
