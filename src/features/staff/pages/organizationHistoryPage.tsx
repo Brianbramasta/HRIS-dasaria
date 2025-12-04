@@ -55,7 +55,7 @@ export default function OrganizationHistoryPage() {
         id: 'statusPerubahan',
         label: 'Status Perubahan',
         align: 'center',
-        format: (v) => {
+        format: (v: string) => {
           const val = (v as string) || '-';
           const isRekom = val === 'Rekomendasi';
           const base = 'inline-flex items-center rounded-lg px-3 py-1 text-xs font-medium';
@@ -89,7 +89,7 @@ export default function OrganizationHistoryPage() {
   return (
     <div className="p-4">
       <DataTable<OrgHistoryListRow>
-        title="Organization History"
+        title="Riwayat Organisasi"
         data={rowsWithStatus}
         columns={columns}
         actions={actions}

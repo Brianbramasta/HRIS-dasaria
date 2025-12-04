@@ -22,7 +22,7 @@ const ModalDeleteContent: React.FC<Props> = ({
   const inputClass = `w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary${memoNumberReadOnly ? ' bg-gray-100' : ''}`;
   return (
     <>
-      <div className="space-y-2">
+      <div className="space-y-2 mb-2">
         <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
         <Input
           required

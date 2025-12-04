@@ -1,3 +1,4 @@
+// Penyesuaian hooks Divisi agar sesuai kontrak API terbaru (1.6)
 import { useState, useCallback, useEffect } from 'react';
 import { divisionsService } from '../services/request/divisions.service';
 import { DivisionListItem, TableFilter } from '../types/organization.api.types';
@@ -14,9 +15,10 @@ interface UseDivisionsReturn {
   
   // Actions
   fetchDivisions: (filter?: TableFilter) => Promise<void>;
-  createDivision: (payload: { name: string; directorateId: string; description?: string | null; memoNumber: string; skFileId: string; }) => Promise<void>;
-  updateDivision: (id: string, payload: { name?: string; directorateId?: string; description?: string | null; memoNumber: string; skFileId: string; }) => Promise<void>;
-  deleteDivision: (id: string, payload: { memoNumber: string; skFileId: string; }) => Promise<void>;
+  // Mengubah payload untuk menggunakan file SK (multipart/form-data)
+  createDivision: (payload: { name: string; directorateId: string; description?: string | null; memoNumber: string; skFile: File; }) => Promise<void>;
+  updateDivision: (id: string, payload: { name?: string; directorateId?: string; description?: string | null; memoNumber: string; skFile: File; }) => Promise<void>;
+  deleteDivision: (id: string, payload: { memoNumber: string; skFile: File; }) => Promise<void>;
   setPage: (page: number) => void;
   setPageSize: (pageSize: number) => void;
   setSearch: (search: string) => void;
@@ -60,7 +62,8 @@ export const useDivisions = (): UseDivisionsReturn => {
     }
   }, [page, pageSize, search, sortBy, sortOrder, filterValue]);
 
-  const createDivision = useCallback(async (divisionData: { name: string; directorateId: string; description?: string | null; memoNumber: string; skFileId: string; }) => {
+  // Menyesuaikan create agar kirim multipart sesuai kontrak API
+  const createDivision = useCallback(async (divisionData: { name: string; directorateId: string; description?: string | null; memoNumber: string; skFile: File; }) => {
     setLoading(true);
     setError(null);
     
@@ -76,7 +79,8 @@ export const useDivisions = (): UseDivisionsReturn => {
     }
   }, [fetchDivisions]);
 
-  const updateDivision = useCallback(async (id: string, divisionData: { name?: string; directorateId?: string; description?: string | null; memoNumber: string; skFileId: string; }) => {
+  // Menyesuaikan update agar kirim POST + _method=PATCH multipart
+  const updateDivision = useCallback(async (id: string, divisionData: { name?: string; directorateId?: string; description?: string | null; memoNumber: string; skFile: File; }) => {
     setLoading(true);
     setError(null);
     
@@ -93,7 +97,8 @@ export const useDivisions = (): UseDivisionsReturn => {
     }
   }, []);
 
-  const deleteDivision = useCallback(async (id: string, payload: { memoNumber: string; skFileId: string; }) => {
+  // Menyesuaikan delete agar kirim POST + _method=DELETE multipart
+  const deleteDivision = useCallback(async (id: string, payload: { memoNumber: string; skFile: File; }) => {
     setLoading(true);
     setError(null);
     

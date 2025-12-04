@@ -31,7 +31,7 @@ const DeleteOfficeModal: React.FC<DeleteOfficeModalProps> = ({ content, isOpen, 
         <form onSubmit={(e) => {e.preventDefault(); handleDelete?.()}}>
         <div className='max-h-[60vh] overflow-y-auto pb-4'>
           {content}
-          <p className='pt-2'>*Data tidak benar-benar dihapus akan tetapi diarsipkan</p>
+          <p className='pt-2 text-start'>*Data tidak benar-benar dihapus akan tetapi diarsipkan</p>
         </div>
         
 

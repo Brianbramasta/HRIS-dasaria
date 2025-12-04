@@ -39,7 +39,7 @@ const navItems: NavItem[] = [
     subItems: [
       { name: "Data Karyawan", path: "/data-karyawan", pro: false },
       { name: "Pengunduran Diri", path: "/pengunduran-diri", pro: false },
-      { name: "Organization History", path: "/organization-history", pro: false },
+      { name: "Riwayat Organisasi", path: "/organization-history", pro: false },
     
     ],
   },

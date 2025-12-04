@@ -133,6 +133,7 @@ export const companiesService = {
               fileName: d.cd_name ?? d.name ?? '',
               number: d.cd_decree_number ?? d.memoNumber ?? '',
               type: d.deleted_at ? 'archive' : 'active',
+              fileUrl: d.cd_file ?? d.url ?? d.link ?? null,
             } as any;
           })
         : [],

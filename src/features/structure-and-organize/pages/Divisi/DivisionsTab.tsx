@@ -13,6 +13,7 @@ import { addNotification } from '@/stores/notificationStore';
 import { FileText } from '@/icons/components/icons';
 type Props = { resetKey: string };
 import { useFileStore } from '@/stores/fileStore';
+import { formatUrlFile } from '@/utils/formatUrlFile';
 
 
 const divisionColumns: DataTableColumn<DivisionRow>[] = [
@@ -20,7 +21,10 @@ const divisionColumns: DataTableColumn<DivisionRow>[] = [
   { id: 'Nama Divisi', label: 'Nama Divisi', sortable: true },
   { id: 'Direktorat', label: 'Direktorat', sortable: true },
   { id: 'Deskripsi Umum', label: 'Deskripsi Umum', sortable: true },
-  { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: false, isAction: true, format: () => <FileText size={16} /> },
+  { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: false, isAction: true, format: (row: DivisionRow) => (
+     
+      row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer"><FileText size={16} /></a> : '—'
+    )  },
 ];
 
 export default function DivisionsTab({ resetKey }: Props) {
@@ -38,7 +42,7 @@ export default function DivisionsTab({ resetKey }: Props) {
       'Nama Divisi': (d as any).name ?? '—',
       'Direktorat': (d as any).directorateName ?? '—',
       'Deskripsi Umum': (d as any).description ?? '—',
-      'File SK dan Memo': ((d as any).skFile || (d as any).memoFile) ? 'Ada' : '—',
+      'File SK dan Memo': (d as any).skFile ?? '—',
       raw: d,
     }));
   }, [divisions]);

@@ -17,6 +17,7 @@ import { IconPencil, IconHapus, iconPlus, IconFileDetail } from '@/icons/compone
 import DocumentsTable from '../../../components/table/TableGlobal';
 import { formatDate } from '@/utils/formatDate';
 import { formatImage } from '@/utils/formatImage';
+import { formatUrlFile } from '@/utils/formatUrlFile';
 
 const DetailPerusahaan: React.FC = () => {
   const { id } = useParams();
@@ -100,7 +101,7 @@ const DetailPerusahaan: React.FC = () => {
         label: 'Detail',
         icon: <IconFileDetail />,
         className: 'h-9 w-9 flex items-center justify-center rounded-lg  text-white ',
-        onClick: (r: any) => { const url = r?.fileUrl || r?.url || r?.link; if (url) window.open(url, '_blank'); },
+        onClick: (r: any) => { console.log('Detail Dokumen', r);const url = formatUrlFile(r?.fileUrl || r?.url || r?.link); if (url) window.open(url, '_blank'); },
       },
       {
         label: 'Edit',

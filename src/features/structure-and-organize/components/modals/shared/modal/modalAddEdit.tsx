@@ -23,7 +23,7 @@ const ModalAddEdit: React.FC<ModalAddEditProps> = ({ title=null, content, isOpen
     <Modal isOpen={isOpen} onClose={onClose} className={`${maxWidth || 'max-w-md'} p-6 zoom-75 dark:text-white `} showCloseButton>
       <div className="space-y-6 ">
         <form className='' onSubmit={(e) => {e.preventDefault(); handleSubmit?.()}}>
-        {title && <h2 className="text-3xl font-bold text-center">{title}</h2>}
+        {title && <h2 className="text-3xl font-bold text-center mb-4">{title}</h2>}
         <div className='max-h-[60vh] overflow-y-auto mb-4'>
           {content}
         </div>

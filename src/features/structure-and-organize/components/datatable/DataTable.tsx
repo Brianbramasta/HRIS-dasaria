@@ -438,7 +438,7 @@ export function DataTable<T = any>({
 
       <div className="flex flex-col md:flex-row items-center justify-between  border-gray-200 px-6 py-4 dark:border-gray-800 gap-2">
         <div className="flex items-center gap-2 text-sm">
-          <span>Show</span>
+          <span>Menampilkan</span>
           <select
             value={rowsPerPage}
             onChange={(e) => handleRowsPerPageChange(Number(e.target.value))}
@@ -452,8 +452,8 @@ export function DataTable<T = any>({
           </select>
           <span>
             {useExternalPagination
-              ? `1 - ${Math.min((page + 1) * rowsPerPage, externalTotal ?? sortedData.length)} of ${externalTotal ?? sortedData.length}`
-              : `1 - ${Math.min((page + 1) * rowsPerPage, sortedData.length)} of ${sortedData.length}`}
+              ? `1 - ${Math.min((page + 1) * rowsPerPage, externalTotal ?? sortedData.length)} dari ${externalTotal ?? sortedData.length}`
+              : `1 - ${Math.min((page + 1) * rowsPerPage, sortedData.length)} dari ${sortedData.length}`}
           </span>
         </div>
         <PaginationWithIcon
@@ -471,12 +471,12 @@ export function DataTable<T = any>({
         <div className="p-6">
           <div className="mb-4">
             <div className='text-center'>
-              <h1 className='text-2xl font-bold'>Filter</h1>
+              <h1 className='text-2xl font-bold mb-2'>Filter</h1>
             </div>
             <div className="flex justify-between items-center mb-2 ">
               <h4 className="font-semibold">Kolom</h4>
               <Checkbox
-                label="Select All"
+                label="Pilih Semua"
                 checked={tempVisibleColumns.filter((id) => id !== 'no').length === columns.filter((c) => c.id !== 'no' && !c.isAction).length}
                 onChange={(checked) => handleSelectAllColumns(checked)}
               />
@@ -564,12 +564,12 @@ export function DataTable<T = any>({
         <div className="p-6">
           <div className="mb-4">
             <div className='text-center'>
-              <h1 className='text-2xl font-bold'>Export</h1>
+              <h1 className='text-2xl font-bold mb-2'>Expor</h1>
             </div>
             <div className="flex justify-between items-center mb-2">
               <h4 className="font-semibold">Kolom</h4>
               <Checkbox
-                label="Select All"
+                label="Pilih Semua"
                 checked={tempExportVisibleColumns.length === columns.filter((c) => c.id !== 'no' && !c.isAction).length}
                 onChange={(checked) => setTempExportVisibleColumns(checked ? columns.filter((c) => c.id !== 'no' && !c.isAction).map((c) => c.id) : [])}
               />

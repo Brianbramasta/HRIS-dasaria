@@ -118,7 +118,7 @@ export default function Dashboard() {
         </div>
 
         {/* Status Kepegawaian (donut) */}
-        <div className="xl:col-span-4">
+        <div className="xl:col-span-4 h-full">
           <StatusKepegawaian />
         </div>
       </div>
