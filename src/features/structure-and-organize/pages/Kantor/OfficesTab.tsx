@@ -30,7 +30,7 @@ const officeColumns: DataTableColumn<OfficeRow>[] = [
 ];
 
 export default function OfficesTab({ resetKey }: Props) {
-  const { offices, fetchOffices, setSearch, setPage, setPageSize, setSort } = useOffices();
+  const { offices, fetchOffices, setSearch, setPage, setPageSize, setSort, page, pageSize, total } = useOffices();
   const addModal = useModal(false);
   const editModal = useModal(false);
   const deleteModal = useModal(false);
@@ -78,9 +78,13 @@ export default function OfficesTab({ resetKey }: Props) {
       filterable
       resetKey={resetKey}
       onSearchChange={(val) => { setSearch(val); fetchOffices(); }}
-      onSortChange={() => { setSort('name', 'asc'); fetchOffices(); }}
+      onSortChange={(columnId, order) => { setSort(columnId, order); fetchOffices(); }}
       onPageChangeExternal={(p) => { setPage(p); fetchOffices(); }}
       onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); fetchOffices(); }}
+      useExternalPagination
+      externalPage={page}
+      externalTotal={total}
+      pageSize={pageSize}
       
       onAdd={() => addModal.openModal()}
       onExport={() => exportCSV('office.csv', rows)}

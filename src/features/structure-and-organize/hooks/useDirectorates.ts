@@ -20,7 +20,7 @@ interface UseDirectoratesReturn {
   setPage: (page: number) => void;
   setPageSize: (pageSize: number) => void;
   setSearch: (search: string) => void;
-  setSort: (sortBy: string, sortOrder: 'asc' | 'desc' ) => void;
+  setSort: (sortBy: string, sortOrder: 'asc' | 'desc'  ) => void;
 }
 
 export const useDirectorates = (): UseDirectoratesReturn => {
@@ -32,8 +32,8 @@ export const useDirectorates = (): UseDirectoratesReturn => {
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
   const [search, setSearch] = useState('');
-  const [sortBy, setSortBy] = useState('name');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [sortBy, setSortBy] = useState<string | undefined>(undefined);
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | undefined>(undefined);
   const filterValue = useFilterStore((s) => s.filters['Direktorat'] ?? '');
 
   const fetchDirectorates = useCallback(async (filter?: TableFilter) => {

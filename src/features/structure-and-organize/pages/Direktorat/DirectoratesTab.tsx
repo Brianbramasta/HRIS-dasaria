@@ -22,7 +22,7 @@ const directorateColumns: DataTableColumn<DirectorateRow>[] = [
 ];
 
 export default function DirectoratesTab({ resetKey }: Props) {
-  const { directorates, fetchDirectorates, setSearch, setPage, setPageSize, setSort } = useDirectorates();
+  const { directorates, fetchDirectorates, setSearch, setPage, setPageSize, setSort, page, pageSize, total } = useDirectorates();
   const addModal = useModal(false);
   const editModal = useModal(false);
   const deleteModal = useModal(false);
@@ -70,9 +70,13 @@ export default function DirectoratesTab({ resetKey }: Props) {
       filterable
       resetKey={resetKey}
       onSearchChange={(val) => { setSearch(val); fetchDirectorates(); }}
-      onSortChange={() => { setSort('name', 'asc'); fetchDirectorates(); }}
+      onSortChange={(columnId, order) => { setSort(columnId, order); fetchDirectorates(); }}
       onPageChangeExternal={(p) => { setPage(p); fetchDirectorates(); }}
       onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); fetchDirectorates(); }}
+      useExternalPagination
+      externalPage={page}
+      externalTotal={total}
+      pageSize={pageSize}
       
       onAdd={() => addModal.openModal()}
       onExport={() => exportCSV('direktorat.csv', rows)}
