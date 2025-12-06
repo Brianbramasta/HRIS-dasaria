@@ -24,6 +24,7 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
   const [description, setDescription] = useState('');
   const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
+  // DOK: gunakan companyIds sebagai multi-select perusahaan pada update kantor
   const [companyIds, setCompanyIds] = useState<string[]>([]);
   const [companyOptions, setCompanyOptions] = useState<{ value: string; text: string }[]>([]);
 
@@ -66,6 +67,7 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
     // metadata file dikelola oleh FileInput melalui store
   };
 
+  // DOK: submit update mengirim company[n][id_company] melalui officesService.update
   const handleSubmit = async () => {
     if (!office) return;
     if (!name.trim()) return;

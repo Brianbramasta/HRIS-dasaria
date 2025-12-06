@@ -20,6 +20,7 @@ interface AddOfficeModalProps {
 
 const AddOfficeModal: React.FC<AddOfficeModalProps> = ({ isOpen, onClose, onSuccess }) => {
   const [name, setName] = useState('');
+  // DOK: gunakan companyIds sebagai multi-select perusahaan sesuai api.contract.kantor.md
   const [companyIds, setCompanyIds] = useState<string[]>([]);
   const [companyOptions, setCompanyOptions] = useState<{ value: string; text: string }[]>([]);
   const [memoNumber, setMemoNumber] = useState('');
@@ -43,6 +44,7 @@ const AddOfficeModal: React.FC<AddOfficeModalProps> = ({ isOpen, onClose, onSucc
     // metadata file dikelola oleh FileInput melalui store
   };
 
+  // DOK: submit create mengirim company[n][id_company] melalui officesService.create
   const handleSubmit = async () => {
     if (!name.trim()) return;
     if (!skFile?.name){

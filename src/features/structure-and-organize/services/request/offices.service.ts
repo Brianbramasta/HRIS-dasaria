@@ -100,11 +100,8 @@ export const officesService = {
     const ids = Array.isArray(payload.companyIds) && payload.companyIds.length > 0
       ? payload.companyIds
       : (payload.companyId ? [payload.companyId] : []);
-    if (ids.length > 1) {
-      ids.forEach((id) => formData.append('id_company[]', id));
-    } else if (ids.length === 1) {
-      formData.append('id_company', ids[0]);
-    }
+    // DOK: Sesuai api.contract.kantor.md, gunakan company[n][id_company] untuk multi-select perusahaan
+    ids.forEach((id, index) => formData.append(`company[${index}][id_company]`, id));
     formData.append('office_decree_number', payload.memoNumber);
     if (payload.description !== undefined && payload.description !== null) {
       formData.append('office_description', payload.description);
@@ -132,10 +129,11 @@ export const officesService = {
     const formData = new FormData();
     formData.append('_method', 'PATCH');
     if (payload.name !== undefined) formData.append('office_name', payload.name);
+    // DOK: PATCH Kantor menggunakan company[n][id_company] untuk multi-select perusahaan
     if (Array.isArray(payload.companyIds) && payload.companyIds.length > 0) {
-      payload.companyIds.forEach((id) => formData.append('id_company[]', id));
+      payload.companyIds.forEach((id, index) => formData.append(`company[${index}][id_company]`, id));
     } else if (payload.companyId !== undefined) {
-      formData.append('id_company', payload.companyId);
+      formData.append(`company[0][id_company]`, payload.companyId);
     }
     formData.append('office_decree_number', payload.memoNumber);
     if (payload.description !== undefined && payload.description !== null) {
