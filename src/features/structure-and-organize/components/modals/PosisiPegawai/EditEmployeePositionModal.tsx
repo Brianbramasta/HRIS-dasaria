@@ -10,6 +10,7 @@ import { positionsService } from '../../../services/request/positions.service';
 import { directoratesService } from '../../../services/request/directorates.service';
 import { divisionsService } from '../../../services/request/divisions.service';
 import { departmentsService } from '../../../services/request/departments.service';
+import { addNotification } from '@/stores/notificationStore';
 
 interface EditEmployeePositionModalProps {
   isOpen: boolean;
@@ -105,6 +106,12 @@ const EditEmployeePositionModal: React.FC<EditEmployeePositionModalProps> = ({ i
       onClose();
     } catch (err) {
       console.error('Failed to update employee position', err);
+      addNotification({
+        variant: 'error',
+        title: 'Posisi Pegawai tidak diupdate',
+        description: 'Gagal mengupdate posisi pegawai. Silakan coba lagi.',
+        hideDuration: 4000,
+      });
     } finally {
       setSubmitting(false);
     }

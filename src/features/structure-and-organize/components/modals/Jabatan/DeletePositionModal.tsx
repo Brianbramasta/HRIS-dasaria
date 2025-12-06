@@ -51,6 +51,12 @@ export const DeletePositionModal = ({
       onClose();
     } catch (error) {
       console.error("Failed to delete position:", error);
+      addNotification({
+        variant: 'error',
+        title: 'Jabatan tidak dihapus',
+        description: 'Gagal menghapus jabatan. Silakan coba lagi.',
+        hideDuration: 4000,
+      });
     } finally {
       setIsLoading(false);
     }

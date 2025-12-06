@@ -8,6 +8,7 @@ import ModalAddEdit from '../shared/modal/modalAddEdit';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 import MultiSelect from '@/components/form/MultiSelect';
+import { addNotification } from '@/stores/notificationStore';
 
 
 
@@ -93,6 +94,12 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
       onClose();
     } catch (err) {
       console.error('Failed to update office', err);
+      addNotification({
+        variant: 'error',
+        title: 'Office tidak diupdate',
+        description: 'Gagal mengupdate office. Silakan coba lagi.',
+        hideDuration: 4000,
+      });
     } finally {
       setSubmitting(false);
     }

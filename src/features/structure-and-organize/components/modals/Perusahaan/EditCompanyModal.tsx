@@ -7,6 +7,7 @@ import TextArea from '@/components/form/input/TextArea';
 import FileInput from '../shared/field/FileInput';
 import Select from '@/components/form/Select';
 import ModalAddEdit from '../shared/modal/modalAddEdit';
+import { addNotification } from '@/stores/notificationStore';
 
 
 interface EditCompanyModalProps {
@@ -74,6 +75,12 @@ const EditCompanyModal: React.FC<EditCompanyModalProps> = ({ isOpen, onClose, co
       onClose();
     } catch (err) {
       console.error('Failed to update company', err);
+        addNotification({
+          variant: 'error',
+          title: 'Perusahaan tidak diupdate',
+          description: 'Gagal mengupdate perusahaan. Silakan coba lagi.',
+          hideDuration: 4000,
+        });
     } finally {
       setSubmitting(false);
     }

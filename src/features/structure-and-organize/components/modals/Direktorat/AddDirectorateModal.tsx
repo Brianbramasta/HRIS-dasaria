@@ -55,6 +55,12 @@ const AddDirectorateModal: React.FC<AddDirectorateModalProps> = ({ isOpen, onClo
       onClose();
     } catch (err) {
       console.error('Failed to add directorate', err);
+      addNotification({
+        variant: 'error',
+        title: ' Direktorat tidak ditambahkan',
+        description: 'Gagal menambahkan direktorat. Silakan coba lagi.',
+        hideDuration: 4000,
+      });
     } finally {
       setSubmitting(false);
     }

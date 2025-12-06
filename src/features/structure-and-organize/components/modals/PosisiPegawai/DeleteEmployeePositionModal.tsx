@@ -40,6 +40,12 @@ const DeleteEmployeePositionModal: React.FC<DeleteEmployeePositionModalProps> = 
       onClose();
     } catch (err) {
       console.error('Failed to delete employee position', err);
+      addNotification({
+        variant: 'error',
+        title: 'Posisi Pegawai tidak dihapus',
+        description: 'Gagal menghapus posisi pegawai. Silakan coba lagi.',
+        hideDuration: 4000,
+      });
     } finally {
       setSubmitting(false);
     }

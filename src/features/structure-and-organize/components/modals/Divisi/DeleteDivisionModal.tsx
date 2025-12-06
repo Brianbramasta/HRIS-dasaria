@@ -42,6 +42,12 @@ const DeleteDivisionModal: React.FC<DeleteDivisionModalProps> = ({ isOpen, onClo
       onClose();
     } catch (err) {
       console.error('Failed to delete division', err);
+      addNotification({
+        variant: 'error',
+        title: 'Divisi tidak dihapus',
+        description: 'Gagal menghapus divisi. Silakan coba lagi.',
+        hideDuration: 4000,
+      });
     } finally {
       setSubmitting(false);
     }

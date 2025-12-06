@@ -53,6 +53,12 @@ const DeleteCompanyModal: React.FC<DeleteCompanyModalProps> = ({ isOpen, onClose
       onClose();
     } catch (err) {
       console.error('Failed to delete company', err);
+      addNotification({
+        variant: 'error',
+        title: 'Perusahaan tidak dihapus',
+        description: 'Gagal menghapus perusahaan. Silakan coba lagi.',
+        hideDuration: 4000,
+      });
     } finally {
       setSubmitting(false);
     }

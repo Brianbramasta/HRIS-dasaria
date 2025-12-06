@@ -9,6 +9,7 @@ import ModalAddEdit from '../shared/modal/modalAddEdit';
 import Input from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
 import TextArea from '@/components/form/input/TextArea';
+import { addNotification } from '@/stores/notificationStore';
 
 interface EditDepartmentModalProps {
   isOpen: boolean;
@@ -40,6 +41,12 @@ const EditDepartmentModal: React.FC<EditDepartmentModalProps> = ({ isOpen, onClo
         setDivisions(dd || []);
       } catch (err) {
         console.error('Failed to initialize edit department', err);
+        addNotification({
+          variant: 'error',
+          title: 'Departemen tidak diupdate',
+          description: 'Gagal mengupdate departemen. Silakan coba lagi.',
+          hideDuration: 4000,
+        });
       }
     };
     if (isOpen) initEdit();

@@ -44,6 +44,12 @@ const DeleteDepartmentModal: React.FC<DeleteDepartmentModalProps> = ({ isOpen, o
       onClose();
     } catch (err) {
       console.error('Failed to delete department', err);
+      addNotification({
+        variant: 'error',
+        title: 'Departemen tidak dihapus',
+        description: 'Gagal menghapus departemen. Silakan coba lagi.',
+        hideDuration: 4000,
+      });
     } finally {
       setSubmitting(false);
     }

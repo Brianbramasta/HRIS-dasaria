@@ -77,6 +77,12 @@ const AddDivisionModal: React.FC<AddDivisionModalProps> = ({ isOpen, onClose, on
       onClose();
     } catch (err) {
       console.error('Failed to add division', err);
+      addNotification({
+        variant: 'error',
+        title: 'Divisi tidak ditambahkan',
+        description: 'Gagal menambahkan divisi. Silakan coba lagi.',
+        hideDuration: 4000,
+      });
     } finally {
       setSubmitting(false);
     }

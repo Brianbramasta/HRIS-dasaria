@@ -83,6 +83,12 @@ const AddOfficeModal: React.FC<AddOfficeModalProps> = ({ isOpen, onClose, onSucc
       onClose();
     } catch (err) {
       console.error('Failed to create office', err);
+      addNotification({
+        variant: 'error',
+        title: 'Office tidak ditambahkan',
+        description: 'Gagal menambahkan office. Silakan coba lagi.',
+        hideDuration: 4000,
+      });
     } finally {
       setSubmitting(false);
     }

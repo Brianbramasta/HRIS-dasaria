@@ -99,6 +99,12 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
       onClose();
     } catch (err) {
       console.error('Failed to create company', err);
+        addNotification({
+          variant: 'error',
+          title: 'Perusahaan tidak ditambahkan',
+          description: 'Gagal menambahkan perusahaan. Silakan coba lagi.',
+          hideDuration: 4000,
+        });
     } finally {
       setSubmitting(false);
     }

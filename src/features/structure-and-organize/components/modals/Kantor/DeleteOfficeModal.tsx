@@ -47,6 +47,12 @@ const DeleteOfficeModal: React.FC<DeleteOfficeModalProps> = ({ isOpen, onClose, 
       onClose();
     } catch (err) {
       console.error('Failed to delete office', err);
+      addNotification({
+        variant: 'error',
+        title: 'Office tidak dihapus',
+        description: 'Gagal menghapus office. Silakan coba lagi.',
+        hideDuration: 4000,
+      });
     } finally {
       setSubmitting(false);
     }

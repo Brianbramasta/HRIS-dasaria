@@ -8,6 +8,7 @@ import ModalAddEdit from '../shared/modal/modalAddEdit';
 
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
+import { addNotification } from '@/stores/notificationStore';
 // import { addNotification } from '@/stores/notificationStore';
 
 interface EditDirectorateModalProps {
@@ -56,6 +57,12 @@ const EditDirectorateModal: React.FC<EditDirectorateModalProps> = ({ isOpen, onC
       onClose();
     } catch (err) {
       console.error('Failed to update directorate', err);
+      addNotification({
+        variant: 'error',
+        title: ' Direktorat tidak diupdate',
+        description: 'Gagal mengupdate direktorat. Silakan coba lagi.',
+        hideDuration: 4000,
+      });
     } finally {
       setSubmitting(false);
     }

@@ -45,6 +45,12 @@ const DeleteDirectorateModal: React.FC<DeleteDirectorateModalProps> = ({ isOpen,
       onClose();
     } catch (err) {
       console.error('Failed to delete directorate', err);
+      addNotification({
+        variant: 'error',
+        title: ' Direktorat tidak dihapus',
+        description: 'Gagal menghapus direktorat. Silakan coba lagi.',
+        hideDuration: 4000,
+      });
     } finally {
       setSubmitting(false);
     }

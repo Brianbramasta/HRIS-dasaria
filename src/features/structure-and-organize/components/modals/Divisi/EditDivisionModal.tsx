@@ -9,6 +9,7 @@ import ModalAddEdit from '../shared/modal/modalAddEdit';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 import Select from '@/components/form/Select';
+import { addNotification } from '@/stores/notificationStore';
 
 interface EditDivisionModalProps {
   isOpen: boolean;
@@ -66,6 +67,12 @@ const EditDivisionModal: React.FC<EditDivisionModalProps> = ({ isOpen, onClose, 
       onClose();
     } catch (err) {
       console.error('Failed to update division', err);
+      addNotification({
+        variant: 'error',
+        title: 'Divisi tidak diupdate',
+        description: 'Gagal mengupdate divisi. Silakan coba lagi.',
+        hideDuration: 4000,
+      });
     } finally {
       setSubmitting(false);
     }

@@ -41,6 +41,12 @@ const DeleteBusinessLineModal: React.FC<DeleteBusinessLineModalProps> = ({ isOpe
       onClose();
     } catch (err) {
       console.error('Failed to delete business line', err);
+      addNotification({
+        variant: 'error',
+        title: 'Lini Bisnis tidak dihapus',
+        description: 'Gagal menghapus lini bisnis. Silakan coba lagi.',
+        hideDuration: 4000,
+      });
     } finally {
       setSubmitting(false);
     }

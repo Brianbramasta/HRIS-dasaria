@@ -68,6 +68,12 @@ export const AddPositionModal = ({ isOpen, onClose, onSuccess }: Props) => {
       onClose();
     } catch (error) {
       console.error("Failed to add position:", error);
+      addNotification({
+        variant: 'error',
+        title: 'Jabatan tidak ditambahkan',
+        description: 'Gagal menambahkan jabatan. Silakan coba lagi.',
+        hideDuration: 4000,
+      });
     } finally {
       setIsLoading(false);
     }

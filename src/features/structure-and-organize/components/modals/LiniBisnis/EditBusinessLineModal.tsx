@@ -8,6 +8,7 @@ import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 // import { error } from 'console';
 import { useFileStore } from '@/stores/fileStore';
+import { addNotification } from '@/stores/notificationStore';
 // import { fileService } from '@/services/file.service';
 // import { addNotification } from '@/stores/notificationStore';
 
@@ -71,6 +72,12 @@ const EditBusinessLineModal: React.FC<EditBusinessLineModalProps> = ({ isOpen, o
       onClose();
     } catch (err) {
       console.error('Failed to update business line', err);
+      addNotification({
+        variant: 'error',
+        title: 'Lini Bisnis tidak diupdate',
+        description: 'Gagal mengupdate lini bisnis. Silakan coba lagi.',
+        hideDuration: 4000,
+      });
     } finally {
       setSubmitting(false);
     }

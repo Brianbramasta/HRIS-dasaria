@@ -75,6 +75,12 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ isOpen, onClose
       onClose();
     } catch (err) {
       console.error('Failed to add department', err);
+      addNotification({
+        variant: 'error',
+        title: 'Departemen tidak ditambahkan',
+        description: 'Gagal menambahkan departemen. Silakan coba lagi.',
+        hideDuration: 4000,
+      });
     } finally {
       setSubmitting(false);
     }

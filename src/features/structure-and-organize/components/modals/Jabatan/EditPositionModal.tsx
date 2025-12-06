@@ -115,6 +115,12 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
       onClose();
     } catch (error) {
       console.error("Failed to update position:", error);
+      addNotification({
+        variant: 'error',
+        title: 'Jabatan tidak diupdate',
+        description: 'Gagal mengupdate jabatan. Silakan coba lagi.',
+        hideDuration: 4000,
+      });
     } finally {
       setIsLoading(false);
     }

@@ -104,6 +104,12 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
       onClose();
     } catch (err) {
       console.error('Failed to create employee position', err);
+      addNotification({
+        variant: 'error',
+        title: 'Posisi Pegawai tidak ditambahkan',
+        description: 'Gagal menambahkan posisi pegawai. Silakan coba lagi.',
+        hideDuration: 4000,
+      });
     } finally {
       setSubmitting(false);
     }

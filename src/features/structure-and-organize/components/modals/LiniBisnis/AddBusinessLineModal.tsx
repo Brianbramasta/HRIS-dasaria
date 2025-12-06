@@ -57,6 +57,12 @@ const AddBusinessLineModal: React.FC<AddBusinessLineModalProps> = ({ isOpen, onC
       useFileStore.getState().clearSkFile();
     } catch (err) {
       console.error('Failed to create business line', err);
+      addNotification({
+        variant: 'error',
+        title: 'Lini Bisnis tidak ditambahkan',
+        description: 'Gagal menambahkan lini bisnis. Silakan coba lagi.',
+        hideDuration: 4000,
+      });
     } finally {
       setSubmitting(false);
     }
