@@ -7,7 +7,8 @@ import FileInput from "../shared/field/FileInput";
 
 import Input from "@/components/form/input/InputField";
 import { addNotification } from "@/stores/notificationStore";
-import Select from "@/components/form/Select";
+// Ubah: Mengganti komponen Select untuk grade menjadi InputField biasa
+// Alasan: Sesuai permintaan, input grade kini berupa teks
 
 type Props = {
   isOpen: boolean;
@@ -27,7 +28,36 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
   });
   const [isLoading, setIsLoading] = useState(false);
   const skFile = useFileStore((s) => s.skFile);
-  const gradeOptions = Array.from({ length: 10 }, (_, i) => ({ value: `D${i}`, label: `D${i}` }));
+  // Ubah: gradeOptions dihapus karena tidak lagi menggunakan Select
+  
+  // Dokumentasi: Saat modal dibuka, ambil detail jabatan by ID sesuai kontrak API
+  useEffect(() => {
+    if (!isOpen || !position?.id) return;
+    setIsLoading(true);
+    positionsService.detail(position.id)
+      .then((p) => {
+        setFormData({
+          name: p.name || "",
+          grade: (p.grade as string) || "",
+          directSubordinates: Array.isArray(p.directSubordinates)
+            ? p.directSubordinates.join(", ")
+            : "",
+          memoNumber: p.memoNumber || "",
+          jobDescription: p.jobDescription || "",
+          skFile: null,
+        });
+      })
+      .catch((error) => {
+        console.error("Failed to fetch position detail:", error);
+        addNotification({
+          variant: 'error',
+          title: 'Gagal mengambil detail jabatan',
+          description: 'Terjadi kesalahan saat memuat data jabatan.',
+          hideDuration: 4000,
+        });
+      })
+      .finally(() => setIsLoading(false));
+  }, [isOpen, position?.id]);
 
   useEffect(() => {
     if (position) {
@@ -59,15 +89,15 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
 
   const handleSubmit = async () => {
     if (!position) return;
-    if (!skFile?.file) {
-      addNotification({
-        variant: 'error',
-        title: 'Jabatan tidak diupdate',
-        description: 'File Wajib di isi',
-        hideDuration: 4000,
-      });
-      return;
-    }
+    // if (!skFile?.file) {
+    //   addNotification({
+    //     variant: 'error',
+    //     title: 'Jabatan tidak diupdate',
+    //     description: 'File Wajib di isi',
+    //     hideDuration: 4000,
+    //   });
+    //   return;
+    // }
 
     setIsLoading(true);
     try {
@@ -117,14 +147,15 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
         >
           Grade
         </label>
-        <Select
-          key={position?.id ?? 'edit'}
-          options={gradeOptions}
-          placeholder="Pilih Grade"
-          onChange={(value) => setFormData((prev) => ({ ...prev, grade: value }))}
-          className=""
-          defaultValue={formData.grade}
+        <Input
           required
+          type="text"
+          name="grade"
+          id="grade"
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+          placeholder="Masukkan grade (mis. D0)"
+          value={formData.grade}
+          onChange={handleInputChange}
         />
       </div>
       <div>

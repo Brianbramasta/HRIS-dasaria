@@ -363,7 +363,7 @@ export function DataTable<T = any>({
                       }`}
                     >
                       {column.id === 'no'
-                        ? (page * rowsPerPage + index + 1)
+                        ? (index + 1)
                         : column.format
                           ? column.format(row[column.id as keyof T], row)
                           : (row[column.id as keyof T] as React.ReactNode)}

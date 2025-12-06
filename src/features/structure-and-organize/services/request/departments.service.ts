@@ -80,6 +80,13 @@ export const departmentsService = {
     };
   },
 
+  // Mengambil detail departemen by ID sesuai kontrak API
+  getById: async (id: string): Promise<DepartmentListItem> => {
+    const result = await apiService.get<any>(`/organizational-structure/departments/${id}`);
+    const item = (result as any).data as any;
+    return mapToDepartment(item);
+  },
+
   // Menyimpan data departemen (multipart/form-data)
   create: async (payload: { name: string; divisionId: string; description?: string | null; memoNumber: string; skFile: File; }): Promise<DepartmentListItem> => {
     const form = new FormData();

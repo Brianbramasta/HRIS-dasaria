@@ -12,6 +12,7 @@ import type { PositionListItem } from '../../types/organization.api.types';
 import { addNotification } from '@/stores/notificationStore';
 import { FileText } from '@/icons/components/icons';
 import { useFileStore } from '@/stores/fileStore';
+import { formatUrlFile } from '@/utils/formatUrlFile';
 type Props = { resetKey: string };
 
 const positionColumns: DataTableColumn<PositionRow>[] = [
@@ -20,11 +21,12 @@ const positionColumns: DataTableColumn<PositionRow>[] = [
   { id: 'Grade', label: 'Grade', sortable: true },
   { id: 'Deskripsi Tugas', label: 'Deskripsi Tugas', sortable: true },
   { id: 'Bawahan Langsung', label: 'Bawahan Langsung', sortable: true },
-  { id: 'File SK & MoU', label: 'File SK & MoU', sortable: false, isAction: true, format: () => <FileText size={16} /> },
+  { id: 'File SK & MoU', label: 'File SK & MoU', sortable: false, isAction: true, format: (row: PositionRow) => (row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer" className='flex items-center justify-center'><FileText size={16} /></a> : '—' )},
 ];
 
+// Dokumentasi: Halaman Jabatan menggunakan pagination eksternal agar kompatibel dengan DataTable
 export default function PositionsTab({ resetKey }: Props) {
-  const { positions, fetchPositions, setSearch, setPage, setPageSize, setSort } = usePositions();
+  const { positions, fetchPositions, setSearch, setPage, setPageSize, setSort, page, pageSize, total, loading } = usePositions();
   const addModal = useModal(false);
   const editModal = useModal(false);
   const deleteModal = useModal(false);
@@ -38,7 +40,7 @@ export default function PositionsTab({ resetKey }: Props) {
       Grade: (p as any).grade ?? (p as any).level ?? '—',
       'Deskripsi Tugas': (p as any).jobDescription ?? (p as any).description ?? '—',
       'Bawahan Langsung': Array.isArray((p as any).directSubordinates) ? (p as any).directSubordinates.join(', ') : '—',
-      'File SK & MoU': ((p as any).skFile || (p as any).memoFile) ? 'Ada' : '—',
+      'File SK & MoU': (p as any).skFile ?? '—',
       raw: p,
     }));
   }, [positions]);
@@ -90,13 +92,18 @@ export default function PositionsTab({ resetKey }: Props) {
         data={rows}
         columns={positionColumns}
         actions={actionsIconOnly}
+        loading={loading}
+        pageSize={pageSize}
+        useExternalPagination
+        externalPage={page}
+        externalTotal={total}
         searchable
         filterable
         resetKey={resetKey}
-        onSearchChange={(val) => { setSearch(val); fetchPositions(); }}
-        onSortChange={() => { setSort('name', 'asc'); fetchPositions(); }}
-        onPageChangeExternal={(p) => { setPage(p); fetchPositions(); }}
-        onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); fetchPositions(); }}
+        onSearchChange={(val) => { setSearch(val); }}
+        onSortChange={(columnId, order) => { setSort(columnId, order); }}
+        onPageChangeExternal={(p) => { setPage(p); }}
+        onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); }}
         
         onAdd={()=>addModal.openModal()}
         onExport={() => exportCSV('jabatan.csv', rows)}

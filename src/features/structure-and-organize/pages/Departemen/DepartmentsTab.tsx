@@ -12,6 +12,7 @@ import DeleteDepartmentModal from '../../components/modals/Departemen/DeleteDepa
 import { FileText } from '@/icons/components/icons';
 import { addNotification } from '@/stores/notificationStore';
 import { useFileStore } from '@/stores/fileStore';
+import { formatUrlFile } from '@/utils/formatUrlFile';
 
 type Props = { resetKey: string };
 
@@ -19,23 +20,27 @@ const departmentColumns: DataTableColumn<DepartmentRow>[] = [
   { id: 'no', label: 'No', sortable: false },
   { id: 'Nama Departemen', label: 'Nama Departemen', sortable: true },
   { id: 'Nama Divisi', label: 'Divisi', sortable: true },
-  { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: false, isAction: true, format: () => <FileText size={16} /> },
+  { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: false, isAction: true, format: (row: DepartmentRow) => (
+    
+    row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer" className='flex items-center justify-center'><FileText size={16} /></a> : '—' )},
 ];
 
 export default function DepartmentsTab({ resetKey }: Props) {
-  const { departments, fetchDepartments, setSearch, setPage, setPageSize, setSort } = useDepartments();
+  // Sinkronisasi pagination eksternal dengan DataTable (server-side pagination)
+  const { departments, fetchDepartments, setSearch, setPage, setPageSize, setSort, page, pageSize, total } = useDepartments() as any;
   const addModal = useModal(false);
   const editModal = useModal(false);
   const deleteModal = useModal(false);
   const [selected, setSelected] = useState<DepartmentListItem | null>(null);
   const fileStore = useFileStore();
 
+  // Perbaikan: tambahkan tipe eksplisit pada parameter callback map untuk menghindari implicit any
   const rows: any[] = useMemo(() => {
-    return (departments || []).map((d, idx) => ({
+    return (departments || []).map((d: DepartmentListItem, idx: number) => ({
       no: idx + 1,
       'Nama Departemen': (d as any).name ?? '—',
       'Nama Divisi': (d as any).divisionName ?? '—',
-      'File SK dan Memo': ((d as any).skFile || (d as any).memoFile) ? 'Ada' : '—',
+      'File SK dan Memo': (d as any).skFile ?? '_',
       raw: d,
     }));
   }, [departments]);
@@ -71,10 +76,20 @@ export default function DepartmentsTab({ resetKey }: Props) {
       searchable
       filterable
       resetKey={resetKey}
+      // Menjalankan pencarian ketika user menekan Enter
       onSearchChange={(val) => { setSearch(val); fetchDepartments(); }}
-      onSortChange={() => { setSort('name', 'asc'); fetchDepartments(); }}
+      // Menjalankan sort berdasarkan kolom dan urutan dari DataTable
+      onSortChange={(columnId, order) => { setSort(columnId, order); fetchDepartments(); }}
+      // Pagination eksternal: page 1-based, DataTable konversi internal otomatis
       onPageChangeExternal={(p) => { setPage(p); fetchDepartments(); }}
+      // Ubah ukuran halaman dan refetch
       onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); fetchDepartments(); }}
+      // Aktifkan mode pagination eksternal agar DataTable tidak slice data
+      useExternalPagination
+      externalPage={page}
+      externalTotal={total}
+      pageSize={pageSize}
+      loading={false}
       
       onAdd={() => addModal.openModal()}
       onExport={() => exportCSV('departemen.csv', rows)}

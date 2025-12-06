@@ -9,7 +9,6 @@ import ModalAddEdit from '../shared/modal/modalAddEdit';
 import Input from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
 import TextArea from '@/components/form/input/TextArea';
-import { addNotification } from '@/stores/notificationStore';
 
 interface EditDepartmentModalProps {
   isOpen: boolean;
@@ -27,39 +26,39 @@ const EditDepartmentModal: React.FC<EditDepartmentModalProps> = ({ isOpen, onClo
   const [divisions, setDivisions] = useState<DivisionListItem[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
+  // Alur edit: ambil detail departemen terlebih dahulu, kemudian dropdown divisi
   useEffect(() => {
-    const loadDivisions = async () => {
+    const initEdit = async () => {
       try {
-        const res = await divisionsService.getList({ search: '', page: 1, pageSize: 100, sortBy: 'name', sortOrder: 'asc' });
-        setDivisions(res.data || []);
+        if (!department?.id) return;
+        const detail = await departmentsService.getById(department.id);
+        setName(detail.name || '');
+        setDivisionId(detail.divisionId || '');
+        setDescription(detail.description || '');
+        setMemoNumber(detail.memoNumber || '');
+        const dd = await divisionsService.getDropdown('');
+        setDivisions(dd || []);
       } catch (err) {
-        console.error('Failed to load divisions', err);
+        console.error('Failed to initialize edit department', err);
       }
     };
-    if (isOpen) loadDivisions();
-  }, [isOpen]);
+    if (isOpen) initEdit();
+  }, [isOpen, department?.id]);
 
-  useEffect(() => {
-    if (isOpen && department) {
-      setName(department.name || '');
-      setDivisionId(department.divisionId || '');
-      setDescription((department as any).description || '');
-      setMemoNumber((department as any).memoNumber || '');
-    }
-  }, [isOpen, department]);
+  // Menghapus alur lama, kini data diisi dari getById
 
   const handleFileChange = (/*_e: React.ChangeEvent<HTMLInputElement>*/) => {};
 
   const handleSubmit = async () => {
     if (!department) return;
-    if (!skFile?.file) {
-      addNotification({
-        variant: 'error',
-        title: 'Surat Keputusan tidak ditambahkan',
-        description: 'File Wajib di isi',
-        hideDuration: 4000,
-      });
-      return};
+    // if (!skFile?.file) {
+    //   addNotification({
+    //     variant: 'error',
+    //     title: 'Surat Keputusan tidak ditambahkan',
+    //     description: 'File Wajib di isi',
+    //     hideDuration: 4000,
+    //   });
+    //   return};
     setSubmitting(true);
     try {
       await departmentsService.update(department.id, {
@@ -104,6 +103,7 @@ const EditDepartmentModal: React.FC<EditDepartmentModalProps> = ({ isOpen, onClo
             required
             onChange={(e) => setDivisionId(e)}
             options={divisions.map((d) => ({ value: d.id, label: d.name }))}
+            defaultValue={divisionId}
           />
         </div>
 

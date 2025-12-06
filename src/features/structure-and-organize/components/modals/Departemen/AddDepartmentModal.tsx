@@ -26,11 +26,12 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ isOpen, onClose
   const [divisions, setDivisions] = useState<DivisionListItem[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
+  // Mengambil dropdown Divisi sesuai kontrak API 1.7
   useEffect(() => {
     const loadDivisions = async () => {
       try {
-        const res = await divisionsService.getList({ search: '', page: 1, pageSize: 100, sortBy: 'name', sortOrder: 'asc' });
-        setDivisions(res.data || []);
+        const res = await divisionsService.getDropdown('');
+        setDivisions(res || []);
       } catch (err) {
         console.error('Failed to load divisions', err);
       }
@@ -105,6 +106,7 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ isOpen, onClose
           required
             options={divisions.map((d) => ({ value: d.id, label: d.name }))}
             onChange={(e) => setDivisionId(e)}
+            defaultValue={divisionId}
             className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>

@@ -36,6 +36,7 @@ const toSortField = (field?: string): string => {
   const map: Record<string, string> = {
     name: 'job_title_name',
     'Nama Posisi': 'job_title_name',
+    'Nama Jabatan': 'job_title_name',
     'Jabatan': 'job_title_name',
     grade: 'grade',
   };
@@ -81,6 +82,14 @@ export const positionsService = {
       pageSize: perPage,
       totalPages,
     };
+  },
+
+  // Dokumentasi: Mengambil detail jabatan berdasarkan ID sesuai kontrak API 1.7 (GET /organizational-structure/job-title/{id_job_title})
+  detail: async (id: string): Promise<PositionListItem> => {
+    const result = await apiService.get<any>(`/organizational-structure/job-title/${id}`);
+    const payload = (result as any);
+    const item = payload?.data?.data ?? payload?.data ?? payload;
+    return mapToPosition(item);
   },
 
   // Menyimpan data jabatan (multipart/form-data)
