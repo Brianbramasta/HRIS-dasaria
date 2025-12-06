@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { employeePositionsService } from '../services/request/employeePositions.service';
 import { EmployeePositionListItem, TableFilter } from '../types/organization.api.types';
 import useFilterStore from '../../../stores/filterStore';
@@ -13,7 +13,8 @@ interface UseEmployeePositionsReturn {
   totalPages: number;
   
   // Actions
-  fetchEmployeePositions: (filter?: TableFilter) => Promise<void>;
+  // Dokumentasi: izinkan Partial agar page memanggil dengan subset filter
+  fetchEmployeePositions: (filter?: Partial<TableFilter>) => Promise<void>;
   createEmployeePosition: (payload: {
     name: string;
     positionId: string;
@@ -23,7 +24,7 @@ interface UseEmployeePositionsReturn {
     startDate?: string | null;
     endDate?: string | null;
     memoNumber: string;
-    skFileId: string;
+    skFile?: File | null;
   }) => Promise<void>;
   updateEmployeePosition: (id: string, payload: {
     name?: string;
@@ -34,7 +35,7 @@ interface UseEmployeePositionsReturn {
     startDate?: string | null;
     endDate?: string | null;
     memoNumber: string;
-    skFileId: string;
+    skFile?: File | null;
   }) => Promise<void>;
   deleteEmployeePosition: (id: string, payload: { memoNumber: string; skFileId: string; }) => Promise<void>;
   setPage: (page: number) => void;
@@ -43,6 +44,7 @@ interface UseEmployeePositionsReturn {
   setSort: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
 }
 
+// Penyesuaian besar: hooks Posisi Pegawai disesuaikan untuk pagination eksternal DataTable
 export const useEmployeePositions = (): UseEmployeePositionsReturn => {
   const [employeePositions, setEmployeePositions] = useState<EmployeePositionListItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -52,18 +54,21 @@ export const useEmployeePositions = (): UseEmployeePositionsReturn => {
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
   const [search, setSearch] = useState('');
-  const [sortBy, setSortBy] = useState('employeeName');
+  // Dokumentasi: set default sort 'Nama Posisi' dan hindari auto-fetch berulang
+  const [sortBy, setSortBy] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const filterValue = useFilterStore((s) => s.filters['Posisi Pegawai'] ?? '');
 
-  const fetchEmployeePositions = useCallback(async (filter?: TableFilter) => {
+  // Dokumentasi: menerima Partial<TableFilter>, kombinasikan dengan state lokal
+  const fetchEmployeePositions = useCallback(async (filter?: Partial<TableFilter>) => {
     setLoading(true);
     setError(null);
     
     try {
+      // Dokumentasi: dukung override page & pageSize dari parameter agar event eksternal tidak membaca state lama
       const response = await employeePositionsService.getList({
-        page,
-        pageSize,
+        page: filter?.page ?? page,
+        pageSize: filter?.pageSize ?? pageSize,
         search: filter?.search ?? search,
         filter: filter?.filter ?? filterValue,
         sortBy: filter?.sortBy ?? sortBy,
@@ -80,6 +85,7 @@ export const useEmployeePositions = (): UseEmployeePositionsReturn => {
     }
   }, [page, pageSize, search, sortBy, sortOrder, filterValue]);
 
+  // Dokumentasi: createEmployeePosition - kirim File asli via service
   const createEmployeePosition = useCallback(async (employeePositionData: {
     name: string;
     positionId: string;
@@ -89,7 +95,7 @@ export const useEmployeePositions = (): UseEmployeePositionsReturn => {
     startDate?: string | null;
     endDate?: string | null;
     memoNumber: string;
-    skFileId: string;
+    skFile?: File | null;
   }) => {
     setLoading(true);
     setError(null);
@@ -104,8 +110,9 @@ export const useEmployeePositions = (): UseEmployeePositionsReturn => {
     } finally {
       setLoading(false);
     }
-  }, [fetchEmployeePositions]);
+  }, [page, pageSize, search, sortBy, sortOrder, filterValue]);
 
+  // Dokumentasi: updateEmployeePosition - kirim File asli via service
   const updateEmployeePosition = useCallback(async (id: string, employeePositionData: {
     name?: string;
     positionId?: string;
@@ -115,7 +122,7 @@ export const useEmployeePositions = (): UseEmployeePositionsReturn => {
     startDate?: string | null;
     endDate?: string | null;
     memoNumber: string;
-    skFileId: string;
+    skFile?: File | null;
   }) => {
     setLoading(true);
     setError(null);
@@ -168,9 +175,8 @@ export const useEmployeePositions = (): UseEmployeePositionsReturn => {
     setSortOrder(newSortOrder);
   }, []);
 
-  useEffect(() => {
-    fetchEmployeePositions();
-  }, [fetchEmployeePositions, filterValue]);
+  // Dokumentasi: tidak auto-fetch di hook agar initial fetch di Page hanya terjadi sekali
+  // (Page memanggil fetchEmployeePositions() saat mount sehingga sort default hanya berjalan sekali)
 
   return {
     employeePositions,

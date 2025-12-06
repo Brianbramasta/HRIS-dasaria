@@ -108,7 +108,7 @@ export const AddPositionModal = ({ isOpen, onClose, onSuccess }: Props) => {
               htmlFor="grade"
               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
             >
-              Grade
+              Golongan
             </label>
             <Input
               required
@@ -116,7 +116,7 @@ export const AddPositionModal = ({ isOpen, onClose, onSuccess }: Props) => {
               name="grade"
               id="grade"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-              placeholder="Masukkan grade (mis. D0)"
+              placeholder="Masukkan golongan (mis. D0)"
               value={formData.grade}
               onChange={handleInputChange}
             />

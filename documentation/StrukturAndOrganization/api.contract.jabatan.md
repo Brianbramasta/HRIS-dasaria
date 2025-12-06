@@ -15,6 +15,25 @@ Query (opsional):
 - `page`
 - `filter[]`
 
+<!-- Tambahan: Endpoint dropdown Jabatan mengikuti pola collection 1.8 (*_dropdown) -->
+## Dropdown Jabatan
+
+URL: `http://127.0.0.1:8000/api/organizational-structure/job-title-dropdown`
+Method: GET
+Query (opsional):
+- `search`
+
+Response (contoh):
+```
+{
+  "meta": { "status": 200, "message": "Success get job title for dropdown" },
+  "data": [
+    { "id_job_title": "019a...", "job_title_name": "Manager" },
+    { "id_job_title": "019b...", "job_title_name": "Staff" }
+  ]
+}
+```
+
 ## Create Jabatan
 
 URL: `http://127.0.0.1:8000/api/organizational-structure/job-title`

@@ -15,6 +15,25 @@ Query (opsional):
 - `page`
 - `filter[]`
 
+<!-- Tambahan: Endpoint dropdown Departemen mengikuti pola collection 1.9 (*-dropdown) -->
+## Dropdown Departemen
+
+URL: `http://127.0.0.1:8000/api/organizational-structure/departments-dropdown`
+Method: GET
+Query (opsional):
+- `search`
+
+Response (contoh):
+```
+{
+  "meta": { "status": 200, "message": "Success get departments for dropdown" },
+  "data": [
+    { "id_department": "019a...", "department_name": "Human Resource Development" },
+    { "id_department": "019b...", "department_name": "Finance" }
+  ]
+}
+```
+
 ## Create Departemen
 
 URL: `http://127.0.0.1:8000/api/organizational-structure/departments`

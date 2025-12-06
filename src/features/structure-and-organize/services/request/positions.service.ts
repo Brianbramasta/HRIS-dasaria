@@ -84,6 +84,22 @@ export const positionsService = {
     };
   },
 
+  // Dokumentasi: Mengambil dropdown jabatan sesuai pola collection 1.8
+  getDropdown: async (search?: string): Promise<PositionListItem[]> => {
+    const qs = search ? `?search=${encodeURIComponent(search)}` : '';
+    const result = await apiService.get<any>(`/organizational-structure/job-title-dropdown${qs}`);
+    const items = (result as any).data as { id_job_title: string; job_title_name: string }[];
+    return (items || []).map((i) => ({
+      id: i.id_job_title,
+      name: i.job_title_name,
+      grade: null,
+      jobDescription: null,
+      directSubordinates: [],
+      memoNumber: null,
+      skFile: null,
+    }));
+  },
+
   // Dokumentasi: Mengambil detail jabatan berdasarkan ID sesuai kontrak API 1.7 (GET /organizational-structure/job-title/{id_job_title})
   detail: async (id: string): Promise<PositionListItem> => {
     const result = await apiService.get<any>(`/organizational-structure/job-title/${id}`);

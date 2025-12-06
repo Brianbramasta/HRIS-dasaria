@@ -539,7 +539,7 @@ export function DataTable<T = any>({
             </div>
           </div>
           <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={() => { setFilterModalOpen(false); setModalFilterTerm(''); }}>Close</Button>
+            <Button variant="outline" onClick={() => { setFilterModalOpen(false); setModalFilterTerm(''); }}>Tutup</Button>
             <Button
               variant="primary"
               onClick={() => {
@@ -553,7 +553,7 @@ export function DataTable<T = any>({
                 setModalFilterTerm('');
               }}
             >
-              Search
+              Cari
             </Button>
           </div>
         </div>
@@ -610,7 +610,7 @@ export function DataTable<T = any>({
             </div>
           </div> */}
           <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setExportModalOpen(false)}>Close</Button>
+            <Button variant="outline" onClick={() => setExportModalOpen(false)}>Tutup</Button>
             <Button
               variant="primary"
               onClick={() => {
@@ -649,7 +649,7 @@ export function DataTable<T = any>({
                 setExportModalOpen(false);
               }}
             >
-              Confirm
+              Pratinjau
             </Button>
           </div>
         </div>

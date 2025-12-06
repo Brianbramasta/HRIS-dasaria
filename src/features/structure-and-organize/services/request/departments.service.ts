@@ -87,6 +87,22 @@ export const departmentsService = {
     return mapToDepartment(item);
   },
 
+  // Dokumentasi: Mengambil dropdown departemen sesuai pola collection 1.9
+  getDropdown: async (search?: string): Promise<DepartmentListItem[]> => {
+    const qs = search ? `?search=${encodeURIComponent(search)}` : '';
+    const result = await apiService.get<any>(`/organizational-structure/departments-dropdown${qs}`);
+    const items = (result as any).data as { id_department: string; department_name: string }[];
+    return (items || []).map((i) => ({
+      id: i.id_department,
+      name: i.department_name,
+      description: null,
+      divisionId: null,
+      divisionName: null,
+      memoNumber: null,
+      skFile: null,
+    }));
+  },
+
   // Menyimpan data departemen (multipart/form-data)
   create: async (payload: { name: string; divisionId: string; description?: string | null; memoNumber: string; skFile: File; }): Promise<DepartmentListItem> => {
     const form = new FormData();

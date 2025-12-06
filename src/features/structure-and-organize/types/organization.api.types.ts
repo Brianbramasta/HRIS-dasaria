@@ -125,6 +125,8 @@ export interface EmployeePositionListItem {
   divisionName: string | null;
   departmentId: string | null;
   departmentName: string | null;
+  // Dokumentasi: tambahkan field deskripsi mengikuti mapping service
+  description: string | null;
   startDate: string | null;
   endDate: string | null;
   memoNumber: string | null;

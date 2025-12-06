@@ -1,3 +1,4 @@
+// Penyesuaian besar: halaman Posisi Pegawai kompatibel dengan pagination eksternal DataTable
 import React, { useMemo, useState } from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '../../components/datatable/DataTable';
 // import { Edit, Trash } from 'react-feather';
@@ -12,6 +13,7 @@ import { useModal } from '../../../../hooks/useModal';
 import { addNotification } from '@/stores/notificationStore';
 import { FileText } from '@/icons/components/icons';
 import { useFileStore } from '@/stores/fileStore';
+import { formatUrlFile } from '@/utils/formatUrlFile';
 
 type Props = { resetKey: string };
 
@@ -22,27 +24,32 @@ const employeePositionColumns: DataTableColumn<EmployeePositionRow>[] = [
   { id: 'Direktorat', label: 'Direktorat', sortable: true },
   { id: 'Divisi', label: 'Divisi', sortable: true },
   { id: 'Departemen', label: 'Departemen', sortable: true },
-  { id: 'File SK & MoU', label: 'File SK & MoU', sortable: false, isAction: true, format: () => <FileText size={16} /> },
+  { id: 'File SK & MoU', label: 'File SK & MoU', sortable: false, isAction: true, format: (row: EmployeePositionRow) => (row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer" className='flex items-center justify-center'><FileText size={16} /></a> : '—')},
 ];
 
 export default function EmployeePositionsTab({ resetKey }: Props) {
-  const { employeePositions, fetchEmployeePositions, setSearch, setPage, setPageSize, setSort } = useEmployeePositions();
+  // Dokumentasi: gunakan tipe return dari useEmployeePositions agar inference parameter map tidak any
+  const { employeePositions, fetchEmployeePositions, setSearch, setPage, setPageSize, setSort, page, pageSize, total } = useEmployeePositions();
   const addModal = useModal(false);
   const editModal = useModal(false);
   const deleteModal = useModal(false);
   const [selectedEmployeePosition, setSelectedEmployeePosition] = useState<EmployeePositionListItem | null>(null);
   const fileStore = useFileStore();
+  // Dokumentasi: flag untuk memastikan fetch awal hanya berjalan sekali saat mount
+  const [hasInitialFetch, setHasInitialFetch] = useState(false);
 
   const rows: EmployeePositionRow[] = useMemo(() => {
-    return (employeePositions || []).map((ep, idx) => ({
+    // Dokumentasi: pastikan kolom string sesuai tipe EmployeePositionRow dan sediakan fileUrl untuk Action
+    return (employeePositions || []).map((ep: EmployeePositionListItem, idx: number) => ({
       id: ep.id,
       no: idx + 1,
-      'Nama Posisi': (ep as any).name ?? (ep as any).positionName ?? '—',
-      Jabatan: (ep as any).position?.name ?? (ep as any).positionName ?? '—',
-      Direktorat: (ep as any).directorate?.name ?? (ep as any).directorateName ?? '—',
-      Divisi: (ep as any).division?.name ?? (ep as any).divisionName ?? '—',
-      Departemen: (ep as any).department?.name ?? (ep as any).departmentName ?? '—',
-      'File SK & MoU': ((ep as any).skFile || (ep as any).memoFile) ? 'Ada' : '—',
+      'Nama Posisi': ep.name ?? ep.positionName ?? '—',
+      Jabatan: ep.positionName ?? '—',
+      Direktorat: ep.directorateName ?? '—',
+      Divisi: ep.divisionName ?? '—',
+      Departemen: ep.departmentName ?? '—',
+      'File SK & MoU': ep.skFile ? 'Ada' : '—',
+      fileUrl: ep.skFile?.fileUrl ?? undefined,
       raw: ep,
     }));
   }, [employeePositions]);
@@ -93,7 +100,8 @@ export default function EmployeePositionsTab({ resetKey }: Props) {
     URL.revokeObjectURL(url);
   };
 
-  React.useEffect(() => { fetchEmployeePositions(); }, [fetchEmployeePositions]);
+  // Dokumentasi: jalankan fetch list sekali saat mount dan set penanda selesai inisialisasi
+  React.useEffect(() => { fetchEmployeePositions(); setHasInitialFetch(true); }, []);
 
   return (
     <>
@@ -105,11 +113,20 @@ export default function EmployeePositionsTab({ resetKey }: Props) {
         searchable
         filterable
         resetKey={resetKey}
-        onSearchChange={(val) => { setSearch(val); fetchEmployeePositions(); }}
-        onSortChange={() => { setSort('name', 'asc'); fetchEmployeePositions(); }}
-        onPageChangeExternal={(p) => { setPage(p); fetchEmployeePositions(); }}
-        onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); fetchEmployeePositions(); }}
-        onColumnVisibilityChange={() => { fetchEmployeePositions(); }}
+        // Dokumentasi: event pencarian hanya fetch setelah inisialisasi selesai
+        onSearchChange={(val) => { setSearch(val); setPage(1); if (hasInitialFetch) { fetchEmployeePositions({ search: val, page: 1 }); } }}
+        // Dokumentasi: event sort hanya fetch setelah inisialisasi selesai
+        onSortChange={(columnId, order) => { setSort(columnId, order); if (hasInitialFetch) { fetchEmployeePositions({ sortBy: columnId, sortOrder: order }); } }}
+        // Dokumentasi: event ganti halaman hanya fetch setelah inisialisasi selesai
+        onPageChangeExternal={(p) => { setPage(p); if (hasInitialFetch) { fetchEmployeePositions({ page: p }); } }}
+        // Dokumentasi: event ganti jumlah baris hanya fetch setelah inisialisasi selesai dan reset ke halaman pertama
+        onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); setPage(1); if (hasInitialFetch) { fetchEmployeePositions({ pageSize: ps, page: 1 }); } }}
+        useExternalPagination
+        externalPage={page}
+        externalTotal={total}
+        pageSize={pageSize}
+        // Dokumentasi: perubahan visibilitas kolom tidak memicu refetch data agar tidak menambah panggilan API saat inisialisasi
+        onColumnVisibilityChange={() => {}}
         onAdd={() => addModal.openModal()}
         onExport={() => exportCSV('posisi-pegawai.csv', rows)}
       />

@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+// Dokumentasi: Modal tambah Posisi Pegawai dengan dropdown dinamis menggunakan service
+import React, { useEffect, useMemo, useState } from 'react';
 import { employeePositionsService } from '../../../services/request/employeePositions.service';
 import type { EmployeePositionListItem } from '../../../types/organization.api.types';
 import { useFileStore } from '@/stores/fileStore';
 import FileInput from '../shared/field/FileInput';
 import ModalAddEdit from '../shared/modal/modalAddEdit';
 import { addNotification } from '@/stores/notificationStore';
+import Select from '@/components/form/Select';
+import { positionsService } from '../../../services/request/positions.service';
+import { directoratesService } from '../../../services/request/directorates.service';
+import { divisionsService } from '../../../services/request/divisions.service';
+import { departmentsService } from '../../../services/request/departments.service';
 
 interface AddEmployeePositionModalProps {
   isOpen: boolean;
@@ -22,13 +28,50 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
   const [description, setDescription] = useState('');
   const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
+  // Dokumentasi: state opsi dropdown (posisi/jabatan, direktorat, divisi, departemen)
+  const [positionOptions, setPositionOptions] = useState<{ value: string; label: string }[]>([]);
+  const [directorateOptions, setDirectorateOptions] = useState<{ value: string; label: string }[]>([]);
+  const [divisionOptions, setDivisionOptions] = useState<{ value: string; label: string }[]>([]);
+  const [departmentOptionsAll, setDepartmentOptionsAll] = useState<{ value: string; label: string }[]>([]);
+  const departmentOptions = useMemo(() => {
+    // Dokumentasi: gunakan dropdown departemen tanpa filter divisi (endpoint tidak mengembalikan id_division)
+    return departmentOptionsAll;
+  }, [departmentOptionsAll]);
 
+  // Dokumentasi: handler perubahan file SK (metadata disimpan di store)
   const handleFileChange = (/*_e: React.ChangeEvent<HTMLInputElement>*/) => {};
 
+  // Dokumentasi: muat dropdown dinamis saat modal dibuka
+  useEffect(() => {
+    if (!isOpen) return;
+    (async () => {
+      try {
+        // Dokumentasi: posisi/jabatan - gunakan endpoint dropdown dari service
+        const posItems = await positionsService.getDropdown('');
+        setPositionOptions((posItems || []).map((p) => ({ value: p.id, label: p.name })));
+
+        // direktorat: endpoint dropdown
+        const dirItems = await directoratesService.getDropdown('');
+        setDirectorateOptions((dirItems || []).map((d) => ({ value: d.id, label: d.name })));
+
+        // divisi: endpoint dropdown
+        const divItems = await divisionsService.getDropdown('');
+        setDivisionOptions((divItems || []).map((d) => ({ value: d.id, label: d.name })));
+
+        // Dokumentasi: departemen - gunakan endpoint dropdown dari service
+        const depItems = await departmentsService.getDropdown('');
+        setDepartmentOptionsAll((depItems || []).map((d) => ({ value: d.id, label: d.name })));
+      } catch (e) {
+        console.error('Gagal memuat dropdown', e);
+      }
+    })();
+  }, [isOpen]);
+
+  // Dokumentasi: submit pembuatan Posisi Pegawai - kirim File asli untuk position_decree_file
   const handleSubmit = async () => {
     console.log('submit', name, jabatan, direktorat, divisi, departemen, memoNumber, description, skFile);
     
-    if (!skFile?.name) {
+    if (!skFile?.file) {
       addNotification({
         variant: 'error',
         title: 'Posisi Pegawai tidak ditambahkan',
@@ -48,7 +91,7 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
         startDate: null,
         endDate: null,
         memoNumber: memoNumber.trim(),
-        skFileId: skFile?.path || skFile?.name,
+        skFile: skFile?.file || null,
       });
       onSuccess?.(created);
       setName('');
@@ -85,52 +128,69 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium">Jabatan</label>
-            <select
+            <Select
               required
-              value={jabatan}
-              onChange={(e) => setJabatan(e.target.value)}
-              className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              <option value="">Pilih Jabatan</option>
-              <option value="Manager">Manager</option>
-              <option value="Staff">Staff</option>
-            </select>
+              options={positionOptions}
+              placeholder="Pilih Jabatan"
+              defaultValue={jabatan}
+              onChange={(v) => setJabatan(v)}
+              onSearch={async (q) => {
+                try {
+                  // Dokumentasi: cari dropdown jabatan via service.getDropdown
+                  const items = await positionsService.getDropdown(q);
+                  setPositionOptions((items || []).map((p) => ({ value: p.id, label: p.name })));
+                } catch (e) { console.error(e); }
+              }}
+            />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium">Direktorat</label>
-            <select
+            <Select
               required
-              value={direktorat}
-              onChange={(e) => setDirektorat(e.target.value)}
-              className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              <option value="">Pilih Direktorat</option>
-              <option value="Teknologi dan Jaringan">Teknologi dan Jaringan</option>
-            </select>
+              options={directorateOptions}
+              placeholder="Pilih Direktorat"
+              defaultValue={direktorat}
+              onChange={(v) => setDirektorat(v)}
+              onSearch={async (q) => {
+                try {
+                  const items = await directoratesService.getDropdown(q);
+                  setDirectorateOptions((items || []).map((d) => ({ value: d.id, label: d.name })));
+                } catch (e) { console.error(e); }
+              }}
+            />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium">Divisi</label>
-            <select
+            <Select
               required
-              value={divisi}
-              onChange={(e) => setDivisi(e.target.value)}
-              className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              <option value="">Pilih Divisi</option>
-              <option value="Teknologi">Teknologi</option>
-            </select>
+              options={divisionOptions}
+              placeholder="Pilih Divisi"
+              defaultValue={divisi}
+              onChange={(v) => { setDivisi(v); /* reset departemen jika divisi berubah */ setDepartemen(''); }}
+              onSearch={async (q) => {
+                try {
+                  const items = await divisionsService.getDropdown(q);
+                  setDivisionOptions((items || []).map((d) => ({ value: d.id, label: d.name })));
+                } catch (e) { console.error(e); }
+              }}
+            />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium">Departemen</label>
-            <select
+            <Select
               required
-              value={departemen}
-              onChange={(e) => setDepartemen(e.target.value)}
-              className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              <option value="">Pilih Departemen</option>
-              <option value="Businnes Operation">Businnes Operation</option>
-            </select>
+              options={departmentOptions}
+              placeholder="Pilih Departemen"
+              defaultValue={departemen}
+              onChange={(v) => setDepartemen(v)}
+              onSearch={async (q) => {
+                try {
+                  // Dokumentasi: cari dropdown departemen via service.getDropdown
+                  const items = await departmentsService.getDropdown(q);
+                  setDepartmentOptionsAll((items || []).map((d) => ({ value: d.id, label: d.name })));
+                } catch (e) { console.error(e); }
+              }}
+            />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>

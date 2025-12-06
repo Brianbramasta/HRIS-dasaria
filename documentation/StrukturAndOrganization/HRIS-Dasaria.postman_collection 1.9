@@ -1407,7 +1407,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base_url}}/api/organizational-structure/directorates-dropdown?search=ini nama direktorat 3 jadi 4",
+									"raw": "{{base_url}}/api/organizational-structure/directorates-dropdown",
 									"host": [
 										"{{base_url}}"
 									],
@@ -1419,7 +1419,8 @@
 									"query": [
 										{
 											"key": "search",
-											"value": "ini nama direktorat 3 jadi 4"
+											"value": "ini nama direktorat 3 jadi 4",
+											"disabled": true
 										}
 									]
 								}
@@ -1441,17 +1442,17 @@
 									"formdata": [
 										{
 											"key": "division_name",
-											"value": "ini divis 1",
+											"value": "ini divis 6",
 											"type": "text"
 										},
 										{
 											"key": "id_directorate",
-											"value": "019ae273-ff4f-7384-acb7-44b31ab476f7",
+											"value": "019ae265-320f-73ac-87c2-25b927de4e77",
 											"type": "text"
 										},
 										{
 											"key": "division_decree_number",
-											"value": "ini sk 1",
+											"value": "ini sk 1 nys ",
 											"type": "text"
 										},
 										{
@@ -1524,15 +1525,74 @@
 							"name": "Get Data by uuid",
 							"request": {
 								"method": "GET",
-								"header": []
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/divisions/019ae778-9bf9-7021-80ab-f7ef64e7e1a2",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"divisions",
+										"019ae778-9bf9-7021-80ab-f7ef64e7e1a2"
+									]
+								}
 							},
 							"response": []
 						},
 						{
 							"name": "Update Data Division by uuid",
 							"request": {
-								"method": "GET",
-								"header": []
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "_method",
+											"value": "PATCH",
+											"type": "text"
+										},
+										{
+											"key": "division_name",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "id_directorate",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "division_decree_number",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "division_description",
+											"value": "ini deskripsi",
+											"type": "text"
+										},
+										{
+											"key": "division_decree_file",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/divisions/019ae833-9eee-71a2-929f-918f233f6d4e",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"divisions",
+										"019ae833-9eee-71a2-929f-918f233f6d4e"
+									]
+								}
 							},
 							"response": []
 						},
@@ -1540,7 +1600,820 @@
 							"name": "index",
 							"request": {
 								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/divisions?filter[]=ini sk update",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"divisions"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "ini divis 2",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "asc",
+											"disabled": true
+										},
+										{
+											"key": "column",
+											"value": "created_at",
+											"disabled": true
+										},
+										{
+											"key": "per_page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "filter[]",
+											"value": "ini sk update"
+										},
+										{
+											"key": "filter[]",
+											"value": "ini divis 2",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Dropdown Division",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/divisions-dropdown",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"divisions-dropdown"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Departmen",
+					"item": [
+						{
+							"name": "Menyimpan data Department",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "department_name",
+											"value": "ini departmen peternakan  2",
+											"type": "text"
+										},
+										{
+											"key": "id_division",
+											"value": "019ae8a3-11de-7361-8643-e0e0166a1c03",
+											"type": "text"
+										},
+										{
+											"key": "department_decree_number",
+											"value": "ini sk entah keberapa ",
+											"type": "text"
+										},
+										{
+											"key": "department_description",
+											"value": "ini deskripsi",
+											"type": "text"
+										},
+										{
+											"key": "department_decree_file",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/departments",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"departments"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete data by uuid",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "department_deleted_decree_number",
+											"value": "tes hapus ",
+											"type": "text"
+										},
+										{
+											"key": "department_deleted_decree_file",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										},
+										{
+											"key": "_method",
+											"value": "DELETE",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/departments/019aec87-9803-715c-8223-aef1aacf85df",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"departments",
+										"019aec87-9803-715c-8223-aef1aacf85df"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Data by uuid",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/departments/019aec86-d8f9-7309-ba15-f7c3273c2a2a",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"departments",
+										"019aec86-d8f9-7309-ba15-f7c3273c2a2a"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Data Department by uuid",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "_method",
+											"value": "PATCH",
+											"type": "text"
+										},
+										{
+											"key": "department_name",
+											"value": "ini departmen peternakan ikan",
+											"type": "text"
+										},
+										{
+											"key": "id_division",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "department_decree_number",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "department_description",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "department_decree_file",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/departments/019aec86-d8f9-7309-ba15-f7c3273c2a2a",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"departments",
+										"019aec86-d8f9-7309-ba15-f7c3273c2a2a"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "index",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/departments",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"departments"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "departmen",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "desc",
+											"disabled": true
+										},
+										{
+											"key": "column",
+											"value": "created_at",
+											"disabled": true
+										},
+										{
+											"key": "per_page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "filter[]",
+											"value": "ikan",
+											"disabled": true
+										},
+										{
+											"key": "filter[]",
+											"value": "Human Resource Development",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Dropdown Departmen",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/departments-dropdown",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"departments-dropdown"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Jabatan",
+					"item": [
+						{
+							"name": "Menyimpan Data jabatan",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "job_title_name",
+											"value": "Data Analyst",
+											"type": "text"
+										},
+										{
+											"key": "grade",
+											"value": "DA-001",
+											"type": "text"
+										},
+										{
+											"key": "direct_subordinate",
+											"value": "Product Owner, UX Designer",
+											"type": "text"
+										},
+										{
+											"key": "job_title_decree_number",
+											"value": "SK-DA-2024-001",
+											"type": "text"
+										},
+										{
+											"key": "job_title_description",
+											"value": "Menganalisis data untuk insights bisnis",
+											"type": "text"
+										},
+										{
+											"key": "job_title_decree_file",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/job-title",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"job-title"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Data by uuid",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "job_title_deleted_decree_number",
+											"value": "ini sk nya ",
+											"type": "text"
+										},
+										{
+											"key": "job_title_deleted_decree_file",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										},
+										{
+											"key": "_method",
+											"value": "DELETE",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/job-title/019aee3e-b586-727f-9464-6d819a5e6278",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"job-title",
+										"019aee3e-b586-727f-9464-6d819a5e6278"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Data by uuid",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/job-title/019aee3e-b586-727f-9464-6d819a5e6278",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"job-title",
+										"019aee3e-b586-727f-9464-6d819a5e6278"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Data Jabatan by uuid",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "job_title_name",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "grade",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "direct_subordinate",
+											"value": "spv",
+											"type": "text"
+										},
+										{
+											"key": "job_title_decree_number",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "job_title_description",
+											"value": "gak tau pokok kerja ya ",
+											"type": "text"
+										},
+										{
+											"key": "job_title_decree_file",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "_method",
+											"value": "PATCH",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/job-title/019aee3e-b586-727f-9464-6d819a5e6278",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"job-title",
+										"019aee3e-b586-727f-9464-6d819a5e6278"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "index",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/job-title",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"job-title"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "Designer",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "desc",
+											"disabled": true
+										},
+										{
+											"key": "column",
+											"value": "job_title_name",
+											"disabled": true
+										},
+										{
+											"key": "per_page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "filter[]",
+											"value": "managet",
+											"disabled": true
+										},
+										{
+											"key": "filter[]",
+											"value": "Senior Software Engineer",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Dropdown Jabatan",
+							"request": {
+								"method": "GET",
 								"header": []
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Position",
+					"item": [
+						{
+							"name": "Menyimpan Data Position",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "position_name",
+											"value": "tes aja ni",
+											"type": "text"
+										},
+										{
+											"key": "id_job_title",
+											"value": "oke ya ",
+											"type": "text"
+										},
+										{
+											"key": "id_directorate",
+											"value": "tes",
+											"type": "text"
+										},
+										{
+											"key": "id_division",
+											"value": "tes",
+											"type": "text"
+										},
+										{
+											"key": "id_department",
+											"value": "tes",
+											"type": "text"
+										},
+										{
+											"key": "position_decree_number",
+											"value": "tes",
+											"type": "text"
+										},
+										{
+											"key": "position_description",
+											"value": "tes",
+											"type": "text"
+										},
+										{
+											"key": "position_decree_file",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/positions",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"positions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "index",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/positions",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"positions"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "Manager",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "asc",
+											"disabled": true
+										},
+										{
+											"key": "column",
+											"value": "created_at",
+											"disabled": true
+										},
+										{
+											"key": "per_page",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "filter[]",
+											"value": "ini departmen peternakan ikan 3",
+											"disabled": true
+										},
+										{
+											"key": "filter[]",
+											"value": "managet",
+											"disabled": true
+										},
+										{
+											"key": "filter[]",
+											"value": "Data Analyst",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Data by uuid",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "_method",
+											"value": "Delete",
+											"type": "text"
+										},
+										{
+											"key": "position_deleted_decree_number",
+											"value": "ini sk oke ",
+											"type": "text"
+										},
+										{
+											"key": "position_deleted_decree_file",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/positions/019af20c-e9e9-7052-970f-f24f5b8d638b",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"positions",
+										"019af20c-e9e9-7052-970f-f24f5b8d638b"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Data by uuid",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/positions/019af279-9974-73eb-9630-2d353b23bc24",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"positions",
+										"019af279-9974-73eb-9630-2d353b23bc24"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Data Position by uuid",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "position_name",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "id_job_title",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "id_directorate",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "id_division",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "id_department",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "position_decree_number",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "position_description",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "position_decree_file",
+											"type": "file",
+											"src": []
+										},
+										{
+											"key": "_method",
+											"value": "PATCH",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/positions/019af279-9974-73eb-9630-2d353b23bc24",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"positions",
+										"019af279-9974-73eb-9630-2d353b23bc24"
+									]
+								}
 							},
 							"response": []
 						}
@@ -1579,7 +2452,7 @@
 		},
 		{
 			"key": "base_url",
-			"value": "http://192.168.1.9:8000"
+			"value": "http://192.168.1.33:8000"
 		}
 	]
 }

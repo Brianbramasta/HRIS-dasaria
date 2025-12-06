@@ -18,7 +18,7 @@ type Props = { resetKey: string };
 const positionColumns: DataTableColumn<PositionRow>[] = [
   { id: 'no', label: 'No', sortable: false },
   { id: 'Nama Jabatan', label: 'Nama Jabatan', sortable: true },
-  { id: 'Grade', label: 'Grade', sortable: true },
+  { id: 'Grade', label: 'Golongan', sortable: true },
   { id: 'Deskripsi Tugas', label: 'Deskripsi Tugas', sortable: true },
   { id: 'Bawahan Langsung', label: 'Bawahan Langsung', sortable: true },
   { id: 'File SK & MoU', label: 'File SK & MoU', sortable: false, isAction: true, format: (row: PositionRow) => (row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer" className='flex items-center justify-center'><FileText size={16} /></a> : '—' )},
