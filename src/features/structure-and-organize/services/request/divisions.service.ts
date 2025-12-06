@@ -129,4 +129,13 @@ export const divisionsService = {
     });
     return { success: !!(resp as any).success } as { success: true };
   },
+  // Mengambil dropdown divisi untuk kebutuhan select
+  getDropdown: async (search?: string): Promise<DivisionListItem[]> => {
+    const params = new URLSearchParams();
+    if (search) params.append('search', search);
+    const qs = params.toString();
+    const result = await apiService.get<any>(`/organizational-structure/divisions-dropdown${qs ? `?${qs}` : ''}`);
+    const items = (result as any)?.data ?? [];
+    return (items || []).map(mapToDivision);
+  },
 };

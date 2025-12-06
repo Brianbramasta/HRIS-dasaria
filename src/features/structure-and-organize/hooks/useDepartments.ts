@@ -1,3 +1,4 @@
+// Penyesuaian hooks Departemen agar sesuai kontrak API 1.7 (departments)
 import { useState, useCallback, useEffect } from 'react';
 import { departmentsService } from '../services/request/departments.service';
 import { DepartmentListItem, TableFilter } from '../types/organization.api.types';
@@ -14,9 +15,9 @@ interface UseDepartmentsReturn {
   
   // Actions
   fetchDepartments: (filter?: TableFilter) => Promise<void>;
-  createDepartment: (payload: { name: string; divisionId: string; description?: string | null; memoNumber: string; skFileId: string; }) => Promise<void>;
-  updateDepartment: (id: string, payload: { name?: string; divisionId?: string; description?: string | null; memoNumber: string; skFileId: string; }) => Promise<void>;
-  deleteDepartment: (id: string, payload: { memoNumber: string; skFileId: string; }) => Promise<void>;
+  createDepartment: (payload: { name: string; divisionId: string; description?: string | null; memoNumber: string; skFile: File; }) => Promise<void>;
+  updateDepartment: (id: string, payload: { name?: string; divisionId?: string; description?: string | null; memoNumber: string; skFile?: File | null; }) => Promise<void>;
+  deleteDepartment: (id: string, payload: { memoNumber: string; skFile?: File; }) => Promise<void>;
   setPage: (page: number) => void;
   setPageSize: (pageSize: number) => void;
   setSearch: (search: string) => void;
@@ -60,7 +61,8 @@ export const useDepartments = (): UseDepartmentsReturn => {
     }
   }, [page, pageSize, search, sortBy, sortOrder, filterValue]);
 
-  const createDepartment = useCallback(async (departmentData: { name: string; divisionId: string; description?: string | null; memoNumber: string; skFileId: string; }) => {
+  // Create Departemen menggunakan multipart sesuai kontrak API
+  const createDepartment = useCallback(async (departmentData: { name: string; divisionId: string; description?: string | null; memoNumber: string; skFile: File; }) => {
     setLoading(true);
     setError(null);
     
@@ -76,7 +78,8 @@ export const useDepartments = (): UseDepartmentsReturn => {
     }
   }, [fetchDepartments]);
 
-  const updateDepartment = useCallback(async (id: string, departmentData: { name?: string; divisionId?: string; description?: string | null; memoNumber: string; skFileId: string; }) => {
+  // Update Departemen menggunakan POST + _method=PATCH multipart
+  const updateDepartment = useCallback(async (id: string, departmentData: { name?: string; divisionId?: string; description?: string | null; memoNumber: string; skFile?: File | null; }) => {
     setLoading(true);
     setError(null);
     
@@ -93,7 +96,8 @@ export const useDepartments = (): UseDepartmentsReturn => {
     }
   }, []);
 
-  const deleteDepartment = useCallback(async (id: string, payload: { memoNumber: string; skFileId: string; }) => {
+  // Delete Departemen menggunakan POST + _method=DELETE multipart
+  const deleteDepartment = useCallback(async (id: string, payload: { memoNumber: string; skFile?: File; }) => {
     setLoading(true);
     setError(null);
     

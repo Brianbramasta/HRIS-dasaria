@@ -42,7 +42,7 @@ export const AddPositionModal = ({ isOpen, onClose, onSuccess }: Props) => {
   };
 
   const handleSubmit = async () => {
-    if (!skFile?.name) {
+    if (!skFile?.file) {
       addNotification({
         variant: 'error',
         title: 'Jabatan tidak ditambahkan',
@@ -60,7 +60,7 @@ export const AddPositionModal = ({ isOpen, onClose, onSuccess }: Props) => {
           jobDescription: rest.jobDescription || null,
           directSubordinates: directSubordinates.split(",").map((s) => s.trim()).filter(Boolean),
           memoNumber: rest.memoNumber,
-          skFileId: skFile?.path || skFile?.name,
+          skFile: skFile?.file as File,
         };
       await positionsService.create(payload);
       onSuccess();

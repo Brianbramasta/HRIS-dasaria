@@ -52,7 +52,7 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ isOpen, onClose
 
   const handleSubmit = async () => {
     setSubmitting(true);
-    if (!skFile?.name) {
+    if (!skFile?.file) {
       addNotification({
         variant: 'error',
         title: 'Surat Keputusan tidak ditambahkan',
@@ -68,7 +68,7 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ isOpen, onClose
         divisionId,
         description: description || null,
         memoNumber,
-        skFileId: skFile?.path || skFile?.name,
+        skFile: skFile?.file as File,
       });
       onSuccess?.();
       onClose();

@@ -1,4 +1,4 @@
-// Penyesuaian hooks Divisi agar sesuai kontrak API terbaru (1.6)
+// Penyesuaian hooks Divisi agar sesuai kontrak API terbaru (1.7)
 import { useState, useCallback, useEffect } from 'react';
 import { divisionsService } from '../services/request/divisions.service';
 import { DivisionListItem, TableFilter } from '../types/organization.api.types';
@@ -23,6 +23,7 @@ interface UseDivisionsReturn {
   setPageSize: (pageSize: number) => void;
   setSearch: (search: string) => void;
   setSort: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
+  getDropdown: (search?: string) => Promise<DivisionListItem[]>;
 }
 
 export const useDivisions = (): UseDivisionsReturn => {
@@ -133,6 +134,11 @@ export const useDivisions = (): UseDivisionsReturn => {
     setSortOrder(newSortOrder);
   }, []);
 
+  // Optional: menyediakan helper dropdown divisi sesuai kebutuhan form
+  const getDropdown = useCallback(async (search?: string) => {
+    return divisionsService.getDropdown(search);
+  }, []);
+
   useEffect(() => {
     fetchDivisions();
   }, [fetchDivisions, filterValue]);
@@ -153,5 +159,6 @@ export const useDivisions = (): UseDivisionsReturn => {
     setPageSize: handleSetPageSize,
     setSearch: handleSetSearch,
     setSort: handleSetSort,
+    getDropdown,
   };
 };

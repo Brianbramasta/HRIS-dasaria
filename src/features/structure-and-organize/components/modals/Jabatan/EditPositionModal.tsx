@@ -59,7 +59,7 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
 
   const handleSubmit = async () => {
     if (!position) return;
-    if (!skFile?.name) {
+    if (!skFile?.file) {
       addNotification({
         variant: 'error',
         title: 'Jabatan tidak diupdate',
@@ -78,7 +78,7 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
           jobDescription: rest.jobDescription || null,
           directSubordinates: directSubordinates.split(",").map((s) => s.trim()).filter(Boolean),
           memoNumber: rest.memoNumber,
-          skFileId: skFile?.path || skFile?.name,
+          skFile: skFile?.file as File,
         };
       await positionsService.update(position.id, payload);
       onSuccess();

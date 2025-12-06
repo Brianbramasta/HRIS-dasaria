@@ -16,16 +16,18 @@ interface DeleteDepartmentModalProps {
 const DeleteDepartmentModal: React.FC<DeleteDepartmentModalProps> = ({ isOpen, onClose, department, onSuccess }) => {
   const [memoNumber, setMemoNumber] = useState('');
   const [skFileName, setSkFileName] = useState('');
+  const [skFile, setSkFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
     setSkFileName(file?.name || '');
+    setSkFile(file);
   };
 
   const handleDelete = async () => {
     if (!department) return;
-    if (!skFileName) {
+    if (!skFile) {
       addNotification({
         variant: 'error',
         title: 'Surat Keputusan tidak ditambahkan',
@@ -37,7 +39,7 @@ const DeleteDepartmentModal: React.FC<DeleteDepartmentModalProps> = ({ isOpen, o
     }
     setSubmitting(true);
     try {
-      await departmentsService.delete(department.id, { memoNumber: memoNumber.trim(), skFileId: skFileName });
+      await departmentsService.delete(department.id, { memoNumber: memoNumber.trim(), skFile });
       onSuccess?.();
       onClose();
     } catch (err) {

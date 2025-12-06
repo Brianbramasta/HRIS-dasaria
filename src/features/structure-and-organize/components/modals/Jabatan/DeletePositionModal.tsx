@@ -34,7 +34,7 @@ export const DeletePositionModal = ({
 
   const handleDelete = async () => {
     if (!position) return;
-    if (!skFile?.name) {
+    if (!skFile?.file) {
       addNotification({
         variant: 'error',
         title: 'Jabatan tidak dihapus',
@@ -46,7 +46,7 @@ export const DeletePositionModal = ({
 
     setIsLoading(true);
     try {
-      await positionsService.delete(position.id, { memoNumber: memoNumber.trim(), skFileId: skFile?.path || skFile?.name });
+      await positionsService.delete(position.id, { memoNumber: memoNumber.trim(), skFile: skFile?.file });
       onSuccess();
       onClose();
     } catch (error) {

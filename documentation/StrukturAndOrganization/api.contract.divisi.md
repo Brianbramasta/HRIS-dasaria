@@ -1,17 +1,19 @@
-<!-- Dokumen kontrak API Divisi berdasarkan HRIS-Dasaria.postman_collection 1.6, komentar ringkas dipindahkan ke atas judul -->
+<!-- Diperbarui sesuai HRIS-Dasaria.postman_collection 1.7; menyesuaikan parameter query dan menambah endpoint dropdown -->
 # Divisi
 
-<!-- Ditambahkan dari HRIS-Dasaria.postman_collection 1.6: endpoint daftar/list Divisi -->
+<!-- Sinkronisasi endpoint daftar/list Divisi dari collection 1.7 -->
 ## List Divisi
 
 URL: `http://127.0.0.1:8000/api/organizational-structure/divisions`
 Method: GET
+<!-- Mengubah 'columns' menjadi 'column' dan menambahkan 'page' -->
 Query (opsional):
-- `per_page`
-- `filter[]`
-- `columns`
-- `sort`
 - `search`
+- `sort`
+- `column`
+- `per_page`
+- `page`
+- `filter[]`
 response: 
 ```
 {
@@ -124,3 +126,9 @@ Body (form-data):
 - `division_deleted_decree_number`
 - `division_deleted_decree_file` (file)
 - `_method`: `DELETE`
+
+<!-- Menambah endpoint dropdown untuk kebutuhan pilihan Divisi pada form -->
+## Dropdown Divisi
+
+URL: `http://127.0.0.1:8000/api/organizational-structure/divisions-dropdown`
+Method: GET

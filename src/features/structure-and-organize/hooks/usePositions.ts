@@ -1,3 +1,4 @@
+// Penyesuaian hooks Jabatan agar sesuai kontrak API 1.7 (job-title)
 import { useState, useCallback, useEffect } from 'react';
 import { positionsService } from '../services/request/positions.service';
 import { PositionListItem, TableFilter } from '../types/organization.api.types';
@@ -14,9 +15,9 @@ interface UsePositionsReturn {
   
   // Actions
   fetchPositions: (filter?: TableFilter) => Promise<void>;
-  createPosition: (payload: { name: string; grade?: string | null; jobDescription?: string | null; directSubordinates?: string[]; memoNumber: string; skFileId: string; }) => Promise<void>;
-  updatePosition: (id: string, payload: { name?: string; grade?: string | null; jobDescription?: string | null; directSubordinates?: string[]; memoNumber: string; skFileId: string; }) => Promise<void>;
-  deletePosition: (id: string, payload: { memoNumber: string; skFileId: string; }) => Promise<void>;
+  createPosition: (payload: { name: string; grade?: string | null; jobDescription?: string | null; directSubordinates?: string[]; memoNumber: string; skFile: File; }) => Promise<void>;
+  updatePosition: (id: string, payload: { name?: string; grade?: string | null; jobDescription?: string | null; directSubordinates?: string[]; memoNumber: string; skFile?: File | null; }) => Promise<void>;
+  deletePosition: (id: string, payload: { memoNumber: string; skFile?: File; }) => Promise<void>;
   setPage: (page: number) => void;
   setPageSize: (pageSize: number) => void;
   setSearch: (search: string) => void;
@@ -60,7 +61,8 @@ export const usePositions = (): UsePositionsReturn => {
     }
   }, [page, pageSize, search, sortBy, sortOrder, filterValue]);
 
-  const createPosition = useCallback(async (positionData: { name: string; grade?: string | null; jobDescription?: string | null; directSubordinates?: string[]; memoNumber: string; skFileId: string; }) => {
+  // Create Jabatan menggunakan multipart sesuai kontrak API
+  const createPosition = useCallback(async (positionData: { name: string; grade?: string | null; jobDescription?: string | null; directSubordinates?: string[]; memoNumber: string; skFile: File; }) => {
     setLoading(true);
     setError(null);
     
@@ -76,7 +78,8 @@ export const usePositions = (): UsePositionsReturn => {
     }
   }, [fetchPositions]);
 
-  const updatePosition = useCallback(async (id: string, positionData: { name?: string; grade?: string | null; jobDescription?: string | null; directSubordinates?: string[]; memoNumber: string; skFileId: string; }) => {
+  // Update Jabatan menggunakan POST + _method=PATCH multipart
+  const updatePosition = useCallback(async (id: string, positionData: { name?: string; grade?: string | null; jobDescription?: string | null; directSubordinates?: string[]; memoNumber: string; skFile?: File | null; }) => {
     setLoading(true);
     setError(null);
     
@@ -93,7 +96,8 @@ export const usePositions = (): UsePositionsReturn => {
     }
   }, []);
 
-  const deletePosition = useCallback(async (id: string, payload: { memoNumber: string; skFileId: string; }) => {
+  // Delete Jabatan menggunakan POST + _method=DELETE multipart
+  const deletePosition = useCallback(async (id: string, payload: { memoNumber: string; skFile?: File; }) => {
     setLoading(true);
     setError(null);
     
