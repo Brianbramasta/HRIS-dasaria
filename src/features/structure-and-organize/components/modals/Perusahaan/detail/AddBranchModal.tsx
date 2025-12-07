@@ -3,6 +3,7 @@ import { officeService, companyService } from '../../../../services/organization
 import Input from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
 import ModalAddEdit from '../../shared/modal/modalAddEdit';
+import { addNotification } from '@/stores/notificationStore';
 
 interface AddBranchModalProps {
   isOpen: boolean;
@@ -39,6 +40,12 @@ const AddBranchModal: React.FC<AddBranchModalProps> = ({ isOpen, onClose, compan
       onClose();
     } catch (err) {
       console.error('Failed to create branch', err);
+      // optionally show error toast
+      addNotification({
+        variant: 'error',
+        title: 'Gagal membuat cabang',
+        description: 'Terjadi kesalahan saat membuat cabang.',
+      });
     } finally {
       setSubmitting(false);
     }

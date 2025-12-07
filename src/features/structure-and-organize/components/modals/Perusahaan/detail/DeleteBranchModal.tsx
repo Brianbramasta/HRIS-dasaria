@@ -40,6 +40,12 @@ const DeleteBranchModal: React.FC<DeleteBranchModalProps> = ({ isOpen, onClose, 
       onClose();
     } catch (err) {
       console.error('Failed to delete branch', err);
+      // optionally show error toast
+      addNotification({
+        variant: 'error',
+        title: 'Gagal menghapus cabang',
+        description: 'Terjadi kesalahan saat menghapus cabang.',
+      });
     } finally {
       setSubmitting(false);
     }

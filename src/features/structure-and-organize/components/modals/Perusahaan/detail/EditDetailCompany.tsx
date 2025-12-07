@@ -9,6 +9,7 @@ import Select from '@/components/form/Select';
 import { useBusinessLines } from '../../../../hooks/useBusinessLines';
 import { companyService } from '../../../../services/organization.service';
 import type { BusinessLineListItem } from '../../../../types/organization.api.types';
+import { addNotification } from '@/stores/notificationStore';
 
 interface EditDetailCompanyProps {
   isOpen: boolean;
@@ -139,6 +140,11 @@ const EditDetailCompany: React.FC<EditDetailCompanyProps> = ({ isOpen, onClose, 
     } catch (err) {
       console.error('Failed to update company', err);
       // optionally show error toast
+      addNotification({
+        variant: 'error',
+        title: 'Gagal menyimpan detail perusahaan',
+        description: 'Terjadi kesalahan saat menyimpan detail perusahaan.',
+      });
     } finally {
       setSubmitting(false);
     }
