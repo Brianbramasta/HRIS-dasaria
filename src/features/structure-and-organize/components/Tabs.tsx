@@ -16,7 +16,7 @@ const Tabs: React.FC<TabProps> = ({ tabs, activeTab, className }) => {
               <Link
                 key={tab.id}
                 to={tab.link}
-                className={`inline-flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200 ease-in-out whitespace-nowrap ${
+                className={`inline-flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200 ease-in-out whitespace-nowrap w-full justify-center ${
                   activeTab === tab.id
                     ? 'bg-white text-blue-900 shadow-theme-xs dark:bg-white/[0.3] dark:text-white'
                       : 'bg-transparent text-[#000] hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'

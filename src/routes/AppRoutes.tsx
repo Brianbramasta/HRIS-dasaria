@@ -81,10 +81,17 @@ import PerpanjanganKontrak from "../features/staff/pages/data-karyawan/tabs/perp
 import DataKaryawanPelanggaran from "../features/staff/components/dataKaryawan/tab/pelanggaran";
 import OrganizationHistoryPage from "../features/staff/pages/organizationHistoryPage";
 import Dashboard from "@/features/dashboard/pages/Dashboard";
-import DaftarPenggajianPage from "@/features/penggajian/pages/daftarPenggajianPage";
-import KonfigurasiPenggajianPage from "@/features/penggajian/pages/konfigurasiPenggajianPage";
-import PeriodePenggajianPage from "@/features/penggajian/pages/periodePenggajianPage";
+// import DaftarPenggajianPage from "@/features/penggajian/pages/daftarPenggajianPage";
+import KonfigurasiPenggajianPage from "@/features/penggajian/pages/konfigursaiPenggajian/konfigurasiPenggajianPage";
+// Dokumentasi: Halaman dan tab Periode Penggajian
+import PeriodePenggajianPage from "@/features/penggajian/pages/periodePenggajian/periodePenggajianPage";
+import NonAETab from "@/features/penggajian/pages/periodePenggajian/tab/nonAEPages";
+import AETab from "@/features/penggajian/pages/periodePenggajian/tab/AEPages";
+import PKLTab from "@/features/penggajian/pages/periodePenggajian/tab/PKLPages";
+import THRTab from "@/features/penggajian/pages/periodePenggajian/tab/THRPages";
 import HakAksesPage from "@/features/hakAkses/pages/hakAksesPage";
+import KasbonPage from "@/features/penggajian/pages/kasbon/kasbonPage";
+import DashboardPenggajianPage from "@/features/penggajian/pages/dashboardPenggajian/dashboardPenggajianPage";
 
 
 
@@ -117,9 +124,17 @@ export default function AppRoutes() {
           <Route path="employee-positions" element={<EmployeePositionsTab resetKey="employee-positions" />} />
           </Route>
           {/* Penggajian */}
-          <Route path="/periode-gajian" element={<DaftarPenggajianPage />} />
+          {/* <Route path="/periode-gajian" element={<DaftarPenggajianPage />} /> */}
           <Route path="/konfigurasi-penggajian" element={<KonfigurasiPenggajianPage />} />
-          <Route path="/daftar-penggajian" element={<PeriodePenggajianPage />} />
+          {/* Dokumentasi: Nested route untuk Periode Penggajian dengan empat tab */}
+          <Route path="/periode-gajian" element={<PeriodePenggajianPage />}>
+            <Route path="non-ae" element={<NonAETab />} />
+            <Route path="ae" element={<AETab />} />
+            <Route path="pkl" element={<PKLTab />} />
+            <Route path="thr" element={<THRTab />} />
+          </Route>
+          <Route path="/kasbon" element={<KasbonPage />} />
+          <Route path="/dashboard-penggajian" element={<DashboardPenggajianPage />} />
 
           <Route path="/data-karyawan" element={<DataKaryawanIndexPage />} />
           <Route path="/data-karyawan/:id" element={<DetailKaryawanPage />} />
