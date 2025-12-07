@@ -151,6 +151,7 @@ export interface CompanyDetailResponse {
     id: string;
     name: string;
     logo: string | FileSummary | null;
+    businessLineId: string | null;
     businessLineName: string | null;
     description: string | null;
     address: string | null;

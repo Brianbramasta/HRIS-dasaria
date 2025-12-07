@@ -18,6 +18,7 @@ import DocumentsTable from '../../../components/table/TableGlobal';
 import { formatDate } from '@/utils/formatDate';
 import { formatImage } from '@/utils/formatImage';
 import { formatUrlFile } from '@/utils/formatUrlFile';
+import { useFileStore } from '@/stores/fileStore';
 
 const DetailPerusahaan: React.FC = () => {
   const { id } = useParams();
@@ -36,6 +37,7 @@ const DetailPerusahaan: React.FC = () => {
   const [isEditDocOpen, setEditDocOpen] = React.useState(false);
   const [selectedDoc, setSelectedDoc] = React.useState<any | null>(null);
   const [isEditOpen, setEditOpen] = React.useState(false);
+  const file = useFileStore();
   
 
   const fetch = React.useCallback(async () => {
@@ -155,13 +157,13 @@ const DetailPerusahaan: React.FC = () => {
             {/* Address */}
             <div className='flex gap-2 justify-between mb-6 items-start '>
               <div className='min-w-[120px] text-gray-600'>Alamat</div> <div>:</div> 
-              <div className="w-full max-w-full break-words md:max-w-[200px] md:w-[200px]">{alamatValue}</div>
+              <div className="w-full max-w-full break-all md:max-w-[200px] md:w-[200px]">{alamatValue}</div>
             </div>
 
             {/* Company Size */}
             <div className='flex gap-2 justify-between mb-6 items-start '>
               <div className='min-w-[120px] text-gray-600'>Jumlah Karyawan</div> <div>:</div> 
-              <div className="w-full max-w-full break-words md:max-w-[200px] md:w-[200px]">{companySizeValue}</div>
+              <div className="w-full max-w-full break-all md:max-w-[200px] md:w-[200px]">{companySizeValue}</div>
             </div>
 
             
@@ -169,7 +171,7 @@ const DetailPerusahaan: React.FC = () => {
             {contactInformation.map((data, idx) => (
               <div key={`contact-${idx}`} className='flex gap-2 justify-between mb-6 items-start '>
                 <div className='min-w-[120px] text-gray-600'>{data.label}</div> <div>:</div> 
-                <div className="w-full max-w-full break-words md:max-w-[200px] md:w-[200px]">{data.value}</div>
+                <div className="w-full max-w-full break-all md:max-w-[200px] md:w-[200px] ">{data.value}</div>
               </div>
             ))}
 
@@ -178,7 +180,7 @@ const DetailPerusahaan: React.FC = () => {
             {customInformation.map((data, idx) => (
               <div key={`custom-${idx}`} className='flex gap-2 justify-between mb-6 items-start '>
                 <div className='min-w-[120px] text-gray-600'>{data.label}</div> <div>:</div> 
-                <div className="w-full max-w-full break-words md:max-w-[200px] md:w-[200px]">{data.value}</div>
+                <div className="w-full max-w-full break-all md:max-w-[200px] md:w-[200px]">{data.value}</div>
               </div>
             ))}
           </div>
@@ -207,12 +209,12 @@ const DetailPerusahaan: React.FC = () => {
 
               <div className="flex items-center justify-between mb-3">
                 <h4 className="text-3xl font-semibold text-[#004969]">Branch</h4>
-                <Button onClick={() => setAddBranchOpen(true)} className="flex items-center justify-center bg-blue-600 text-white  rounded">
+                {/* <Button onClick={() => setAddBranchOpen(true)} className="flex items-center justify-center bg-blue-600 text-white  rounded">
                   {iconPlus({size:24})} <span className='hidden md:inline'>Tambah Branch</span>
-                </Button>
+                </Button> */}
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className={`grid grid-cols-1  ${branches?.length ?'sm:grid-cols-2':'sm:grid-cols-1'} gap-3`}>
                 {
                   branches?.length ? branches.map((b) => (
                   <div key={b.id} className="p-3 border rounded flex justify-between items-center gap-3 flex-wrap sm:flex-nowrap">
@@ -282,7 +284,7 @@ const DetailPerusahaan: React.FC = () => {
           title: 'Branch dihapus',
         });
       }} />
-      <AddDocumentModal isOpen={isAddDocOpen} onClose={() => setAddDocOpen(false)} companyId={id || ''} onSuccess={() => {fetch();
+      <AddDocumentModal isOpen={isAddDocOpen} onClose={() => {setAddDocOpen(false); file.clearSkFile()}} companyId={id || ''} onSuccess={() => {fetch();
         addNotification({
           description: 'Dokumen berhasil ditambahkan',
           variant: 'success',
@@ -290,7 +292,7 @@ const DetailPerusahaan: React.FC = () => {
           title: 'Dokumen ditambahkan',
         });
       }} />
-      <DeleteDocumentModal isOpen={isDeleteDocOpen} onClose={() => setDeleteDocOpen(false)} document={selectedDoc} onSuccess={() => {fetch();
+      <DeleteDocumentModal companyId={id || ''} isOpen={isDeleteDocOpen} onClose={() => {setDeleteDocOpen(false); file.clearSkFile()}} document={selectedDoc} onSuccess={() => {fetch();
         addNotification({
           description: 'Dokumen berhasil dihapus',
           variant: 'success',

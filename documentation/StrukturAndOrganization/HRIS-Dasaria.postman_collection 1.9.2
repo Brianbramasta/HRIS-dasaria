@@ -908,7 +908,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base_url}}/api/organizational-structure/companies?search=test&sort=desc&column=created_at&per_page=2&page=1&filter[]=test&filter[]=test 3",
+									"raw": "{{base_url}}/api/organizational-structure/companies",
 									"host": [
 										"{{base_url}}"
 									],
@@ -920,31 +920,38 @@
 									"query": [
 										{
 											"key": "search",
-											"value": "test"
+											"value": "test",
+											"disabled": true
 										},
 										{
 											"key": "sort",
-											"value": "desc"
+											"value": "desc",
+											"disabled": true
 										},
 										{
 											"key": "column",
-											"value": "created_at"
+											"value": "created_at",
+											"disabled": true
 										},
 										{
 											"key": "per_page",
-											"value": "2"
+											"value": "2",
+											"disabled": true
 										},
 										{
 											"key": "page",
-											"value": "1"
+											"value": "1",
+											"disabled": true
 										},
 										{
 											"key": "filter[]",
-											"value": "test"
+											"value": "test",
+											"disabled": true
 										},
 										{
 											"key": "filter[]",
-											"value": "test 3"
+											"value": "test 3",
+											"disabled": true
 										}
 									]
 								}
@@ -982,7 +989,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base_url}}/api/organizational-structure/companies/019ad7e9-2331-71ed-8ee7-ff7af32a8cd6/detail",
+									"raw": "{{base_url}}/api/organizational-structure/companies/019ad7eb-5df0-7383-b933-c4f1c208db39/detail",
 									"host": [
 										"{{base_url}}"
 									],
@@ -990,7 +997,7 @@
 										"api",
 										"organizational-structure",
 										"companies",
-										"019ad7e9-2331-71ed-8ee7-ff7af32a8cd6",
+										"019ad7eb-5df0-7383-b933-c4f1c208db39",
 										"detail"
 									]
 								}
@@ -1011,6 +1018,173 @@
 										"api",
 										"organizational-structure",
 										"companies-dropdown"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Data Perusahaan by uuid",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "address",
+											"value": "kaliurang",
+											"type": "text"
+										},
+										{
+											"key": "postal_code",
+											"value": "68124",
+											"type": "text"
+										},
+										{
+											"key": "email",
+											"value": "tes@gmail.com",
+											"type": "text"
+										},
+										{
+											"key": "phone",
+											"value": "0812",
+											"type": "text"
+										},
+										{
+											"key": "industry",
+											"value": "isp",
+											"type": "text"
+										},
+										{
+											"key": "founded_year",
+											"value": "2017",
+											"type": "text"
+										},
+										{
+											"key": "company_type",
+											"value": "pt",
+											"type": "text"
+										},
+										{
+											"key": "website",
+											"value": "https://github.com/",
+											"type": "text"
+										},
+										{
+											"key": "logo",
+											"type": "file",
+											"src": "/D:/sekolah/polije/bangkit/belajar_penerapan_machine_learning_dengan_google_cloud/data-test-submissions/cancer-1.png"
+										},
+										{
+											"key": "_method",
+											"value": "PATCH",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/companies/019ae365-412f-701f-983f-b17071f92ba2",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"companies",
+										"019ae365-412f-701f-983f-b17071f92ba2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Tambah Document Melalui perusahaan",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "documents[0][cd_name]",
+											"value": "gak tau 3",
+											"type": "text"
+										},
+										{
+											"key": "documents[0][cd_decree_number]",
+											"value": "sk3",
+											"type": "text"
+										},
+										{
+											"key": "documents[0][cd_file]",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										},
+										{
+											"key": "documents[1][cd_name]",
+											"value": "gak tau 4",
+											"type": "text"
+										},
+										{
+											"key": "documents[1][cd_decree_number]",
+											"value": "gak tau 4",
+											"type": "text"
+										},
+										{
+											"key": "documents[1][cd_file]",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/companies/019ae365-412f-701f-983f-b17071f92ba2/documents",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"companies",
+										"019ae365-412f-701f-983f-b17071f92ba2",
+										"documents"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Document Melalui Perusahaan",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "cd_deleted_decree",
+											"value": "ini sk hapus",
+											"type": "text"
+										},
+										{
+											"key": "cd_deleted_decree_file",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/companies/019add3b-ae10-70a3-8e0d-4c6531564850/deletedocuments",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"companies",
+										"019add3b-ae10-70a3-8e0d-4c6531564850",
+										"deletedocuments"
 									]
 								}
 							},
@@ -1081,7 +1255,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base_url}}/api/organizational-structure/offices/019adab2-98de-72ed-848f-cc1c3b7639c4",
+									"raw": "{{base_url}}/api/organizational-structure/offices/019af2d5-b017-7377-8117-a24b457c26ae",
 									"host": [
 										"{{base_url}}"
 									],
@@ -1089,7 +1263,7 @@
 										"api",
 										"organizational-structure",
 										"offices",
-										"019adab2-98de-72ed-848f-cc1c3b7639c4"
+										"019af2d5-b017-7377-8117-a24b457c26ae"
 									]
 								}
 							},
@@ -1193,6 +1367,69 @@
 											"value": "ini knator di bidang iot",
 											"disabled": true
 										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Data Kantor by uuid",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "_method",
+											"value": "PATCH",
+											"type": "text"
+										},
+										{
+											"key": "office_name",
+											"value": "jadi 2 aja ",
+											"type": "text"
+										},
+										{
+											"key": "company[0][id_company]",
+											"value": "019ae365-412f-701f-983f-b17071f92ba2",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "company[1][id_company]",
+											"value": "",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "office_decree_number",
+											"value": "ini ks tes",
+											"type": "text"
+										},
+										{
+											"key": "office_description",
+											"value": "entah ",
+											"type": "text"
+										},
+										{
+											"key": "office_decree_file",
+											"type": "file",
+											"src": [],
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/offices/019af2c7-93f9-734c-a4b1-6ff20255f8d3",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"offices",
+										"019af2c7-93f9-734c-a4b1-6ff20255f8d3"
 									]
 								}
 							},

@@ -1,5 +1,6 @@
 import React from 'react';
-import { apiService } from '../../../../../../services/api';
+// Dokumentasi: Integrasi service companiesService untuk tambah dokumen perusahaan bila ada file baru
+import { companiesService } from '../../../../services/request/companies.service';
 import ModalAddEdit from '../../shared/modal/modalAddEdit';
 import FileInput from '../../../../../../components/form/input/FileInput';
 import { addNotification } from '@/stores/notificationStore';
@@ -44,16 +45,21 @@ const EditDocumentModal: React.FC<EditDocumentModalProps> = ({ isOpen, onClose, 
     }
     setSubmitting(true);
     try {
-      const payload: any = {
-        name: name.trim(),
-        doc_number: docNumber.trim(),
-        file_name: file?.name || document?.fileName || document?.file_name || '',
-        owner_type: 'company',
-        owner_id: companyId,
-        size: file ? Math.round((file.size || 0) / 1024) : document?.size || undefined,
-        updated_at: new Date().toISOString(),
-      };
-      await apiService.patch(`/files/${document.id}`, payload as any);
+      if (file) {
+        await companiesService.addDocuments(companyId, [{ name: name.trim(), number: docNumber.trim(), file }]);
+      } else {
+        // Tetap lakukan update metadata bila tidak ada file baru
+        const payload: any = {
+          name: name.trim(),
+          doc_number: docNumber.trim(),
+          file_name: document?.fileName || document?.file_name || '',
+          owner_type: 'company',
+          owner_id: companyId,
+          size: document?.size || undefined,
+          updated_at: new Date().toISOString(),
+        };
+        await (await import('../../../../../../services/api')).apiService.patch(`/files/${document.id}`, payload as any);
+      }
       onSuccess?.();
       onClose();
     } catch (err) {

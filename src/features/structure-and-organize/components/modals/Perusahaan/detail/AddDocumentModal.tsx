@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { apiService } from '../../../../../../services/api';
+// Dokumentasi: Integrasi service companiesService untuk tambah dokumen perusahaan
+import { companiesService } from '../../../../services/request/companies.service';
 import ModalAddEdit from '../../shared/modal/modalAddEdit';
 import FileInput from '../../../../../../components/form/input/FileInput';
 import { addNotification } from '@/stores/notificationStore';
@@ -17,7 +18,7 @@ const AddDocumentModal: React.FC<AddDocumentModalProps> = ({ isOpen, onClose, co
   const [entries, setEntries] = useState<DocEntry[]>([{ name: '', docNumber: '', file: null }]);
   const [submitting, setSubmitting] = useState(false);
   // default type to active to preserve filtering in listing
-  const defaultType: 'active' | 'archive' = 'active';
+  // const defaultType: 'active' | 'archive' = 'active';
 
   const updateEntry = (index: number, patch: Partial<DocEntry>) => {
     setEntries((prev) => prev.map((e, i) => (i === index ? { ...e, ...patch } : e)));
@@ -49,23 +50,9 @@ const AddDocumentModal: React.FC<AddDocumentModalProps> = ({ isOpen, onClose, co
     }
     setSubmitting(true);
     try {
-      const now = Date.now();
-      await Promise.all(
-        valid.map((e, idx) => {
-          const payload = {
-            id: `${now}-${idx}`,
-            name: e.name.trim(),
-            docNumber: e.docNumber.trim(),
-            fileName: e.file?.name || '',
-            filePath: e.file?.name || '',
-            ownerType: 'company',
-            ownerId: companyId,
-            size: e.file ? `${Math.round((e.file.size || 0) / 1024)} KB` : undefined,
-            type: defaultType,
-            createdAt: new Date().toISOString(),
-          } as any;
-          return apiService.post('/documents', payload);
-        })
+      await companiesService.addDocuments(
+        companyId,
+        valid.map((e) => ({ name: e.name.trim(), number: e.docNumber.trim(), file: e.file as File }))
       );
       onSuccess?.();
       setEntries([{ name: '', docNumber: '', file: null }]);

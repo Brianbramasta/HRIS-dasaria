@@ -47,7 +47,7 @@ export default function App() {
 
       {/* Global loading overlay */}
       {isLoading && (
-        <div className="fixed inset-0 z-[9998] flex items-center justify-center bg-black/20 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[9999999] flex items-center justify-center bg-black/20 backdrop-blur-sm">
           <div className="rounded-md bg-white/80 p-4">
             <SpinnerOne />
           </div>

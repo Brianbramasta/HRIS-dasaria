@@ -23,7 +23,7 @@ const divisionColumns: DataTableColumn<DivisionRow>[] = [
   { id: 'Direktorat', label: 'Direktorat', sortable: true },
   { id: 'Deskripsi Umum', label: 'Deskripsi Umum', sortable: true },
   { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: false, isAction: true, align: 'center', format: (row: DivisionRow) => (
-     
+
       row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer" className='flex items-center justify-center'><FileText size={16} /></a> : '—'
     )  },
 ];

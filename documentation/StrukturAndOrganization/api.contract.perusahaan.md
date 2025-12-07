@@ -157,3 +157,99 @@ response:
   ]
 }
 ```
+
+<!-- Tambahan: Dokumentasi API untuk menambah dokumen perusahaan berdasarkan Postman HRIS-Dasaria 1.9.2 -->
+
+## Tambah Dokumen Perusahaan
+
+URL: `http://127.0.0.1:8000/api/organizational-structure/companies/{id_company}/documents`
+Method: POST
+Body (form-data):
+- `documents[0][cd_name]`
+- `documents[0][cd_decree_number]`
+- `documents[0][cd_file]` (file)
+- `documents[1][cd_name]` (opsional)
+- `documents[1][cd_decree_number]` (opsional)
+- `documents[1][cd_file]` (file, opsional)
+
+```
+response:
+{
+  "meta": {
+    "status": 201,
+    "message": "Company documents added successfully"
+  },
+  "data": [
+    {
+      "cd_name": "dokument 1",
+      "cd_decree_number": "SK/COMP/2024/001",
+      "cd_file": "company/decree/<file-uuid>.pdf",
+      "id_company": "{id_company}",
+      "id_cd": "<uuid>",
+      "created_at": "<timestamp>",
+      "updated_at": "<timestamp>"
+    }
+  ]
+}
+```
+
+<!-- Tambahan: Dokumentasi API untuk menghapus dokumen perusahaan berdasarkan Postman HRIS-Dasaria 1.9.2 -->
+
+## Hapus Dokumen Perusahaan
+
+URL: `http://127.0.0.1:8000/api/organizational-structure/companies/{id_company}/deletedocuments`
+Method: POST
+Body (form-data):
+- `cd_deleted_decree`
+- `cd_deleted_decree_file` (file)
+
+```
+response:
+{
+  "meta": {
+    "status": 200,
+    "message": "Company documents deleted successfully"
+  }
+}
+```
+
+<!-- Tambahan: Dokumentasi API untuk update data perusahaan berdasarkan Postman HRIS-Dasaria 1.9.2 -->
+
+## Update Data Perusahaan by UUID
+
+URL: `http://127.0.0.1:8000/api/organizational-structure/companies/{id_company}`
+Method: POST (with `_method=PATCH`)
+Body (form-data):
+- `address`
+- `postal_code`
+- `email`
+- `phone`
+- `industry`
+- `founded_year`
+- `company_type`
+- `website`
+- `logo` (file)
+- `_method`: `PATCH`
+
+```
+response:
+{
+  "meta": {
+    "status": 200,
+    "message": "Company updated successfully"
+  },
+  "data": {
+    "id_company": "{id_company}",
+    "address": "kaliurang",
+    "postal_code": "68124",
+    "email": "tes@gmail.com",
+    "phone": "0812",
+    "industry": "isp",
+    "founded_year": 2017,
+    "company_type": "pt",
+    "website": "https://github.com/",
+    "logo_url": "company/logo/<file-uuid>.png",
+    "updated_at": "<timestamp>"
+  }
+}
+```
