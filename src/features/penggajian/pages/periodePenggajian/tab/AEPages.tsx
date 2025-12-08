@@ -1,5 +1,7 @@
 // Dokumentasi: Tab AE untuk Periode Penggajian menggunakan DataTable dengan kolom sesuai dokumen
+// Dokumentasi: Tab AE - tambahkan navigasi ke halaman Detail Gaji AE saat klik Edit
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router';
 // Dokumentasi: Menggunakan toolbarRightSlotAtas untuk menempatkan tombol Import & Template di bar atas.
 import DataTable, { DataTableColumn, DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
 import Button from '@/components/ui/button/Button';
@@ -24,6 +26,7 @@ type AERow = {
 };
 
 export default function AETab({ resetKey = 'ae' }: { resetKey?: string }) {
+  const navigate = useNavigate();
   const [rows] = useState<AERow[]>([
     { idKaryawan: '12345681', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', totalGajiBersih: '7.250.000', uangTransportasi: '500.000', potongan: '250.000', tunjanganTidakTetap: '750.000', kategori: 'Sales', perusahaan: 'Dasaria', statusPenggajian: 'Draft', approvalHrga: 'Selesai', approvalFat: 'Pending', approvalDirekturKeuangan: 'Selesai' },
   ]);
@@ -46,7 +49,15 @@ export default function AETab({ resetKey = 'ae' }: { resetKey?: string }) {
   ], []);
 
   const actions: DataTableAction<AERow>[] = [
-    { label: '', icon: <Edit />, onClick: () => {}, variant: 'outline', className: 'border-0' },
+    {
+      label: '',
+      icon: <Edit />,
+      onClick: (row) => {
+        navigate(`/periode-gajian/detail-ae/${row.idKaryawan}`);
+      },
+      variant: 'outline',
+      className: 'border-0',
+    },
     { label: '', icon: <Trash />, onClick: () => {}, variant: 'outline', className: 'border-0', color: 'error' },
   ];
 

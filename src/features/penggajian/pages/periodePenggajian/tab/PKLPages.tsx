@@ -1,5 +1,7 @@
 // Dokumentasi: Tab PKL untuk Periode Penggajian menggunakan DataTable dengan kolom sesuai dokumen
+// Dokumentasi: Tab PKL - tambahkan navigasi ke halaman Detail Gaji PKL saat klik Edit
 import  { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router';
 // Dokumentasi: Menggunakan toolbarRightSlotAtas untuk menempatkan tombol Import & Template di bar atas.
 import DataTable, { DataTableColumn, DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
 import Button from '@/components/ui/button/Button';
@@ -21,6 +23,7 @@ type PKLRow = {
 };
 
 export default function PKLTab({ resetKey = 'pkl' }: { resetKey?: string }) {
+  const navigate = useNavigate();
   const [rows] = useState<PKLRow[]>([
     { idKaryawan: '22345678', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', uangSaku: '2.000.000', kategori: 'PKL', perusahaan: 'Dasaria', statusPenggajian: 'Draft', approvalHrga: 'Selesai', approvalFat: 'Pending', approvalDirekturKeuangan: 'Selesai' },
   ]);
@@ -40,7 +43,15 @@ export default function PKLTab({ resetKey = 'pkl' }: { resetKey?: string }) {
   ], []);
 
   const actions: DataTableAction<PKLRow>[] = [
-    { label: '', icon: <Edit />, onClick: () => {}, variant: 'outline', className: 'border-0' },
+    {
+      label: '',
+      icon: <Edit />,
+      onClick: (row) => {
+        navigate(`/periode-gajian/detail-pkl/${row.idKaryawan}`);
+      },
+      variant: 'outline',
+      className: 'border-0',
+    },
     { label: '', icon: <Trash />, onClick: () => {}, variant: 'outline', className: 'border-0', color: 'error' },
   ];
 

@@ -1,5 +1,7 @@
 // Dokumentasi: Tab Non AE untuk Periode Penggajian menggunakan DataTable dengan kolom sesuai dokumen
+// Dokumentasi: Tab Non AE - tambah navigasi ke halaman Detail Gaji saat klik Edit
 import  { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router';
 // Dokumentasi: Menggunakan toolbarRightSlotAtas untuk menempatkan tombol Import & Template di bar atas.
 import DataTable, { DataTableColumn, DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
 import Button from '@/components/ui/button/Button';
@@ -25,6 +27,8 @@ type NonAERow = {
 };
 
 export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string }) {
+  // Dokumentasi: Navigasi ke halaman detail menggunakan react-router
+  const navigate = useNavigate();
   const [rows] = useState<NonAERow[]>([
     { idKaryawan: '12345678', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', totalGajiBersih: '7.000.000', gajiPokokUangSaku: '5.000.000', potongan: '250.000', tunjanganTetap: '1.000.000', tunjanganTidakTetap: '750.000', kategori: 'Staff', perusahaan: 'Dasaria', statusPenggajian: 'Draft', approvalHrga: 'Selesai', approvalFat: 'Pending', approvalDirekturKeuangan: 'Selesai' },
     { idKaryawan: '12345679', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', totalGajiBersih: '7.000.000', gajiPokokUangSaku: '5.000.000', potongan: '250.000', tunjanganTetap: '1.000.000', tunjanganTidakTetap: '750.000', kategori: 'Staff', perusahaan: 'Dasaria', statusPenggajian: 'Pending Draft', approvalHrga: 'Selesai', approvalFat: 'Selesai', approvalDirekturKeuangan: 'Pending' },
@@ -49,7 +53,16 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
   ], []);
 
   const actions: DataTableAction<NonAERow>[] = [
-    { label: '', icon: <Edit />, onClick: () => {}, variant: 'outline', className: 'border-0' },
+    {
+      label: '',
+      icon: <Edit />,
+      onClick: (row) => {
+        // Dokumentasi: arahkan ke halaman detail dengan idKaryawan sebagai parameter
+        navigate(`/periode-gajian/detail-non-ae/${row.idKaryawan}`);
+      },
+      variant: 'outline',
+      className: 'border-0',
+    },
     { label: '', icon: <Trash />, onClick: () => {}, variant: 'outline', className: 'border-0', color: 'error' },
   ];
 

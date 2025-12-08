@@ -1,5 +1,7 @@
 // Dokumentasi: Tab THR untuk Periode Penggajian menggunakan DataTable dengan kolom sesuai dokumen
+// Dokumentasi: Tab THR - tambahkan navigasi ke halaman Detail Gaji THR saat klik Edit
 import  { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router';
 // Dokumentasi: Menggunakan toolbarRightSlotAtas untuk menempatkan tombol Import & Template di bar atas.
 import DataTable, { DataTableColumn, DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
 import Button from '@/components/ui/button/Button';
@@ -24,6 +26,7 @@ type THRRow = {
 };
 
 export default function THRTab({ resetKey = 'thr' }: { resetKey?: string }) {
+  const navigate = useNavigate();
   const [rows] = useState<THRRow[]>([
     { idKaryawan: '32345678', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', totalTHR: '5.000.000', gajiPokokUangSaku: '4.000.000', tunjanganTetap: '1.000.000', lamaKerja: '2 tahun', kategori: 'Staff', perusahaan: 'Dasaria', statusPenggajian: 'Draft', approvalHrga: 'Selesai', approvalFat: 'Pending', approvalDirekturKeuangan: 'Selesai' },
   ]);
@@ -46,7 +49,15 @@ export default function THRTab({ resetKey = 'thr' }: { resetKey?: string }) {
   ], []);
 
   const actions: DataTableAction<THRRow>[] = [
-    { label: '', icon: <Edit />, onClick: () => {}, variant: 'outline', className: 'border-0' },
+    {
+      label: '',
+      icon: <Edit />,
+      onClick: (row) => {
+        navigate(`/periode-gajian/detail-thr/${row.idKaryawan}`);
+      },
+      variant: 'outline',
+      className: 'border-0',
+    },
     { label: '', icon: <Trash />, onClick: () => {}, variant: 'outline', className: 'border-0', color: 'error' },
   ];
 

@@ -83,14 +83,32 @@ import OrganizationHistoryPage from "../features/staff/pages/organizationHistory
 import Dashboard from "@/features/dashboard/pages/Dashboard";
 // import DaftarPenggajianPage from "@/features/penggajian/pages/daftarPenggajianPage";
 import KonfigurasiPenggajianPage from "@/features/penggajian/pages/konfigursaiPenggajian/konfigurasiPenggajianPage";
+// Dokumentasi: Import tab untuk Konfigurasi Penggajian
+import KompensasiPage from "@/features/penggajian/pages/konfigursaiPenggajian/tab/kompensasiPage";
+import BpjsPage from "@/features/penggajian/pages/konfigursaiPenggajian/tab/bpjsPage";
+import AcuanPotonganPage from "@/features/penggajian/pages/konfigursaiPenggajian/tab/acuanPotonganPage";
+import TunjanganTetapPage from "@/features/penggajian/pages/konfigursaiPenggajian/tab/tunjanganTetapPage";
+import TunjanganTidakTetapPage from "@/features/penggajian/pages/konfigursaiPenggajian/tab/tunjanganTidakTetapPage";
+import PotonganTidakTetapPage from "@/features/penggajian/pages/konfigursaiPenggajian/tab/potonganTidakTetapPage";
+import THRPage from "@/features/penggajian/pages/konfigursaiPenggajian/tab/THRPage";
 // Dokumentasi: Halaman dan tab Periode Penggajian
 import PeriodePenggajianPage from "@/features/penggajian/pages/periodePenggajian/periodePenggajianPage";
 import NonAETab from "@/features/penggajian/pages/periodePenggajian/tab/nonAEPages";
 import AETab from "@/features/penggajian/pages/periodePenggajian/tab/AEPages";
 import PKLTab from "@/features/penggajian/pages/periodePenggajian/tab/PKLPages";
 import THRTab from "@/features/penggajian/pages/periodePenggajian/tab/THRPages";
+// Dokumentasi: Import halaman Detail Gaji untuk navigasi dari tabel Periode Penggajian
+// import DetailGajiPage from "@/features/penggajian/pages/periodePenggajian/detail/detailGaji";
+// Dokumentasi: Import halaman Detail Gaji AE dan Non-AE terpisah
+import DetailGajiAEPage from "@/features/penggajian/pages/periodePenggajian/detail/detailGajiAEPage";
+import DetailGajiNonAEPage from "@/features/penggajian/pages/periodePenggajian/detail/detailGajiNonAEPage";
+import DetailGajiTHRPage from "@/features/penggajian/pages/periodePenggajian/detail/detailGajiTHRPage";
+import DetailGajiPKLPage from "@/features/penggajian/pages/periodePenggajian/detail/detailGajiPKLPage";
 import HakAksesPage from "@/features/hakAkses/pages/hakAksesPage";
+// Dokumentasi: Import halaman Kasbon dan tab terkait
 import KasbonPage from "@/features/penggajian/pages/kasbon/kasbonPage";
+import StatusKasbonPage from "@/features/penggajian/pages/kasbon/tab/statusKasbonPage";
+import RiwayatPengajuanPage from "@/features/penggajian/pages/kasbon/tab/riwayatPengajuanPage";
 import DashboardPenggajianPage from "@/features/penggajian/pages/dashboardPenggajian/dashboardPenggajianPage";
 
 
@@ -125,7 +143,17 @@ export default function AppRoutes() {
           </Route>
           {/* Penggajian */}
           {/* <Route path="/periode-gajian" element={<DaftarPenggajianPage />} /> */}
-          <Route path="/konfigurasi-penggajian" element={<KonfigurasiPenggajianPage />} />
+          // Dokumentasi: Nested route untuk Konfigurasi Penggajian dengan tujuh tab
+          <Route path="/konfigurasi-penggajian" element={<KonfigurasiPenggajianPage />}>
+            <Route index element={<KompensasiPage />} />
+            <Route path="kompensasi" element={<KompensasiPage />} />
+            <Route path="bpjs" element={<BpjsPage />} />
+            <Route path="acuan-potongan" element={<AcuanPotonganPage />} />
+            <Route path="tunjangan-tetap" element={<TunjanganTetapPage />} />
+            <Route path="tunjangan-tidak-tetap" element={<TunjanganTidakTetapPage />} />
+            <Route path="potongan-tidak-tetap" element={<PotonganTidakTetapPage />} />
+            <Route path="thr" element={<THRPage />} />
+          </Route>
           {/* Dokumentasi: Nested route untuk Periode Penggajian dengan empat tab */}
           <Route path="/periode-gajian" element={<PeriodePenggajianPage />}>
             <Route path="non-ae" element={<NonAETab />} />
@@ -133,7 +161,18 @@ export default function AppRoutes() {
             <Route path="pkl" element={<PKLTab />} />
             <Route path="thr" element={<THRTab />} />
           </Route>
-          <Route path="/kasbon" element={<KasbonPage />} />
+          {/* Dokumentasi: Route Detail Gaji terpisah agar dapat diakses dari tombol Edit */}
+          {/* <Route path="/periode-gajian/detail/:id" element={<DetailGajiPage />} /> */}
+          <Route path="/periode-gajian/detail-ae/:id" element={<DetailGajiAEPage />} />
+          <Route path="/periode-gajian/detail-non-ae/:id" element={<DetailGajiNonAEPage />} />
+          <Route path="/periode-gajian/detail-thr/:id" element={<DetailGajiTHRPage />} />
+          <Route path="/periode-gajian/detail-pkl/:id" element={<DetailGajiPKLPage />} />
+          {/* Dokumentasi: Nested route untuk Kasbon dengan dua tab */}
+          <Route path="/kasbon" element={<KasbonPage />}>
+            <Route index element={<RiwayatPengajuanPage />} />
+            <Route path="riwayat-pengajuan" element={<RiwayatPengajuanPage />} />
+            <Route path="status-kasbon" element={<StatusKasbonPage />} />
+          </Route>
           <Route path="/dashboard-penggajian" element={<DashboardPenggajianPage />} />
 
           <Route path="/data-karyawan" element={<DataKaryawanIndexPage />} />
