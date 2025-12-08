@@ -1,5 +1,4 @@
 // Dokumentasi: Halaman Tunjangan Tetap berisi 4 section tabel menggunakan ExpandCard + TableGlobal
-import React from 'react';
 import DocumentsTable from '@/features/structure-and-organize/components/table/TableGlobal';
 import ExpandCard from '@/features/structure-and-organize/components/card/ExpandCard';
 import { IconFileDetail, IconPencil } from '@/icons/components/icons';

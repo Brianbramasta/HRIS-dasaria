@@ -1,7 +1,7 @@
 
 
 // Dokumentasi: Tabel Tunjangan Hari Raya menggunakan DataTable + toggle Switch (ON/OFF) di toolbar atas, serta tombol Ekspor & Tambah Potongan
-import React, { useMemo, useState } from 'react';
+import  { useMemo, useState } from 'react';
 import DataTable, { type DataTableColumn, type DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
 import { IconPencil } from '@/icons/components/icons';
 import Switch from '@/components/form/switch/Switch';

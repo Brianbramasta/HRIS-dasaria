@@ -1,5 +1,5 @@
 // Dokumentasi: Tabel Acuan Potongan menggunakan DataTable + tombol Ekspor
-import React, { useMemo } from 'react';
+import  { useMemo } from 'react';
 import { DataTable, type DataTableColumn, type DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
 import { IconPencil, IconHapus } from '@/icons/components/icons';
 
