@@ -1,14 +1,14 @@
 // Dokumentasi: Menambahkan dukungan slot toolbar atas (toolbarRightSlotAtas) untuk kustomisasi tombol Import/Download Template,
 // fallback ke tombol default (Ekspor & Tambah) menggunakan onExport dan onAdd bila slot tidak disediakan.
 import React, { useState, useMemo, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Table, TableHeader, TableBody, TableRow, TableCell } from '../../../../components/ui/table';
 import PaginationWithIcon from '../../../../components/tables/DataTables/TableOne/PaginationWithIcon';
 import Button from '../../../../components/ui/button/Button';
 import {Modal} from '../../../../components/ui/modal/index';
 import { Plus } from 'react-feather';
 import { FilterLineIcon } from '../../../../icons/index';
-import { setFilterFor, getFilterFor } from '../../../../stores/filterStore';
+import { setFilterFor, getFilterFor, loadPageFilters, persistPageFilters } from '../../../../stores/filterStore';
 import Checkbox from '../../../../components/form/input/Checkbox';
 import {IconExport} from '@/icons/components/icons'
 
@@ -124,24 +124,30 @@ export function DataTable<T = any>({
   const [modalFilterTerm, setModalFilterTerm] = useState('');
   const [modalFilterItems, setModalFilterItems] = useState<string[]>([]);
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // Reset visible columns when resetKey changes (e.g., on tab switch)
   useEffect(() => {
-    setVisibleColumns(columns.filter((c) => !c.isAction).map((c) => c.id));
-  }, [resetKey, columns]);
+    const pageKey = resetKey ?? location.pathname;
+    const valid = columns.filter((c) => !c.isAction).map((c) => c.id);
+    const { columns: savedCols } = loadPageFilters(pageKey);
+    const next = (savedCols ?? valid).filter((id) => valid.includes(id));
+    setVisibleColumns(next.length ? next : valid);
+  }, [resetKey, columns, location.pathname]);
   useEffect(() => {
-    setExportVisibleColumns(columns.filter((c) => c.id !== 'no' && !c.isAction).map((c) => c.id));
+    const validExport = columns.filter((c) => c.id !== 'no' && !c.isAction).map((c) => c.id);
+    setExportVisibleColumns(validExport);
   }, [resetKey, columns]);
 
   useEffect(() => {
     if (isFilterModalOpen) {
       setTempVisibleColumns(visibleColumns);
-      const key = title ?? 'global';
-      const existing = getFilterFor(key);
-      const items = existing ? existing.split(',').map((v) => v.trim()).filter((v) => v.length > 0) : [];
+      const pageKey = resetKey ?? location.pathname;
+      const { terms } = loadPageFilters(pageKey);
+      const existing = terms.length ? terms : (getFilterFor(title ?? 'global') || '').split(',').map((v) => v.trim()).filter((v) => v.length > 0);
+      const items = existing;
       setModalFilterItems(items);
     }
-  }, [isFilterModalOpen]);
+  }, [isFilterModalOpen, resetKey, location.pathname]);
 
   useEffect(() => {
     if (isExportModalOpen) {
@@ -163,16 +169,18 @@ export function DataTable<T = any>({
   }, [useExternalPagination, pageSize]);
 
   useEffect(() => {
-    const key = title ?? 'global';
-    const existing = getFilterFor(key);
-    console.log('existing', existing);
-    console.log('key', key);
-    if (existing) {
-      
-      const items = existing.split(',').map((v) => v.trim()).filter((v) => v.length > 0);
-      setModalFilterItems(items);
+    const pageKey = resetKey ?? location.pathname;
+    const { terms } = loadPageFilters(pageKey);
+    if (terms.length) {
+      setModalFilterItems(terms);
+    } else {
+      const existing = getFilterFor(title ?? 'global');
+      if (existing) {
+        const items = existing.split(',').map((v) => v.trim()).filter((v) => v.length > 0);
+        setModalFilterItems(items);
+      }
     }
-  }, [resetKey]);
+  }, [resetKey, location.pathname]);
 
   const handleSort = (columnId: string) => {
     const isAsc = orderBy === columnId && order === 'asc';
@@ -550,13 +558,14 @@ export function DataTable<T = any>({
           </div>
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={() => { setFilterModalOpen(false); setModalFilterTerm(''); }}>Tutup</Button>
-            <Button
-              variant="primary"
-              onClick={() => {
-                const key = title ?? 'global';
+              <Button
+                variant="primary"
+                onClick={() => {
+                const pageKey = resetKey ?? location.pathname;
                 const terms = modalFilterItems.length > 0 ? modalFilterItems : (modalFilterTerm.trim() ? [modalFilterTerm.trim()] : []);
                 const value = terms.join(',');
-                setFilterFor(key, value);
+                setFilterFor(title ?? 'global', value);
+                persistPageFilters(pageKey, terms, tempVisibleColumns);
                 setVisibleColumns(tempVisibleColumns);
                 onColumnVisibilityChange?.(tempVisibleColumns);
                 setFilterModalOpen(false);
