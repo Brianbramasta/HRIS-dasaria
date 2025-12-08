@@ -10,7 +10,8 @@ import DeleteDocumentModal from '../../../components/modals/Perusahaan/detail/De
 import EditDetailCompany from '../../../components/modals/Perusahaan/detail/EditDetailCompany';
 import Button from '@/components/ui/button/Button';
 // import { TrashBinIcon } from '@/icons/index';
-import { IconHapus as  TrashBinIcon} from '@/icons/components/icons';
+// DOK: Hapus import ikon tidak terpakai 'TrashBinIcon'
+// Alasan: ikon ini tidak digunakan (baris pemakaian sedang dikomentari)
 import { addNotification } from '@/stores/notificationStore';
 import { IconPencil, IconHapus, iconPlus, IconFileDetail } from '@/icons/components/icons';
 // import { TrashBinIcon as TrashIcon, PencilIcon as EditIcon, EyeIcon } from '@/icons/index';
@@ -30,7 +31,9 @@ const DetailPerusahaan: React.FC = () => {
 
   const [isAddBranchOpen, setAddBranchOpen] = React.useState(false);
   const [isDeleteBranchOpen, setDeleteBranchOpen] = React.useState(false);
-  const [selectedBranch, setSelectedBranch] = React.useState<any | null>(null);
+  // DOK: Hilangkan setter state yang tidak digunakan (setSelectedBranch)
+  // Alasan: aksi pilih branch untuk delete sedang tidak aktif, hindari error lint
+  const [selectedBranch] = React.useState<any | null>(null);
 
   const [isAddDocOpen, setAddDocOpen] = React.useState(false);
   const [isDeleteDocOpen, setDeleteDocOpen] = React.useState(false);
@@ -66,7 +69,7 @@ const DetailPerusahaan: React.FC = () => {
   const alamatValue = company?.address || '—';
   const companySizeValue = (company?.employeeCount || company?.employees || '')
     ? `${company?.employeeCount || company?.employees} Employes`
-    : '—';
+    : '0';
 
   const contactInformation = [
     { label: 'Kode Pos', value: company?.postalCode || company?.postal || '—' },
@@ -105,12 +108,12 @@ const DetailPerusahaan: React.FC = () => {
         className: 'h-9 w-9 flex items-center justify-center rounded-lg  text-white ',
         onClick: (r: any) => { console.log('Detail Dokumen', r);const url = formatUrlFile(r?.fileUrl || r?.url || r?.link); if (url) window.open(url, '_blank'); },
       },
-      {
-        label: 'Edit',
-        icon: <IconPencil />,
-        className: 'h-9 w-9 flex items-center justify-center rounded-lg  text-white ',
-        onClick: (r: any) => { setSelectedDoc(r); setEditDocOpen(true); },
-      }
+      // {
+      //   label: 'Edit',
+      //   icon: <IconPencil />,
+      //   className: 'h-9 w-9 flex items-center justify-center rounded-lg  text-white ',
+      //   onClick: (r: any) => { setSelectedDoc(r); setEditDocOpen(true); },
+      // }
     ];
   }), []);
 
@@ -223,9 +226,10 @@ const DetailPerusahaan: React.FC = () => {
                       {/* <div className="text-sm text-gray-500">{b.address}</div> */}
                       <div className="text-sm text-gray-500">{b.employeeCount ? `${b.employeeCount} Employees` : '0 Employees'}</div>
                     </div>
-                    <div>
+                    {/* comment kata ui/ux di hapus */}
+                    {/* <div>
                       <button onClick={() => { setSelectedBranch(b); setDeleteBranchOpen(true); }} className="bg-red-500 text-white rounded p-2"><TrashBinIcon color='white'/></button>
-                    </div>
+                    </div> */}
                   </div>
                 )): <div className="text-center text-gray-500">Belum ada branch</div>}
               </div>
@@ -276,6 +280,7 @@ const DetailPerusahaan: React.FC = () => {
           title: 'Branch ditambahkan',
         });
       }} />
+
       <DeleteBranchModal isOpen={isDeleteBranchOpen} onClose={() => setDeleteBranchOpen(false)} branch={selectedBranch} onSuccess={() => {fetch();
         addNotification({
           description: 'Branch berhasil dihapus',

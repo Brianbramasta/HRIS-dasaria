@@ -12,7 +12,7 @@ const mapToCompany = (item: any): CompanyListItem => ({
   description: item.company_description ?? item.deskripsi_perusahaan ?? item.description ?? null,
   businessLineId: item.id_bl ?? item.fk_uuid_lini_bisnis ?? item.businessLineId ?? null,
   businessLineName:
-    item.business_line_name ?? item.businessLineName ?? item.lini_bisnis?.nama_lini_bisnis ?? item.bl_name ?? null,
+  item.business_line_name ?? item.businessLineName ?? item.lini_bisnis?.nama_lini_bisnis ?? item.bl_name ??item.business_line?.bl_name ?? null,
   memoNumber: item.company_decree_number ?? item.memoNumber ?? null,
   skFile: null,
   logo: item.logo ?? null,

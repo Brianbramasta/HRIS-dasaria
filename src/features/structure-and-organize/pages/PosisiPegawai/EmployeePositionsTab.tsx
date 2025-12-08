@@ -14,6 +14,7 @@ import { addNotification } from '@/stores/notificationStore';
 import { FileText } from '@/icons/components/icons';
 import { useFileStore } from '@/stores/fileStore';
 import { formatUrlFile } from '@/utils/formatUrlFile';
+import { useFilterStore } from '@/stores/filterStore';
 
 type Props = { resetKey: string };
 
@@ -24,7 +25,7 @@ const employeePositionColumns: DataTableColumn<EmployeePositionRow>[] = [
   { id: 'Direktorat', label: 'Direktorat', sortable: true },
   { id: 'Divisi', label: 'Divisi', sortable: true },
   { id: 'Departemen', label: 'Departemen', sortable: true },
-  { id: 'File SK & MoU', label: 'File SK & MoU', sortable: false, isAction: true, format: (row: EmployeePositionRow) => (row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer" className='flex items-center justify-center'><FileText size={16} /></a> : '—')},
+  { id: 'File SK & MoU', label: 'File SK & MoU', sortable: false, align: 'center', isAction: true, format: (row: EmployeePositionRow) => (row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer" className='flex items-center justify-center'><FileText size={16} /></a> : '—')},
 ];
 
 export default function EmployeePositionsTab({ resetKey }: Props) {
@@ -37,9 +38,12 @@ export default function EmployeePositionsTab({ resetKey }: Props) {
   const fileStore = useFileStore();
   // Dokumentasi: flag untuk memastikan fetch awal hanya berjalan sekali saat mount
   const [hasInitialFetch, setHasInitialFetch] = useState(false);
+  // Dokumentasi: ambil nilai filter dari store untuk kunci judul tabel
+  const filterValue = useFilterStore((s) => s.filters['Posisi Pegawai'] ?? '');
 
   const rows: EmployeePositionRow[] = useMemo(() => {
-    // Dokumentasi: pastikan kolom string sesuai tipe EmployeePositionRow dan sediakan fileUrl untuk Action
+    // DOK: Pastikan kolom bertipe string; gunakan nama file untuk tampilan
+    // Alasan: tipe EmployeePositionRow mengharuskan 'File SK & MoU' bertipe string
     return (employeePositions || []).map((ep: EmployeePositionListItem, idx: number) => ({
       id: ep.id,
       no: idx + 1,
@@ -48,7 +52,7 @@ export default function EmployeePositionsTab({ resetKey }: Props) {
       Direktorat: ep.directorateName ?? '—',
       Divisi: ep.divisionName ?? '—',
       Departemen: ep.departmentName ?? '—',
-      'File SK & MoU': ep.skFile ? 'Ada' : '—',
+      'File SK & MoU': ep.skFile ?? '—',
       fileUrl: ep.skFile?.fileUrl ?? undefined,
       raw: ep,
     }));
@@ -102,6 +106,15 @@ export default function EmployeePositionsTab({ resetKey }: Props) {
 
   // Dokumentasi: jalankan fetch list sekali saat mount dan set penanda selesai inisialisasi
   React.useEffect(() => { fetchEmployeePositions(); setHasInitialFetch(true); }, []);
+
+  // Dokumentasi: ketika tombol Cari di modal Filter ditekan (menyimpan ke filterStore),
+  // sinkronkan pencarian dan jalankan request API seperti halaman Jabatan
+  React.useEffect(() => {
+    if (!hasInitialFetch) return;
+    setSearch(filterValue);
+    setPage(1);
+    fetchEmployeePositions({ search: filterValue, page: 1 });
+  }, [filterValue, hasInitialFetch]);
 
   return (
     <>

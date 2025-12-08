@@ -447,7 +447,7 @@ export function DataTable<T = any>({
       </div>
 
       <div className="flex flex-col md:flex-row items-center justify-between  border-gray-200 px-6 py-4 dark:border-gray-800 gap-2">
-        <div className="flex items-center gap-2 text-sm">
+        <div className="flex items-center gap-2 text-sm dark:text-white">
           <span>Menampilkan</span>
           <select
             value={rowsPerPage}
@@ -477,7 +477,7 @@ export function DataTable<T = any>({
         />
       </div>
       
-      <Modal className="max-w-md" isOpen={isFilterModalOpen} onClose={() => { setFilterModalOpen(false); setModalFilterTerm(''); }} >
+      <Modal className="max-w-md dark:bg-gray-800 dark:text-white" isOpen={isFilterModalOpen} onClose={() => { setFilterModalOpen(false); setModalFilterTerm(''); }} >
         <div className="p-6">
           <div className="mb-4">
             <div className='text-center'>
@@ -570,7 +570,7 @@ export function DataTable<T = any>({
       </Modal>
 
       {/* Export Modal */}
-      <Modal className="max-w-md" isOpen={isExportModalOpen} onClose={() => setExportModalOpen(false)}>
+      <Modal className="max-w-md  dark:bg-gray-800 dark:text-white" isOpen={isExportModalOpen} onClose={() => setExportModalOpen(false)}>
         <div className="p-6">
           <div className="mb-4">
             <div className='text-center'>

@@ -20,7 +20,7 @@ const departmentColumns: DataTableColumn<DepartmentRow>[] = [
   { id: 'no', label: 'No', sortable: false },
   { id: 'Nama Departemen', label: 'Nama Departemen', sortable: true },
   { id: 'Nama Divisi', label: 'Divisi', sortable: true },
-  { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: false, isAction: true, format: (row: DepartmentRow) => (
+  { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: false,align: 'center', isAction: true, format: (row: DepartmentRow) => (
     
     row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer" className='flex items-center justify-center'><FileText size={16} /></a> : '—' )},
 ];

@@ -10,6 +10,9 @@ import { useBusinessLines } from '../../../../hooks/useBusinessLines';
 import { companyService } from '../../../../services/organization.service';
 import type { BusinessLineListItem } from '../../../../types/organization.api.types';
 import { addNotification } from '@/stores/notificationStore';
+// DOK: Hapus import tidak digunakan 'format' yang berasal dari 'path'
+// Alasan: tidak dipakai di komponen ini dan memicu error lint
+import { formatDate } from '@/utils/formatDate'
 
 interface EditDetailCompanyProps {
   isOpen: boolean;
@@ -45,7 +48,10 @@ const EditDetailCompany: React.FC<EditDetailCompanyProps> = ({ isOpen, onClose, 
       type: company?.type || '',
       website: company?.website || '',
       companySize: company?.companySize || company?.size || '',
+      logo: company?.logo || '',
+
     });
+    console.log('company', company);
     setLogoFile(null);
   }, [isOpen, company]);
 
@@ -97,27 +103,59 @@ const EditDetailCompany: React.FC<EditDetailCompanyProps> = ({ isOpen, onClose, 
     if (!company?.id) return;
     setSubmitting(true);
     try {
-      const toFoundedYear = (val: any): number | null => {
+      // DOK: Helper konversi ke format tanggal YYYY-MM-DD untuk payload
+      const toYMD = (val: any): string | null => {
         if (!val) return null;
-        if (typeof val === 'number') return val;
-        const s = String(val);
-        const slash = s.split('/');
-        if (slash.length === 3) {
-          const y = Number(slash[2]);
-          return Number.isFinite(y) ? y : null;
+        if (val instanceof Date) {
+          const yyyy = val.getFullYear();
+          const mm = String(val.getMonth() + 1).padStart(2, '0');
+          const dd = String(val.getDate()).padStart(2, '0');
+          return `${yyyy}-${mm}-${dd}`;
         }
-        const dash = s.split('-');
-        if (dash.length >= 1 && /^\d{4}$/.test(dash[0])) {
-          const y = Number(dash[0]);
-          return Number.isFinite(y) ? y : null;
+        const s = String(val).trim();
+        // Jika sudah ISO (YYYY-MM-DD)
+        if (/^\d{4}-\d{2}-\d{2}$/.test(s.slice(0, 10))) {
+          return s.slice(0, 10);
         }
-        const onlyDigits = s.replace(/\D/g, '');
-        if (onlyDigits.length === 4) {
-          const y = Number(onlyDigits);
-          return Number.isFinite(y) ? y : null;
+        // Format flatpickr default "d/m/Y"
+        const m = s.match(/^([0-3]?\d)\/([0-1]?\d)\/(\d{4})$/);
+        if (m) {
+          const dd = m[1].padStart(2, '0');
+          const mm = m[2].padStart(2, '0');
+          const yyyy = m[3];
+          return `${yyyy}-${mm}-${dd}`;
+        }
+        // Fallback: coba parse Date
+        const d = new Date(s);
+        if (!isNaN(d.getTime())) {
+          const yyyy = d.getFullYear();
+          const mm = String(d.getMonth() + 1).padStart(2, '0');
+          const dd = String(d.getDate()).padStart(2, '0');
+          return `${yyyy}-${mm}-${dd}`;
         }
         return null;
       };
+      // const toFoundedYear = (val: any): number | null => {
+      //   if (!val) return null;
+      //   if (typeof val === 'number') return val;
+      //   const s = String(val);
+      //   const slash = s.split('/');
+      //   if (slash.length === 3) {
+      //     const y = Number(slash[2]);
+      //     return Number.isFinite(y) ? y : null;
+      //   }
+      //   const dash = s.split('-');
+      //   if (dash.length >= 1 && /^\d{4}$/.test(dash[0])) {
+      //     const y = Number(dash[0]);
+      //     return Number.isFinite(y) ? y : null;
+      //   }
+      //   const onlyDigits = s.replace(/\D/g, '');
+      //   if (onlyDigits.length === 4) {
+      //     const y = Number(onlyDigits);
+      //     return Number.isFinite(y) ? y : null;
+      //   }
+      //   return null;
+      // };
 
       const payload: any = {
         address: form.address || null,
@@ -125,7 +163,8 @@ const EditDetailCompany: React.FC<EditDetailCompanyProps> = ({ isOpen, onClose, 
         email: form.email || null,
         phone: form.phone || null,
         industry: form.industry || null,
-        founded_year: toFoundedYear(form.founded),
+        // DOK: Kirim founded_year sebagai YYYY-MM-DD
+        founded_year: toYMD(form.founded),
         company_type: form.type || null,
         website: form.website || null,
         logo: logoFile || null,
@@ -229,20 +268,26 @@ const EditDetailCompany: React.FC<EditDetailCompanyProps> = ({ isOpen, onClose, 
             </div>
             <div>
               <label className="text-sm font-medium">Jumlah Karyawan</label>
-              <Input value={form.companySize} onChange={(e:any) => handleChange('companySize', e.target.value)} />
+              <Input value={form.companySize || '0'} disabled onChange={(e:any) => handleChange('companySize', e.target.value)} />
             </div>
             <div>
+              // DOK: Gunakan block arrow agar parameter 'date' dianggap terpakai oleh TS
+              // Alasan: mencegah TS6133 ('date' tidak dibaca) saat kita hanya butuh dateString
               <DatePicker
                 id="company-founded"
                 label="Tanggal Didirikan"
-                defaultDate={form.founded?.slice?.(0,10) || form.founded || undefined}
-                onChange={(...args) => handleChange('founded', args[1] as string)}
+                defaultDate={formatDate(form.founded) || undefined}
+                onChange={(date, dateString) => { void date; handleChange('founded', dateString); }}
                 placeholder="hh/bb/tttt"
               />
             </div>
             <div>
               <label className="text-sm font-medium">Website</label>
               <Input value={form.website} onChange={(e:any) => handleChange('website', e.target.value)} />
+            </div>
+            <div  className="md:col-span-2">
+              <label className="text-sm font-medium">Industri</label>
+              <Input value={form.industry} onChange={(e:any) => handleChange('industry', e.target.value)} />
             </div>
           </div>
         </div>
