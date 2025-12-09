@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { DataTable, type DataTableColumn } from '@/features/structure-and-organize/components/datatable/DataTable';
 import { IconFileDetail } from '@/icons/components/icons';
 import ShareLinkModal from '@/features/staff/components/modals/sharelink/shareLink';
-import PengajuanKasbonModal from '@/features/penggajian/components/modals/kasbon/pengajuanKasbonmodal';
+// Dokumentasi: perbaikan casing import untuk menghindari error TS1261
+import PengajuanKasbonModal from '@/features/penggajian/components/modals/kasbon/PengajuanKasbonModal';
 
 type KasbonRiwayatRow = {
   no?: number;

@@ -8,6 +8,7 @@ type AERow = {
   idKaryawan: string;
   pengguna: string;
   tanggalPengajuan: string;
+  jumlahHariKerja: string;
   totalGajiBersih: string;
   uangTransportasi: string;
   potongan: string;
@@ -30,13 +31,14 @@ export default function AETab({ resetKey = 'ae' }: { resetKey?: string }) {
   const detailPathPrefix = isDistribusiPage ? '/distribusi-gaji/detail-ae' : `${basePrefix}/detail-ae`;
   const title = isApprovalPage ? 'Approval Periode Gajian' : isDistribusiPage ? 'Distribusi Slip Gaji' : 'Periode Gajian';
   const [rows] = useState<AERow[]>([
-    { idKaryawan: '12345681', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', totalGajiBersih: '7.250.000', uangTransportasi: '500.000', potongan: '250.000', tunjanganTidakTetap: '750.000', kategori: 'Sales', perusahaan: 'Dasaria', statusPenggajian: 'Draft', approvalHrga: 'Selesai', approvalFat: 'Pending', approvalDirekturKeuangan: 'Selesai' },
+    { idKaryawan: '12345681', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', jumlahHariKerja: '20', totalGajiBersih: '7.250.000', uangTransportasi: '500.000', potongan: '250.000', tunjanganTidakTetap: '750.000', kategori: 'Sales', perusahaan: 'Dasaria', statusPenggajian: 'Draft', approvalHrga: 'Selesai', approvalFat: 'Pending', approvalDirekturKeuangan: 'Selesai' },
   ]);
   const baseColumns: DataTableColumn<AERow>[] = [
     { id: 'no', label: 'No.', align: 'center', sortable: false },
     { id: 'idKaryawan', label: 'ID Karyawan' },
     { id: 'pengguna', label: 'Pengguna' },
     { id: 'tanggalPengajuan', label: 'Tanggal Pengajuan' },
+    { id: 'jumlahHariKerja', label: 'Jumlah Hari Kerja' },
     { id: 'totalGajiBersih', label: 'Total Gaji Bersih', align: 'right' },
     { id: 'uangTransportasi', label: 'Uang Transportasi', align: 'right' },
     { id: 'potongan', label: 'Potongan', align: 'right' },

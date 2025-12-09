@@ -8,6 +8,7 @@ type PKLRow = {
   idKaryawan: string;
   pengguna: string;
   tanggalPengajuan: string;
+  jumlahHariKerja: string;
   uangSaku: string;
   kategori: string;
   perusahaan: string;
@@ -27,13 +28,14 @@ export default function PKLTab({ resetKey = 'pkl' }: { resetKey?: string }) {
   const detailPathPrefix = isDistribusiPage ? '/distribusi-gaji/detail-pkl' : `${basePrefix}/detail-pkl`;
   const title = isApprovalPage ? 'Approval Periode Gajian' : isDistribusiPage ? 'Distribusi Slip Gaji' : 'Periode Gajian';
   const [rows] = useState<PKLRow[]>([
-    { idKaryawan: '22345678', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', uangSaku: '2.000.000', kategori: 'PKL', perusahaan: 'Dasaria', statusPenggajian: 'Draft', approvalHrga: 'Selesai', approvalFat: 'Pending', approvalDirekturKeuangan: 'Selesai' },
+    { idKaryawan: '22345678', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', jumlahHariKerja: '20', uangSaku: '2.000.000', kategori: 'PKL', perusahaan: 'Dasaria', statusPenggajian: 'Draft', approvalHrga: 'Selesai', approvalFat: 'Pending', approvalDirekturKeuangan: 'Selesai' },
   ]);
   const baseColumns: DataTableColumn<PKLRow>[] = [
     { id: 'no', label: 'No.', align: 'center', sortable: false },
     { id: 'idKaryawan', label: 'ID Karyawan' },
     { id: 'pengguna', label: 'Pengguna' },
     { id: 'tanggalPengajuan', label: 'Tanggal Pengajuan' },
+    { id: 'jumlahHariKerja', label: 'Jumlah Hari Kerja' },
     { id: 'uangSaku', label: 'Uang Saku', align: 'right' },
     { id: 'kategori', label: 'Kategori' },
     { id: 'perusahaan', label: 'Perusahaan' },

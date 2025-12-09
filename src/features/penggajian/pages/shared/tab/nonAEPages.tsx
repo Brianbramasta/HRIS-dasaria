@@ -8,6 +8,7 @@ type NonAERow = {
   idKaryawan: string;
   pengguna: string;
   tanggalPengajuan: string;
+  jumlahHariKerja: string;
   totalGajiBersih: string;
   gajiPokokUangSaku: string;
   potongan: string;
@@ -31,14 +32,15 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
   const detailPathPrefix = isDistribusiPage ? '/distribusi-gaji/detail-non-ae' : `${basePrefix}/detail-non-ae`;
   const title = isApprovalPage ? 'Approval Periode Gajian' : isDistribusiPage ? 'Distribusi Slip Gaji' : 'Periode Gajian';
   const [rows] = useState<NonAERow[]>([
-    { idKaryawan: '12345678', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', totalGajiBersih: '7.000.000', gajiPokokUangSaku: '5.000.000', potongan: '250.000', tunjanganTetap: '1.000.000', tunjanganTidakTetap: '750.000', kategori: 'Staff', perusahaan: 'Dasaria', statusPenggajian: 'Draft', approvalHrga: 'Selesai', approvalFat: 'Pending', approvalDirekturKeuangan: 'Selesai' },
-    { idKaryawan: '12345679', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', totalGajiBersih: '7.000.000', gajiPokokUangSaku: '5.000.000', potongan: '250.000', tunjanganTetap: '1.000.000', tunjanganTidakTetap: '750.000', kategori: 'Staff', perusahaan: 'Dasaria', statusPenggajian: 'Pending Draft', approvalHrga: 'Selesai', approvalFat: 'Selesai', approvalDirekturKeuangan: 'Pending' },
+    { idKaryawan: '12345678', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', jumlahHariKerja: '20', totalGajiBersih: '7.000.000', gajiPokokUangSaku: '5.000.000', potongan: '250.000', tunjanganTetap: '1.000.000', tunjanganTidakTetap: '750.000', kategori: 'Staff', perusahaan: 'Dasaria', statusPenggajian: 'Draft', approvalHrga: 'Selesai', approvalFat: 'Pending', approvalDirekturKeuangan: 'Selesai' },
+    { idKaryawan: '12345679', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', jumlahHariKerja: '20', totalGajiBersih: '7.000.000', gajiPokokUangSaku: '5.000.000', potongan: '250.000', tunjanganTetap: '1.000.000', tunjanganTidakTetap: '750.000', kategori: 'Staff', perusahaan: 'Dasaria', statusPenggajian: 'Pending Draft', approvalHrga: 'Selesai', approvalFat: 'Selesai', approvalDirekturKeuangan: 'Pending' },
   ]);
   const baseColumns: DataTableColumn<NonAERow>[] = [
     { id: 'no', label: 'No.', align: 'center', sortable: false },
     { id: 'idKaryawan', label: 'ID Karyawan' },
     { id: 'pengguna', label: 'Pengguna' },
     { id: 'tanggalPengajuan', label: 'Tanggal Pengajuan' },
+    { id: 'jumlahHariKerja', label: 'Jumlah Hari Kerja' },
     { id: 'totalGajiBersih', label: 'Total Gaji Bersih', align: 'right' },
     { id: 'gajiPokokUangSaku', label: 'Gaji Pokok / Uang Saku', align: 'right' },
     { id: 'potongan', label: 'Potongan', align: 'right' },
