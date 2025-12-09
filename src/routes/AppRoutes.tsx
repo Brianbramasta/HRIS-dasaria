@@ -119,6 +119,7 @@ import DistribusiGajiPage from "@/features/penggajian/pages/distribusiGaji/distr
 // Auth Feature Pages
 import { LoginPage, ForgotPasswordPage } from "../features/auth/pages";
 import ProtectedOutlet from "../features/auth/components/ProtectedOutlet";
+import FormKasbonPage from "@/features/penggajian/pages/kasbon/fromKasbon/formKasbonPage";
 
 export default function AppRoutes() {
   return (
@@ -175,6 +176,7 @@ export default function AppRoutes() {
             <Route index element={<RiwayatPengajuanPage />} />
             <Route path="riwayat-pengajuan" element={<RiwayatPengajuanPage />} />
             <Route path="status-kasbon" element={<StatusKasbonPage />} />
+            <Route path="formulir-kasbon" element={<FormKasbonPage />} />
           </Route>
           <Route path="/dashboard-penggajian" element={<DashboardPenggajianPage />} />
           <Route path="/approval-periode-gajian" element={<ApprovalPeriodeGajianPage />}>
@@ -189,7 +191,7 @@ export default function AppRoutes() {
             <Route path="detail-pkl/:id" element={<DetailGajiPKLPage />} />
           </Route>
           
-          // Dokumentasi: Nested route untuk Distribusi Gaji dengan empat tab
+          {/* // Dokumentasi: Nested route untuk Distribusi Gaji dengan empat tab */}
           <Route path="/distribusi-gaji" element={<DistribusiGajiPage />}>
             <Route path="non-ae" element={<NonAETab />} />
             <Route path="ae" element={<AETab />} />

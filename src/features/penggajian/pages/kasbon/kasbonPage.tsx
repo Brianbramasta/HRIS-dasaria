@@ -1,4 +1,4 @@
-// Dokumentasi: Halaman induk Kasbon dengan skema Tabs + Outlet
+// Dokumentasi: Halaman induk Kasbon, Tabs disembunyikan pada halaman formulir
 import { Outlet, useLocation } from 'react-router-dom';
 import Tabs from '@/features/structure-and-organize/components/Tabs';
 
@@ -10,7 +10,7 @@ export default function KasbonPage() {
 
   // Dokumentasi: sembunyikan Tabs jika sedang berada di halaman detail
   // contoh: /kasbon/riwayat-pengajuan/123
-  const isDetailPage = pathParts.length > 2;
+  const isDetailPage = pathParts.length > 2 || pathParts[1] === 'formulir-kasbon';
 
   // Dokumentasi: daftar Tabs Kasbon
   const tabs = [

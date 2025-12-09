@@ -1,8 +1,10 @@
-// Dokumentasi: Tabel "Riwayat Pengajuan Kasbon" menggunakan DataTable
+// Dokumentasi: Tabel "Riwayat Pengajuan Kasbon" & integrasi modal pengajuan
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DataTable, type DataTableColumn } from '@/features/structure-and-organize/components/datatable/DataTable';
 import { IconFileDetail } from '@/icons/components/icons';
-import { Modal } from '@/components/ui/modal';
+import ShareLinkModal from '@/features/staff/components/modals/sharelink/shareLink';
+import PengajuanKasbonModal from '@/features/penggajian/components/modals/kasbon/pengajuanKasbonmodal';
 
 type KasbonRiwayatRow = {
   no?: number;
@@ -23,6 +25,8 @@ type KasbonRiwayatRow = {
 };
 
 export default function RiwayatPengajuanPage() {
+  // Dokumentasi: inisialisasi navigate dan state modal
+  const navigate = useNavigate();
   // Dokumentasi: util ekspor CSV sederhana
   const exportCSV = (filename: string, data: any[]) => {
     if (!data || data.length === 0) return;
@@ -110,6 +114,21 @@ export default function RiwayatPengajuanPage() {
   ), []);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isShareOpen, setIsShareOpen] = useState(false);
+
+  // Dokumentasi: URL share menuju form kasbon
+  const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/kasbon/formulir-kasbon` : '/kasbon/formulir-kasbon';
+
+  // Dokumentasi: handler membuka modal ShareLink
+  const handleOpenShare = () => {
+    setIsShareOpen(true);
+  };
+
+  // Dokumentasi: handler navigasi ke halaman Form Kasbon
+  const handleOpenFormKasbon = () => {
+    setIsModalOpen(false);
+    navigate('/kasbon/formulir-kasbon');
+  };
 
   return (
     <div className="p-4">
@@ -124,16 +143,19 @@ export default function RiwayatPengajuanPage() {
         addButtonLabel="Form Pengajuan Kasbon"
       />
 
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} >
-        <div className="space-y-3">
-          <p className="text-sm text-gray-700 dark:text-gray-300">
-            Form pengajuan kasbon belum tersedia. Silakan lanjutkan proses melalui admin.
-          </p>
-          <div className="flex justify-end gap-2">
-            <button onClick={() => setIsModalOpen(false)} className="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-800 dark:bg-gray-800 dark:text-white">Tutup</button>
-          </div>
-        </div>
-      </Modal>
+      <PengajuanKasbonModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onShareLink={handleOpenShare}
+        onFormKasbon={handleOpenFormKasbon}
+      />
+
+      <ShareLinkModal
+        isOpen={isShareOpen}
+        onClose={() => setIsShareOpen(false)}
+        link={shareUrl}
+        message="Silakan isi form kasbon melalui tautan berikut"
+      />
     </div>
   );
 }
