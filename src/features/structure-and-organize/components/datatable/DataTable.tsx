@@ -12,12 +12,14 @@ import { setFilterFor, getFilterFor, loadPageFilters, persistPageFilters } from 
 import Checkbox from '../../../../components/form/input/Checkbox';
 import {IconExport} from '@/icons/components/icons'
 
+// Dokumentasi: Menambahkan headerFormat untuk custom header cell (contoh: checkbox check-all)
 export interface DataTableColumn<T = any> {
   id: string;
   label: string;
   minWidth?: number;
   align?: 'left' | 'center' | 'right';
   format?: (value: any, row: T) => React.ReactNode;
+  headerFormat?: () => React.ReactNode;
   sortable?: boolean;
   filterable?: boolean;
   isAction?: boolean;
@@ -348,7 +350,7 @@ export function DataTable<T = any>({
                   onClick={() => column.sortable !== false && handleSort(column.id)}
                 >
                   <div className={`flex items-center gap-1 ${column.align === 'center' ? 'justify-center' : column.align === 'right' ? 'justify-end' : 'justify-start'}`}>
-                    {column.label}
+                    {column.headerFormat ? column.headerFormat() : column.label}
                     {column.sortable !== false && <span className="text-white">{getSortIcon(column.id)}</span>}
                   </div>
                 </TableCell>

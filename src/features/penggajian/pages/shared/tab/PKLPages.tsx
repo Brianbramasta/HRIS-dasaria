@@ -1,12 +1,7 @@
-// Dokumentasi: Tab PKL untuk Periode Penggajian menggunakan DataTable dengan kolom sesuai dokumen
-// Dokumentasi: Tab PKL - tambahkan navigasi ke halaman Detail Gaji PKL saat klik Edit
-import  { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router';
-// Dokumentasi: Menggunakan toolbarRightSlotAtas untuk menempatkan tombol Import & Template di bar atas.
-import DataTable, { DataTableColumn, DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
-import Button from '@/components/ui/button/Button';
-import { Edit, Trash } from 'react-feather';
-import { IconDownloadTemplate, IconImport } from '@/icons/components/icons';
+import  { useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { DataTableColumn } from '@/features/structure-and-organize/components/datatable/DataTable';
+import PenggajianTabBase from '../../../components/tabs/PenggajianTabBase';
 
 type PKLRow = {
   no?: number;
@@ -23,12 +18,15 @@ type PKLRow = {
 };
 
 export default function PKLTab({ resetKey = 'pkl' }: { resetKey?: string }) {
-  const navigate = useNavigate();
+  const location = useLocation();
+  const isApprovalPage = location.pathname.includes('/approval-periode-gajian');
+  const basePrefix = isApprovalPage ? '/approval-periode-gajian' : '/periode-gajian';
+  const detailPathPrefix = `${basePrefix}/detail-pkl`;
+  const title = isApprovalPage ? 'Approval Periode Gajian' : 'Periode Gajian';
   const [rows] = useState<PKLRow[]>([
     { idKaryawan: '22345678', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', uangSaku: '2.000.000', kategori: 'PKL', perusahaan: 'Dasaria', statusPenggajian: 'Draft', approvalHrga: 'Selesai', approvalFat: 'Pending', approvalDirekturKeuangan: 'Selesai' },
   ]);
-
-  const columns: DataTableColumn<PKLRow>[] = useMemo(() => [
+  const baseColumns: DataTableColumn<PKLRow>[] = [
     { id: 'no', label: 'No.', align: 'center', sortable: false },
     { id: 'idKaryawan', label: 'ID Karyawan' },
     { id: 'pengguna', label: 'Pengguna' },
@@ -40,39 +38,14 @@ export default function PKLTab({ resetKey = 'pkl' }: { resetKey?: string }) {
     { id: 'approvalHrga', label: 'Approval Direktur HRGA', format: (v) => <span className="inline-flex rounded-full bg-green-100 px-2 py-1 text-xs text-green-700 dark:bg-green-900/30 dark:text-green-200">{String(v)}</span> },
     { id: 'approvalFat', label: 'Approval FAT', format: (v) => <span className="inline-flex rounded-full bg-yellow-100 px-2 py-1 text-xs text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-200">{String(v)}</span> },
     { id: 'approvalDirekturKeuangan', label: 'Approval Direktur Keuangan', format: (v) => <span className="inline-flex rounded-full bg-green-100 px-2 py-1 text-xs text-green-700 dark:bg-green-900/30 dark:text-green-200">{String(v)}</span> },
-  ], []);
-
-  const actions: DataTableAction<PKLRow>[] = [
-    {
-      label: '',
-      icon: <Edit />,
-      onClick: (row) => {
-        navigate(`/periode-gajian/detail-pkl/${row.idKaryawan}`);
-      },
-      variant: 'outline',
-      className: 'border-0',
-    },
-    { label: '', icon: <Trash />, onClick: () => {}, variant: 'outline', className: 'border-0', color: 'error' },
   ];
-
-  const toolbarRightSlot = (
-    <div className="flex items-center gap-3">
-      <Button variant="outline" size="sm" className="bg-success text-white dark:text-white">
-        <IconImport size={16} /> Import</Button>
-      <Button variant="custom" className='w-max bg-[#007BFF] text-white dark:text-white' size="sm">
-        <IconDownloadTemplate size={16} />
-        Template Import Data</Button>
-    </div>
-  );
-
   return (
-    <DataTable
-      title="Periode Gajian"
-      data={rows}
-      columns={columns}
-      actions={actions}
-      toolbarRightSlotAtas={toolbarRightSlot}
+    <PenggajianTabBase
       resetKey={resetKey}
+      rows={rows}
+      baseColumns={baseColumns}
+      detailPathPrefix={detailPathPrefix}
+      title={title}
     />
   );
 }

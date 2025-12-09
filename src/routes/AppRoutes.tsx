@@ -93,23 +93,26 @@ import PotonganTidakTetapPage from "@/features/penggajian/pages/konfigursaiPengg
 import THRPage from "@/features/penggajian/pages/konfigursaiPenggajian/tab/THRPage";
 // Dokumentasi: Halaman dan tab Periode Penggajian
 import PeriodePenggajianPage from "@/features/penggajian/pages/periodePenggajian/periodePenggajianPage";
-import NonAETab from "@/features/penggajian/pages/periodePenggajian/tab/nonAEPages";
-import AETab from "@/features/penggajian/pages/periodePenggajian/tab/AEPages";
-import PKLTab from "@/features/penggajian/pages/periodePenggajian/tab/PKLPages";
-import THRTab from "@/features/penggajian/pages/periodePenggajian/tab/THRPages";
+import NonAETab from "@/features/penggajian/pages/shared/tab/nonAEPages";
+import AETab from "@/features/penggajian/pages/shared/tab/AEPages";
+import PKLTab from "@/features/penggajian/pages/shared/tab/PKLPages";
+import THRTab from "@/features/penggajian/pages/shared/tab/THRPages";
 // Dokumentasi: Import halaman Detail Gaji untuk navigasi dari tabel Periode Penggajian
 // import DetailGajiPage from "@/features/penggajian/pages/periodePenggajian/detail/detailGaji";
 // Dokumentasi: Import halaman Detail Gaji AE dan Non-AE terpisah
-import DetailGajiAEPage from "@/features/penggajian/pages/periodePenggajian/detail/detailGajiAEPage";
-import DetailGajiNonAEPage from "@/features/penggajian/pages/periodePenggajian/detail/detailGajiNonAEPage";
-import DetailGajiTHRPage from "@/features/penggajian/pages/periodePenggajian/detail/detailGajiTHRPage";
-import DetailGajiPKLPage from "@/features/penggajian/pages/periodePenggajian/detail/detailGajiPKLPage";
+import DetailGajiAEPage from "@/features/penggajian/pages/shared/detail/detailGajiAEPage";
+import DetailGajiNonAEPage from "@/features/penggajian/pages/shared/detail/detailGajiNonAEPage";
+import DetailGajiTHRPage from "@/features/penggajian/pages/shared/detail/detailGajiTHRPage";
+import DetailGajiPKLPage from "@/features/penggajian/pages/shared/detail/detailGajiPKLPage";
 import HakAksesPage from "@/features/hakAkses/pages/hakAksesPage";
 // Dokumentasi: Import halaman Kasbon dan tab terkait
 import KasbonPage from "@/features/penggajian/pages/kasbon/kasbonPage";
 import StatusKasbonPage from "@/features/penggajian/pages/kasbon/tab/statusKasbonPage";
 import RiwayatPengajuanPage from "@/features/penggajian/pages/kasbon/tab/riwayatPengajuanPage";
 import DashboardPenggajianPage from "@/features/penggajian/pages/dashboardPenggajian/dashboardPenggajianPage";
+
+import ApprovalPeriodeGajianPage from "@/features/penggajian/pages/approvalPeriodeGajian/approvalPeriodeGajianPage";
+import DistribusiGajiPage from "@/features/penggajian/pages/distribusiGaji/distribusiGajiPage";
 
 
 
@@ -174,7 +177,20 @@ export default function AppRoutes() {
             <Route path="status-kasbon" element={<StatusKasbonPage />} />
           </Route>
           <Route path="/dashboard-penggajian" element={<DashboardPenggajianPage />} />
-
+          <Route path="/approval-periode-gajian" element={<ApprovalPeriodeGajianPage />}>
+            <Route path="non-ae" element={<NonAETab />} />
+            <Route path="ae" element={<AETab />} />
+            <Route path="pkl" element={<PKLTab />} />
+            <Route path="thr" element={<THRTab />} />
+            {/* detail approval */}
+            <Route path="detail-ae/:id" element={<DetailGajiAEPage />} />
+            <Route path="detail-non-ae/:id" element={<DetailGajiNonAEPage />} />
+            <Route path="detail-thr/:id" element={<DetailGajiTHRPage />} />
+            <Route path="detail-pkl/:id" element={<DetailGajiPKLPage />} />
+          </Route>
+          
+          <Route path="/distribusi-gaji" element={<DistribusiGajiPage />} />
+          
           <Route path="/data-karyawan" element={<DataKaryawanIndexPage />} />
           <Route path="/data-karyawan/:id" element={<DetailKaryawanPage />} />
           <Route path="/data-karyawan/perpanjangan-kontrak" element={<PerpanjanganKontrak />} />

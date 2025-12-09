@@ -4,6 +4,7 @@ import React, { useMemo, useState } from 'react';
 import ModalAddEdit from '@/features/structure-and-organize/components/modals/shared/modal/modalAddEdit';
 import Label from '@/components/form/Label';
 import Input from '@/components/form/input/InputField';
+import type { ModalProps } from '@/features/penggajian/components/contents/detail';
 
 interface FormValues {
   komisiSales: string;
@@ -13,13 +14,7 @@ interface FormValues {
   feeMitraSubnet: string;
 }
 
-interface TambahTunjanganTidakTetapModalAEProps {
-  isOpen: boolean;
-  onClose: () => void;
-  submitting?: boolean;
-  defaultValues?: Partial<FormValues>;
-  onSave?: (values: FormValues) => void;
-}
+type Props = ModalProps;
 
 // Dokumentasi: Format angka ribuan dengan titik pemisah
 const formatRupiah = (val: string) => {
@@ -28,10 +23,9 @@ const formatRupiah = (val: string) => {
   return cleaned.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 };
 
-const TambahTunjanganTidakTetapModalAE: React.FC<TambahTunjanganTidakTetapModalAEProps> = ({
+const TambahTunjanganTidakTetapModalAE: React.FC<Props> = ({
   isOpen,
   onClose,
-  submitting = false,
   defaultValues,
   onSave,
 }) => {
@@ -75,7 +69,7 @@ const TambahTunjanganTidakTetapModalAE: React.FC<TambahTunjanganTidakTetapModalA
   );
 
   const handleSubmit = () => {
-    onSave?.(form);
+    onSave(form as unknown as Record<string, string>);
     onClose();
   };
 
@@ -86,7 +80,7 @@ const TambahTunjanganTidakTetapModalAE: React.FC<TambahTunjanganTidakTetapModalA
       onClose={onClose}
       content={content}
       handleSubmit={handleSubmit}
-      submitting={submitting}
+      submitting={false}
       maxWidth="max-w-lg"
       confirmTitleButton="Simpan Perubahan"
       closeTitleButton="Tutup"
