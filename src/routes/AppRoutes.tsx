@@ -189,7 +189,18 @@ export default function AppRoutes() {
             <Route path="detail-pkl/:id" element={<DetailGajiPKLPage />} />
           </Route>
           
-          <Route path="/distribusi-gaji" element={<DistribusiGajiPage />} />
+          // Dokumentasi: Nested route untuk Distribusi Gaji dengan empat tab
+          <Route path="/distribusi-gaji" element={<DistribusiGajiPage />}>
+            <Route path="non-ae" element={<NonAETab />} />
+            <Route path="ae" element={<AETab />} />
+            <Route path="pkl" element={<PKLTab />} />
+            <Route path="thr" element={<THRTab />} />
+            {/* detail distribusi */}
+            <Route path="detail-ae/:id" element={<DetailGajiAEPage />} />
+            <Route path="detail-non-ae/:id" element={<DetailGajiNonAEPage />} />
+            <Route path="detail-thr/:id" element={<DetailGajiTHRPage />} />
+            <Route path="detail-pkl/:id" element={<DetailGajiPKLPage />} />
+          </Route>
           
           <Route path="/data-karyawan" element={<DataKaryawanIndexPage />} />
           <Route path="/data-karyawan/:id" element={<DetailKaryawanPage />} />

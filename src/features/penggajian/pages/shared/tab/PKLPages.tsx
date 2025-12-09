@@ -19,10 +19,13 @@ type PKLRow = {
 
 export default function PKLTab({ resetKey = 'pkl' }: { resetKey?: string }) {
   const location = useLocation();
+  // Dokumentasi: Deteksi halaman Approval atau Distribusi untuk set judul
   const isApprovalPage = location.pathname.includes('/approval-periode-gajian');
+  const isDistribusiPage = location.pathname.includes('/distribusi-gaji');
   const basePrefix = isApprovalPage ? '/approval-periode-gajian' : '/periode-gajian';
-  const detailPathPrefix = `${basePrefix}/detail-pkl`;
-  const title = isApprovalPage ? 'Approval Periode Gajian' : 'Periode Gajian';
+  // Dokumentasi: Gunakan prefix detail khusus distribusi saat di halaman Distribusi
+  const detailPathPrefix = isDistribusiPage ? '/distribusi-gaji/detail-pkl' : `${basePrefix}/detail-pkl`;
+  const title = isApprovalPage ? 'Approval Periode Gajian' : isDistribusiPage ? 'Distribusi Slip Gaji' : 'Periode Gajian';
   const [rows] = useState<PKLRow[]>([
     { idKaryawan: '22345678', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', uangSaku: '2.000.000', kategori: 'PKL', perusahaan: 'Dasaria', statusPenggajian: 'Draft', approvalHrga: 'Selesai', approvalFat: 'Pending', approvalDirekturKeuangan: 'Selesai' },
   ]);

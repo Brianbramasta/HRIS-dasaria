@@ -66,6 +66,9 @@ interface DataTableProps<T = any> {
   toolbarRightSlot?: React.ReactNode;
   // Dokumentasi: Slot toolbar kanan di bagian atas (sejajar judul). Jika tidak ada, tampilkan default onExport & onAdd.
   toolbarRightSlotAtas?: React.ReactNode;
+  // Dokumentasi: Mode render tombol default (Ekspor/Tambah) bersama slot atas kustom.
+  // Jika true, tampilkan tombol default dan konten slot berdampingan.
+  appendDefaultToolbarRightAtas?: boolean;
   // External pagination support (server-side)
   useExternalPagination?: boolean;
   externalPage?: number;
@@ -99,6 +102,7 @@ export function DataTable<T = any>({
   resetKey,
   toolbarRightSlot,
   toolbarRightSlotAtas,
+  appendDefaultToolbarRightAtas = false,
   useExternalPagination = false,
   externalPage,
   externalTotal,
@@ -278,25 +282,46 @@ export function DataTable<T = any>({
           {title && (
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white text-start w-full">{title}</h2>
           )}
-          {/* Dokumentasi: Render slot atas kustom bila tersedia, jika tidak tampilkan tombol default Ekspor & Tambah */}
-          {toolbarRightSlotAtas ? (
-            <div className="flex items-center gap-3">{toolbarRightSlotAtas}</div>
-          ) : (
-            <div className="flex items-center gap-3">
-              {onExport && (
-                <Button className='bg-success text-white dark:text-white' onClick={() => setExportModalOpen(true)} variant="outline" size="sm">
-                  <IconExport size={16}  />
-                  {exportButtonLabel}
-                </Button>
-              )}
-              {onAdd && (
-                <Button onClick={onAdd} variant="primary" size="sm" className="w-max">
-                  {addButtonIcon ? <span className="mr-2">{addButtonIcon}</span> : <Plus size={16} className="mr-2" />}
-                  {addButtonLabel || ('Tambah ' + (title ?? ''))}
-                </Button>
-              )}
-            </div>
-          )}
+          {/* Dokumentasi: Render tombol default (Ekspor/Tambah) dan opsional slot atas kustom sesuai mode */}
+          <div className="flex items-center gap-3">
+            {!toolbarRightSlotAtas && (
+              <>
+                {onExport && (
+                  <Button className='bg-success text-white dark:text-white' onClick={() => setExportModalOpen(true)} variant="outline" size="sm">
+                    <IconExport size={16}  />
+                    {exportButtonLabel}
+                  </Button>
+                )}
+                {onAdd && (
+                  <Button onClick={onAdd} variant="primary" size="sm" className="w-max">
+                    {addButtonIcon ? <span className="mr-2">{addButtonIcon}</span> : <Plus size={16} className="mr-2" />}
+                    {addButtonLabel || ('Tambah ' + (title ?? ''))}
+                  </Button>
+                )}
+              </>
+            )}
+            {toolbarRightSlotAtas && (
+              <>
+                {appendDefaultToolbarRightAtas && (
+                  <>
+                    {onExport && (
+                      <Button className='bg-success text-white dark:text-white' onClick={() => setExportModalOpen(true)} variant="outline" size="sm">
+                        <IconExport size={16}  />
+                        {exportButtonLabel}
+                      </Button>
+                    )}
+                    {onAdd && (
+                      <Button onClick={onAdd} variant="primary" size="sm" className="w-max">
+                        {addButtonIcon ? <span className="mr-2">{addButtonIcon}</span> : <Plus size={16} className="mr-2" />}
+                        {addButtonLabel || ('Tambah ' + (title ?? ''))}
+                      </Button>
+                    )}
+                  </>
+                )}
+                {toolbarRightSlotAtas}
+              </>
+            )}
+          </div>
           
         </div>
         

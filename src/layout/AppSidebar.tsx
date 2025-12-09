@@ -51,7 +51,7 @@ const navItems: NavItem[] = [
       { name: "Konfigurasi Penggajian", path: "/konfigurasi-penggajian", pro: false },
       { name: "Periode Gajian", path: "/periode-gajian/non-ae", pro: false },
       { name: "Approval Periode Gajian", path: "/approval-periode-gajian/non-ae", pro: false },
-      { name: "Distribusi Gaji", path: "/distribusi-gaji", pro: false },
+      { name: "Distribusi Gaji", path: "/distribusi-gaji/non-ae", pro: false },
       { name: "Kasbon", path: "/kasbon", pro: false },
     
     ],

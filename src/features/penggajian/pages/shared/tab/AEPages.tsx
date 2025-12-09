@@ -22,10 +22,13 @@ type AERow = {
 
 export default function AETab({ resetKey = 'ae' }: { resetKey?: string }) {
   const location = useLocation();
+  // Dokumentasi: Deteksi halaman Approval atau Distribusi untuk set judul
   const isApprovalPage = location.pathname.includes('/approval-periode-gajian');
+  const isDistribusiPage = location.pathname.includes('/distribusi-gaji');
   const basePrefix = isApprovalPage ? '/approval-periode-gajian' : '/periode-gajian';
-  const detailPathPrefix = `${basePrefix}/detail-ae`;
-  const title = isApprovalPage ? 'Approval Periode Gajian' : 'Periode Gajian';
+  // Dokumentasi: Gunakan prefix detail khusus distribusi saat di halaman Distribusi
+  const detailPathPrefix = isDistribusiPage ? '/distribusi-gaji/detail-ae' : `${basePrefix}/detail-ae`;
+  const title = isApprovalPage ? 'Approval Periode Gajian' : isDistribusiPage ? 'Distribusi Slip Gaji' : 'Periode Gajian';
   const [rows] = useState<AERow[]>([
     { idKaryawan: '12345681', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', totalGajiBersih: '7.250.000', uangTransportasi: '500.000', potongan: '250.000', tunjanganTidakTetap: '750.000', kategori: 'Sales', perusahaan: 'Dasaria', statusPenggajian: 'Draft', approvalHrga: 'Selesai', approvalFat: 'Pending', approvalDirekturKeuangan: 'Selesai' },
   ]);

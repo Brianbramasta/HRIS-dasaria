@@ -1,7 +1,7 @@
 // Dokumentasi: Halaman Non-AE di-refactor untuk menggunakan komponen dinamis DetailPayrollContent
 import { useMemo } from "react";
 import { useParams } from "react-router";
-import DetailPayrollContent, { SectionConfig } from "@/features/penggajian/components/contents/detail";
+import DetailPayrollContent, { SectionConfig } from "@/features/penggajian/components/layouts/layoutDetail";
 import TambahTunjanganTidakTetapModal from "@/features/penggajian/components/modals/detailGaji/nonAE/tambahTunjanganTidakTetapModal";
 import TambahPotonganTidakTetapModal from "@/features/penggajian/components/modals/detailGaji/nonAE/tambahPotonganTidakTetapModal";
 

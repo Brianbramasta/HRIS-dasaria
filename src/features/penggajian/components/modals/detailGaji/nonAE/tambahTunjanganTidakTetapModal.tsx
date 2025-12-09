@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react';
 import ModalAddEdit from '@/features/structure-and-organize/components/modals/shared/modal/modalAddEdit';
 import Label from '@/components/form/Label';
 import Input from '@/components/form/input/InputField';
-import type { ModalProps } from '@/features/penggajian/components/contents/detail';
+import type { ModalProps } from '@/features/penggajian/components/layouts/layoutDetail';
 
 interface FormValues {
   pph21: string;

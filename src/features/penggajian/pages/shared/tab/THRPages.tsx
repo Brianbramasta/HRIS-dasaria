@@ -22,10 +22,13 @@ type THRRow = {
 
 export default function THRTab({ resetKey = 'thr' }: { resetKey?: string }) {
   const location = useLocation();
+  // Dokumentasi: Deteksi halaman Approval atau Distribusi untuk set judul
   const isApprovalPage = location.pathname.includes('/approval-periode-gajian');
+  const isDistribusiPage = location.pathname.includes('/distribusi-gaji');
   const basePrefix = isApprovalPage ? '/approval-periode-gajian' : '/periode-gajian';
-  const detailPathPrefix = `${basePrefix}/detail-thr`;
-  const title = isApprovalPage ? 'Approval Periode Gajian' : 'Periode Gajian';
+  // Dokumentasi: Gunakan prefix detail khusus distribusi saat di halaman Distribusi
+  const detailPathPrefix = isDistribusiPage ? '/distribusi-gaji/detail-thr' : `${basePrefix}/detail-thr`;
+  const title = isApprovalPage ? 'Approval Periode Gajian' : isDistribusiPage ? 'Distribusi Slip Gaji' : 'Periode Gajian';
   const [rows] = useState<THRRow[]>([
     { idKaryawan: '32345678', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', totalTHR: '5.000.000', gajiPokokUangSaku: '4.000.000', tunjanganTetap: '1.000.000', lamaKerja: '2 tahun', kategori: 'Staff', perusahaan: 'Dasaria', statusPenggajian: 'Draft', approvalHrga: 'Selesai', approvalFat: 'Pending', approvalDirekturKeuangan: 'Selesai' },
   ]);

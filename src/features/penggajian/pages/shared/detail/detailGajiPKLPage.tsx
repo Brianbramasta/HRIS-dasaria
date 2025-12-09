@@ -1,7 +1,7 @@
 // Dokumentasi: Halaman PKL di-refactor untuk menggunakan komponen dinamis DetailPayrollContent
 import { useMemo } from "react";
 import { useParams } from "react-router";
-import DetailPayrollContent, { SectionConfig } from "@/features/penggajian/components/contents/detail";
+import DetailPayrollContent, { SectionConfig } from "@/features/penggajian/components/layouts/layoutDetail";
 
 // Dokumentasi: Komponen halaman PKL yang menyusun config untuk layout dinamis
 export default function DetailGajiPKLPage() {

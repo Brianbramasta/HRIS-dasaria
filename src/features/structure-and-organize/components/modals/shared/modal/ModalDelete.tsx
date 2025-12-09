@@ -11,10 +11,11 @@ interface DeleteOfficeModalProps {
   content?: React.ReactNode;
   confirmTitleButton?: string;
   closeTitleButton?: string;
+  isAlert?: boolean;
   title?: string;
 }
 
-const DeleteOfficeModal: React.FC<DeleteOfficeModalProps> = ({ content, isOpen, onClose, handleDelete, submitting=false, confirmTitleButton = 'Hapus', closeTitleButton = 'Tutup', title = 'Hapus Data' }) => {
+const DeleteOfficeModal: React.FC<DeleteOfficeModalProps> = ({ content, isOpen, onClose, handleDelete, submitting=false, confirmTitleButton = 'Hapus', closeTitleButton = 'Tutup', title = 'Hapus Data', isAlert = true }) => {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="max-w-md p-6 zoom-75 dark:text-white  " showCloseButton>
@@ -31,7 +32,7 @@ const DeleteOfficeModal: React.FC<DeleteOfficeModalProps> = ({ content, isOpen, 
         <form onSubmit={(e) => {e.preventDefault(); handleDelete?.()}}>
         <div className='max-h-[60vh] overflow-y-auto pb-4'>
           {content}
-          <p className='pt-2 text-start'>*Data tidak benar-benar dihapus akan tetapi diarsipkan</p>
+          {isAlert && (<p className='pt-2 text-start'>*Data tidak benar-benar dihapus akan tetapi diarsipkan</p>)}
         </div>
         
 

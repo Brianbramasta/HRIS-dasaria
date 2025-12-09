@@ -23,10 +23,13 @@ type NonAERow = {
 
 export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string }) {
   const location = useLocation();
+  // Dokumentasi: Deteksi halaman Approval atau Distribusi untuk set judul
   const isApprovalPage = location.pathname.includes('/approval-periode-gajian');
+  const isDistribusiPage = location.pathname.includes('/distribusi-gaji');
   const basePrefix = isApprovalPage ? '/approval-periode-gajian' : '/periode-gajian';
-  const detailPathPrefix = `${basePrefix}/detail-non-ae`;
-  const title = isApprovalPage ? 'Approval Periode Gajian' : 'Periode Gajian';
+  // Dokumentasi: Gunakan prefix detail khusus distribusi saat di halaman Distribusi
+  const detailPathPrefix = isDistribusiPage ? '/distribusi-gaji/detail-non-ae' : `${basePrefix}/detail-non-ae`;
+  const title = isApprovalPage ? 'Approval Periode Gajian' : isDistribusiPage ? 'Distribusi Slip Gaji' : 'Periode Gajian';
   const [rows] = useState<NonAERow[]>([
     { idKaryawan: '12345678', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', totalGajiBersih: '7.000.000', gajiPokokUangSaku: '5.000.000', potongan: '250.000', tunjanganTetap: '1.000.000', tunjanganTidakTetap: '750.000', kategori: 'Staff', perusahaan: 'Dasaria', statusPenggajian: 'Draft', approvalHrga: 'Selesai', approvalFat: 'Pending', approvalDirekturKeuangan: 'Selesai' },
     { idKaryawan: '12345679', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', totalGajiBersih: '7.000.000', gajiPokokUangSaku: '5.000.000', potongan: '250.000', tunjanganTetap: '1.000.000', tunjanganTidakTetap: '750.000', kategori: 'Staff', perusahaan: 'Dasaria', statusPenggajian: 'Pending Draft', approvalHrga: 'Selesai', approvalFat: 'Selesai', approvalDirekturKeuangan: 'Pending' },

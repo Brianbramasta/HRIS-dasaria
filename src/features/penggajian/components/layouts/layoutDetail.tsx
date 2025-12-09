@@ -55,7 +55,9 @@ export type SectionConfig = {
 export default function DetailPayrollContent({ config }: { config: SectionConfig }) {
   const goBack = useGoBack();
   const location = useLocation();
+  // Dokumentasi: Deteksi konteks Approval & Distribusi untuk kontrol tombol edit
   const isApprovalContext = location.pathname.startsWith("/approval-periode-gajian");
+  const isDistribusiContext = location.pathname.startsWith("/distribusi-gaji");
 
   const [ttValues, setTtValues] = useState<Record<string, string>>(
     () => config.tunjanganTidakTetap?.initialValues ?? {}
@@ -162,7 +164,7 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
               </div>
             ))}
           </div>
-          {config.tunjanganTidakTetap.showEditButton && (
+          {(config.tunjanganTidakTetap.showEditButton || isDistribusiContext) && (
             <div className="w-full flex justify-end">
               <Button
                 size="sm"
@@ -206,7 +208,7 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
               </div>
             ))}
           </div>
-          {config.potonganTidakTetap.showEditButton && isApprovalContext && (
+          {config.potonganTidakTetap.showEditButton && (isApprovalContext || isDistribusiContext) && (
             <div className="w-full flex justify-end">
               <Button
                 size="sm"
