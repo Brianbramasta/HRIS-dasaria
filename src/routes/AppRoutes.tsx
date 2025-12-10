@@ -134,6 +134,7 @@ export default function AppRoutes() {
         <Route element={<ProtectedOutlet />}> 
           <Route index path="/" element={<Dashboard />} />
           <Route path="/structure-and-organize" element={<StructureAndOrganize />}>
+            <Route index element={<BusinessLinesTab resetKey="business-lines" />} />
             <Route path="business-lines" element={<BusinessLinesTab resetKey="business-lines" />} />
             <Route path="business-lines/:id" element={<DetailLiniBisnis />} />
             <Route path="companies" element={<CompaniesTab resetKey="companies" />} />
@@ -160,6 +161,8 @@ export default function AppRoutes() {
           </Route>
           {/* Dokumentasi: Nested route untuk Periode Penggajian dengan empat tab */}
           <Route path="/periode-gajian" element={<PeriodePenggajianPage />}>
+            {/* Dokumentasi: index default Non-AE untuk /periode-gajian */}
+            <Route index element={<NonAETab />} />
             <Route path="non-ae" element={<NonAETab />} />
             <Route path="ae" element={<AETab />} />
             <Route path="pkl" element={<PKLTab />} />
@@ -180,6 +183,8 @@ export default function AppRoutes() {
           </Route>
           <Route path="/dashboard-penggajian" element={<DashboardPenggajianPage />} />
           <Route path="/approval-periode-gajian" element={<ApprovalPeriodeGajianPage />}>
+            {/* Dokumentasi: index default Non-AE untuk /approval-periode-gajian */}
+            <Route index element={<NonAETab />} />
             <Route path="non-ae" element={<NonAETab />} />
             <Route path="ae" element={<AETab />} />
             <Route path="pkl" element={<PKLTab />} />
@@ -193,6 +198,8 @@ export default function AppRoutes() {
           
           {/* // Dokumentasi: Nested route untuk Distribusi Gaji dengan empat tab */}
           <Route path="/distribusi-gaji" element={<DistribusiGajiPage />}>
+            {/* Dokumentasi: index default Non-AE untuk /distribusi-gaji */}
+            <Route index element={<NonAETab />} />
             <Route path="non-ae" element={<NonAETab />} />
             <Route path="ae" element={<AETab />} />
             <Route path="pkl" element={<PKLTab />} />

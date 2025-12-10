@@ -31,7 +31,7 @@ const navItems: NavItem[] = [
   },{
     icon: <> {iconStrukturOrganisasi({ size: 16 })} </>,
     name: "Struktur dan Organisasi",
-    path: "/structure-and-organize/business-lines",
+    path: "/structure-and-organize",
   },
   {
     icon: <> {iconKaryawan({ size: 16 })} </>,
@@ -49,9 +49,9 @@ const navItems: NavItem[] = [
     subItems: [
       { name: "Dashboard Penggajian", path: "/dashboard-penggajian", pro: false },
       { name: "Konfigurasi Penggajian", path: "/konfigurasi-penggajian", pro: false },
-      { name: "Periode Gajian", path: "/periode-gajian/non-ae", pro: false },
-      { name: "Approval Periode Gajian", path: "/approval-periode-gajian/non-ae", pro: false },
-      { name: "Distribusi Gaji", path: "/distribusi-gaji/non-ae", pro: false },
+      { name: "Periode Gajian", path: "/periode-gajian", pro: false },
+      { name: "Approval Periode Gajian", path: "/approval-periode-gajian", pro: false },
+      { name: "Distribusi Gaji", path: "/distribusi-gaji", pro: false },
       { name: "Kasbon", path: "/kasbon", pro: false },
     
     ],
