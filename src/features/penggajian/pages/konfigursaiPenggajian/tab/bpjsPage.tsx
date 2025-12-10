@@ -1,8 +1,9 @@
-// Dokumentasi: Tabel BPJS menggunakan DataTable dengan kolom No., Detail BPJS, Kategori BPJS, Jenis, %Value, dan Aksi
-import { useMemo } from 'react';
+// Dokumentasi: Halaman BPJS + integrasi Modal Edit BPJS untuk update data
+import {  useState } from 'react';
 import { DataTable, type DataTableColumn, type DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
 // import { Edit } from 'react-feather';
 import { IconPencil } from '@/icons/components/icons';
+import EditBpjsModal from '@/features/penggajian/components/modals/konfigurasiPenggajian/bpjs/editBpjsModal';
 
 type BpjsRow = {
   no?: number;
@@ -12,6 +13,7 @@ type BpjsRow = {
   percent: string;
 };
 
+// Dokumentasi: Komponen utama halaman BPJS: render tabel dan kelola modal edit
 export default function BpjsPage() {
   // Dokumentasi: util sederhana untuk ekspor data ke CSV mengikuti pola halaman lain
   const exportCSV = (filename: string, data: any[]) => {
@@ -36,26 +38,34 @@ export default function BpjsPage() {
     { id: 'percent', label: '%Value', sortable: true, align: 'center' },
   ];
 
+  const [rows, setRows] = useState<BpjsRow[]>([
+    { detailBpjs: 'BPJS Kesehatan - Iuran Karyawan', kategoriBpjs: 'Kesehatan', jenis: 'Potongan', percent: '1%' },
+    { detailBpjs: 'BPJS Ketenagakerjaan - JHT', kategoriBpjs: 'Ketenagakerjaan', jenis: 'Potongan', percent: '2%' },
+    { detailBpjs: 'BPJS Ketenagakerjaan - JP', kategoriBpjs: 'Ketenagakerjaan', jenis: 'Potongan', percent: '1%'},
+    { detailBpjs: 'BPJS Ketenagakerjaan - JKK', kategoriBpjs: 'Ketenagakerjaan', jenis: 'Tunjangan', percent: '0.24%'},
+  ]);
+
+  const [isEditOpen, setEditOpen] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+
   const actions: DataTableAction<BpjsRow>[] = [
     {
       label: '',
       icon: <IconPencil />,
       onClick: (row) => {
-        console.log('edit bpjs', row);
+        const idx = rows.indexOf(row);
+        setSelectedIndex(idx >= 0 ? idx : null);
+        setEditOpen(true);
       },
       variant: 'outline',
       className: 'border-0',
     },
   ];
 
-  const rows: BpjsRow[] = useMemo(() => (
-    [
-      { detailBpjs: 'BPJS Kesehatan - Iuran Karyawan', kategoriBpjs: 'Kesehatan', jenis: 'Potongan', percent: '1%' },
-      { detailBpjs: 'BPJS Ketenagakerjaan - JHT', kategoriBpjs: 'Ketenagakerjaan', jenis: 'Potongan', percent: '2%' },
-      { detailBpjs: 'BPJS Ketenagakerjaan - JP', kategoriBpjs: 'Ketenagakerjaan', jenis: 'Potongan', percent: '1%'},
-      { detailBpjs: 'BPJS Ketenagakerjaan - JKK', kategoriBpjs: 'Ketenagakerjaan', jenis: 'Tunjangan', percent: '0.24%'},
-    ]
-  ), []);
+  const handleSave = (values: { detailBpjs: string; kategoriBpjs: string; jenis: string; percent: string; }) => {
+    if (selectedIndex === null) return;
+    setRows((prev) => prev.map((r, i) => i === selectedIndex ? { ...r, ...values } : r));
+  };
 
   return (
     <div className="p-4">
@@ -67,6 +77,12 @@ export default function BpjsPage() {
         searchable
         filterable
         onExport={() => exportCSV('bpjs.csv', rows)}
+      />
+      <EditBpjsModal
+        isOpen={isEditOpen}
+        onClose={() => setEditOpen(false)}
+        defaultValues={selectedIndex !== null ? rows[selectedIndex] : undefined}
+        onSave={handleSave}
       />
     </div>
   );

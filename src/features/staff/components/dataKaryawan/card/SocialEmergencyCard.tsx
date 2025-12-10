@@ -4,7 +4,8 @@ import InputField from '@/components/form/input/InputField';
 import Button from '@/components/ui/button/Button';
 import { Edit2 } from 'react-feather';
 import { useModal } from '@/hooks/useModal';
-import EducationalBackgroundModal, { type EducationSocialForm } from '@/features/staff/components/modals/dataKaryawan/PersonalInformation/EducationalBackgroundModal';
+// Integrasi modal baru Media Sosial & Kontak Darurat
+import MediaSosialModal, { type MediaSosialForm } from '@/features/staff/components/modals/dataKaryawan/PersonalInformation/MediaSosialModal';
 import type { KaryawanDetailResponse } from '@/features/staff/services/karyawanService';
 import { IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
 
@@ -12,18 +13,19 @@ interface Props {
   personalInformation: KaryawanDetailResponse['personalInformation'];
 }
 
+// Komponen utama kartu Media Sosial & Kontak Darurat
 export default function SocialEmergencyCard({ personalInformation }: Props) {
   const { isOpen, openModal, closeModal } = useModal(false);
-  const initialData: EducationSocialForm = {
-    education: [{ jenjang: '', namaLembaga: '', gelar: '', nilaiPendidikan: '', jurusanKeahlian: '', tahunLulus: '' }],
-    facebook: '',
-    linkedin: '',
-    xcom: '',
-    instagram: '',
-    akunSosmedOrangTerdekat: '',
-    namaKontakDarurat: '',
-    nomorKontakDarurat: '',
-    hubunganKontakDarurat: '',
+  // Data awal untuk modal sosial dari personalInformation
+  const initialData: MediaSosialForm = {
+    facebook: personalInformation.facebook || '',
+    linkedin: personalInformation.linkedin || '',
+    xCom: personalInformation.xCom || '',
+    instagram: personalInformation.instagram || '',
+    akunSosialMediaTerdekat: personalInformation.akunSosialMediaTerdekat || '',
+    namaNoKontakDarurat: personalInformation.namaNoKontakDarurat || '',
+    noKontakDarurat: personalInformation.noKontakDarurat || '',
+    hubunganKontakDarurat: personalInformation.hubunganKontakDarurat || '',
   };
   const pi = personalInformation as any;
   const isComplete = !!pi?.facebook &&
@@ -76,12 +78,13 @@ export default function SocialEmergencyCard({ personalInformation }: Props) {
         </Button>
       </div>
 
-      <EducationalBackgroundModal
+      <MediaSosialModal
         isOpen={isOpen}
         initialData={initialData}
         onClose={closeModal}
         onSubmit={(payload) => {
-          console.log('Save Education & Sosial', payload);
+          // Simpan perubahan sosial & kontak darurat
+          console.log('Save Sosial & Kontak Darurat', payload);
           closeModal();
         }}
         submitting={false}

@@ -132,7 +132,7 @@ export default function RiwayatPengajuanPage() {
   };
 
   return (
-    <div className="p-4">
+    <div className="p-0">
       <DataTable
         title="Riwayat Pengajuan"
         data={rows}

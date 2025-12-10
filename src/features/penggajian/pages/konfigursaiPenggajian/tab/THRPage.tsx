@@ -1,10 +1,11 @@
 
 
-// Dokumentasi: Tabel Tunjangan Hari Raya menggunakan DataTable + toggle Switch (ON/OFF) di toolbar atas, serta tombol Ekspor & Tambah Potongan
+// Dokumentasi: Tabel Tunjangan Hari Raya + integrasi Modal Edit THR
 import  { useMemo, useState } from 'react';
 import DataTable, { type DataTableColumn, type DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
 import { IconPencil } from '@/icons/components/icons';
 import Switch from '@/components/form/switch/Switch';
+import EditThrModal from '@/features/penggajian/components/modals/konfigurasiPenggajian/thr/editThrModal';
 
 type THRConfigRow = {
   no?: number;
@@ -14,6 +15,8 @@ type THRConfigRow = {
 
 export default function THRPage() {
   const [isEnabled, setIsEnabled] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [defaultValues, setDefaultValues] = useState<{ lamaKerja: string; deskripsiUmum: string } | null>(null);
 
   const columns: DataTableColumn<THRConfigRow>[] = [
     { id: 'no', label: 'No.', align: 'center', sortable: false },
@@ -22,7 +25,10 @@ export default function THRPage() {
   ];
 
   const actions: DataTableAction<THRConfigRow>[] = [
-    { label: '', icon: <IconPencil />, onClick: (row) => { console.log('edit', row); }, variant: 'outline', className: 'border-0' },
+    { label: '', icon: <IconPencil />, onClick: (row) => {
+      setDefaultValues({ lamaKerja: row['Lama Kerja'], deskripsiUmum: row['Deksripsi Umum'] });
+      setIsModalOpen(true);
+    }, variant: 'outline', className: 'border-0' },
   ];
 
   const rows: THRConfigRow[] = useMemo(() => (
@@ -70,6 +76,14 @@ export default function THRPage() {
         addButtonLabel="Tambah Potongan"
         toolbarRightSlotAtas={switchSlot}
       />
+      {isModalOpen && (
+        <EditThrModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          defaultValues={defaultValues}
+          onSave={(values) => { console.log('save thr', values); }}
+        />
+      )}
     </div>
   );
 }

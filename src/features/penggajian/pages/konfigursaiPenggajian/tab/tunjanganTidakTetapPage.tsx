@@ -1,7 +1,8 @@
-// Dokumentasi: Tabel Tunjangan Tidak Tetap menggunakan DataTable dengan tombol Ekspor & Tambah Tunjangan
-import  { useMemo } from 'react';
+// Dokumentasi: Tabel Tunjangan Tidak Tetap + integrasi Modal Tambah/Edit
+import  { useMemo, useState } from 'react';
 import DataTable, { type DataTableColumn, type DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
 import { IconPencil, IconHapus } from '@/icons/components/icons';
+import EditTunjanganTidakTetapModal from '@/features/penggajian/components/modals/konfigurasiPenggajian/tunjanganTidaktetap/editTunjanganTidakTetapModal';
 
 type TunjanganTidakTetapRow = {
   no?: number;
@@ -10,6 +11,11 @@ type TunjanganTidakTetapRow = {
 };
 
 export default function TunjanganTidakTetapPage() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [defaultValues, setDefaultValues] = useState<{ namaTunjangan: string; deskripsiUmum: string } | null>(null);
+  const [modalTitle, setModalTitle] = useState<string>('Edit Tunjangan Tidak Tetap');
+  const [confirmTitleButton, setConfirmTitleButton] = useState<string>('Simpan Perubahan');
+
   const columns: DataTableColumn<TunjanganTidakTetapRow>[] = [
     { id: 'no', label: 'No.', align: 'center', sortable: false },
     { id: 'Nama Tunjangan', label: 'Nama Tunjangan', sortable: true },
@@ -18,7 +24,12 @@ export default function TunjanganTidakTetapPage() {
 
   const actions: DataTableAction<TunjanganTidakTetapRow>[] = [
     { label: '', icon: <IconHapus />, onClick: (row) => { console.log('hapus', row); }, variant: 'outline', className: 'border-0' },
-    { label: '', icon: <IconPencil />, onClick: (row) => { console.log('edit', row); }, variant: 'outline', className: 'border-0' },
+    { label: '', icon: <IconPencil />, onClick: (row) => {
+      setDefaultValues({ namaTunjangan: row['Nama Tunjangan'], deskripsiUmum: row['Deksripsi Umum'] });
+      setModalTitle('Edit Tunjangan Tidak Tetap');
+      setConfirmTitleButton('Simpan Perubahan');
+      setIsModalOpen(true);
+    }, variant: 'outline', className: 'border-0' },
   ];
 
   const rows: TunjanganTidakTetapRow[] = useMemo(() => (
@@ -57,9 +68,19 @@ export default function TunjanganTidakTetapPage() {
         searchable
         filterable
         onExport={() => exportCSV('tunjangan-tidak-tetap.csv', rows)}
-        onAdd={() => console.log('tambah tunjangan')}
+        onAdd={() => { setDefaultValues({ namaTunjangan: '', deskripsiUmum: '' }); setModalTitle('Tambah Tunjangan Tidak Tetap'); setConfirmTitleButton('Simpan'); setIsModalOpen(true); }}
         addButtonLabel="Tambah Tunjangan"
       />
+      {isModalOpen && (
+        <EditTunjanganTidakTetapModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          defaultValues={defaultValues}
+          onSave={(values) => { console.log('save tunjangan tidak tetap', values); }}
+          title={modalTitle}
+          confirmTitleButton={confirmTitleButton}
+        />
+      )}
     </div>
   );
 }

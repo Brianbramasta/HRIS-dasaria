@@ -1,7 +1,8 @@
-// Dokumentasi: Tabel Acuan Potongan menggunakan DataTable + tombol Ekspor
-import  { useMemo } from 'react';
+// Dokumentasi: Halaman Acuan Potongan + integrasi Modal Edit untuk update data
+import  {  useState } from 'react';
 import { DataTable, type DataTableColumn, type DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
 import { IconPencil, IconHapus } from '@/icons/components/icons';
+import EditAcuanPotonganModal from '@/features/penggajian/components/modals/konfigurasiPenggajian/acuanPotongan/editAcuanPotonganModal';
 
 type AcuanPotonganRow = {
   no?: number;
@@ -20,24 +21,30 @@ export default function AcuanPotonganPage() {
     { id: 'keterangan', label: 'Keterangan', sortable: false },
   ];
 
+  const [rows, setRows] = useState<AcuanPotonganRow[]>([
+    { acuanPotongan: 'UMR', kategori: 'BPJS Kesehatan', nominal: '3.524.238', keterangan: '-' },
+    { acuanPotongan: 'Non-UMR', kategori: 'BPJS Kesehatan', nominal: '4.100.000', keterangan: '-' },
+    { acuanPotongan: 'Gaji Tipe 1', kategori: 'BPJS Ketenagakerjaan', nominal: '3.524.238', keterangan: 'Salary < UMK' },
+    { acuanPotongan: 'Gaji Tipe 2', kategori: 'BPJS Ketenagakerjaan', nominal: '3.524.238', keterangan: 'Salary ≥ UMK' },
+    { acuanPotongan: 'Gaji Tipe 3', kategori: 'BPJS Ketenagakerjaan', nominal: '4.000.000', keterangan: 'Salary > 4.000.000' },
+    { acuanPotongan: 'Gaji Tipe 4', kategori: 'BPJS Ketenagakerjaan', nominal: '5.000.000', keterangan: 'Salary > 5.000.000' },
+    { acuanPotongan: 'Gaji Tipe 5', kategori: 'BPJS Ketenagakerjaan', nominal: '7.000.000', keterangan: 'Salary > 7.000.000' },
+    { acuanPotongan: 'Gaji Tipe 6', kategori: 'BPJS Ketenagakerjaan', nominal: '10.000.000', keterangan: 'Salary > 10.000.000' },
+    { acuanPotongan: 'Gaji Tipe 7', kategori: 'BPJS Ketenagakerjaan', nominal: '12.000.000', keterangan: 'Salary > 13.000.000' },
+  ]);
+
+  const [isEditOpen, setEditOpen] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+
   const actions: DataTableAction<AcuanPotonganRow>[] = [
     { label: '', icon: <IconHapus />, onClick: (row) => { console.log('hapus', row); }, variant: 'outline', className: 'border-0' },
-    { label: '', icon: <IconPencil />, onClick: (row) => { console.log('edit', row); }, variant: 'outline', className: 'border-0' },
+    { label: '', icon: <IconPencil />, onClick: (row) => { const idx = rows.indexOf(row); setSelectedIndex(idx >= 0 ? idx : null); setEditOpen(true); }, variant: 'outline', className: 'border-0' },
   ];
 
-  const rows: AcuanPotonganRow[] = useMemo(() => (
-    [
-      { acuanPotongan: 'UMR', kategori: 'BPJS Kesehatan', nominal: '3.524.238', keterangan: '-' },
-      { acuanPotongan: 'Non-UMR', kategori: 'BPJS Kesehatan', nominal: '4.100.000', keterangan: '-' },
-      { acuanPotongan: 'Gaji Tipe 1', kategori: 'BPJS Ketenagakerjaan', nominal: '3.524.238', keterangan: 'Salary < UMK' },
-      { acuanPotongan: 'Gaji Tipe 2', kategori: 'BPJS Ketenagakerjaan', nominal: '3.524.238', keterangan: 'Salary ≥ UMK' },
-      { acuanPotongan: 'Gaji Tipe 3', kategori: 'BPJS Ketenagakerjaan', nominal: '4.000.000', keterangan: 'Salary > 4.000.000' },
-      { acuanPotongan: 'Gaji Tipe 4', kategori: 'BPJS Ketenagakerjaan', nominal: '5.000.000', keterangan: 'Salary > 5.000.000' },
-      { acuanPotongan: 'Gaji Tipe 5', kategori: 'BPJS Ketenagakerjaan', nominal: '7.000.000', keterangan: 'Salary > 7.000.000' },
-      { acuanPotongan: 'Gaji Tipe 6', kategori: 'BPJS Ketenagakerjaan', nominal: '10.000.000', keterangan: 'Salary > 10.000.000' },
-      { acuanPotongan: 'Gaji Tipe 7', kategori: 'BPJS Ketenagakerjaan', nominal: '12.000.000', keterangan: 'Salary > 13.000.000' },
-    ]
-  ), []);
+  const handleSave = (values: { acuanPotongan: string; kategori: string; nominal: string; keterangan: string; }) => {
+    if (selectedIndex === null) return;
+    setRows((prev) => prev.map((r, i) => i === selectedIndex ? { ...r, ...values } : r));
+  };
 
   // Dokumentasi: util sederhana untuk ekspor
   const exportCSV = (filename: string, data: any[]) => {
@@ -65,6 +72,12 @@ export default function AcuanPotonganPage() {
         searchable
         filterable
         onExport={() => exportCSV('acuan-potongan.csv', rows)}
+      />
+      <EditAcuanPotonganModal
+        isOpen={isEditOpen}
+        onClose={() => setEditOpen(false)}
+        defaultValues={selectedIndex !== null ? rows[selectedIndex] : undefined}
+        onSave={handleSave}
       />
     </div>
   );

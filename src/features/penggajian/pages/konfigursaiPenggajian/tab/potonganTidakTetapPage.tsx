@@ -1,9 +1,10 @@
 
 
-// Dokumentasi: Tabel Potongan Tidak Tetap menggunakan DataTable dengan tombol Ekspor & Tambah Potongan
-import  { useMemo } from 'react';
+// Dokumentasi: Tabel Potongan Tidak Tetap + integrasi Modal Tambah/Edit
+import  { useMemo, useState } from 'react';
 import DataTable, { type DataTableColumn, type DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
 import { IconPencil, IconHapus } from '@/icons/components/icons';
+import PotonganTidakTetapModal from '@/features/penggajian/components/modals/konfigurasiPenggajian/potonganTidakTetap/potonganTidakTetapModal';
 
 type PotonganTidakTetapRow = {
   no?: number;
@@ -12,6 +13,10 @@ type PotonganTidakTetapRow = {
 };
 
 export default function PotonganTidakTetapPage() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [defaultValues, setDefaultValues] = useState<{ namaPotongan: string; deskripsiUmum: string } | null>(null);
+  const [modalTitle, setModalTitle] = useState<string>('Edit Potongan Tidak Tetap');
+  const [confirmTitleButton, setConfirmTitleButton] = useState<string>('Simpan Perubahan');
   const columns: DataTableColumn<PotonganTidakTetapRow>[] = [
     { id: 'no', label: 'No.', align: 'center', sortable: false },
     { id: 'Nama Potongan', label: 'Nama Potongan', sortable: true },
@@ -20,7 +25,12 @@ export default function PotonganTidakTetapPage() {
 
   const actions: DataTableAction<PotonganTidakTetapRow>[] = [
     { label: '', icon: <IconHapus />, onClick: (row) => { console.log('hapus', row); }, variant: 'outline', className: 'border-0' },
-    { label: '', icon: <IconPencil />, onClick: (row) => { console.log('edit', row); }, variant: 'outline', className: 'border-0' },
+    { label: '', icon: <IconPencil />, onClick: (row) => {
+      setDefaultValues({ namaPotongan: row['Nama Potongan'], deskripsiUmum: row['Deksripsi Umum'] });
+      setModalTitle('Edit Potongan Tidak Tetap');
+      setConfirmTitleButton('Simpan Perubahan');
+      setIsModalOpen(true);
+    }, variant: 'outline', className: 'border-0' },
   ];
 
   const rows: PotonganTidakTetapRow[] = useMemo(() => (
@@ -57,9 +67,19 @@ export default function PotonganTidakTetapPage() {
         searchable
         filterable
         onExport={() => exportCSV('potongan-tidak-tetap.csv', rows)}
-        onAdd={() => console.log('tambah potongan')}
+        onAdd={() => { setDefaultValues({ namaPotongan: '', deskripsiUmum: '' }); setModalTitle('Tambah Potongan Tidak Tetap'); setConfirmTitleButton('Simpan'); setIsModalOpen(true); }}
         addButtonLabel="Tambah Potongan"
       />
+      {isModalOpen && (
+        <PotonganTidakTetapModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          defaultValues={defaultValues}
+          onSave={(values) => { console.log('save potongan tidak tetap', values); }}
+          title={modalTitle}
+          confirmTitleButton={confirmTitleButton}
+        />
+      )}
     </div>
   );
 }

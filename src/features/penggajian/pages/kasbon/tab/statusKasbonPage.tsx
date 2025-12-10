@@ -111,7 +111,7 @@ export default function StatusKasbonPage() {
   ), []);
 
   return (
-    <div className="p-4">
+    <div className="p-0">
       {/* <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Status Kasbon</h1> */}
       <DataTable
         title="Status Kasbon"

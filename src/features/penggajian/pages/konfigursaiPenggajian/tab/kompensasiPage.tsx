@@ -1,8 +1,10 @@
 // Dokumentasi: Tabel Kompensasi menggunakan DataTable dengan kolom No., Level Jabatan, Kategori, General, Junior, Middle, Senior, dan Aksi
-import { useMemo } from 'react';
+// Dokumentasi: Integrasi Modal EditKompensasiModal - buka saat tombol edit diklik
+import { useMemo, useState } from 'react';
 import { DataTable, type DataTableColumn, type DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
 // import { Edit } from 'react-feather';
 import { IconPencil } from '@/icons/components/icons';
+import EditKompensasiModal, { type EditKompensasiForm } from '@/features/penggajian/components/modals/konfigurasiPenggajian/kompensasi/editKompensasiModal';
 
 type CompensationRow = {
   no?: number;
@@ -15,6 +17,9 @@ type CompensationRow = {
 };
 
 export default function KompensasiPage() {
+  // Dokumentasi: State kendali modal edit kompensasi
+  const [showEdit, setShowEdit] = useState(false);
+  const [rowToEdit, setRowToEdit] = useState<EditKompensasiForm | null>(null);
   // Dokumentasi: util sederhana untuk ekspor data ke CSV mengikuti pola halaman lain
   const exportCSV = (filename: string, data: any[]) => {
     if (!data || data.length === 0) return;
@@ -45,7 +50,16 @@ export default function KompensasiPage() {
       label: '',
       icon: <IconPencil  />,
       onClick: (row) => {
-        console.log('edit row', row);
+        // Dokumentasi: Buka modal edit dengan data baris
+        setRowToEdit({
+          levelJabatan: row.levelJabatan,
+          kategori: row.kategori,
+          general: row.general,
+          junior: row.junior,
+          middle: row.middle,
+          senior: row.senior,
+        });
+        setShowEdit(true);
       },
       variant: 'outline',
       className: 'border-0',
@@ -75,6 +89,18 @@ export default function KompensasiPage() {
         searchable
         filterable
         onExport={() => exportCSV('kompensasi.csv', rows)}
+      />
+      {/* Dokumentasi: Render modal edit kompensasi ketika state showEdit true */}
+      <EditKompensasiModal
+        isOpen={showEdit}
+        initialData={rowToEdit}
+        onClose={() => { setShowEdit(false); setRowToEdit(null); }}
+        onSubmit={(data) => {
+          // Dokumentasi: Simpan perubahan (sementara: log). Integrasi API atau state update di masa depan.
+          console.log('simpan perubahan kompensasi', data);
+          setShowEdit(false);
+          setRowToEdit(null);
+        }}
       />
     </div>
   );

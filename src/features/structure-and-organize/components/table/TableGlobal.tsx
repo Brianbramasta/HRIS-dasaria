@@ -1,3 +1,4 @@
+// Dokumentasi: Tambahan prop isAction untuk mengontrol kolom "Aksi"
 import React from 'react';
 import { Table, TableHeader, TableBody, TableRow, TableCell } from '@/components/ui/table';
 import { TrashBinIcon, PencilIcon } from '@/icons/index';
@@ -30,6 +31,8 @@ interface DocumentsTableProps {
   className?: string;
   actionsForRow?: (row: DocumentItem) => Action<DocumentItem>[] | null | undefined;
   title?: string;
+  /** Dokumentasi: jika false, kolom aksi tidak ditampilkan */
+  isAction?: boolean;
 }
 
 const defaultColumns: Column<DocumentItem>[] = [
@@ -58,7 +61,8 @@ const defaultActions = (
   },
 ];
 
-const DocumentsTable: React.FC<DocumentsTableProps> = ({ items, columns, actions, onEdit, onDelete, className, actionsForRow, title }) => {
+// Dokumentasi: Komponen tabel global dengan kontrol kolom aksi via isAction
+const DocumentsTable: React.FC<DocumentsTableProps> = ({ items, columns, actions, onEdit, onDelete, className, actionsForRow, title, isAction = true }) => {
   const cols = columns && columns.length ? columns : defaultColumns;
   const acts = actions && actions.length ? actions : defaultActions(onEdit, onDelete);
 
@@ -78,7 +82,9 @@ const DocumentsTable: React.FC<DocumentsTableProps> = ({ items, columns, actions
                 {c.label}
               </TableCell>
             ))}
-            <TableCell isHeader className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">Aksi</TableCell>
+            {isAction && (
+              <TableCell isHeader className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">Aksi</TableCell>
+            )}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -94,17 +100,19 @@ const DocumentsTable: React.FC<DocumentsTableProps> = ({ items, columns, actions
                   {c.render ? c.render(row[c.id], row, idx) : (row[c.id] ?? '—')}
                 </TableCell>
               ))}
-              <TableCell className="px-6 py-4 text-center">
-                <div className="flex items-center justify-center gap-2">
-                  {(actionsForRow ? (actionsForRow(row) ?? acts) : acts).map((a, i) => (
-                    <button key={i} className={a.className} onClick={() => a.onClick(row)}>{a.icon || a.label}</button>
-                  ))}
-                </div>
-              </TableCell>
+              {isAction && (
+                <TableCell className="px-6 py-4 text-center">
+                  <div className="flex items-center justify-center gap-2">
+                    {(actionsForRow ? (actionsForRow(row) ?? acts) : acts).map((a, i) => (
+                      <button key={i} className={a.className} onClick={() => a.onClick(row)}>{a.icon || a.label}</button>
+                    ))}
+                  </div>
+                </TableCell>
+              )}
             </TableRow>
           )) : (
             <TableRow key="no-docs" className="border-b border-gray-100 dark:border-gray-800">
-              <TableCell colSpan={cols.length + 1} className="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+              <TableCell colSpan={cols.length + (isAction ? 1 : 0)} className="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
                 {title ? `Tidak ada ${title}` : 'Tidak ada Data'}
               </TableCell>
             </TableRow>
