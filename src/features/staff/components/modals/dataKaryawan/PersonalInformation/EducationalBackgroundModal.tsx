@@ -1,36 +1,24 @@
+// Refactor modal: mendukung Pendidikan Formal & Non-Formal, memindahkan input sosial ke modal terpisah
 import React, { useEffect, useMemo, useState } from 'react';
 import ModalAddEdit from '@/features/structure-and-organize/components/modals/shared/modal/modalAddEdit';
 import Label from '@/components/form/Label';
 import InputField from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
+import DatePicker from '@/components/form/date-picker';
+import FileInput from '@/components/form/input/FileInput';
 import { Plus, Trash2 } from 'react-feather';
+import type { EducationItem as EducationItemType } from '@/features/staff/types/FormulirKaryawan';
 
-export type EducationItem = {
-  jenjang: string;
-  namaLembaga: string;
-  gelar: string;
-  nilaiPendidikan: string;
-  jurusanKeahlian: string;
-  tahunLulus: string;
-};
-
-export type EducationSocialForm = {
-  education: EducationItem[];
-  facebook?: string;
-  linkedin?: string;
-  xcom?: string;
-  instagram?: string;
-  akunSosmedOrangTerdekat?: string;
-  namaKontakDarurat?: string;
-  nomorKontakDarurat?: string;
-  hubunganKontakDarurat?: string;
+// Tipe form lokal untuk modal pendidikan (tanpa media sosial)
+export type EducationModalForm = {
+  education: EducationItemType[];
 };
 
 interface Props {
   isOpen: boolean;
-  initialData?: EducationSocialForm | null;
+  initialData?: EducationModalForm | null;
   onClose: () => void;
-  onSubmit: (data: EducationSocialForm) => void;
+  onSubmit: (data: EducationModalForm) => void;
   submitting?: boolean;
 }
 
@@ -44,48 +32,63 @@ const JENJANG_OPTIONS = [
   { label: 'Doktor (S3)', value: 'S3' },
 ];
 
-// Jurusan/Keahlian menjadi input biasa
+const JENIS_PENDIDIKAN_OPTIONS = [
+  { label: 'Pendidikan Formal', value: 'formal' },
+  { label: 'Pendidikan Non-Formal', value: 'non-formal' },
+];
 
-const emptyForm: EducationSocialForm = {
-  education: [
-    { jenjang: '', namaLembaga: '', gelar: '', nilaiPendidikan: '', jurusanKeahlian: '', tahunLulus: '' },
-  ],
-  facebook: '',
-  linkedin: '',
-  xcom: '',
-  instagram: '',
-  akunSosmedOrangTerdekat: '',
-  namaKontakDarurat: '',
-  nomorKontakDarurat: '',
-  hubunganKontakDarurat: '',
+// Default satu baris data pendidikan
+const defaultEduRow: EducationItemType = {
+  jenisPendidikan: 'formal',
+  jenjang: '',
+  namaLembaga: '',
+  gelar: '',
+  nilaiPendidikan: '',
+  jurusanKeahlian: '',
+  tahunLulus: '',
+  // Non-formal
+  namaSertifikat: '',
+  organisasiPenerbit: '',
+  tanggalPenerbitan: '',
+  tanggalKedaluwarsa: '',
+  idKredensial: '',
 };
 
-const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSubmit, submitting = false }) => {
-  const [form, setForm] = useState<EducationSocialForm>(emptyForm);
-  const title = useMemo(() => 'Edit Educational Background & Sosial Media', []);
+const emptyForm: EducationModalForm = {
+  education: [defaultEduRow],
+};
 
+// Komponen utama modal pendidikan
+const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSubmit, submitting = false }) => {
+  // State form pendidikan
+  const [form, setForm] = useState<EducationModalForm>(emptyForm);
+  const title = useMemo(() => 'Edit Riwayat Pendidikan', []);
+
+  // Inisialisasi data ketika modal dibuka/initialData berubah
   useEffect(() => {
-    const defaultRow: EducationItem = { jenjang: '', namaLembaga: '', gelar: '', nilaiPendidikan: '', jurusanKeahlian: '', tahunLulus: '' };
     const base = initialData ? { ...emptyForm, ...initialData } : emptyForm;
-    const ensuredEducation = Array.isArray(base.education) && base.education.length > 0 ? base.education : [defaultRow];
+    const ensuredEducation = Array.isArray(base.education) && base.education.length > 0 ? base.education : [defaultEduRow];
     setForm({ ...base, education: ensuredEducation });
   }, [initialData, isOpen]);
 
-  const handleEducationChange = (idx: number, key: keyof EducationItem, value: any) => {
+  // Handler update field pendidikan per baris
+  const updateEducationField = (index: number, field: keyof EducationItemType, value: any) => {
     setForm((prev) => {
       const next = [...prev.education];
-      next[idx] = { ...next[idx], [key]: value };
+      next[index] = { ...next[index], [field]: value } as EducationItemType;
       return { ...prev, education: next };
     });
   };
 
+  // Tambah baris pendidikan
   const addEducationRow = () => {
     setForm((prev) => ({
       ...prev,
-      education: [...prev.education, { jenjang: '', namaLembaga: '', gelar: '', nilaiPendidikan: '', jurusanKeahlian: '', tahunLulus: '' }],
+      education: [...prev.education, { ...defaultEduRow }],
     }));
   };
 
+  // Hapus baris pendidikan
   const removeEducationRow = (idx: number) => {
     setForm((prev) => ({
       ...prev,
@@ -93,114 +96,169 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
     }));
   };
 
-  const updateEducationField = (index: number, field: keyof EducationItem, value: any) => {
-    setForm((prev) => {
-      const next = [...prev.education];
-      next[index] = { ...next[index], [field]: value } as EducationItem;
-      return { ...prev, education: next };
-    });
-  };
-
+  // Konten modal: pilihan jenis + field kondisional
   const content = (
     <div className="space-y-8">
       <div>
         <h2 className="text-3xl font-bold text-start">{title}</h2>
         <h4 className="text-sm text-grey-200 font-semibold">Update your details to keep your profile up-to-date.</h4>
       </div>
+
       <div>
-        <h3 className="text-2xl text-grey-200 font-semibold">Educational Background</h3>
+        <h3 className="text-2xl text-grey-200 font-semibold">Riwayat Pendidikan</h3>
         <div className="space-y-6">
-          {form.education.map((_, idx) => (
-            <div className="flex gap-4">
-              <div key={idx} className="grid grid-cols-1 gap-4 md:grid-cols-6 items-end">
-              <div>
-                <Label>Jenjang</Label>
-                <Select options={JENJANG_OPTIONS} defaultValue={form.education[idx]?.jenjang || ''} onChange={(v) => handleEducationChange(idx, 'jenjang', v)} placeholder="Select" />
-              </div>
-              <div>
-                <Label>Nama Lembaga</Label>
-                <InputField value={form.education[idx]?.namaLembaga || ''} onChange={(e) => handleEducationChange(idx, 'namaLembaga', e.target.value)} placeholder="Masukkan nama lembaga" />
-              </div>
-              <div>
-                <Label>Gelar</Label>
-                <InputField placeholder="Masukkan gelar" value={form.education[idx]?.gelar || ''} onChange={(e) => updateEducationField(idx, 'gelar', e.target.value)} />
-              </div>
-              <div>
-                <Label>Nilai Pendidikan Terakhir</Label>
-                <InputField value={form.education[idx]?.nilaiPendidikan || ''} onChange={(e) => handleEducationChange(idx, 'nilaiPendidikan', e.target.value)} />
-              </div>
-              <div>
-                <Label>Jurusan / Keahlian</Label>
-                <InputField value={form.education[idx]?.jurusanKeahlian || ''} onChange={(e) => handleEducationChange(idx, 'jurusanKeahlian', e.target.value)} placeholder="Masukkan jurusan/keahlian" />
-              </div>
-              <div>
-                <Label>Tahun Lulus</Label>
-                <InputField value={form.education[idx]?.tahunLulus || ''} onChange={(e) => handleEducationChange(idx, 'tahunLulus', e.target.value)} />
-              </div>
-              
-            </div>
-              <div className="md:col-span-1 flex md:justify-end items-end">
-                {idx === 0 ? (
-                  <button type="button" onClick={addEducationRow} title="Tambah" className="h-10 w-10 rounded-lg bg-emerald-600 text-white flex items-center justify-center">
-                    <Plus size={18} />
-                  </button>
-                ) : (
-                  <button type="button" onClick={() => removeEducationRow(idx)} title="Hapus" className="h-10 w-10 rounded-lg bg-red-600 text-white flex items-center justify-center">
-                    <Trash2 size={18} />
-                  </button>
+          {form.education.map((edu, idx) => (
+            <div className="flex gap-4" key={idx}>
+              <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end flex-1">
+                {/* Jenis Pendidikan */}
+                <div className="md:col-span-5">
+                  <Label>Jenis Pendidikan</Label>
+                  <Select
+                    options={JENIS_PENDIDIKAN_OPTIONS}
+                    defaultValue={edu.jenisPendidikan ?? 'formal'}
+                    onChange={(value) => updateEducationField(idx, 'jenisPendidikan', value)}
+                    placeholder="Pilih jenis"
+                  />
+                </div>
+                <div className="md:col-span-1 flex md:justify-end items-end">
+                  {idx === 0 ? (
+                    <button
+                      type="button"
+                      onClick={addEducationRow}
+                      className="h-10 w-10 rounded-lg bg-emerald-600 text-white flex items-center justify-center"
+                      title="Tambah Pendidikan"
+                    >
+                      <Plus size={18} />
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => removeEducationRow(idx)}
+                      className="h-10 w-10 rounded-lg bg-red-600 text-white flex items-center justify-center"
+                      title="Hapus Pendidikan"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  )}
+                </div>
+
+                {/* Field Formal */}
+                {(edu.jenisPendidikan ?? 'formal') === 'formal' && (
+                  <>
+                    <div className="md:col-span-2">
+                      <Label>Jenjang</Label>
+                      <Select
+                        options={JENJANG_OPTIONS}
+                        defaultValue={edu.jenjang}
+                        onChange={(value) => updateEducationField(idx, 'jenjang', value)}
+                        placeholder="Select"
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label>Nama Lembaga</Label>
+                      <InputField
+                        placeholder="Masukkan nama lembaga"
+                        value={edu.namaLembaga}
+                        onChange={(e) => updateEducationField(idx, 'namaLembaga', e.target.value)}
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label>Gelar</Label>
+                      <InputField
+                        placeholder="Masukkan gelar"
+                        value={edu.gelar}
+                        onChange={(e) => updateEducationField(idx, 'gelar', e.target.value)}
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label>Nilai Pendidikan Terakhir</Label>
+                      <InputField
+                        placeholder="Masukkan nilai"
+                        value={edu.nilaiPendidikan}
+                        onChange={(e) => updateEducationField(idx, 'nilaiPendidikan', e.target.value)}
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label>Jurusan / Keahlian</Label>
+                      <InputField
+                        placeholder="Masukkan jurusan/keahlian"
+                        value={edu.jurusanKeahlian}
+                        onChange={(e) => updateEducationField(idx, 'jurusanKeahlian', e.target.value)}
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label>Tahun Lulus</Label>
+                      <InputField
+                        placeholder="Masukkan tahun lulus"
+                        value={edu.tahunLulus}
+                        onChange={(e) => updateEducationField(idx, 'tahunLulus', e.target.value)}
+                      />
+                    </div>
+                  </>
+                )}
+
+                {/* Field Non-Formal */}
+                {edu.jenisPendidikan === 'non-formal' && (
+                  <>
+                    <div className="md:col-span-2">
+                      <Label>Nama Sertifikat</Label>
+                      <InputField
+                        placeholder="Masukkan nama sertifikat"
+                        value={edu.namaSertifikat || ''}
+                        onChange={(e) => updateEducationField(idx, 'namaSertifikat', e.target.value)}
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label>Organisasi penerbit</Label>
+                      <InputField
+                        placeholder="Masukkan organisasi penerbit"
+                        value={edu.organisasiPenerbit || ''}
+                        onChange={(e) => updateEducationField(idx, 'organisasiPenerbit', e.target.value)}
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <DatePicker
+                        id={`tanggalPenerbitan-${idx}`}
+                        label="Tanggal penerbitan"
+                        placeholder="Pilih tanggal"
+                        defaultDate={edu.tanggalPenerbitan || ''}
+                        onChange={(_d, dateStr) => updateEducationField(idx, 'tanggalPenerbitan', dateStr)}
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <DatePicker
+                        id={`tanggalKedaluwarsa-${idx}`}
+                        label="Tanggal Kedaluwarsa"
+                        placeholder="Pilih tanggal"
+                        defaultDate={edu.tanggalKedaluwarsa || ''}
+                        onChange={(_d, dateStr) => updateEducationField(idx, 'tanggalKedaluwarsa', dateStr)}
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label>ID Kredensial</Label>
+                      <InputField
+                        placeholder="Masukkan ID kredensial"
+                        value={edu.idKredensial || ''}
+                        onChange={(e) => updateEducationField(idx, 'idKredensial', e.target.value)}
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label>Upload file</Label>
+                      <FileInput onChange={(e) => updateEducationField(idx, 'fileSertifikat', e.target.files?.[0])} />
+                    </div>
+                  </>
                 )}
               </div>
             </div>
-            
           ))}
-        </div>
-      </div>
-
-      <div>
-        <h3 className="text-2xl text-grey-200 font-semibold">Sosial Media & Kontak darurat</h3>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <div>
-            <Label>Facebook</Label>
-            <InputField value={form.facebook || ''} onChange={(e) => setForm((p) => ({ ...p, facebook: e.target.value }))} placeholder="https://www.facebook.com/username" />
-          </div>
-          <div>
-            <Label>X.com</Label>
-            <InputField value={form.xcom || ''} onChange={(e) => setForm((p) => ({ ...p, xcom: e.target.value }))} placeholder="https://x.com/username" />
-          </div>
-          <div>
-            <Label>Linkedin</Label>
-            <InputField value={form.linkedin || ''} onChange={(e) => setForm((p) => ({ ...p, linkedin: e.target.value }))} placeholder="https://www.linkedin.com/in/username" />
-          </div>
-          <div>
-            <Label>Instagram</Label>
-            <InputField value={form.instagram || ''} onChange={(e) => setForm((p) => ({ ...p, instagram: e.target.value }))} placeholder="https://instagram.com/username" />
-          </div>
-          <div className="">
-            <Label>Akun Sosial Media Orang Terdekat</Label>
-            <InputField value={form.akunSosmedOrangTerdekat || ''} onChange={(e) => setForm((p) => ({ ...p, akunSosmedOrangTerdekat: e.target.value }))} placeholder="https://..." />
-          </div>
-          <div>
-            <Label>No. Kontak Darurat</Label>
-            <InputField value={form.nomorKontakDarurat || ''} onChange={(e) => setForm((p) => ({ ...p, nomorKontakDarurat: e.target.value }))} />
-          </div>
-          <div>
-            <Label>Nama No. Kontak Darurat</Label>
-            <InputField value={form.namaKontakDarurat || ''} onChange={(e) => setForm((p) => ({ ...p, namaKontakDarurat: e.target.value }))} />
-          </div>
-          
-          <div className="">
-            <Label>Hubungan dengan Kontak Darurat</Label>
-            <InputField value={form.hubunganKontakDarurat || ''} onChange={(e) => setForm((p) => ({ ...p, hubunganKontakDarurat: e.target.value }))} />
-          </div>
         </div>
       </div>
     </div>
   );
 
-
+  // Render modal
   return (
     <ModalAddEdit
-      // title={title}
       isOpen={isOpen}
       onClose={onClose}
       content={content}

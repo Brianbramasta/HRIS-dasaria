@@ -26,13 +26,28 @@ export interface PersonalDataFormData {
 }
 
 // Step 2: Educational Background & Media Sosial
+// Tambahan tipe untuk mendukung pendidikan Formal & Non-Formal
+// - jenisPendidikan: menentukan tampilan field (formal/non-formal)
+// - Field non-formal: namaSertifikat, organisasiPenerbit, tanggalPenerbitan, tanggalKedaluwarsa, idKredensial, fileSertifikat
 export interface EducationItem {
+  // Jenis pendidikan (formal atau non-formal)
+  jenisPendidikan?: 'formal' | 'non-formal';
+
+  // Field Formal
   jenjang: string;
   namaLembaga: string;
   gelar: string;
   nilaiPendidikan: string;
   jurusanKeahlian: string;
   tahunLulus: string;
+
+  // Field Non-Formal (opsional)
+  namaSertifikat?: string;
+  organisasiPenerbit?: string;
+  tanggalPenerbitan?: string; // format string dari flatpickr
+  tanggalKedaluwarsa?: string; // format string dari flatpickr
+  idKredensial?: string;
+  fileSertifikat?: File;
 }
 
 export interface EducationalBackgroundFormData {

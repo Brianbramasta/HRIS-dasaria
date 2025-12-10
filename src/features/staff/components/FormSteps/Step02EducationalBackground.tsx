@@ -1,3 +1,5 @@
+// Refactor Step 2: Tambahkan pilihan jenis pendidikan (Formal/Non-Formal)
+// dan tampilkan field secara kondisional termasuk DatePicker & FileInput.
 import React, { useEffect } from 'react';
 import { useFormulirKaryawanStore } from '../../stores/useFormulirKaryawanStore';
 import Input from '../../../../components/form/input/InputField';
@@ -7,6 +9,8 @@ import Button from '../../../../components/ui/button/Button';
 import { Trash2 } from 'react-feather';
 import { iconPlus as Plus } from '@/icons/components/icons';
 import { EducationItem } from '../../types/FormulirKaryawan';
+import DatePicker from '../../../../components/form/date-picker';
+import FileInput from '../../../../components/form/input/FileInput';
 
 const JENJANG_OPTIONS = [
   { label: 'SD/MI', value: 'SD' },
@@ -18,6 +22,11 @@ const JENJANG_OPTIONS = [
   { label: 'Doktor (S3)', value: 'S3' },
 ];
 
+const JENIS_PENDIDIKAN_OPTIONS = [
+  { label: 'Pendidikan Formal', value: 'formal' },
+  { label: 'Pendidikan Non-Formal', value: 'non-formal' },
+];
+
 
 export const Step02EducationalBackground: React.FC = () => {
   const { formData, updateStep2 } = useFormulirKaryawanStore();
@@ -27,7 +36,21 @@ export const Step02EducationalBackground: React.FC = () => {
     if (!step2.education || step2.education.length === 0) {
       updateStep2({
         education: [
-          { jenjang: '', namaLembaga: '', gelar: '', nilaiPendidikan: '', jurusanKeahlian: '', tahunLulus: '' },
+          {
+            jenisPendidikan: 'formal',
+            jenjang: '',
+            namaLembaga: '',
+            gelar: '',
+            nilaiPendidikan: '',
+            jurusanKeahlian: '',
+            tahunLulus: '',
+            // Non-formal defaults
+            namaSertifikat: '',
+            organisasiPenerbit: '',
+            tanggalPenerbitan: '',
+            tanggalKedaluwarsa: '',
+            idKredensial: '',
+          },
         ],
       });
     }
@@ -38,7 +61,20 @@ export const Step02EducationalBackground: React.FC = () => {
     updateStep2({
       education: [
         ...education,
-        { jenjang: '', namaLembaga: '', gelar: '', nilaiPendidikan: '', jurusanKeahlian: '', tahunLulus: '' },
+        {
+          jenisPendidikan: 'formal',
+          jenjang: '',
+          namaLembaga: '',
+          gelar: '',
+          nilaiPendidikan: '',
+          jurusanKeahlian: '',
+          tahunLulus: '',
+          namaSertifikat: '',
+          organisasiPenerbit: '',
+          tanggalPenerbitan: '',
+          tanggalKedaluwarsa: '',
+          idKredensial: '',
+        },
       ],
     });
   };
@@ -51,7 +87,7 @@ export const Step02EducationalBackground: React.FC = () => {
   const updateEducationField = (
     index: number,
     field: keyof EducationItem,
-    value: string,
+    value: string | File | undefined,
   ) => {
     const education = step2.education || [];
     const next = education.map((item, i) =>
@@ -71,93 +107,163 @@ export const Step02EducationalBackground: React.FC = () => {
 
         <div className="space-y-4">
           {(step2.education || []).map((edu, index) => (
-            <>
-            <div className="flex gap-4">
-              <div key={index} className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
-                <div className="md:col-span-1">
-                  <Label>Jenjang</Label>
+            <div className="flex gap-4" key={index}>
+              <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end flex-1">
+                {/* Jenis Pendidikan */}
+                <div className="md:col-span-5">
+                  <Label>Jenis Pendidikan</Label>
                   <Select
-                    options={JENJANG_OPTIONS}
-                    defaultValue={edu.jenjang}
-                    onChange={(value) => updateEducationField(index, 'jenjang', value)}
-                    placeholder="Select"
+                    options={JENIS_PENDIDIKAN_OPTIONS}
+                    defaultValue={edu.jenisPendidikan ?? 'formal'}
+                    onChange={(value) => updateEducationField(index, 'jenisPendidikan', value)}
+                    placeholder="Pilih jenis"
                   />
                 </div>
-                
-                <div className="md:col-span-1">
-                  <Label htmlFor={`namaLembaga-${index}`}>Nama Lembaga</Label>
-                  <Input
-                    id={`namaLembaga-${index}`}
-                    placeholder="Masukkan nama lembaga"
-                    value={edu.namaLembaga}
-                    onChange={(e) => updateEducationField(index, 'namaLembaga', e.target.value)}
-                  />
-                </div>
-                <div className="md:col-span-1">
-                  <Label htmlFor={`gelar-${index}`}>Gelar</Label>
-                  <Input
-                    id={`gelar-${index}`}
-                    placeholder="Masukkan gelar"
-                    value={edu.gelar}
-                    onChange={(e) => updateEducationField(index, 'gelar', e.target.value)}
-                  />
-                </div>
-                
-                <div className="md:col-span-1">
-                  <Label htmlFor={`nilaiPendidikan-${index}`}>Nilai Pendidikan Terakhir</Label>
-                  <Input
-                    id={`nilaiPendidikan-${index}`}
-                    placeholder="Masukkan nilai"
-                    value={edu.nilaiPendidikan}
-                    onChange={(e) => updateEducationField(index, 'nilaiPendidikan', e.target.value)}
-                  />
-                </div>
-
-                <div className="md:col-span-1">
-                  <Label htmlFor={`jurusanKeahlian-${index}`}>Jurusan / Keahlian</Label>
-                  <Input
-                    id={`jurusanKeahlian-${index}`}
-                    placeholder="Masukkan jurusan/keahlian"
-                    value={edu.jurusanKeahlian}
-                    onChange={(e) => updateEducationField(index, 'jurusanKeahlian', e.target.value)}
-                  />
-                </div>
-
-                <div className="md:col-span-1">
-                  <Label htmlFor={`tahunLulus-${index}`}>Tahun Lulus</Label>
-                  <Input
-                    id={`tahunLulus-${index}`}
-                    placeholder="Masukkan tahun lulus"
-                    value={edu.tahunLulus}
-                    onChange={(e) => updateEducationField(index, 'tahunLulus', e.target.value)}
-                  />
-                </div>
-              </div>
                 <div className="md:col-span-1 flex md:justify-end items-end">
-                  {index === 0 ? (
-                    <Button
-                      onClick={addEducationRow}
-                      variant="custom"
-                      size="custom"
-                      className="bg-emerald-500 text-white ring-1 ring-inset ring-emerald-500 hover:bg-emerald-600 h-10 w-10 p-0 flex items-center justify-center"
-                      aria-label="Tambah Pendidikan"
-                    >
-                      <Plus size={24} />
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={() => removeEducationRow(index)}
-                      variant="custom"
-                      size="custom"
-                      className="bg-red-500 text-white ring-1 ring-inset ring-red-500 hover:bg-red-600 h-10 w-10 p-0 flex items-center justify-center"
-                      aria-label="Hapus Pendidikan"
-                    >
-                      <Trash2 size={18} />
-                    </Button>
-                  )}
-                </div>
+                {index === 0 ? (
+                  <Button
+                    onClick={addEducationRow}
+                    variant="custom"
+                    size="custom"
+                    className="bg-emerald-500 text-white ring-1 ring-inset ring-emerald-500 hover:bg-emerald-600 h-10 w-10 p-0 flex items-center justify-center"
+                    aria-label="Tambah Pendidikan"
+                  >
+                    <Plus size={24} />
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => removeEducationRow(index)}
+                    variant="custom"
+                    size="custom"
+                    className="bg-red-500 text-white ring-1 ring-inset ring-red-500 hover:bg-red-600 h-10 w-10 p-0 flex items-center justify-center"
+                    aria-label="Hapus Pendidikan"
+                  >
+                    <Trash2 size={18} />
+                  </Button>
+                )}
+              </div>
+
+                {/* Formal Fields */}
+                {(
+                  edu.jenisPendidikan ?? 'formal'
+                ) === 'formal' && (
+                  <>
+                    <div className="md:col-span-2">
+                      <Label>Jenjang</Label>
+                      <Select
+                        options={JENJANG_OPTIONS}
+                        defaultValue={edu.jenjang}
+                        onChange={(value) => updateEducationField(index, 'jenjang', value)}
+                        placeholder="Select"
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label htmlFor={`namaLembaga-${index}`}>Nama Lembaga</Label>
+                      <Input
+                        id={`namaLembaga-${index}`}
+                        placeholder="Masukkan nama lembaga"
+                        value={edu.namaLembaga}
+                        onChange={(e) => updateEducationField(index, 'namaLembaga', e.target.value)}
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label htmlFor={`gelar-${index}`}>Gelar</Label>
+                      <Input
+                        id={`gelar-${index}`}
+                        placeholder="Masukkan gelar"
+                        value={edu.gelar}
+                        onChange={(e) => updateEducationField(index, 'gelar', e.target.value)}
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label htmlFor={`nilaiPendidikan-${index}`}>Nilai Pendidikan Terakhir</Label>
+                      <Input
+                        id={`nilaiPendidikan-${index}`}
+                        placeholder="Masukkan nilai"
+                        value={edu.nilaiPendidikan}
+                        onChange={(e) => updateEducationField(index, 'nilaiPendidikan', e.target.value)}
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label htmlFor={`jurusanKeahlian-${index}`}>Jurusan / Keahlian</Label>
+                      <Input
+                        id={`jurusanKeahlian-${index}`}
+                        placeholder="Masukkan jurusan/keahlian"
+                        value={edu.jurusanKeahlian}
+                        onChange={(e) => updateEducationField(index, 'jurusanKeahlian', e.target.value)}
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label htmlFor={`tahunLulus-${index}`}>Tahun Lulus</Label>
+                      <Input
+                        id={`tahunLulus-${index}`}
+                        placeholder="Masukkan tahun lulus"
+                        value={edu.tahunLulus}
+                        onChange={(e) => updateEducationField(index, 'tahunLulus', e.target.value)}
+                      />
+                    </div>
+                  </>
+                )}
+
+                {/* Non-Formal Fields */}
+                {edu.jenisPendidikan === 'non-formal' && (
+                  <>
+                    <div className="md:col-span-2">
+                      <Label htmlFor={`namaSertifikat-${index}`}>Nama Sertifikat</Label>
+                      <Input
+                        id={`namaSertifikat-${index}`}
+                        placeholder="Masukkan nama sertifikat"
+                        value={edu.namaSertifikat || ''}
+                        onChange={(e) => updateEducationField(index, 'namaSertifikat', e.target.value)}
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label htmlFor={`organisasiPenerbit-${index}`}>Organisasi penerbit</Label>
+                      <Input
+                        id={`organisasiPenerbit-${index}`}
+                        placeholder="Masukkan organisasi penerbit"
+                        value={edu.organisasiPenerbit || ''}
+                        onChange={(e) => updateEducationField(index, 'organisasiPenerbit', e.target.value)}
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <DatePicker
+                        id={`tanggalPenerbitan-${index}`}
+                        label="Tanggal penerbitan"
+                        placeholder="Pilih tanggal"
+                        defaultDate={edu.tanggalPenerbitan || ''}
+                        onChange={(_dates, dateStr) => updateEducationField(index, 'tanggalPenerbitan', dateStr)}
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <DatePicker
+                        id={`tanggalKedaluwarsa-${index}`}
+                        label="Tanggal Kedaluwarsa"
+                        placeholder="Pilih tanggal"
+                        defaultDate={edu.tanggalKedaluwarsa || ''}
+                        onChange={(_dates, dateStr) => updateEducationField(index, 'tanggalKedaluwarsa', dateStr)}
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label htmlFor={`idKredensial-${index}`}>ID Kredensial</Label>
+                      <Input
+                        id={`idKredensial-${index}`}
+                        placeholder="Masukkan ID kredensial"
+                        value={edu.idKredensial || ''}
+                        onChange={(e) => updateEducationField(index, 'idKredensial', e.target.value)}
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label>Upload file</Label>
+                      <FileInput
+                        onChange={(e) => updateEducationField(index, 'fileSertifikat', e.target.files?.[0])}
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
+              
             </div>
-            </>
           ))}
         </div>
       </div>
