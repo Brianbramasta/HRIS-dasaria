@@ -3,6 +3,8 @@ import StatusKepegawaian from "../components/chart/StatusKepegawaian";
 import Demographic from "../components/chart/Demographic";
 import EmployeeEngagement from "../components/chart/EmployeeEngagement";
 import Statistik from "../components/chart/Statistik";
+// Dokumentasi: Import tabel ulang tahun bulanan
+import TableUlangtahun from "../components/tables/tableUlangtahun";
 
 export default function Dashboard() {
   return (
@@ -136,6 +138,10 @@ export default function Dashboard() {
       {/* Statistik */}
       <div>
         <Statistik />
+      </div>
+      {/* Dokumentasi: Tambahkan tabel ulang tahun bulan ini menggunakan DataTable */}
+      <div className="mt-6">
+        <TableUlangtahun />
       </div>
     </div>
   );

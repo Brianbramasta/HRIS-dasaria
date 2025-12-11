@@ -148,7 +148,6 @@ export default function AppRoutes() {
           </Route>
           {/* Penggajian */}
           {/* <Route path="/periode-gajian" element={<DaftarPenggajianPage />} /> */}
-          // Dokumentasi: Nested route untuk Konfigurasi Penggajian dengan tujuh tab
           <Route path="/konfigurasi-penggajian" element={<KonfigurasiPenggajianPage />}>
             <Route index element={<KompensasiPage />} />
             <Route path="kompensasi" element={<KompensasiPage />} />
