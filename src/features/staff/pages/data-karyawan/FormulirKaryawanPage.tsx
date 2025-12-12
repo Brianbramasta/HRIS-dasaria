@@ -1,3 +1,4 @@
+// Integrasi submit: gunakan hook useCreateEmployee untuk kirim FormData ke API employees
 import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFormulirKaryawanStore } from '../../stores/useFormulirKaryawanStore';
@@ -9,7 +10,7 @@ import Step04SalaryBpjs from '../../components/FormSteps/Step04SalaryBpjs';
 import Step05UploadDocument from '../../components/FormSteps/Step05UploadDocument';
 import SuccessModal from '../../components/SuccessModal';
 import Button from '../../../../components/ui/button/Button';
-import { karyawanService } from '../../services/karyawanService';
+import useCreateEmployee from '../../hooks/useCreateEmployee';
 import { ChevronLeft } from 'react-feather';
 import { useAuthStore } from '../../../auth/stores/authStore';
 
@@ -45,6 +46,7 @@ export default function FormulirKaryawanPage() {
   const { isAuthenticated } = useAuthStore((s) => ({ isAuthenticated: s.isAuthenticated }));
 
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const { submit } = useCreateEmployee();
 
   const handleNextStep = useCallback(() => {
     if (goToNextStep()) {
@@ -57,71 +59,12 @@ export default function FormulirKaryawanPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [goToPreviousStep]);
 
+  // handleSubmit: bangun FormData via hook dan submit ke API employees
   const handleSubmit = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-
-      // Transform form data ke format yang sesuai dengan CreateKaryawanDto
-      const submitData = {
-        // Personal Data
-        name: formData.step1.namaLengkap,
-        email: formData.step1.email,
-        nik: formData.step1.nik,
-        agama: formData.step1.agama,
-        tempatLahir: formData.step1.tempatLahir,
-        golDarah: formData.step1.golDarah,
-        statusMenikah: formData.step1.statusMenikah,
-        nomorTelepon: formData.step1.nomorTelepon,
-        jumlahTanggungan: formData.step1.jumlahTanggungan,
-        alamatDomisili: formData.step1.alamatDomisili,
-        alamatKtp: formData.step1.alamatKtp,
-
-        // Generate ID Karyawan (format: KRY-YYYYMMDD-XXXX)
-        idKaryawan: `KRY-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`,
-        posisi: formData.step3Employee?.position || 'Staff',
-        jabatan: formData.step3Employee?.jabatan || 'Karyawan',
-        tanggalJoin: formData.step3Employee?.tanggalMasuk || new Date().toISOString().split('T')[0],
-        tanggalBerakhir: formData.step3Employee?.tanggalAkhir || undefined,
-        company: formData.step3Employee?.company || 'PT. Default',
-        office: formData.step3Employee?.kantor || undefined,
-        department: formData.step3Employee?.departemen || undefined,
-
-        // Educational Background
-        education: formData.step2.education,
-
-        // Media Sosial
-        facebook: formData.step2.facebook,
-        xCom: formData.step2.xCom,
-        linkedin: formData.step2.linkedin,
-        instagram: formData.step2.instagram,
-        akunSosialMediaTerdekat: formData.step2.akunSosialMediaTerdekat,
-        noKontakDarurat: formData.step2.noKontakDarurat,
-        namaNoKontakDarurat: formData.step2.namaNoKontakDarurat,
-        hubunganKontakDarurat: formData.step2.hubunganKontakDarurat,
-
-        // Salary
-        bank: formData.step3.bank,
-        namaAkunBank: formData.step3.namaAkunBank,
-        noRekening: formData.step3.noRekening,
-        npwp: formData.step3.npwp,
-
-        // BPJS
-        noBpjsKesehatan: formData.step3.noBpjsKesehatan,
-        statusBpjsKesehatan: formData.step3.statusBpjsKesehatan,
-        noBpjsKetenagakerjaan: formData.step3.noBpjsKetenagakerjaan,
-        statusBpjsKetenagakerjaan: formData.step3.statusBpjsKetenagakerjaan,
-        nominalBpjsTk: formData.step3.nominalBpjsTk,
-
-        // Documents
-        documents: formData.step4.documents?.map((doc) => ({
-          tipeFile: doc.tipeFile,
-          namaFile: doc.namaFile,
-        })),
-      };
-
-      // Save to database
-      await karyawanService.createKaryawan(submitData);
+      await submit();
 
       // Show success modal
       setShowSuccessModal(true);
