@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 // import { Plus } from 'react-feather';
-import TabPendingReview from './TabPendingReviewPage';
-import TabReviewed from './TabReviewedPage';
+import TabPendingReview from './tab/TabPendingReviewPage';
+import TabReviewed from './tab/TabReviewedPage';
 // import Button from '../../../../components/ui/button/Button';
 import ResignKaryawanModal from '../../components/modals/ResignKaryawanModal';
 // import { addNotification } from '../../../../stores/notificationStore';

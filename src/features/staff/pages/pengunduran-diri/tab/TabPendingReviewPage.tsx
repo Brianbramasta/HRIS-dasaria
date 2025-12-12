@@ -1,15 +1,16 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DataTable, DataTableColumn, DataTableAction } from '../../../structure-and-organize/components/datatable/DataTable';
-import { PengunduranDiri } from '../../types/PengunduranDiri';
-import usePengunduranDiri from '../../hooks/usePengunduranDiri';
+import { DataTable, DataTableColumn, DataTableAction } from '../../../../structure-and-organize/components/datatable/DataTable';
+import { PengunduranDiri } from '../../../types/PengunduranDiri';
+import usePengunduranDiri from '../../../hooks/usePengunduranDiri';
 import { ChevronDown } from 'react-feather';
 import { IconForm } from '@/icons/components/icons';
-import Button from '../../../../components/ui/button/Button';
-import { Dropdown } from '../../../../components/ui/dropdown/Dropdown';
+import Button from '../../../../../components/ui/button/Button';
+import { Dropdown } from '../../../../../components/ui/dropdown/Dropdown';
 import { IconPencil } from '@/icons/components/icons';
 
 export default function TabPendingReview({ onOpenForm }: { onOpenForm?: () => void }) {
+  console.log('TabPendingReview', onOpenForm);
   const navigate = useNavigate();
   const {
     data,
@@ -185,8 +186,9 @@ export default function TabPendingReview({ onOpenForm }: { onOpenForm?: () => vo
         pageSize={limit}
         pageSizeOptions={[5, 10, 25, 50]}
         filterable={true}
-        onAdd={onOpenForm}
-        addButtonLabel="Form Pengunduran Diri"
+        // comment dulu - revisi ui
+        // onAdd={onOpenForm}
+        // addButtonLabel="Form Pengunduran Diri"
         addButtonIcon={<IconForm />}
         toolbarRightSlot={
           <div className="relative">

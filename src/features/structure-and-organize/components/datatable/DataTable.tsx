@@ -1,5 +1,6 @@
 // Dokumentasi: Menambahkan dukungan slot toolbar atas (toolbarRightSlotAtas) untuk kustomisasi tombol Import/Download Template,
 // fallback ke tombol default (Ekspor & Tambah) menggunakan onExport dan onAdd bila slot tidak disediakan.
+// Dokumentasi: Menambahkan toolbarLeftSlotAtas agar layout atas bisa menempatkan input di kiri
 import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Table, TableHeader, TableBody, TableRow, TableCell } from '../../../../components/ui/table';
@@ -66,6 +67,8 @@ interface DataTableProps<T = any> {
   toolbarRightSlot?: React.ReactNode;
   // Dokumentasi: Slot toolbar kanan di bagian atas (sejajar judul). Jika tidak ada, tampilkan default onExport & onAdd.
   toolbarRightSlotAtas?: React.ReactNode;
+  // Dokumentasi: Slot toolbar kiri di bagian atas (di kiri sejajar tombol kanan)
+  toolbarLeftSlotAtas?: React.ReactNode;
   // Dokumentasi: Mode render tombol default (Ekspor/Tambah) bersama slot atas kustom.
   // Jika true, tampilkan tombol default dan konten slot berdampingan.
   appendDefaultToolbarRightAtas?: boolean;
@@ -73,6 +76,7 @@ interface DataTableProps<T = any> {
   useExternalPagination?: boolean;
   externalPage?: number;
   externalTotal?: number;
+  isNewLine?: boolean;
 }
 
 export function DataTable<T = any>({
@@ -102,10 +106,12 @@ export function DataTable<T = any>({
   resetKey,
   toolbarRightSlot,
   toolbarRightSlotAtas,
+  toolbarLeftSlotAtas,
   appendDefaultToolbarRightAtas = false,
   useExternalPagination = false,
   externalPage,
   externalTotal,
+  isNewLine = false,// Jika true, judul akan ditampilkan di baris baru
 }: DataTableProps<T>) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(pageSize);
@@ -278,11 +284,17 @@ export function DataTable<T = any>({
   return (
     <div className={`rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900 ${className}`}>
       <div className=" border-gray-200 p-6 dark:border-gray-800">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center items-center sm:justify-between mb-4">
-          {title && (
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white text-start w-full">{title}</h2>
+        {isNewLine && title && (
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{title}</h2>
+        )}
+        {/* Dokumentasi: Bar atas dengan layout kiri (input/Select) dan kanan (tombol) */}
+        <div className="flex items-center justify-between gap-3 mb-4">
+          {!isNewLine && title && (
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{title}</h2>
           )}
-          {/* Dokumentasi: Render tombol default (Ekspor/Tambah) dan opsional slot atas kustom sesuai mode */}
+          <div className="flex-1 min-w-0">
+            {toolbarLeftSlotAtas}
+          </div>
           <div className="flex items-center gap-3">
             {!toolbarRightSlotAtas && (
               <>
@@ -322,7 +334,6 @@ export function DataTable<T = any>({
               </>
             )}
           </div>
-          
         </div>
         
 
@@ -349,7 +360,7 @@ export function DataTable<T = any>({
               </svg>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3">
             
             {filterable && (
               <Button onClick={() => setFilterModalOpen(true)} variant="outline" size="sm">

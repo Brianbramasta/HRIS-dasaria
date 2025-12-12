@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { DataTable, DataTableColumn } from '../../../structure-and-organize/components/datatable/DataTable';
-import { PengunduranDiri } from '../../types/PengunduranDiri';
-import usePengunduranDiri from '../../hooks/usePengunduranDiri';
-import Button from '../../../../components/ui/button/Button';
+import { DataTable, DataTableColumn } from '../../../../structure-and-organize/components/datatable/DataTable';
+import { PengunduranDiri } from '../../../types/PengunduranDiri';
+import usePengunduranDiri from '../../../hooks/usePengunduranDiri';
+import Button from '../../../../../components/ui/button/Button';
 import { useNavigate } from 'react-router-dom';
 import { ChevronDown } from 'react-feather';
-import { Dropdown } from '../../../../components/ui/dropdown/Dropdown';
+import { Dropdown } from '../../../../../components/ui/dropdown/Dropdown';
 
 export default function TabReviewed() {
   const navigate = useNavigate();

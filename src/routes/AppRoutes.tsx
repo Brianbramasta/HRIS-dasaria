@@ -113,6 +113,7 @@ import DashboardPenggajianPage from "@/features/penggajian/pages/dashboardPengga
 
 import ApprovalPeriodeGajianPage from "@/features/penggajian/pages/approvalPeriodeGajian/approvalPeriodeGajianPage";
 import DistribusiGajiPage from "@/features/penggajian/pages/distribusiGaji/distribusiGajiPage";
+import JenisPengajuanPage from "@/features/jenisPengajuan/pages/jenisPengajuanPage";
 
 
 
@@ -219,6 +220,7 @@ export default function AppRoutes() {
           <Route path="/pengunduran-diri/:id" element={<DetailPengunduranDiriPage />} />
           <Route path="/perpanjangan-kontrak" element={<PerpanjanganKontrak />} />
           
+          <Route path="/jenis-pengajuan" element={<JenisPengajuanPage />} />
           <Route path="/organization-history" element={<OrganizationHistoryPage />} />
           <Route path="/hak-akses" element={<HakAksesPage />} />
 

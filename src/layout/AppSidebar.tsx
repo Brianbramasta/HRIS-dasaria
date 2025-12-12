@@ -8,7 +8,7 @@ import {
   HorizontaLDots,
  
 } from "../icons";
-import { iconPenggajian, iconKaryawan, iconStrukturOrganisasi, IconHakAksesMenu }   from '@/icons/components/icons'
+import { iconPenggajian, iconKaryawan, iconStrukturOrganisasi, IconHakAksesMenu, IconJenisPengajuan }   from '@/icons/components/icons'
 import { useSidebar } from "../context/SidebarContext";
 // import SidebarWidget from "./SidebarWidget";
 import { useAuthStore } from "../features/auth/stores/authStore";
@@ -59,6 +59,10 @@ const navItems: NavItem[] = [
     icon: <> {IconHakAksesMenu({ size: 16 })} </>,
     name: "Hak Akses",
     path: "/hak-akses",
+  },{
+    icon: <> {IconJenisPengajuan({ size: 16 })} </>,
+    name: "Jenis Pengajuan",
+    path: "/jenis-pengajuan",
   },
 ];
 
