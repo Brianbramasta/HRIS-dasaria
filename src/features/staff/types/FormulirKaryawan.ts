@@ -116,6 +116,8 @@ export interface EmployeeDataFormData {
   kantor: string;
   direktorat: string;
   departemen: string;
+  employmentStatus: string;
+  resignationStatus: string;
 }
 
 // Combined Formulir Data

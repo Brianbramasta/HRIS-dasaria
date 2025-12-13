@@ -30,12 +30,50 @@ interface PaginatedResponse<T> {
 
 // Interface untuk Employee List Item
 export interface EmployeeListItem {
-  id_employee: string;
+  id: string;
   full_name: string;
-  national_id: string;
+  national_id: number;
   email: string;
   position: string;
   department: string;
+  // Additional fields dari API response
+  religion?: number;
+  blood_type?: string;
+  birth_place?: string;
+  birth_date?: string;
+  last_education?: number;
+  marital_status?: number;
+  gender?: number;
+  household_dependents?: number;
+  phone_number?: string;
+  current_address?: string;
+  ktp_address?: string;
+  bank_account_number?: number;
+  bank_name?: string;
+  bank_account_holder?: string;
+  npwp?: number;
+  ptkp_id?: string;
+  bpjs_employment_number?: number;
+  bpjs_employment_status?: number;
+  bpjs_health_number?: number;
+  bpjs_health_status?: number;
+  employment_status?: number;
+  resignation_status?: string | null;
+  start_date?: string;
+  end_date?: string;
+  position_level?: number;
+  payroll_status?: number;
+  employee_category?: number;
+  user_access?: string;
+  company_name?: string;
+  office_name?: string;
+  job_title_name?: string;
+  grade?: string;
+  position_name?: string;
+  department_name?: string;
+  division_name?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 // Interface untuk Dropdown Items

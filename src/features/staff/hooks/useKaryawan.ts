@@ -1,7 +1,8 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Karyawan, KaryawanFilterParams } from '../types/Karyawan';
-import karyawanService from '../services/karyawanService';
+import employeeMasterDataService, { EmployeeListItem } from '../services/employeeMasterData.service';
 import useFilterStore from '../../../stores/filterStore';
+import { addNotification } from '../../../stores/notificationStore';
 
 export interface UseKaryawanOptions {
   initialPage?: number;
@@ -18,7 +19,67 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(initialPage);
   const [limit, setLimit] = useState(initialLimit);
+  const [isInitialFetch, setIsInitialFetch] = useState(true);
   const filterValue = useFilterStore((s) => s.filters['Data Master Karyawan'] ?? '');
+
+  /**
+   * Transform API response data to Karyawan interface
+   */
+  const transformApiDataToKaryawan = (apiData: EmployeeListItem): Karyawan => {
+    // Map employment status number to string
+    const getEmploymentStatus = (status?: number): 'aktif' | 'cuti' | 'resign' | 'nonaktif' | undefined => {
+      if (!status) return undefined;
+      switch (status) {
+        case 1: return 'aktif';
+        case 2: return 'nonaktif';
+        case 3: return 'aktif'; // probation is still active
+        case 4: return 'resign';
+        default: return undefined;
+      }
+    };
+
+    // Map payroll status number to string
+    const getPayrollStatus = (status?: number): string | undefined => {
+      if (!status) return undefined;
+      switch (status) {
+        case 1: return 'aktif';
+        case 2: return 'nonaktif';
+        case 3: return 'suspended';
+        default: return undefined;
+      }
+    };
+
+    // Map employee category number to string
+    const getEmployeeCategory = (category?: number): string | undefined => {
+      if (!category) return undefined;
+      switch (category) {
+        case 1: return 'Non-Staff';
+        case 2: return 'Staff';
+        case 3: return 'Partner';
+        default: return undefined;
+      }
+    };
+
+    return {
+      id: apiData.id,
+      idKaryawan: apiData.id,
+      name: apiData.full_name,
+      email: apiData.email,
+      posisi: apiData.position_name || apiData.position || '',
+      jabatan: apiData.job_title_name || '',
+      tanggalJoin: apiData.start_date || '',
+      tanggalBerakhir: apiData.end_date,
+      company: apiData.company_name || '',
+      department: apiData.department_name || apiData.department || '',
+      departement: apiData.department_name || apiData.department || '', // alias
+      office: apiData.office_name,
+      divisi: apiData.division_name,
+      grade: apiData.grade,
+      statusPayroll: getPayrollStatus(apiData.payroll_status),
+      kategori: getEmployeeCategory(apiData.employee_category),
+      status: getEmploymentStatus(apiData.employment_status),
+    };
+  };
 
   const fetchKaryawan = useCallback(
     async (params?: KaryawanFilterParams) => {
@@ -26,22 +87,38 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
         setLoading(true);
         setError(null);
 
-        const response = await karyawanService.getKaryawan({
+        // Build query params for employeeMasterDataService
+        const queryParams: any = {
           page,
-          limit,
-          filter: params?.filter ?? filterValue,
-          ...params,
-        });
-        console.log('Fetched karyawan response:', response.data);
-        if (response) {
-          const payload = response.data as any;
-          const items = Array.isArray(payload) ? payload : payload.items || payload.data || [];
-          setData(items);
-          setTotal(payload.total || 0);
-          setPage(payload.page || initialPage);
-          setLimit(payload.limit || initialLimit);
+          per_page: limit,
+        };
+
+        if (params?.search) queryParams.search = params.search;
+        if (params?.sortBy) queryParams.column = params.sortBy;
+        if (params?.order) queryParams.sort = params.order;
+        
+        // Handle filter - convert to array if needed
+        const filterParam = params?.filter ?? filterValue;
+        if (filterParam) {
+          queryParams.filter = Array.isArray(filterParam) ? filterParam : [filterParam];
+        }
+
+        const response = await employeeMasterDataService.getEmployees(queryParams);
+        
+        // API returns { meta: { status, message }, data: {...} } not the standard ApiResponse
+        const apiResult = response as any;
+        
+        if (apiResult && apiResult.meta?.status === 200 && apiResult.data) {
+          const apiResponse = apiResult.data;
+          
+          // Transform API data to Karyawan interface
+          const transformedData = apiResponse.data.map(transformApiDataToKaryawan);
+          
+          setData(transformedData);
+          setTotal(apiResponse.total || 0);
+          // Don't update page/limit from response to avoid conflicts
         } else {
-          setError(response || 'Gagal memuat data karyawan');
+          setError('Gagal memuat data karyawan');
         }
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan saat memuat data';
@@ -50,33 +127,56 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
         setLoading(false);
       }
     },
-    [page, limit, filterValue, initialPage, initialLimit]
+    [page, limit, filterValue]
   );
 
+  // Auto-fetch when page, limit, or filter changes
   useEffect(() => {
     if (autoFetch) {
-      fetchKaryawan();
+      // Skip initial fetch if it's the first render (will be handled separately)
+      if (isInitialFetch) {
+        setIsInitialFetch(false);
+        fetchKaryawan();
+      } else {
+        // For subsequent changes, fetch data
+        fetchKaryawan();
+      }
     }
-  }, [fetchKaryawan, autoFetch, filterValue]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, limit, filterValue, autoFetch]);
 
   const createKaryawan = useCallback(
-    async (karyawanData: any) => {
+    async (formData: FormData) => {
       try {
         setLoading(true);
         setError(null);
 
-        const response = await karyawanService.createKaryawan(karyawanData);
+        const response = await employeeMasterDataService.createEmployee(formData);
 
-        if (response) {
+        if (response && response.success) {
+          addNotification({
+            variant: 'success',
+            title: response.message || 'Karyawan berhasil ditambahkan',
+          });
           await fetchKaryawan();
           return response.data;
         } else {
-          setError(response || 'Gagal membuat karyawan');
-          throw new Error(response);
+          const errorMsg = response?.message || 'Gagal membuat karyawan';
+          setError(errorMsg);
+          addNotification({
+            variant: 'error',
+            title: errorMsg,
+          });
+          throw new Error(errorMsg);
         }
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan saat membuat karyawan';
         setError(errorMessage);
+        addNotification({
+          variant: 'error',
+          title: errorMessage,
+        });
+        throw err;
       } finally {
         setLoading(false);
       }
@@ -85,23 +185,37 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
   );
 
   const updateKaryawan = useCallback(
-    async (id: string, karyawanData: any) => {
+    async (id: string, formData: FormData) => {
       try {
         setLoading(true);
         setError(null);
 
-        const response = await karyawanService.updateKaryawan(id, karyawanData);
+        const response = await employeeMasterDataService.updateEmployee(id, formData);
 
-        if (response) {
+        if (response && response.success) {
+          addNotification({
+            variant: 'success',
+            title: response.message || 'Karyawan berhasil diperbarui',
+          });
           await fetchKaryawan();
           return response.data;
         } else {
-          setError(response || 'Gagal memperbarui karyawan');
-          throw new Error(response);
+          const errorMsg = response?.message || 'Gagal memperbarui karyawan';
+          setError(errorMsg);
+          addNotification({
+            variant: 'error',
+            title: errorMsg,
+          });
+          throw new Error(errorMsg);
         }
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan saat memperbarui karyawan';
         setError(errorMessage);
+        addNotification({
+          variant: 'error',
+          title: errorMessage,
+        });
+        throw err;
       } finally {
         setLoading(false);
       }
@@ -115,17 +229,31 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
         setLoading(true);
         setError(null);
 
-        const response = await karyawanService.deleteKaryawan(id);
+        const response = await employeeMasterDataService.deleteEmployee(id);
 
-        if (response) {
+        if (response && response.success) {
+          addNotification({
+            variant: 'success',
+            title: response.message || 'Karyawan berhasil dihapus',
+          });
           await fetchKaryawan();
         } else {
-          setError(response || 'Gagal menghapus karyawan');
-          throw new Error(response);
+          const errorMsg = response?.message || 'Gagal menghapus karyawan';
+          setError(errorMsg);
+          addNotification({
+            variant: 'error',
+            title: errorMsg,
+          });
+          throw new Error(errorMsg);
         }
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan saat menghapus karyawan';
         setError(errorMessage);
+        addNotification({
+          variant: 'error',
+          title: errorMessage,
+        });
+        throw err;
       } finally {
         setLoading(false);
       }
@@ -134,33 +262,30 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
   );
 
   const exportKaryawan = useCallback(
-    async (format:'csv' | 'excel' = 'csv')=>{console.log('Fetched pengunduran diri response:',format)}
-    // async (format: 'csv' | 'excel' = 'csv') => {
-    //   try {
-    //     setError(null);
-    //     const blob = await karyawanService.exportKaryawan(format);
-        
-    //     // Create download link
-    //     const url = window.URL.createObjectURL(blob);
-    //     const a = document.createElement('a');
-    //     a.href = url;
-    //     a.download = `karyawan_${new Date().getTime()}.${format === 'csv' ? 'csv' : 'xlsx'}`;
-    //     document.body.appendChild(a);
-    //     a.click();
-    //     window.URL.revokeObjectURL(url);
-    //     document.body.removeChild(a);
-    //   } catch (err) {
-    //     const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan saat export data';
-    //     setError(errorMessage);
-    //     throw err;
-    //   }
-    // },
-   , []
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async (_format: 'csv' | 'excel' = 'csv') => {
+      try {
+        setError(null);
+        addNotification({
+          variant: 'info',
+          title: 'Fitur export belum tersedia',
+        });
+        // TODO: Implement export when API endpoint is available
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan saat export data';
+        setError(errorMessage);
+        addNotification({
+          variant: 'error',
+          title: errorMessage,
+        });
+        throw err;
+      }
+    },
+    []
   );
 
   const handleSearchChange = useCallback(
     (search: string) => {
-      setPage(1);
       fetchKaryawan({ search });
     },
     [fetchKaryawan]
@@ -168,7 +293,6 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
 
   const handleSortChange = useCallback(
     (columnId: string, order: 'asc' | 'desc') => {
-      setPage(1);
       fetchKaryawan({ sortBy: columnId, order });
     },
     [fetchKaryawan]
@@ -184,7 +308,7 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
   const handleRowsPerPageChange = useCallback(
     (newLimit: number) => {
       setLimit(newLimit);
-      setPage(1);
+      setPage(1); // Reset to first page when changing page size
     },
     []
   );

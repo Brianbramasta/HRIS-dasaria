@@ -203,7 +203,6 @@ export function DataTable<T = any>({
   };
 
   const filteredData = useMemo(() => {
-    console.log('data', data)
     if (!searchTerm) return data;
     return data.filter((row) =>
       columns.some((column) => {

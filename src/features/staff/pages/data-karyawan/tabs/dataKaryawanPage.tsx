@@ -11,6 +11,8 @@ import AddKaryawanModal from '../../../components/modals/AddKaryawanModal';
 import DeleteKaryawanModal from '../../../components/modals/dataKaryawan/DeleteKaryawanModal';
 import ShareLinkModal from '../../../components/modals/sharelink/shareLink';
 import { IconFileDetail,IconHapus } from '@/icons/components/icons';
+import { addNotification } from '@/stores/notificationStore';
+
 
 export default function DataKaryawanPage() {
   const navigate = useNavigate();
@@ -18,6 +20,7 @@ export default function DataKaryawanPage() {
     data,
     loading,
     error,
+    total,
     page,
     limit,
     fetchKaryawan,
@@ -71,8 +74,6 @@ export default function DataKaryawanPage() {
 
   const renderSisaKontrakBadge = (endStr: string | null | undefined) => {
     const end = parseIndonesianDate(endStr);
-    console.log('end',end)
-    console.log('endStr',endStr)
     if (!end) {
       return (
         <span className="inline-block rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-800">-</span>
@@ -191,16 +192,21 @@ export default function DataKaryawanPage() {
       label: 'Office',
       minWidth: 130,
       sortable: true,
-    },{
-      id:'jabatan',
-      label: 'Jabatan',
+      format: (value) => value || '-',
+    },
+    {
+      id:'posisi',
+      label: 'Posisi',
       minWidth: 130,
       sortable: true,
-    },{
-      id:'jabatan',
+      format: (value, row) => row.posisi || value || '-',
+    },
+    {
+      id:'jenjangJabatan',
       label: 'Jenjang Jabatan',
       minWidth: 130,
-      sortable: true,
+      sortable: false,
+      format: () => '-', // Not available in current API response
     },
     {
       id:'grade',
@@ -208,13 +214,15 @@ export default function DataKaryawanPage() {
       minWidth: 130,
       sortable: true,
       format: (value) => value || '-',
-    },{
-      id:'posisi',
+    },
+    {
+      id:'posisiAccess',
       label: 'User Access',
       minWidth: 130,
       sortable: true,
-      format: (value, row) => row.posisi || value || '-',
-    },{
+      format: () => '-',
+    },
+    {
       id:'departement',
       label: 'Departement',
       minWidth: 130,
@@ -305,11 +313,7 @@ export default function DataKaryawanPage() {
   };
 
   const handleExportKaryawan = async () => {
-    try {
-      await exportKaryawan('csv');
-    } catch (err) {
-      console.error('Export failed:', err);
-    }
+    await exportKaryawan('csv');
   };
 
   const handleConfirmDelete = async () => {
@@ -320,7 +324,13 @@ export default function DataKaryawanPage() {
       setShowDeleteModal(false);
       setSelectedKaryawan(null);
     } catch (err) {
-      console.error('Delete failed:', err);
+      // Error handling for delete
+      addNotification({
+              variant: 'error',
+              title: 'Gagal menghapus karyawan',
+              description: err as string | undefined,
+              hideDuration: 4000,
+            });
     } finally {
       setDeleteSubmitting(false);
     }
@@ -329,7 +339,7 @@ export default function DataKaryawanPage() {
   if (error) {
     return (
       <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
-        <p>Error: {error}</p>
+        <p className="font-semibold mb-2">Error: {error}</p>
         <Button onClick={() => fetchKaryawan()} variant="primary" size="sm" className="mt-2">
           Coba Lagi
         </Button>
@@ -370,6 +380,9 @@ export default function DataKaryawanPage() {
         onSortChange={handleSortChange}
         onPageChangeExternal={handlePageChange}
         onRowsPerPageChangeExternal={handleRowsPerPageChange}
+        useExternalPagination={true}
+        externalPage={page}
+        externalTotal={total}
       />
 
       {/* Add Karyawan Modal */}

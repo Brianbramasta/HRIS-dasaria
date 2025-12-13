@@ -1,0 +1,3330 @@
+{
+	"info": {
+		"_postman_id": "b22a0d3f-84f7-48ca-91ff-48d789eb7ae6",
+		"name": "HRIS-Dasaria",
+		"description": "# 🚀 Get started here\n\nThis template guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this template**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these [request](https://learning.postman.com/docs/sending-requests/requests/) types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT request.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n ```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a [variable](https://learning.postman.com/docs/sending-requests/variables/) called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Scripts\" tab**\n\nAdding tests to your requests can help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/fa30ea0a-373d-4545-a668-e7b283cca343/aW1hZ2UucG5n\" width=\"2162\" height=\"1530\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n    \n- Add more [scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/) to verify if the API works as expected and execute workflows.\n    \n\n## 💡Related templates\n\n[API testing basics](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9a37a28-055b-49cd-8c7e-97494a21eb54&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[API documentation](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9c28f47-1253-44af-a2f3-20dce4da1f18&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Authorization methods](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=31a9a6ed-4cdf-4ced-984c-d12c9aec1c27&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "50366378",
+		"_collection_link": "https://capstone-plant.postman.co/workspace/Capstone-plant-Workspace~d22d6bd7-c43b-4ba9-83d2-840395817c64/collection/24391851-b22a0d3f-84f7-48ca-91ff-48d789eb7ae6?action=share&source=collection_link&creator=50366378"
+	},
+	"item": [
+		{
+			"name": "Stuktur dan Organisasi",
+			"item": [
+				{
+					"name": "Lini Bisnis",
+					"item": [
+						{
+							"name": "Index",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/business-lines?filter[]=Internet&filter[]=Softwa",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"business-lines"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "tech",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "desc",
+											"disabled": true
+										},
+										{
+											"key": "column",
+											"value": "created_at",
+											"disabled": true
+										},
+										{
+											"key": "per_page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "filter[]",
+											"value": "Internet"
+										},
+										{
+											"key": "filter[]",
+											"value": "Softwa"
+										}
+									]
+								},
+								"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+							},
+							"response": [
+								{
+									"name": "Index",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://127.0.0.1:8000/api/organizational-structure/business-lines",
+											"protocol": "http",
+											"host": [
+												"127",
+												"0",
+												"0",
+												"1"
+											],
+											"port": "8000",
+											"path": [
+												"api",
+												"organizational-structure",
+												"business-lines"
+											]
+										}
+									},
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json",
+											"description": "",
+											"type": "text"
+										}
+									],
+									"cookie": [
+										{
+											"expires": "Invalid Date",
+											"domain": "",
+											"path": ""
+										}
+									],
+									"body": "{\r\n    \"meta\": {\r\n        \"status\": 200,\r\n        \"message\": \"Success get business lines\"\r\n    },\r\n    \"data\": {\r\n        \"current_page\": 1,\r\n        \"data\": [\r\n            {\r\n                \"id_bl\": \"019ad2e2-272f-7101-9fd5-511ce44d15d9\",\r\n                \"bl_name\": \"Digital Transformation Unit\",\r\n                \"bl_decree_number\": \"SK/DTU/2024/001\",\r\n                \"bl_description\": \"Unit yang fokus pada transformasi digital perusahaan, implementasi sistem ERP, dan otomatisasi proses bisnis\",\r\n                \"bl_decree_file_url\": \"business-lines/decree/6dc4ae0b-f781-4aad-9b31-d0350baa4422.pdf\",\r\n                \"created_at\": \"2025-11-30T03:50:27.000000Z\",\r\n                \"updated_at\": \"2025-11-30T03:50:27.000000Z\"\r\n            },\r\n            {\r\n                \"id_bl\": \"019ad2e3-8ef9-729c-8230-fe84d6c5d181\",\r\n                \"bl_name\": \"Cloud Solutions Division\",\r\n                \"bl_decree_number\": \"SK/CSD/2024/002\",\r\n                \"bl_description\": \"Penyedia layanan cloud computing, managed services, dan infrastruktur IT untuk enterprise\",\r\n                \"bl_decree_file_url\": \"business-lines/decree/1cb069a8-20ee-4195-8fed-8db6f5989224.pdf\",\r\n                \"created_at\": \"2025-11-30T03:51:59.000000Z\",\r\n                \"updated_at\": \"2025-11-30T03:51:59.000000Z\"\r\n            },\r\n            {\r\n                \"id_bl\": \"019ad2e4-fb0c-711b-938f-1bb8e592869e\",\r\n                \"bl_name\": \"Cybersecurity & Risk Management\",\r\n                \"bl_decree_number\": \"SK/CRM/2024/003\",\r\n                \"bl_description\": \"Layanan keamanan siber, penetration testing, risk assessment, dan compliance security\",\r\n                \"bl_decree_file_url\": \"business-lines/decree/34293c71-d9f3-49d8-a9b4-153db447d5e7.pdf\",\r\n                \"created_at\": \"2025-11-30T03:53:33.000000Z\",\r\n                \"updated_at\": \"2025-11-30T03:53:33.000000Z\"\r\n            },\r\n            {\r\n                \"id_bl\": \"019ad2e5-7fff-73c8-8695-68dd2b2381e0\",\r\n                \"bl_name\": \"Data Analytics & Business Intelligence\",\r\n                \"bl_decree_number\": \"SK/DABI/2024/004\",\r\n                \"bl_description\": \"Pengolahan data, analitik bisnis, machine learning, dan dashboard reporting untuk pengambilan keputusan\",\r\n                \"bl_decree_file_url\": \"business-lines/decree/263d4d4d-5a78-4909-824f-60f48240ca86.pdf\",\r\n                \"created_at\": \"2025-11-30T03:54:07.000000Z\",\r\n                \"updated_at\": \"2025-11-30T03:54:07.000000Z\"\r\n            },\r\n            {\r\n                \"id_bl\": \"019ad2e5-e4c3-71f3-a4e0-affbc167b926\",\r\n                \"bl_name\": \"E-Commerce Platform Solutions\",\r\n                \"bl_decree_number\": \"SK/EPS/2024/005\",\r\n                \"bl_description\": \"Pengembangan platform e-commerce, marketplace, payment gateway, dan solusi perdagangan digital\",\r\n                \"bl_decree_file_url\": \"business-lines/decree/24253f24-955f-47d9-8138-bf2e655ffeee.pdf\",\r\n                \"created_at\": \"2025-11-30T03:54:33.000000Z\",\r\n                \"updated_at\": \"2025-11-30T03:54:33.000000Z\"\r\n            },\r\n            {\r\n                \"id_bl\": \"019ad2e6-4cd8-7287-8ad1-b752a17b9043\",\r\n                \"bl_name\": \"Mobile Application Development\",\r\n                \"bl_decree_number\": \"SK/MAD/2024/006\",\r\n                \"bl_description\": \"Pengembangan aplikasi mobile iOS dan Android, progressive web apps, dan cross-platform solutions\",\r\n                \"bl_decree_file_url\": \"business-lines/decree/33b5d12a-4201-42b3-bf93-cc5f01e4fbc0.pdf\",\r\n                \"created_at\": \"2025-11-30T03:54:59.000000Z\",\r\n                \"updated_at\": \"2025-11-30T03:54:59.000000Z\"\r\n            },\r\n            {\r\n                \"id_bl\": \"019ad2e6-b068-73fd-917b-b912011b7ad0\",\r\n                \"bl_name\": \"IoT & Smart City Solutions\",\r\n                \"bl_decree_number\": \"SK/IOT/2024/007\",\r\n                \"bl_description\": \"Implementasi Internet of Things, smart city solutions, sensor networks, dan automation systems\",\r\n                \"bl_decree_file_url\": \"business-lines/decree/19ed3076-ff2b-467c-af4f-db06311c5937.pdf\",\r\n                \"created_at\": \"2025-11-30T03:55:25.000000Z\",\r\n                \"updated_at\": \"2025-11-30T03:55:25.000000Z\"\r\n            },\r\n            {\r\n                \"id_bl\": \"019ad2e7-1c4f-7056-9b0b-7b0bdf62cf2d\",\r\n                \"bl_name\": \"Artificial Intelligence & Automation\",\r\n                \"bl_decree_number\": \"SK/AIA/2024/008\",\r\n                \"bl_description\": \"Pengembangan solusi AI, robotic process automation, chatbot, dan intelligent automation\",\r\n                \"bl_decree_file_url\": \"business-lines/decree/8f0ba547-7079-4a5c-85f3-88ecf77f3ea1.pdf\",\r\n                \"created_at\": \"2025-11-30T03:55:52.000000Z\",\r\n                \"updated_at\": \"2025-11-30T03:55:52.000000Z\"\r\n            },\r\n            {\r\n                \"id_bl\": \"019ad2e7-7d5e-70af-abdc-a25e662fc5c7\",\r\n                \"bl_name\": \"Financial Technology Solutions\",\r\n                \"bl_decree_number\": \"SK/FTS/2024/009\",\r\n                \"bl_description\": \"Pengembangan aplikasi fintech, digital banking, payment systems, dan financial analytics\",\r\n                \"bl_decree_file_url\": \"business-lines/decree/efaf4af3-83f2-472e-b809-e4abcaa78eb0.pdf\",\r\n                \"created_at\": \"2025-11-30T03:56:17.000000Z\",\r\n                \"updated_at\": \"2025-11-30T03:56:17.000000Z\"\r\n            },\r\n            {\r\n                \"id_bl\": \"019ad2e7-d958-71fe-9e8b-a626e85aec7c\",\r\n                \"bl_name\": \"Healthcare Technology\",\r\n                \"bl_decree_number\": \"SK/HCT/2024/010\",\r\n                \"bl_description\": \"Sistem informasi rumah sakit, telemedicine, electronic medical records, dan health monitoring solutions\",\r\n                \"bl_decree_file_url\": \"business-lines/decree/ef6bc0cd-9d4a-438f-ad5a-d544738c1162.pdf\",\r\n                \"created_at\": \"2025-11-30T03:56:41.000000Z\",\r\n                \"updated_at\": \"2025-11-30T03:56:41.000000Z\"\r\n            }\r\n        ],\r\n        \"first_page_url\": \"http://127.0.0.1:8000/api/organizational-structure/business-lines?page=1\",\r\n        \"from\": 1,\r\n        \"last_page\": 1,\r\n        \"last_page_url\": \"http://127.0.0.1:8000/api/organizational-structure/business-lines?page=1\",\r\n        \"links\": [\r\n            {\r\n                \"url\": null,\r\n                \"label\": \"&laquo; Previous\",\r\n                \"page\": null,\r\n                \"active\": false\r\n            },\r\n            {\r\n                \"url\": \"http://127.0.0.1:8000/api/organizational-structure/business-lines?page=1\",\r\n                \"label\": \"1\",\r\n                \"page\": 1,\r\n                \"active\": true\r\n            },\r\n            {\r\n                \"url\": null,\r\n                \"label\": \"Next &raquo;\",\r\n                \"page\": null,\r\n                \"active\": false\r\n            }\r\n        ],\r\n        \"next_page_url\": null,\r\n        \"path\": \"http://127.0.0.1:8000/api/organizational-structure/business-lines\",\r\n        \"per_page\": 10,\r\n        \"prev_page_url\": null,\r\n        \"to\": 10,\r\n        \"total\": 10\r\n    }\r\n}"
+								}
+							]
+						},
+						{
+							"name": "Get Data by uuid",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/business-lines/019ad2e7-d958-71fe-9e8b-a626e85aec7c",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"business-lines",
+										"019ad2e7-d958-71fe-9e8b-a626e85aec7c"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get Data by uuid",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://127.0.0.1:8000/api/organizational-structure/business-lines/019ad2e7-d958-71fe-9e8b-a626e85aec7c",
+											"protocol": "http",
+											"host": [
+												"127",
+												"0",
+												"0",
+												"1"
+											],
+											"port": "8000",
+											"path": [
+												"api",
+												"organizational-structure",
+												"business-lines",
+												"019ad2e7-d958-71fe-9e8b-a626e85aec7c"
+											]
+										}
+									},
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json",
+											"description": "",
+											"type": "text"
+										}
+									],
+									"cookie": [
+										{
+											"expires": "Invalid Date",
+											"domain": "",
+											"path": ""
+										}
+									],
+									"body": "{\n    \"meta\": {\n        \"status\": 200,\n        \"message\": \"Success get business line detail\"\n    },\n    \"data\": {\n        \"id_bl\": \"019ad2e7-d958-71fe-9e8b-a626e85aec7c\",\n        \"bl_name\": \"Healthcare Technology\",\n        \"bl_decree_number\": \"SK/HCT/2024/010\",\n        \"bl_description\": \"Sistem informasi rumah sakit, telemedicine, electronic medical records, dan health monitoring solutions\",\n        \"bl_decree_file_url\": \"business-lines/decree/ef6bc0cd-9d4a-438f-ad5a-d544738c1162.pdf\",\n        \"bl_delete_decree_number\": null,\n        \"bl_delete_decree_file_url\": null,\n        \"deleted_at\": null,\n        \"created_at\": \"2025-11-30T03:56:41.000000Z\",\n        \"updated_at\": \"2025-11-30T03:56:41.000000Z\"\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Menyimpan Data Lini Bisnis",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "bl_name",
+											"value": "ini tes lini bisnis baru  3",
+											"type": "text"
+										},
+										{
+											"key": "bl_decree_number",
+											"value": "SK/HCT/2024/010",
+											"type": "text"
+										},
+										{
+											"key": "bl_description",
+											"value": "tes deskripsi ",
+											"type": "text"
+										},
+										{
+											"key": "bl_decree_file",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/business-lines",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"business-lines"
+									]
+								},
+								"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+							},
+							"response": [
+								{
+									"name": "Menyimpan Data Lini Bisnis",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "nama_lini_bisnis",
+													"value": "Financial Technology Division",
+													"type": "text"
+												},
+												{
+													"key": "no_sk_lini_bisnis",
+													"value": "SK/FINTECH/2024/001",
+													"type": "text"
+												},
+												{
+													"key": "deskripsi_lini_bisnis",
+													"value": "",
+													"type": "text"
+												},
+												{
+													"key": "file_url_sk_lini_bisnis",
+													"type": "file",
+													"src": "/D:/tes1.pdf"
+												}
+											]
+										},
+										"url": {
+											"raw": "http://127.0.0.1:8000/api/organizational-structure/business-lines",
+											"protocol": "http",
+											"host": [
+												"127",
+												"0",
+												"0",
+												"1"
+											],
+											"port": "8000",
+											"path": [
+												"api",
+												"organizational-structure",
+												"business-lines"
+											]
+										}
+									},
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json",
+											"description": "",
+											"type": "text"
+										}
+									],
+									"cookie": [
+										{
+											"expires": "Invalid Date",
+											"domain": "",
+											"path": ""
+										}
+									],
+									"body": "{\r\n    \"meta\": {\r\n        \"status\": 201,\r\n        \"message\": \"Business line created successfully\"\r\n    },\r\n    \"data\": {\r\n        \"bl_name\": \"Healthcare Technology\",\r\n        \"bl_decree_number\": \"SK/HCT/2024/010\",\r\n        \"bl_description\": \"Sistem informasi rumah sakit, telemedicine, electronic medical records, dan health monitoring solutions\",\r\n        \"bl_decree_file_url\": \"business-lines/decree/ef6bc0cd-9d4a-438f-ad5a-d544738c1162.pdf\",\r\n        \"id_bl\": \"019ad2e7-d958-71fe-9e8b-a626e85aec7c\",\r\n        \"updated_at\": \"2025-11-30T03:56:41.000000Z\",\r\n        \"created_at\": \"2025-11-30T03:56:41.000000Z\"\r\n    }\r\n}"
+								}
+							]
+						},
+						{
+							"name": "Update data Lini Bisnis By Uuid",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful PUT request\", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "bl_name",
+											"value": "ini tes lini bisnis baru3",
+											"type": "text"
+										},
+										{
+											"key": "bl_decree_number",
+											"value": "SK/HCT/2024/015",
+											"type": "text"
+										},
+										{
+											"key": "bl_description",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "bl_decree_file",
+											"type": "file",
+											"src": []
+										},
+										{
+											"key": "_method",
+											"value": "PATCH",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/business-lines/019ad3cf-7ae4-7045-8d7b-01ac5da939fb",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"business-lines",
+										"019ad3cf-7ae4-7045-8d7b-01ac5da939fb"
+									]
+								},
+								"description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
+							},
+							"response": [
+								{
+									"name": "Update data Lini Bisnis By Uuid",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "nama_lini_bisnis",
+													"value": "Digital Business Unit ",
+													"type": "text"
+												},
+												{
+													"key": "no_sk_lini_bisnis",
+													"value": "SK/DBU/2024/001",
+													"type": "text"
+												},
+												{
+													"key": "deskripsi_lini_bisnis",
+													"value": "digital bisnis",
+													"type": "text"
+												},
+												{
+													"key": "file_url_sk_lini_bisnis",
+													"type": "file",
+													"src": "/D:/detail.pdf"
+												}
+											]
+										},
+										"url": {
+											"raw": "http://127.0.0.1:8000/api/lini-bisnis/019aba13-4d9c-7138-af92-221af98f4bd6/update",
+											"protocol": "http",
+											"host": [
+												"127",
+												"0",
+												"0",
+												"1"
+											],
+											"port": "8000",
+											"path": [
+												"api",
+												"lini-bisnis",
+												"019aba13-4d9c-7138-af92-221af98f4bd6",
+												"update"
+											]
+										}
+									},
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json",
+											"description": "",
+											"type": "text"
+										}
+									],
+									"cookie": [
+										{
+											"expires": "Invalid Date",
+											"domain": "",
+											"path": ""
+										}
+									],
+									"body": "{\n    \"meta\": {\n        \"status\": 200,\n        \"message\": \"Business line updated successfully\"\n    },\n    \"data\": {\n        \"id_bl\": \"019ad3cf-7ae4-7045-8d7b-01ac5da939fb\",\n        \"bl_name\": \"ini tes lini bisnis baru3\",\n        \"bl_decree_number\": \"SK/HCT/2024/015\",\n        \"bl_description\": \"tes deskripsi\",\n        \"bl_decree_file\": \"business-lines/decree/4a5ad844-794e-4f2e-a0b0-130bc41950e8.pdf\",\n        \"bl_delete_decree_number\": null,\n        \"bl_delete_decree_file\": null,\n        \"deleted_at\": null,\n        \"created_at\": \"2025-11-30T08:09:41.000000Z\",\n        \"updated_at\": \"2025-12-01T03:04:30.000000Z\"\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Delete data Lini Bisnis By Uuid",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful DELETE request\", function () {",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 202, 204]);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "bl_delete_decree_number",
+											"value": "SK-HP/HCT/2024/001",
+											"type": "text"
+										},
+										{
+											"key": "bl_delete_decree_file",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										},
+										{
+											"key": "_method",
+											"value": "DELETE",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/business-lines/019ad7eb-5df0-7383-b933-c4f1c208db39",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"business-lines",
+										"019ad7eb-5df0-7383-b933-c4f1c208db39"
+									]
+								},
+								"description": "This is a DELETE request, and it is used to delete data that was previously created via a POST request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful DELETE request typically returns a `200 OK`, `202 Accepted`, or `204 No Content` response code."
+							},
+							"response": [
+								{
+									"name": "Delete data By Uuid",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "no_sk_hapus_lini_bisnis",
+													"value": "SK-PH/BU/2024/001",
+													"type": "text"
+												},
+												{
+													"key": "file_url_sk_hapus_lini_bisnis",
+													"type": "file",
+													"src": "/D:/tes1.pdf"
+												}
+											]
+										},
+										"url": {
+											"raw": "http://127.0.0.1:8000/api/lini-bisnis/019aba13-4d9c-7138-af92-221af98f4bd6/delete",
+											"protocol": "http",
+											"host": [
+												"127",
+												"0",
+												"0",
+												"1"
+											],
+											"port": "8000",
+											"path": [
+												"api",
+												"lini-bisnis",
+												"019aba13-4d9c-7138-af92-221af98f4bd6",
+												"delete"
+											]
+										}
+									},
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json",
+											"description": "",
+											"type": "text"
+										}
+									],
+									"cookie": [
+										{
+											"expires": "Invalid Date",
+											"domain": "",
+											"path": ""
+										}
+									],
+									"body": "{\n    \"meta\": {\n        \"status\": 200,\n        \"message\": \"Business line deleted successfully\"\n    },\n    \"data\": null\n}"
+								}
+							]
+						},
+						{
+							"name": "Dropdwon Lini-Bisnis",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/business-lines-dropdown?search=",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"business-lines-dropdown"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": ""
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Dropdwon Lini-Bisnis",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://127.0.0.1:8000/api/dropdown-lini-bisnis",
+											"protocol": "http",
+											"host": [
+												"127",
+												"0",
+												"0",
+												"1"
+											],
+											"port": "8000",
+											"path": [
+												"api",
+												"dropdown-lini-bisnis"
+											]
+										}
+									},
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json",
+											"description": "",
+											"type": "text"
+										}
+									],
+									"cookie": [
+										{
+											"expires": "Invalid Date",
+											"domain": "",
+											"path": ""
+										}
+									],
+									"body": "{\n    \"meta\": {\n        \"status\": 200,\n        \"message\": \"Success get business lines for dropdown\"\n    },\n    \"data\": [\n        {\n            \"id_bl\": \"019ad2e7-1c4f-7056-9b0b-7b0bdf62cf2d\",\n            \"bl_name\": \"Artificial Intelligence & Automation\"\n        },\n        {\n            \"id_bl\": \"019ad2e3-8ef9-729c-8230-fe84d6c5d181\",\n            \"bl_name\": \"Cloud Solutions Division\"\n        },\n        {\n            \"id_bl\": \"019ad2e4-fb0c-711b-938f-1bb8e592869e\",\n            \"bl_name\": \"Cybersecurity & Risk Management\"\n        },\n        {\n            \"id_bl\": \"019ad2e5-7fff-73c8-8695-68dd2b2381e0\",\n            \"bl_name\": \"Data Analytics & Business Intelligence\"\n        },\n        {\n            \"id_bl\": \"019ad2e2-272f-7101-9fd5-511ce44d15d9\",\n            \"bl_name\": \"Digital Transformation Unit\"\n        },\n        {\n            \"id_bl\": \"019ad2e5-e4c3-71f3-a4e0-affbc167b926\",\n            \"bl_name\": \"E-Commerce Platform Solutions\"\n        },\n        {\n            \"id_bl\": \"019ad2e7-7d5e-70af-abdc-a25e662fc5c7\",\n            \"bl_name\": \"Financial Technology Solutions\"\n        },\n        {\n            \"id_bl\": \"019ad2e7-d958-71fe-9e8b-a626e85aec7c\",\n            \"bl_name\": \"Healthcare Technology 6\"\n        },\n        {\n            \"id_bl\": \"019ad3c3-3d95-7303-bb43-e73ebc5c7738\",\n            \"bl_name\": \"ini tes lini bisnis baru\"\n        },\n        {\n            \"id_bl\": \"019ad3cf-2598-72ba-a1f5-9782ec3b6fbc\",\n            \"bl_name\": \"ini tes lini bisnis baru\"\n        },\n        {\n            \"id_bl\": \"019ad3cf-7ae4-7045-8d7b-01ac5da939fb\",\n            \"bl_name\": \"ini tes lini bisnis baru  2\"\n        },\n        {\n            \"id_bl\": \"019ad3d4-04fb-7039-846c-bbc166d24e27\",\n            \"bl_name\": \"ini tes lini bisnis baru  3\"\n        },\n        {\n            \"id_bl\": \"019ad2e6-b068-73fd-917b-b912011b7ad0\",\n            \"bl_name\": \"IoT & Smart City Solutions\"\n        },\n        {\n            \"id_bl\": \"019ad2e6-4cd8-7287-8ad1-b752a17b9043\",\n            \"bl_name\": \"Mobile Application Development\"\n        }\n    ]\n}"
+								}
+							]
+						},
+						{
+							"name": "Get Detail Lini Bisnis",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/business-lines/019ad2e7-1c4f-7056-9b0b-7b0bdf62cf2d/detail",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"business-lines",
+										"019ad2e7-1c4f-7056-9b0b-7b0bdf62cf2d",
+										"detail"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get Detail Lini Bisnis",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://127.0.0.1:8000/api/lini-bisnis/019abe86-2217-71cc-8803-4eb968699c93",
+											"protocol": "http",
+											"host": [
+												"127",
+												"0",
+												"0",
+												"1"
+											],
+											"port": "8000",
+											"path": [
+												"api",
+												"lini-bisnis",
+												"019abe86-2217-71cc-8803-4eb968699c93"
+											]
+										}
+									},
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json",
+											"description": "",
+											"type": "text"
+										}
+									],
+									"cookie": [
+										{
+											"expires": "Invalid Date",
+											"domain": "",
+											"path": ""
+										}
+									],
+									"body": "{\n    \"meta\": {\n        \"status\": 200,\n        \"message\": \"Success get business line detail\"\n    },\n    \"data\": {\n        \"id_bl\": \"019ad2e7-1c4f-7056-9b0b-7b0bdf62cf2d\",\n        \"bl_name\": \"Artificial Intelligence & Automation\",\n        \"bl_decree_number\": \"SK/AIA/2024/008\",\n        \"bl_description\": \"Pengembangan solusi AI, robotic process automation, chatbot, dan intelligent automation\",\n        \"bl_decree_file\": \"business-lines/decree/8f0ba547-7079-4a5c-85f3-88ecf77f3ea1.pdf\",\n        \"bl_delete_decree_number\": null,\n        \"bl_delete_decree_file\": null,\n        \"deleted_at\": null,\n        \"created_at\": \"2025-11-30T03:55:52.000000Z\",\n        \"updated_at\": \"2025-11-30T03:55:52.000000Z\",\n        \"companies\": [\n            {\n                \"id_company\": \"019ad44c-08a3-72a5-835a-dc467fb7abb3\",\n                \"company_name\": \"PT. Artificial Intelligence Indonesia\",\n                \"company_description\": \"Pengembang solusi AI dan robotic process automation untuk meningkatkan efisiensi bisnis perusahaan di Indonesia\",\n                \"company_delete_decree_number\": null,\n                \"company_delete_decree_file\": null,\n                \"id_bl\": \"019ad2e7-1c4f-7056-9b0b-7b0bdf62cf2d\",\n                \"deleted_at\": null,\n                \"created_at\": \"2025-11-30T10:25:44.000000Z\",\n                \"updated_at\": \"2025-11-30T10:25:44.000000Z\"\n            }\n        ]\n    }\n}"
+								}
+							]
+						}
+					],
+					"description": "api lini bisnis"
+				},
+				{
+					"name": "Perusahaan",
+					"item": [
+						{
+							"name": "Menyimpan Data Perusahaan",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "company_name",
+											"value": "PT. Smart IoT Solutions",
+											"type": "text"
+										},
+										{
+											"key": "id_bl",
+											"value": "019ad2e6-b068-73fd-917b-b912011b7ad0",
+											"type": "text"
+										},
+										{
+											"key": "company_description",
+											"value": "Spesialis Internet of Things untuk smart city, industrial automation, dan connected devices",
+											"type": "text"
+										},
+										{
+											"key": "documents[0][cd_name]",
+											"value": "dokument 1",
+											"type": "text"
+										},
+										{
+											"key": "documents[0][cd_decree_number]",
+											"value": "ini sk",
+											"type": "text"
+										},
+										{
+											"key": "documents[0][cd_file]",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										},
+										{
+											"key": "documents[1][cd_name]",
+											"value": "document 2",
+											"type": "text"
+										},
+										{
+											"key": "documents[1][cd_decree_number]",
+											"value": "ini sk 2",
+											"type": "text"
+										},
+										{
+											"key": "documents[1][cd_file]",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/companies",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"companies"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Menyimpan Data Perusahaan",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "nama_perusahaan",
+													"value": "",
+													"type": "text"
+												},
+												{
+													"key": "uuid_lini_bisnis",
+													"value": "",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "http://127.0.0.1:8000/api/organizational-structure/companies",
+											"protocol": "http",
+											"host": [
+												"127",
+												"0",
+												"0",
+												"1"
+											],
+											"port": "8000",
+											"path": [
+												"api",
+												"organizational-structure",
+												"companies"
+											]
+										}
+									},
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json",
+											"description": "",
+											"type": "text"
+										}
+									],
+									"cookie": [
+										{
+											"expires": "Invalid Date",
+											"domain": "",
+											"path": ""
+										}
+									],
+									"body": "{\n    \"meta\": {\n        \"status\": 201,\n        \"message\": \"Company created successfully\"\n    },\n    \"data\": {\n        \"company\": {\n            \"company_name\": \"PT. Artificial Intelligence Indonesia\",\n            \"company_description\": \"Pengembang solusi AI dan robotic process automation untuk meningkatkan efisiensi bisnis perusahaan di Indonesia\",\n            \"id_bl\": \"019ad2e7-1c4f-7056-9b0b-7b0bdf62cf2d\",\n            \"id_company\": \"019ad7eb-5df0-7383-b933-c4f1c208db39\",\n            \"updated_at\": \"2025-12-01T03:18:37.000000Z\",\n            \"created_at\": \"2025-12-01T03:18:37.000000Z\"\n        },\n        \"documents\": [\n            {\n                \"cd_name\": \"dokument 1\",\n                \"cd_decree_number\": \"ini sk\",\n                \"cd_file\": \"company/decree/67a22979-66d3-45ca-a361-c2fad0b61094.pdf\",\n                \"id_company\": \"019ad7eb-5df0-7383-b933-c4f1c208db39\",\n                \"id_cd\": \"019ad7eb-5e0c-7000-8794-4cf8751c7445\",\n                \"updated_at\": \"2025-12-01T03:18:37.000000Z\",\n                \"created_at\": \"2025-12-01T03:18:37.000000Z\"\n            },\n            {\n                \"cd_name\": \"document 2\",\n                \"cd_decree_number\": \"ini sk 2\",\n                \"cd_file\": \"company/decree/8ce0ac2b-99b9-478d-99fd-b01cde44f8ef.pdf\",\n                \"id_company\": \"019ad7eb-5df0-7383-b933-c4f1c208db39\",\n                \"id_cd\": \"019ad7eb-5e11-736d-9d6b-4576682d650e\",\n                \"updated_at\": \"2025-12-01T03:18:37.000000Z\",\n                \"created_at\": \"2025-12-01T03:18:37.000000Z\"\n            }\n        ]\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Delete Data Perusahaan By Uuid",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "company_delete_decree_number",
+											"value": "ini sk hapus ",
+											"type": "text"
+										},
+										{
+											"key": "company_delete_decree_file",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										},
+										{
+											"key": "_method",
+											"value": "DELETE",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/companies/019ad7eb-5df0-7383-b933-c4f1c208db39 ",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"companies",
+										"019ad7eb-5df0-7383-b933-c4f1c208db39 "
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Delete Data Perusahaan By Uuid",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "http://127.0.0.1:8000/api/organizational-structure/companies/019ad7eb-5df0-7383-b933-c4f1c208db39",
+											"protocol": "http",
+											"host": [
+												"127",
+												"0",
+												"0",
+												"1"
+											],
+											"port": "8000",
+											"path": [
+												"api",
+												"organizational-structure",
+												"companies",
+												"019ad7eb-5df0-7383-b933-c4f1c208db39"
+											]
+										}
+									},
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json",
+											"description": "",
+											"type": "text"
+										}
+									],
+									"cookie": [
+										{
+											"expires": "Invalid Date",
+											"domain": "",
+											"path": ""
+										}
+									],
+									"body": "{\r\n    \"meta\": {\r\n        \"status\": 200,\r\n        \"message\": \"Company deleted successfully\"\r\n    }\r\n}"
+								}
+							]
+						},
+						{
+							"name": "Index",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/companies?search=test",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"companies"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "test"
+										},
+										{
+											"key": "sort",
+											"value": "desc",
+											"disabled": true
+										},
+										{
+											"key": "column",
+											"value": "created_at",
+											"disabled": true
+										},
+										{
+											"key": "per_page",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "filter[]",
+											"value": "test",
+											"disabled": true
+										},
+										{
+											"key": "filter[]",
+											"value": "test 3",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Index",
+									"originalRequest": {
+										"method": "GET",
+										"header": []
+									},
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json",
+											"description": "",
+											"type": "text"
+										}
+									],
+									"cookie": [
+										{
+											"expires": "Invalid Date",
+											"domain": "",
+											"path": ""
+										}
+									],
+									"body": "{\n    \"success\": true,\n    \"message\": \"List Perusahaan\",\n    \"data\": [\n        {\n            \"uuid_perusahaan\": \"019ac89b-3d5a-7385-937b-28a9d80edc29\",\n            \"nama_perusahaan\": \"PT. Digital Innovation Indonesia\",\n            \"fk_uuid_lini_bisnis\": \"019ac88e-ef31-7264-b1f7-bd67a1b80b03\",\n            \"deskripsi_perusahaan\": \"Perusahaan teknologi yang fokus pada transformasi digital dan pengembangan solusi inovatif untuk UMKM dan enterprise\",\n            \"no_sk_hapus_perusahaan\": null,\n            \"file_url_sk_hapus_perusahaan\": null,\n            \"deleted_at\": null,\n            \"created_at\": \"2025-11-28T03:56:48.000000Z\",\n            \"updated_at\": \"2025-11-28T03:56:48.000000Z\",\n            \"lini_bisnis\": null\n        },\n        {\n            \"uuid_perusahaan\": \"019ac89c-5f56-718d-a5cf-1c6d97394f05\",\n            \"nama_perusahaan\": \"PT. Cloud Infrastructure Nusantara\",\n            \"fk_uuid_lini_bisnis\": \"019ac88f-a82a-734e-9865-0309bbe5a2a1\",\n            \"deskripsi_perusahaan\": \"Penyedia layanan cloud computing terkemuka dengan data center tier-3 dan layanan managed services 24/7\",\n            \"no_sk_hapus_perusahaan\": null,\n            \"file_url_sk_hapus_perusahaan\": null,\n            \"deleted_at\": null,\n            \"created_at\": \"2025-11-28T03:58:02.000000Z\",\n            \"updated_at\": \"2025-11-28T03:58:02.000000Z\",\n            \"lini_bisnis\": null\n        },\n        {\n            \"uuid_perusahaan\": \"019ac89c-f3bc-7277-af69-58bcf35e4a07\",\n            \"nama_perusahaan\": \"PT. Cyber Guard Security\",\n            \"fk_uuid_lini_bisnis\": \"019ac890-1879-7334-9193-dd7b2d62ba48\",\n            \"deskripsi_perusahaan\": \"Perusahaan spesialis keamanan siber yang menyediakan layanan penetration testing, SOC, dan security consultation\",\n            \"no_sk_hapus_perusahaan\": null,\n            \"file_url_sk_hapus_perusahaan\": null,\n            \"deleted_at\": null,\n            \"created_at\": \"2025-11-28T03:58:40.000000Z\",\n            \"updated_at\": \"2025-11-28T03:58:40.000000Z\",\n            \"lini_bisnis\": null\n        },\n        {\n            \"uuid_perusahaan\": \"019ac89d-9414-730c-aa98-08748d471611\",\n            \"nama_perusahaan\": \"PT. Data Insight Analytics\",\n            \"fk_uuid_lini_bisnis\": \"019ac890-c74a-73f6-b306-8d797b9de4fc\",\n            \"deskripsi_perusahaan\": \"Spesialis dalam big data analytics, business intelligence, dan machine learning solutions untuk berbagai industri\",\n            \"no_sk_hapus_perusahaan\": null,\n            \"file_url_sk_hapus_perusahaan\": null,\n            \"deleted_at\": null,\n            \"created_at\": \"2025-11-28T03:59:21.000000Z\",\n            \"updated_at\": \"2025-11-28T03:59:21.000000Z\",\n            \"lini_bisnis\": null\n        },\n        {\n            \"uuid_perusahaan\": \"019ac89f-d121-7367-94e8-c95dfb42534b\",\n            \"nama_perusahaan\": \"PT. Toko Digital Maju\",\n            \"fk_uuid_lini_bisnis\": \"019ac891-2e95-70ca-a3b8-60037c5015a6\",\n            \"deskripsi_perusahaan\": \"Platform e-commerce terintegrasi dengan fulfillment center dan payment gateway untuk merchant Indonesia\",\n            \"no_sk_hapus_perusahaan\": null,\n            \"file_url_sk_hapus_perusahaan\": null,\n            \"deleted_at\": null,\n            \"created_at\": \"2025-11-28T04:01:48.000000Z\",\n            \"updated_at\": \"2025-11-28T04:01:48.000000Z\",\n            \"lini_bisnis\": null\n        },\n        {\n            \"uuid_perusahaan\": \"019ac8a0-6c46-71cb-95ba-9c94e9763a31\",\n            \"nama_perusahaan\": \"PT. Aplikasi Mobile Kreatif\",\n            \"fk_uuid_lini_bisnis\": \"019ac893-b20b-713f-b248-6ee5f3e5ce7b\",\n            \"deskripsi_perusahaan\": \"Pengembang aplikasi mobile native dan cross-platform dengan fokus pada user experience yang exceptional\",\n            \"no_sk_hapus_perusahaan\": null,\n            \"file_url_sk_hapus_perusahaan\": null,\n            \"deleted_at\": null,\n            \"created_at\": \"2025-11-28T04:02:28.000000Z\",\n            \"updated_at\": \"2025-11-28T04:02:28.000000Z\",\n            \"lini_bisnis\": null\n        },\n        {\n            \"uuid_perusahaan\": \"019ac8a1-3339-725c-aab1-bff352580e72\",\n            \"nama_perusahaan\": \"PT. Smart IoT Solutions\",\n            \"fk_uuid_lini_bisnis\": \"019ac894-0fd5-7128-9915-8743848f99a5\",\n            \"deskripsi_perusahaan\": \"Spesialis Internet of Things untuk smart city, industrial automation, dan connected devices\",\n            \"no_sk_hapus_perusahaan\": null,\n            \"file_url_sk_hapus_perusahaan\": null,\n            \"deleted_at\": null,\n            \"created_at\": \"2025-11-28T04:03:18.000000Z\",\n            \"updated_at\": \"2025-11-28T04:03:18.000000Z\",\n            \"lini_bisnis\": null\n        },\n        {\n            \"uuid_perusahaan\": \"019ac8a1-bbe6-72cd-b6a7-8533ca16e577\",\n            \"nama_perusahaan\": \"PT. Artificial Intelligence Indonesia\",\n            \"fk_uuid_lini_bisnis\": \"019ac894-81cc-7078-9611-e4b2c208331c\",\n            \"deskripsi_perusahaan\": \"Pengembang solusi AI dan robotic process automation untuk meningkatkan efisiensi bisnis\",\n            \"no_sk_hapus_perusahaan\": null,\n            \"file_url_sk_hapus_perusahaan\": null,\n            \"deleted_at\": null,\n            \"created_at\": \"2025-11-28T04:03:53.000000Z\",\n            \"updated_at\": \"2025-11-28T04:03:53.000000Z\",\n            \"lini_bisnis\": null\n        }\n    ],\n    \"pagination\": {\n        \"current_page\": 1,\n        \"per_page\": 10,\n        \"total\": 8,\n        \"last_page\": 1,\n        \"from\": 1,\n        \"to\": 8\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Get Detail Perusahaan",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/companies/019ad7eb-5df0-7383-b933-c4f1c208db39/detail",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"companies",
+										"019ad7eb-5df0-7383-b933-c4f1c208db39",
+										"detail"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Dropdwon Perusahaan",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/companies-dropdown",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"companies-dropdown"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "PT. Artificial Intelligence Indonesia",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Data Perusahaan by uuid",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "address",
+											"value": "kaliurang",
+											"type": "text"
+										},
+										{
+											"key": "postal_code",
+											"value": "68124",
+											"type": "text"
+										},
+										{
+											"key": "email",
+											"value": "tes@gmail.com",
+											"type": "text"
+										},
+										{
+											"key": "phone",
+											"value": "0812",
+											"type": "text"
+										},
+										{
+											"key": "industry",
+											"value": "isp",
+											"type": "text"
+										},
+										{
+											"key": "founded_year",
+											"value": "2025-01-01",
+											"type": "text"
+										},
+										{
+											"key": "company_type",
+											"value": "pt",
+											"type": "text"
+										},
+										{
+											"key": "website",
+											"value": "https://github.com/",
+											"type": "text"
+										},
+										{
+											"key": "logo",
+											"type": "file",
+											"src": "/D:/Tahmin.jpeg"
+										},
+										{
+											"key": "_method",
+											"value": "PATCH",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/companies/019ae365-412f-701f-983f-b17071f92ba2",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"companies",
+										"019ae365-412f-701f-983f-b17071f92ba2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Tambah Document Melalui perusahaan",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "documents[0][cd_name]",
+											"value": "gak tau 3",
+											"type": "text"
+										},
+										{
+											"key": "documents[0][cd_decree_number]",
+											"value": "sk3",
+											"type": "text"
+										},
+										{
+											"key": "documents[0][cd_file]",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										},
+										{
+											"key": "documents[1][cd_name]",
+											"value": "gak tau 4",
+											"type": "text"
+										},
+										{
+											"key": "documents[1][cd_decree_number]",
+											"value": "gak tau 4",
+											"type": "text"
+										},
+										{
+											"key": "documents[1][cd_file]",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/companies/019ae365-412f-701f-983f-b17071f92ba2/documents",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"companies",
+										"019ae365-412f-701f-983f-b17071f92ba2",
+										"documents"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Document Melalui Perusahaan",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "cd_deleted_decree",
+											"value": "ini sk hapus",
+											"type": "text"
+										},
+										{
+											"key": "cd_deleted_decree_file",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/companies/019add3b-ae10-70a3-8e0d-4c6531564850/deletedocuments",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"companies",
+										"019add3b-ae10-70a3-8e0d-4c6531564850",
+										"deletedocuments"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Kantor",
+					"item": [
+						{
+							"name": "Menyimpan Data Kantor",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "office_name",
+											"value": "ini kantor tes 2 perusahaan",
+											"type": "text"
+										},
+										{
+											"key": "company[0][id_company]",
+											"value": "019ad7e9-2331-71ed-8ee7-ff7af32a8cd6",
+											"type": "text"
+										},
+										{
+											"key": "company[1][id_company]",
+											"value": "019ae21c-307b-717e-9e7b-86e2eb42e681",
+											"type": "text"
+										},
+										{
+											"key": "office_decree_number",
+											"value": "ini sk kantor ",
+											"type": "text"
+										},
+										{
+											"key": "office_description",
+											"value": "ini knator di bidang iot",
+											"type": "text"
+										},
+										{
+											"key": "office_decree_file",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/offices",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"offices"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Data by uuid",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/offices/019af2d5-b017-7377-8117-a24b457c26ae",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"offices",
+										"019af2d5-b017-7377-8117-a24b457c26ae"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Data Office",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "office_delete_decree_number",
+											"value": "tes",
+											"type": "text"
+										},
+										{
+											"key": "office_delete_decree_file",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										},
+										{
+											"key": "_method",
+											"value": "DELETE",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/offices/019add4a-82ac-70fd-9e10-dee1ee781f67",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"offices",
+										"019add4a-82ac-70fd-9e10-dee1ee781f67"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": "DELETE",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "index",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/offices",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"offices"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "ini kantor",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "desc",
+											"disabled": true
+										},
+										{
+											"key": "column",
+											"value": "created_at",
+											"disabled": true
+										},
+										{
+											"key": "per_page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "filter[]",
+											"value": "ini knator di bidang ai",
+											"disabled": true
+										},
+										{
+											"key": "filter[]",
+											"value": "ini knator di bidang iot",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Data Kantor by uuid",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "_method",
+											"value": "PATCH",
+											"type": "text"
+										},
+										{
+											"key": "office_name",
+											"value": "jadi 2 aja ",
+											"type": "text"
+										},
+										{
+											"key": "company[0][id_company]",
+											"value": "019ae365-412f-701f-983f-b17071f92ba2",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "company[1][id_company]",
+											"value": "",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "office_decree_number",
+											"value": "ini ks tes",
+											"type": "text"
+										},
+										{
+											"key": "office_description",
+											"value": "entah ",
+											"type": "text"
+										},
+										{
+											"key": "office_decree_file",
+											"type": "file",
+											"src": [],
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/offices/019af2c7-93f9-734c-a4b1-6ff20255f8d3",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"offices",
+										"019af2c7-93f9-734c-a4b1-6ff20255f8d3"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Direktorat",
+					"item": [
+						{
+							"name": "Menyimpan Data Direktorat",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "directorate_name",
+											"value": "ini nama direktorat 3",
+											"type": "text"
+										},
+										{
+											"key": "directorate_decree_number",
+											"value": "ini sk directorat 3",
+											"type": "text"
+										},
+										{
+											"key": "directorate_description",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "directorate_decree_file",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/directorates",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"directorates"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Data by uuid",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/directorates/019ae273-ff4f-7384-acb7-44b31ab476f7",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"directorates",
+										"019ae273-ff4f-7384-acb7-44b31ab476f7"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Data Directorate by uuid",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "_method",
+											"value": "PATCH",
+											"type": "text"
+										},
+										{
+											"key": "directorate_name",
+											"value": "ini nama direktorat 3 jadi 4",
+											"type": "text"
+										},
+										{
+											"key": "directorate_decree_number",
+											"value": "ini sk directorat 3 jadi 4",
+											"type": "text"
+										},
+										{
+											"key": "directorate_description",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "directorate_decree_file",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/directorates/019ae273-ff4f-7384-acb7-44b31ab476f7",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"directorates",
+										"019ae273-ff4f-7384-acb7-44b31ab476f7"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Data Directorate by uuid",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "_method",
+											"value": "DELETE",
+											"type": "text"
+										},
+										{
+											"key": "directorate_deleted_decree_number",
+											"value": "ini sk delete",
+											"type": "text"
+										},
+										{
+											"key": "directorate_deleted_decree_file",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/directorates/019ae273-ff4f-7384-acb7-44b31ab476f7",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"directorates",
+										"019ae273-ff4f-7384-acb7-44b31ab476f7"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "index",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/directorates",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"directorates"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "ini nama direktorat",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "desc",
+											"disabled": true
+										},
+										{
+											"key": "column",
+											"value": "created_at",
+											"disabled": true
+										},
+										{
+											"key": "per_page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "filter[]",
+											"value": "ini sk directorat",
+											"disabled": true
+										},
+										{
+											"key": "filter[]",
+											"value": "ini sk directorat 2",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Dropdown Directorate",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/directorates-dropdown",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"directorates-dropdown"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "ini nama direktorat 3 jadi 4",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Division",
+					"item": [
+						{
+							"name": "Menyimpan data Division",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "division_name",
+											"value": "ini divis 6",
+											"type": "text"
+										},
+										{
+											"key": "id_directorate",
+											"value": "019ae265-320f-73ac-87c2-25b927de4e77",
+											"type": "text"
+										},
+										{
+											"key": "division_decree_number",
+											"value": "ini sk 1 nys ",
+											"type": "text"
+										},
+										{
+											"key": "division_description",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "division_decree_file",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/divisions",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"divisions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Data Division by uuid",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "_method",
+											"value": "DELETE",
+											"type": "text"
+										},
+										{
+											"key": "division_deleted_decree_number",
+											"value": "ini sk hapus ",
+											"type": "text"
+										},
+										{
+											"key": "division_deleted_decree_file",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/divisions/019ae8a3-11de-7361-8643-e0e0166a1c03",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"divisions",
+										"019ae8a3-11de-7361-8643-e0e0166a1c03"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Data by uuid",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/divisions/019ae778-9bf9-7021-80ab-f7ef64e7e1a2",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"divisions",
+										"019ae778-9bf9-7021-80ab-f7ef64e7e1a2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Data Division by uuid",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "_method",
+											"value": "PATCH",
+											"type": "text"
+										},
+										{
+											"key": "division_name",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "id_directorate",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "division_decree_number",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "division_description",
+											"value": "ini deskripsi",
+											"type": "text"
+										},
+										{
+											"key": "division_decree_file",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/divisions/019ae833-9eee-71a2-929f-918f233f6d4e",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"divisions",
+										"019ae833-9eee-71a2-929f-918f233f6d4e"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "index",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/divisions",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"divisions"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "ini divis 2",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "asc",
+											"disabled": true
+										},
+										{
+											"key": "column",
+											"value": "created_at",
+											"disabled": true
+										},
+										{
+											"key": "per_page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "filter[]",
+											"value": "ini sk update",
+											"disabled": true
+										},
+										{
+											"key": "filter[]",
+											"value": "ini divis 2",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Dropdown Division",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/divisions-dropdown",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"divisions-dropdown"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Departmen",
+					"item": [
+						{
+							"name": "Menyimpan data Department",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "department_name",
+											"value": "Information Technology",
+											"type": "text"
+										},
+										{
+											"key": "id_division",
+											"value": "019ae889-1ecb-7262-88ed-58868c0e4bf4",
+											"type": "text"
+										},
+										{
+											"key": "department_decree_number",
+											"value": "ini sk entah keberapa  3",
+											"type": "text"
+										},
+										{
+											"key": "department_description",
+											"value": "ini deskripsi",
+											"type": "text"
+										},
+										{
+											"key": "department_decree_file",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/departments",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"departments"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete data by uuid",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "department_deleted_decree_number",
+											"value": "tes hapus ",
+											"type": "text"
+										},
+										{
+											"key": "department_deleted_decree_file",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										},
+										{
+											"key": "_method",
+											"value": "DELETE",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/departments/019aec87-9803-715c-8223-aef1aacf85df",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"departments",
+										"019aec87-9803-715c-8223-aef1aacf85df"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Data by uuid",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/departments/019aec86-d8f9-7309-ba15-f7c3273c2a2a",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"departments",
+										"019aec86-d8f9-7309-ba15-f7c3273c2a2a"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Data Department by uuid",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "_method",
+											"value": "PATCH",
+											"type": "text"
+										},
+										{
+											"key": "department_name",
+											"value": "ini departmen peternakan ikan",
+											"type": "text"
+										},
+										{
+											"key": "id_division",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "department_decree_number",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "department_description",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "department_decree_file",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/departments/019aec86-d8f9-7309-ba15-f7c3273c2a2a",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"departments",
+										"019aec86-d8f9-7309-ba15-f7c3273c2a2a"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "index",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/departments",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"departments"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "departmen",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "desc",
+											"disabled": true
+										},
+										{
+											"key": "column",
+											"value": "created_at",
+											"disabled": true
+										},
+										{
+											"key": "per_page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "filter[]",
+											"value": "ikan",
+											"disabled": true
+										},
+										{
+											"key": "filter[]",
+											"value": "Human Resource Development",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Dropdown Departmen",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/departments-dropdown",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"departments-dropdown"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "Information Technology",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Jabatan",
+					"item": [
+						{
+							"name": "Menyimpan Data jabatan",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "job_title_name",
+											"value": "Talent Acquisition Specialist",
+											"type": "text"
+										},
+										{
+											"key": "grade",
+											"value": "TAS-001",
+											"type": "text"
+										},
+										{
+											"key": "direct_subordinate",
+											"value": "Recruitment Coordinator, Sourcing Specialist",
+											"type": "text"
+										},
+										{
+											"key": "job_title_decree_number",
+											"value": "SK-TAS-2024-001",
+											"type": "text"
+										},
+										{
+											"key": "job_title_description",
+											"value": "Menangani proses rekrutmen dan seleksi kandidat",
+											"type": "text"
+										},
+										{
+											"key": "job_title_decree_file",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/job-title",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"job-title"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Data by uuid",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "job_title_deleted_decree_number",
+											"value": "ini sk nya ",
+											"type": "text"
+										},
+										{
+											"key": "job_title_deleted_decree_file",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										},
+										{
+											"key": "_method",
+											"value": "DELETE",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/job-title/019aee3e-b586-727f-9464-6d819a5e6278",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"job-title",
+										"019aee3e-b586-727f-9464-6d819a5e6278"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Data by uuid",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/job-title/019aee3e-b586-727f-9464-6d819a5e6278",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"job-title",
+										"019aee3e-b586-727f-9464-6d819a5e6278"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Data Jabatan by uuid",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "job_title_name",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "grade",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "direct_subordinate",
+											"value": "spv",
+											"type": "text"
+										},
+										{
+											"key": "job_title_decree_number",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "job_title_description",
+											"value": "gak tau pokok kerja ya ",
+											"type": "text"
+										},
+										{
+											"key": "job_title_decree_file",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "_method",
+											"value": "PATCH",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/job-title/019aee3e-b586-727f-9464-6d819a5e6278",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"job-title",
+										"019aee3e-b586-727f-9464-6d819a5e6278"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "index",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/job-title",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"job-title"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "Designer",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "desc",
+											"disabled": true
+										},
+										{
+											"key": "column",
+											"value": "job_title_name",
+											"disabled": true
+										},
+										{
+											"key": "per_page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "filter[]",
+											"value": "managet",
+											"disabled": true
+										},
+										{
+											"key": "filter[]",
+											"value": "Senior Software Engineer",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Dropdown Jabatan",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/job-title-dropdown",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"job-title-dropdown"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "managet",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Position",
+					"item": [
+						{
+							"name": "Menyimpan Data Position",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "position_name",
+											"value": "tes aja ni",
+											"type": "text"
+										},
+										{
+											"key": "id_job_title",
+											"value": "019aee8b-ab6d-707c-8fc8-34147caf1254",
+											"type": "text"
+										},
+										{
+											"key": "id_directorate",
+											"value": "019ae265-320f-73ac-87c2-25b927de4e77",
+											"type": "text"
+										},
+										{
+											"key": "id_division",
+											"value": "019ae889-1ecb-7262-88ed-58868c0e4bf4",
+											"type": "text"
+										},
+										{
+											"key": "id_department",
+											"value": "019aed99-baf2-738f-9ba1-adde262af553",
+											"type": "text"
+										},
+										{
+											"key": "position_decree_number",
+											"value": "tes",
+											"type": "text"
+										},
+										{
+											"key": "position_description",
+											"value": "tes",
+											"type": "text"
+										},
+										{
+											"key": "position_decree_file",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/positions",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"positions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "index",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/positions",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"positions"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "Manager",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "asc",
+											"disabled": true
+										},
+										{
+											"key": "column",
+											"value": "created_at",
+											"disabled": true
+										},
+										{
+											"key": "per_page",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "filter[]",
+											"value": "ini departmen peternakan ikan 3",
+											"disabled": true
+										},
+										{
+											"key": "filter[]",
+											"value": "managet",
+											"disabled": true
+										},
+										{
+											"key": "filter[]",
+											"value": "Data Analyst",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Data by uuid",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "_method",
+											"value": "Delete",
+											"type": "text"
+										},
+										{
+											"key": "position_deleted_decree_number",
+											"value": "ini sk oke ",
+											"type": "text"
+										},
+										{
+											"key": "position_deleted_decree_file",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/positions/019af20c-e9e9-7052-970f-f24f5b8d638b",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"positions",
+										"019af20c-e9e9-7052-970f-f24f5b8d638b"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Data by uuid",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/positions/019af279-9974-73eb-9630-2d353b23bc24",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"positions",
+										"019af279-9974-73eb-9630-2d353b23bc24"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Data Position by uuid",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "position_name",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "id_job_title",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "id_directorate",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "id_division",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "id_department",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "position_decree_number",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "position_description",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "position_decree_file",
+											"type": "file",
+											"src": []
+										},
+										{
+											"key": "_method",
+											"value": "PATCH",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/organizational-structure/positions/019af279-9974-73eb-9630-2d353b23bc24",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"organizational-structure",
+										"positions",
+										"019af279-9974-73eb-9630-2d353b23bc24"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"description": "all api Struktur dan Organisasi"
+		},
+		{
+			"name": "Data Master Karyawan",
+			"item": [
+				{
+					"name": "Data Karyawan",
+					"item": [
+						{
+							"name": "Dropdwon Perusahaan",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/employee-master-data/companies",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"employee-master-data",
+										"companies"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Dropdown Office",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/employee-master-data/offices",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"employee-master-data",
+										"offices"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Dropdown Directorate",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/employee-master-data/directorate",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"employee-master-data",
+										"directorate"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Dropdown Division by Directorate",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/employee-master-data/division/019ae21e-7ff8-7315-80a5-a139bbc01e52",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"employee-master-data",
+										"division",
+										"019ae21e-7ff8-7315-80a5-a139bbc01e52"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Dropdown Departmen by Division",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/employee-master-data/department/019ae833-9eee-71a2-929f-918f233f6d4e",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"employee-master-data",
+										"department",
+										"019ae833-9eee-71a2-929f-918f233f6d4e"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Dropdown jabatan + golongan",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/employee-master-data/jabatan-dropdown",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"employee-master-data",
+										"jabatan-dropdown"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Dropdown Posisi",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/employee-master-data/position-dropdown",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"employee-master-data",
+										"position-dropdown"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Menyimpan Data Karyawan",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "full_name",
+											"value": "tes probation ",
+											"type": "text"
+										},
+										{
+											"key": "national_id",
+											"value": "50641555",
+											"type": "text"
+										},
+										{
+											"key": "email",
+											"value": "tes4@gmail.com",
+											"type": "text"
+										},
+										{
+											"key": "religion",
+											"value": "1",
+											"description": "1 = islam, 2 = protestant, 3 = catholic, 4 = hindu, 5 = buddhist, 6 = confucianism",
+											"type": "text"
+										},
+										{
+											"key": "blood_type",
+											"value": "b+",
+											"type": "text"
+										},
+										{
+											"key": "birth_place",
+											"value": "jember",
+											"type": "text"
+										},
+										{
+											"key": "birth_date",
+											"value": "2003-06-14",
+											"type": "text"
+										},
+										{
+											"key": "last_education",
+											"value": "7",
+											"description": "1 = sd, 2 = smp, 3 = sma, 4 = d1, 5 = d2, 6 = d3, 7 = s1, 8 = s2, 9 = s3",
+											"type": "text"
+										},
+										{
+											"key": "marital_status",
+											"value": "1",
+											"description": "1 = single, 2 = married",
+											"type": "text"
+										},
+										{
+											"key": "gender",
+											"value": "1",
+											"description": "1 = male, 2 = female",
+											"type": "text"
+										},
+										{
+											"key": "household_dependents",
+											"value": "0",
+											"type": "text"
+										},
+										{
+											"key": "phone_number",
+											"value": "082147xxxx",
+											"type": "text"
+										},
+										{
+											"key": "current_address",
+											"value": "malang",
+											"type": "text"
+										},
+										{
+											"key": "ktp_address",
+											"value": "jember",
+											"type": "text"
+										},
+										{
+											"key": "bank_account_number",
+											"value": "34534635",
+											"type": "text"
+										},
+										{
+											"key": "bank_name",
+											"value": "rizal",
+											"type": "text"
+										},
+										{
+											"key": "bank_account_holder",
+											"value": "morimana",
+											"type": "text"
+										},
+										{
+											"key": "npwp",
+											"value": "13432432",
+											"type": "text"
+										},
+										{
+											"key": "ptkp_id",
+											"value": "84649b16-fa71-4074-bd90-49b36386f983",
+											"type": "text"
+										},
+										{
+											"key": "bpjs_employment_number",
+											"value": "5060",
+											"type": "text"
+										},
+										{
+											"key": "bpjs_employment_status",
+											"value": "1",
+											"description": "1 = active, 2 = inactive",
+											"type": "text"
+										},
+										{
+											"key": "bpjs_health_number",
+											"value": "5060",
+											"type": "text"
+										},
+										{
+											"key": "bpjs_health_status",
+											"value": "1",
+											"description": "1 = active, 2 = inactive",
+											"type": "text"
+										},
+										{
+											"key": "employment_status",
+											"value": "1",
+											"description": "1=active, 2=inactive, 3=probation, 4=resigned",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "resignation_status",
+											"value": "",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "documents[0][file_type]",
+											"value": "1",
+											"description": "1: surat keterangan pengalaman kerja, 2: pakta integritas, 3: PKWT/PKWTT, 4: surat perjanjian bersama, 5: dokumen lainnya",
+											"type": "text"
+										},
+										{
+											"key": "documents[0][file]",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										},
+										{
+											"key": "tes",
+											"value": "",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "education_formal_detail[0][education_level]",
+											"value": "1",
+											"description": "1 = sd, 2 = smp, 3 = sma, 4 = d1, 5 = d2, 6 = d3, 7 = s1, 8 = s2, 9 = s3\t",
+											"type": "text"
+										},
+										{
+											"key": "education_formal_detail[0][institution_name]",
+											"value": "hasbu",
+											"type": "text"
+										},
+										{
+											"key": "education_formal_detail[0][degree]",
+											"value": "strkom",
+											"type": "text"
+										},
+										{
+											"key": "education_formal_detail[0][final_grade]",
+											"value": "3.85",
+											"type": "text"
+										},
+										{
+											"key": "education_formal_detail[0][major]",
+											"value": "teknologi informasi ",
+											"type": "text"
+										},
+										{
+											"key": "education_formal_detail[0][graduation_year]",
+											"value": "2025",
+											"type": "text"
+										},
+										{
+											"key": "tes",
+											"value": "",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "company_id",
+											"value": "019ae365-412f-701f-983f-b17071f92ba2",
+											"type": "text"
+										},
+										{
+											"key": "office_id",
+											"value": "019af2d8-b94d-70ea-85ba-03c0c9be7ef9",
+											"type": "text"
+										},
+										{
+											"key": "directorate_id",
+											"value": "019ae21e-7ff8-7315-80a5-a139bbc01e52",
+											"type": "text"
+										},
+										{
+											"key": "division_id",
+											"value": "019ae833-9eee-71a2-929f-918f233f6d4e",
+											"type": "text"
+										},
+										{
+											"key": "department_id",
+											"value": "019aed99-53bc-71af-aa7f-07b317ff29d8",
+											"type": "text"
+										},
+										{
+											"key": "position_id",
+											"value": "019af20b-fabf-725a-98d8-d19d2022165c",
+											"type": "text"
+										},
+										{
+											"key": "job_title_id",
+											"value": "019aee3e-b586-727f-9464-6d819a5e6278",
+											"type": "text"
+										},
+										{
+											"key": "start_date",
+											"value": "2025-01-01",
+											"type": "text"
+										},
+										{
+											"key": "end_date",
+											"value": "2025-06-01",
+											"type": "text"
+										},
+										{
+											"key": "position_level",
+											"value": "1",
+											"description": "1: General, 2: Junior, 3: Middle, 4: Senior",
+											"type": "text"
+										},
+										{
+											"key": "payroll_status",
+											"value": "1",
+											"description": "1: Active, 2: Inactive, 3: Suspended",
+											"type": "text"
+										},
+										{
+											"key": "employee_category",
+											"value": "2",
+											"description": "1: Non-Staff, 2: Staff, 3: Partner",
+											"type": "text"
+										},
+										{
+											"key": "tes",
+											"value": "",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "non_formal_education[0][certificate_name]",
+											"value": "ini sertifikat",
+											"type": "text"
+										},
+										{
+											"key": "non_formal_education[0][institution_name]",
+											"value": "kampus negeri ",
+											"type": "text"
+										},
+										{
+											"key": "non_formal_education[0][start_date]",
+											"value": "2020-01-01",
+											"type": "text"
+										},
+										{
+											"key": "non_formal_education[0][end_date]",
+											"value": "2025-01-01",
+											"type": "text"
+										},
+										{
+											"key": "non_formal_education[0][certificate_id]",
+											"value": "ini id ",
+											"type": "text"
+										},
+										{
+											"key": "non_formal_education[0][certificate_file]",
+											"type": "file",
+											"src": "/D:/tes1.pdf"
+										},
+										{
+											"key": "tes",
+											"value": "",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "facebook_name",
+											"value": "ini facebook",
+											"type": "text"
+										},
+										{
+											"key": "instagram_name",
+											"value": "ini  instagram ",
+											"type": "text"
+										},
+										{
+											"key": "linkedin_name",
+											"value": "ini linkeid",
+											"type": "text"
+										},
+										{
+											"key": "twitter_name",
+											"value": "ini nama twiter ",
+											"type": "text"
+										},
+										{
+											"key": "relative_social_media",
+											"value": "gak ada",
+											"type": "text"
+										},
+										{
+											"key": "emergency_contact_number",
+											"value": "0821444",
+											"type": "text"
+										},
+										{
+											"key": "emergency_contact_name",
+											"value": "siti nurjumaatik ",
+											"type": "text"
+										},
+										{
+											"key": "emergency_contact_relationship",
+											"value": "ibu ",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/employee-master-data/employees",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"employee-master-data",
+										"employees"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Data by uuid",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "_method",
+											"value": "Delete",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/employee-master-data/employees/019b0b60-173a-7260-a049-d494f5707e8c",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"employee-master-data",
+										"employees",
+										"019b0b60-173a-7260-a049-d494f5707e8c"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "index",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/employee-master-data/employees",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"employee-master-data",
+										"employees"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "tes44@gmail.com",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "desc",
+											"disabled": true
+										},
+										{
+											"key": "column",
+											"value": "email",
+											"disabled": true
+										},
+										{
+											"key": "per_page",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "filter[]",
+											"value": "tes44@gmail.com",
+											"disabled": true
+										},
+										{
+											"key": "filter[]",
+											"value": "managet",
+											"disabled": true
+										},
+										{
+											"key": "filter[]",
+											"value": "Data Analyst",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": "1"
+		},
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000"
+		}
+	]
+}

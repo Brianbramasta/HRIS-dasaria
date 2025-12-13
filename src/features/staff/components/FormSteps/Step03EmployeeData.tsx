@@ -6,10 +6,10 @@ import Label from '../../../../components/form/Label';
 import InputField from '../../../../components/form/input/InputField';
 import employeeMasterDataService from '../../services/employeeMasterData.service';
 
-const STATUS_KARYAWAN_OPTIONS = [
-  { label: 'Aktif', value: 'aktif' },
-  { label: 'Nonaktif', value: 'nonaktif' },
-];
+// const STATUS_KARYAWAN_OPTIONS = [
+//   { label: 'Aktif', value: 'aktif' },
+//   { label: 'Nonaktif', value: 'nonaktif' },
+// ];
 
 const JENJANG_JABATAN_OPTIONS = [
   { label: 'General', value: '1' },
@@ -33,6 +33,16 @@ const KATEGORI_KARYAWAN_OPTIONS = [
   { label: 'Non-Staff', value: '1' },
   { label: 'Staff', value: '2' },
   { label: 'Partner', value: '3' },
+];
+
+const EMPLOYMENT_STATUS_OPTIONS = [
+  { label: 'Active', value: 'active' },
+  { label: 'Inactive', value: 'inactive' },
+];
+
+const RESIGNATION_STATUS_OPTIONS = [
+  { label: 'Belum Resign', value: 'not_resigned' },
+  { label: 'Sudah Resign', value: 'resigned' },
 ];
 
 export const Step03EmployeeData: React.FC = () => {
@@ -180,9 +190,9 @@ export const Step03EmployeeData: React.FC = () => {
             <div>
               <Label>Status Karyawan</Label>
               <Select
-                options={STATUS_KARYAWAN_OPTIONS}
-                defaultValue={step3.statusKaryawan}
-                onChange={(value) => handleChange('statusKaryawan', value)}
+                options={EMPLOYMENT_STATUS_OPTIONS}
+                defaultValue={step3.employmentStatus}
+                onChange={(value) => handleChange('employmentStatus', value)}
                 placeholder="Select"
                 required
               />
@@ -318,6 +328,16 @@ export const Step03EmployeeData: React.FC = () => {
                 options={KATEGORI_KARYAWAN_OPTIONS}
                 defaultValue={step3.kategoriKaryawan}
                 onChange={(value) => handleChange('kategoriKaryawan', value)}
+                placeholder="Select"
+              />
+            </div>
+            
+            <div>
+              <Label>Resignation Status</Label>
+              <Select
+                options={RESIGNATION_STATUS_OPTIONS}
+                defaultValue={step3.resignationStatus}
+                onChange={(value) => handleChange('resignationStatus', value)}
                 placeholder="Select"
               />
             </div>

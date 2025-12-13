@@ -87,6 +87,8 @@ const initialFormData: FormulirKaryawanData = {
     kantor: '',
     direktorat: '',
     departemen: '',
+    employmentStatus: '',
+    resignationStatus: '',
   },
   step3: {
     bank: '',
