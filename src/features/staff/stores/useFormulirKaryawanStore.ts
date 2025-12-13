@@ -9,6 +9,9 @@ import {
   EmployeeDataFormData,
 } from '../types/FormulirKaryawan';
 
+// LocalStorage key untuk form data karyawan
+const FORM_STORAGE_KEY = 'formulir_karyawan_draft';
+
 interface FormulirStore {
   // State
   currentStep: number;
@@ -34,6 +37,9 @@ interface FormulirStore {
   setError: (error: string | null) => void;
   isStepValid: (step: number) => boolean;
   getFormProgress: () => number;
+  saveToLocalStorage: () => void;
+  loadFromLocalStorage: () => void;
+  clearLocalStorage: () => void;
 }
 
 const initialFormData: FormulirKaryawanData = {
@@ -107,12 +113,60 @@ const initialStepCompleted: StepCompletionStatus = {
   step5: false,
 };
 
-export const useFormulirKaryawanStore = create<FormulirStore>((set, get) => ({
-  // Initial state
-  currentStep: 1,
-  totalSteps: 4,
-  formData: initialFormData,
-  stepCompleted: initialStepCompleted,
+// Fungsi helper untuk menyimpan data ke localStorage
+const saveToStorage = (data: any) => {
+  try {
+    // Convert File objects to serializable format
+    const serializedData = JSON.stringify(data, (key, value) => {
+      if (value instanceof File) {
+        return {
+          _isFile: true,
+          name: value.name,
+          size: value.size,
+          type: value.type,
+          lastModified: value.lastModified,
+        };
+      }
+      return value;
+    });
+    localStorage.setItem(FORM_STORAGE_KEY, serializedData);
+  } catch (error) {
+    console.error('Error saving to localStorage:', error);
+  }
+};
+
+// Fungsi helper untuk memuat data dari localStorage
+const loadFromStorage = (): any | null => {
+  try {
+    const data = localStorage.getItem(FORM_STORAGE_KEY);
+    if (data) {
+      return JSON.parse(data);
+    }
+  } catch (error) {
+    console.error('Error loading from localStorage:', error);
+  }
+  return null;
+};
+
+// Fungsi helper untuk menghapus data dari localStorage
+const clearStorage = () => {
+  try {
+    localStorage.removeItem(FORM_STORAGE_KEY);
+  } catch (error) {
+    console.error('Error clearing localStorage:', error);
+  }
+};
+
+export const useFormulirKaryawanStore = create<FormulirStore>((set, get) => {
+  // Load saved data from localStorage
+  const savedData = loadFromStorage();
+  
+  return {
+  // Initial state - gunakan data dari localStorage jika ada
+  currentStep: savedData?.currentStep || 1,
+  totalSteps: savedData?.totalSteps || 4,
+  formData: savedData?.formData || initialFormData,
+  stepCompleted: savedData?.stepCompleted || initialStepCompleted,
   isLoading: false,
   error: null,
 
@@ -126,63 +180,89 @@ export const useFormulirKaryawanStore = create<FormulirStore>((set, get) => ({
   },
 
   updateStep1: (data) => {
-    set((state) => ({
-      formData: {
-        ...state.formData,
-        step1: {
-          ...state.formData.step1,
-          ...data,
+    set((state) => {
+      const newState = {
+        formData: {
+          ...state.formData,
+          step1: {
+            ...state.formData.step1,
+            ...data,
+          },
         },
-      },
-    }));
+      };
+      // Simpan ke localStorage setiap update
+      saveToStorage({ ...state, ...newState });
+      return newState;
+    });
   },
 
   updateStep2: (data) => {
-    set((state) => ({
-      formData: {
-        ...state.formData,
-        step2: {
-          ...state.formData.step2,
-          ...data,
+    set((state) => {
+      const newState = {
+        formData: {
+          ...state.formData,
+          step2: {
+            ...state.formData.step2,
+            ...data,
+          },
         },
-      },
-    }));
+      };
+      // Simpan ke localStorage setiap update
+      saveToStorage({ ...state, ...newState });
+      return newState;
+    });
   },
 
   updateStep3: (data) => {
-    set((state) => ({
-      formData: {
-        ...state.formData,
-        step3: {
-          ...state.formData.step3,
-          ...data,
+    set((state) => {
+      const newState = {
+        formData: {
+          ...state.formData,
+          step3: {
+            ...state.formData.step3,
+            ...data,
+          },
         },
-      },
-    }));
+      };
+      // Simpan ke localStorage setiap update
+      saveToStorage({ ...state, ...newState });
+      return newState;
+    });
   },
 
   updateStep3Employee: (data) => {
-    set((state) => ({
-      formData: {
-        ...state.formData,
-        step3Employee: {
-          ...state.formData.step3Employee,
-          ...data,
+    console.log('updateStep3Employee', data);
+    set((state) => {
+      const newState = {
+        formData: {
+          ...state.formData,
+          step3Employee: {
+            ...state.formData.step3Employee,
+            ...data,
+          },
         },
-      },
-    }));
+      };
+      // Simpan ke localStorage setiap update
+      saveToStorage({ ...state, ...newState });
+      return newState;
+    });
   },
 
   updateStep4: (data) => {
-    set((state) => ({
-      formData: {
-        ...state.formData,
-        step4: {
-          ...state.formData.step4,
-          ...data,
+    set((state) => {
+      const newState = {
+        formData: {
+          ...state.formData,
+          step4: {
+            ...state.formData.step4,
+            ...data,
+          },
         },
-      },
-    }));
+      };
+      // Simpan ke localStorage setiap update
+      saveToStorage({ ...state, ...newState });
+      return newState;
+    });
   },
 
   markStepAsCompleted: (step) => {
@@ -207,7 +287,12 @@ export const useFormulirKaryawanStore = create<FormulirStore>((set, get) => ({
 
     if (currentStep < totalSteps) {
       get().markStepAsCompleted(currentStep);
-      set({ currentStep: currentStep + 1, error: null });
+      set((state) => {
+        const newState = { currentStep: currentStep + 1, error: null };
+        // Simpan ke localStorage setiap next step
+        saveToStorage({ ...state, ...newState });
+        return newState;
+      });
       return true;
     }
 
@@ -223,6 +308,8 @@ export const useFormulirKaryawanStore = create<FormulirStore>((set, get) => ({
   },
 
   resetForm: () => {
+    // Hapus data dari localStorage saat reset
+    clearStorage();
     set({
       currentStep: 1,
       formData: initialFormData,
@@ -276,6 +363,7 @@ export const useFormulirKaryawanStore = create<FormulirStore>((set, get) => ({
         {
           if (totalSteps === 5) {
             const s = formData.step3Employee;
+            console.log('step',s);
             return !!(
               s.statusKaryawan &&
               s.position &&
@@ -328,4 +416,32 @@ export const useFormulirKaryawanStore = create<FormulirStore>((set, get) => ({
     const completedSteps = Object.values(stepCompleted).slice(0, totalSteps).filter((v) => v).length;
     return Math.round((completedSteps / totalSteps) * 100);
   },
-}));
+
+  // LocalStorage methods
+  saveToLocalStorage: () => {
+    const state = get();
+    saveToStorage({
+      currentStep: state.currentStep,
+      totalSteps: state.totalSteps,
+      formData: state.formData,
+      stepCompleted: state.stepCompleted,
+    });
+  },
+
+  loadFromLocalStorage: () => {
+    const savedData = loadFromStorage();
+    if (savedData) {
+      set({
+        currentStep: savedData.currentStep || 1,
+        totalSteps: savedData.totalSteps || 4,
+        formData: savedData.formData || initialFormData,
+        stepCompleted: savedData.stepCompleted || initialStepCompleted,
+      });
+    }
+  },
+
+  clearLocalStorage: () => {
+    clearStorage();
+  },
+};
+});

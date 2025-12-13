@@ -25,13 +25,13 @@ class ApiService {
     // Base URL bisa diubah sesuai environment
     // Daftar path yang menggunakan VITE_API_URL
     // dummy path untuk testing
-    const viteUrlPaths = ['/structure-and-organize']; // tambahkan path lain jika perlu
+    const viteUrlPaths = ['/structure-and-organize', '/data-karyawan']; // tambahkan path lain jika perlu
     const currentPath = window.location.pathname;
 
     // Tentukan baseURL berdasarkan apakah path termasuk dalam daftar
     this.baseURL = viteUrlPaths.some(path => currentPath.startsWith(path))
-      ? import.meta.env.VITE_API_URL || 'http://172.28.80.1:3001/api'
-      : import.meta.env.apiUrl || 'http://172.28.80.1:3001/api';
+      ? import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+      : import.meta.env.apiUrl || 'http://localhost:3001/api';
     
     this.instance = axios.create({
       baseURL: this.baseURL,

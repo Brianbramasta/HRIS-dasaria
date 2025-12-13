@@ -10,14 +10,11 @@ import DocumentsTable from '../../../structure-and-organize/components/table/Tab
 import { DocumentItem } from '../../types/FormulirKaryawan';
 
 const DOCUMENT_TYPE_OPTIONS = [
-  { label: 'Kartu Tanda Penduduk', value: 'ktp' },
-  { label: 'Ijazah Terakhir', value: 'ijazah' },
-  { label: 'Kartu Keluarga', value: 'kk' },
-  { label: 'BPJS Kesehatan', value: 'bpjs_kesehatan' },
-  { label: 'BPJS Ketenagakerjaan', value: 'bpjs_ketenagakerjaan' },
-  { label: 'NPWP', value: 'npwp' },
-  { label: 'Sertifikat Keahlian', value: 'sertifikat' },
-  { label: 'Dokumen Lainnya', value: 'lainnya' },
+  { label: 'Pengalaman Kerja', value: '1' },
+  { label: 'Pakta Integritas', value: '2' },
+  { label: 'PKWT/PKWTT', value: '3' },
+  { label: 'Perjanjian Bersama', value: '4' },
+  { label: 'Lainnya', value: '5' },
 ];
 
 export const Step05UploadDocument: React.FC = () => {

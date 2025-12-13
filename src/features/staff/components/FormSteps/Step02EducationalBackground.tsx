@@ -179,6 +179,7 @@ export const Step02EducationalBackground: React.FC = () => {
                       <Label htmlFor={`nilaiPendidikan-${index}`}>Nilai Pendidikan Terakhir</Label>
                       <Input
                         id={`nilaiPendidikan-${index}`}
+                        type='number'
                         placeholder="Masukkan nilai"
                         value={edu.nilaiPendidikan}
                         onChange={(e) => updateEducationField(index, 'nilaiPendidikan', e.target.value)}
@@ -196,6 +197,7 @@ export const Step02EducationalBackground: React.FC = () => {
                     <div className="md:col-span-2">
                       <Label htmlFor={`tahunLulus-${index}`}>Tahun Lulus</Label>
                       <Input
+                        type='number'
                         id={`tahunLulus-${index}`}
                         placeholder="Masukkan tahun lulus"
                         value={edu.tahunLulus}
@@ -326,6 +328,7 @@ export const Step02EducationalBackground: React.FC = () => {
             <Label htmlFor="noKontakDarurat">No. Kontak Darurat</Label>
             <Input
               id="noKontakDarurat"
+              type='number'
               placeholder="+62"
               value={step2.noKontakDarurat}
               onChange={(e) => handleChange('noKontakDarurat', e.target.value)}

@@ -5,15 +5,7 @@ import Select from '../../../../components/form/Select';
 import TextArea from '../../../../components/form/input/TextArea';
 import Label from '../../../../components/form/Label';
 import DatePicker from '../../../../components/form/date-picker';
-
-const AGAMA_OPTIONS = [
-  { label: 'Islam', value: 'islam' },
-  { label: 'Kristen', value: 'kristen' },
-  { label: 'Katholik', value: 'katholik' },
-  { label: 'Hindu', value: 'hindu' },
-  { label: 'Buddha', value: 'buddha' },
-  { label: 'Konhucu', value: 'konhucu' },
-];
+import { AGAMA_OPTIONS, PENDIDIKAN_OPTIONS, JENIS_KELAMIN_OPTIONS, STATUS_MENIKAH_OPTIONS } from '../../utils/employeeMappings';
 
 const GOLONGAN_DARAH_OPTIONS = [
   { label: 'A', value: 'A' },
@@ -22,27 +14,11 @@ const GOLONGAN_DARAH_OPTIONS = [
   { label: 'O', value: 'O' },
 ];
 
-const PENDIDIKAN_OPTIONS = [
-  { label: 'SD/Sederajat', value: 'sd' },
-  { label: 'SMP/Sederajat', value: 'smp' },
-  { label: 'SMA/Sederajat', value: 'sma' },
-  { label: 'D3', value: 'd3' },
-  { label: 'S1', value: 's1' },
-  { label: 'S2', value: 's2' },
-  { label: 'S3', value: 's3' },
-];
+// PENDIDIKAN_OPTIONS diambil dari utils agar selaras dengan mapPendidikanToCode
 
-const JENIS_KELAMIN_OPTIONS = [
-  { label: 'Laki-laki', value: 'laki-laki' },
-  { label: 'Perempuan', value: 'perempuan' },
-];
+// JENIS_KELAMIN_OPTIONS dari utils agar selaras dengan mapGenderToCode
 
-const STATUS_MENIKAH_OPTIONS = [
-  { label: 'Belum Menikah', value: 'belum_menikah' },
-  { label: 'Menikah', value: 'menikah' },
-  { label: 'Cerai Hidup', value: 'cerai_hidup' },
-  { label: 'Cerai Mati', value: 'cerai_mati' },
-];
+// STATUS_MENIKAH_OPTIONS dari utils agar selaras dengan mapStatusMenikahToCode
 
 const TANGGUNGAN_OPTIONS = [
   { label: '0', value: '0' },
@@ -99,6 +75,7 @@ export const Step01PersonalData: React.FC = () => {
             <Label htmlFor="nik">NIK</Label>
             <Input
               id="nik"
+              type='number'
               placeholder="Masukkan NIK"
               value={step1.nik}
               onChange={(e) => handleChange('nik', e.target.value)}
@@ -193,6 +170,7 @@ export const Step01PersonalData: React.FC = () => {
             <Label htmlFor="nomorTelepon">Nomor Telepon</Label>
             <Input
               id="nomorTelepon"
+              type='number'
               placeholder="+62"
               value={step1.nomorTelepon}
               onChange={(e) => handleChange('nomorTelepon', e.target.value)}

@@ -42,6 +42,7 @@ export default function FormulirKaryawanPage() {
     setError,
     setTotalSteps,
     totalSteps,
+    clearLocalStorage,
   } = useFormulirKaryawanStore();
   const { isAuthenticated } = useAuthStore((s) => ({ isAuthenticated: s.isAuthenticated }));
 
@@ -66,6 +67,9 @@ export default function FormulirKaryawanPage() {
       setError(null);
       await submit();
 
+      // Hapus data dari localStorage setelah berhasil submit
+      clearLocalStorage();
+
       // Show success modal
       setShowSuccessModal(true);
     } catch (err) {
@@ -76,7 +80,7 @@ export default function FormulirKaryawanPage() {
     } finally {
       setLoading(false);
     }
-  }, [formData, setLoading, setError]);
+  }, [formData, setLoading, setError, submit, clearLocalStorage]);
 
   const handleBackToHome = () => {
     resetForm();

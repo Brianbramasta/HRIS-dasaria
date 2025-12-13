@@ -16,8 +16,8 @@ const BANK_OPTIONS = [
 ];
 
 const BPJS_STATUS_OPTIONS = [
-  { label: 'Mandiri', value: 'mandiri' },
-  { label: 'PBI', value: 'pbi' },
+  { label: 'Aktif', value: 'aktif' },
+  { label: 'Nonaktif', value: 'nonaktif' },
 ];
 
 const BPJS_TK_STATUS_OPTIONS = [
@@ -73,6 +73,7 @@ export const Step04SalaryBpjs: React.FC = () => {
           <div>
             <Label htmlFor="noRekening">No. Rekening</Label>
             <Input
+              type='number'
               id="noRekening"
               placeholder="Masukkan nomor rekening"
               value={step3.noRekening}
@@ -98,6 +99,7 @@ export const Step04SalaryBpjs: React.FC = () => {
             <Label htmlFor="npwp">NPWP</Label>
             <Input
               id="npwp"
+              type='number'
               placeholder="Masukkan NPWP"
               value={step3.npwp}
               onChange={(e) => handleChange('npwp', e.target.value)}
@@ -132,6 +134,7 @@ export const Step04SalaryBpjs: React.FC = () => {
           <div>
             <Label htmlFor="noBpjsKetenagakerjaan">No. BPJS Ketenagakerjaan</Label>
             <Input
+              type='number'
               id="noBpjsKetenagakerjaan"
               placeholder="Masukkan nomor"
               value={step3.noBpjsKetenagakerjaan}
@@ -156,6 +159,7 @@ export const Step04SalaryBpjs: React.FC = () => {
           <div>
             <Label htmlFor="noBpjsKesehatan">No. BPJS Kesehatan</Label>
             <Input
+            type='number'
               id="noBpjsKesehatan"
               placeholder="Masukkan nomor"
               value={step3.noBpjsKesehatan}
@@ -166,7 +170,7 @@ export const Step04SalaryBpjs: React.FC = () => {
 
           {/* Status BPJS Kesehatan */}
           <div>
-            <Label>Status BPJS Kesehatan (Mandiri/PBI)</Label>
+            <Label>Status BPJS Kesehatan</Label>
             <Select
               options={BPJS_STATUS_OPTIONS}
               defaultValue={step3.statusBpjsKesehatan}
