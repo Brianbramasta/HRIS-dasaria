@@ -1,7 +1,3 @@
-// Integrasi submit: gunakan hook useCreateEmployee untuk kirim FormData ke API employees
-import { useState, useCallback, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useFormulirKaryawanStore } from '../../stores/useFormulirKaryawanStore';
 import ProgressBarWithOutsideLabel from '../../../../components/ui/progressbar/ProgressBarWithOutsideLabel';
 import Step01PersonalData from '../../components/FormSteps/Step01PersonalData';
 import Step02EducationalBackground from '../../components/FormSteps/Step02EducationalBackground';
@@ -10,9 +6,8 @@ import Step04SalaryBpjs from '../../components/FormSteps/Step04SalaryBpjs';
 import Step05UploadDocument from '../../components/FormSteps/Step05UploadDocument';
 import SuccessModal from '../../components/SuccessModal';
 import Button from '../../../../components/ui/button/Button';
-import useCreateEmployee from '../../hooks/useCreateEmployee';
 import { ChevronLeft } from 'react-feather';
-import { useAuthStore } from '../../../auth/stores/authStore';
+import useFormulirKaryawan from '../../hooks/form/useFormulirKaryawan';
 
 const TITLES_WITH_LOGIN = [
   'Data Pribadi',
@@ -29,69 +24,20 @@ const TITLES_PUBLIC = [
 ];
 
 export default function FormulirKaryawanPage() {
-  const navigate = useNavigate();
   const {
     currentStep,
-    formData,
     isLoading,
     error,
-    goToNextStep,
-    goToPreviousStep,
-    resetForm,
-    setLoading,
-    setError,
-    setTotalSteps,
     totalSteps,
-    clearLocalStorage,
-  } = useFormulirKaryawanStore();
-  const { isAuthenticated } = useAuthStore((s) => ({ isAuthenticated: s.isAuthenticated }));
-
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const { submit } = useCreateEmployee();
-
-  const handleNextStep = useCallback(() => {
-    if (goToNextStep()) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  }, [goToNextStep]);
-
-  const handlePreviousStep = useCallback(() => {
-    goToPreviousStep();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [goToPreviousStep]);
-
-  // handleSubmit: bangun FormData via hook dan submit ke API employees
-  const handleSubmit = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      await submit();
-
-      // Hapus data dari localStorage setelah berhasil submit
-      clearLocalStorage();
-
-      // Show success modal
-      setShowSuccessModal(true);
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Gagal menyimpan data karyawan';
-      setError(errorMessage);
-      console.error('Submit error:', err);
-    } finally {
-      setLoading(false);
-    }
-  }, [formData, setLoading, setError, submit, clearLocalStorage]);
-
-  const handleBackToHome = () => {
-    resetForm();
-    setShowSuccessModal(false);
-    navigate('/staff/data-karyawan');
-  };
-
-  const handleBackToDataPage = () => {
-    resetForm();
-    navigate('/staff/data-karyawan');
-  };
+    isAuthenticated,
+    showSuccessModal,
+    setShowSuccessModal,
+    handleNextStep,
+    handlePreviousStep,
+    handleSubmit,
+    handleBackToHome,
+    handleBackToDataPage,
+  } = useFormulirKaryawan();
 
   const renderStep = () => {
     switch (currentStep) {
@@ -109,10 +55,6 @@ export default function FormulirKaryawanPage() {
         return null;
     }
   };
-
-  useEffect(() => {
-    setTotalSteps(isAuthenticated ? 5 : 4);
-  }, [isAuthenticated, setTotalSteps]);
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8">

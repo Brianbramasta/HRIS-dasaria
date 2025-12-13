@@ -1,21 +1,16 @@
 
 
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { DataTable, DataTableColumn, DataTableAction } from '../../../../structure-and-organize/components/datatable/DataTable';
+import { DataTable } from '../../../../structure-and-organize/components/datatable/DataTable';
 import { Karyawan } from '../../../types/Karyawan';
-import useKaryawan from '../../../hooks/useKaryawan';
-// import { Edit2, Trash2, Eye } from 'react-feather';
+import useKaryawan from '../../../hooks/list/useKaryawan';
 import Button from '../../../../../components/ui/button/Button';
 import AddKaryawanModal from '../../../components/modals/AddKaryawanModal';
 import DeleteKaryawanModal from '../../../components/modals/dataKaryawan/DeleteKaryawanModal';
 import ShareLinkModal from '../../../components/modals/sharelink/shareLink';
-import { IconFileDetail,IconHapus } from '@/icons/components/icons';
-import { addNotification } from '@/stores/notificationStore';
+import { getKaryawanColumns, getKaryawanActions } from '../../../utils/list/tableConfig';
 
 
 export default function DataKaryawanPage() {
-  const navigate = useNavigate();
   const {
     data,
     loading,
@@ -23,318 +18,41 @@ export default function DataKaryawanPage() {
     total,
     page,
     limit,
+    navigate,
     fetchKaryawan,
     handleSearchChange,
     handleSortChange,
     handlePageChange,
     handleRowsPerPageChange,
-    exportKaryawan,
-    deleteKaryawan,
+    // Modal states
+    selectedKaryawan,
+    showDetailModal,
+    showAddModal,
+    showShareModal,
+    showDeleteModal,
+    deleteSubmitting,
+    shareUrl,
+    // Modal handlers
+    handleAddKaryawan,
+    handleExportKaryawan,
+    handleDeleteClick,
+    handleConfirmDelete,
+    handleAddModalClose,
+    handleAddManual,
+    handleImportFile,
+    handleShareModalClose,
+    handleDeleteModalClose,
+    setShowDetailModal,
+    setSelectedKaryawan,
   } = useKaryawan({
     initialPage: 1,
     initialLimit: 10,
     autoFetch: true,
   });
 
-  const [selectedKaryawan, setSelectedKaryawan] = useState<Karyawan | null>(null);
-  const [showDetailModal, setShowDetailModal] = useState(false);
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [showShareModal, setShowShareModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deleteSubmitting, setDeleteSubmitting] = useState(false);
-  const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/data-karyawan/form` : '/data-karyawan/form';
-
-  const parseIndonesianDate = (dateStr: string | null | undefined) => {
-    if (!dateStr) return null;
-    const trimmed = (dateStr || '').trim();
-    const isoCandidate = new Date(trimmed);
-    if (!isNaN(isoCandidate.getTime())) return isoCandidate;
-    const months: Record<string, number> = {
-      Januari: 0,
-      Februari: 1,
-      Maret: 2,
-      April: 3,
-      Mei: 4,
-      Juni: 5,
-      Juli: 6,
-      Agustus: 7,
-      September: 8,
-      Oktober: 9,
-      November: 10,
-      Desember: 11,
-    };
-    const parts = trimmed.split(/\s+/);
-    if (parts.length < 3) return null;
-    const day = parseInt(parts[0], 10);
-    const month = months[parts[1]];
-    const year = parseInt(parts[2], 10);
-    if (isNaN(day) || month === undefined || isNaN(year)) return null;
-    return new Date(year, month, day);
-  };
-
-  const renderSisaKontrakBadge = (endStr: string | null | undefined) => {
-    const end = parseIndonesianDate(endStr);
-    if (!end) {
-      return (
-        <span className="inline-block rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-800">-</span>
-      );
-    }
-    const now = new Date();
-    const diffMs = end.getTime() - now.getTime();
-    const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-    if (diffDays <= 0) {
-      return (
-        <span className="inline-block rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-800">Berakhir</span>
-      );
-    }
-    if (diffDays <= 14) {
-      const weeks = Math.max(1, Math.ceil(diffDays / 7));
-      return (
-        <span className="inline-block rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-800">{`${weeks} Minggu`}</span>
-      );
-    }
-    if (diffDays <= 30) {
-      return (
-        <span className="inline-block rounded-full bg-yellow-100 px-3 py-1 text-xs font-medium text-yellow-800">1 Bulan</span>
-      );
-    }
-    const months = Math.floor(diffDays / 30);
-    return (
-      <span className="inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">{`${months} Bulan`}</span>
-    );
-  };
-
-  // Define columns untuk DataTable
-  const columns: DataTableColumn<Karyawan>[] = [
-    {
-      id: 'no',
-      label: 'No.',
-      minWidth: 50,
-      align: 'center',
-      sortable: false,
-      format: (_, row) => {
-        const index = data.indexOf(row) + 1 + (page - 1) * limit;
-        return index;
-      },
-    },
-    {
-      id: 'id',
-      label: 'ID Karyawan',
-      minWidth: 120,
-      sortable: true,
-    },
-    {
-      id: 'name',
-      label: 'User',
-      minWidth: 150,
-      sortable: true,
-      format: (value, row) => (
-        <div className="flex items-center gap-2">
-          <img
-            src={row.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${value}`}
-            alt={value}
-            className="h-8 w-8 rounded-full"
-          />
-          <span>{value}</span>
-        </div>
-      ),
-    },
-    {
-      id: 'jabatan',
-      label: 'Jabatan',
-      minWidth: 130,
-      sortable: true,
-    },
-    {
-      id: 'email',
-      label: 'Email',
-      minWidth: 180,
-      sortable: true,
-      format: (value) => (
-        <a href={`mailto:${value}`} className="text-blue-600 hover:underline">
-          {value}
-        </a>
-      ),
-    },
-    {
-      id: 'tanggalJoin',
-      label: 'Tanggal Join',
-      minWidth: 130,
-      sortable: true,
-    },
-    {
-      id: 'tanggalBerakhir',
-      label: 'Tanggal Berakhir',
-      minWidth: 140,
-      sortable: true,
-      format: (value) => value || '-',
-    },
-    {
-      id: 'sisaKontrak',
-      label: 'Sisa Kontrak',
-      minWidth: 130,
-      sortable: false,
-      format: (_, row) => renderSisaKontrakBadge(row.tanggalBerakhir),
-    },
-    {
-      id: 'company',
-      label: 'Company',
-      minWidth: 130,
-      sortable: true,
-      format: (value) => (
-        <span className="inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800">
-          {value}
-        </span>
-      ),
-    },
-    {
-      id:'office',
-      label: 'Office',
-      minWidth: 130,
-      sortable: true,
-      format: (value) => value || '-',
-    },
-    {
-      id:'posisi',
-      label: 'Posisi',
-      minWidth: 130,
-      sortable: true,
-      format: (value, row) => row.posisi || value || '-',
-    },
-    {
-      id:'jenjangJabatan',
-      label: 'Jenjang Jabatan',
-      minWidth: 130,
-      sortable: false,
-      format: () => '-', // Not available in current API response
-    },
-    {
-      id:'grade',
-      label: 'Grade',
-      minWidth: 130,
-      sortable: true,
-      format: (value) => value || '-',
-    },
-    {
-      id:'posisiAccess',
-      label: 'User Access',
-      minWidth: 130,
-      sortable: true,
-      format: () => '-',
-    },
-    {
-      id:'departement',
-      label: 'Departement',
-      minWidth: 130,
-      sortable: true,
-      format: (_, row) => row.departement || row.department || '-',
-    },{
-      id:'divisi',
-      label: 'Divisi',
-      minWidth: 130,
-      sortable: true,
-      format: (value) => value || '-',
-    },
-    {
-      id: 'status',
-      label: 'Status Karyawan',
-      minWidth: 100,
-      sortable: true,
-      format: (value) => (
-        <span className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${
-          value === 'active' || value === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-        }`}>
-          {value || '-'}
-        </span>
-      ),
-    },{
-      id: 'statusPayroll',
-      label: 'Status Payroll',
-      minWidth: 100,
-      sortable: true,
-      format: (value) => (
-        <span className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${
-          value === 'active' || value === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-        }`}>
-          {value || '-'}
-        </span>
-      ),
-    },
-    {
-      id:'kategori',
-      label: 'kategori karyawan',
-      minWidth: 130,
-      sortable: true,
-      format: (value) => value || '-',
-    },
-    {
-      id: 'detail',
-      label: 'Detail Profile',
-      minWidth: 80,
-      align: 'center',
-      sortable: false,
-      format: (_, row) => (
-        <button
-          onClick={() => navigate(`/data-karyawan/${row.id}?mode=view`)}
-          className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
-          aria-label="Detail Profile"
-        >
-          <IconFileDetail />
-        </button>
-      ),
-    },
-
-  ];
-
-  // Define actions untuk DataTable
-  const actions: DataTableAction<Karyawan>[] = [
-    // {
-    //   icon: <Edit2 size={16} />,
-    //   onClick: (row) => {
-    //     navigate(`/data-karyawan/${row.id}?mode=edit`);
-    //   },
-    //   variant: 'outline',
-    //   color: 'warning',
-    // },
-    {
-      icon: <IconHapus />,
-      onClick: (row) => {
-        setSelectedKaryawan(row);
-        setShowDeleteModal(true);
-      },
-      variant: 'outline',
-      color: 'error',
-    },
-  ];
-
-  const handleAddKaryawan = () => {
-    // Open the Add Karyawan modal
-    setShowAddModal(true);
-  };
-
-  const handleExportKaryawan = async () => {
-    await exportKaryawan('csv');
-  };
-
-  const handleConfirmDelete = async () => {
-    if (!selectedKaryawan) return;
-    try {
-      setDeleteSubmitting(true);
-      await deleteKaryawan(selectedKaryawan.id);
-      setShowDeleteModal(false);
-      setSelectedKaryawan(null);
-    } catch (err) {
-      // Error handling for delete
-      addNotification({
-              variant: 'error',
-              title: 'Gagal menghapus karyawan',
-              description: err as string | undefined,
-              hideDuration: 4000,
-            });
-    } finally {
-      setDeleteSubmitting(false);
-    }
-  };
+  // Define columns and actions for DataTable
+  const columns = getKaryawanColumns(data, page, limit, navigate);
+  const actions = getKaryawanActions(handleDeleteClick);
 
   if (error) {
     return (
@@ -349,16 +67,6 @@ export default function DataKaryawanPage() {
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
-      {/* <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Data Master Karyawan</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Kelola data karyawan perusahaan
-          </p>
-        </div>
-      </div> */}
-
       {/* Data Table */}
       <DataTable
         data={data}
@@ -388,26 +96,20 @@ export default function DataKaryawanPage() {
       {/* Add Karyawan Modal */}
       <AddKaryawanModal
         isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        onAddManual={() => {
-          setShowAddModal(false);
-          navigate('/data-karyawan/form');
-        }}
-        onImportFile={() => {
-          setShowAddModal(false);
-          setShowShareModal(true);
-        }}
+        onClose={handleAddModalClose}
+        onAddManual={handleAddManual}
+        onImportFile={handleImportFile}
       />
 
       <ShareLinkModal
         isOpen={showShareModal}
-        onClose={() => setShowShareModal(false)}
+        onClose={handleShareModalClose}
         link={shareUrl}
       />
 
       <DeleteKaryawanModal
         isOpen={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
+        onClose={handleDeleteModalClose}
         karyawan={selectedKaryawan || undefined}
         handleDelete={handleConfirmDelete}
         submitting={deleteSubmitting}

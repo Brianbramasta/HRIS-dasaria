@@ -1,124 +1,19 @@
 // Service: Employee Master Data – Lengkap sesuai kontrak API karyawan
 import apiService, { ApiResponse } from '../../../services/api';
 import { FormulirKaryawanData } from '../types/FormulirKaryawan';
-
-// Interface untuk query parameters
-interface EmployeeListParams {
-  search?: string;
-  sort?: 'asc' | 'desc';
-  column?: string;
-  per_page?: number;
-  page?: number;
-  filter?: string[];
-}
-
-// Interface untuk pagination response
-interface PaginatedResponse<T> {
-  current_page: number;
-  data: T[];
-  first_page_url: string;
-  from: number;
-  last_page: number;
-  last_page_url: string;
-  next_page_url: string | null;
-  path: string;
-  per_page: number;
-  prev_page_url: string | null;
-  to: number;
-  total: number;
-}
-
-// Interface untuk Employee List Item
-export interface EmployeeListItem {
-  id: string;
-  full_name: string;
-  national_id: number;
-  email: string;
-  position: string;
-  department: string;
-  // Additional fields dari API response
-  religion?: number;
-  blood_type?: string;
-  birth_place?: string;
-  birth_date?: string;
-  last_education?: number;
-  marital_status?: number;
-  gender?: number;
-  household_dependents?: number;
-  phone_number?: string;
-  current_address?: string;
-  ktp_address?: string;
-  bank_account_number?: number;
-  bank_name?: string;
-  bank_account_holder?: string;
-  npwp?: number;
-  ptkp_id?: string;
-  bpjs_employment_number?: number;
-  bpjs_employment_status?: number;
-  bpjs_health_number?: number;
-  bpjs_health_status?: number;
-  employment_status?: number;
-  resignation_status?: string | null;
-  start_date?: string;
-  end_date?: string;
-  position_level?: number;
-  payroll_status?: number;
-  employee_category?: number;
-  user_access?: string;
-  company_name?: string;
-  office_name?: string;
-  job_title_name?: string;
-  grade?: string;
-  position_name?: string;
-  department_name?: string;
-  division_name?: string;
-  created_at?: string;
-  updated_at?: string;
-}
-
-// Interface untuk Dropdown Items
-export interface CompanyDropdownItem {
-  id_company: string;
-  company_name: string;
-}
-
-export interface OfficeDropdownItem {
-  id_office: string;
-  office_name: string;
-}
-
-export interface DirectorateDropdownItem {
-  id: string;
-  directorate_name: string;
-}
-
-export interface DivisionDropdownItem {
-  id: string;
-  division_name: string;
-}
-
-export interface DepartmentDropdownItem {
-  id: string;
-  department_name: string;
-}
-
-export interface JobTitleDropdownItem {
-  id_job_title: string;
-  job_title_name: string;
-  grade: string;
-}
-
-export interface PositionDropdownItem {
-  id_position: string;
-  position_name: string;
-}
-
-export interface PTKPDropdownItem {
-  id_ptkp: string;
-  ptkp_code: string;
-  ptkp_description: string;
-  ptkp_amount: number;
-}
+import {
+  EmployeeListParams,
+  PaginatedResponse,
+  EmployeeListItem,
+  CompanyDropdownItem,
+  OfficeDropdownItem,
+  DirectorateDropdownItem,
+  DivisionDropdownItem,
+  DepartmentDropdownItem,
+  JobTitleDropdownItem,
+  PositionDropdownItem,
+  PTKPDropdownItem,
+} from '../types/Karyawan';
 
 class EmployeeMasterDataService {
   private readonly basePath = 'employee-master-data';

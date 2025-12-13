@@ -1,8 +1,9 @@
 import { useState, useCallback, useEffect } from 'react';
-import { Karyawan, KaryawanFilterParams } from '../types/Karyawan';
-import employeeMasterDataService, { EmployeeListItem } from '../services/employeeMasterData.service';
-import useFilterStore from '../../../stores/filterStore';
-import { addNotification } from '../../../stores/notificationStore';
+import { useNavigate } from 'react-router-dom';
+import { Karyawan, KaryawanFilterParams, EmployeeListItem } from '../../types/Karyawan';
+import employeeMasterDataService from '../../services/employeeMasterData.service';
+import useFilterStore from '../../../../stores/filterStore';
+import { addNotification } from '../../../../stores/notificationStore';
 
 export interface UseKaryawanOptions {
   initialPage?: number;
@@ -12,6 +13,7 @@ export interface UseKaryawanOptions {
 
 export function useKaryawan(options: UseKaryawanOptions = {}) {
   const { initialPage = 1, initialLimit = 10, autoFetch = true } = options;
+  const navigate = useNavigate();
 
   const [data, setData] = useState<Karyawan[]>([]);
   const [loading, setLoading] = useState(false);
@@ -21,6 +23,15 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
   const [limit, setLimit] = useState(initialLimit);
   const [isInitialFetch, setIsInitialFetch] = useState(true);
   const filterValue = useFilterStore((s) => s.filters['Data Master Karyawan'] ?? '');
+
+  // Modal states
+  const [selectedKaryawan, setSelectedKaryawan] = useState<Karyawan | null>(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteSubmitting, setDeleteSubmitting] = useState(false);
+  const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/data-karyawan/form` : '/data-karyawan/form';
 
   /**
    * Transform API response data to Karyawan interface
@@ -60,24 +71,99 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
       }
     };
 
+    // Map position level number to string
+    const getPositionLevel = (level?: number): string | undefined => {
+      if (!level) return undefined;
+      switch (level) {
+        case 1: return 'Staff';
+        case 2: return 'Junior Staff';
+        case 3: return 'Senior Staff';
+        case 4: return 'Manager';
+        case 5: return 'Senior Manager';
+        case 6: return 'Director';
+        default: return `Level ${level}`;
+      }
+    };
+
     return {
+      // Core Identity
       id: apiData.id,
       idKaryawan: apiData.id,
       name: apiData.full_name,
+      full_name: apiData.full_name,
       email: apiData.email,
-      posisi: apiData.position_name || apiData.position || '',
+      
+      // Personal Information
+      birth_date: apiData.birth_date,
+      birth_place: apiData.birth_place,
+      national_id: apiData.national_id,
+      religion: apiData.religion,
+      blood_type: apiData.blood_type,
+      gender: apiData.gender,
+      marital_status: apiData.marital_status,
+      last_education: apiData.last_education,
+      household_dependents: apiData.household_dependents,
+      phone_number: apiData.phone_number,
+      current_address: apiData.current_address,
+      ktp_address: apiData.ktp_address,
+      
+      // Position & Organization
+      posisi: apiData.position_name || '',
+      position_name: apiData.position_name,
       jabatan: apiData.job_title_name || '',
-      tanggalJoin: apiData.start_date || '',
-      tanggalBerakhir: apiData.end_date,
-      company: apiData.company_name || '',
-      department: apiData.department_name || apiData.department || '',
-      departement: apiData.department_name || apiData.department || '', // alias
-      office: apiData.office_name,
-      divisi: apiData.division_name,
+      job_title_name: apiData.job_title_name,
+      jenjangJabatan: getPositionLevel(apiData.position_level),
+      position_level: apiData.position_level,
       grade: apiData.grade,
-      statusPayroll: getPayrollStatus(apiData.payroll_status),
-      kategori: getEmployeeCategory(apiData.employee_category),
+      
+      // Company & Structure
+      company: apiData.company_name || '',
+      company_name: apiData.company_name,
+      office: apiData.office_name,
+      office_name: apiData.office_name,
+      department: apiData.department_name,
+      department_name: apiData.department_name,
+      departement: apiData.department_name, // alias
+      divisi: apiData.division_name,
+      division_name: apiData.division_name,
+      direktorat: apiData.directorate_name,
+      directorate_name: apiData.directorate_name,
+      
+      // Employment Details
+      tanggalJoin: apiData.start_date || '',
+      start_date: apiData.start_date,
+      tanggalBerakhir: apiData.end_date,
+      end_date: apiData.end_date,
+      employment_status: apiData.employment_status,
       status: getEmploymentStatus(apiData.employment_status),
+      statusPayroll: getPayrollStatus(apiData.payroll_status),
+      payroll_status: apiData.payroll_status,
+      statusDataKaryawan: apiData.resignation_status ? 'Tidak Lengkap' : 'Lengkap',
+      resignation_status: apiData.resignation_status,
+      kategori: getEmployeeCategory(apiData.employee_category),
+      employee_category: apiData.employee_category,
+      
+      // Access & Permissions
+      posisiAccess: apiData.user_access,
+      user_access: apiData.user_access,
+      
+      // Bank & Financial
+      bank_name: apiData.bank_name,
+      bank_account_number: apiData.bank_account_number,
+      bank_account_holder: apiData.bank_account_holder,
+      npwp: apiData.npwp,
+      ptkp_id: apiData.ptkp_id,
+      
+      // BPJS
+      bpjs_employment_number: apiData.bpjs_employment_number,
+      bpjs_employment_status: apiData.bpjs_employment_status,
+      bpjs_health_number: apiData.bpjs_health_number,
+      bpjs_health_status: apiData.bpjs_health_status,
+      
+      // System Fields
+      deleted_at: apiData.deleted_at,
+      created_at: apiData.created_at,
+      updated_at: apiData.updated_at,
     };
   };
 
@@ -313,6 +399,60 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
     []
   );
 
+  const handleAddKaryawan = useCallback(() => {
+    setShowAddModal(true);
+  }, []);
+
+  const handleExportKaryawan = useCallback(async () => {
+    await exportKaryawan('csv');
+  }, [exportKaryawan]);
+
+  const handleDeleteClick = useCallback((row: Karyawan) => {
+    setSelectedKaryawan(row);
+    setShowDeleteModal(true);
+  }, []);
+
+  const handleConfirmDelete = useCallback(async () => {
+    if (!selectedKaryawan) return;
+    try {
+      setDeleteSubmitting(true);
+      await deleteKaryawan(selectedKaryawan.id);
+      setShowDeleteModal(false);
+      setSelectedKaryawan(null);
+    } catch (err) {
+      addNotification({
+        variant: 'error',
+        title: 'Gagal menghapus karyawan',
+        description: err as string | undefined,
+        hideDuration: 4000,
+      });
+    } finally {
+      setDeleteSubmitting(false);
+    }
+  }, [selectedKaryawan, deleteKaryawan]);
+
+  const handleAddModalClose = useCallback(() => {
+    setShowAddModal(false);
+  }, []);
+
+  const handleAddManual = useCallback(() => {
+    setShowAddModal(false);
+    navigate('/data-karyawan/form');
+  }, [navigate]);
+
+  const handleImportFile = useCallback(() => {
+    setShowAddModal(false);
+    setShowShareModal(true);
+  }, []);
+
+  const handleShareModalClose = useCallback(() => {
+    setShowShareModal(false);
+  }, []);
+
+  const handleDeleteModalClose = useCallback(() => {
+    setShowDeleteModal(false);
+  }, []);
+
   return {
     data,
     loading,
@@ -320,6 +460,7 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
     total,
     page,
     limit,
+    navigate,
     fetchKaryawan,
     createKaryawan,
     updateKaryawan,
@@ -329,6 +470,26 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
     handleSortChange,
     handlePageChange,
     handleRowsPerPageChange,
+    // Modal states
+    selectedKaryawan,
+    showDetailModal,
+    showAddModal,
+    showShareModal,
+    showDeleteModal,
+    deleteSubmitting,
+    shareUrl,
+    // Modal handlers
+    handleAddKaryawan,
+    handleExportKaryawan,
+    handleDeleteClick,
+    handleConfirmDelete,
+    handleAddModalClose,
+    handleAddManual,
+    handleImportFile,
+    handleShareModalClose,
+    handleDeleteModalClose,
+    setShowDetailModal,
+    setSelectedKaryawan,
   };
 }
 
