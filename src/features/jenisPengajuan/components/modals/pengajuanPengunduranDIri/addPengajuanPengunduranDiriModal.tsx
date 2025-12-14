@@ -10,6 +10,7 @@ import Input from '@/components/form/input/InputField';
 import DatePicker from '@/components/form/date-picker';
 import TextArea from '@/components/form/input/TextArea';
 import FileInput from '@/features/structure-and-organize/components/modals/shared/field/FileInput';
+import PopupBerhasil from '../../shared/modals/popupBerhasil';
 
 export type PengunduranDiriForm = {
   idKaryawan: string;
@@ -48,6 +49,7 @@ const AddPengajuanPengunduranDiriModal: React.FC<Props> = ({ isOpen, onClose, de
 
   const [form, setForm] = useState<PengunduranDiriForm>(initial);
   const [submitting, setSubmitting] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   useEffect(() => {
     setForm(initial);
@@ -123,22 +125,36 @@ const AddPengajuanPengunduranDiriModal: React.FC<Props> = ({ isOpen, onClose, de
     try {
       if (onSave) onSave(form);
       onClose();
+      // Show success popup after closing the main modal
+      setTimeout(() => setShowSuccessPopup(true), 300);
     } finally {
       setSubmitting(false);
     }
   };
 
+  const handleCloseSuccessPopup = () => {
+    setShowSuccessPopup(false);
+  };
+
   return (
-    <ModalAddEdit
-      isOpen={isOpen}
-      onClose={onClose}
-      content={content}
-      handleSubmit={handleSubmit}
-      submitting={submitting}
-      maxWidth="max-w-5xl"
-      confirmTitleButton="Submit"
-      closeTitleButton="Tutup"
-    />
+    <>
+      <ModalAddEdit
+        isOpen={isOpen}
+        onClose={onClose}
+        content={content}
+        handleSubmit={handleSubmit}
+        submitting={submitting}
+        maxWidth="max-w-5xl"
+        confirmTitleButton="Submit"
+        closeTitleButton="Tutup"
+      />
+      <PopupBerhasil
+        isOpen={showSuccessPopup}
+        onClose={handleCloseSuccessPopup}
+        title="Pengajuan Pengunduran Diri Berhasil Dikirim"
+        description='"Terima kasih, pengajuan pengunduran diri Anda telah berhasil dikirim. Dokumen Anda kini sedang menunggu peninjauan dan persetujuan dari HRD. Anda akan dihubungi oleh tim HR kami mengenai langkah selanjutnya."'
+      />
+    </>
   );
 };
 

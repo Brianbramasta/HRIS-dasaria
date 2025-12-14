@@ -12,6 +12,8 @@ import Select from '@/components/form/Select';
 import DatePicker from '@/components/form/date-picker';
 import FileInput from '@/components/form/input/FileInput';
 import TextArea from '@/components/form/input/TextArea';
+import PopupBerhasil from '../../shared/modals/popupBerhasil';
+import Alert from '@/components/ui/alert/Alert';
 
 export type PengajuanKasbonForm = {
   idKaryawan: string;
@@ -69,6 +71,7 @@ const AddPengajuanKasbonModal: React.FC<Props> = ({ isOpen, onClose, defaultValu
 
   const [form, setForm] = useState<PengajuanKasbonForm>(initial);
   const [submitting, setSubmitting] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   useEffect(() => {
     setForm(initial);
@@ -91,6 +94,18 @@ const AddPengajuanKasbonModal: React.FC<Props> = ({ isOpen, onClose, defaultValu
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.gajiPokok, form.nominalKasbon, form.periodeCicilan]);
 
+  // Dokumentasi: Validasi untuk memeriksa apakah form memenuhi syarat dan ketentuan
+  const isFormValid = useMemo(() => {
+    return (
+      form.tanggalPengajuan &&
+      form.jenisKasbon &&
+      form.nominalKasbon > 0 &&
+      form.periodeCicilan &&
+      form.suratPersetujuanAtasan &&
+      form.keterangan.trim() !== ''
+    );
+  }, [form]);
+
   const content = (
     <div className="space-y-6">
     <h2 className="text-3xl font-bold text-start mb-4">Pengajuan Kasbon</h2>
@@ -108,7 +123,15 @@ const AddPengajuanKasbonModal: React.FC<Props> = ({ isOpen, onClose, defaultValu
           <a href="#" className="text-brand-600 underline">disini</a>.
         </p> */}
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      
+      {/* Dokumentasi: Alert error ditampilkan jika form tidak memenuhi syarat */}
+      {!isFormValid ? (
+        <Alert
+          variant="error"
+          title="Mohon maaf anda belum memenuhi Syarat dan Ketentuan untuk melakukan pengajuan kasbon."
+          message=""
+        />
+      ):(<> <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div>
           <Label>Id Karyawan</Label>
           <Input placeholder="Masukkan ID Karyawan" value={form.idKaryawan} onChange={(e) => setField('idKaryawan', e.target.value)} disabled/>
@@ -160,7 +183,8 @@ const AddPengajuanKasbonModal: React.FC<Props> = ({ isOpen, onClose, defaultValu
       <div>
         <Label>Keterangan</Label>
         <TextArea placeholder="Berikan alasan mendetail..." value={form.keterangan} onChange={(value) => setField('keterangan', value)} rows={4} />
-      </div>
+      </div></>)}
+     
     </div>
   );
 
@@ -169,23 +193,37 @@ const AddPengajuanKasbonModal: React.FC<Props> = ({ isOpen, onClose, defaultValu
     try {
       if (onSave) onSave(form);
       onClose();
+      // Show success popup after closing the main modal
+      setTimeout(() => setShowSuccessPopup(true), 300);
     } finally {
       setSubmitting(false);
     }
   };
 
+  const handleCloseSuccessPopup = () => {
+    setShowSuccessPopup(false);
+  };
+
   return (
-    <ModalAddEdit
-    //   title={'Pengajuan Kasbon'}
-      isOpen={isOpen}
-      onClose={onClose}
-      content={content}
-      handleSubmit={handleSubmit}
-      submitting={submitting}
-      maxWidth="max-w-4xl"
-      confirmTitleButton="Submit"
-      closeTitleButton="Tutup"
-    />
+    <>
+      <ModalAddEdit
+      //   title={'Pengajuan Kasbon'}
+        isOpen={isOpen}
+        onClose={onClose}
+        content={content}
+        handleSubmit={handleSubmit}
+        submitting={submitting}
+        maxWidth="max-w-4xl"
+        confirmTitleButton="Submit"
+        closeTitleButton="Tutup"
+      />
+      <PopupBerhasil
+        isOpen={showSuccessPopup}
+        onClose={handleCloseSuccessPopup}
+        title="Pengajuan Kasbon Berhasil Dikirim"
+        description='"Terima kasih, pengajuan Kasbon Anda telah berhasil dikirim dan kini Menunggu Persetujuan. Jika pengajuan diterima maka akan dikonfirmasi Secepatnya oleh HR."'
+      />
+    </>
   );
 };
 
