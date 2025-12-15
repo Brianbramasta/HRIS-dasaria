@@ -77,9 +77,12 @@ import PendaftaranKaryawanBaru from "../features/staff/pages/data-karyawan/Penda
 import PengunduranDiri from "../features/staff/pages/pengunduran-diri/pengunduranDiriPage";
 import FormResignPage from "../features/staff/pages/pengunduran-diri/form-resign/formResignPage";
 import DetailPengunduranDiriPage from "../features/staff/pages/pengunduran-diri/detail/DetailPengunduranDiriPage";
-import PerpanjanganKontrak from "../features/staff/pages/data-karyawan/tabs/perpanjanganKontrakPage";
+import PerpanjanganKontrak from "../features/staff/pages/perpanjanganKontrak/perpanjanganKontrakHr/perpanjanganKontrakPage";
+import PersetujuanPerpanjanganKontrak from "../features/staff/pages/perpanjanganKontrak/persetujuanPerpanjanganKontrak";
+import PerpanjangKontrakEdit from "../features/staff/pages/perpanjanganKontrak/perpanjanganKontrakHr/detail/perpanjangKontrakEdit";
 import DataKaryawanPelanggaran from "../features/staff/components/dataKaryawan/tab/pelanggaran";
-import OrganizationHistoryPage from "../features/staff/pages/organizationHistoryPage";
+import OrganizationHistoryPage from "../features/staff/pages/riwayatOrganisasi/organizationHistoryPage";
+import OrganizationHistoryAtasanPage from "../features/staff/pages/riwayatOrganisasi/organizationHistoryAtasanPage";
 import Dashboard from "@/features/dashboard/pages/Dashboard";
 // import DaftarPenggajianPage from "@/features/penggajian/pages/daftarPenggajianPage";
 import KonfigurasiPenggajianPage from "@/features/penggajian/pages/konfigursaiPenggajian/konfigurasiPenggajianPage";
@@ -219,9 +222,12 @@ export default function AppRoutes() {
           
           <Route path="/pengunduran-diri/:id" element={<DetailPengunduranDiriPage />} />
           <Route path="/perpanjangan-kontrak" element={<PerpanjanganKontrak />} />
+          <Route path="/perpanjangan-kontrak/persetujuan" element={<PersetujuanPerpanjanganKontrak />} />
+          <Route path="perpanjangan-kontrak/detail/:id" element={<PerpanjangKontrakEdit />} />
           
           <Route path="/jenis-pengajuan" element={<JenisPengajuanPage />} />
           <Route path="/organization-history" element={<OrganizationHistoryPage />} />
+          <Route path="/organization-history/atasan" element={<OrganizationHistoryAtasanPage />} />
           <Route path="/hak-akses" element={<HakAksesPage />} />
 
           <Route path="/analytics" element={<Analytics />} />

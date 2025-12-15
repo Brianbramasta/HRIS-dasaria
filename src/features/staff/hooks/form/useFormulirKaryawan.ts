@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useFormulirKaryawanStore } from '../../stores/useFormulirKaryawanStore';
 import useCreateEmployee from './useCreateEmployee';
 import { useAuthStore } from '../../../auth/stores/authStore';
+import { addNotification } from '@/stores/notificationStore';
 
 export interface UseFormulirKaryawanReturn {
   // Store states
@@ -70,8 +71,19 @@ export const useFormulirKaryawan = (): UseFormulirKaryawanReturn => {
       // Hapus data dari localStorage setelah berhasil submit
       clearLocalStorage();
 
-      // Show success modal
-      setShowSuccessModal(true);
+      if (isAuthenticated) {
+        // Jika user login, redirect ke /data-karyawan dan tampilkan notification
+        addNotification({
+          variant: 'success',
+          title: 'Data Karyawan ditambahkan !',
+          description: 'Penambahan Data Karyawan Berhasil Dikonfirmasi',
+          hideDuration: 5000,
+        });
+        navigate('/data-karyawan');
+      } else {
+        // Jika user tidak login, tampilkan success modal
+        setShowSuccessModal(true);
+      }
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : 'Gagal menyimpan data karyawan';
@@ -80,7 +92,7 @@ export const useFormulirKaryawan = (): UseFormulirKaryawanReturn => {
     } finally {
       setLoading(false);
     }
-  }, [formData, setLoading, setError, submit, clearLocalStorage]);
+  }, [formData, setLoading, setError, submit, clearLocalStorage, isAuthenticated, navigate]);
 
   const handleBackToHome = useCallback(() => {
     resetForm();

@@ -55,7 +55,7 @@ export interface Karyawan {
   status?: 'aktif' | 'cuti' | 'resign' | 'nonaktif' | 'active';
   statusPayroll?: string | number;
   payroll_status?: number; // API field
-  statusDataKaryawan?: string;
+  employee_data_status?: string;
   resignation_status?: string | null; // API field
   kategori?: string;
   employee_category?: number | string; // API field
@@ -253,6 +253,7 @@ export interface EmployeeListItem {
   department_name?: string;
   division_name?: string;
   directorate_name?: string;
+  employee_data_status?: string;
   created_at?: string;
   updated_at?: string;
 }

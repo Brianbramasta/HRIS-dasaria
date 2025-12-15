@@ -59,7 +59,7 @@ export const mapEmployeeCategoryToCode = (v: string): string => {
   return '2';
 };
 
-// Opsi dropdown selaras dengan mapping di atas
+// Opsi dropdown selaras dengan mapping di atas form 1
 export const AGAMA_OPTIONS = [
   { label: 'Islam', value: 'islam' },
   { label: 'Kristen', value: 'kristen' },
@@ -89,5 +89,116 @@ export const JENIS_KELAMIN_OPTIONS = [
 export const STATUS_MENIKAH_OPTIONS = [
   { label: 'Belum Menikah', value: 'belum_menikah' },
   { label: 'Menikah', value: 'menikah' },
+];
+
+export const GOLONGAN_DARAH_OPTIONS = [
+  { label: 'A', value: 'A' },
+  { label: 'B', value: 'B' },
+  { label: 'AB', value: 'AB' },
+  { label: 'O', value: 'O' },
+];
+
+export const TANGGUNGAN_OPTIONS = [
+  { label: '0', value: '0' },
+  { label: '1', value: '1' },
+  { label: '2', value: '2' },
+  { label: '3', value: '3' },
+  { label: '4+', value: '4' },
+];
+
+// form 2
+export const JENJANG_OPTIONS = [
+  { label: 'SD/MI', value: 'SD' },
+  { label: 'SMP/MTs', value: 'SMP' },
+  { label: 'SMA/SMK/MA', value: 'SMA' },
+  { label: 'Diploma (D3)', value: 'D3' },
+  { label: 'Sarjana (S1)', value: 'S1' },
+  { label: 'Magister (S2)', value: 'S2' },
+  { label: 'Doktor (S3)', value: 'S3' },
+];
+
+export const JENIS_PENDIDIKAN_OPTIONS = [
+  { label: 'Pendidikan Formal', value: 'formal' },
+  { label: 'Pendidikan Non-Formal', value: 'non-formal' },
+];
+
+// form 3
+
+// export const STATUS_KARYAWAN_OPTIONS = [
+//   { label: 'Aktif', value: 'aktif' },
+//   { label: 'Nonaktif', value: 'nonaktif' },
+// ];
+
+export const JENJANG_JABATAN_OPTIONS = [
+  { label: 'General', value: '1' },
+  { label: 'Junior', value: '2' },
+  { label: 'Middle', value: '3' },
+  { label: 'Senior', value: '4' },
+];
+
+export const HAK_AKSES_OPTIONS = [
+  { label: 'HR/Admin', value: 'hr/admin' },
+  { label: 'Staff', value: 'staff' },
+];
+
+export const STATUS_PAYROLL_OPTIONS = [
+  { label: 'Active', value: '1' },
+  { label: 'Inactive', value: '2' },
+  { label: 'Suspended', value: '3' },
+];
+
+export const KATEGORI_KARYAWAN_OPTIONS = [
+  { label: 'Non-Staff', value: '1' },
+  { label: 'Staff', value: '2' },
+  { label: 'Mitra', value: '3' },
+];
+
+export const EMPLOYMENT_STATUS_OPTIONS = [
+  { label: 'Active', value: 'active' },
+  { label: 'Inactive', value: 'inactive' },
+];
+
+//export const RESIGNATION_STATUS_OPTIONS = [
+//   { label: 'Belum Resign', value: 'not_resigned' },
+//   { label: 'Sudah Resign', value: 'resigned' },
+// ];
+
+
+// form 4
+export const BANK_OPTIONS = [
+  { label: 'Bank Mandiri', value: 'mandiri' },
+  { label: 'Bank BCA', value: 'bca' },
+  { label: 'Bank BNI', value: 'bni' },
+  { label: 'Bank BTN', value: 'btn' },
+  { label: 'Bank CIMB Niaga', value: 'cimb' },
+  { label: 'Bank Danamon', value: 'danamon' },
+  { label: 'Lainnya', value: 'lainnya' },
+];
+
+export const BPJS_STATUS_OPTIONS = [
+  { label: 'Aktif', value: 'aktif' },
+  { label: 'Nonaktif', value: 'nonaktif' },
+];
+
+export const BPJS_TK_STATUS_OPTIONS = [
+  { label: 'Aktif', value: 'aktif' },
+  { label: 'Nonaktif', value: 'nonaktif' },
+];
+
+// form 5
+export const DOCUMENT_TYPE_OPTIONS = [
+  { label: 'Foto Terbaru', value: '1' },
+  { label: 'Kartu Tanda Penduduk', value: '2' },
+  { label: 'Ijazah Terakhir', value: '3' },
+  { label: 'Kartu Keluarga', value: '4' },
+  { label: 'BPJS Kesehatan', value: '5' },
+  { label: 'BPJS Ketenagakerjaan', value: '6' },
+  { label: 'NPWP', value: '7' },
+  { label: 'Surat Keterangan Pengalaman Kerja', value: '8' },
+  { label: 'Surat Perjanjian Bersama', value: '9' },
+  { label: 'NDA', value: '10' },
+  { label: 'Jobdesk', value: '11' },
+  { label: 'Pakta Integritas', value: '12' },
+  { label: 'PKWT/PKWTT', value: '13' },
 ];
 

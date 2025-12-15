@@ -147,7 +147,7 @@ export const getKaryawanColumns = (
     format: (value) => value || '-',
   },
   {
-    id: 'status',
+    id: 'employment_status',
     label: 'Status Karyawan',
     minWidth: 130,
     sortable: true,
@@ -160,7 +160,7 @@ export const getKaryawanColumns = (
     ),
   },
   {
-    id: 'statusPayroll',
+    id: 'payroll_status',
     label: 'Status Payroll',
     minWidth: 120,
     sortable: true,
@@ -178,7 +178,7 @@ export const getKaryawanColumns = (
     minWidth: 150,
     sortable: true,
     format: (_, row) => {
-      const status = row.statusDataKaryawan || row.resignation_status;
+      const status = row.employee_data_status || '-';
       return (
         <span className={`inline-block rounded-full p-[10px] w-full text-center  text-xs font-medium ${
           status === 'complete' || status === 'lengkap' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
@@ -189,7 +189,7 @@ export const getKaryawanColumns = (
     },
   },
   {
-    id: 'kategori',
+    id: 'employee_category',
     label: 'Kategori Karyawan',
     minWidth: 140,
     sortable: true,

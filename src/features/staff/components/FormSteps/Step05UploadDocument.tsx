@@ -8,14 +8,9 @@ import { TrashBinIcon  } from '@/icons';
 import {iconPlus as PlusIcon} from '@/icons/components/icons';
 import DocumentsTable from '../../../structure-and-organize/components/table/TableGlobal';
 import { DocumentItem } from '../../types/FormulirKaryawan';
+import { DOCUMENT_TYPE_OPTIONS } from '../../utils/employeeMappings';
 
-const DOCUMENT_TYPE_OPTIONS = [
-  { label: 'Pengalaman Kerja', value: '1' },
-  { label: 'Pakta Integritas', value: '2' },
-  { label: 'PKWT/PKWTT', value: '3' },
-  { label: 'Perjanjian Bersama', value: '4' },
-  { label: 'Lainnya', value: '5' },
-];
+
 
 export const Step05UploadDocument: React.FC = () => {
   const { formData, updateStep4 } = useFormulirKaryawanStore();

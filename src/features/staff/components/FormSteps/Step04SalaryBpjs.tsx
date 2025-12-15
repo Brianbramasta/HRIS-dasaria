@@ -6,25 +6,9 @@ import Label from '../../../../components/form/Label';
 import { useAuthStore } from '../../../auth/stores/authStore';
 import { usePTKPDropdown } from '../../hooks/form/useFromStep4';
 
-const BANK_OPTIONS = [
-  { label: 'Bank Mandiri', value: 'mandiri' },
-  { label: 'Bank BCA', value: 'bca' },
-  { label: 'Bank BNI', value: 'bni' },
-  { label: 'Bank BTN', value: 'btn' },
-  { label: 'Bank CIMB Niaga', value: 'cimb' },
-  { label: 'Bank Danamon', value: 'danamon' },
-  { label: 'Lainnya', value: 'lainnya' },
-];
+import { BANK_OPTIONS, BPJS_STATUS_OPTIONS, BPJS_TK_STATUS_OPTIONS } from '../../utils/employeeMappings';
 
-const BPJS_STATUS_OPTIONS = [
-  { label: 'Aktif', value: 'aktif' },
-  { label: 'Nonaktif', value: 'nonaktif' },
-];
 
-const BPJS_TK_STATUS_OPTIONS = [
-  { label: 'Aktif', value: 'aktif' },
-  { label: 'Nonaktif', value: 'nonaktif' },
-];
 
 export const Step04SalaryBpjs: React.FC = () => {
   const { formData, updateStep3 } = useFormulirKaryawanStore();

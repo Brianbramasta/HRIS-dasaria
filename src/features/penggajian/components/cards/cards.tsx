@@ -35,13 +35,13 @@ const PayrollCard: React.FC<PayrollCardProps> = ({
   return (
     <div
       className={twMerge(
-        "rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]",
+        "rounded-2xl overflow-hidden border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]",
         className
       )}
     >
       <div
         className={twMerge(
-          "flex items-center justify-between rounded-t-2xl px-6 py-3",
+          "flex items-center justify-between px-6 py-4 m-4 rounded-t-md",
           headerColorClasses[headerColor]
         )}
       >
@@ -54,7 +54,7 @@ const PayrollCard: React.FC<PayrollCardProps> = ({
         {rightSlot && <div className="ml-3">{rightSlot}</div>}
       </div>
 
-      <div className="p-4 border-t border-gray-100 dark:border-gray-800 sm:p-6">
+      <div className="p-6 bg-white dark:bg-white/[0.03]">
         <div className="space-y-6">{children}</div>
       </div>
     </div>

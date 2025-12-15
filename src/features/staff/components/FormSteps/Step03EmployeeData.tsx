@@ -5,45 +5,8 @@ import Select from '../../../../components/form/Select';
 import Label from '../../../../components/form/Label';
 import InputField from '../../../../components/form/input/InputField';
 import employeeMasterDataService from '../../services/employeeMasterData.service';
+import { JENJANG_JABATAN_OPTIONS, HAK_AKSES_OPTIONS, STATUS_PAYROLL_OPTIONS, KATEGORI_KARYAWAN_OPTIONS, EMPLOYMENT_STATUS_OPTIONS } from '../../utils/employeeMappings';
 
-// const STATUS_KARYAWAN_OPTIONS = [
-//   { label: 'Aktif', value: 'aktif' },
-//   { label: 'Nonaktif', value: 'nonaktif' },
-// ];
-
-const JENJANG_JABATAN_OPTIONS = [
-  { label: 'General', value: '1' },
-  { label: 'Junior', value: '2' },
-  { label: 'Middle', value: '3' },
-  { label: 'Senior', value: '4' },
-];
-
-const HAK_AKSES_OPTIONS = [
-  { label: 'HR/Admin', value: 'hr/admin' },
-  { label: 'Staff', value: 'staff' },
-];
-
-const STATUS_PAYROLL_OPTIONS = [
-  { label: 'Active', value: '1' },
-  { label: 'Inactive', value: '2' },
-  { label: 'Suspended', value: '3' },
-];
-
-const KATEGORI_KARYAWAN_OPTIONS = [
-  { label: 'Non-Staff', value: '1' },
-  { label: 'Staff', value: '2' },
-  { label: 'Mitra', value: '3' },
-];
-
-const EMPLOYMENT_STATUS_OPTIONS = [
-  { label: 'Active', value: 'active' },
-  { label: 'Inactive', value: 'inactive' },
-];
-
-// const RESIGNATION_STATUS_OPTIONS = [
-//   { label: 'Belum Resign', value: 'not_resigned' },
-//   { label: 'Sudah Resign', value: 'resigned' },
-// ];
 
 export const Step03EmployeeData: React.FC = () => {
   const { formData, updateStep3Employee } = useFormulirKaryawanStore();

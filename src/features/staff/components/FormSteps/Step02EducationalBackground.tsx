@@ -11,21 +11,8 @@ import { iconPlus as Plus } from '@/icons/components/icons';
 import { EducationItem } from '../../types/FormulirKaryawan';
 import DatePicker from '../../../../components/form/date-picker';
 import FileInput from '../../../../components/form/input/FileInput';
+import { JENIS_PENDIDIKAN_OPTIONS, JENJANG_OPTIONS } from '../../utils/employeeMappings';
 
-const JENJANG_OPTIONS = [
-  { label: 'SD/MI', value: 'SD' },
-  { label: 'SMP/MTs', value: 'SMP' },
-  { label: 'SMA/SMK/MA', value: 'SMA' },
-  { label: 'Diploma (D3)', value: 'D3' },
-  { label: 'Sarjana (S1)', value: 'S1' },
-  { label: 'Magister (S2)', value: 'S2' },
-  { label: 'Doktor (S3)', value: 'S3' },
-];
-
-const JENIS_PENDIDIKAN_OPTIONS = [
-  { label: 'Pendidikan Formal', value: 'formal' },
-  { label: 'Pendidikan Non-Formal', value: 'non-formal' },
-];
 
 
 export const Step02EducationalBackground: React.FC = () => {

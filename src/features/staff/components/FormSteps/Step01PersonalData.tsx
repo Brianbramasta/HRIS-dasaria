@@ -5,28 +5,10 @@ import Select from '../../../../components/form/Select';
 import TextArea from '../../../../components/form/input/TextArea';
 import Label from '../../../../components/form/Label';
 import DatePicker from '../../../../components/form/date-picker';
-import { AGAMA_OPTIONS, PENDIDIKAN_OPTIONS, JENIS_KELAMIN_OPTIONS, STATUS_MENIKAH_OPTIONS } from '../../utils/employeeMappings';
+import { AGAMA_OPTIONS, PENDIDIKAN_OPTIONS, JENIS_KELAMIN_OPTIONS, STATUS_MENIKAH_OPTIONS, GOLONGAN_DARAH_OPTIONS, 
+TANGGUNGAN_OPTIONS } from '../../utils/employeeMappings';
 
-const GOLONGAN_DARAH_OPTIONS = [
-  { label: 'A', value: 'A' },
-  { label: 'B', value: 'B' },
-  { label: 'AB', value: 'AB' },
-  { label: 'O', value: 'O' },
-];
 
-// PENDIDIKAN_OPTIONS diambil dari utils agar selaras dengan mapPendidikanToCode
-
-// JENIS_KELAMIN_OPTIONS dari utils agar selaras dengan mapGenderToCode
-
-// STATUS_MENIKAH_OPTIONS dari utils agar selaras dengan mapStatusMenikahToCode
-
-const TANGGUNGAN_OPTIONS = [
-  { label: '0', value: '0' },
-  { label: '1', value: '1' },
-  { label: '2', value: '2' },
-  { label: '3', value: '3' },
-  { label: '4+', value: '4' },
-];
 
 export const Step01PersonalData: React.FC = () => {
   const { formData, updateStep1 } = useFormulirKaryawanStore();

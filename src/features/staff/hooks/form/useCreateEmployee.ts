@@ -83,8 +83,8 @@ export function useCreateEmployee() {
     if (nonFormal) {
       appendIfValue(fd, 'non_formal_education[0][certificate_name]', nonFormal.namaSertifikat);
       appendIfValue(fd, 'non_formal_education[0][institution_name]', nonFormal.organisasiPenerbit);
-      appendIfValue(fd, 'non_formal_education[0][start_date]', nonFormal.tanggalPenerbitan);
-      appendIfValue(fd, 'non_formal_education[0][end_date]', nonFormal.tanggalKedaluwarsa);
+      appendIfValue(fd, 'non_formal_education[0][start_date]', formatDateToISO(nonFormal.tanggalPenerbitan || ''));
+      appendIfValue(fd, 'non_formal_education[0][end_date]', formatDateToISO(nonFormal.tanggalKedaluwarsa || ''));
       appendIfValue(fd, 'non_formal_education[0][certificate_id]', nonFormal.idKredensial);
       if (nonFormal.fileSertifikat) fd.append('non_formal_education[0][certificate_file]', nonFormal.fileSertifikat);
     }

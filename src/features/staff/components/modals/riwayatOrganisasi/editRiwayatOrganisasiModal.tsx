@@ -32,6 +32,7 @@ interface Props {
   onClose: () => void;
   onSubmit: (data: OrganizationChangeForm) => void;
   submitting?: boolean;
+  hideSkFileUpload?: boolean;
 }
 
 const JENIS_PERUBAHAN_OPTIONS = [
@@ -100,7 +101,7 @@ const POSITION_OPTIONS = [
   { label: 'IT Support', value: 'IT Support' },
 ];
 
-const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSubmit, submitting = false }) => {
+const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSubmit, submitting = false, hideSkFileUpload = false }) => {
   const [form, setForm] = useState<OrganizationChangeForm>({});
   const title = useMemo(() => 'Perubahan Organisasi', []);
 
@@ -188,10 +189,12 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
             <Label>Kategori Karyawan</Label>
             <Select options={KATEGORI_OPTIONS} defaultValue={form.kategoriKaryawan || ''} onChange={(v) => handleInput('kategoriKaryawan', v)} placeholder="Select" />
           </div>
-          <div>
-            <Label>Unggah file Sk</Label>
-            <FileInput onChange={handleFileChange} />
-          </div>
+          {!hideSkFileUpload && (
+            <div>
+              <Label>Unggah file Sk</Label>
+              <FileInput onChange={handleFileChange} />
+            </div>
+          )}
         </div>
       </div>
     </div>

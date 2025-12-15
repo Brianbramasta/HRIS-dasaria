@@ -138,7 +138,7 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
       status: getEmploymentStatus(apiData.employment_status),
       statusPayroll: getPayrollStatus(apiData.payroll_status),
       payroll_status: apiData.payroll_status,
-      statusDataKaryawan: apiData.resignation_status ? 'Tidak Lengkap' : 'Lengkap',
+      employee_data_status: apiData.employee_data_status,
       resignation_status: apiData.resignation_status,
       kategori: getEmployeeCategory(apiData.employee_category),
       employee_category: apiData.employee_category,
