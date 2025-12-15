@@ -2843,6 +2843,25 @@
 							"response": []
 						},
 						{
+							"name": "Dropdwon PTKP",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/employee-master-data/ptkp-status-dropdown",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"employee-master-data",
+										"ptkp-status-dropdown"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "Menyimpan Data Karyawan",
 							"request": {
 								"method": "POST",
@@ -3324,7 +3343,7 @@
 		},
 		{
 			"key": "base_url",
-			"value": "http://127.0.0.1:8000"
+			"value": "http://192.168.1.23:8000"
 		}
 	]
 }

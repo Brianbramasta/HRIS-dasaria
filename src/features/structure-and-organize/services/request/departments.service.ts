@@ -21,10 +21,10 @@ const toFileSummary = (url: string | null): FileSummary | null => {
 };
 
 const mapToDepartment = (item: any): DepartmentListItem => ({
-  id: item.id_department ?? item.id ?? '',
+  id: item.id ?? item.id ?? '',
   name: item.department_name ?? item.name ?? '',
   description: item.department_description ?? item.description ?? null,
-  divisionId: item.id_division ?? null,
+  divisionId: item.division_id ?? null,
   divisionName: item.division_name ?? null,
   memoNumber: item.department_decree_number ?? null,
   skFile: toFileSummary(item.department_decree_file_url ?? item.department_decree_file ?? null),
@@ -91,9 +91,9 @@ export const departmentsService = {
   getDropdown: async (search?: string): Promise<DepartmentListItem[]> => {
     const qs = search ? `?search=${encodeURIComponent(search)}` : '';
     const result = await apiService.get<any>(`/organizational-structure/departments-dropdown${qs}`);
-    const items = (result as any).data as { id_department: string; department_name: string }[];
+    const items = (result as any).data as { id: string; department_name: string }[];
     return (items || []).map((i) => ({
-      id: i.id_department,
+      id: i.id,
       name: i.department_name,
       description: null,
       divisionId: null,
@@ -107,7 +107,7 @@ export const departmentsService = {
   create: async (payload: { name: string; divisionId: string; description?: string | null; memoNumber: string; skFile: File; }): Promise<DepartmentListItem> => {
     const form = new FormData();
     form.append('department_name', payload.name);
-    form.append('id_division', payload.divisionId);
+    form.append('division_id', payload.divisionId);
     form.append('department_decree_number', payload.memoNumber);
     if (payload.description !== undefined && payload.description !== null) form.append('department_description', payload.description);
     form.append('department_decree_file', payload.skFile);
@@ -121,7 +121,7 @@ export const departmentsService = {
     const form = new FormData();
     form.append('_method', 'PATCH');
     if (payload.name !== undefined) form.append('department_name', payload.name);
-    if (payload.divisionId !== undefined) form.append('id_division', payload.divisionId);
+    if (payload.divisionId !== undefined) form.append('division_id', payload.divisionId);
     form.append('department_decree_number', payload.memoNumber);
     if (payload.description !== undefined && payload.description !== null) form.append('department_description', payload.description);
     if (payload.skFile) form.append('department_decree_file', payload.skFile);

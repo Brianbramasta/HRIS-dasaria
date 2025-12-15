@@ -21,7 +21,7 @@ const toFileSummary = (url: string | null): FileSummary | null => {
 };
 
 const mapToBusinessLine = (item: any): BusinessLineListItem => ({
-  id: item.id_bl,
+  id: item.id,
   name: item.bl_name,
   description: item.bl_description ?? null,
   memoNumber: item.bl_decree_number ?? null,
@@ -80,9 +80,9 @@ export const businessLinesService = {
   getDropdown: async (search?: string): Promise<BusinessLineListItem[]> => {
     const qs = search ? `?search=${encodeURIComponent(search)}` : '';
     const result = await apiService.get<any>(`/organizational-structure/business-lines-dropdown${qs}`);
-    const items = (result as any).data as { id_bl: string; bl_name: string }[];
+    const items = (result as any).data as { id: string; bl_name: string }[];
     return (items || []).map((i) => ({
-      id: i.id_bl,
+      id: i.id,
       name: i.bl_name,
       description: null,
       memoNumber: null,

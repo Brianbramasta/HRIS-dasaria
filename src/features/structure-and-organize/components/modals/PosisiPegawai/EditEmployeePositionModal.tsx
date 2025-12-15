@@ -52,12 +52,13 @@ const EditEmployeePositionModal: React.FC<EditEmployeePositionModalProps> = ({ i
         setDepartemen(detail.departmentId || '');
         setMemoNumber(detail.memoNumber || '');
         setDescription((detail as any).description || '');
-
+        console.log('Detail Posisi Pegawai', detail);
+        console.log('positionId', detail.positionId)
         // Setelah detail, muat dropdown
         // Dokumentasi: dropdown jabatan pakai service.getDropdown
         const posItems = await positionsService.getDropdown('');
         setPositionOptions((posItems || []).map((p) => ({ value: p.id, label: p.name })));
-
+        console.log('positionOptions', posItems);
         const dirItems = await directoratesService.getDropdown('');
         setDirectorateOptions((dirItems || []).map((d) => ({ value: d.id, label: d.name })));
 
@@ -141,7 +142,8 @@ const EditEmployeePositionModal: React.FC<EditEmployeePositionModalProps> = ({ i
               options={positionOptions}
               placeholder="Pilih Jabatan"
               defaultValue={jabatan}
-              onChange={(v) => setJabatan(v)}
+              onChange={(v) => {setJabatan(v); console.log('value',v);
+              }}
               onSearch={async (q) => {
                 try {
                   // Dokumentasi: cari dropdown jabatan via service.getDropdown

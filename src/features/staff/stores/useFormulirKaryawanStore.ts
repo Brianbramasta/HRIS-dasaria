@@ -71,7 +71,7 @@ const initialFormData: FormulirKaryawanData = {
     hubunganKontakDarurat: '',
   },
   step3Employee: {
-    statusKaryawan: '',
+    // statusKaryawan: '',
     divisi: '',
     position: '',
     jabatan: '',
@@ -88,7 +88,7 @@ const initialFormData: FormulirKaryawanData = {
     direktorat: '',
     departemen: '',
     employmentStatus: '',
-    resignationStatus: '',
+    // resignationStatus: '',
   },
   step3: {
     bank: '',
@@ -367,7 +367,7 @@ export const useFormulirKaryawanStore = create<FormulirStore>((set, get) => {
             const s = formData.step3Employee;
             console.log('step',s);
             return !!(
-              s.statusKaryawan &&
+              
               s.position &&
               s.jabatan &&
               s.tanggalMasuk &&

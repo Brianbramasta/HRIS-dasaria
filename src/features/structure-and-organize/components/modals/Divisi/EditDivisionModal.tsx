@@ -41,6 +41,7 @@ const EditDivisionModal: React.FC<EditDivisionModalProps> = ({ isOpen, onClose, 
   }, [isOpen]);
 
   useEffect(() => {
+    console.log('Division', division);
     if (isOpen && division) {
       setName(division.name || '');
       setDescription(division.description || '');

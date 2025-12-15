@@ -4,6 +4,7 @@ import Input from '../../../../components/form/input/InputField';
 import Select from '../../../../components/form/Select';
 import Label from '../../../../components/form/Label';
 import { useAuthStore } from '../../../auth/stores/authStore';
+import { usePTKPDropdown } from '../../hooks/form/useFromStep4';
 
 const BANK_OPTIONS = [
   { label: 'Bank Mandiri', value: 'mandiri' },
@@ -29,6 +30,7 @@ export const Step04SalaryBpjs: React.FC = () => {
   const { formData, updateStep3 } = useFormulirKaryawanStore();
   const step3 = formData.step3;
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const { ptkpOptions, loading, fetchPTKPOptions } = usePTKPDropdown();
 
   const handleChange = (field: string, value: string) => {
     updateStep3({ [field]: value } as any);
@@ -111,12 +113,13 @@ export const Step04SalaryBpjs: React.FC = () => {
           {isAuthenticated && (
             <div>
               <Label htmlFor="ptkpStatus">PTKP Status</Label>
-              <Input
-                id="ptkpStatus"
-                placeholder="Masukkan status PTKP"
-                value={step3.ptkpStatus as any}
-                onChange={(e) => handleChange('ptkpStatus', e.target.value)}
+              <Select
+                options={ptkpOptions}
+                defaultValue={step3.ptkpStatus as any}
+                onChange={(value) => handleChange('ptkpStatus', value)}
+                placeholder={loading ? "Loading..." : "Select PTKP Status"}
                 required
+                onSearch={(query) => fetchPTKPOptions(query)}
               />
             </div>
           )}

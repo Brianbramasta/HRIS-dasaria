@@ -228,7 +228,8 @@ const AppSidebar: React.FC = () => {
                       : nav.name === "Struktur dan Organisasi"
                       ? iconStrukturOrganisasi({ size: 16, color })
                       : nav.name === "Hak Akses"
-                      ? IconHakAksesMenu({ size: 16, color })
+                      ? IconHakAksesMenu({ size: 16, color }):nav.name === "Jenis Pengajuan"
+                      ? IconJenisPengajuan({ size: 16, color })
                       : isValidElement(nav.icon)
                       ? cloneElement(nav.icon as any, { style: { color } })
                       : nav.icon;

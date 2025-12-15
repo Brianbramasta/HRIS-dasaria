@@ -168,7 +168,7 @@ class EmployeeMasterDataService {
    */
   async getPTKPDropdown(search?: string): Promise<PTKPDropdownItem[]> {
     const qs = search ? `?search=${encodeURIComponent(search)}` : '';
-    const resp = await apiService.get<PTKPDropdownItem[]>(`${this.basePath}/ptkp-dropdown${qs}`);
+    const resp = await apiService.get<PTKPDropdownItem[]>(`${this.basePath}/ptkp-status-dropdown${qs}`);
     return (resp as any)?.data ?? [];
   }
 

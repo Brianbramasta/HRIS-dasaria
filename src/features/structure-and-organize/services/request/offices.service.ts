@@ -20,12 +20,15 @@ const toFileSummary = (url: string | null): FileSummary | null => {
 };
 
 const mapToOffice = (item: any): OfficeListItem => ({
-  id: item.id_office ?? item.id ?? '',
+  id: item.id ?? item.id ?? '',
   name: item.office_name ?? item.name ?? '',
   description: item.office_description ?? item.description ?? null,
   memoNumber: item.office_decree_number ?? item.memoNumber ?? null,
   skFile: toFileSummary(item.office_decree_file_url ?? item.office_decree_file ?? null),
   companyId: item.id_company ?? null,
+  companyIds: Array.isArray(item.companies) 
+    ? item.companies.map((company: any) => company.id ?? company.id_company ?? null).filter(Boolean)
+    : item.id_company ? [item.id_company] : [],
 });
 
 const toSortField = (field?: string): string => {
@@ -80,11 +83,7 @@ export const officesService = {
     const result = await apiService.get<any>(`/organizational-structure/offices/${id}`);
     const body = (result as any)?.data ?? {};
     const item = body?.data ?? body;
-    const office = mapToOffice(item);
-    const comps = Array.isArray(item?.companies) ? item.companies : [];
-    const ids = comps.map((c: any) => c?.id_company ?? c?.pivot?.id_company).filter(Boolean);
-    const cid = ids.length > 0 ? ids[0] : null;
-    return { ...office, companyId: cid, companyIds: ids };
+    return mapToOffice(item);
   },
 
   create: async (payload: {
@@ -100,8 +99,8 @@ export const officesService = {
     const ids = Array.isArray(payload.companyIds) && payload.companyIds.length > 0
       ? payload.companyIds
       : (payload.companyId ? [payload.companyId] : []);
-    // DOK: Sesuai api.contract.kantor.md, gunakan company[n][id_company] untuk multi-select perusahaan
-    ids.forEach((id, index) => formData.append(`company[${index}][id_company]`, id));
+    // DOK: Sesuai api.contract.kantor.md, gunakan company[n][company_id] untuk multi-select perusahaan
+    ids.forEach((id, index) => formData.append(`company[${index}][company_id]`, id));
     formData.append('office_decree_number', payload.memoNumber);
     if (payload.description !== undefined && payload.description !== null) {
       formData.append('office_description', payload.description);
@@ -131,9 +130,9 @@ export const officesService = {
     if (payload.name !== undefined) formData.append('office_name', payload.name);
     // DOK: PATCH Kantor menggunakan company[n][id_company] untuk multi-select perusahaan
     if (Array.isArray(payload.companyIds) && payload.companyIds.length > 0) {
-      payload.companyIds.forEach((id, index) => formData.append(`company[${index}][id_company]`, id));
+      payload.companyIds.forEach((id, index) => formData.append(`company[${index}][company_id]`, id));
     } else if (payload.companyId !== undefined) {
-      formData.append(`company[0][id_company]`, payload.companyId);
+      formData.append(`company[0][company_id]`, payload.companyId);
     }
     formData.append('office_decree_number', payload.memoNumber);
     if (payload.description !== undefined && payload.description !== null) {

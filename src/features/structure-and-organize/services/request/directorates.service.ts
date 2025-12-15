@@ -20,7 +20,7 @@ const toFileSummary = (url: string | null): FileSummary | null => {
 };
 
 const mapToDirectorate = (item: any): DirectorateListItem => ({
-  id: item.id_directorate ?? item.id ?? '',
+  id: item.id ?? item.id ?? '',
   name: item.directorate_name ?? item.name ?? '',
   description: item.directorate_description ?? item.description ?? null,
   memoNumber: item.directorate_decree_number ?? item.memoNumber ?? null,
@@ -78,9 +78,9 @@ export const directoratesService = {
   getDropdown: async (search?: string): Promise<DirectorateListItem[]> => {
     const qs = search ? `?search=${encodeURIComponent(search)}` : '';
     const result = await apiService.get<any>(`/organizational-structure/directorates-dropdown${qs}`);
-    const items = (result as any).data as { id_directorate: string; directorate_name: string }[];
+    const items = (result as any).data as { id: string; directorate_name: string }[];
     return (items || []).map((i) => ({
-      id: i.id_directorate,
+      id: i.id,
       name: i.directorate_name,
       description: null,
       memoNumber: null,

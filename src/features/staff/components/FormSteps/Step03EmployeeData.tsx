@@ -32,7 +32,7 @@ const STATUS_PAYROLL_OPTIONS = [
 const KATEGORI_KARYAWAN_OPTIONS = [
   { label: 'Non-Staff', value: '1' },
   { label: 'Staff', value: '2' },
-  { label: 'Partner', value: '3' },
+  { label: 'Mitra', value: '3' },
 ];
 
 const EMPLOYMENT_STATUS_OPTIONS = [
@@ -40,10 +40,10 @@ const EMPLOYMENT_STATUS_OPTIONS = [
   { label: 'Inactive', value: 'inactive' },
 ];
 
-const RESIGNATION_STATUS_OPTIONS = [
-  { label: 'Belum Resign', value: 'not_resigned' },
-  { label: 'Sudah Resign', value: 'resigned' },
-];
+// const RESIGNATION_STATUS_OPTIONS = [
+//   { label: 'Belum Resign', value: 'not_resigned' },
+//   { label: 'Sudah Resign', value: 'resigned' },
+// ];
 
 export const Step03EmployeeData: React.FC = () => {
   const { formData, updateStep3Employee } = useFormulirKaryawanStore();
@@ -332,7 +332,7 @@ export const Step03EmployeeData: React.FC = () => {
               />
             </div>
             
-            <div>
+            {/* <div>
               <Label>Resignation Status</Label>
               <Select
                 options={RESIGNATION_STATUS_OPTIONS}
@@ -340,7 +340,7 @@ export const Step03EmployeeData: React.FC = () => {
                 onChange={(value) => handleChange('resignationStatus', value)}
                 placeholder="Select"
               />
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

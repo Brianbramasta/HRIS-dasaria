@@ -7,7 +7,7 @@ import {
 } from '../../types/organization.api.types';
 
 const mapToCompany = (item: any): CompanyListItem => ({
-  id: item.id_company ?? item.uuid_perusahaan ?? item.id ?? '',
+  id: item.id ?? item.uuid_perusahaan ?? item.id ?? '',
   name: item.company_name ?? item.nama_perusahaan ?? item.name ?? '',
   description: item.company_description ?? item.deskripsi_perusahaan ?? item.description ?? null,
   businessLineId: item.id_bl ?? item.fk_uuid_lini_bisnis ?? item.businessLineId ?? null,
@@ -89,7 +89,7 @@ export const companiesService = {
           ? (result as any).data.data
           : [];
     return (items || []).map((it: any) => ({
-      id: it.id_company ?? it.uuid_perusahaan ?? it.id ?? '',
+      id: it.id ?? it.uuid_perusahaan ?? it.id ?? '',
       name: it.company_name ?? it.nama_perusahaan ?? it.name ?? '',
     }));
   },

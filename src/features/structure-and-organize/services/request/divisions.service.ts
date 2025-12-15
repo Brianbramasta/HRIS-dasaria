@@ -20,10 +20,10 @@ const toFileSummary = (url: string | null): FileSummary | null => {
 };
 
 const mapToDivision = (item: any): DivisionListItem => ({
-  id: item.id_division ?? item.id ?? '',
+  id:  item.id ?? '',
   name: item.division_name ?? item.name ?? '',
   description: item.division_description ?? item.description ?? null,
-  directorateId: item.id_directorate ?? null,
+  directorateId: item.directorate_id ?? null,
   directorateName: item.directorate_name ?? null,
   memoNumber: item.division_decree_number ?? null,
   skFile: toFileSummary(item.division_decree_file_url ?? item.division_decree_file ?? null),
@@ -87,7 +87,7 @@ export const divisionsService = {
   create: async (payload: { name: string; directorateId: string; description?: string | null; memoNumber: string; skFile: File; }): Promise<DivisionListItem> => {
     const form = new FormData();
     form.append('division_name', payload.name);
-    form.append('id_directorate', payload.directorateId);
+    form.append('directorate_id', payload.directorateId);
     form.append('division_decree_number', payload.memoNumber);
     if (payload.description !== undefined && payload.description !== null) {
       form.append('division_description', payload.description);
@@ -105,7 +105,7 @@ export const divisionsService = {
     const form = new FormData();
     form.append('_method', 'PATCH');
     if (payload.name !== undefined) form.append('division_name', payload.name);
-    if (payload.directorateId !== undefined) form.append('id_directorate', payload.directorateId);
+    if (payload.directorateId !== undefined) form.append('directorate_id', payload.directorateId);
     form.append('division_decree_number', payload.memoNumber);
     if (payload.description !== undefined && payload.description !== null) {
       form.append('division_description', payload.description);

@@ -298,8 +298,7 @@ export interface PositionDropdownItem {
 }
 
 export interface PTKPDropdownItem {
-  id_ptkp: string;
-  ptkp_code: string;
-  ptkp_description: string;
-  ptkp_amount: number;
+  id: string;
+  code: string;
+  category: string;
 }

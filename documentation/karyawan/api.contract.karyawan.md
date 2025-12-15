@@ -599,7 +599,7 @@ GET {{base_url}}/api/employee-master-data/employees?search=tes44@gmail.com&sort=
 
 ## Dropdown PTKP
 
-**URL:** `{{base_url}}/api/employee-master-data/ptkp-dropdown`  
+**URL:** `{{base_url}}/api/employee-master-data/ptkp-status-dropdown`  
 **Method:** GET
 
 **Query Parameters (opsional):**

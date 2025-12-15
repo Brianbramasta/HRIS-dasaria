@@ -21,7 +21,7 @@ const toFileSummary = (url: string | null): FileSummary | null => {
 };
 
 const mapToPosition = (item: any): PositionListItem => ({
-  id: item.id_job_title ?? item.id ?? '',
+  id: item.id ?? item.id ?? '',
   name: item.job_title_name ?? item.name ?? '',
   grade: item.grade ?? null,
   jobDescription: item.job_title_description ?? item.description ?? null,
@@ -88,9 +88,9 @@ export const positionsService = {
   getDropdown: async (search?: string): Promise<PositionListItem[]> => {
     const qs = search ? `?search=${encodeURIComponent(search)}` : '';
     const result = await apiService.get<any>(`/organizational-structure/job-title-dropdown${qs}`);
-    const items = (result as any).data as { id_job_title: string; job_title_name: string }[];
+    const items = (result as any).data as { id: string; job_title_name: string }[];
     return (items || []).map((i) => ({
-      id: i.id_job_title,
+      id: i.id,
       name: i.job_title_name,
       grade: null,
       jobDescription: null,

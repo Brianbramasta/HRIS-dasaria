@@ -2843,6 +2843,25 @@
 							"response": []
 						},
 						{
+							"name": "Dropdwon PTKP",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/employee-master-data/ptkp-status-dropdown",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"employee-master-data",
+										"ptkp-status-dropdown"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "Menyimpan Data Karyawan",
 							"request": {
 								"method": "POST",
@@ -2857,7 +2876,7 @@
 										},
 										{
 											"key": "national_id",
-											"value": "5064",
+											"value": "50641555",
 											"type": "text"
 										},
 										{
@@ -3247,17 +3266,17 @@
 									"query": [
 										{
 											"key": "search",
-											"value": "Manager",
+											"value": "tes44@gmail.com",
 											"disabled": true
 										},
 										{
 											"key": "sort",
-											"value": "asc",
+											"value": "desc",
 											"disabled": true
 										},
 										{
 											"key": "column",
-											"value": "created_at",
+											"value": "email",
 											"disabled": true
 										},
 										{
@@ -3272,7 +3291,7 @@
 										},
 										{
 											"key": "filter[]",
-											"value": "ini departmen peternakan ikan 3",
+											"value": "tes44@gmail.com",
 											"disabled": true
 										},
 										{
@@ -3324,7 +3343,7 @@
 		},
 		{
 			"key": "base_url",
-			"value": "http://10.12.54.98:8000"
+			"value": "http://192.168.1.23:8000"
 		}
 	]
 }

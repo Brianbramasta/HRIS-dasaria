@@ -22,15 +22,15 @@ const toFileSummary = (url: string | null): FileSummary | null => {
 
 // Mapping respons API ke tipe frontend EmployeePositionListItem
 const mapToEmployeePosition = (item: any): EmployeePositionListItem => ({
-  id: item.id_position ?? item.id ?? '',
+  id: item.id ?? item.id ?? '',
   name: item.position_name ?? item.name ?? '',
-  positionId: item.id_job_title ?? item.positionId ?? null,
+  positionId: item.job_title_id ?? item.positionId ?? null,
   positionName: item.job_title_name ?? item.positionName ?? null,
-  directorateId: item.id_directorate ?? item.directorateId ?? null,
+  directorateId: item.directorate_id ?? item.directorateId ?? null,
   directorateName: item.directorate_name ?? item.directorateName ?? null,
-  divisionId: item.id_division ?? item.divisionId ?? null,
+  divisionId: item.division_id ?? item.divisionId ?? null,
   divisionName: item.division_name ?? item.divisionName ?? null,
-  departmentId: item.id_department ?? item.departmentId ?? null,
+  departmentId: item.department_id ?? item.departmentId ?? null,
   departmentName: item.department_name ?? item.departmentName ?? null,
   description: item.position_description ?? item.description ?? null,
   startDate: item.start_date ?? item.startDate ?? null,
@@ -122,10 +122,10 @@ export const employeePositionsService = {
   }): Promise<EmployeePositionListItem> => {
     const form = new FormData();
     form.append('position_name', payload.name);
-    form.append('id_job_title', payload.positionId);
-    if (payload.directorateId) form.append('id_directorate', payload.directorateId);
-    if (payload.divisionId) form.append('id_division', payload.divisionId);
-    if (payload.departmentId) form.append('id_department', payload.departmentId);
+    form.append('job_title_id', payload.positionId);
+    if (payload.directorateId) form.append('directorate_id', payload.directorateId);
+    if (payload.divisionId) form.append('division_id', payload.divisionId);
+    if (payload.departmentId) form.append('department_id', payload.departmentId);
     if (payload.memoNumber) form.append('position_decree_number', payload.memoNumber);
     // Dokumentasi: kirim File asli (bukan string id/path)
     if (payload.skFile) form.append('position_decree_file', payload.skFile);
@@ -155,10 +155,10 @@ export const employeePositionsService = {
     const form = new FormData();
     form.append('_method', 'PATCH');
     if (payload.name !== undefined) form.append('position_name', payload.name);
-    if (payload.positionId !== undefined) form.append('id_job_title', payload.positionId);
-    if (payload.directorateId !== undefined && payload.directorateId !== null) form.append('id_directorate', payload.directorateId);
-    if (payload.divisionId !== undefined && payload.divisionId !== null) form.append('id_division', payload.divisionId);
-    if (payload.departmentId !== undefined && payload.departmentId !== null) form.append('id_department', payload.departmentId);
+    if (payload.positionId !== undefined) form.append('job_title_id', payload.positionId);
+    if (payload.directorateId !== undefined && payload.directorateId !== null) form.append('directorate_id', payload.directorateId);
+    if (payload.divisionId !== undefined && payload.divisionId !== null) form.append('division_id', payload.divisionId);
+    if (payload.departmentId !== undefined && payload.departmentId !== null) form.append('department_id', payload.departmentId);
     if (payload.memoNumber) form.append('position_decree_number', payload.memoNumber);
     if (payload.description !== undefined) form.append('position_description', payload.description);
     // Dokumentasi: kirim File asli bila tersedia

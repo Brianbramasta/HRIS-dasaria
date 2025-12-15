@@ -100,7 +100,7 @@ export interface Step4FormData {
 
 // Step 3 (Login only): Data Karyawan/Organisasi
 export interface EmployeeDataFormData {
-  statusKaryawan: string;
+  // statusKaryawan: string;
   divisi: string;
   position: string;
   jabatan: string;
@@ -117,7 +117,7 @@ export interface EmployeeDataFormData {
   direktorat: string;
   departemen: string;
   employmentStatus: string;
-  resignationStatus: string;
+  // resignationStatus: string;
 }
 
 // Combined Formulir Data
