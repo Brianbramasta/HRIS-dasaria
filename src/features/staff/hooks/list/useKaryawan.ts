@@ -317,7 +317,7 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
 
         const response = await employeeMasterDataService.deleteEmployee(id);
 
-        if (response && response.success) {
+        if (response && response.meta.status === 200) {
           addNotification({
             variant: 'success',
             title: response.message || 'Karyawan berhasil dihapus',

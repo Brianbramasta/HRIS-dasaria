@@ -6,6 +6,10 @@ export interface ApiResponse<T = any> {
   success: boolean;
   message: string;
   data: T;
+  meta: {
+    status: number;
+    message: string;
+  };
   statusCode?: number;
 }
 
