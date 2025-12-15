@@ -46,6 +46,11 @@ const Select: React.FC<SelectProps> = ({
       )
     : options;
 
+  // Sync internal state when defaultValue prop changes
+  useEffect(() => {
+    setSelectedValue(defaultValue);
+  }, [defaultValue]);
+
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       const target = e.target as Node;
