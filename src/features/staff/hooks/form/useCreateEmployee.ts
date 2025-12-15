@@ -114,7 +114,7 @@ export function useCreateEmployee() {
       appendIfValue(fd, 'payroll_status', mapPayrollStatusToCode(formData.step3Employee.statusPayroll));
       appendIfValue(fd, 'employee_category', mapEmployeeCategoryToCode(formData.step3Employee.kategoriKaryawan));
       appendIfValue(fd, 'employment_status', formData.step3Employee.employmentStatus);
-      appendIfValue(fd, 'resignation_status', formData.step3Employee.resignationStatus);
+      // appendIfValue(fd, 'resignation_status', formData.step3Employee.resignationStatus);
     }
 
     return fd;
