@@ -64,19 +64,19 @@ export default function DetailKaryawanPage() {
   });
 
   if (loading) {
-    // return <div className="p-6">Memuat detail…</div>;
+    return <div className="p-6">Memuat detail…</div>;
   }
 
   if (error) {
-    // return (
-    //   <div className="p-6">
-    //     <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">{error}</div>
-    //   </div>
-    // );
+    return (
+      <div className="p-6">
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">{error}</div>
+      </div>
+    );
   }
 
   if (!data) {
-    // return <div className="p-6">Data tidak ditemukan.</div>;
+    return <div className="p-6">Data tidak ditemukan.</div>;
   }
 
   
