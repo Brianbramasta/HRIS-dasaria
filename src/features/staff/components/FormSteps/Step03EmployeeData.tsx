@@ -25,7 +25,10 @@ export const Step03EmployeeData: React.FC = () => {
     updateStep3Employee({ [field]: value } as any);
     
     // Reset dependent fields when parent selection changes
-    if (field === 'direktorat') {
+    if (field === 'company') {
+      updateStep3Employee({ kantor: '' } as any);
+      setOfficeOptions([]);
+    } else if (field === 'direktorat') {
       updateStep3Employee({ divisi: '', departemen: '' } as any);
       setDivisionOptions([]);
       setDepartmentOptions([]);
@@ -53,13 +56,6 @@ export const Step03EmployeeData: React.FC = () => {
         const companies = await employeeMasterDataService.getCompanyDropdown();
         setCompanyOptions((companies || []).map((i: any) => ({ 
           label: i.company_name, 
-          value: i.id
-        })));
-
-        // Fetch offices
-        const offices = await employeeMasterDataService.getOfficeDropdown();
-        setOfficeOptions((offices || []).map((i: any) => ({ 
-          label: i.office_name, 
           value: i.id
         })));
 
@@ -141,6 +137,27 @@ export const Step03EmployeeData: React.FC = () => {
     fetchDepartments();
   }, [step3.divisi]);
 
+  // Fetch offices when company changes
+  useEffect(() => {
+    const fetchOffices = async () => {
+      if (!step3.company) {
+        setOfficeOptions([]);
+        return;
+      }
+      try {
+        const items = await employeeMasterDataService.getOfficeDropdown('', step3.company);
+        setOfficeOptions((items || []).map((i: any) => ({ 
+          label: i.office_name, 
+          value: i.id 
+        })));
+      } catch (error) {
+        console.error('Error fetching offices:', error);
+        setOfficeOptions([]);
+      }
+    };
+    fetchOffices();
+  }, [step3.company]);
+
   return (
     <div className="space-y-6">
       <div>
@@ -191,7 +208,7 @@ export const Step03EmployeeData: React.FC = () => {
             <div>
               <Label>Kantor</Label>
               <Select
-                options={officeOptions}
+                options={officeOptions.length > 0 ? officeOptions : [{ label: 'Pilih perusahaan terlebih dahulu', value: '' }]}
                 defaultValue={step3.kantor}
                 onChange={(value) => handleChange('kantor', value)}
                 placeholder="Select"

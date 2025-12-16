@@ -154,9 +154,13 @@ export const KATEGORI_KARYAWAN_OPTIONS = [
 ];
 
 export const EMPLOYMENT_STATUS_OPTIONS = [
-  { label: 'Active', value: 'active' },
-  { label: 'Inactive', value: 'inactive' },
+  { label: 'Active', value: '1' },
+  { label: 'Inactive', value: '2' },
+  { label: 'Probation', value: '3' },
+  { label: 'Resigned', value: '4' },
 ];
+
+
 
 //export const RESIGNATION_STATUS_OPTIONS = [
 //   { label: 'Belum Resign', value: 'not_resigned' },

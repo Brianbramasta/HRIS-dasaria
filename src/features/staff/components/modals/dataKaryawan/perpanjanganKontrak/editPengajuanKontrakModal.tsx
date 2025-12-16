@@ -124,7 +124,7 @@ export default function EditPengajuanKontrakModal({
 
   return (
     <ModalAddEdit
-      title="Edit Pengajuan Kontrak"
+      title="Detail Data Karyawan"
       isOpen={isOpen}
       onClose={onClose}
       handleSubmit={handleSubmit}

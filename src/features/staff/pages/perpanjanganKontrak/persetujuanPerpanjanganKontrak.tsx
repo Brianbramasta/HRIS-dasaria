@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DataTable, DataTableColumn, DataTableAction } from '../../../structure-and-organize/components/datatable/DataTable';
 import { X, Check, FileText, ChevronDown } from 'react-feather';
-import Checkbox from '@/components/form/input/Checkbox';
+// import Checkbox from '@/components/form/input/Checkbox';
 import Button from '@/components/ui/button/Button';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
+import EditPengajuanKontrakModal from '@/features/staff/components/modals/dataKaryawan/perpanjanganKontrak/editPengajuanKontrakModal';
+import KonfirmasiPenolakanKontrak from '@/features/staff/components/modals/dataKaryawan/perpanjanganKontrak/konfirmasiPenolakanKontrak';
 
 type PersetujuanKontrakRow = {
   id: string;
@@ -170,52 +172,44 @@ const getStatusColor = (status: string) => {
 
 export default function PersetujuanPerpanjanganKontrak() {
   const navigate = useNavigate();
-  const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+  const [selectedKontrak, setSelectedKontrak] = useState<PersetujuanKontrakRow | null>(null);
 
-  const handleCheckboxChange = (id: string, checked: boolean) => {
-    setSelectedRows((prev) =>
-      checked ? [...prev, id] : prev.filter((rowId) => rowId !== id)
-    );
+  const handleViewDetail = (row: PersetujuanKontrakRow) => {
+    setSelectedKontrak(row);
+    setIsModalOpen(true);
   };
 
-  const handleSelectAll = (checked: boolean) => {
-    setSelectedRows(checked ? sampleData.map((row) => row.id) : []);
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedKontrak(null);
   };
 
-  const handleApprove = () => {
-    if (selectedRows.length === 0) return;
-    console.log('Approve rows:', selectedRows);
-    // Add your approval logic here
-    setSelectedRows([]);
+  const handleRejectClick = (row: PersetujuanKontrakRow) => {
+    setSelectedKontrak(row);
+    setIsRejectModalOpen(true);
   };
 
-  const handleReject = () => {
-    if (selectedRows.length === 0) return;
-    console.log('Reject rows:', selectedRows);
-    // Add your rejection logic here
-    setSelectedRows([]);
+  const handleRejectModalClose = () => {
+    setIsRejectModalOpen(false);
+    setSelectedKontrak(null);
+  };
+
+  const handleRejectSubmit = async (alasanPenolakan: string) => {
+    console.log('Reject:', selectedKontrak);
+    console.log('Alasan Penolakan:', alasanPenolakan);
+    // TODO: Implement API call to reject contract extension
   };
 
   const columns: DataTableColumn<PersetujuanKontrakRow>[] = [
     {
-      id: 'checkbox',
-      label: '',
+      id: 'no',
+      label: 'No.',
       minWidth: 50,
       align: 'center',
       sortable: false,
-      headerFormat: () => (
-        <Checkbox
-          checked={selectedRows.length === sampleData.length && sampleData.length > 0}
-          onChange={handleSelectAll}
-        />
-      ),
-      format: (_, row) => (
-        <Checkbox
-          checked={selectedRows.includes(row.id)}
-          onChange={(checked) => handleCheckboxChange(row.id, checked)}
-        />
-      ),
     },
     { id: 'idKaryawan', label: 'ID Karyawan', minWidth: 120, sortable: true },
     {
@@ -270,7 +264,7 @@ export default function PersetujuanPerpanjanganKontrak() {
       label: '',
       icon: <X size={16} className="text-red-600" />,
       onClick: (row) => {
-        console.log('Reject:', row);
+        handleRejectClick(row);
       },
       variant: 'outline',
       className: 'border-red-300 hover:bg-red-50 dark:border-red-800 dark:hover:bg-red-900/20',
@@ -279,6 +273,7 @@ export default function PersetujuanPerpanjanganKontrak() {
       label: '',
       icon: <Check size={16} className="text-green-600" />,
       onClick: (row) => {
+        handleViewDetail(row);
         console.log('Approve:', row);
       },
       variant: 'outline',
@@ -299,28 +294,6 @@ export default function PersetujuanPerpanjanganKontrak() {
         filterable={true}
         loading={false}
         emptyMessage="Tidak ada data kontrak"
-        toolbarRightSlotAtas={
-          <div className="flex items-center gap-3">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleReject}
-              disabled={selectedRows.length === 0}
-              className="border-red-300 text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Ditolak
-            </Button>
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={handleApprove}
-              disabled={selectedRows.length === 0}
-              className="bg-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Disetujui
-            </Button>
-          </div>
-        }
         toolbarRightSlot={
           <div className="relative">
             <Button
@@ -357,6 +330,41 @@ export default function PersetujuanPerpanjanganKontrak() {
           </div>
         }
       />
+      
+      {selectedKontrak && (
+        <>
+          <EditPengajuanKontrakModal
+            isOpen={isModalOpen}
+            onClose={handleModalClose}
+            kontrakData={{
+              idKaryawan: selectedKontrak.idKaryawan,
+              pengguna: selectedKontrak.name,
+              jenisPerubahan: 'Tidak ada',
+              perusahaan: 'Dasaria',
+              kantor: 'Head Kantor',
+              direktorat: 'SDM',
+              divisi: 'HR',
+              departemen: selectedKontrak.department,
+              position: selectedKontrak.position || 'HR',
+              jabatan: 'EntryLevel',
+              golongan: 'D5',
+              jenjangJabatan: 'Senior',
+              gajiPokok: '4,000,000',
+              kategoriKaryawan: 'Staff',
+            }}
+            onSuccess={() => {
+              console.log('Modal closed after success');
+            }}
+          />
+          <KonfirmasiPenolakanKontrak
+            isOpen={isRejectModalOpen}
+            onClose={handleRejectModalClose}
+            idKaryawan={selectedKontrak.idKaryawan}
+            nama={selectedKontrak.name}
+            onSubmit={handleRejectSubmit}
+          />
+        </>
+      )}
     </div>
   );
 }

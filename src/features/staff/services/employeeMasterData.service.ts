@@ -102,9 +102,9 @@ class EmployeeMasterDataService {
    * @param search - Optional search query untuk filter kantor
    * @returns Promise dengan array kantor
    */
-  async getOfficeDropdown(search?: string): Promise<OfficeDropdownItem[]> {
+  async getOfficeDropdown(search?: string, idCompany?: string): Promise<OfficeDropdownItem[]> {
     const qs = search ? `?search=${encodeURIComponent(search)}` : '';
-    const resp = await apiService.get<OfficeDropdownItem[]>(`${this.basePath}/offices${qs}`);
+    const resp = await apiService.get<OfficeDropdownItem[]>(`${this.basePath}/offices/${idCompany}/${qs}`);
     return (resp as any)?.data ?? [];
   }
 

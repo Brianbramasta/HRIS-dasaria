@@ -13,12 +13,13 @@ interface DeleteOfficeModalProps {
   closeTitleButton?: string;
   isAlert?: boolean;
   title?: string;
+  maxWidth?: string;
 }
 
-const DeleteOfficeModal: React.FC<DeleteOfficeModalProps> = ({ content, isOpen, onClose, handleDelete, submitting=false, confirmTitleButton = 'Hapus', closeTitleButton = 'Tutup', title = 'Hapus Data', isAlert = true }) => {
+const DeleteOfficeModal: React.FC<DeleteOfficeModalProps> = ({ content, isOpen, onClose, handleDelete, submitting=false, confirmTitleButton = 'Hapus', closeTitleButton = 'Tutup', title = 'Hapus Data', isAlert = true, maxWidth = 'max-w-md' }) => {
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="max-w-md p-6 zoom-75 dark:text-white  " showCloseButton>
+    <Modal isOpen={isOpen} onClose={onClose} className={` p-6 zoom-75 dark:text-white ${maxWidth}`} showCloseButton>
       <div className="space-y-6">
         <div className="flex flex-col items-center">
           <div className="mb-3 text-4xl">
