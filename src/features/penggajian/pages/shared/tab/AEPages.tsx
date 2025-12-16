@@ -45,10 +45,10 @@ export default function AETab({ resetKey = 'ae' }: { resetKey?: string }) {
     { id: 'tunjanganTidakTetap', label: 'Tunjangan Tidak Tetap', align: 'right' },
     { id: 'kategori', label: 'Kategori' },
     { id: 'perusahaan', label: 'Perusahaan' },
-    { id: 'statusPenggajian', label: 'Status Penggajian', format: (v) => <span className="inline-flex rounded-full bg-blue-100 px-2 py-1 text-xs text-blue-700 dark:bg-blue-900/30 dark:text-blue-200">{String(v)}</span> },
-    { id: 'approvalHrga', label: 'Approval Direktur HRGA', format: (v) => <span className="inline-flex rounded-full bg-green-100 px-2 py-1 text-xs text-green-700 dark:bg-green-900/30 dark:text-green-200">{String(v)}</span> },
-    { id: 'approvalFat', label: 'Approval FAT', format: (v) => <span className="inline-flex rounded-full bg-yellow-100 px-2 py-1 text-xs text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-200">{String(v)}</span> },
-    { id: 'approvalDirekturKeuangan', label: 'Approval Direktur Keuangan', format: (v) => <span className="inline-flex rounded-full bg-green-100 px-2 py-1 text-xs text-green-700 dark:bg-green-900/30 dark:text-green-200">{String(v)}</span> },
+    { id: 'statusPenggajian', label: 'Status Penggajian', format: (v) => <span className=" rounded-full bg-blue-100 p-[10px] flex justify-center text-xs text-blue-700 dark:bg-blue-900/30 dark:text-blue-200">{String(v)}</span> },
+    { id: 'approvalHrga', label: 'Approval Direktur HRGA', format: (v) => <span className=" rounded-full bg-green-100 p-[10px] flex justify-center text-xs text-green-700 dark:bg-green-900/30 dark:text-green-200">{String(v)}</span> },
+    { id: 'approvalFat', label: 'Approval FAT', format: (v) => <span className=" rounded-full bg-yellow-100 p-[10px] flex justify-center text-xs text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-200">{String(v)}</span> },
+    { id: 'approvalDirekturKeuangan', label: 'Approval Direktur Keuangan', format: (v) => <span className=" rounded-full bg-green-100 p-[10px] flex justify-center text-xs text-green-700 dark:bg-green-900/30 dark:text-green-200">{String(v)}</span> },
   ];
   return (
     <PenggajianTabBase

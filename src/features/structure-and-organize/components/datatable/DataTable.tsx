@@ -384,7 +384,7 @@ export function DataTable<T = any>({
                   } ${column.sortable !== false ? 'cursor-pointer hover:text-gray-200' : ''}`}
                   onClick={() => column.sortable !== false && handleSort(column.id)}
                 >
-                  <div className={`flex items-center gap-1 ${column.align === 'center' ? 'justify-center' : column.align === 'right' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`min-w-max flex items-center gap-1 ${column.align === 'center' ? 'justify-center' : column.align === 'right' ? 'justify-end' : 'justify-start'}`}>
                     {column.headerFormat ? column.headerFormat() : column.label}
                     {column.sortable !== false && <span className="text-white">{getSortIcon(column.id)}</span>}
                   </div>

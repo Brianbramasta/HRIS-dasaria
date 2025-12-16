@@ -241,7 +241,7 @@ export default function PersetujuanPerpanjanganKontrak() {
       minWidth: 140,
       sortable: true,
       format: (value) => (
-        <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(value)}`}>
+        <span className={`p-[10px] flex justify-center rounded-full text-xs font-medium ${getStatusColor(value)}`}>
           {value}
         </span>
       ),

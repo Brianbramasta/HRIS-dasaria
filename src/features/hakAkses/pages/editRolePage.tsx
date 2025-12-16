@@ -463,7 +463,7 @@ export default function EditRolePage() {
           <h2 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Hak Akses</h2>
           
           <div className="overflow-x-auto">
-            <table className="min-w-full">
+            <table className="min-w-full dark:text-white">
               <thead>
                 <tr className="bg-[#004969] text-white">
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">

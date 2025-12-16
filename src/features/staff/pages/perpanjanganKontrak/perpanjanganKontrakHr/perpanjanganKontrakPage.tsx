@@ -237,7 +237,7 @@ export default function PerpanjanganKontrak() {
       minWidth: 180,
       sortable: true,
       format: (value) => (
-        <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(value)}`}>
+        <span className={`p-[10px] flex justify-center rounded-full text-xs font-medium ${getStatusColor(value)}`}>
           {value}
         </span>
       ),
@@ -248,7 +248,7 @@ export default function PerpanjanganKontrak() {
       minWidth: 140,
       sortable: true,
       format: (value) => (
-        <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(value)}`}>
+        <span className={`p-[10px] flex justify-center rounded-full text-xs font-medium ${getStatusColor(value)}`}>
           {value}
         </span>
       ),

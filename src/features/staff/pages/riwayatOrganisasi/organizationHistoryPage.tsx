@@ -63,7 +63,7 @@ export default function OrganizationHistoryPage() {
         format: (v: string) => {
           const val = (v as string) || '-';
           const isRekom = val === 'Rekomendasi';
-          const base = 'inline-flex items-center rounded-lg px-3 py-1 text-xs font-medium';
+          const base = ' rounded-full p-[10px] flex justify-center text-xs font-medium';
           const cls = isRekom ? 'bg-orange-100 text-orange-600' : 'bg-green-100 text-green-600';
           return <span className={`${base} ${cls}`}>{val}</span>;
         },
