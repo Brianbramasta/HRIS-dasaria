@@ -108,6 +108,8 @@ import DetailGajiNonAEPage from "@/features/penggajian/pages/shared/detail/detai
 import DetailGajiTHRPage from "@/features/penggajian/pages/shared/detail/detailGajiTHRPage";
 import DetailGajiPKLPage from "@/features/penggajian/pages/shared/detail/detailGajiPKLPage";
 import HakAksesPage from "@/features/hakAkses/pages/hakAksesPage";
+import DetailHakAksesPages from "@/features/hakAkses/pages/detail/detailHakAksesPages";
+import EditRolePage from "@/features/hakAkses/pages/editRolePage";
 // Dokumentasi: Import halaman Kasbon dan tab terkait
 import KasbonPage from "@/features/penggajian/pages/kasbon/kasbonPage";
 import StatusKasbonPage from "@/features/penggajian/pages/kasbon/tab/statusKasbonPage";
@@ -229,6 +231,8 @@ export default function AppRoutes() {
           <Route path="/organization-history" element={<OrganizationHistoryPage />} />
           <Route path="/organization-history/atasan" element={<OrganizationHistoryAtasanPage />} />
           <Route path="/hak-akses" element={<HakAksesPage />} />
+          <Route path="/hak-akses/detail/:roleId" element={<DetailHakAksesPages />} />
+          <Route path="/hak-akses/edit/:roleId" element={<EditRolePage />} />
 
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/marketing" element={<Marketing />} />
