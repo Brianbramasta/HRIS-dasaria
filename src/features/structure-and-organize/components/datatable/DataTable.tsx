@@ -372,12 +372,13 @@ export function DataTable<T = any>({
         </div>
       </div>
 
-      <div className="overflow-x-auto mx-6 border rounded-sm">
+      <div className="overflow-auto max-h-[500px] mx-6 border rounded-sm">
         <Table className="min-w-full">
-          <TableHeader>
+          <TableHeader className="sticky top-0 z-10">
             <TableRow className="border-b border-gray-200 bg-[#004969] dark:border-gray-700 dark:bg-gray-800">
               {displayColumns.map((column) => (
                 <TableCell
+                  isHeader={true}
                   key={column.id}
                   className={`px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider ${
                     column.align === 'center' ? 'text-center' : column.align === 'right' ? 'text-right' : 'text-left'
@@ -391,10 +392,10 @@ export function DataTable<T = any>({
                 </TableCell>
               ))}
               {actions && actions.length > 0 && (
-                <TableCell className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">Aksi</TableCell>
+                <TableCell isHeader={true} className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">Aksi</TableCell>
               )}
               {secondaryActions && secondaryActions.length > 0 && (
-                <TableCell className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">Aksi</TableCell>
+                <TableCell isHeader={true} className="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider">Aksi</TableCell>
               )}
             </TableRow>
           </TableHeader>
