@@ -4,72 +4,71 @@ import InputField from '@/components/form/input/InputField';
 import Button from '@/components/ui/button/Button';
 import { Edit2 } from 'react-feather';
 import { useModal } from '@/hooks/useModal';
-// Integrasi modal baru Media Sosial & Kontak Darurat
 import MediaSosialModal, { type MediaSosialForm } from '@/features/staff/components/modals/dataKaryawan/PersonalInformation/MediaSosialModal';
-import type { KaryawanDetailResponse } from '@/features/staff/services/karyawanService';
 import { IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
 
 interface Props {
-  personalInformation: KaryawanDetailResponse['personalInformation'];
+  personalInformation: any; // API response from Data_Sosial_media.social_media array
 }
 
-// Komponen utama kartu Media Sosial & Kontak Darurat
 export default function SocialEmergencyCard({ personalInformation }: Props) {
   const { isOpen, openModal, closeModal } = useModal(false);
-  // Data awal untuk modal sosial dari personalInformation
+  
+  // Extract social media and emergency contact data from social_media array
+  const socialEmergencyData = personalInformation?.social_media[0] || {};
+  
   const initialData: MediaSosialForm = {
-    facebook: personalInformation.facebook || '',
-    linkedin: personalInformation.linkedin || '',
-    xCom: personalInformation.xCom || '',
-    instagram: personalInformation.instagram || '',
-    akunSosialMediaTerdekat: personalInformation.akunSosialMediaTerdekat || '',
-    namaNoKontakDarurat: personalInformation.namaNoKontakDarurat || '',
-    noKontakDarurat: personalInformation.noKontakDarurat || '',
-    hubunganKontakDarurat: personalInformation.hubunganKontakDarurat || '',
+    facebook: socialEmergencyData.facebook_name || '',
+    linkedin: socialEmergencyData.linkedin_name || '',
+    xCom: socialEmergencyData.twitter_name || '',
+    instagram: socialEmergencyData.instagram_name || '',
+    akunSosialMediaTerdekat: socialEmergencyData.relative_social_media || '',
+    namaNoKontakDarurat: socialEmergencyData.emergency_contact_name || '',
+    noKontakDarurat: socialEmergencyData.emergency_contact_number || '',
+    hubunganKontakDarurat: socialEmergencyData.emergency_contact_relationship || '',
   };
-  const pi = personalInformation as any;
-  const isComplete = !!pi?.facebook &&
-    !!pi?.xCom &&
-    !!pi?.linkedin &&
-    !!pi?.instagram &&
-    !!pi?.namaNoKontakDarurat &&
-    !!pi?.noKontakDarurat &&
-    !!pi?.hubunganKontakDarurat &&
-    !!pi?.akunSosialMediaTerdekat;
+  
+  const isComplete = Boolean(
+    socialEmergencyData.facebook_name ||
+    socialEmergencyData.instagram_name ||
+    socialEmergencyData.linkedin_name ||
+    socialEmergencyData.twitter_name ||
+    socialEmergencyData.emergency_contact_name
+  );
   return (
     <ExpandCard title="Media Sosial & Kontak Darurat" leftIcon={isComplete ? <IconLengkap /> : <IconTidakLengkap />} withHeaderDivider>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
           <Label>Facebook</Label>
-          <InputField value={personalInformation.facebook || ''} readonly={true} />
+          <InputField value={socialEmergencyData.facebook_name || ''} readonly={true} />
         </div>
         <div>
           <Label>X.com</Label>
-          <InputField value={personalInformation.xCom || ''} readonly={true} />
+          <InputField value={socialEmergencyData.twitter_name || ''} readonly={true} />
         </div>
         <div>
           <Label>LinkedIn</Label>
-          <InputField value={personalInformation.linkedin || ''} readonly={true} />
+          <InputField value={socialEmergencyData.linkedin_name || ''} readonly={true} />
         </div>
         <div>
           <Label>Instagram</Label>
-          <InputField value={personalInformation.instagram || ''} readonly={true} />
+          <InputField value={socialEmergencyData.instagram_name || ''} readonly={true} />
         </div>
         <div>
           <Label>Nama Kontak Darurat</Label>
-          <InputField value={personalInformation.namaNoKontakDarurat || ''} readonly={true} />
+          <InputField value={socialEmergencyData.emergency_contact_name || ''} readonly={true} />
         </div>
         <div>
           <Label>No. Kontak Darurat</Label>
-          <InputField value={personalInformation.noKontakDarurat || ''} readonly={true} />
+          <InputField value={socialEmergencyData.emergency_contact_number || ''} readonly={true} />
         </div>
         <div>
           <Label>Akun Sosial Media Orang Terdekat</Label>
-          <InputField value={personalInformation.akunSosialMediaTerdekat || ''} readonly={true} />
+          <InputField value={socialEmergencyData.relative_social_media || ''} readonly={true} />
         </div>
         <div>
           <Label>Hubungan dengan Kontak Darurat</Label>
-          <InputField value={personalInformation.hubunganKontakDarurat || ''} readonly={true} />
+          <InputField value={socialEmergencyData.emergency_contact_relationship || ''} readonly={true} />
         </div>
       </div>
       <div className="mt-4 flex justify-end">

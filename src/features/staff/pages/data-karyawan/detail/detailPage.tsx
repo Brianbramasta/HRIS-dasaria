@@ -1,13 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import Tabs from '../../../../structure-and-organize/components/Tabs';
-// import Button from '../../../../../components/ui/button/Button';
-import { karyawanService, type KaryawanDetailResponse } from '../../../../staff/services/karyawanService';
 import PesonalInformationTab from '../../../components/dataKaryawan/tab/pesonalInformation';
 import ContractTab from '../../../components/dataKaryawan/tab/contract';
 import OrganizationHistoryTab from '../../../components/dataKaryawan/tab/organizationHistory';
 import PelanggaranTab from '../../../components/dataKaryawan/tab/pelanggaran';
 import StoryPayrollTab from '../../../components/dataKaryawan/tab/storyPayroll';
+import { useDetailDataKaryawanPersonalInfo } from '@/features/staff/stores/useDetailDataKaryawanPersonalInfo';
 
 function useQuery() {
   const { search } = useLocation();
@@ -21,35 +20,7 @@ export default function DetailKaryawanPage() {
   const mode = query.get('mode') || 'view';
   const isEditable = mode === 'edit';
   const tabParam = (query.get('tab') || 'personal-information').toLowerCase();
-
-  const [data, setData] = useState<KaryawanDetailResponse | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    console.log('id',id)
-    let active = true;
-    async function fetchDetail() {
-      if (!id) return;
-      try {
-        setLoading(true);
-        setError(null);
-        const res = await karyawanService.getKaryawanById(id);
-        if (!active) return;
-        setData(res.data);
-      } catch (err) {
-        if (!active) return;
-        const msg = err instanceof Error ? err.message : 'Gagal memuat detail karyawan';
-        setError(msg);
-      } finally {
-        if (active) setLoading(false);
-      }
-    }
-    fetchDetail();
-    return () => {
-      active = false;
-    };
-  }, [id]);
+  const {detail} = useDetailDataKaryawanPersonalInfo();
 
   const tabs = [
     { id: 'personal-information', label: 'Personal Information' },
@@ -63,24 +34,6 @@ export default function DetailKaryawanPage() {
     return { id: t.id, label: t.label, link: `${location.pathname}?${params.toString()}` };
   });
 
-  if (loading) {
-    return <div className="p-6">Memuat detail…</div>;
-  }
-
-  if (error) {
-    return (
-      <div className="p-6">
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">{error}</div>
-      </div>
-    );
-  }
-
-  if (!data) {
-    return <div className="p-6">Data tidak ditemukan.</div>;
-  }
-
-  
-
   return (
     <div className="space-y-6 p-4">
       {/* Header */}
@@ -88,20 +41,20 @@ export default function DetailKaryawanPage() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex flex-col md:flex-row items-center gap-3">
             <img
-              src={data.karyawan.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${data.karyawan.name}`}
-              alt={data.karyawan.name || ''}
+              src={detail?.Data_Pribadi?.avatar ?? 'https://api.dicebear.com/7.x/avataaars/svg?seed=${id}'}
+              alt="Employee Avatar"
               className="h-12 w-12 rounded-full"
             />
             <div className='text-center md:text-left'>
-              <div className="text-base font-semibold">{data.karyawan.name || 'Megawati'}</div>
-              <div className="text-sm text-gray-500">{data.karyawan.posisi || 'Staff'} | {data.karyawan.company || 'PT. Dasaria Indonesia'}</div>
+              <div className="text-base font-semibold">{detail?.Data_Pribadi?.full_name}</div>
+              <div className="text-sm text-gray-500">{detail?.Data_Employment_Posisi?.department_name} | {detail?.Data_Employment_Posisi?.user_access}</div>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button ><img src='/images/icons/sosial-media/x.svg'/></button>
-            <button ><img src='/images/icons/sosial-media/linkedin.svg'/></button>
-            <button ><img src='/images/icons/sosial-media/facebook.svg'/></button>
-            <button ><img src='/images/icons/sosial-media/instagram.svg'/></button>
+            {detail?.Data_Sosial_media.social_media[0]?.twitter_name && <a href={detail?.Data_Sosial_media.social_media[0]?.twitter_name} target='_blank'><img src='/images/icons/sosial-media/x.svg'/></a>}
+            {detail?.Data_Sosial_media.social_media[0]?.linkedin_name && <a href={detail?.Data_Sosial_media.social_media[0]?.linkedin_name} target='_blank'><img src='/images/icons/sosial-media/linkedin.svg'/></a>}
+            {detail?.Data_Sosial_media.social_media[0]?.facebook_name && <a href={detail?.Data_Sosial_media.social_media[0]?.facebook_name} target='_blank'><img src='/images/icons/sosial-media/facebook.svg'/></a>}
+            {detail?.Data_Sosial_media.social_media[0]?.instagram_name && <a href={detail?.Data_Sosial_media.social_media[0]?.instagram_name} target='_blank'><img src='/images/icons/sosial-media/instagram.svg'/></a>}
           </div>
         </div>
       </div>
@@ -110,15 +63,15 @@ export default function DetailKaryawanPage() {
       {(() => {
         switch (tabs.some(t => t.id === tabParam) ? tabParam : 'personal-information') {
           case 'personal-information':
-            return <PesonalInformationTab data={data} isEditable={isEditable} />;
+            return <PesonalInformationTab employeeId={id!} isEditable={isEditable} />;
           case 'contract':
-            return <ContractTab data={data.karyawan as any} isEditable={isEditable} />;
+            return <ContractTab data={{} as any} isEditable={isEditable} />;
           case 'organization-history':
-            return <OrganizationHistoryTab data={data.karyawan as any} isEditable={isEditable} />;
+            return <OrganizationHistoryTab data={{} as any} isEditable={isEditable} />;
           case 'pelanggaran':
             return <PelanggaranTab />;
           case 'story-payroll':
-            return <StoryPayrollTab data={data.karyawan as any} isEditable={isEditable} />;
+            return <StoryPayrollTab data={{} as any} isEditable={isEditable} />;
           default:
             return null;
         }

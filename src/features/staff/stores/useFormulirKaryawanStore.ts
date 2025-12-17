@@ -58,6 +58,7 @@ const initialFormData: FormulirKaryawanData = {
     jumlahTanggungan: '',
     alamatDomisili: '',
     alamatKtp: '',
+    fotoProfil: '',
   },
   step2: {
     education: [],
@@ -350,7 +351,8 @@ export const useFormulirKaryawanStore = create<FormulirStore>((set, get) => {
           step1.nomorTelepon &&
           step1.jumlahTanggungan &&
           step1.alamatDomisili &&
-          step1.alamatKtp
+          step1.alamatKtp &&
+          step1.fotoProfil
         ); }
 
       case 2:

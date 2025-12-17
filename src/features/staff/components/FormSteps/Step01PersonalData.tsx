@@ -5,6 +5,7 @@ import Select from '../../../../components/form/Select';
 import TextArea from '../../../../components/form/input/TextArea';
 import Label from '../../../../components/form/Label';
 import DatePicker from '../../../../components/form/date-picker';
+import FileInput from '../../../../components/form/input/FileInput';
 import { AGAMA_OPTIONS, PENDIDIKAN_OPTIONS, JENIS_KELAMIN_OPTIONS, STATUS_MENIKAH_OPTIONS, GOLONGAN_DARAH_OPTIONS, 
 TANGGUNGAN_OPTIONS } from '../../utils/employeeMappings';
 
@@ -16,6 +17,11 @@ export const Step01PersonalData: React.FC = () => {
 
   const handleChange = (field: string, value: string) => {
     updateStep1({ [field]: value } as any);
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] || null;
+    updateStep1({ fotoProfil: file } as any);
   };
 
   return (
@@ -171,29 +177,45 @@ export const Step01PersonalData: React.FC = () => {
               required
             />
           </div>
-          {/* Alamat Domisili */}
+          {/* Upload Foto Profil */}
         <div className="mt-4">
-          <Label>Alamat Domisili</Label>
-          <TextArea
-            placeholder="Enter as description ..."
-            value={step1.alamatDomisili}
-            onChange={(value) => handleChange('alamatDomisili', value)}
-            rows={4}
-            required
-          />
+          <Label>Upload Foto Profil</Label>
+          <FileInput onChange={handleFileChange} />
+          {step1.fotoProfil && (
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+              File dipilih: {step1.fotoProfil.name}
+            </p>
+          )}
+        </div>
+        {/* Alamat KTP */}
+          <div>
+            <Label>Alamat KTP</Label>
+            <TextArea
+              placeholder="Enter as description ..."
+              value={step1.alamatKtp}
+              onChange={(value) => handleChange('alamatKtp', value)}
+              rows={4}
+              required
+            />
+          </div>
         </div>
 
-        {/* Alamat KTP */}
-        <div className="mt-4">
-          <Label>Alamat KTP</Label>
-          <TextArea
-            placeholder="Enter as description ..."
-            value={step1.alamatKtp}
-            onChange={(value) => handleChange('alamatKtp', value)}
-            rows={4}
-            required
-          />
-        </div>
+        
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Alamat Domisili */}
+          <div>
+            <Label>Alamat Domisili</Label>
+            <TextArea
+              placeholder="Enter as description ..."
+              value={step1.alamatDomisili}
+              onChange={(value) => handleChange('alamatDomisili', value)}
+              rows={4}
+              required
+            />
+          </div>
+
+          
         </div>
 
         

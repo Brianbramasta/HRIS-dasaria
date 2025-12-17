@@ -906,7 +906,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base_url}}/api/organizational-structure/companies?search=test",
+									"raw": "{{base_url}}/api/organizational-structure/companies",
 									"host": [
 										"{{base_url}}"
 									],
@@ -918,7 +918,8 @@
 									"query": [
 										{
 											"key": "search",
-											"value": "test"
+											"value": "test",
+											"disabled": true
 										},
 										{
 											"key": "sort",
@@ -1213,12 +1214,12 @@
 											"type": "text"
 										},
 										{
-											"key": "company[0][id_company]",
+											"key": "company[0][company_id]",
 											"value": "019ad7e9-2331-71ed-8ee7-ff7af32a8cd6",
 											"type": "text"
 										},
 										{
-											"key": "company[1][id_company]",
+											"key": "company[1][company_id]",
 											"value": "019ae21c-307b-717e-9e7b-86e2eb42e681",
 											"type": "text"
 										},
@@ -1395,16 +1396,14 @@
 											"type": "text"
 										},
 										{
-											"key": "company[0][id_company]",
+											"key": "company[0][company_id]",
 											"value": "019ae365-412f-701f-983f-b17071f92ba2",
-											"type": "text",
-											"disabled": true
+											"type": "text"
 										},
 										{
-											"key": "company[1][id_company]",
+											"key": "company[1][company_id]",
 											"value": "",
-											"type": "text",
-											"disabled": true
+											"type": "text"
 										},
 										{
 											"key": "office_decree_number",
@@ -1413,14 +1412,13 @@
 										},
 										{
 											"key": "office_description",
-											"value": "entah ",
+											"value": "entah  1",
 											"type": "text"
 										},
 										{
 											"key": "office_decree_file",
 											"type": "file",
-											"src": [],
-											"disabled": true
+											"src": []
 										}
 									]
 								},
@@ -1780,7 +1778,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base_url}}/api/organizational-structure/divisions/019ae778-9bf9-7021-80ab-f7ef64e7e1a2",
+									"raw": "{{base_url}}/api/organizational-structure/divisions/019ae8a3-11de-7361-8643-e0e0166a1c03",
 									"host": [
 										"{{base_url}}"
 									],
@@ -1788,7 +1786,7 @@
 										"api",
 										"organizational-structure",
 										"divisions",
-										"019ae778-9bf9-7021-80ab-f7ef64e7e1a2"
+										"019ae8a3-11de-7361-8643-e0e0166a1c03"
 									]
 								}
 							},
@@ -1809,12 +1807,12 @@
 										},
 										{
 											"key": "division_name",
-											"value": "",
+											"value": "tes ",
 											"type": "text"
 										},
 										{
-											"key": "id_directorate",
-											"value": "",
+											"key": "directorate_id",
+											"value": "019ae21e-7ff8-7315-80a5-a139bbc01e52",
 											"type": "text"
 										},
 										{
@@ -1835,7 +1833,7 @@
 									]
 								},
 								"url": {
-									"raw": "{{base_url}}/api/organizational-structure/divisions/019ae833-9eee-71a2-929f-918f233f6d4e",
+									"raw": "{{base_url}}/api/organizational-structure/divisions/019ae8a3-11de-7361-8643-e0e0166a1c03",
 									"host": [
 										"{{base_url}}"
 									],
@@ -1843,7 +1841,7 @@
 										"api",
 										"organizational-structure",
 										"divisions",
-										"019ae833-9eee-71a2-929f-918f233f6d4e"
+										"019ae8a3-11de-7361-8643-e0e0166a1c03"
 									]
 								}
 							},
@@ -2636,27 +2634,27 @@
 									"formdata": [
 										{
 											"key": "position_name",
-											"value": "",
+											"value": "tes update 1",
 											"type": "text"
 										},
 										{
 											"key": "id_job_title",
-											"value": "",
+											"value": "019aee8b-ab6d-707c-8fc8-34147caf1254",
 											"type": "text"
 										},
 										{
 											"key": "id_directorate",
-											"value": "",
+											"value": "019ae265-320f-73ac-87c2-25b927de4e77",
 											"type": "text"
 										},
 										{
 											"key": "id_division",
-											"value": "",
+											"value": "019ae889-1ecb-7262-88ed-58868c0e4bf4",
 											"type": "text"
 										},
 										{
 											"key": "id_department",
-											"value": "",
+											"value": "019aed99-baf2-738f-9ba1-adde262af553",
 											"type": "text"
 										},
 										{
@@ -2708,6 +2706,36 @@
 					"name": "Data Karyawan",
 					"item": [
 						{
+							"name": "Detail Profile",
+							"item": [
+								{
+									"name": "Informasi Pribadi",
+									"item": [
+										{
+											"name": "Get Data Detail Karyawan",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{base_url}}/api/employee-master-data/employees/019b2635-a1a5-71d9-a7f2-b30831cc893f",
+													"host": [
+														"{{base_url}}"
+													],
+													"path": [
+														"api",
+														"employee-master-data",
+														"employees",
+														"019b2635-a1a5-71d9-a7f2-b30831cc893f"
+													]
+												}
+											},
+											"response": []
+										}
+									]
+								}
+							]
+						},
+						{
 							"name": "Dropdwon Perusahaan",
 							"request": {
 								"method": "GET",
@@ -2732,14 +2760,15 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base_url}}/api/employee-master-data/offices",
+									"raw": "{{base_url}}/api/employee-master-data/offices/019ad7eb-5df0-7383-b933-c4f1c208db39",
 									"host": [
 										"{{base_url}}"
 									],
 									"path": [
 										"api",
 										"employee-master-data",
-										"offices"
+										"offices",
+										"019ad7eb-5df0-7383-b933-c4f1c208db39"
 									]
 								}
 							},
@@ -3006,7 +3035,7 @@
 										{
 											"key": "documents[0][file_type]",
 											"value": "1",
-											"description": "1: surat keterangan pengalaman kerja, 2: pakta integritas, 3: PKWT/PKWTT, 4: surat perjanjian bersama, 5: dokumen lainnya",
+											"description": "1: Foto Terbaru 2: Kartu Tanda Penduduk\n3: Ijazah Terakhir 4: Kartu Keluarga 5: BPJS Kesehatan 6: BPJS Ketenagakerjaan 7: NPWP 8: Surat Keterangan Pengalaman Kerja 9: Surat Perjanjian Bersama10: NDA 11: Jobdesk 12: Pakta Integritas 13: PKWT/PKWTT",
 											"type": "text"
 										},
 										{
@@ -3343,7 +3372,7 @@
 		},
 		{
 			"key": "base_url",
-			"value": "http://192.168.1.23:8000"
+			"value": "http://192.168.2.154:8000"
 		}
 	]
 }

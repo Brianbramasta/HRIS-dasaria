@@ -1,15 +1,15 @@
 import ExpandCard from '@/features/structure-and-organize/components/card/ExpandCard';
 import DocumentsTable from '@/features/structure-and-organize/components/table/TableGlobal';
 import Button from '@/components/ui/button/Button';
-import { Download, Eye, Edit2 } from 'react-feather';
+import {  Edit2 } from 'react-feather';
 import React from 'react';
 import { useModal } from '@/hooks/useModal';
 import PersonalDocumentsModal from '@/features/staff/components/modals/dataKaryawan/PersonalInformation/PersonalDocumentsModal';
-import type { KaryawanDetailResponse } from '@/features/staff/services/karyawanService';
-import { IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
+import { IconFileDetail, IconHapus, IconLengkap, IconPencil, IconTidakLengkap } from '@/icons/components/icons';
+import { formatUrlFile } from '@/utils/formatUrlFile';
 
 interface Props {
-  documents: KaryawanDetailResponse['documents'];
+  documents: any; // API response from employee-master-data
 }
 
 export default function PersonalDocumentsCard({ documents }: Props) {
@@ -17,11 +17,21 @@ export default function PersonalDocumentsCard({ documents }: Props) {
   const { isOpen, openModal, closeModal } = useModal(false);
 
   React.useEffect(() => {
-    const mapped = (documents || []).map((d, idx) => ({ id: idx + 1, no: idx + 1, namaFile: d.namaFile || '', dokumen: d.tipeFile || '' }));
+    // Note: API response doesn't have documents field in the current contract
+    // This is a placeholder implementation
+    const docs = documents?.documents || [];
+    const mapped = docs.map((d: any, idx: number) => ({
+      id: d.id || idx + 1,
+      no: idx + 1,
+      namaFile: d.name_file || '',
+      fileType: d.file_type || '',
+      fileUrl: d.file || '',
+    }));
+    console.log('Mapped documents', mapped);
     setPersonalFiles(mapped);
   }, [documents]);
 
-  const isComplete = Array.isArray(documents) && documents.length > 0 && documents.every((d: any) => !!d?.namaFile && !!d?.tipeFile);
+  const isComplete = Array.isArray(documents?.documents) && documents.documents.length > 0 && documents.documents.every((d: any) => !!d?.file_name && !!d?.file_type);
 
   return (
     <ExpandCard title="Berkas/Dokumen Pribadi" leftIcon={isComplete ? <IconLengkap /> : <IconTidakLengkap />} withHeaderDivider>
@@ -30,18 +40,27 @@ export default function PersonalDocumentsCard({ documents }: Props) {
           items={personalFiles}
           columns={[
             { id: 'no', label: 'No.', align: 'center', render: (_v, _row, idx) => idx + 1 },
+            { id: 'fileType', label: 'Tipe File' },
             { id: 'namaFile', label: 'Nama File' },
-            { id: 'dokumen', label: 'Dokumen' },
           ]}
           actions={[
             {
-              icon: <Eye size={16} />,
-              className: 'rounded-md border border-gray-300 px-2 py-1 text-sm hover:bg-gray-50',
+              icon: <IconHapus size={16} />,
+              className: ' border-gray-300 text-sm hover:bg-gray-50',
               onClick: () => {},
             },
             {
-              icon: <Download size={16} />,
-              className: 'rounded-md border border-gray-300 px-2 py-1 text-sm hover:bg-gray-50',
+              icon: <IconFileDetail size={16} />,
+              className: ' border-gray-300 text-sm hover:bg-gray-50',
+              onClick: (row: any) => {
+                console.log('View clicked', row);
+                console.log('View clicked dokuments', documents);
+                window.open(formatUrlFile(row.fileUrl), '_blank'); 
+              },
+            },
+            {
+              icon: <IconPencil size={16} />,
+              className: ' border-gray-300 text-sm hover:bg-gray-50',
               onClick: () => {},
             },
           ]}

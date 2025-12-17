@@ -23,6 +23,7 @@ export interface PersonalDataFormData {
   jumlahTanggungan: string;
   alamatDomisili: string;
   alamatKtp: string;
+  fotoProfil: File | string;
 }
 
 // Step 2: Educational Background & Media Sosial

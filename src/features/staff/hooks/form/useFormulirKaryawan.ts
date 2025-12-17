@@ -84,11 +84,42 @@ export const useFormulirKaryawan = (): UseFormulirKaryawanReturn => {
         // Jika user tidak login, tampilkan success modal
         setShowSuccessModal(true);
       }
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Gagal menyimpan data karyawan';
-      setError(errorMessage);
+    } catch (err: any) {
       console.error('Submit error:', err);
+      
+      // Handle validation errors (422 status)
+      if (err?.errors && typeof err.errors === 'object') {
+        // Format validation errors for display
+        const errorMessages: string[] = [];
+        Object.entries(err.errors).forEach(([field, messages]) => {
+          if (Array.isArray(messages)) {
+            console.log(`Field: ${field}, Messages: ${messages}`);
+            messages.forEach((msg) => errorMessages.push(msg));
+          }
+        });
+        
+        const errorText = errorMessages.join(', ');
+        setError(errorText);
+        
+        // Show notification for validation errors
+        addNotification({
+          variant: 'error',
+          title: 'Validasi Gagal',
+          description: errorText,
+          hideDuration: 7000,
+        });
+      } else {
+        // Handle general errors
+        const errorMessage = err?.message || 'Gagal menyimpan data karyawan';
+        setError(errorMessage);
+        
+        addNotification({
+          variant: 'error',
+          title: 'Gagal Menyimpan',
+          description: errorMessage,
+          hideDuration: 5000,
+        });
+      }
     } finally {
       setLoading(false);
     }

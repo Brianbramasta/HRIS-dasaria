@@ -5,27 +5,26 @@ import Button from '@/components/ui/button/Button';
 import { Edit2 } from 'react-feather';
 import { useModal } from '@/hooks/useModal';
 import SalaryBpjsModal, { type SalaryBpjsForm } from '@/features/staff/components/modals/dataKaryawan/PersonalInformation/SalaryBpjsModal';
-import type { KaryawanDetailResponse } from '@/features/staff/services/karyawanService';
 import { IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
 
 interface Props {
-  financeAndCompliance: KaryawanDetailResponse['financeAndCompliance'];
+  financeAndCompliance: any; // API response from employee-master-data
 }
 
 export default function SalaryCard({ financeAndCompliance }: Props) {
   const { isOpen, openModal, closeModal } = useModal(false);
   const initialData: SalaryBpjsForm = {
     gaji: '',
-    bank: financeAndCompliance.bank || '',
-    namaAkunBank: financeAndCompliance.namaAkunBank || '',
-    noRekening: financeAndCompliance.noRekening || '',
-    npwp: financeAndCompliance.npwp || '',
-    ptkpStatus: '',
+    bank: financeAndCompliance?.bank_name || '',
+    namaAkunBank: financeAndCompliance?.bank_account_holder || '',
+    noRekening: financeAndCompliance?.bank_account_number || '',
+    npwp: financeAndCompliance?.npwp || '',
+    ptkpStatus: financeAndCompliance?.ptkp_code || '',
   };
-  const isComplete = !!financeAndCompliance.bank &&
-    !!financeAndCompliance.namaAkunBank &&
-    !!financeAndCompliance.noRekening &&
-    !!financeAndCompliance.npwp;
+  const isComplete = !!financeAndCompliance?.bank_name &&
+    !!financeAndCompliance?.bank_account_holder &&
+    !!financeAndCompliance?.bank_account_number &&
+    !!financeAndCompliance?.npwp;
   return (
     <ExpandCard title="Gaji" leftIcon={isComplete ? <IconLengkap /> : <IconTidakLengkap />} withHeaderDivider>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -35,23 +34,23 @@ export default function SalaryCard({ financeAndCompliance }: Props) {
         </div> */}
         <div className="md:col-span-2">
           <Label>Bank</Label>
-          <InputField value={financeAndCompliance.bank || ''} readonly={true} />
+          <InputField value={financeAndCompliance?.bank_name || ''} readonly={true} />
         </div>
         <div>
           <Label>Nama Akun Bank</Label>
-          <InputField value={financeAndCompliance.namaAkunBank || ''} readonly={true} />
+          <InputField value={financeAndCompliance?.bank_account_holder || ''} readonly={true} />
         </div>
         <div>
           <Label>No. Rekening</Label>
-          <InputField value={financeAndCompliance.noRekening || ''} readonly={true} />
+          <InputField value={financeAndCompliance?.bank_account_number || ''} readonly={true} />
         </div>
         <div>
           <Label>NPWP</Label>
-          <InputField value={financeAndCompliance.npwp || ''} readonly={true} />
+          <InputField value={financeAndCompliance?.npwp || ''} readonly={true} />
         </div>
         <div>
           <Label>PTKP Status</Label>
-          <InputField value={''} readonly={true} />
+          <InputField value={financeAndCompliance?.ptkp_code || ''} readonly={true} />
         </div>
       </div>
       <div className="mt-4 flex justify-end">

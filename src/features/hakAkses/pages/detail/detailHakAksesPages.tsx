@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { DataTable, DataTableColumn, DataTableAction } from '../../../structure-and-organize/components/datatable/DataTable';
 import { IconHapus, IconChangePassword } from '@/icons/components/icons';
+import TambahRoleModal from '../../components/modals/tambahRole';
 
 interface UserData {
   no: number;
@@ -14,6 +15,7 @@ interface UserData {
 
 export default function DetailHakAksesPages() {
   const { roleId } = useParams<{ roleId: string }>();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [data] = useState<UserData[]>([
     { 
       no: 1, 
@@ -95,9 +97,23 @@ export default function DetailHakAksesPages() {
 
   const roleName = getRoleName(roleId);
 
+  // Mock employee options untuk dropdown ID Karyawan
+  const employeeOptions = [
+    { value: 'EMP001', label: 'EMP001 - John Doe' },
+    { value: 'EMP002', label: 'EMP002 - Jane Smith' },
+    { value: 'EMP003', label: 'EMP003 - Bob Johnson' },
+    { value: 'EMP004', label: 'EMP004 - Alice Williams' },
+    { value: 'EMP005', label: 'EMP005 - Charlie Brown' },
+  ];
+
   const handleAdd = () => {
-    console.log('Add new user');
-    // Handle add user action
+    setIsModalOpen(true);
+  };
+
+  const handleSubmit = (values: any) => {
+    console.log('New user submitted:', values);
+    // Implement API call to create new user here
+    // After success, refresh the data table
   };
 
   return (
@@ -112,6 +128,13 @@ export default function DetailHakAksesPages() {
         searchPlaceholder="Cari berdasarkan kata kunci"
         pageSize={10}
         filterable={true}
+      />
+      
+      <TambahRoleModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleSubmit}
+        employeeOptions={employeeOptions}
       />
     </div>
   );

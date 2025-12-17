@@ -57,8 +57,8 @@ class EmployeeMasterDataService {
    * @param idEmployee - UUID karyawan
    * @returns Promise dengan detail karyawan
    */
-  async getEmployeeDetail(idEmployee: string): Promise<ApiResponse<any>> {
-    return apiService.get<any>(`${this.basePath}/employees/${idEmployee}`);
+  async getEmployeeDetailPersonal(idEmployee: string): Promise<ApiResponse<any>> {
+    return apiService.get<any>(`${this.basePath}/employees/${idEmployee}/data-personal`);
   }
 
   /**

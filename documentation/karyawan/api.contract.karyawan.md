@@ -299,6 +299,138 @@ GET {{base_url}}/api/employee-master-data/employees?search=tes44@gmail.com&sort=
 **URL:** `{{base_url}}/api/employee-master-data/employees/{id_employee}`  
 **Method:** GET
 
+**Path Parameters:**
+
+- `id_employee` (required) - ID karyawan (contoh: "019b2635-a1a5-71d9-a7f2-b30831cc893f")
+
+**Response:**
+
+```json
+{
+    "meta": {
+        "status": 200,
+        "message": "Success get employee detail"
+    },
+    "data": {
+        "Data_Pribadi": {
+            "id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
+            "full_name": "Brian Bramasta 2",
+            "national_id": "345617",
+            "email": "Brianaldybramastaerrr@gmail.com",
+            "religion": "Christianity - Protestant",
+            "blood_type": "B",
+            "birth_place": "Bojonegoro",
+            "birth_date": "2025-12-01",
+            "last_education": "SD",
+            "marital_status": "Belum Menikah",
+            "gender": "Laki-laki",
+            "household_dependents": "1",
+            "phone_number": "333333",
+            "current_address": "aa",
+            "ktp_address": "aa"
+        },
+        "Data_Pendidikan": {
+            "employee_id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
+            "formal_educations": [
+                {
+                    "id": "019b2b02-dd76-7255-a6ce-0a6118e45d97",
+                    "education_level": "S1",
+                    "institution_name": "test",
+                    "degree": "aha",
+                    "final_grade": "3",
+                    "major": "test",
+                    "graduation_year": "2022",
+                    "employee_id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
+                    "created_at": "2025-12-17T06:32:46.000000Z",
+                    "updated_at": "2025-12-17T06:32:46.000000Z"
+                }
+            ],
+            "non_formal_educations": [
+                {
+                    "id": "019b2b02-dd7a-700b-a21e-d80cafb8baef",
+                    "employee_id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
+                    "certificate_name": "test",
+                    "institution_name": "testtttt",
+                    "start_date": "2025-12-01",
+                    "end_date": "2025-12-01",
+                    "certificate_id": "55466647",
+                    "certificate_file": "EmployeeMasterData\/Education\/non-formal\/f9e5fd1d-a7af-4e32-915c-1865a586e4a1.pdf",
+                    "deleted_at": null,
+                    "created_at": "2025-12-17T06:32:46.000000Z",
+                    "updated_at": "2025-12-17T06:32:46.000000Z"
+                }
+            ]
+        },
+        "Data_Sosial_media": {
+            "employee_id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
+            "social_media": [
+                {
+                    "id": "019b2b02-dd7e-7154-8620-b115a5409e54",
+                    "facebook_name": "https:\/\/brianaldybramasta.my.id\/",
+                    "instagram_name": "https:\/\/brianaldybramasta.my.id\/",
+                    "linkedin_name": "https:\/\/brianaldybramasta.my.id\/",
+                    "twitter_name": "https:\/\/brianaldybramasta.my.id\/",
+                    "relative_social_media": "https:\/\/brianaldybramasta.my.id\/",
+                    "emergency_contact_number": "08999999999",
+                    "emergency_contact_name": "siapa ya",
+                    "emergency_contact_relationship": "oke",
+                    "employee_id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
+                    "deleted_at": null,
+                    "created_at": "2025-12-17T06:32:46.000000Z",
+                    "updated_at": "2025-12-17T06:32:46.000000Z"
+                }
+            ]
+        },
+        "Data_Keuangan": {
+            "employee_id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
+            "bank_account_number": "235566666",
+            "bank_name": "bca",
+            "bank_account_holder": "test",
+            "npwp": "345678999",
+            "ptkp_code": "K\/3"
+        },
+        "Data_BPJS": {
+            "employee_id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
+            "bpjs_employment_number": "123455555",
+            "bpjs_employment_status": "Aktif",
+            "bpjs_health_number": "123333",
+            "bpjs_health_status": "Aktif"
+        },
+        "Data_Employment_Posisi": {
+            "employee_id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
+            "employment_status": "Evaluasi",
+            "resignation_status": null,
+            "created_at": "2025-12-17T06:32:46.000000Z",
+            "updated_at": "2025-12-17T06:32:46.000000Z",
+            "company_name": "PT. Artificial Intelligence Indonesia",
+            "office_name": "ini kantor ai",
+            "directorate_name": "ini nama direktorat 3 jadi 4",
+            "division_name": "ini divisi 1",
+            "department_name": "Human Resource Development",
+            "job_title_name": null,
+            "grade": "DA-001",
+            "position_name": "Accounting Manager",
+            "start_date": "2025-11-01",
+            "end_date": "2026-11-01",
+            "position_level": "Genereal",
+            "payroll_status": "aktif",
+            "employee_category": "Staff",
+            "user_access": "no"
+        },
+        "Data_Dokumen": {
+            "employee_id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
+            "documents": [
+                {
+                    "file_type": "Kartu Tanda Penduduk",
+                    "file": "EmployeeMasterData\/Document\/372552d2-5553-45ef-9f50-84e39d0cf406.pdf",
+                    "name_file": "dummy-pdf_2.pdf"
+                }
+            ]
+        }
+    }
+}
+```
+
 ---
 
 ## Create Karyawan

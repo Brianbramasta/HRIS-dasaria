@@ -5,11 +5,10 @@ import Button from '@/components/ui/button/Button';
 import { Edit2 } from 'react-feather';
 import { useModal } from '@/hooks/useModal';
 import SalaryBpjsModal, { type SalaryBpjsForm } from '@/features/staff/components/modals/dataKaryawan/PersonalInformation/SalaryBpjsModal';
-import type { KaryawanDetailResponse } from '@/features/staff/services/karyawanService';
 import { IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
 
 interface Props {
-  financeAndCompliance: KaryawanDetailResponse['financeAndCompliance'];
+  financeAndCompliance: any; // API response from employee-master-data
 }
 
 export default function BPJSCard({ financeAndCompliance }: Props) {
@@ -21,34 +20,34 @@ export default function BPJSCard({ financeAndCompliance }: Props) {
     namaAkunBank: '',
     npwp: '',
     ptkpStatus: '',
-    noBpjsKS: financeAndCompliance.noBpjsKesehatan || '',
-    statusBpjsKS: financeAndCompliance.statusBpjsKesehatan || '',
-    noBpjsTK: financeAndCompliance.noBpjsKetenagakerjaan || '',
-    statusBpjsTK: financeAndCompliance.statusBpjsKetenagakerjaan || '',
-    nominalBpjsTK: financeAndCompliance.nominalBpjsTk || '',
+    noBpjsKS: financeAndCompliance?.bpjs_health_number || '',
+    statusBpjsKS: financeAndCompliance?.bpjs_health_status || '',
+    noBpjsTK: financeAndCompliance?.bpjs_employment_number || '',
+    statusBpjsTK: financeAndCompliance?.bpjs_employment_status || '',
+    nominalBpjsTK: '',
   };
-  const isComplete = !!financeAndCompliance.noBpjsKesehatan &&
-    !!financeAndCompliance.statusBpjsKesehatan &&
-    !!financeAndCompliance.noBpjsKetenagakerjaan &&
-    !!financeAndCompliance.statusBpjsKetenagakerjaan;
+  const isComplete = !!financeAndCompliance?.bpjs_health_number &&
+    !!financeAndCompliance?.bpjs_health_status &&
+    !!financeAndCompliance?.bpjs_employment_number &&
+    !!financeAndCompliance?.bpjs_employment_status;
   return (
     <ExpandCard title="BPJS" leftIcon={isComplete ? <IconLengkap /> : <IconTidakLengkap />} withHeaderDivider>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
           <Label>No. BPJS Kesehatan</Label>
-          <InputField value={financeAndCompliance.noBpjsKesehatan || ''} readonly={true} />
+          <InputField value={financeAndCompliance?.bpjs_health_number || ''} readonly={true} />
         </div>
         <div>
           <Label>Status BPJS Kesehatan</Label>
-          <InputField value={financeAndCompliance.statusBpjsKesehatan || ''} readonly={true} />
+          <InputField value={financeAndCompliance?.bpjs_health_status || ''} readonly={true} />
         </div>
         <div>
           <Label>No. BPJS Ketenagakerjaan</Label>
-          <InputField value={financeAndCompliance.noBpjsKetenagakerjaan || ''} readonly={true} />
+          <InputField value={financeAndCompliance?.bpjs_employment_number || ''} readonly={true} />
         </div>
         <div>
           <Label>Status BPJS Ketenagakerjaan</Label>
-          <InputField value={financeAndCompliance.statusBpjsKetenagakerjaan || ''} readonly={true} />
+          <InputField value={financeAndCompliance?.bpjs_employment_status || ''} readonly={true} />
         </div>
         {/* <div>
           <Label>Nominal BPJS TK</Label>

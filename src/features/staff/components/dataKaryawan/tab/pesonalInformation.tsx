@@ -1,4 +1,3 @@
-// import type { Karyawan } from '@/features/staff/types/Karyawan';
 import React from 'react';
 import PersonalDataCard from '@/features/staff/components/dataKaryawan/card/PersonalDataCard';
 import EducationalBackgroundCard from '@/features/staff/components/dataKaryawan/card/EducationalBackgroundCard';
@@ -7,43 +6,19 @@ import EmployeeDataCard from '@/features/staff/components/dataKaryawan/card/Empl
 import SalaryCard from '@/features/staff/components/dataKaryawan/card/SalaryCard';
 import BPJSCard from '@/features/staff/components/dataKaryawan/card/BPJSCard';
 import PersonalDocumentsCard from '@/features/staff/components/dataKaryawan/card/PersonalDocumentsCard';
-import { karyawanService, type KaryawanDetailResponse } from '@/features/staff/services/karyawanService';
+import { useDetailDataKaryawanPersonalInfo } from '@/features/staff/stores/useDetailDataKaryawanPersonalInfo';
 
 interface Props {
-  data: KaryawanDetailResponse;
+  employeeId: string;
   isEditable: boolean;
 }
 
-export default function PesonalInformationTab({ data }: Props) {
-  const [detail, setDetail] = React.useState<KaryawanDetailResponse | null>(null);
-  const [loading, setLoading] = React.useState<boolean>(true);
-  const [error, setError] = React.useState<string | null>(null);
+export default function PesonalInformationTab({ employeeId }: Props) {
+  const { detail, loading, error, fetchDetail } = useDetailDataKaryawanPersonalInfo();
 
   React.useEffect(() => {
-    let active = true;
-    console.log('data karyawan',data)
-    console.log('data karyawan2',data.karyawan)
-    console.log('data karyawan3',data.karyawan.id)
-    async function fetchDetail() {
-      try {
-        setLoading(true);
-        setError(null);
-        const res = await karyawanService.getKaryawanById(data.karyawan.id);
-        if (!active) return;
-        setDetail(res.data);
-      } catch (err) {
-        if (!active) return;
-        const msg = err instanceof Error ? err.message : 'Gagal memuat detail karyawan';
-        setError(msg);
-      } finally {
-        if (active) setLoading(false);
-      }
-    }
-    fetchDetail();
-    return () => {
-      active = false;
-    };
-  }, [data.karyawan.id]);
+    fetchDetail(employeeId);
+  }, [employeeId, fetchDetail]);
 
   if (loading) {
     return <div className="p-4">Memuat detail…</div>;
@@ -57,13 +32,13 @@ export default function PesonalInformationTab({ data }: Props) {
 
   return (
     <div className="space-y-6">
-      <PersonalDataCard data={detail.karyawan} personalInformation={detail.personalInformation} />
-      <EducationalBackgroundCard education={detail.education} />
-      <SocialEmergencyCard personalInformation={detail.personalInformation} />
-      <EmployeeDataCard data={detail.karyawan} />
-      <SalaryCard financeAndCompliance={detail.financeAndCompliance} />
-      <BPJSCard financeAndCompliance={detail.financeAndCompliance} />
-      <PersonalDocumentsCard documents={detail.documents} />
+      <PersonalDataCard data={detail.Data_Pribadi} />
+      <EducationalBackgroundCard education={detail.Data_Pendidikan} />
+      <SocialEmergencyCard personalInformation={detail.Data_Sosial_media} />
+      <EmployeeDataCard data={detail.Data_Employment_Posisi} />
+      <SalaryCard financeAndCompliance={detail.Data_Keuangan} />
+      <BPJSCard financeAndCompliance={detail.Data_BPJS} />
+      <PersonalDocumentsCard documents={detail.Data_Dokumen} />
     </div>
   );
 }

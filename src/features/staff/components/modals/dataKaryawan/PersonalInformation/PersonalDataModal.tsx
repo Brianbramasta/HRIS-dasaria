@@ -5,6 +5,7 @@ import InputField from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
 import TextArea from '@/components/form/input/TextArea';
 import DatePicker from '@/components/form/date-picker';
+import FileInput from '@/components/form/input/FileInput';
 
 export type PersonalDataForm = {
   idKaryawan?: string;
@@ -22,6 +23,7 @@ export type PersonalDataForm = {
   alamatDomisili?: string;
   alamatKtp?: string;
   agama?: string;
+  fotoProfil?: File | null;
 };
 
 interface PersonalDataModalProps {
@@ -48,6 +50,7 @@ const emptyForm: PersonalDataForm = {
   alamatDomisili: '',
   alamatKtp: '',
   agama: '',
+  fotoProfil: null,
 };
 
 const AGAMA_OPTIONS = [
@@ -103,6 +106,11 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
 
   const handleInput = (key: keyof PersonalDataForm, value: any) => {
     setForm((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] || null;
+    setForm((prev) => ({ ...prev, fotoProfil: file }));
   };
 
   const content = (
@@ -169,6 +177,16 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
         <div>
           <Label>Jumlah Tanggungan sesuai KK</Label>
           <Select options={TANGGUNGAN_OPTIONS} defaultValue={form.jumlahTanggungan || ''} onChange={(v) => handleInput('jumlahTanggungan', v)} placeholder="Select" />
+        </div>
+
+        <div className="md:col-span-2">
+          <Label>Upload Foto Profil</Label>
+          <FileInput onChange={handleFileChange} />
+          {form.fotoProfil && (
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+              File dipilih: {form.fotoProfil.name}
+            </p>
+          )}
         </div>
 
         <div>
