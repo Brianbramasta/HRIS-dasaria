@@ -90,7 +90,7 @@ export default function EducationalBackgroundCard({ education }: Props) {
                   variant="outline"
                   size="sm"
                   className="w-full "
-                  style={{ jus: '100%' }}
+                  // style={{ justifyContent: 'space-between' }}
                   onClick={() => window.open(formatUrlFile(item?.certificate_file), '_blank')}
                   disabled={!item?.certificate_file}
                   endIcon={

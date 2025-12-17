@@ -2,6 +2,7 @@ import { DataTableColumn, DataTableAction } from '../../../structure-and-organiz
 import { Karyawan } from '../../types/Karyawan';
 import { IconFileDetail, IconHapus } from '@/icons/components/icons';
 import { renderSisaKontrakBadge } from './dateHelpers';
+import { formatDateToIndonesian } from '@/utils/formatDate';
 
 /**
  * Get columns configuration for employee data table
@@ -61,20 +62,21 @@ export const getKaryawanColumns = (
     label: 'Tanggal Lahir',
     minWidth: 130,
     sortable: true,
-    format: (_, row) => row.birth_date || '-',
+    format: (_, row) => formatDateToIndonesian(row.birth_date as string) || '-',
   },
   {
     id: 'tanggalJoin',
     label: 'Tanggal Masuk',
     minWidth: 130,
     sortable: true,
+    format: (_, row) => formatDateToIndonesian(row.tanggalJoin as string) || '-',
   },
   {
     id: 'tanggalBerakhir',
     label: 'Tanggal Berakhir',
     minWidth: 140,
     sortable: true,
-    format: (value) => value || '-',
+    format: (value) => formatDateToIndonesian(value as string) || '-',
   },
   {
     id: 'sisaKontrak',

@@ -181,11 +181,11 @@ export const Step01PersonalData: React.FC = () => {
         <div className="mt-4">
           <Label>Upload Foto Profil</Label>
           <FileInput onChange={handleFileChange} />
-          {step1.fotoProfil && (
+          {/* {step1.fotoProfil && (
             <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
               File dipilih: {step1.fotoProfil.name}
             </p>
-          )}
+          )} */}
         </div>
         {/* Alamat KTP */}
           <div>

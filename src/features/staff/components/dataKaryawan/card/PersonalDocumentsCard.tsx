@@ -45,12 +45,12 @@ export default function PersonalDocumentsCard({ documents }: Props) {
           ]}
           actions={[
             {
-              icon: <IconHapus size={16} />,
+              icon: <IconHapus />,
               className: ' border-gray-300 text-sm hover:bg-gray-50',
               onClick: () => {},
             },
             {
-              icon: <IconFileDetail size={16} />,
+              icon: <IconFileDetail />,
               className: ' border-gray-300 text-sm hover:bg-gray-50',
               onClick: (row: any) => {
                 console.log('View clicked', row);
@@ -59,7 +59,7 @@ export default function PersonalDocumentsCard({ documents }: Props) {
               },
             },
             {
-              icon: <IconPencil size={16} />,
+              icon: <IconPencil  />,
               className: ' border-gray-300 text-sm hover:bg-gray-50',
               onClick: () => {},
             },

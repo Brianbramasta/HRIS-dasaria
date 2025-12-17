@@ -15,7 +15,7 @@ import {
   mapPayrollStatusToCode,
   mapEmployeeCategoryToCode,
 } from '../../utils/employeeMappings';
-import { formatDateToISO } from '@/utils/formatDate';
+import { formatIndonesianToISO } from '@/utils/formatDate';
 
 const appendIfValue = (fd: FormData, key: string, value: any) => {
   if (value !== undefined && value !== null && `${value}` !== '') {
@@ -38,7 +38,7 @@ export function useCreateEmployee() {
     appendIfValue(fd, 'religion', mapAgamaToCode(formData.step1.agama));
     appendIfValue(fd, 'blood_type', formData.step1.golDarah);
     appendIfValue(fd, 'birth_place', formData.step1.tempatLahir);
-    appendIfValue(fd, 'birth_date', formatDateToISO(formData.step1.tanggalLahir));
+    appendIfValue(fd, 'birth_date', formatIndonesianToISO(formData.step1.tanggalLahir));
     appendIfValue(fd, 'last_education', mapPendidikanToCode(formData.step1.pendidikanTerakhir));
     appendIfValue(fd, 'marital_status', mapStatusMenikahToCode(formData.step1.statusMenikah));
     appendIfValue(fd, 'gender', mapGenderToCode(formData.step1.jenisKelamin));
@@ -83,8 +83,8 @@ export function useCreateEmployee() {
     if (nonFormal) {
       appendIfValue(fd, 'non_formal_education[0][certificate_name]', nonFormal.namaSertifikat);
       appendIfValue(fd, 'non_formal_education[0][institution_name]', nonFormal.organisasiPenerbit);
-      appendIfValue(fd, 'non_formal_education[0][start_date]', formatDateToISO(nonFormal.tanggalPenerbitan || ''));
-      appendIfValue(fd, 'non_formal_education[0][end_date]', formatDateToISO(nonFormal.tanggalKedaluwarsa || ''));
+      appendIfValue(fd, 'non_formal_education[0][start_date]', formatIndonesianToISO(nonFormal.tanggalPenerbitan || ''));
+      appendIfValue(fd, 'non_formal_education[0][end_date]', formatIndonesianToISO(nonFormal.tanggalKedaluwarsa || ''));
       appendIfValue(fd, 'non_formal_education[0][certificate_id]', nonFormal.idKredensial);
       if (nonFormal.fileSertifikat) fd.append('non_formal_education[0][certificate_file]', nonFormal.fileSertifikat);
     }
@@ -108,8 +108,8 @@ export function useCreateEmployee() {
       appendIfValue(fd, 'department_id', formData.step3Employee.departemen);
       appendIfValue(fd, 'position_id', formData.step3Employee.position);
       appendIfValue(fd, 'job_title_id', formData.step3Employee.jabatan);
-      appendIfValue(fd, 'start_date', formatDateToISO(formData.step3Employee.tanggalMasuk));
-      appendIfValue(fd, 'end_date', formatDateToISO(formData.step3Employee.tanggalAkhir));
+      appendIfValue(fd, 'start_date', formatIndonesianToISO(formData.step3Employee.tanggalMasuk));
+      appendIfValue(fd, 'end_date', formatIndonesianToISO(formData.step3Employee.tanggalAkhir));
       appendIfValue(fd, 'position_level', mapPositionLevelToCode(formData.step3Employee.jenjangJabatan));
       appendIfValue(fd, 'payroll_status', mapPayrollStatusToCode(formData.step3Employee.statusPayroll));
       appendIfValue(fd, 'employee_category', mapEmployeeCategoryToCode(formData.step3Employee.kategoriKaryawan));

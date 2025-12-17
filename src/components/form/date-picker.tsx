@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import flatpickr from "flatpickr";
+import { Indonesian } from "flatpickr/dist/l10n/id.js";
 import "flatpickr/dist/flatpickr.css";
 import Label from "./Label";
 import { CalenderIcon } from "../../icons";
@@ -29,7 +30,8 @@ export default function DatePicker({
       static: false,
       position: "above",
       monthSelectorType: "static",
-      dateFormat: "d/m/Y",
+      dateFormat: "d F Y",
+      locale: Indonesian,
       defaultDate,
       onChange,
     });
