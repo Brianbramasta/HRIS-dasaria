@@ -43,7 +43,7 @@ export function useContract({ employeeId, autoFetch = true }: UseContractOptions
         title: 'Error',
         description: errorMessage,
         variant: 'error',
-        duration: 5000,
+        hideDuration: 5000,
       });
     } finally {
       setIsLoading(false);
@@ -57,7 +57,7 @@ export function useContract({ employeeId, autoFetch = true }: UseContractOptions
           title: 'Error',
           description: 'Employee ID is required',
           variant: 'error',
-          duration: 5000,
+          hideDuration: 5000,
         });
         return false;
       }
@@ -69,7 +69,7 @@ export function useContract({ employeeId, autoFetch = true }: UseContractOptions
           title: 'Success',
           description: 'Contract created successfully',
           variant: 'success',
-          duration: 5000,
+          hideDuration: 5000,
         });
         // Refresh data after successful creation
         await fetchContractData();
@@ -80,7 +80,7 @@ export function useContract({ employeeId, autoFetch = true }: UseContractOptions
           title: 'Error',
           description: errorMessage,
           variant: 'error',
-          duration: 5000,
+          hideDuration: 5000,
         });
         return false;
       } finally {
