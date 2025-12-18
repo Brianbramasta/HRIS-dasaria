@@ -61,7 +61,7 @@ export default function DetailHakAksesPages() {
 
   const columns: DataTableColumn<UserData>[] = [
     { id: 'no', label: 'No.', minWidth: 50, sortable: false },
-    { id: 'idKaryawan', label: 'Id Karyawan', minWidth: 150 },
+    { id: 'idKaryawan', label: 'NIP', minWidth: 150 },
     { id: 'nama', label: 'Nama', minWidth: 200 },
     { id: 'role', label: 'Role', minWidth: 150 },
     { id: 'email', label: 'Email', minWidth: 200 },
@@ -97,7 +97,7 @@ export default function DetailHakAksesPages() {
 
   const roleName = getRoleName(roleId);
 
-  // Mock employee options untuk dropdown ID Karyawan
+  // Mock employee options untuk dropdown NIP
   const employeeOptions = [
     { value: 'EMP001', label: 'EMP001 - John Doe' },
     { value: 'EMP002', label: 'EMP002 - Jane Smith' },

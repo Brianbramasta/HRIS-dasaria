@@ -127,7 +127,7 @@ export default function FormResignPage() {
       <Form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
-            <label className="mb-2 block text-sm font-medium">Nomor/Id Karyawan</label>
+            <label className="mb-2 block text-sm font-medium">NIP</label>
             <Input name="idKaryawan" value={form.idKaryawan} onChange={handleChange} required />
           </div>
           <div>

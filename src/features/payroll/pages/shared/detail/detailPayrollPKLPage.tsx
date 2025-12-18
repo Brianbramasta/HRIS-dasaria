@@ -21,7 +21,7 @@ export default function DetailGajiPKLPage() {
 
   const config: SectionConfig = {
     infoFields: [
-      { name: "idKaryawan", label: "ID Karyawan", type: "input", placeholder: "Input", value: defaultData.idKaryawan, readonly: true },
+      { name: "idKaryawan", label: "NIP", type: "input", placeholder: "Input", value: defaultData.idKaryawan, readonly: true },
       { name: "pengguna", label: "Pengguna", type: "input", placeholder: "Otomatis", value: defaultData.pengguna, readonly: true },
       { name: "tanggalPengajuan", label: "Tanggal Pengajuan", type: "date", id: "pkl-tanggal-pengajuan", placeholder: "Pilih tanggal" },
       { name: "uangSaku", label: "Uang Saku", type: "input", placeholder: "Inputan", inputType: "text" },

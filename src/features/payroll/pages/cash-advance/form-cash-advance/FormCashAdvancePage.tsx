@@ -1,7 +1,7 @@
 
 
 // Dokumentasi: Halaman Form Kasbon
-// - Menyediakan form pengajuan kasbon dengan field: Id Karyawan, Nama Lengkap,
+// - Menyediakan form pengajuan kasbon dengan field: NIP, Nama Lengkap,
 //   Departemen, Posisi, Gaji Pokok, Tanggal Pengajuan
 // - Pola dan komponen mengikuti FormResignPage untuk konsistensi UI/UX
 export default function FormKasbonPage() {
@@ -108,7 +108,7 @@ export default function FormKasbonPage() {
           <div className="text-sm text-gray-900 dark:text-white space-y-1">
             <div>Ketentuan Pengajuan Kasbon:</div>
             <ul className="list-disc pl-5">
-              <li>Harap memasukkan ID Karyawan terlebih dahulu untuk melakukan pengecekan kelayakan pengajuan kasbon.</li>
+              <li>Harap memasukkan NIP terlebih dahulu untuk melakukan pengecekan kelayakan pengajuan kasbon.</li>
               <li>Harap melampirkan dokumen yang diminta, yaitu: <b>Surat Persetujuan Atasan</b> dan <b>Surat Dokumen Pendukung</b>.</li>
               <li>Hanya format JPG dan PDF yang diperbolehkan. Ukuran maksimum masing-masing dokumen <b>10MB</b>.</li>
               <li>Contoh <b>Surat Persetujuan Atasan</b> bisa <a href="https://example.com/surat-persetujuan-atasan" className='text-blue-600' target="_blank" rel="noopener noreferrer">klik di sini</a>.</li>
@@ -119,7 +119,7 @@ export default function FormKasbonPage() {
         <Form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
-              <label className="mb-2 block text-sm font-medium">Id Karyawan</label>
+              <label className="mb-2 block text-sm font-medium">NIP</label>
               <Input name="idKaryawan" value={form.idKaryawan} onChange={handleChange} required />
             </div>
             <div>

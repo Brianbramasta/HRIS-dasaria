@@ -123,8 +123,8 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="space-y-6">
           <div>
-            <Label>Id Karyawan</Label>
-            <InputField placeholder="Masukkan id karyawan" value={form.idKaryawan || ''} onChange={(e) => handleInput('idKaryawan', e.target.value)} />
+            <Label>NIP</Label>
+            <InputField placeholder="Masukkan nip" value={form.idKaryawan || ''} onChange={(e) => handleInput('idKaryawan', e.target.value)} />
           </div>
           <div>
             <Label>Jenis Perubahan</Label>

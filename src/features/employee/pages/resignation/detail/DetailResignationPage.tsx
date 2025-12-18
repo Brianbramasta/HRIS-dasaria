@@ -158,7 +158,7 @@ export default function DetailPengunduranDiriPage() {
                 <div className="font-medium">{data.name}</div>
               </div>
               <div>
-                <div className="text-sm text-gray-600">ID Karyawan</div>
+                <div className="text-sm text-gray-600">NIP</div>
                 <div className="font-medium">{data.idKaryawan}</div>
               </div>
               <div>

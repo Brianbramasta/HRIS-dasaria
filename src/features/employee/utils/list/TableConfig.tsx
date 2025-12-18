@@ -26,7 +26,7 @@ export const getKaryawanColumns = (
   },
   {
     id: 'id',
-    label: 'ID Karyawan',
+    label: 'NIP',
     minWidth: 120,
     sortable: true,
   },

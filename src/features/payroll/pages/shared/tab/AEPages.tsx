@@ -35,7 +35,7 @@ export default function AETab({ resetKey = 'ae' }: { resetKey?: string }) {
   ]);
   const baseColumns: DataTableColumn<AERow>[] = [
     { id: 'no', label: 'No.', align: 'center', sortable: false },
-    { id: 'idKaryawan', label: 'ID Karyawan' },
+    { id: 'idKaryawan', label: 'NIP' },
     { id: 'pengguna', label: 'Pengguna' },
     { id: 'tanggalPengajuan', label: 'Tanggal Pengajuan' },
     { id: 'jumlahHariKerja', label: 'Jumlah Hari Kerja' },

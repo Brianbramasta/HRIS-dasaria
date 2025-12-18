@@ -88,7 +88,7 @@ export default function EditStatusPerpanjanganModal({
         <>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">ID Karyawan</label>
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">NIP</label>
               <Input type="text" value={kontrakData.idKaryawan} disabled />
             </div>
             <div className="space-y-2">

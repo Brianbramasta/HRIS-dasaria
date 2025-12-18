@@ -54,7 +54,7 @@ export default function RiwayatPengajuanPage() {
       sortable: false,
       format: (_, row) => rows.indexOf(row) + 1,
     },
-    { id: 'idKaryawan', label: 'ID Karyawan', sortable: true },
+    { id: 'idKaryawan', label: 'NIP', sortable: true },
     {
       id: 'pengguna',
       label: 'Pengguna',

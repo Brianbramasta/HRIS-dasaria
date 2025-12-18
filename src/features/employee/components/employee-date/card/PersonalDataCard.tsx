@@ -39,7 +39,7 @@ export default function PersonalDataCard({ data }: Props) {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="space-y-4">
           <div>
-            <Label htmlFor="idKaryawan">ID Karyawan</Label>
+            <Label htmlFor="idKaryawan">NIP</Label>
             <InputField id="idKaryawan" value={data?.id || ''} readonly={true} />
           </div>
           <div>

@@ -75,7 +75,7 @@ const AddPengajuanPengunduranDiriModal: React.FC<Props> = ({ isOpen, onClose, de
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div>
-          <Label>Nomor/Id Karyawan</Label>
+          <Label>NIP</Label>
           <Input placeholder="-" value={form.idKaryawan} disabled />
         </div>
         <div>

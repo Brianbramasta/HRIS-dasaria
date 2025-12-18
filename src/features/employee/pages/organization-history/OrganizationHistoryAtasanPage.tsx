@@ -32,7 +32,7 @@ export default function OrganizationHistoryAtasanPage() {
   const columns: DataTableColumn<OrgHistoryListRow>[] = useMemo(
     () => [
       { id: 'no', label: 'No.', align: 'center', format: (_v, row) => rows.findIndex((r) => r.id === row.id) + 1 },
-      { id: 'idKaryawan', label: 'ID Karyawan' },
+      { id: 'idKaryawan', label: 'NIP' },
       {
         id: 'user',
         label: 'User',

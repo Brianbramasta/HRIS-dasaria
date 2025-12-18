@@ -34,7 +34,7 @@ export default function THRTab({ resetKey = 'thr' }: { resetKey?: string }) {
   ]);
   const baseColumns: DataTableColumn<THRRow>[] = [
     { id: 'no', label: 'No.', align: 'center', sortable: false },
-    { id: 'idKaryawan', label: 'ID Karyawan' },
+    { id: 'idKaryawan', label: 'NIP' },
     { id: 'pengguna', label: 'Pengguna' },
     { id: 'tanggalPengajuan', label: 'Tanggal Pengajuan' },
     { id: 'totalTHR', label: 'Total THR', align: 'right' },

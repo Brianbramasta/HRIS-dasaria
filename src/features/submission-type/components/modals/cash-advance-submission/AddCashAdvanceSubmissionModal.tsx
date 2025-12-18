@@ -133,8 +133,8 @@ const AddPengajuanKasbonModal: React.FC<Props> = ({ isOpen, onClose, defaultValu
         />
       ):(<> <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div>
-          <Label>Id Karyawan</Label>
-          <Input placeholder="Masukkan ID Karyawan" value={form.idKaryawan} onChange={(e) => setField('idKaryawan', e.target.value)} disabled/>
+          <Label>NIP</Label>
+          <Input placeholder="Masukkan NIP" value={form.idKaryawan} onChange={(e) => setField('idKaryawan', e.target.value)} disabled/>
         </div>
         <div>
           <Label>Nama Lengkap</Label>

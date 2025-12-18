@@ -19,7 +19,7 @@ type BirthdayRow = {
 // Dokumentasi: Definisi kolom untuk DataTable Ulang Tahun
 const columns: DataTableColumn<BirthdayRow>[] = [
   { id: 'no', label: 'No.', sortable: false },
-  { id: 'idKaryawan', label: 'ID Karyawan', sortable: true },
+  { id: 'idKaryawan', label: 'NIP', sortable: true },
   { id: 'pengguna', label: 'Pengguna', sortable: true, format: (val: string) => (
     <div className="flex items-center gap-2">
       <div className="h-6 w-6 rounded-full bg-gray-200 flex items-center justify-center text-[10px] font-semibold text-gray-600">

@@ -20,7 +20,7 @@ export default function DetailGajiTHRPage() {
 
   const config: SectionConfig = {
     infoFields: [
-      { name: "idKaryawan", label: "ID Karyawan", type: "input", placeholder: "Input", value: defaultData.idKaryawan, readonly: true },
+      { name: "idKaryawan", label: "NIP", type: "input", placeholder: "Input", value: defaultData.idKaryawan, readonly: true },
       { name: "pengguna", label: "Pengguna", type: "input", placeholder: "Otomatis", value: defaultData.pengguna, readonly: true },
       { name: "tanggalPengajuan", label: "Tanggal Pengajuan", type: "date", id: "thr-tanggal-pengajuan", placeholder: "Pilih tanggal" },
       { name: "gajiPokokUangSaku", label: "Gaji Pokok/Uang Saku", type: "input", placeholder: "Otomatis", readonly: true },

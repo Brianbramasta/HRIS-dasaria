@@ -50,7 +50,7 @@ const KonfirmasiPenolakanKontrak: React.FC<KonfirmasiPenolakanKontrakProps> = ({
         <div className='grid grid-cols-2 gap-4'>
             <div className="space-y-2">
                 <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Id Karyawan
+                NIP
                 </label>
                 <InputField
                 type="text"

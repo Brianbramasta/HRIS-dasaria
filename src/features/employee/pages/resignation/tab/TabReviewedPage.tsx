@@ -43,7 +43,7 @@ export default function TabReviewed() {
     },
     {
       id: 'idKaryawan',
-      label: 'ID Karyawan',
+      label: 'NIP',
       minWidth: 120,
       sortable: true,
     },

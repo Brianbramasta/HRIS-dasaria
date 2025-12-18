@@ -207,7 +207,7 @@ export default function PerpanjanganKontrak() {
       align: 'center',
       sortable: false,
     },
-    { id: 'idKaryawan', label: 'ID Karyawan', minWidth: 120, sortable: true },
+    { id: 'idKaryawan', label: 'NIP', minWidth: 120, sortable: true },
     {
       id: 'name',
       label: 'Pengguna',

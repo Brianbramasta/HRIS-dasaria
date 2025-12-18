@@ -96,10 +96,10 @@ const TambahRoleModal: React.FC<TambahRoleModalProps> = ({
   const content = (
     <div className="space-y-5 grid grid-cols-1 md:grid-cols-2 gap-2">
       <div>
-        <Label>Id Karyawan</Label>
+        <Label>NIP</Label>
         <Select
           options={employeeOptions}
-          placeholder="Pilih ID Karyawan"
+          placeholder="Pilih NIP"
           onChange={handleEmployeeChange}
           defaultValue={form.idKaryawan}
           required

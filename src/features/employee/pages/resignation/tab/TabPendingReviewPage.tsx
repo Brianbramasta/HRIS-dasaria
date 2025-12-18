@@ -53,7 +53,7 @@ export default function TabPendingReview({ onOpenForm }: { onOpenForm?: () => vo
     },
     {
       id: 'idKaryawan',
-      label: 'ID Karyawan',
+      label: 'NIP',
       minWidth: 120,
       sortable: true,
     },

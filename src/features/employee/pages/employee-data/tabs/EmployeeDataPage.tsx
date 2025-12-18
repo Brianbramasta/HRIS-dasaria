@@ -169,7 +169,7 @@ function DetailKaryawanModal({
 
           {/* Information Grid */}
           <div>
-            <label className="text-sm font-medium text-gray-500 dark:text-gray-400">ID Karyawan</label>
+            <label className="text-sm font-medium text-gray-500 dark:text-gray-400">NIP</label>
             <p className="mt-1 text-gray-900 dark:text-white">{karyawan.idKaryawan}</p>
           </div>
 
