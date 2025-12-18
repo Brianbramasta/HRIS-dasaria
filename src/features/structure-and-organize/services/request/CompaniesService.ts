@@ -6,6 +6,8 @@ import {
   CompanyDetailResponse,
 } from '../../types/OrganizationApiTypes';
 
+const BaseUrl = '/organizational-structure/company-master-data/companies';
+
 const mapToCompany = (item: any): CompanyListItem => ({
   id: item.id ?? item.uuid_perusahaan ?? item.id ?? '',
   name: item.company_name ?? item.nama_perusahaan ?? item.name ?? '',
@@ -51,7 +53,7 @@ export const companiesService = {
       params.append('sort', filter.sortOrder);
     }
     const qs = params.toString();
-    const result = await apiService.get<any>(`/organizational-structure/companies${qs ? `?${qs}` : ''}`);
+    const result = await apiService.get<any>(`${BaseUrl}${qs ? `?${qs}` : ''}`);
     const payload = (result as any);
     const topData = payload?.data;
     const items = Array.isArray(topData)
@@ -95,7 +97,7 @@ export const companiesService = {
   },
 
   getDetail: async (id: string): Promise<CompanyDetailResponse> => {
-    const result = await apiService.get<any>(`/organizational-structure/companies/${id}/detail`);
+    const result = await apiService.get<any>(`${BaseUrl}/${id}/detail`);
     const body = (result as any).data ?? {};
     const item = body.data ?? body;
     const company = mapToCompany(item);
@@ -166,7 +168,7 @@ export const companiesService = {
       }
     }
     const created = await apiService.post<any>(
-      '/organizational-structure/companies',
+      `${BaseUrl}`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
@@ -209,7 +211,7 @@ export const companiesService = {
       }
     }
     const updated = await apiService.post<any>(
-      `/organizational-structure/companies/${id}`,
+      `${BaseUrl}/${id}`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
@@ -252,7 +254,7 @@ export const companiesService = {
     if (payload.id_bl !== undefined && payload.id_bl !== null) formData.append('id_bl', payload.id_bl);
     
     const updated = await apiService.post<any>(
-      `/organizational-structure/companies/${id}`,
+      `${BaseUrl}/${id}`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
@@ -267,7 +269,7 @@ export const companiesService = {
     if (payload.memoNumber) formData.append('company_delete_decree_number', payload.memoNumber);
     if (payload.skFile) formData.append('company_delete_decree_file', payload.skFile);
     const resp = await apiService.post<any>(
-      `/organizational-structure/companies/${id}`,
+      `${BaseUrl}/${id}`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
@@ -288,7 +290,7 @@ export const companiesService = {
       formData.append(`documents[${i}][cd_file]`, d.file);
     });
     const created = await apiService.post<any>(
-      `/organizational-structure/companies/${id}/documents`,
+      `${BaseUrl}/${id}/documents`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
@@ -316,7 +318,7 @@ export const companiesService = {
     if (payload.memoNumber) formData.append('cd_deleted_decree', payload.memoNumber);
     if (payload.skFile) formData.append('cd_deleted_decree_file', payload.skFile);
     const resp = await apiService.post<any>(
-      `/organizational-structure/companies/${id}/deletedocuments`,
+      `${BaseUrl}/${id}/deletedocuments`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );

@@ -60,7 +60,7 @@ import TaskList from "../pages/Task/TaskList";
 import Saas from "../pages/Dashboard/Saas";
 import StructureAndOrganize from "../features/structure-and-organize/pages/StructureAndOrganizationPage";
 import ExportPage from "../features/structure-and-organize/pages/ExportPage";
-import BusinessLinesTab from "../features/structure-and-organize/pages/LiniBisnis/BusinessLinesTab";
+import BusinessLinesTab from "../features/structure-and-organize/pages/business-line/BusinessLinesTab";
 import CompaniesTab from "../features/structure-and-organize/pages/company/CompaniesTab";
 import OfficesTab from "../features/structure-and-organize/pages/office/OfficesTab";
 import DirectoratesTab from "../features/structure-and-organize/pages/directorate/DirectoratesTab";
@@ -68,7 +68,7 @@ import DivisionsTab from "../features/structure-and-organize/pages/division/Divi
 import DepartmentsTab from "../features/structure-and-organize/pages/departement/DepartmentsTab";
 import PositionsTab from "../features/structure-and-organize/pages/job-tittle/PositionsTab";
 import EmployeePositionsTab from "../features/structure-and-organize/pages/employee-positions/EmployeePositionsTab";
-import DetailLiniBisnis from "../features/structure-and-organize/pages/LiniBisnis/DetailLiniBisnis";
+import DetailLiniBisnis from "../features/structure-and-organize/pages/business-line/DetailLiniBisnis";
 import DetailPerusahaan from "../features/structure-and-organize/pages/company/detail/DetailCompany";
 import DataKaryawanIndexPage from "../features/employee/pages/employee-data/IndexPage";
 import DetailKaryawanPage from "../features/employee/pages/employee-data/detail/DetailPage";

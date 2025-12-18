@@ -7,6 +7,8 @@ import {
   FileSummary,
 } from '../../types/OrganizationApiTypes';
 
+const BaseUrl = '/organizational-structure/business-master-data/business-lines';
+
 const toFileSummary = (url: string | null): FileSummary | null => {
   if (!url) return null;
   const parts = url.split('/');
@@ -60,7 +62,7 @@ export const businessLinesService = {
       params.append('sort', filter.sortOrder);
     }
     const qs = params.toString();
-    const result = await apiService.get<any>(`/organizational-structure/business-lines${qs ? `?${qs}` : ''}`);
+    const result = await apiService.get<any>(`${BaseUrl}${qs ? `?${qs}` : ''}`);
     const payload = (result as any);
     const items = payload?.data?.data ?? [];
     const total = payload?.data?.total ?? (items?.length || 0);
@@ -79,7 +81,7 @@ export const businessLinesService = {
 
   getDropdown: async (search?: string): Promise<BusinessLineListItem[]> => {
     const qs = search ? `?search=${encodeURIComponent(search)}` : '';
-    const result = await apiService.get<any>(`/organizational-structure/business-lines-dropdown${qs}`);
+    const result = await apiService.get<any>(`${BaseUrl}${qs}`);
     const items = (result as any).data as { id: string; bl_name: string }[];
     return (items || []).map((i) => ({
       id: i.id,
@@ -91,7 +93,7 @@ export const businessLinesService = {
   },
 
   getDetail: async (id: string): Promise<BusinessLineDetailResponse> => {
-    const result = await apiService.get<any>(`/organizational-structure/business-lines/${id}/detail`);
+    const result = await apiService.get<any>(`${BaseUrl}/${id}/detail`);
     const item = (result as any).data as any;
     const bl = mapToBusinessLine(item);
     const activeSk = toFileSummary(item?.bl_decree_file_url ?? item?.bl_decree_file ?? null);
@@ -120,7 +122,7 @@ export const businessLinesService = {
   },
 
   getById: async (id: string): Promise<BusinessLineListItem> => {
-    const result = await apiService.get<any>(`/organizational-structure/business-lines/${id}`);
+    const result = await apiService.get<any>(`${BaseUrl}/${id}`);
     const item = (result as any).data as any;
     return mapToBusinessLine(item);
   },
@@ -135,7 +137,7 @@ export const businessLinesService = {
     if (payload.skFile) {
       formData.append('bl_decree_file', payload.skFile);
     }
-    const created = await apiService.post<any>(`/organizational-structure/business-lines`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+    const created = await apiService.post<any>(`${BaseUrl}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
     const item = (created as any).data as any;
     return mapToBusinessLine(item);
   },
@@ -151,7 +153,7 @@ export const businessLinesService = {
     if (payload.skFile) {
       formData.append('bl_decree_file', payload.skFile);
     }
-    const updated = await apiService.post<any>(`/organizational-structure/business-lines/${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+    const updated = await apiService.post<any>(`${BaseUrl}/${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
     const item = (updated as any).data as any;
     return mapToBusinessLine(item);
   },
@@ -163,7 +165,7 @@ export const businessLinesService = {
     if (payload.skFile) {
       formData.append('bl_delete_decree_file', payload.skFile);
     }
-    const resp = await apiService.post<any>(`/organizational-structure/business-lines/${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+    const resp = await apiService.post<any>(`${BaseUrl}/${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
     return { success: !!(resp as any).success } as { success: true };
   },
 };
