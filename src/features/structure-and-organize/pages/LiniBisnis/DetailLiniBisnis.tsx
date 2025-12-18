@@ -3,7 +3,7 @@ import { Eye } from 'react-feather';
 import { IconFileDetail } from '@/icons/components/icons';
 import { useParams, useNavigate } from 'react-router';
 import ExpandCard from '../../components/card/ExpandCard';
-import { businessLineService } from '../../services/organization.service';
+import { businessLineService } from '../../services/OrganizationService';
 import DocumentsTable from '../../components/table/TableGlobal';
 import { formatUrlFile } from '@/utils/formatUrlFile';
 export default function DetailLiniBisnis() {

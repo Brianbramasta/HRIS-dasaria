@@ -1,7 +1,7 @@
 import PageMeta from '../../../components/common/PageMeta';
 import AuthLayout from './AuthPageLayout';
-import { LoginForm } from '../components';
-import { useLogin } from '../hooks';
+import { LoginForm } from '../components/Index';
+import { useLogin } from '../hooks/Index';
 
 export default function LoginPage() {
   const { isLoading, error, handleLogin } = useLogin();

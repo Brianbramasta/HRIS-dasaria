@@ -11,8 +11,8 @@ import {
 import { iconPenggajian, iconKaryawan, iconStrukturOrganisasi, IconHakAksesMenu, IconJenisPengajuan }   from '@/icons/components/icons'
 import { useSidebar } from "../context/SidebarContext";
 // import SidebarWidget from "./SidebarWidget";
-import { useAuthStore } from "../features/auth/stores/authStore";
-import { filterMenuByRole } from "../features/auth/config/rolePermissions";
+import { useAuthStore } from "../features/auth/stores/AuthStore";
+import { filterMenuByRole } from "../features/auth/config/RolePermissions";
 
 type NavItem = {
   name: string;

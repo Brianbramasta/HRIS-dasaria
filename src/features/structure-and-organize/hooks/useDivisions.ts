@@ -1,7 +1,7 @@
 // Penyesuaian hooks Divisi agar sesuai kontrak API terbaru (1.7)
 import { useState, useCallback, useEffect } from 'react';
-import { divisionsService } from '../services/request/divisions.service';
-import { DivisionListItem, TableFilter } from '../types/organization.api.types';
+import { divisionsService } from '../services/request/DivisionsService';
+import { DivisionListItem, TableFilter } from '../types/OrganizationApiTypes';
 import useFilterStore from '../../../stores/filterStore';
 
 interface UseDivisionsReturn {

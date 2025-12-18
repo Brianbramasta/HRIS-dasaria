@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
-import { useAuthStore } from "@/features/auth/stores/authStore";
+import { useAuthStore } from "@/features/auth/stores/AuthStore";
 import { clearAllFilterPersistence } from "@/stores/filterStore";
 
 export default function UserDropdown() {

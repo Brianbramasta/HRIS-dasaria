@@ -1,4 +1,4 @@
-import { TableFilter } from '../types/organization.api.types';
+import { TableFilter } from '../types/OrganizationApiTypes';
 
 export const buildQueryParams = (filter: TableFilter): string => {
   const params = new URLSearchParams();

@@ -5,7 +5,7 @@ import Label from '../../../components/form/Label';
 import Input from '../../../components/form/input/InputField';
 import Checkbox from '../../../components/form/input/Checkbox';
 import Button from '../../../components/ui/button/Button';
-import { LoginRequest } from '../types';
+import { LoginRequest } from '../types/Index';
 
 interface LoginFormProps {
   onSubmit: (data: LoginRequest) => Promise<void>;

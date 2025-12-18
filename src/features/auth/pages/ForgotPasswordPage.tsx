@@ -1,7 +1,7 @@
 import PageMeta from '../../../components/common/PageMeta';
 import AuthLayout from './AuthPageLayout';
-import { ForgotPasswordForm } from '../components';
-import { useForgotPassword } from '../hooks';
+import { ForgotPasswordForm } from '../components/Index';
+import { useForgotPassword } from '../hooks/Index';
 
 export default function ForgotPasswordPage() {
   const { isLoading, error, successMessage, handleForgotPassword } =

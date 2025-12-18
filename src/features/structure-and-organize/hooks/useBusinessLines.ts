@@ -3,8 +3,8 @@ import {
   TableFilter,
   BusinessLineListItem,
   BusinessLineDetailResponse,
-} from '../types/organization.api.types';
-import { businessLinesService } from '../services/request/businessLines.service';
+} from '../types/OrganizationApiTypes';
+import { businessLinesService } from '../services/request/BusinessLinesService';
 import useFilterStore from '../../../stores/filterStore';
 
 interface UseBusinessLinesReturn {

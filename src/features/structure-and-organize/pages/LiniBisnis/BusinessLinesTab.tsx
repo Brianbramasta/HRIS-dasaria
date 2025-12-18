@@ -5,15 +5,15 @@ import DataTable, { DataTableColumn } from '../../components/datatable/DataTable
 import { IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
 import {
   useBusinessLines,
-} from '../../index';
-import AddBusinessLineModal from '../../components/modals/LiniBisnis/AddBusinessLineModal';
-import EditBusinessLineModal from '../../components/modals/LiniBisnis/EditBusinessLineModal';
-import DeleteBusinessLineModal from '../../components/modals/LiniBisnis/DeleteBusinessLineModal';
+} from '../../Index';
+import AddBusinessLineModal from '../../components/modals/business-line/AddBusinessLineModal';
+import EditBusinessLineModal from '../../components/modals/business-line/EditBusinessLineModal';
+import DeleteBusinessLineModal from '../../components/modals/business-line/DeleteBusinessLineModal';
 import { addNotification } from '../../../../stores/notificationStore';
 
-import type { BLRow } from '../../types/organizationTable.types';
-import { businessLinesService } from '../../services/request/businessLines.service';
-import type { BusinessLineListItem } from '../../types/organization.api.types';
+import type { BLRow } from '../../types/OrganizationTableTypes';
+import { businessLinesService } from '../../services/request/BusinessLinesService';
+import type { BusinessLineListItem } from '../../types/OrganizationApiTypes';
 import { FileText } from '@/icons/components/icons';
 import { useFileStore } from '@/stores/fileStore';
 

@@ -1,8 +1,8 @@
 // Types
-export * from './types/organization.types';
+export * from './types/OrganizationTypes';
 
 // Services
-export * from './services/organization.service';
+export * from './services/OrganizationService';
 
 // Hooks
 export * from './hooks/useBusinessLines';
@@ -19,4 +19,4 @@ export * from './components/datatable/DataTable';
 export * from './components/Tabs';
 
 // Pages
-export * from './pages/StrukturOrganisasiPage';
+export * from './pages/StructureAndOrganizationPage';

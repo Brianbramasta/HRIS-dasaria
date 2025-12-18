@@ -5,7 +5,7 @@ import AppRoutes from "./routes/AppRoutes";
 import Notification from "./components/ui/notification/Notfication";
 import { useNotificationStore, removeNotification } from "./stores/notificationStore";
 import type { AppNotification } from "./stores/notificationStore";
-import { useAuthStore } from "./features/auth/stores/authStore";
+import { useAuthStore } from "./features/auth/stores/AuthStore";
 import SpinnerOne from "./components/ui/spinner/SpinnerOne";
 import { useLoadingStore } from "./stores/loadingStore";
 import PageMeta from "./components/common/PageMeta";

@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
-import { directoratesService } from '../services/request/directorates.service';
-import { DirectorateListItem, TableFilter } from '../types/organization.api.types';
+import { directoratesService } from '../services/request/DirectoratesService';
+import { DirectorateListItem, TableFilter } from '../types/OrganizationApiTypes';
 import useFilterStore from '../../../stores/filterStore';
 
 interface UseDirectoratesReturn {

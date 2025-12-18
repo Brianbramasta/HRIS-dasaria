@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
-import { businessLinesService } from '../services/request/businessLines.service';
-import { companiesService } from '../services/request/companies.service';
-import { BusinessLineDetailResponse, CompanyDetailResponse } from '../types/organization.api.types';
+import { businessLinesService } from '../services/request/BusinessLinesService';
+import { companiesService } from '../services/request/CompaniesService';
+import { BusinessLineDetailResponse, CompanyDetailResponse } from '../types/OrganizationApiTypes';
 
 interface UseOrganizationReturn {
   businessLineDetail: BusinessLineDetailResponse | null;

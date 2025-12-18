@@ -58,74 +58,74 @@ import Success from "../pages/OtherPage/Success";
 import AppLayout from "../layout/AppLayout";
 import TaskList from "../pages/Task/TaskList";
 import Saas from "../pages/Dashboard/Saas";
-import StructureAndOrganize from "../features/structure-and-organize/pages/StrukturOrganisasiPage";
+import StructureAndOrganize from "../features/structure-and-organize/pages/StructureAndOrganizationPage";
 import ExportPage from "../features/structure-and-organize/pages/ExportPage";
 import BusinessLinesTab from "../features/structure-and-organize/pages/LiniBisnis/BusinessLinesTab";
-import CompaniesTab from "../features/structure-and-organize/pages/Perusahaan/CompaniesTab";
-import OfficesTab from "../features/structure-and-organize/pages/Kantor/OfficesTab";
-import DirectoratesTab from "../features/structure-and-organize/pages/Direktorat/DirectoratesTab";
-import DivisionsTab from "../features/structure-and-organize/pages/Divisi/DivisionsTab";
-import DepartmentsTab from "../features/structure-and-organize/pages/Departemen/DepartmentsTab";
-import PositionsTab from "../features/structure-and-organize/pages/Jabatan/PositionsTab";
-import EmployeePositionsTab from "../features/structure-and-organize/pages/PosisiPegawai/EmployeePositionsTab";
+import CompaniesTab from "../features/structure-and-organize/pages/company/CompaniesTab";
+import OfficesTab from "../features/structure-and-organize/pages/office/OfficesTab";
+import DirectoratesTab from "../features/structure-and-organize/pages/directorate/DirectoratesTab";
+import DivisionsTab from "../features/structure-and-organize/pages/division/DivisionsTab";
+import DepartmentsTab from "../features/structure-and-organize/pages/departement/DepartmentsTab";
+import PositionsTab from "../features/structure-and-organize/pages/job-tittle/PositionsTab";
+import EmployeePositionsTab from "../features/structure-and-organize/pages/employee-positions/EmployeePositionsTab";
 import DetailLiniBisnis from "../features/structure-and-organize/pages/LiniBisnis/DetailLiniBisnis";
-import DetailPerusahaan from "../features/structure-and-organize/pages/Perusahaan/detail/DetailPerusahaan";
-import DataKaryawanIndexPage from "../features/staff/pages/data-karyawan/indexPage";
-import DetailKaryawanPage from "../features/staff/pages/data-karyawan/detail/detailPage";
-import FormulirKaryawanPage from "../features/staff/pages/data-karyawan/FormulirKaryawanPage";
-import PendaftaranKaryawanBaru from "../features/staff/pages/data-karyawan/PendaftaranKaryawanBaru";
-import PengunduranDiri from "../features/staff/pages/pengunduran-diri/pengunduranDiriPage";
-import FormResignPage from "../features/staff/pages/pengunduran-diri/form-resign/formResignPage";
-import DetailPengunduranDiriPage from "../features/staff/pages/pengunduran-diri/detail/DetailPengunduranDiriPage";
-import PerpanjanganKontrak from "../features/staff/pages/perpanjanganKontrak/perpanjanganKontrakHr/perpanjanganKontrakPage";
-import PersetujuanPerpanjanganKontrak from "../features/staff/pages/perpanjanganKontrak/persetujuanPerpanjanganKontrak";
-import PerpanjangKontrakEdit from "../features/staff/pages/perpanjanganKontrak/perpanjanganKontrakHr/detail/perpanjangKontrakEdit";
-import DataKaryawanPelanggaran from "../features/staff/components/dataKaryawan/tab/pelanggaran";
-import OrganizationHistoryPage from "../features/staff/pages/riwayatOrganisasi/organizationHistoryPage";
-import OrganizationHistoryAtasanPage from "../features/staff/pages/riwayatOrganisasi/organizationHistoryAtasanPage";
+import DetailPerusahaan from "../features/structure-and-organize/pages/company/detail/DetailCompany";
+import DataKaryawanIndexPage from "../features/employee/pages/employee-data/IndexPage";
+import DetailKaryawanPage from "../features/employee/pages/employee-data/detail/DetailPage";
+import FormulirKaryawanPage from "../features/employee/pages/employee-data/EmployeeFormPage";
+import PendaftaranKaryawanBaru from "../features/employee/pages/employee-data/NewEmployeeRegistration";
+import PengunduranDiri from "../features/employee/pages/resignation/ResignationPage";
+import FormResignPage from "../features/employee/pages/resignation/form-resign/FormResignPage";
+import DetailPengunduranDiriPage from "../features/employee/pages/resignation/detail/DetailResignationPage";
+import PerpanjanganKontrak from "../features/employee/pages/contract-renewal/contract-renewal-hr/ContractRenewalPage";
+import PersetujuanPerpanjanganKontrak from "../features/employee/pages/contract-renewal/ContractRenewalApproval";
+import PerpanjangKontrakEdit from "../features/employee/pages/contract-renewal/contract-renewal-hr/detail/ContractRenewalEdit";
+import DataKaryawanPelanggaran from "../features/employee/components/employee-date/tab/Pelanggaran";
+import OrganizationHistoryPage from "../features/employee/pages/organization-history/OrganizationHistoryPage";
+import OrganizationHistoryAtasanPage from "../features/employee/pages/organization-history/OrganizationHistoryAtasanPage";
 import Dashboard from "@/features/dashboard/pages/Dashboard";
 // import DaftarPenggajianPage from "@/features/penggajian/pages/daftarPenggajianPage";
-import KonfigurasiPenggajianPage from "@/features/penggajian/pages/konfigursaiPenggajian/konfigurasiPenggajianPage";
+import KonfigurasiPenggajianPage from "@/features/payroll/pages/PayrollConfiguration/PayrollConfigurationPage";
 // Dokumentasi: Import tab untuk Konfigurasi Penggajian
-import KompensasiPage from "@/features/penggajian/pages/konfigursaiPenggajian/tab/kompensasiPage";
-import BpjsPage from "@/features/penggajian/pages/konfigursaiPenggajian/tab/bpjsPage";
-import AcuanPotonganPage from "@/features/penggajian/pages/konfigursaiPenggajian/tab/acuanPotonganPage";
-import TunjanganTetapPage from "@/features/penggajian/pages/konfigursaiPenggajian/tab/tunjanganTetapPage";
-import TunjanganTidakTetapPage from "@/features/penggajian/pages/konfigursaiPenggajian/tab/tunjanganTidakTetapPage";
-import PotonganTidakTetapPage from "@/features/penggajian/pages/konfigursaiPenggajian/tab/potonganTidakTetapPage";
-import THRPage from "@/features/penggajian/pages/konfigursaiPenggajian/tab/THRPage";
+import KompensasiPage from "@/features/payroll/pages/PayrollConfiguration/tab/CompensationPage";
+import BpjsPage from "@/features/payroll/pages/PayrollConfiguration/tab/BPJSPage";
+import AcuanPotonganPage from "@/features/payroll/pages/PayrollConfiguration/tab/DeductionReferencePage";
+import TunjanganTetapPage from "@/features/payroll/pages/PayrollConfiguration/tab/FixedAllowancePage";
+import TunjanganTidakTetapPage from "@/features/payroll/pages/PayrollConfiguration/tab/NonRecurringAllowancePage";
+import PotonganTidakTetapPage from "@/features/payroll/pages/PayrollConfiguration/tab/NonRecurringDeductionPage";
+import THRPage from "@/features/payroll/pages/PayrollConfiguration/tab/BonusTHRPage";
 // Dokumentasi: Halaman dan tab Periode Penggajian
-import PeriodePenggajianPage from "@/features/penggajian/pages/periodePenggajian/periodePenggajianPage";
-import NonAETab from "@/features/penggajian/pages/shared/tab/nonAEPages";
-import AETab from "@/features/penggajian/pages/shared/tab/AEPages";
-import PKLTab from "@/features/penggajian/pages/shared/tab/PKLPages";
-import THRTab from "@/features/penggajian/pages/shared/tab/THRPages";
+import PeriodePenggajianPage from "@/features/payroll/pages/payroll-period/PayrollPeriodPage";
+import NonAETab from "@/features/payroll/pages/shared/tab/NonAEPages";
+import AETab from "@/features/payroll/pages/shared/tab/AEPages";
+import PKLTab from "@/features/payroll/pages/shared/tab/PKLPages";
+import THRTab from "@/features/payroll/pages/shared/tab/THRPages";
 // Dokumentasi: Import halaman Detail Gaji untuk navigasi dari tabel Periode Penggajian
 // import DetailGajiPage from "@/features/penggajian/pages/periodePenggajian/detail/detailGaji";
 // Dokumentasi: Import halaman Detail Gaji AE dan Non-AE terpisah
-import DetailGajiAEPage from "@/features/penggajian/pages/shared/detail/detailGajiAEPage";
-import DetailGajiNonAEPage from "@/features/penggajian/pages/shared/detail/detailGajiNonAEPage";
-import DetailGajiTHRPage from "@/features/penggajian/pages/shared/detail/detailGajiTHRPage";
-import DetailGajiPKLPage from "@/features/penggajian/pages/shared/detail/detailGajiPKLPage";
-import HakAksesPage from "@/features/hakAkses/pages/hakAksesPage";
-import DetailHakAksesPages from "@/features/hakAkses/pages/detail/detailHakAksesPages";
-import EditRolePage from "@/features/hakAkses/pages/editRolePage";
+import DetailGajiAEPage from "@/features/payroll/pages/shared/detail/detailPayrollAEPage";
+import DetailGajiNonAEPage from "@/features/payroll/pages/shared/detail/detailPayrollNonAEPage";
+import DetailGajiTHRPage from "@/features/payroll/pages/shared/detail/detailPayrollTHRPage";
+import DetailGajiPKLPage from "@/features/payroll/pages/shared/detail/detailPayrollPKLPage";
+import HakAksesPage from "@/features/role-management-access/pages/RoleManagementPage";
+import DetailHakAksesPages from "@/features/role-management-access/pages/detail/DetailHakAksesPages";
+import EditRolePage from "@/features/role-management-access/pages/EditRolePage";
 // Dokumentasi: Import halaman Kasbon dan tab terkait
-import KasbonPage from "@/features/penggajian/pages/kasbon/kasbonPage";
-import StatusKasbonPage from "@/features/penggajian/pages/kasbon/tab/statusKasbonPage";
-import RiwayatPengajuanPage from "@/features/penggajian/pages/kasbon/tab/riwayatPengajuanPage";
-import DashboardPenggajianPage from "@/features/penggajian/pages/dashboardPenggajian/dashboardPenggajianPage";
+import KasbonPage from "@/features/payroll/pages/cash-advance/CashAdvancePage";
+import StatusKasbonPage from "@/features/payroll/pages/cash-advance/tab/StatusCashAdvancePage";
+import RiwayatPengajuanPage from "@/features/payroll/pages/cash-advance/tab/HistorySubmissionPage";
+import DashboardPenggajianPage from "@/features/payroll/pages/dashboard-payroll/DashboardPayrollPage";
 
-import ApprovalPeriodeGajianPage from "@/features/penggajian/pages/approvalPeriodeGajian/approvalPeriodeGajianPage";
-import DistribusiGajiPage from "@/features/penggajian/pages/distribusiGaji/distribusiGajiPage";
+import ApprovalPeriodeGajianPage from "@/features/payroll/pages/payroll-period-approval/PayrollPeriodApprovalPage";
+import DistribusiGajiPage from "@/features/payroll/pages/distribution-payroll/DistributionPayrollPage";
 import JenisPengajuanPage from "@/features/jenisPengajuan/pages/jenisPengajuanPage";
 
 
 
 // Auth Feature Pages
-import { LoginPage, ForgotPasswordPage } from "../features/auth/pages";
+import { LoginPage, ForgotPasswordPage } from "../features/auth/pages/Index";
 import ProtectedOutlet from "../features/auth/components/ProtectedOutlet";
-import FormKasbonPage from "@/features/penggajian/pages/kasbon/fromKasbon/formKasbonPage";
+import FormKasbonPage from "@/features/payroll/pages/cash-advance/form-cash-advance/FormCashAdvancePage";
 
 export default function AppRoutes() {
   return (

@@ -1,7 +1,7 @@
 // Penyesuaian hooks Jabatan agar sesuai kontrak API 1.7 (job-title)
 import { useState, useCallback, useEffect } from 'react';
-import { positionsService } from '../services/request/positions.service';
-import { PositionListItem, TableFilter } from '../types/organization.api.types';
+import { positionsService } from '../services/request/PositionService';
+import { PositionListItem, TableFilter } from '../types/OrganizationApiTypes';
 import useFilterStore from '../../../stores/filterStore';
 
 interface UsePositionsReturn {

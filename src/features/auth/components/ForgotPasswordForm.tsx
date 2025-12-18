@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Label from '../../../components/form/Label';
 import Input from '../../../components/form/input/InputField';
 import Button from '../../../components/ui/button/Button';
-import { ForgotPasswordRequest } from '../types';
+import { ForgotPasswordRequest } from '../types/Index';
 // import Logo from '../../../components/common/Logo';
 
 interface ForgotPasswordFormProps {

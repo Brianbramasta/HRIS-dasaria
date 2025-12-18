@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authService } from '../services';
-import { ForgotPasswordRequest } from '../types';
+import { authService } from '../services/Index';
+import { ForgotPasswordRequest } from '../types/Index';
 import { ApiError } from '../../../services/api';
 
 export const useForgotPassword = () => {

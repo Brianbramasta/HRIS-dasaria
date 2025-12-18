@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authService } from '../services';
-import { LoginRequest } from '../types';
+import { authService } from '../services/Index';
+import { LoginRequest } from '../types/Index';
 import { ApiError } from '../../../services/api';
-import { useAuthStore } from '../stores/authStore';
+import { useAuthStore } from '../stores/AuthStore';
 
 export const useLogin = () => {
   const navigate = useNavigate();

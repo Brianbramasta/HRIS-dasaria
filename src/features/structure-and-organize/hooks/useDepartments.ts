@@ -1,7 +1,7 @@
 // Penyesuaian hooks Departemen agar sesuai kontrak API 1.7 (departments)
 import { useState, useCallback, useEffect } from 'react';
-import { departmentsService } from '../services/request/departments.service';
-import { DepartmentListItem, TableFilter } from '../types/organization.api.types';
+import { departmentsService } from '../services/request/DepartmentsService';
+import { DepartmentListItem, TableFilter } from '../types/OrganizationApiTypes';
 import useFilterStore from '../../../stores/filterStore';
 
 interface UseDepartmentsReturn {

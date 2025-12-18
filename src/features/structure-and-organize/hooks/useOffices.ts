@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
-import { officesService } from '../services/request/offices.service';
-import { OfficeListItem, TableFilter } from '../types/organization.api.types';
+import { officesService } from '../services/request/OfficesService';
+import { OfficeListItem, TableFilter } from '../types/OrganizationApiTypes';
 import useFilterStore from '../../../stores/filterStore';
 
 interface UseOfficesReturn {

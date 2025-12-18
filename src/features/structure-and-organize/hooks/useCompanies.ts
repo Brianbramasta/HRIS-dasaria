@@ -2,8 +2,8 @@ import { useState, useCallback, useEffect } from 'react';
 import { 
   TableFilter,
   CompanyListItem,
-} from '../types/organization.api.types';
-import { companiesService } from '../services/request/companies.service';
+} from '../types/OrganizationApiTypes';
+import { companiesService } from '../services/request/CompaniesService';
 import useFilterStore from '../../../stores/filterStore';
 
 interface UseCompaniesReturn {

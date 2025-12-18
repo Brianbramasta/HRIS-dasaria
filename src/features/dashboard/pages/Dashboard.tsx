@@ -1,10 +1,10 @@
 import EmployeeMetricCard from "../components/chart/EmployeeMetricCard";
-import StatusKepegawaian from "../components/chart/StatusKepegawaian";
+import StatusKepegawaian from "../components/chart/EmploymentStatus";
 import Demographic from "../components/chart/Demographic";
 import EmployeeEngagement from "../components/chart/EmployeeEngagement";
-import Statistik from "../components/chart/Statistik";
+import Statistik from "../components/chart/Statistic";
 // Dokumentasi: Import tabel ulang tahun bulanan
-import TableUlangtahun from "../components/tables/tableUlangtahun";
+import TableUlangtahun from "../components/tables/BirthdayTable";
 
 export default function Dashboard() {
   return (

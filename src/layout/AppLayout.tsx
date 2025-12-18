@@ -3,7 +3,7 @@ import { Outlet } from "react-router";
 import AppHeader from "./AppHeader";
 import Backdrop from "./Backdrop";
 import AppSidebar from "./AppSidebar";
-import { useAuthStore } from "../features/auth/stores/authStore";
+import { useAuthStore } from "../features/auth/stores/AuthStore";
 
 const LayoutContent: React.FC = () => {
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();

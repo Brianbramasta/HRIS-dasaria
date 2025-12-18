@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react';
 import { useLogin } from '../useLogin';
-import { authService } from '../../services/auth.service';
-import * as authStoreModule from '../../stores/authStore';
+import { authService } from '../../services/AuthService';
+import * as authStoreModule from '../../stores/AuthStore';
 
 // Mocks
 const mockNavigate = jest.fn();

@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
-import { employeePositionsService } from '../services/request/employeePositions.service';
-import { EmployeePositionListItem, TableFilter } from '../types/organization.api.types';
+import { employeePositionsService } from '../services/request/EmployeePositionsService';
+import { EmployeePositionListItem, TableFilter } from '../types/OrganizationApiTypes';
 import useFilterStore from '../../../stores/filterStore';
 
 interface UseEmployeePositionsReturn {

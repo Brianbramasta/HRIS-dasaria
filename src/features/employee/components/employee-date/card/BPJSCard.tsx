@@ -1,0 +1,75 @@
+import ExpandCard from '@/features/structure-and-organize/components/card/ExpandCard';
+import Label from '@/components/form/Label';
+import InputField from '@/components/form/input/InputField';
+import Button from '@/components/ui/button/Button';
+import { Edit2 } from 'react-feather';
+import { useModal } from '@/hooks/useModal';
+import SalaryBpjsModal, { type SalaryBpjsForm } from '@/features/employee/components/modals/employeeData/PersonalInformation/SalaryBpjsModal';
+import { IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
+
+interface Props {
+  financeAndCompliance: any; // API response from employee-master-data
+}
+
+export default function BPJSCard({ financeAndCompliance }: Props) {
+  const { isOpen, openModal, closeModal } = useModal(false);
+  const initialData: SalaryBpjsForm = {
+    gaji: '',
+    bank: '',
+    noRekening: '',
+    namaAkunBank: '',
+    npwp: '',
+    ptkpStatus: '',
+    noBpjsKS: financeAndCompliance?.bpjs_health_number || '',
+    statusBpjsKS: financeAndCompliance?.bpjs_health_status || '',
+    noBpjsTK: financeAndCompliance?.bpjs_employment_number || '',
+    statusBpjsTK: financeAndCompliance?.bpjs_employment_status || '',
+    nominalBpjsTK: '',
+  };
+  const isComplete = !!financeAndCompliance?.bpjs_health_number &&
+    !!financeAndCompliance?.bpjs_health_status &&
+    !!financeAndCompliance?.bpjs_employment_number &&
+    !!financeAndCompliance?.bpjs_employment_status;
+  return (
+    <ExpandCard title="BPJS" leftIcon={isComplete ? <IconLengkap /> : <IconTidakLengkap />} withHeaderDivider>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div>
+          <Label>No. BPJS Kesehatan</Label>
+          <InputField value={financeAndCompliance?.bpjs_health_number || ''} readonly={true} />
+        </div>
+        <div>
+          <Label>Status BPJS Kesehatan</Label>
+          <InputField value={financeAndCompliance?.bpjs_health_status || ''} readonly={true} />
+        </div>
+        <div>
+          <Label>No. BPJS Ketenagakerjaan</Label>
+          <InputField value={financeAndCompliance?.bpjs_employment_number || ''} readonly={true} />
+        </div>
+        <div>
+          <Label>Status BPJS Ketenagakerjaan</Label>
+          <InputField value={financeAndCompliance?.bpjs_employment_status || ''} readonly={true} />
+        </div>
+        {/* <div>
+          <Label>Nominal BPJS TK</Label>
+          <InputField value={financeAndCompliance.nominalBpjsTk || ''} readonly={true} />
+        </div> */}
+      </div>
+      <div className="mt-4 flex justify-end">
+        <Button variant="primary" size="sm" onClick={openModal}>
+          <Edit2 size={16} className="mr-2" /> Edit
+        </Button>
+      </div>
+
+      <SalaryBpjsModal
+        isOpen={isOpen}
+        initialData={initialData}
+        onClose={closeModal}
+        onSubmit={(payload) => {
+          console.log('Save Salary & BPJS', payload);
+          closeModal();
+        }}
+        submitting={false}
+      />
+    </ExpandCard>
+  );
+}

@@ -1,6 +1,6 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { useAuthStore } from '../stores/authStore';
-import { canAccessRoute } from '../config/rolePermissions';
+import { useAuthStore } from '../stores/AuthStore';
+import { canAccessRoute } from '../config/RolePermissions';
 
 // Role-based access: HR/Admin -> full access; staff -> only data master karyawan
 // const STAFF_ALLOWED_PATHS = ['/data-karyawan', '/data-karyawan/form'];
