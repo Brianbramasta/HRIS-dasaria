@@ -233,6 +233,10 @@ export const Step03EmployeeData: React.FC = () => {
                 placeholder="Select"
               />
             </div>
+            
+          </div>
+
+          <div className="space-y-4">
             <div>
               <Label>Departemen</Label>
               <Select
@@ -242,9 +246,6 @@ export const Step03EmployeeData: React.FC = () => {
                 placeholder="Select"
               />
             </div>
-          </div>
-
-          <div className="space-y-4">
             <div>
               <Label>Position</Label>
               <Select
@@ -284,7 +285,7 @@ export const Step03EmployeeData: React.FC = () => {
                 onChange={() => {}}
               />
             </div>
-            <div>
+            {/* <div>
               <Label>Hak Akses Pengguna</Label>
               <Select
                 options={HAK_AKSES_OPTIONS}
@@ -292,7 +293,7 @@ export const Step03EmployeeData: React.FC = () => {
                 onChange={(value) => handleChange('userAccess', value)}
                 placeholder="Select"
               />
-            </div>
+            </div> */}
             <div>
               <Label>Status PayRoll</Label>
               <Select

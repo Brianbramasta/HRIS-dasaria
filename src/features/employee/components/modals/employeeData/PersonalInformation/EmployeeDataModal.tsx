@@ -170,13 +170,14 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             <Label>Divisi</Label>
             <Select options={DIVISI_OPTIONS} defaultValue={form.divisi || ''} onChange={(v) => handleInput('divisi', v)} placeholder="Select" />
           </div>
-          <div>
-            <Label>Departemen</Label>
-            <Select options={DEPARTEMEN_OPTIONS} defaultValue={form.departemen || ''} onChange={(v) => handleInput('departemen', v)} placeholder="Select" />
-          </div>
+        
         </div>
 
         <div className="space-y-4">
+            <div>
+            <Label>Departemen</Label>
+            <Select options={DEPARTEMEN_OPTIONS} defaultValue={form.departemen || ''} onChange={(v) => handleInput('departemen', v)} placeholder="Select" />
+          </div>
           <div>
             <Label>Position</Label>
             <Select options={POSITION_OPTIONS} defaultValue={form.position || ''} onChange={(v) => handleInput('position', v)} placeholder="Select" />
@@ -193,10 +194,10 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             <Label>Golongan</Label>
             <Select options={GOLONGAN_OPTIONS} defaultValue={form.golongan || ''} onChange={(v) => handleInput('golongan', v)} placeholder="Select" />
           </div>
-          <div>
+          {/* <div>
             <Label>Hak Akses Pengguna</Label>
             <Select options={USER_ACCESS_OPTIONS} defaultValue={form.userAccess || 'Employee'} onChange={(v) => handleInput('userAccess', v)} placeholder="Select" />
-          </div>
+          </div> */}
           <div>
             <Label>Status Payroll</Label>
             <Select options={STATUS_PAYROLL_OPTIONS} defaultValue={form.statusPayroll || ''} onChange={(v) => handleInput('statusPayroll', v)} placeholder="Select" />

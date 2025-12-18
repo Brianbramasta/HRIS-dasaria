@@ -72,13 +72,14 @@ export default function EmployeeDataCard({ data }: Props) {
             <Label>Divisi</Label>
             <InputField value={data?.division_name || ''} readonly={true} />
           </div>
+          
+        </div>
+
+        <div className="space-y-4">
           <div>
             <Label>Departemen</Label>
             <InputField value={data?.department_name || ''} readonly={true} />
           </div>
-        </div>
-
-        <div className="space-y-4">
           <div>
             <Label>Position</Label>
             <InputField value={data?.position_level || ''} readonly={true} />
@@ -95,10 +96,10 @@ export default function EmployeeDataCard({ data }: Props) {
             <Label>Golongan</Label>
             <InputField value={data?.grade || ''} readonly={true} />
           </div>
-          <div>
+          {/* <div>
             <Label>Hak Akses Pengguna</Label>
             <InputField value={data?.user_access || ''} readonly={true} />
-          </div>
+          </div> */}
           <div>
             <Label>Status PayRoll</Label>
             <InputField value={data?.payroll_status || ''} readonly={true} />
