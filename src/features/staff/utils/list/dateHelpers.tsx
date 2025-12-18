@@ -42,7 +42,7 @@ export const renderSisaKontrakBadge = (endStr: string | null | undefined): React
   const end = parseIndonesianDate(endStr);
   if (!end) {
     return (
-      <span className="inline-block rounded-full bg-gray-100 p-[10px] w-max text-xs font-medium text-gray-800">-</span>
+      <span className="inline-block rounded-full bg-gray-100 p-[10px] w-full text-center text-xs font-medium text-gray-800">-</span>
     );
   }
   const now = new Date();
@@ -51,22 +51,22 @@ export const renderSisaKontrakBadge = (endStr: string | null | undefined): React
   
   if (diffDays <= 0) {
     return (
-      <span className="inline-block rounded-full bg-red-100 p-[10px] w-max text-xs font-medium text-red-800">Berakhir</span>
+      <span className="inline-block rounded-full bg-red-100 p-[10px] w-full text-center text-xs font-medium text-red-800">Berakhir</span>
     );
   }
   if (diffDays <= 14) {
     const weeks = Math.max(1, Math.ceil(diffDays / 7));
     return (
-      <span className="inline-block rounded-full bg-red-100 p-[10px] w-max text-xs font-medium text-red-800">{`${weeks} Minggu`}</span>
+      <span className="inline-block rounded-full bg-red-100 p-[10px] w-full text-center text-xs font-medium text-red-800">{`${weeks} Minggu`}</span>
     );
   }
   if (diffDays <= 30) {
     return (
-      <span className="inline-block rounded-full bg-yellow-100 p-[10px] w-max text-xs font-medium text-yellow-800">1 Bulan</span>
+      <span className="inline-block rounded-full bg-yellow-100 p-[10px] w-full text-center text-xs font-medium text-yellow-800">1 Bulan</span>
     );
   }
   const months = Math.floor(diffDays / 30);
   return (
-    <span className="inline-block rounded-full bg-green-100 p-[10px] w-max text-xs font-medium text-green-800">{`${months} Bulan`}</span>
+    <span className="inline-block rounded-full bg-green-100 p-[10px] w-full text-center text-xs font-medium text-green-800">{`${months} Bulan`}</span>
   );
 };

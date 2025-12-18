@@ -2,9 +2,11 @@ import React, { useEffect, useMemo, useState } from 'react';
 import ModalAddEdit from '@/features/structure-and-organize/components/modals/shared/modal/modalAddEdit';
 import Label from '@/components/form/Label';
 import InputField from '@/components/form/input/InputField';
-import TextArea from '@/components/form/input/TextArea';
+// import TextArea from '@/components/form/input/TextArea';
 import Select from '@/components/form/Select';
 import FileInput from '@/features/structure-and-organize/components/modals/shared/field/FileInput';
+import DatePicker from '@/components/form/date-picker';
+import { formatDateToIndonesian } from '@/utils/formatDate';
 
 export type ContractEntry = {
   id?: number;
@@ -27,24 +29,26 @@ interface ContractModalProps {
   onClose: () => void;
   onSubmit: (data: ContractEntry) => void;
   submitting?: boolean;
+  onFileChange?: (file: File | null) => void;
+  showStatusBerakhir?: boolean;
 }
 
 const optionsStatusKontrak = [
-  { value: 'Aktif', label: 'Aktif' },
-  { value: 'Tidak Aktif', label: 'Tidak Aktif' },
-  { value: 'Habis', label: 'Habis' },
+  { value: '1', label: 'Aktif' },
+  { value: '2', label: 'Tidak Aktif' },
+  { value: '3', label: 'Probation' },
+  { value: '4', label: 'Resigned' }
 ];
 
 const optionsJenisKontrak = [
-  { value: 'PKWT', label: 'PKWT' },
-  { value: 'PKWTT', label: 'PKWTT' },
-  { value: 'Intern', label: 'Intern' },
+  { value: '1', label: 'PKWT' },
+  { value: '2', label: 'PKWTT' },
 ];
 
 const optionsStatusBerakhir = [
-  { value: '-', label: '-' },
-  { value: 'Diperpanjang', label: 'Diperpanjang' },
-  { value: 'Berakhir', label: 'Berakhir' },
+  { value: '1', label: 'Resign' },
+  { value: '2', label: 'PHK' },
+  { value: '3', label: 'Tidak Diperpanjang' }
 ];
 
 const emptyForm: ContractEntry = {
@@ -59,7 +63,7 @@ const emptyForm: ContractEntry = {
   deskripsi: '',
 };
 
-const ContractModal: React.FC<ContractModalProps> = ({ isOpen, mode, initialData, onClose, onSubmit, submitting = false }) => {
+const ContractModal: React.FC<ContractModalProps> = ({ isOpen, mode, initialData, onClose, onSubmit, submitting = false, onFileChange, showStatusBerakhir = false }) => {
   const [form, setForm] = useState<ContractEntry>(emptyForm);
   const title = useMemo(() => (mode === 'add' ? 'Tambah Kontrak' : 'Edit Kontrak'), [mode]);
 
@@ -71,11 +75,52 @@ const ContractModal: React.FC<ContractModalProps> = ({ isOpen, mode, initialData
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
+  // Convert ISO date (yyyy-MM-dd) to Indonesian format (d F Y)
+  // const convertToIndonesianDate = (isoDate: string): string => {
+  //   if (!isoDate) return '';
+  //   const date = new Date(isoDate);
+  //   const months = [
+  //     'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+  //     'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+  //   ];
+  //   const day = date.getDate();
+  //   const month = months[date.getMonth()];
+  //   const year = date.getFullYear();
+  //   return `${day} ${month} ${year}`;
+  // };
+
+  // Handle date change from DatePicker (Indonesian format) to ISO format (yyyy-MM-dd)
+  const handleDateChange = (key: keyof ContractEntry) => (selectedDates: Date[]) => {
+    console.log('Selected Date:', selectedDates);
+    if (selectedDates.length > 0) {
+      const date = selectedDates[0];
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const isoDate = `${year}-${month}-${day}`;
+      console.log('ISO Date:', isoDate);
+      console.log('Key:', key);
+      handleInput(key, isoDate);
+    } else {
+      handleInput(key, '');
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleInput('fileName', file.name);
+      onFileChange?.(file);
+    } else {
+      onFileChange?.(null);
+    }
+  };
+
   const content = (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
       <div className="col-span-2">
         <Label>Nama Lengkap</Label>
-        <InputField placeholder="Nama Lengkap" value={form.namaLengkap} onChange={(e) => handleInput('namaLengkap', e.target.value)} required />
+        <InputField readonly placeholder="Nama Lengkap" value={form.namaLengkap} onChange={(e) => handleInput('namaLengkap', e.target.value)} required />
       </div>
 
       <div className='md:col-span-2'>
@@ -88,12 +133,22 @@ const ContractModal: React.FC<ContractModalProps> = ({ isOpen, mode, initialData
       </div> */}
 
       <div>
-        <Label>TTD Kontrak Terakhir</Label>
-        <InputField type="date" value={form.ttdKontrakTerakhir} onChange={(e) => handleInput('ttdKontrakTerakhir', e.target.value)} />
+        <DatePicker 
+          id="ttdKontrakTerakhir" 
+          label="TTD Kontrak Terakhir" 
+          placeholder="Pilih Tanggal"
+          defaultDate={formatDateToIndonesian(form.ttdKontrakTerakhir) || undefined}
+          onChange={handleDateChange('ttdKontrakTerakhir')}
+        />
       </div>
       <div>
-        <Label>Berakhir Kontrak</Label>
-        <InputField type="date" value={form.berakhirKontrak} onChange={(e) => handleInput('berakhirKontrak', e.target.value)} />
+        <DatePicker 
+          id="berakhirKontrak" 
+          label="Berakhir Kontrak" 
+          placeholder="Pilih Tanggal"
+          defaultDate={formatDateToIndonesian(form.berakhirKontrak) || undefined}
+          onChange={handleDateChange('berakhirKontrak')}
+        />
       </div>
 
       <div>
@@ -105,20 +160,17 @@ const ContractModal: React.FC<ContractModalProps> = ({ isOpen, mode, initialData
         <InputField type="number" min="0" value={form.kontrakKe} onChange={(e) => handleInput('kontrakKe', Number(e.target.value))} />
       </div>
 
-      <div className='md:col-span-2'>
+      <div className='md:col-span-2' hidden={!showStatusBerakhir}>
         <Label>Status Berakhir</Label>
         <Select options={optionsStatusBerakhir} placeholder="Select" defaultValue={form.statusBerakhir} onChange={(v) => handleInput('statusBerakhir', v)} />
       </div>
-      <div className="col-span-2">
+      {/* <div className="col-span-2" hidden>
         <Label>Description</Label>
         <TextArea placeholder="Enter as description ..." rows={4} value={form.deskripsi || ''} onChange={(v) => handleInput('deskripsi', v)} />
-      </div>
+      </div> */}
 
       <div className="col-span-2">
-        <FileInput skFileName={form.fileName || ''} onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file) handleInput('fileName', file.name);
-        }} />
+        <FileInput skFileName={form.fileName || ''} onChange={handleFileChange} />
       </div>
     </div>
   );

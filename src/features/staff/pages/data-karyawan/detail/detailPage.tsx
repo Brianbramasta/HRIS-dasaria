@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import Tabs from '../../../../structure-and-organize/components/Tabs';
 import PesonalInformationTab from '../../../components/dataKaryawan/tab/pesonalInformation';
@@ -20,7 +20,8 @@ export default function DetailKaryawanPage() {
   const mode = query.get('mode') || 'view';
   const isEditable = mode === 'edit';
   const tabParam = (query.get('tab') || 'personal-information').toLowerCase();
-  const {detail} = useDetailDataKaryawanPersonalInfo();
+  const {detail, fetchDetail} = useDetailDataKaryawanPersonalInfo();
+  useEffect(() => { fetchDetail(id!); }, [id]);
 
   const tabs = [
     { id: 'personal-information', label: 'Personal Information' },
@@ -65,7 +66,7 @@ export default function DetailKaryawanPage() {
           case 'personal-information':
             return <PesonalInformationTab employeeId={id!} isEditable={isEditable} />;
           case 'contract':
-            return <ContractTab data={{} as any} isEditable={isEditable} />;
+            return <ContractTab employeeId={id!} data={{} as any} isEditable={isEditable} />;
           case 'organization-history':
             return <OrganizationHistoryTab data={{} as any} isEditable={isEditable} />;
           case 'pelanggaran':

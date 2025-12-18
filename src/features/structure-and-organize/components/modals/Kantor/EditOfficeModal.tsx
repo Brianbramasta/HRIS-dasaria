@@ -45,7 +45,6 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
           : (fallbackId ? [fallbackId] : []);
         setCompanyIds(selectedIds);
         console.log('selectedIds', selectedIds);
-        console.log('companyIds', companyIds);
         console.log('initialIds', initialIds);
         const res = await companiesService.getDropdown();
         const opts = res.map((c) => ({ value: c.id, text: c.name }));

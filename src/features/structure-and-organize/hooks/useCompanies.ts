@@ -192,7 +192,7 @@ export const useCompanies = (): UseCompaniesReturn => {
 
   useEffect(() => {
     fetchCompanies();
-  }, [search, sortBy, sortOrder, page, pageSize, filterValue]);
+  }, [search, sortBy, sortOrder, page, pageSize, filterValue, fetchCompanies]);
 
   return {
     companies,

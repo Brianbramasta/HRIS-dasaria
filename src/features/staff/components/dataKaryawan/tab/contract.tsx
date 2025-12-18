@@ -1,23 +1,20 @@
-import { useMemo, useState, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode, useEffect } from 'react';
 import type { Karyawan } from '@/features/staff/types/Karyawan';
 import Button from '@/components/ui/button/Button';
 import { DataTable, type DataTableColumn, type DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
 import ContractModal, { type ContractEntry } from '@/features/staff/components/modals/dataKaryawan/contract/ContractModal';
 import { IconPencil, IconFileDetail } from '@/icons/components/icons';
 import ComponentCard from '@/components/common/ComponentCard';
+import { useContract } from '@/features/staff/hooks/detail/useContract';
+import type { ContractHistoryItem, CreateContractPayload } from '@/features/staff/services/detail/contractService';
+import { formatUrlFile } from '@/utils/formatUrlFile';
+import { useDetailDataKaryawanPersonalInfo } from '@/features/staff/stores/useDetailDataKaryawanPersonalInfo';
 
 interface Props {
+  employeeId?: string;
   data?: Karyawan;
   isEditable?: boolean;
 }
-
-type HistoryRow = {
-  id: number;
-  deskripsi: string;
-  jenisKontrak: string;
-  ttdKontrakTerakhir: string; // yyyy-MM-dd
-  berakhirKontrak: string; // yyyy-MM-dd
-};
 
 const formatDate = (iso: string) => {
   if (!iso) return '-';
@@ -35,8 +32,17 @@ function SummaryItem({ label, children }: { label: string; children: ReactNode }
   );
 }
 
-export default function ContractTab({ data }: Props) {
+export default function ContractTab({ employeeId: employeeIdProp, data }: Props) {
+  const { detail } = useDetailDataKaryawanPersonalInfo();
   const defaultName = useMemo(() => (data as any)?.name ?? (data as any)?.fullName ?? '', [data]);
+  const memoizedEmployeeId = useMemo(() => (data as any)?.id ?? '', [data]);
+  const employeeId = employeeIdProp || memoizedEmployeeId;
+
+  // Use the contract hook
+  const { contractData, isLoading, isSubmitting, createContract } = useContract({
+    employeeId,
+    autoFetch: !!employeeId,
+  });
 
   const [summary, setSummary] = useState<ContractEntry>({
     namaLengkap: defaultName || 'Megawati',
@@ -50,95 +56,118 @@ export default function ContractTab({ data }: Props) {
     deskripsi: '',
   });
 
-  const [rows, setRows] = useState<HistoryRow[]>([
-    { id: 1, deskripsi: 'Kartu Keluarga', jenisKontrak: 'PKWTT', ttdKontrakTerakhir: '2026-04-01', berakhirKontrak: '' },
-    { id: 2, deskripsi: 'Kartu Tanda Penduduk', jenisKontrak: 'PKWT', ttdKontrakTerakhir: '2025-10-01', berakhirKontrak: '2026-04-01' },
-    { id: 3, deskripsi: 'Ijazah Terakhir', jenisKontrak: 'Part Time', ttdKontrakTerakhir: '2025-03-01', berakhirKontrak: '2025-10-01' },
-  ]);
+  const [rows, setRows] = useState<ContractHistoryItem[]>([]);
+
+  // Update summary and rows when contract data is loaded
+  useEffect(() => {
+    if (contractData) {
+      setSummary({
+        namaLengkap: detail?.Data_Pribadi.full_name || '',
+        statusKontrak: contractData.summary?.status_kontrak,
+        lamaBekerja: contractData.summary?.lama_bekerja,
+        ttdKontrakTerakhir: contractData.summary?.ttd_kontrak_terakhir,
+        berakhirKontrak: contractData.summary?.berakhir_kontrak,
+        jenisKontrak: contractData.summary?.jenis_kontrak,
+        kontrakKe: contractData.summary?.kontrak_ke,
+        statusBerakhir: contractData.summary?.status_berakhir,
+        deskripsi: '',
+      });
+      setRows(contractData.contracts);
+    }
+  }, [contractData, defaultName]);
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<'add' | 'edit'>('add');
   const [editing, setEditing] = useState<ContractEntry | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleAdd = () => {
     setModalMode('add');
     setEditing({
       ...summary,
       deskripsi: '',
-      kontrakKe: summary.kontrakKe ?? 0,
+      kontrakKe: (summary.kontrakKe ?? 0) + 1,
     });
+    setSelectedFile(null);
     setModalOpen(true);
   };
 
-  const handleEditRow = (row: HistoryRow) => {
+  const handleEditRow = (row: ContractHistoryItem) => {
     setModalMode('edit');
     setEditing({
-      ...summary,
-      deskripsi: row.deskripsi,
-      jenisKontrak: row.jenisKontrak,
-      ttdKontrakTerakhir: row.ttdKontrakTerakhir,
-      berakhirKontrak: row.berakhirKontrak,
+      namaLengkap: defaultName,
+      statusKontrak: row.contract_status,
+      lamaBekerja: summary.lamaBekerja,
+      ttdKontrakTerakhir: row.last_contract_signed_date,
+      berakhirKontrak: row.end_date,
+      jenisKontrak: row.contract_type,
+      kontrakKe: summary.kontrakKe,
+      statusBerakhir: summary.statusBerakhir,
+      deskripsi: row.contract_number,
     });
+    setSelectedFile(null);
     setModalOpen(true);
   };
 
-  const handleSubmit = (entry: ContractEntry) => {
-    if (modalMode === 'add') {
-      const nextId = rows.length ? Math.max(...rows.map((r) => r.id)) + 1 : 1;
-      setRows((prev) => [
-        ...prev,
-        {
-          id: nextId,
-          deskripsi: entry.deskripsi || '- ',
-          jenisKontrak: entry.jenisKontrak,
-          ttdKontrakTerakhir: entry.ttdKontrakTerakhir,
-          berakhirKontrak: entry.berakhirKontrak,
-        },
-      ]);
-      setSummary(entry); // opsional: perbarui ringkasan ke entry terbaru
-    } else {
-      // edit: sinkronkan ringkasan dan baris terkait dengan tanggal dan jenis kontrak
-      setSummary(entry);
-      setRows((prev) => {
-        // pilih baris yang cocok dengan ttd dan deskripsi sebelum edit jika ada
-        return prev.map((r) =>
-          r.deskripsi === (editing?.deskripsi || '') && r.ttdKontrakTerakhir === (editing?.ttdKontrakTerakhir || '')
-            ? {
-                ...r,
-                deskripsi: entry.deskripsi || r.deskripsi,
-                jenisKontrak: entry.jenisKontrak,
-                ttdKontrakTerakhir: entry.ttdKontrakTerakhir,
-                berakhirKontrak: entry.berakhirKontrak,
-              }
-            : r,
-        );
-      });
+  const handleSubmit = async (entry: ContractEntry) => {
+    if (!selectedFile) {
+      alert('Please select a contract file');
+      return;
     }
-    setModalOpen(false);
+
+    // Map contract status to number
+    const contractStatusMap: Record<string, number> = {
+      'Aktif': 1,
+      'Tidak Aktif': 2,
+      'Probation': 3,
+      'Resigned': 4,
+    };
+
+    // Map contract type to number
+    const contractTypeMap: Record<string, number> = {
+      'PKWT': 1,
+      'PKWTT': 2,
+    };
+
+    const payload: CreateContractPayload = {
+      contract_status: contractStatusMap[entry.statusKontrak] || 1,
+      last_contract_signed_date: entry.ttdKontrakTerakhir,
+      end_date: entry.berakhirKontrak,
+      contract_type: contractTypeMap[entry.jenisKontrak] || 1,
+      contract_number: entry.deskripsi || '1',
+      file_contract: selectedFile,
+    };
+
+    const success = await createContract(payload);
+    if (success) {
+      setModalOpen(false);
+      setSelectedFile(null);
+    }
   };
 
-  const columns: DataTableColumn<HistoryRow>[] = [
-    { id: 'no', label: 'No.', align: 'center', format: (_v, row) => rows.findIndex((r) => r.id === row.id) + 1 , sortable: false},
-    { id: 'jenisKontrak', label: 'Jenis Kontrak' },
-    { id: 'ttdKontrakTerakhir', label: 'TTD Kontrak Terakhir', format: (v) => formatDate(v) },
-    { id: 'berakhirKontrak', label: 'Berakhir Kontrak', format: (v) => (v ? formatDate(v) : '-') },
+  const columns: DataTableColumn<ContractHistoryItem>[] = [
+    { id: 'no', label: 'No.', align: 'center', format: (_v, row) => rows.findIndex((r) => r.id === row.id) + 1, sortable: false },
+    { id: 'contract_type', label: 'Jenis Kontrak' },
+    { id: 'last_contract_signed_date', label: 'TTD Kontrak Terakhir', format: (v) => formatDate(v) },
+    { id: 'end_date', label: 'Berakhir Kontrak', format: (v) => (v ? formatDate(v) : '-') },
   ];
 
-  const actions: DataTableAction<HistoryRow>[] = [
+  const actions: DataTableAction<ContractHistoryItem>[] = [
     {
-      // label: '',
       variant: 'outline',
       color: 'error',
       icon: <IconFileDetail />,
-      onClick: (row) => console.log(row),
+      onClick: (row) => {
+        if (row.file_contract) {
+          window.open(formatUrlFile(row.file_contract), '_blank');
+        }
+      },
     },
     {
-      // label: '',
       variant: 'outline',
       icon: <IconPencil />,
       onClick: (row) => handleEditRow(row),
     },
-    
   ];
 
   return (
@@ -151,33 +180,27 @@ export default function ContractTab({ data }: Props) {
               <img src="/images/user/user-10.png" alt="Preview" className="w-full h-56 object-cover" />
             </div>
             <div className="mt-3 w-full flex justify-center">
-              <Button variant="primary" >Pratinjau PDF</Button>
+              <Button variant="primary" disabled={isLoading}>Pratinjau PDF</Button>
             </div>
           </div>
 
           {/* Summary Fields */}
           <div className="col-span-4 grid grid-cols-1 gap-4 sm:grid-cols-3 h-fit">
-            <SummaryItem label="Status Kontrak">{summary.statusKontrak}</SummaryItem>
-            <SummaryItem label="TTD Kontrak Terakhir">{formatDate(summary.ttdKontrakTerakhir)}</SummaryItem>
-            <SummaryItem label="Berakhir Kontrak">{formatDate(summary.berakhirKontrak)}</SummaryItem>
-            <SummaryItem label="Lama Bekerja">{summary.lamaBekerja}</SummaryItem>
-            <SummaryItem label="Sisa Kontrak">5 Bulan</SummaryItem>
-            <SummaryItem label="Jenis Kontrak">{summary.jenisKontrak}</SummaryItem>
-            <SummaryItem label="Kontrak ke">{summary.kontrakKe}</SummaryItem>
-            <SummaryItem label="Status Berakhir">{summary.statusBerakhir}</SummaryItem>
-            {/* <div className="col-span-2">
-              <div className="rounded-lg border border-gray-200 bg-white p-3">
-                <div className="text-xs text-gray-500 mb-1">Deskripsi</div>
-                <div className="text-sm text-gray-700 min-h-[80px]">{summary.deskripsi || '-'}</div>
-              </div>
-            </div> */}
+            <SummaryItem label="Status Kontrak">{summary?.statusKontrak}</SummaryItem>
+            <SummaryItem label="TTD Kontrak Terakhir">{formatDate(summary?.ttdKontrakTerakhir)}</SummaryItem>
+            <SummaryItem label="Berakhir Kontrak">{formatDate(summary?.berakhirKontrak)}</SummaryItem>
+            <SummaryItem label="Lama Bekerja">{summary?.lamaBekerja}</SummaryItem>
+            <SummaryItem label="Sisa Kontrak">{contractData?.summary?.sisa_kontrak || '-'}</SummaryItem>
+            <SummaryItem label="Jenis Kontrak">{summary?.jenisKontrak}</SummaryItem>
+            <SummaryItem label="Kontrak ke">{summary?.kontrakKe}</SummaryItem>
+            <SummaryItem label="Status Berakhir">{summary?.statusBerakhir}</SummaryItem>
           </div>
         </div>
       </ComponentCard>
 
       {/* History Table */}
       <div className="mt-6">
-        <DataTable<HistoryRow>
+        <DataTable<ContractHistoryItem>
           title="Riwayat Kontrak"
           data={rows}
           columns={columns}
@@ -185,6 +208,7 @@ export default function ContractTab({ data }: Props) {
           onAdd={handleAdd}
           addButtonLabel="Tambah Dokumen"
           emptyMessage="Belum ada riwayat kontrak"
+          // isLoading={isLoading}
         />
       </div>
 
@@ -193,9 +217,14 @@ export default function ContractTab({ data }: Props) {
         isOpen={isModalOpen}
         mode={modalMode}
         initialData={editing}
-        onClose={() => setModalOpen(false)}
+        onClose={() => {
+          setModalOpen(false);
+          setSelectedFile(null);
+        }}
         onSubmit={handleSubmit}
-        submitting={false}
+        submitting={isSubmitting}
+        onFileChange={setSelectedFile}
+        showStatusBerakhir={modalMode === 'edit'}
       />
     </>
   );

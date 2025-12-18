@@ -105,7 +105,7 @@ export default function EmployeePositionsTab({ resetKey }: Props) {
   };
 
   // Dokumentasi: jalankan fetch list sekali saat mount dan set penanda selesai inisialisasi
-  React.useEffect(() => { fetchEmployeePositions(); setHasInitialFetch(true); }, []);
+  React.useEffect(() => { fetchEmployeePositions(); setHasInitialFetch(true); }, [fetchEmployeePositions]);
 
   // Dokumentasi: ketika tombol Cari di modal Filter ditekan (menyimpan ke filterStore),
   // sinkronkan pencarian dan jalankan request API seperti halaman Jabatan

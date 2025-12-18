@@ -174,7 +174,7 @@ export const useBusinessLines = (options?: { autoFetch?: boolean }): UseBusiness
     if (autoFetch) {
       fetchBusinessLines();
     }
-  }, [search, sortBy, sortOrder, page, pageSize, filterValue, autoFetch]);
+  }, [search, sortBy, sortOrder, page, pageSize, filterValue, autoFetch, fetchBusinessLines]);
 
   return {
     businessLines,

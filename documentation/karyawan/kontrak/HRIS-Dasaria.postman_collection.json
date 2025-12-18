@@ -2712,12 +2712,12 @@
 									"name": "Informasi Pribadi",
 									"item": [
 										{
-											"name": "Get Data Detail Karyawan",
+											"name": "Get Data Detail Karyawan Tab informasi pribadi",
 											"request": {
 												"method": "GET",
 												"header": [],
 												"url": {
-													"raw": "{{base_url}}/api/employee-master-data/employees/019b2635-a1a5-71d9-a7f2-b30831cc893f",
+													"raw": "{{base_url}}/api/employee-master-data/employees/019b2b0f-cb59-7228-b9fb-25a4c24eff35/data-personal",
 													"host": [
 														"{{base_url}}"
 													],
@@ -2725,11 +2725,195 @@
 														"api",
 														"employee-master-data",
 														"employees",
-														"019b2635-a1a5-71d9-a7f2-b30831cc893f"
+														"019b2b0f-cb59-7228-b9fb-25a4c24eff35",
+														"data-personal"
 													]
 												}
 											},
 											"response": []
+										}
+									]
+								},
+								{
+									"name": "kontrak",
+									"item": [
+										{
+											"name": "menyimpan kontrak",
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "formdata",
+													"formdata": [
+														{
+															"key": "contract_status",
+															"value": "1",
+															"description": "1=active, 2=inactive, 3=probation, 4=resigned",
+															"type": "text"
+														},
+														{
+															"key": "last_contract_signed_date",
+															"value": "2024-01-15",
+															"type": "text"
+														},
+														{
+															"key": "end_date",
+															"value": "2025-01-15",
+															"type": "text"
+														},
+														{
+															"key": "contract_type",
+															"value": "1",
+															"description": "1 = pkwt, 2 = pkwtt",
+															"type": "text"
+														},
+														{
+															"key": "contract_number",
+															"value": "1",
+															"type": "text"
+														},
+														{
+															"key": "file_contract",
+															"type": "file",
+															"src": "/D:/tes1.pdf"
+														}
+													]
+												},
+												"url": {
+													"raw": "{{base_url}}/api/employee-master-data/employees/019b2b20-41d2-7205-8b89-bd5d73f2a7d0/kontrak",
+													"host": [
+														"{{base_url}}"
+													],
+													"path": [
+														"api",
+														"employee-master-data",
+														"employees",
+														"019b2b20-41d2-7205-8b89-bd5d73f2a7d0",
+														"kontrak"
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "menyimpan kontrak",
+													"originalRequest": {
+														"method": "POST",
+														"header": [],
+														"body": {
+															"mode": "formdata",
+															"formdata": [
+																{
+																	"key": "contract_status",
+																	"value": "1",
+																	"description": "1=active, 2=inactive, 3=probation, 4=resigned",
+																	"type": "text"
+																},
+																{
+																	"key": "last_contract_signed_date",
+																	"value": "2024-01-15",
+																	"type": "text"
+																},
+																{
+																	"key": "end_date",
+																	"value": "2025-01-15",
+																	"type": "text"
+																},
+																{
+																	"key": "contract_type",
+																	"value": "1",
+																	"description": "1 = pkwt, 2 = pkwtt",
+																	"type": "text"
+																},
+																{
+																	"key": "contract_number",
+																	"value": "1",
+																	"type": "text"
+																},
+																{
+																	"key": "file_contract",
+																	"type": "file",
+																	"src": "/D:/tes1.pdf"
+																}
+															]
+														},
+														"url": {
+															"raw": "{{base_url}}/api/employee-master-data/employees/019b2b20-41d2-7205-8b89-bd5d73f2a7d0/kontrak",
+															"host": [
+																"{{base_url}}"
+															],
+															"path": [
+																"api",
+																"employee-master-data",
+																"employees",
+																"019b2b20-41d2-7205-8b89-bd5d73f2a7d0",
+																"kontrak"
+															]
+														}
+													},
+													"_postman_previewlanguage": "",
+													"header": [],
+													"cookie": [
+														{
+															"expires": "Invalid Date",
+															"domain": "",
+															"path": ""
+														}
+													],
+													"body": "{\r\n    \"meta\": {\r\n        \"status\": 201,\r\n        \"message\": \"Success create new contract employee\"\r\n    },\r\n    \"data\": {\r\n        \"employee_id\": \"019b2b20-41d2-7205-8b89-bd5d73f2a7d0\",\r\n        \"contract_status\": 1,\r\n        \"last_contract_signed_date\": \"2024-01-15\",\r\n        \"end_date\": \"2025-01-15\",\r\n        \"contract_type\": 1,\r\n        \"contract_number\": \"1\",\r\n        \"file_contract\": \"EmployeeMasterData/DocumentContract/bc4765e2-351f-405b-a4c3-6a5fa4b6eb67.pdf\",\r\n        \"id\": \"019b2f4b-bc11-7376-9814-ac938ca56764\",\r\n        \"updated_at\": \"2025-12-18T02:30:51.000000Z\",\r\n        \"created_at\": \"2025-12-18T02:30:51.000000Z\"\r\n    }\r\n}"
+												}
+											]
+										},
+										{
+											"name": "get kontrak",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{base_url}}/api/employee-master-data/employees/019b2b20-41d2-7205-8b89-bd5d73f2a7d0/data-kontrak",
+													"host": [
+														"{{base_url}}"
+													],
+													"path": [
+														"api",
+														"employee-master-data",
+														"employees",
+														"019b2b20-41d2-7205-8b89-bd5d73f2a7d0",
+														"data-kontrak"
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "get kontrak",
+													"originalRequest": {
+														"method": "GET",
+														"header": [],
+														"url": {
+															"raw": "{{base_url}}/api/employee-master-data/employees/019b2b20-41d2-7205-8b89-bd5d73f2a7d0/data-kontrak",
+															"host": [
+																"{{base_url}}"
+															],
+															"path": [
+																"api",
+																"employee-master-data",
+																"employees",
+																"019b2b20-41d2-7205-8b89-bd5d73f2a7d0",
+																"data-kontrak"
+															]
+														}
+													},
+													"_postman_previewlanguage": "",
+													"header": [],
+													"cookie": [
+														{
+															"expires": "Invalid Date",
+															"domain": "",
+															"path": ""
+														}
+													],
+													"body": "{\r\n    \"meta\": {\r\n        \"status\": 200,\r\n        \"message\": \"Success get employee contract data\"\r\n    },\r\n    \"data\": {\r\n        \"summary\": {\r\n            \"status_kontrak\": \"aktif\",\r\n            \"ttd_kontrak_terakhir\": \"2024-01-15\",\r\n            \"berakhir_kontrak\": \"2025-01-15\",\r\n            \"jenis_kontrak\": \"PKWT\",\r\n            \"lama_bekerja\": \"1 year 11 months before\",\r\n            \"sisa_kontrak\": \"Sudah berakhir\",\r\n            \"kontrak_ke\": 3,\r\n            \"status_berakhir\": \"Masih Aktif\"\r\n        },\r\n        \"contracts\": [\r\n            {\r\n                \"id\": \"019b2b50-935d-7233-9566-ec2ff1d66ab3\",\r\n                \"employee_id\": \"019b2b20-41d2-7205-8b89-bd5d73f2a7d0\",\r\n                \"contract_number\": \"1\",\r\n                \"contract_type\": \"PKWT\",\r\n                \"contract_status\": \"aktif\",\r\n                \"last_contract_signed_date\": \"2024-01-15\",\r\n                \"end_date\": \"2025-01-15\",\r\n                \"file_contract\": \"http://192.168.2.154:8000/storage/contracts/phpE04B.tmp\",\r\n                \"created_at\": \"2025-12-17 07:57:39\",\r\n                \"updated_at\": \"2025-12-17 07:57:39\",\r\n                \"deleted_at\": null\r\n            },\r\n            {\r\n                \"id\": \"019b2b64-09f0-702c-815a-b56903aa3a8d\",\r\n                \"employee_id\": \"019b2b20-41d2-7205-8b89-bd5d73f2a7d0\",\r\n                \"contract_number\": \"1\",\r\n                \"contract_type\": \"PKWT\",\r\n                \"contract_status\": \"aktif\",\r\n                \"last_contract_signed_date\": \"2024-01-15\",\r\n                \"end_date\": \"2025-01-15\",\r\n                \"file_contract\": \"http://192.168.2.154:8000/storage/contracts/php56F7.tmp\",\r\n                \"created_at\": \"2025-12-17 08:18:55\",\r\n                \"updated_at\": \"2025-12-17 08:18:55\",\r\n                \"deleted_at\": null\r\n            },\r\n            {\r\n                \"id\": \"019b2b69-84d0-70c2-96ec-bc5fe7902888\",\r\n                \"employee_id\": \"019b2b20-41d2-7205-8b89-bd5d73f2a7d0\",\r\n                \"contract_number\": \"1\",\r\n                \"contract_type\": \"PKWT\",\r\n                \"contract_status\": \"aktif\",\r\n                \"last_contract_signed_date\": \"2024-01-15\",\r\n                \"end_date\": \"2025-01-15\",\r\n                \"file_contract\": \"http://192.168.2.154:8000/storage/contracts/f8c5a84d-588d-468b-be52-dcf845bda4fd.pdf\",\r\n                \"created_at\": \"2025-12-17 08:24:54\",\r\n                \"updated_at\": \"2025-12-17 08:24:54\",\r\n                \"deleted_at\": null\r\n            }\r\n        ]\r\n    }\r\n}"
+												}
+											]
 										}
 									]
 								}
@@ -2900,17 +3084,17 @@
 									"formdata": [
 										{
 											"key": "full_name",
-											"value": "tes probation ",
+											"value": "tes probation",
 											"type": "text"
 										},
 										{
 											"key": "national_id",
-											"value": "50641555",
+											"value": "50641561",
 											"type": "text"
 										},
 										{
 											"key": "email",
-											"value": "tes4@gmail.com",
+											"value": "tes10@gmail.com",
 											"type": "text"
 										},
 										{
@@ -3081,10 +3265,34 @@
 											"type": "text"
 										},
 										{
-											"key": "tes",
-											"value": "",
-											"type": "text",
-											"disabled": true
+											"key": "education_formal_detail[1][education_level]",
+											"value": "2",
+											"type": "text"
+										},
+										{
+											"key": "education_formal_detail[1][institution_name]",
+											"value": "tes",
+											"type": "text"
+										},
+										{
+											"key": "education_formal_detail[1][degree]",
+											"value": "4",
+											"type": "text"
+										},
+										{
+											"key": "education_formal_detail[1][final_grade]",
+											"value": "4",
+											"type": "text"
+										},
+										{
+											"key": "education_formal_detail[1][major]",
+											"value": "tes",
+											"type": "text"
+										},
+										{
+											"key": "education_formal_detail[1][graduation_year]",
+											"value": "2025",
+											"type": "text"
 										},
 										{
 											"key": "company_id",
@@ -3295,22 +3503,22 @@
 									"query": [
 										{
 											"key": "search",
-											"value": "tes44@gmail.com",
+											"value": "5064",
 											"disabled": true
 										},
 										{
 											"key": "sort",
-											"value": "desc",
+											"value": "asc",
 											"disabled": true
 										},
 										{
 											"key": "column",
-											"value": "email",
+											"value": "full_name",
 											"disabled": true
 										},
 										{
 											"key": "per_page",
-											"value": "2",
+											"value": "50",
 											"disabled": true
 										},
 										{
@@ -3330,7 +3538,7 @@
 										},
 										{
 											"key": "filter[]",
-											"value": "Data Analyst",
+											"value": "ini nama direktorat",
 											"disabled": true
 										}
 									]

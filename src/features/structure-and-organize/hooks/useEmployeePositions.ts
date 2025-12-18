@@ -110,7 +110,7 @@ export const useEmployeePositions = (): UseEmployeePositionsReturn => {
     } finally {
       setLoading(false);
     }
-  }, [page, pageSize, search, sortBy, sortOrder, filterValue]);
+  }, [page, pageSize, search, sortBy, sortOrder, filterValue, fetchEmployeePositions]);
 
   // Dokumentasi: updateEmployeePosition - kirim File asli via service
   const updateEmployeePosition = useCallback(async (id: string, employeePositionData: {
