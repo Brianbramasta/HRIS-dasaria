@@ -18,9 +18,9 @@ type Props = { resetKey: string };
 
 const departmentColumns: DataTableColumn<DepartmentRow>[] = [
   { id: 'no', label: 'No', sortable: false },
-  { id: 'Nama Departemen', label: 'Nama Departemen', sortable: true },
-  { id: 'Nama Divisi', label: 'Divisi', sortable: true },
-  { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: false,align: 'center', isAction: true, format: (row: DepartmentRow) => (
+  { id: 'nama-departemen', label: 'Nama Departemen', sortable: true },
+  { id: 'nama-divisi', label: 'Divisi', sortable: true },
+  { id: 'file-sk-dan-memo', label: 'File SK dan Memo', sortable: false,align: 'center', isAction: true, format: (row: DepartmentRow) => (
     
     row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer" className='flex items-center justify-center'><FileText size={16} /></a> : '—' )},
 ];
@@ -38,9 +38,9 @@ export default function DepartmentsTab({ resetKey }: Props) {
   const rows: any[] = useMemo(() => {
     return (departments || []).map((d: DepartmentListItem, idx: number) => ({
       no: idx + 1,
-      'Nama Departemen': (d as any).name ?? '—',
-      'Nama Divisi': (d as any).divisionName ?? '—',
-      'File SK dan Memo': (d as any).skFile ?? '_',
+      'nama-departemen': (d as any).name ?? '—',
+      'nama-divisi': (d as any).divisionName ?? '—',
+      'file-sk-dan-memo': (d as any).skFile ?? '_',
       raw: d,
     }));
   }, [departments]);

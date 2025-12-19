@@ -40,7 +40,6 @@ const PotonganTidakTetapModal: React.FC<Props> = ({ isOpen, onClose, defaultValu
       </div>
       <div>
         <Label>Deksripsi Umum</Label>
-        // Dokumentasi: Perbaikan handler TextArea - onChange mengembalikan string value
         <TextArea placeholder="Tulis description ..." value={form.deskripsiUmum} onChange={(value) => setField('deskripsiUmum', value)} />
       </div>
     </div>

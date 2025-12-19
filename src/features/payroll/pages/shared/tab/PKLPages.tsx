@@ -1,7 +1,10 @@
-import  { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { DataTableColumn } from '@/features/structure-and-organize/components/datatable/DataTable';
 import PenggajianTabBase from '../../../components/tabs/PayrollTabBase';
+import Button from '@/components/ui/button/Button';
+import { Dropdown } from '@/components/ui/dropdown/Dropdown';
+import { ChevronDown } from 'react-feather';
 
 type PKLRow = {
   no?: number;
@@ -20,19 +23,27 @@ type PKLRow = {
 
 export default function PKLTab({ resetKey = 'pkl' }: { resetKey?: string }) {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [approvalType, setApprovalType] = useState<string>('Persetujuan oleh FAT');
   // Dokumentasi: Deteksi halaman Approval atau Distribusi untuk set judul
-  const isApprovalPage = location.pathname.includes('/approval-periode-gajian');
-  const isDistribusiPage = location.pathname.includes('/distribusi-gaji');
-  const basePrefix = isApprovalPage ? '/approval-periode-gajian' : '/periode-gajian';
+  const isApprovalPage = location.pathname.includes('/payroll-period-approval');
+  const isDistribusiPage = location.pathname.includes('/salary-distribution');
+  const basePrefix = isApprovalPage ? '/payroll-period-approval' : '/payroll-period';
   // Dokumentasi: Gunakan prefix detail khusus distribusi saat di halaman Distribusi
-  const detailPathPrefix = isDistribusiPage ? '/distribusi-gaji/detail-pkl' : `${basePrefix}/detail-pkl`;
+  const detailPathPrefix = isDistribusiPage ? '/salary-distribution/detail-pkl' : `${basePrefix}/detail-pkl`;
   const title = isApprovalPage ? 'Approval Periode Gajian' : isDistribusiPage ? 'Distribusi Slip Gaji' : 'Periode Gajian';
+
+  // Dokumentasi: Fungsi untuk navigasi detail dengan approval type sebagai query parameter
+  const handleDetailNavigation = (id: string) => {
+    navigate(`${detailPathPrefix}/${id}?approvalType=${encodeURIComponent(approvalType)}`);
+  };
   const [rows] = useState<PKLRow[]>([
     { idKaryawan: '22345678', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', jumlahHariKerja: '20', uangSaku: '2.000.000', kategori: 'PKL', perusahaan: 'Dasaria', statusPenggajian: 'Draft', approvalHrga: 'Selesai', approvalFat: 'Pending', approvalDirekturKeuangan: 'Selesai' },
   ]);
   const baseColumns: DataTableColumn<PKLRow>[] = [
     { id: 'no', label: 'No.', align: 'center', sortable: false },
-    { id: 'idKaryawan', label: 'ID Karyawan' },
+    { id: 'idKaryawan', label: 'NIP' },
     { id: 'pengguna', label: 'Pengguna' },
     { id: 'tanggalPengajuan', label: 'Tanggal Pengajuan' },
     { id: 'jumlahHariKerja', label: 'Jumlah Hari Kerja' },
@@ -51,6 +62,51 @@ export default function PKLTab({ resetKey = 'pkl' }: { resetKey?: string }) {
       baseColumns={baseColumns}
       detailPathPrefix={detailPathPrefix}
       title={title}
+      onDetailNavigation={handleDetailNavigation}
+      toolbarRightSlot={
+        isApprovalPage && <div className="relative">
+          <Button
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            variant="outline"
+            size="sm"
+            className="flex items-center gap-1 dropdown-toggle"
+          >
+            {approvalType}
+            <ChevronDown size={16} />
+          </Button>
+          <Dropdown isOpen={isDropdownOpen} onClose={() => setIsDropdownOpen(false)}>
+            <div className="p-2 w-64">
+              <button
+                className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+                onClick={() => {
+                  setApprovalType('Persetujuan oleh FAT');
+                  setIsDropdownOpen(false);
+                }}
+              >
+                Persetujuan oleh FAT
+              </button>
+              <button
+                className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+                onClick={() => {
+                  setApprovalType('Persetujuan oleh Direktur HRGA');
+                  setIsDropdownOpen(false);
+                }}
+              >
+                Persetujuan oleh Direktur HRGA
+              </button>
+              <button
+                className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+                onClick={() => {
+                  setApprovalType('Persetujuan oleh BOD');
+                  setIsDropdownOpen(false);
+                }}
+              >
+                Persetujuan oleh BOD
+              </button>
+            </div>
+          </Dropdown>
+        </div>
+      }
     />
   );
 }

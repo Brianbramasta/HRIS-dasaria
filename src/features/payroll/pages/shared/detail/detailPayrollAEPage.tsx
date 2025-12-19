@@ -41,13 +41,11 @@ export default function DetailGajiAEPage() {
       ],
       initialValues: { komisiSales: "", komisiSurveySales: "", growthReward: "", insentif: "", feeMitraSubnet: "" },
       ModalComponent: TambahTunjanganTidakTetapModalAE,
-      showEditButton: true,
     },
     potonganTidakTetap: {
       fields: [{ name: "kasbon", label: "Kasbon", type: "input", colSpan: 3 }],
       initialValues: { kasbon: "" },
       ModalComponent: TambahPotonganTidakTetapModalAE,
-      showEditButton: true,
     },
     rekapitulasi: true,
     catatan: true,

@@ -10,10 +10,10 @@ export default function DistribusiGajiPage() {
   const isDetailPage = pathParts.length > 2;
 
   const tabs = [
-    { id: 'non-ae', label: 'Non AE', link: '/distribusi-gaji/non-ae' },
-    { id: 'ae', label: 'AE', link: '/distribusi-gaji/ae' },
-    { id: 'pkl', label: 'PKL', link: '/distribusi-gaji/pkl' },
-    { id: 'thr', label: 'THR', link: '/distribusi-gaji/thr' },
+    { id: 'non-ae', label: 'Non AE', link: '/salary-distribution/non-ae' },
+    { id: 'ae', label: 'AE', link: '/salary-distribution/ae' },
+    { id: 'pkl', label: 'PKL', link: '/salary-distribution/pkl' },
+    { id: 'thr', label: 'THR', link: '/salary-distribution/thr' },
   ];
 
   return (

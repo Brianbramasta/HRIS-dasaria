@@ -17,11 +17,11 @@ type Props = { resetKey: string };
 
 const positionColumns: DataTableColumn<PositionRow>[] = [
   { id: 'no', label: 'No', sortable: false },
-  { id: 'Nama Jabatan', label: 'Nama Jabatan', sortable: true },
-  { id: 'Grade', label: 'Golongan', sortable: true },
-  { id: 'Deskripsi Tugas', label: 'Deskripsi Tugas', sortable: true },
-  { id: 'Bawahan Langsung', label: 'Bawahan Langsung', sortable: true },
-  { id: 'File SK & MoU', label: 'File SK & MoU', sortable: false, isAction: true, format: (row: PositionRow) => (row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer" className='flex items-center justify-center'><FileText size={16} /></a> : '—' )},
+  { id: 'nama-jabatan', label: 'Nama Jabatan', sortable: true },
+  { id: 'grade', label: 'Golongan', sortable: true },
+  { id: 'deskripsi-tugas', label: 'Deskripsi Tugas', sortable: true },
+  { id: 'bawahan-langsung', label: 'Bawahan Langsung', sortable: true },
+  { id: 'file-sk-dan-mou', label: 'File SK & MoU', sortable: false, isAction: true, format: (row: PositionRow) => (row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer" className='flex items-center justify-center'><FileText size={16} /></a> : '—' )},
 ];
 
 // Dokumentasi: Halaman Jabatan menggunakan pagination eksternal agar kompatibel dengan DataTable
@@ -36,11 +36,11 @@ export default function PositionsTab({ resetKey }: Props) {
   const rows: PositionRow[] = useMemo(() => {
     return (positions || []).map((p, idx) => ({
       no: idx + 1,
-      'Nama Jabatan': (p as any).name ?? '—',
-      Grade: (p as any).grade ?? (p as any).level ?? '—',
-      'Deskripsi Tugas': (p as any).jobDescription ?? (p as any).description ?? '—',
-      'Bawahan Langsung': Array.isArray((p as any).directSubordinates) ? (p as any).directSubordinates.join(', ') : '—',
-      'File SK & MoU': (p as any).skFile ?? '—',
+      'nama-jabatan': (p as any).name ?? '—',
+      'grade': (p as any).grade ?? (p as any).level ?? '—',
+      'deskripsi-tugas': (p as any).jobDescription ?? (p as any).description ?? '—',
+      'bawahan-langsung': Array.isArray((p as any).directSubordinates) ? (p as any).directSubordinates.join(', ') : '—',
+      'file-sk-dan-mou': (p as any).skFile ?? '—',
       raw: p,
     }));
   }, [positions]);

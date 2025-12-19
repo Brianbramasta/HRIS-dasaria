@@ -8,6 +8,7 @@ import DatePicker from "@/components/form/date-picker";
 import TextArea from "@/components/form/input/TextArea";
 import Button from "@/components/ui/button/Button";
 import useGoBack from "@/hooks/useGoBack";
+import { ChevronLeft } from "react-feather";
 
 export type FieldType = "input" | "date";
 export type FieldDescriptor = {
@@ -36,7 +37,6 @@ export type SectionConfig = {
     fields: FieldDescriptor[];
     initialValues?: Record<string, string>;
     ModalComponent?: React.ComponentType<ModalProps>;
-    showEditButton?: boolean;
   };
   potonganTetap?: {
     fields: FieldDescriptor[];
@@ -45,7 +45,6 @@ export type SectionConfig = {
     fields: FieldDescriptor[];
     initialValues?: Record<string, string>;
     ModalComponent?: React.ComponentType<ModalProps>;
-    showEditButton?: boolean; // tombol edit tampil saat approval context
   };
   rekapitulasi?: boolean;
   catatan?: boolean;
@@ -55,9 +54,20 @@ export type SectionConfig = {
 export default function DetailPayrollContent({ config }: { config: SectionConfig }) {
   const goBack = useGoBack();
   const location = useLocation();
+  
   // Dokumentasi: Deteksi konteks Approval & Distribusi untuk kontrol tombol edit
-  const isApprovalContext = location.pathname.startsWith("/approval-periode-gajian");
-  const isDistribusiContext = location.pathname.startsWith("/distribusi-gaji");
+  const isApprovalContext = location.pathname.startsWith("/payroll-period-approval");
+  const isDistribusiContext = location.pathname.startsWith("/salary-distribution");
+  
+  // Dokumentasi: Ambil approvalType dari URL query parameter
+  const searchParams = new URLSearchParams(location.search);
+  const approvalType = searchParams.get('approvalType') || '';
+  
+  // Dokumentasi: Tentukan apakah edit buttons harus ditampilkan berdasarkan approval type
+  // - Persetujuan oleh FAT: dapat edit tunjangan tidak tetap DAN potongan tidak tetap
+  // - Persetujuan oleh Direktur HRGA / BOD: hanya dapat edit tunjangan tidak tetap
+  const isFATApproval = approvalType === 'Persetujuan oleh FAT';
+  const isHRGAorBODApproval = approvalType === 'Persetujuan oleh Direktur HRGA' || approvalType === 'Persetujuan oleh BOD';
 
   const [ttValues, setTtValues] = useState<Record<string, string>>(
     () => config.tunjanganTidakTetap?.initialValues ?? {}
@@ -95,16 +105,17 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
   return (
     <div className="space-y-6">
       {/* Header dan tombol kembali */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-start">
         <button
           type="button"
           onClick={goBack}
           className="text-sm text-gray-600 hover:text-brand-500 dark:text-gray-400 dark:hover:text-brand-400"
         >
-          ◀ Kembali
+          <ChevronLeft size={24} className="text-gray-700 dark:text-gray-300" /> 
         </button>
+        <h2 className="text-xl font-semibold text-gray-800 dark:text-white/90">Detail Gaji</h2>
       </div>
-      <h2 className="text-xl font-semibold text-gray-800 dark:text-white/90">Detail Gaji</h2>
+      
 
       {/* Informasi Karyawan */}
       <PayrollCard title="Informasi Karyawan" headerColor="gray">
@@ -164,7 +175,8 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
               </div>
             ))}
           </div>
-          {(config.tunjanganTidakTetap.showEditButton || isDistribusiContext) && (
+          {/* Dokumentasi: Tampilkan tombol Edit jika FAT atau HRGA/BOD approval atau Distribusi */}
+          {(isFATApproval || isHRGAorBODApproval || isDistribusiContext) && (
             <div className="w-full flex justify-end">
               <Button
                 size="sm"
@@ -208,7 +220,8 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
               </div>
             ))}
           </div>
-          {config.potonganTidakTetap.showEditButton && (isApprovalContext || isDistribusiContext) && (
+          {/* Dokumentasi: Tampilkan tombol Edit hanya jika FAT approval atau Distribusi */}
+          {(isFATApproval || isDistribusiContext) && (
             <div className="w-full flex justify-end">
               <Button
                 size="sm"

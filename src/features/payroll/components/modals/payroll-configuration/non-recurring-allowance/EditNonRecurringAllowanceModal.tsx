@@ -40,7 +40,6 @@ const EditTunjanganTidakTetapModal: React.FC<Props> = ({ isOpen, onClose, defaul
       </div>
       <div>
         <Label>Deksripsi Umum</Label>
-        // Dokumentasi: Perbaikan handler TextArea - onChange mengembalikan string value
         <TextArea placeholder="Tulis description ..." value={form.deskripsiUmum} onChange={(value) => setField('deskripsiUmum', value)} />
       </div>
     </div>

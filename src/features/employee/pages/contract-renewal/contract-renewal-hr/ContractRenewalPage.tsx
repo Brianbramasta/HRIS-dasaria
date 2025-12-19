@@ -283,7 +283,7 @@ export default function PerpanjanganKontrak() {
       label: '',
       icon: <Edit />,
       onClick: (row) => {
-        navigate(`/perpanjangan-kontrak/detail/${row.idKaryawan}`);
+        navigate(`/contract-extension/detail/${row.idKaryawan}`);
       },
       variant: 'outline',
     },
@@ -319,7 +319,7 @@ export default function PerpanjanganKontrak() {
                   className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
                   onClick={() => {
                     setIsDropdownOpen(false);
-                    navigate('/perpanjangan-kontrak');
+                    navigate('/contract-extension');
                   }}
                 >
                   Pengajuan & Kelola Kontrak
@@ -328,7 +328,7 @@ export default function PerpanjanganKontrak() {
                   className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
                   onClick={() => {
                     setIsDropdownOpen(false);
-                    navigate('/perpanjangan-kontrak/persetujuan');
+                    navigate('/contract-extension/persetujuan');
                   }}
                 >
                   Persetujuan Perpanjangan Kontrak

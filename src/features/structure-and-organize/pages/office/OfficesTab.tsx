@@ -18,8 +18,8 @@ type Props = { resetKey: string };
 const officeColumns: DataTableColumn<OfficeRow>[] = [
   { id: 'no', label: 'No', sortable: false },
   { id: 'Office', label: 'Kantor', sortable: true },
-  { id: 'Deskripsi Umum', label: 'Deskripsi Umum', sortable: true },
-  { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: false, align: 'center', isAction: true, format: (row: OfficeRow) => (
+  { id: 'deskripsi-umum', label: 'Deskripsi Umum', sortable: true },
+  { id: 'file-sk-dan-memo', label: 'File SK dan Memo', sortable: false, align: 'center', isAction: true, format: (row: OfficeRow) => (
     // <div onClick={() => {
     //   console.log(formatUrlFile(row.fileUrl as string));
     //   if (row.fileUrl) {
@@ -41,9 +41,9 @@ export default function OfficesTab({ resetKey }: Props) {
   const rows: OfficeRow[] = useMemo(() => {
     return (offices || []).map((o, idx) => ({
       no: idx + 1,
-      Office: (o as any).name ?? '—',
-      'Deskripsi Umum': (o as any).description ?? '—',
-      'File SK dan Memo': (o as any).skFile ??'-',
+      'nama-kantor': (o as any).name ?? '—',
+      'deskripsi-umum': (o as any).description ?? '—',
+      'file-sk-dan-memo': (o as any).skFile ??'-',
       raw: o,
     }));
   }, [offices]);

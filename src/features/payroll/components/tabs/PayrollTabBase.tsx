@@ -16,6 +16,8 @@ type Props<TRow extends BaseRow> = {
   baseColumns: DataTableColumn<TRow>[];
   detailPathPrefix: string;
   title?: string;
+  onDetailNavigation?: (id: string) => void;
+  toolbarRightSlot?: React.ReactNode;
 };
 
 export default function PenggajianTabBase<TRow extends BaseRow>({
@@ -24,12 +26,14 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
   baseColumns,
   detailPathPrefix,
   title = 'Periode Gajian',
+  onDetailNavigation,
+  toolbarRightSlot,
 }: Props<TRow>) {
   const navigate = useNavigate();
   const location = useLocation();
   // Dokumentasi: Deteksi halaman Approval & Distribusi untuk mengatur checkbox & toolbar
-  const isApprovalPage = location.pathname.includes('/approval-periode-gajian');
-  const isDistribusiPage = location.pathname.includes('/distribusi-gaji');
+  const isApprovalPage = location.pathname.includes('/payroll-period-approval');
+  const isDistribusiPage = location.pathname.includes('/salary-distribution');
 
   const [selected, setSelected] = useState<Record<string, boolean>>({});
   // Dokumentasi: Hitung status check-all untuk header (semua baris terpilih)
@@ -81,7 +85,11 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
       icon: <Edit />,
       onClick: (row) => {
         const id = (row as BaseRow).idKaryawan;
-        navigate(`${detailPathPrefix}/${id}`);
+        if (onDetailNavigation) {
+          onDetailNavigation(id);
+        } else {
+          navigate(`${detailPathPrefix}/${id}`);
+        }
       },
       variant: 'outline',
       className: 'border-0',
@@ -129,6 +137,7 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
         appendDefaultToolbarRightAtas={isDistribusiPage}
         onExport={isDistribusiPage ? () => {} : undefined}
         resetKey={resetKey}
+        toolbarRightSlot={toolbarRightSlot}
       />
       <DeleteDataGajiModal
         isOpen={showDelete}

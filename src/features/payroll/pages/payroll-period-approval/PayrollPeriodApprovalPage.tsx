@@ -12,10 +12,10 @@ export default function ApprovalPeriodeGajianPage() {
   const isDetailPage = pathParts.length > 2;
 
   const tabs = [
-    { id: 'non-ae', label: 'Non AE', link: '/approval-periode-gajian/non-ae' },
-    { id: 'ae', label: 'AE', link: '/approval-periode-gajian/ae' },
-    { id: 'pkl', label: 'PKL', link: '/approval-periode-gajian/pkl' },
-    { id: 'thr', label: 'THR', link: '/approval-periode-gajian/thr' },
+    { id: 'non-ae', label: 'Non AE', link: '/payroll-period-approval/non-ae' },
+    { id: 'ae', label: 'AE', link: '/payroll-period-approval/ae' },
+    { id: 'pkl', label: 'PKL', link: '/payroll-period-approval/pkl' },
+    { id: 'thr', label: 'THR', link: '/payroll-period-approval/thr' },
   ];
 
   return (

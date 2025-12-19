@@ -6,7 +6,7 @@ export default function KasbonPage() {
   // Dokumentasi: menentukan tab aktif dari path URL
   const location = useLocation();
   const pathParts = location.pathname.split('/').filter(Boolean);
-  const activeTab = pathParts[1] || 'riwayat-pengajuan';
+  const activeTab = pathParts[1] || 'submission-history';
 
   // Dokumentasi: sembunyikan Tabs jika sedang berada di halaman detail
   // contoh: /kasbon/riwayat-pengajuan/123
@@ -14,8 +14,8 @@ export default function KasbonPage() {
 
   // Dokumentasi: daftar Tabs Kasbon
   const tabs = [
-    { id: 'riwayat-pengajuan', label: 'Riwayat Pengajuan', link: '/kasbon/riwayat-pengajuan' },
-    { id: 'status-kasbon', label: 'Status Kasbon', link: '/kasbon/status-kasbon' },
+    { id: 'submission-history', label: 'Riwayat Pengajuan', link: '/cash-advance/submission-history' },
+    { id: 'cash-advance-status', label: 'Status Kasbon', link: '/cash-advance/cash-advance-status' },
   ];
 
   return (

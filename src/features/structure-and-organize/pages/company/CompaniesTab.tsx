@@ -17,9 +17,9 @@ type Props = { resetKey: string };
 
 const companyColumns: DataTableColumn<CompanyRow>[] = [
   { id: 'no', label: 'No', sortable: false },
-  { id: 'Nama Perusahaan', label: 'Nama Perusahaan', sortable: true },
-  { id: 'Deskripsi Umum', label: 'Deskripsi Umum', sortable: true },
-  { id: 'Lini Bisnis', label: 'Lini Bisnis', sortable: true },
+  { id: 'nama-perusahaan', label: 'Nama Perusahaan', sortable: true },
+  { id: 'deskripsi-umum', label: 'Deskripsi Umum', sortable: true },
+  { id: 'lini-bisnis', label: 'Lini Bisnis', sortable: true },
   { id: 'Detail', label: 'Detail', sortable: false, align: 'center', isAction: true, format: (_val, row) => (
     <Link to={`/structure-and-organize/companies/${(row as any).id ?? (row as any).no}`} className="flex justify-center items-center text-brand-600 hover:underline">
       <FileText size={16} />
@@ -40,9 +40,9 @@ export default function CompaniesTab({ resetKey }: Props) {
     return (companies || []).map((c, idx) => ({
       id: (c as any).id,
       no: idx + 1,
-      'Nama Perusahaan': (c as any).name ?? '—',
-      'Deskripsi Umum': (c as any).description ?? '—',
-      'Lini Bisnis': (c as any).businessLineName ?? (c as any).businessLine?.name ?? '—',
+      'nama-perusahaan': (c as any).name ?? '—',
+      'deskripsi-umum': (c as any).description ?? '—',
+      'lini-bisnis': (c as any).businessLineName ?? (c as any).businessLine?.name ?? '—',
       Detail: (c as any).website ?? (c as any).details ?? '—',
     }));
   }, [companies]);

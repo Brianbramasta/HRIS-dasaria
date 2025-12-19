@@ -20,12 +20,12 @@ type Props = { resetKey: string };
 
 const employeePositionColumns: DataTableColumn<EmployeePositionRow>[] = [
   { id: 'no', label: 'No', sortable: false },
-  { id: 'Nama Posisi', label: 'Nama Posisi', sortable: true },
-  { id: 'Jabatan', label: 'Jabatan', sortable: true },
-  { id: 'Direktorat', label: 'Direktorat', sortable: true },
-  { id: 'Divisi', label: 'Divisi', sortable: true },
-  { id: 'Departemen', label: 'Departemen', sortable: true },
-  { id: 'File SK & MoU', label: 'File SK & MoU', sortable: false, align: 'center', isAction: true, format: (row: EmployeePositionRow) => (row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer" className='flex items-center justify-center'><FileText size={16} /></a> : '—')},
+  { id: 'nama-posisi', label: 'Nama Posisi', sortable: true },
+  { id: 'jabatan', label: 'Jabatan', sortable: true },
+  { id: 'direktorat', label: 'Direktorat', sortable: true },
+  { id: 'divisi', label: 'Divisi', sortable: true },
+  { id: 'departemen', label: 'Departemen', sortable: true },
+  { id: 'file-sk-dan-mou', label: 'File SK & MoU', sortable: false, align: 'center', isAction: true, format: (row: EmployeePositionRow) => (row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer" className='flex items-center justify-center'><FileText size={16} /></a> : '—')},
 ];
 
 export default function EmployeePositionsTab({ resetKey }: Props) {
@@ -47,12 +47,12 @@ export default function EmployeePositionsTab({ resetKey }: Props) {
     return (employeePositions || []).map((ep: EmployeePositionListItem, idx: number) => ({
       id: ep.id,
       no: idx + 1,
-      'Nama Posisi': ep.name ?? ep.positionName ?? '—',
-      Jabatan: ep.positionName ?? '—',
-      Direktorat: ep.directorateName ?? '—',
-      Divisi: ep.divisionName ?? '—',
-      Departemen: ep.departmentName ?? '—',
-      'File SK & MoU': ep.skFile ?? '—',
+      'nama-posisi': ep.name ?? ep.positionName ?? '—',
+      'jabatan': ep.positionName ?? '—',
+      'direktorat': ep.directorateName ?? '—',
+      'divisi': ep.divisionName ?? '—',
+      'departemen': ep.departmentName ?? '—',
+      'file-sk-dan-mou': ep.skFile ?? '—',
       fileUrl: ep.skFile?.fileUrl ?? undefined,
       raw: ep,
     }));

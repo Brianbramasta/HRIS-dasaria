@@ -36,10 +36,11 @@ const navItems: NavItem[] = [
   {
     icon: <> {iconKaryawan({ size: 16 })} </>,
     name: "Data Master Karyawan",
+
     subItems: [
-      { name: "Data Karyawan", path: "/data-karyawan", pro: false },
-      { name: "Perpanjangan Kontrak", path: "/perpanjangan-kontrak", pro: false },
-      { name: "Pengunduran Diri", path: "/pengunduran-diri", pro: false },
+      { name: "Data Karyawan", path: "/employee-data", pro: false },
+      { name: "Perpanjangan Kontrak", path: "/contract-extension", pro: false },
+      { name: "Pengunduran Diri", path: "/resignation", pro: false },
       { name: "Riwayat Organisasi", path: "/organization-history", pro: false },
     
     ],
@@ -48,22 +49,22 @@ const navItems: NavItem[] = [
     icon: <> {iconPenggajian({ size: 16 })} </>,
     name: "Penggajian",
     subItems: [
-      { name: "Dashboard Penggajian", path: "/dashboard-penggajian", pro: false },
-      { name: "Konfigurasi Penggajian", path: "/konfigurasi-penggajian", pro: false },
-      { name: "Periode Gajian", path: "/periode-gajian", pro: false },
-      { name: "Approval Periode Gajian", path: "/approval-periode-gajian", pro: false },
-      { name: "Distribusi Gaji", path: "/distribusi-gaji", pro: false },
-      { name: "Kasbon", path: "/kasbon", pro: false },
+      { name: "Dashboard Penggajian", path: "/payroll-dashboard", pro: false },
+      { name: "Konfigurasi Penggajian", path: "/payroll-configuration", pro: false },
+      { name: "Periode Gajian", path: "/payroll-period", pro: false },
+      { name: "Persetujuan Periode Gajian", path: "/payroll-period-approval", pro: false },
+      { name: "Distribusi Gaji", path: "/salary-distribution", pro: false },
+      { name: "Kasbon", path: "/cash-advance", pro: false },
     
     ],
   },{
     icon: <> {IconHakAksesMenu({ size: 16 })} </>,
     name: "Hak Akses",
-    path: "/hak-akses",
+    path: "/role-management-access",
   },{
     icon: <> {IconJenisPengajuan({ size: 16 })} </>,
     name: "Jenis Pengajuan",
-    path: "/jenis-pengajuan",
+    path: "/submission-types",
   },
 ];
 

@@ -18,9 +18,9 @@ type Props = { resetKey: string };
 
 const directorateColumns: DataTableColumn<DirectorateRow>[] = [
   { id: 'no', label: 'No', sortable: false },
-  { id: 'Nama Direktorat', label: 'Nama Direktorat', sortable: true },
-  { id: 'Deskripsi Umum', label: 'Deskripsi Umum', sortable: true },
-  { id: 'File SK dan Memo', label: 'File SK dan Memo', sortable: false, align: 'center', isAction: true, format: (row: DirectorateRow) => (
+  { id: 'direktorat-name', label: 'Nama Direktorat', sortable: true },
+  { id: 'deskripsi-umum', label: 'Deskripsi Umum', sortable: true },
+  { id: 'file-sk-dan-memo', label: 'File SK dan Memo', sortable: false, align: 'center', isAction: true, format: (row: DirectorateRow) => (
     row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer" className='flex justify-center items-center'><FileText size={16} /></a> : '—' )},  
 ];
 
@@ -35,9 +35,9 @@ export default function DirectoratesTab({ resetKey }: Props) {
   const rows: any[] = useMemo(() => {
     return (directorates || []).map((d, idx) => ({
       no: idx + 1,
-      'Nama Direktorat': (d as any).name ?? '—',
-      'Deskripsi Umum': (d as any).description ?? '—',
-      'File SK dan Memo': (d as any).skFile ??'-',
+      'nama-direktorat': (d as any).name ?? '—',
+      'deskripsi-umum': (d as any).description ?? '—',
+      'file-sk-dan-memo': (d as any).skFile ??'-',
       raw: d,
     }));
   }, [directorates]);

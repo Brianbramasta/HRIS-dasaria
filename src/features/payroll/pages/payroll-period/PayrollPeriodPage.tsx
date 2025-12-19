@@ -13,10 +13,10 @@ export default function PeriodePenggajianPage() {
   const isDetailPage = pathParts.length > 2;
 
   const tabs = [
-    { id: 'non-ae', label: 'Non AE', link: '/periode-gajian/non-ae' },
-    { id: 'ae', label: 'AE', link: '/periode-gajian/ae' },
-    { id: 'pkl', label: 'PKL', link: '/periode-gajian/pkl' },
-    { id: 'thr', label: 'THR', link: '/periode-gajian/thr' },
+    { id: 'non-ae', label: 'Non AE', link: '/payroll-period/non-ae' },
+    { id: 'ae', label: 'AE', link: '/payroll-period/ae' },
+    { id: 'pkl', label: 'PKL', link: '/payroll-period/pkl' },
+    { id: 'thr', label: 'THR', link: '/payroll-period/thr' },
   ];
 
   return (

@@ -40,7 +40,6 @@ export default function DetailGajiPage() {
       ],
       initialValues: { pph21: "", pendidikan: "", performa: "" },
       ModalComponent: TambahTunjanganTidakTetapModal,
-      showEditButton: true,
     },
     potonganTetap: {
       fields: [
@@ -57,7 +56,6 @@ export default function DetailGajiPage() {
       ],
       initialValues: { jkn1: "", jht2: "", kasbon: "" },
       ModalComponent: TambahPotonganTidakTetapModal,
-      showEditButton: true, // tombol Edit akan tampil hanya saat approval context
     },
     rekapitulasi: true,
     catatan: true,

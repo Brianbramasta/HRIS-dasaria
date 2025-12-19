@@ -133,9 +133,9 @@ export default function AppRoutes() {
       {/* Dashboard Layout */}
       <Route element={<AppLayout />}>
         {/* Public route: pendaftaran karyawan baru */}
-        <Route path="/data-karyawan/pendaftaran" element={<PendaftaranKaryawanBaru />} />
-        <Route path="/data-karyawan/form" element={<FormulirKaryawanPage />} />
-        <Route path="/pengunduran-diri/form" element={<FormResignPage />} />
+        <Route path="/employee-data/pendaftaran" element={<PendaftaranKaryawanBaru />} />
+        <Route path="/employee-data/form" element={<FormulirKaryawanPage />} />
+        <Route path="/resignation/form" element={<FormResignPage />} />
         {/* Protected routes */}
         <Route element={<ProtectedOutlet />}> 
           <Route index path="/" element={<Dashboard />} />
@@ -153,42 +153,45 @@ export default function AppRoutes() {
           <Route path="employee-positions" element={<EmployeePositionsTab resetKey="employee-positions" />} />
           </Route>
           {/* Penggajian */}
-          {/* <Route path="/periode-gajian" element={<DaftarPenggajianPage />} /> */}
-          <Route path="/konfigurasi-penggajian" element={<KonfigurasiPenggajianPage />}>
+          {/* <Route path="/payroll-period" element={<DaftarPenggajianPage />} /> */}
+          <Route path="/payroll-configuration" element={<KonfigurasiPenggajianPage />}>
             <Route index element={<KompensasiPage />} />
-            <Route path="kompensasi" element={<KompensasiPage />} />
+
+            <Route path="compensation" element={<KompensasiPage />} />
             <Route path="bpjs" element={<BpjsPage />} />
-            <Route path="acuan-potongan" element={<AcuanPotonganPage />} />
-            <Route path="tunjangan-tetap" element={<TunjanganTetapPage />} />
-            <Route path="tunjangan-tidak-tetap" element={<TunjanganTidakTetapPage />} />
-            <Route path="potongan-tidak-tetap" element={<PotonganTidakTetapPage />} />
+            <Route path="deduction-reference" element={<AcuanPotonganPage />} />
+            <Route path="fixed-allowance" element={<TunjanganTetapPage />} />
+            <Route path="non-recurring-allowance" element={<TunjanganTidakTetapPage />} />
+            <Route path="non-recurring-deduction" element={<PotonganTidakTetapPage />} />
             <Route path="thr" element={<THRPage />} />
           </Route>
           {/* Dokumentasi: Nested route untuk Periode Penggajian dengan empat tab */}
-          <Route path="/periode-gajian" element={<PeriodePenggajianPage />}>
-            {/* Dokumentasi: index default Non-AE untuk /periode-gajian */}
+          <Route path="/payroll-period" element={<PeriodePenggajianPage />}>
+            {/* Dokumentasi: index default Non-AE untuk /payroll-period */}
             <Route index element={<NonAETab />} />
+
             <Route path="non-ae" element={<NonAETab />} />
             <Route path="ae" element={<AETab />} />
-            <Route path="pkl" element={<PKLTab />} />
-            <Route path="thr" element={<THRTab />} />
+            <Route path="internship" element={<PKLTab />} />
+            <Route path="holiday-allowance" element={<THRTab />} />
           </Route>
           {/* Dokumentasi: Route Detail Gaji terpisah agar dapat diakses dari tombol Edit */}
-          {/* <Route path="/periode-gajian/detail/:id" element={<DetailGajiPage />} /> */}
-          <Route path="/periode-gajian/detail-ae/:id" element={<DetailGajiAEPage />} />
-          <Route path="/periode-gajian/detail-non-ae/:id" element={<DetailGajiNonAEPage />} />
-          <Route path="/periode-gajian/detail-thr/:id" element={<DetailGajiTHRPage />} />
-          <Route path="/periode-gajian/detail-pkl/:id" element={<DetailGajiPKLPage />} />
+          {/* <Route path="/payroll-period/detail/:id" element={<DetailGajiPage />} /> */}
+          <Route path="/payroll-period/detail-ae/:id" element={<DetailGajiAEPage />} />
+          <Route path="/payroll-period/detail-non-ae/:id" element={<DetailGajiNonAEPage />} />
+          <Route path="/payroll-period/detail-thr/:id" element={<DetailGajiTHRPage />} />
+          <Route path="/payroll-period/detail-pkl/:id" element={<DetailGajiPKLPage />} />
           {/* Dokumentasi: Nested route untuk Kasbon dengan dua tab */}
-          <Route path="/kasbon" element={<KasbonPage />}>
+          <Route path="/cash-advance" element={<KasbonPage />}>
             <Route index element={<RiwayatPengajuanPage />} />
-            <Route path="riwayat-pengajuan" element={<RiwayatPengajuanPage />} />
-            <Route path="status-kasbon" element={<StatusKasbonPage />} />
-            <Route path="formulir-kasbon" element={<FormKasbonPage />} />
+
+            <Route path="submission-history" element={<RiwayatPengajuanPage />} />
+            <Route path="cash-advance-status" element={<StatusKasbonPage />} />
+            <Route path="cash-advance-form" element={<FormKasbonPage />} />
           </Route>
-          <Route path="/dashboard-penggajian" element={<DashboardPenggajianPage />} />
-          <Route path="/approval-periode-gajian" element={<ApprovalPeriodeGajianPage />}>
-            {/* Dokumentasi: index default Non-AE untuk /approval-periode-gajian */}
+          <Route path="/payroll-dashboard" element={<DashboardPenggajianPage />} />
+          <Route path="/payroll-period-approval" element={<ApprovalPeriodeGajianPage />}>
+            {/* Dokumentasi: index default Non-AE untuk /payroll-period-approval */}
             <Route index element={<NonAETab />} />
             <Route path="non-ae" element={<NonAETab />} />
             <Route path="ae" element={<AETab />} />
@@ -202,8 +205,8 @@ export default function AppRoutes() {
           </Route>
           
           {/* // Dokumentasi: Nested route untuk Distribusi Gaji dengan empat tab */}
-          <Route path="/distribusi-gaji" element={<DistribusiGajiPage />}>
-            {/* Dokumentasi: index default Non-AE untuk /distribusi-gaji */}
+          <Route path="/salary-distribution" element={<DistribusiGajiPage />}>
+            {/* Dokumentasi: index default Non-AE untuk /salary-distribution */}
             <Route index element={<NonAETab />} />
             <Route path="non-ae" element={<NonAETab />} />
             <Route path="ae" element={<AETab />} />
@@ -216,23 +219,23 @@ export default function AppRoutes() {
             <Route path="detail-pkl/:id" element={<DetailGajiPKLPage />} />
           </Route>
           
-          <Route path="/data-karyawan" element={<DataKaryawanIndexPage />} />
-          <Route path="/data-karyawan/:id" element={<DetailKaryawanPage />} />
-          <Route path="/data-karyawan/perpanjangan-kontrak" element={<PerpanjanganKontrak />} />
-          <Route path="/data-karyawan/:id/pelanggaran" element={<DataKaryawanPelanggaran />} />
-          <Route path="/pengunduran-diri" element={<PengunduranDiri />} />
+          <Route path="/employee-data" element={<DataKaryawanIndexPage />} />
+          <Route path="/employee-data/:id" element={<DetailKaryawanPage />} />
+          <Route path="/employee-data/contract-extension" element={<PerpanjanganKontrak />} />
+          <Route path="/employee-data/:id/pelanggaran" element={<DataKaryawanPelanggaran />} />
+          <Route path="/resignation" element={<PengunduranDiri />} />
           
-          <Route path="/pengunduran-diri/:id" element={<DetailPengunduranDiriPage />} />
-          <Route path="/perpanjangan-kontrak" element={<PerpanjanganKontrak />} />
-          <Route path="/perpanjangan-kontrak/persetujuan" element={<PersetujuanPerpanjanganKontrak />} />
-          <Route path="perpanjangan-kontrak/detail/:id" element={<PerpanjangKontrakEdit />} />
+          <Route path="/resignation/:id" element={<DetailPengunduranDiriPage />} />
+          <Route path="/contract-extension" element={<PerpanjanganKontrak />} />
+          <Route path="/contract-extension/persetujuan" element={<PersetujuanPerpanjanganKontrak />} />
+          <Route path="contract-extension/detail/:id" element={<PerpanjangKontrakEdit />} />
           
-          <Route path="/jenis-pengajuan" element={<JenisPengajuanPage />} />
+          <Route path="/submission-types" element={<JenisPengajuanPage />} />
           <Route path="/organization-history" element={<OrganizationHistoryPage />} />
           <Route path="/organization-history/atasan" element={<OrganizationHistoryAtasanPage />} />
-          <Route path="/hak-akses" element={<HakAksesPage />} />
-          <Route path="/hak-akses/detail/:roleId" element={<DetailHakAksesPages />} />
-          <Route path="/hak-akses/edit/:roleId" element={<EditRolePage />} />
+          <Route path="/role-management-access" element={<HakAksesPage />} />
+          <Route path="/role-management-access/detail/:roleId" element={<DetailHakAksesPages />} />
+          <Route path="/role-management-access/edit/:roleId" element={<EditRolePage />} />
 
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/marketing" element={<Marketing />} />
