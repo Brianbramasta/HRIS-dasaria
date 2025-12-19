@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { companyService } from '../../../services/OrganizationService';
-import { useBusinessLines } from '../../../hooks/useBusinessLines';
+import { useBusinessLines } from '../../../hooks/business-lines/useBusinessLines';
 import type { CompanyListItem, BusinessLineListItem } from '../../../types/OrganizationApiTypes';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';

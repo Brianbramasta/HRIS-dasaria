@@ -5,7 +5,7 @@ export * from './types/OrganizationTypes';
 export * from './services/OrganizationService';
 
 // Hooks
-export * from './hooks/useBusinessLines';
+export * from './hooks/business-lines/useBusinessLines';
 export * from './hooks/useCompanies';
 export * from './hooks/useOffices';
 export * from './hooks/useDirectorates';

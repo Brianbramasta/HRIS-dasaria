@@ -6,7 +6,7 @@ import TextArea from '@/components/form/input/TextArea';
 import FileInput from '@/components/form/input/FileInput';
 import DatePicker from '@/components/form/date-picker';
 import Select from '@/components/form/Select';
-import { useBusinessLines } from '../../../../hooks/useBusinessLines';
+import { useBusinessLines } from '../../../../hooks/business-lines/useBusinessLines';
 import { companyService } from '../../../../services/OrganizationService';
 import type { BusinessLineListItem } from '../../../../types/OrganizationApiTypes';
 import { addNotification } from '@/stores/notificationStore';

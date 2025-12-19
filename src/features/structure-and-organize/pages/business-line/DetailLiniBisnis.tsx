@@ -1,49 +1,14 @@
-import React from 'react';
 import { Eye } from 'react-feather';
 import { IconFileDetail } from '@/icons/components/icons';
 import { useParams, useNavigate } from 'react-router';
 import ExpandCard from '../../components/card/ExpandCard';
-import { businessLineService } from '../../services/OrganizationService';
 import DocumentsTable from '../../components/table/TableGlobal';
-import { formatUrlFile } from '@/utils/formatUrlFile';
+import useDetailBusinessLines from '../../hooks/business-lines/useDetailBusinessLines';
 export default function DetailLiniBisnis() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [title, setTitle] = React.useState<string>('Detail Lini Bisnis');
-  const [overviewText, setOverviewText] = React.useState<string>('');
-  const [personalFiles, setPersonalFiles] = React.useState<Array<{ no: number; namaFile: string; dokumen: string }>>([]);
-  const [companies, setCompanies] = React.useState<Array<{ no: number; nama: string; dokumen: string, companyId: string }>>([]);
-  const [loading, setLoading] = React.useState<boolean>(false);
-  const [error, setError] = React.useState<string | null>(null);
-
-  React.useEffect(() => {
-    const loadData = async () => {
-      if (!id) return;
-      setLoading(true);
-      setError(null);
-      try {
-        // Gunakan endpoint komposit: GET /business-lines/:id/detail
-        const detail = await businessLineService.getDetail(id);
-        setTitle(detail?.businessLine?.name ?? 'Detail Lini Bisnis');
-        setOverviewText(detail?.businessLine?.description ?? '—');
-        console.log('detail',detail)
-        const files = detail?.personalFiles || [];
-        console.log('files',files)
-        setPersonalFiles(files.map((f: any, idx: number) => ({ no: idx + 1, namaFile: f.fileName || '—', dokumen: f.fileName || '—', memoNumber:detail?.businessLine?.memoNumber || '—', fileUrl: formatUrlFile(f.fileUrl) || '—' })));
-
-        const comps = detail?.companies || [];
-        setCompanies(comps.map((c: any, idx: number) => ({ no: idx + 1, nama: c.name, dokumen: c.details ? c.details : '—', companyId: c.id })));
-      } catch (err) {
-        console.error('Failed to load business line detail:', err);
-        setError(err instanceof Error ? err.message : 'Gagal memuat detail lini bisnis');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadData();
-  }, [id]);
+  const { title, overviewText, personalFiles, companies, loading, error } = useDetailBusinessLines(id as string | undefined);
 
 
   return (
@@ -52,12 +17,8 @@ export default function DetailLiniBisnis() {
       <div>
         <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">{title}</h1>
         {/* <p className="text-gray-500 dark:text-gray-400 text-sm">Detail Lini Bisnis {id ? `#${id}` : ''}</p> */}
-        {loading && (
-          <p className="text-gray-500 dark:text-gray-400 text-sm">Memuat data…</p>
-        )}
-        {error && (
-          <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
-        )}
+          {loading && <p className="text-gray-500 dark:text-gray-400 text-sm">Memuat data…</p>}
+          {error && <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>}
       </div>
 
       {/* Overview */}

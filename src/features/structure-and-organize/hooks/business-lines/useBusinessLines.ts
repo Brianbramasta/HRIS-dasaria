@@ -1,11 +1,34 @@
 import { useState, useCallback, useEffect } from 'react';
-import { 
+import {
   TableFilter,
   BusinessLineListItem,
   BusinessLineDetailResponse,
-} from '../types/OrganizationApiTypes';
-import { businessLinesService } from '../services/request/BusinessLinesService';
-import useFilterStore from '../../../stores/filterStore';
+  FileSummary,
+} from '../../types/OrganizationApiTypes';
+import { businessLinesService } from '../../services/request/BusinessLinesService';
+import useFilterStore from '../../../../stores/filterStore';
+
+// Mapping helpers: transform raw API payload -> frontend types
+const toFileSummary = (url: string | null): FileSummary | null => {
+  if (!url) return null;
+  const parts = url.split('/');
+  const fileName = parts[parts.length - 1] || '';
+  const ext = fileName.includes('.') ? fileName.split('.').pop() || '' : '';
+  return {
+    fileName,
+    fileUrl: url,
+    fileType: ext,
+    size: null,
+  };
+};
+
+const mapToBusinessLine = (item: any): BusinessLineListItem => ({
+  id: item.id,
+  name: item.bl_name,
+  description: item.bl_description ?? null,
+  memoNumber: item.bl_decree_number ?? null,
+  skFile: toFileSummary(item.bl_decree_file_url ?? item.bl_decree_file ?? null),
+});
 
 interface UseBusinessLinesReturn {
   businessLines: BusinessLineListItem[];
@@ -60,10 +83,18 @@ export const useBusinessLines = (options?: { autoFetch?: boolean }): UseBusiness
         page: filter?.page ?? page,
         pageSize: filter?.pageSize ?? pageSize,
       });
-      console.log('response', response);
-      setBusinessLines(response.data);
-      setTotal(response.total);
-      setTotalPages(response.totalPages);
+
+      // service returns raw API response; extract payload and map here
+      const payload = (response as any)?.data ?? {};
+      const items = payload?.data ?? [];
+      const totalCount = payload?.total ?? (items?.length || 0);
+      // const currentPage = payload?.current_page ?? filter?.page ?? page;
+      const perPage = payload?.per_page ?? filter?.pageSize ?? pageSize;
+      const totalPagesCalc = perPage ? Math.ceil(totalCount / perPage) : 1;
+
+      setBusinessLines((items || []).map(mapToBusinessLine));
+      setTotal(totalCount);
+      setTotalPages(totalPagesCalc);
       
       if (filter?.page) setPage(filter.page);
       if (filter?.pageSize) setPageSize(filter.pageSize);
@@ -83,9 +114,11 @@ export const useBusinessLines = (options?: { autoFetch?: boolean }): UseBusiness
     setError(null);
     
     try {
-      const newBusinessLine = await businessLinesService.create(payload);
+      const created = await businessLinesService.create(payload);
+      const item = (created as any)?.data as any;
+      const mapped = mapToBusinessLine(item);
       await fetchBusinessLines();
-      return newBusinessLine;
+      return mapped;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create business line');
       console.error('Error creating business line:', err);
@@ -100,9 +133,11 @@ export const useBusinessLines = (options?: { autoFetch?: boolean }): UseBusiness
     setError(null);
     
     try {
-      const updatedBusinessLine = await businessLinesService.update(id, payload);
+      const updated = await businessLinesService.update(id, payload);
+      const item = (updated as any)?.data as any;
+      const mapped = mapToBusinessLine(item);
       await fetchBusinessLines();
-      return updatedBusinessLine;
+      return mapped;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update business line');
       console.error('Error updating business line:', err);
@@ -117,9 +152,11 @@ export const useBusinessLines = (options?: { autoFetch?: boolean }): UseBusiness
     setError(null);
     
     try {
-      await businessLinesService.delete(id, payload);
+      const resp = await businessLinesService.delete(id, payload);
+      // service returns raw response; success flag may be in resp.data.success or resp.success
+      const success = !!((resp as any)?.data?.success ?? (resp as any)?.success);
       await fetchBusinessLines();
-      return true;
+      return success;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete business line');
       console.error('Error deleting business line:', err);
@@ -133,8 +170,35 @@ export const useBusinessLines = (options?: { autoFetch?: boolean }): UseBusiness
     setLoading(true);
     setError(null);
     try {
-      const detail = await businessLinesService.getDetail(id);
-      return detail;
+      const resp = await businessLinesService.getDetail(id);
+      const item = (resp as any)?.data as any;
+      if (!item) return null;
+
+      const bl = mapToBusinessLine(item);
+      const activeSk = toFileSummary(item?.bl_decree_file_url ?? item?.bl_decree_file ?? null);
+      const deleteSk = toFileSummary(item?.bl_delete_decree_file_url ?? item?.bl_delete_decree_file ?? null);
+      const personalFiles: FileSummary[] = [];
+      if (activeSk) personalFiles.push(activeSk);
+      if (deleteSk) personalFiles.push(deleteSk);
+      const companies = Array.isArray(item?.companies)
+        ? item.companies.map((c: any) => ({
+            id: c.id_company || '',
+            name: c.company_name || '',
+            details: c.company_description ?? null,
+          }))
+        : [];
+
+      return {
+        businessLine: {
+          id: bl.id,
+          name: bl.name,
+          description: bl.description,
+          memoNumber: bl.memoNumber,
+          skFile: bl.skFile,
+        },
+        personalFiles,
+        companies,
+      };
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to get detail');
       console.error('Error getting business line detail:', err);
@@ -146,8 +210,15 @@ export const useBusinessLines = (options?: { autoFetch?: boolean }): UseBusiness
 
   const getDropdown = useCallback(async (search?: string): Promise<BusinessLineListItem[]> => {
     try {
-      const items = await businessLinesService.getDropdown(search);
-      return items;
+      const resp = await businessLinesService.getDropdown(search);
+      const items = (resp as any)?.data ?? [];
+      return (items || []).map((i: any) => ({
+        id: i.id,
+        name: i.bl_name,
+        description: null,
+        memoNumber: null,
+        skFile: null,
+      }));
     } catch (err) {
       console.error('Error fetching dropdown business lines:', err);
       return [];
@@ -158,8 +229,10 @@ export const useBusinessLines = (options?: { autoFetch?: boolean }): UseBusiness
     setLoading(true);
     setError(null);
     try {
-      const item = await businessLinesService.getById(id);
-      return item;
+      const resp = await businessLinesService.getById(id);
+      const item = (resp as any)?.data as any;
+      if (!item) return null;
+      return mapToBusinessLine(item);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to get business line');
       console.error('Error getting business line by id:', err);
@@ -175,6 +248,7 @@ export const useBusinessLines = (options?: { autoFetch?: boolean }): UseBusiness
       fetchBusinessLines();
     }
   }, [search, sortBy, sortOrder, page, pageSize, filterValue, autoFetch, fetchBusinessLines]);
+  
 
   return {
     businessLines,
