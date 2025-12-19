@@ -8,7 +8,7 @@ import EditKompensasiModal, { type EditKompensasiForm } from '@/features/payroll
 
 type CompensationRow = {
   no?: number;
-  levelJabatan: string;
+  'level-jabatan': string;
   kategori: string;
   general: string;
   junior: string;
@@ -37,7 +37,7 @@ export default function KompensasiPage() {
   };
   const columns: DataTableColumn<CompensationRow>[] = [
     { id: 'no', label: 'No.', align: 'center', sortable: false },
-    { id: 'levelJabatan', label: 'Level Jabatan', sortable: true },
+    { id: 'level-jabatan', label: 'Level Jabatan', sortable: true },
     { id: 'kategori', label: 'Kategori', sortable: true },
     { id: 'general', label: 'General', align: 'center', sortable: true },
     { id: 'junior', label: 'Junior', align: 'center', sortable: true },
@@ -52,7 +52,7 @@ export default function KompensasiPage() {
       onClick: (row) => {
         // Dokumentasi: Buka modal edit dengan data baris
         setRowToEdit({
-          levelJabatan: row.levelJabatan,
+          levelJabatan: row['level-jabatan'],
           kategori: row.kategori,
           general: row.general,
           junior: row.junior,
@@ -68,14 +68,14 @@ export default function KompensasiPage() {
 
   const rows: CompensationRow[] = useMemo(() => (
     [
-      { levelJabatan: 'Direktur', kategori: 'Gaji Pokok', general: '-', junior: '3.524.238', middle: '3.524.238', senior: '5.000.000' },
-      { levelJabatan: 'Manager', kategori: 'Gaji Pokok', general: '-', junior: '4.100.000', middle: '4.100.000', senior: '5.000.000' },
-      { levelJabatan: 'Supervisor', kategori: 'Gaji Pokok', general: '-', junior: '3.524.238', middle: '3.524.238', senior: '5.000.000' },
-      { levelJabatan: 'Senior Officer', kategori: 'Gaji Pokok', general: '-', junior: '3.524.238', middle: '3.524.238', senior: '5.000.000' },
-      { levelJabatan: 'Officer', kategori: 'Gaji Pokok', general: '-', junior: '4.000.000', middle: '4.000.000', senior: '5.000.000' },
-      { levelJabatan: 'Entry Level', kategori: 'Gaji Pokok', general: '-', junior: '5.000.000', middle: '5.000.000', senior: '5.000.000' },
-      { levelJabatan: 'Under Staff - Internship', kategori: 'Uang Saku', general: '-', junior: '2.000.000', middle: '2.000.000', senior: '3.000.000' },
-      { levelJabatan: 'Under Staff - PKL', kategori: 'Uang Saku', general: '1.000.000', junior: '-', middle: '-', senior: '-' },
+      { 'level-jabatan': 'Direktur', kategori: 'Gaji Pokok', general: '-', junior: '3.524.238', middle: '3.524.238', senior: '5.000.000' },
+      { 'level-jabatan': 'Manager', kategori: 'Gaji Pokok', general: '-', junior: '4.100.000', middle: '4.100.000', senior: '5.000.000' },
+      { 'level-jabatan': 'Supervisor', kategori: 'Gaji Pokok', general: '-', junior: '3.524.238', middle: '3.524.238', senior: '5.000.000' },
+      { 'level-jabatan': 'Senior Officer', kategori: 'Gaji Pokok', general: '-', junior: '3.524.238', middle: '3.524.238', senior: '5.000.000' },
+      { 'level-jabatan': 'Officer', kategori: 'Gaji Pokok', general: '-', junior: '4.000.000', middle: '4.000.000', senior: '5.000.000' },
+      { 'level-jabatan': 'Entry Level', kategori: 'Gaji Pokok', general: '-', junior: '5.000.000', middle: '5.000.000', senior: '5.000.000' },
+      { 'level-jabatan': 'Under Staff - Internship', kategori: 'Uang Saku', general: '-', junior: '2.000.000', middle: '2.000.000', senior: '3.000.000' },
+      { 'level-jabatan': 'Under Staff - PKL', kategori: 'Uang Saku', general: '1.000.000', junior: '-', middle: '-', senior: '-' },
     ]
   ), []);
 

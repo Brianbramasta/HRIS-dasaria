@@ -1,17 +1,14 @@
-// Dokumentasi: Tabel "Riwayat Pengajuan Kasbon" & integrasi modal pengajuan
+// Dokumentasi: Tabel "Persetujuan Kasbon" dengan kolom aksi tambahan
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DataTable, type DataTableColumn } from '@/features/structure-and-organize/components/datatable/DataTable';
+import { DataTable, type DataTableColumn, type DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
 import { IconFileDetail } from '@/icons/components/icons';
-import ShareLinkModal from '@/features/employee/components/modals/sharelink/shareLink';
+import { CheckCircle, XCircle } from 'react-feather';
 import Button from '@/components/ui/button/Button';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { ChevronDown } from 'react-feather';
-// Dokumentasi: perbaikan casing import untuk menghindari error TS1261
-// import PengajuanKasbonModal from '@/features/penggajian/components/modals/kasbon/PengajuanKasbonModal';
-import PengajuanKasbonModal from '@/features/payroll/components/modals/cash-advance/CashAdvanceSubmissionModal';
 
-type KasbonRiwayatRow = {
+type KasbonApprovalRow = {
   no?: number;
   idKaryawan: string;
   pengguna: string;
@@ -29,9 +26,11 @@ type KasbonRiwayatRow = {
   detail?: string;
 };
 
-export default function RiwayatPengajuanPage() {
-  // Dokumentasi: inisialisasi navigate dan state modal
+export default function CashAdvanceApprovalPage() {
+  // Dokumentasi: inisialisasi navigate dan state dropdown
   const navigate = useNavigate();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
   // Dokumentasi: util ekspor CSV sederhana
   const exportCSV = (filename: string, data: any[]) => {
     if (!data || data.length === 0) return;
@@ -49,7 +48,7 @@ export default function RiwayatPengajuanPage() {
   };
 
   // Dokumentasi: definisi kolom tabel sesuai kebutuhan UI
-  const columns: DataTableColumn<KasbonRiwayatRow>[] = [
+  const columns: DataTableColumn<KasbonApprovalRow>[] = [
     {
       id: 'no',
       label: 'No.',
@@ -86,7 +85,7 @@ export default function RiwayatPengajuanPage() {
       id: 'statusKasbon',
       label: 'Status Kasbon',
       sortable: true,
-      format: (value: KasbonRiwayatRow['statusKasbon']) => {
+      format: (value: KasbonApprovalRow['statusKasbon']) => {
         const color =
           value === 'Disetujui' ? 'bg-success-100 text-success-700' :
           value === 'Ditolak' ? 'bg-error-100 text-error-700' :
@@ -111,18 +110,8 @@ export default function RiwayatPengajuanPage() {
   ];
 
   // Dokumentasi: contoh data statis untuk tampilan tabel
-  const rows: KasbonRiwayatRow[] = useMemo(() => (
+  const rows: KasbonApprovalRow[] = useMemo(() => (
     [
-      { idKaryawan: '1523409876', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'TA', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '3.000.000', nominalCicilan: '300.000', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Persetujuan HR' },
-      { idKaryawan: '1523409877', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Pribadi', nominalKasbon: '8.000.000', nominalCicilan: '600.000', periodeCicilan: '13 bulan', statusKasbon: 'Disetujui' },
-      { idKaryawan: '1523409878', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '1.200.000', nominalCicilan: '150.000', periodeCicilan: '8 bulan', statusKasbon: 'Ditolak' },
-      { idKaryawan: '1523409879', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Pribadi', nominalKasbon: '5.000.000', nominalCicilan: '500.000', periodeCicilan: '10 bulan', statusKasbon: 'Disetujui' },
-      { idKaryawan: '1523409880', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'LND', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '2.500.000', nominalCicilan: '250.000', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Persetujuan HR' },
-      { idKaryawan: '1523409876', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'TA', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '3.000.000', nominalCicilan: '300.000', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Persetujuan HR' },
-      { idKaryawan: '1523409877', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Pribadi', nominalKasbon: '8.000.000', nominalCicilan: '600.000', periodeCicilan: '13 bulan', statusKasbon: 'Disetujui' },
-      { idKaryawan: '1523409878', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '1.200.000', nominalCicilan: '150.000', periodeCicilan: '8 bulan', statusKasbon: 'Ditolak' },
-      { idKaryawan: '1523409879', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Pribadi', nominalKasbon: '5.000.000', nominalCicilan: '500.000', periodeCicilan: '10 bulan', statusKasbon: 'Disetujui' },
-      { idKaryawan: '1523409880', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'LND', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '2.500.000', nominalCicilan: '250.000', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Persetujuan HR' },
       { idKaryawan: '1523409876', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'TA', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '3.000.000', nominalCicilan: '300.000', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Persetujuan HR' },
       { idKaryawan: '1523409877', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Pribadi', nominalKasbon: '8.000.000', nominalCicilan: '600.000', periodeCicilan: '13 bulan', statusKasbon: 'Disetujui' },
       { idKaryawan: '1523409878', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '1.200.000', nominalCicilan: '150.000', periodeCicilan: '8 bulan', statusKasbon: 'Ditolak' },
@@ -166,35 +155,36 @@ export default function RiwayatPengajuanPage() {
     ]
   ), []);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isShareOpen, setIsShareOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-  // Dokumentasi: URL share menuju form kasbon
-  const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/cash-advance/cash-advance-form` : '/cash-advance/cash-advance-form';
-
-  // Dokumentasi: handler membuka modal ShareLink
-  const handleOpenShare = () => {
-    setIsShareOpen(true);
-  };
-
-  // Dokumentasi: handler navigasi ke halaman Form Kasbon
-  const handleOpenFormKasbon = () => {
-    setIsModalOpen(false);
-    navigate('/cash-advance/cash-advance-form');
-  };
+  // Dokumentasi: definisi aksi untuk approve/reject
+  const actions: DataTableAction<KasbonApprovalRow>[] = [
+    {
+      icon: <CheckCircle size={18} />,
+      className: 'text-success-600 hover:text-success-700',
+      onClick: (row) => {
+        console.log('Approve kasbon:', row);
+        // Implementasi approve logic
+      },
+    },
+    {
+      icon: <XCircle size={18} />,
+      className: 'text-error-600 hover:text-error-700',
+      onClick: (row) => {
+        console.log('Reject kasbon:', row);
+        // Implementasi reject logic
+      },
+    },
+  ];
 
   return (
     <div className="p-0">
       <DataTable
-        title="Riwayat Pengajuan"
+        title="Persetujuan Kasbon"
         data={rows}
         columns={columns}
+        actions={actions}
         searchable
         filterable
-        onExport={() => exportCSV('riwayat-pengajuan-kasbon.csv', rows)}
-        onAdd={() => setIsModalOpen(true)}
-        addButtonLabel="Form Pengajuan Kasbon"
+        onExport={() => exportCSV('persetujuan-kasbon.csv', rows)}
         toolbarRightSlot={
           <div className="relative">
             <Button
@@ -203,7 +193,7 @@ export default function RiwayatPengajuanPage() {
               size="sm"
               className="flex items-center gap-1 dropdown-toggle"
             >
-              Riwayat Pengajuan Kasbon
+              Persetujuan Kasbon
               <ChevronDown size={16} />
             </Button>
             <Dropdown isOpen={isDropdownOpen} onClose={() => setIsDropdownOpen(false)}>
@@ -230,20 +220,6 @@ export default function RiwayatPengajuanPage() {
             </Dropdown>
           </div>
         }
-      />
-
-      <PengajuanKasbonModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onShareLink={handleOpenShare}
-        onFormKasbon={handleOpenFormKasbon}
-      />
-
-      <ShareLinkModal
-        isOpen={isShareOpen}
-        onClose={() => setIsShareOpen(false)}
-        link={shareUrl}
-        message="Silakan isi form kasbon melalui tautan berikut"
       />
     </div>
   );

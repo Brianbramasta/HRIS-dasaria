@@ -1,5 +1,6 @@
 // Dokumentasi: Tabel "Status Kasbon" menggunakan DataTable
 import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DataTable, type DataTableColumn } from '@/features/structure-and-organize/components/datatable/DataTable';
 import { IconFileDetail } from '@/icons/components/icons';
 
@@ -23,6 +24,8 @@ type StatusKasbonRow = {
 };
 
 export default function StatusKasbonPage() {
+  const navigate = useNavigate();
+  
   // Dokumentasi: util ekspor CSV sederhana
 //   const exportCSV = (filename: string, data: any[]) => {
 //     if (!data || data.length === 0) return;
@@ -91,8 +94,11 @@ export default function StatusKasbonPage() {
       label: 'Detail',
       align: 'center',
       sortable: false,
-      format: () => (
-        <button className="inline-flex items-center justify-center rounded-md border border-gray-200 p-2 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-white/[0.06]">
+      format: (_, row) => (
+        <button 
+          onClick={() => navigate(`/cash-advance/detail/${row.idKaryawan}`)}
+          className="inline-flex items-center justify-center rounded-md border border-gray-200 p-2 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-white/[0.06]"
+        >
           <IconFileDetail />
         </button>
       ),

@@ -10,6 +10,7 @@ interface TextareaProps {
   error?: boolean; // Error state
   hint?: string; // Hint text to display
   required?: boolean; // Required state
+  readonly?: boolean; // Read-only state
 }
 
 const TextArea: React.FC<TextareaProps> = ({
@@ -22,6 +23,7 @@ const TextArea: React.FC<TextareaProps> = ({
   error = false, // Error state
   hint = "", // Default hint text
   required = false, // Required state
+  readonly = false, // Read-only state
 }) => {
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (onChange) {
@@ -33,6 +35,8 @@ const TextArea: React.FC<TextareaProps> = ({
 
   if (disabled) {
     textareaClasses += ` bg-gray-100 opacity-50 text-gray-500 border-gray-300 cursor-not-allowed opacity40 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700`;
+  } else if (readonly) {
+    textareaClasses += ` bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20 dark:border-gray-700 dark:text-white/90 dark:focus:border-brand-800`;
   } else if (error) {
     textareaClasses += ` bg-transparent  border-gray-300 focus:border-error-300 focus:ring-3 focus:ring-error-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:focus:border-error-800`;
   } else {
@@ -47,6 +51,7 @@ const TextArea: React.FC<TextareaProps> = ({
         value={value}
         onChange={handleChange}
         disabled={disabled}
+        readOnly={readonly}
         className={textareaClasses}
         required={required}
       />

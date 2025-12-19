@@ -114,6 +114,8 @@ import EditRolePage from "@/features/role-management-access/pages/EditRolePage";
 import KasbonPage from "@/features/payroll/pages/cash-advance/CashAdvancePage";
 import StatusKasbonPage from "@/features/payroll/pages/cash-advance/tab/StatusCashAdvancePage";
 import RiwayatPengajuanPage from "@/features/payroll/pages/cash-advance/tab/HistorySubmissionPage";
+import CashAdvanceApprovalPage from "@/features/payroll/pages/cash-advance/tab/CashAdvanceApprovalPage";
+import DetailSubmissionPage from "@/features/payroll/pages/cash-advance/detail/DetailSubmissionPage";
 import DashboardPenggajianPage from "@/features/payroll/pages/dashboard-payroll/DashboardPayrollPage";
 
 import ApprovalPeriodeGajianPage from "@/features/payroll/pages/payroll-period-approval/PayrollPeriodApprovalPage";
@@ -181,14 +183,17 @@ export default function AppRoutes() {
           <Route path="/payroll-period/detail-non-ae/:id" element={<DetailGajiNonAEPage />} />
           <Route path="/payroll-period/detail-thr/:id" element={<DetailGajiTHRPage />} />
           <Route path="/payroll-period/detail-pkl/:id" element={<DetailGajiPKLPage />} />
-          {/* Dokumentasi: Nested route untuk Kasbon dengan dua tab */}
+          {/* Dokumentasi: Nested route untuk Kasbon dengan tiga tab */}
           <Route path="/cash-advance" element={<KasbonPage />}>
             <Route index element={<RiwayatPengajuanPage />} />
 
             <Route path="submission-history" element={<RiwayatPengajuanPage />} />
             <Route path="cash-advance-status" element={<StatusKasbonPage />} />
+            <Route path="approval" element={<CashAdvanceApprovalPage />} />
             <Route path="cash-advance-form" element={<FormKasbonPage />} />
           </Route>
+          {/* Dokumentasi: Route untuk Detail Kasbon */}
+          <Route path="/cash-advance/detail/:id" element={<DetailSubmissionPage />} />
           <Route path="/payroll-dashboard" element={<DashboardPenggajianPage />} />
           <Route path="/payroll-period-approval" element={<ApprovalPeriodeGajianPage />}>
             {/* Dokumentasi: index default Non-AE untuk /payroll-period-approval */}
