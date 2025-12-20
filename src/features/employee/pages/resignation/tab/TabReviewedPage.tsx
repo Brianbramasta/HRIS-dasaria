@@ -135,7 +135,7 @@ export default function TabReviewed() {
                   className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100"
                   onClick={() => {
                     setIsStatusDropdownOpen(false);
-                    navigate('/pengunduran-diri?view=pending');
+                    navigate('/resignation?view=pending');
                   }}
                 >
                   Ditinjau
@@ -144,7 +144,7 @@ export default function TabReviewed() {
                   className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100"
                   onClick={() => {
                     setIsStatusDropdownOpen(false);
-                    navigate('/pengunduran-diri?view=reviewed');
+                    navigate('/resignation?view=reviewed');
                   }}
                 >
                   Selesai

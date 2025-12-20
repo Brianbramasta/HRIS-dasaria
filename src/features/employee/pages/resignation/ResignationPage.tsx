@@ -33,7 +33,7 @@ export default function PengunduranDiriPage() {
 
   const goToFormResign = () => {
     setIsModalOpen(false);
-    navigate('/pengunduran-diri/form');
+    navigate('/resignation/form');
   };
 
   return (
@@ -65,7 +65,7 @@ export default function PengunduranDiriPage() {
       <ShareLinkModal
         isOpen={isShareOpen}
         onClose={() => setIsShareOpen(false)}
-        link={`${window.location.origin}/pengunduran-diri/form`}
+        link={`${window.location.origin}/resignation/form`}
         message={'Silakan isi data karyawan melalui tautan berikut'}
       />
     </div>
