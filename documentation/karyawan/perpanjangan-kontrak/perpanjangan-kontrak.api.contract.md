@@ -13,9 +13,6 @@
 - `per_page` - Jumlah data per halaman (default: 10)
 - `page` - Nomor halaman (default: 1)
 - `filter[]` - Filter berdasarkan kriteria tertentu (dapat digunakan multiple)
-  <!-- - status_perpanjangan: 1=Pending, 2=Diperpanjang, 3=Ditolak, 4=Menunggu Jadwal Negoisasi, 5=Negoisasi
-  - status_atasan: 1=Pending, 2=Disetujui, 3=Ditolak
-  - status_karyawan: 1=Pending, 2=Disetujui, 3=Negoisasi, 4=Info, 5=Ditolak -->
 - `filter_column[range][column][]` - Filter berdasarkan range tanggal (contoh: `filter_column[range][end_date][]=2024-01-01&filter_column[range][end_date][]=2024-01-31`)
 - `filter_column[in][column][]` - Filter berdasarkan multiple values/checkbox (contoh: `filter_column[in][renewal_status][]=1&filter_column[in][renewal_status][]=2`)
 
