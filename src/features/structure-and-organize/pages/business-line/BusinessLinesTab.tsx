@@ -47,46 +47,25 @@ export default function BusinessLinesTab({ resetKey }: Props) {
     total,
     page,
     pageSize,
+    rows_column,
     setSearch,
     setPage,
     setPageSize,
     setSort,
+    getById
   } = useBusinessLines();
 
   // pages only call addNotification; the container is rendered globally in App.tsx
 
-  const rows: BLRow[] = useMemo(() => {
-    return (businessLines || []).map((b, idx) => ({
-      id: (b as any).id,
-      no: idx + 1,
-      'lini-bisnis': (b as any).name ?? '—',
-      'deskripsi-umum': (b as any).description ?? '—',
-      'file-sk-dan-memo': ((b as any).skFile || (b as any).memoFile) ? 'Ada' : '—',
-    }));
-  }, [businessLines]);
-
-  const exportCSV = (filename: string, data: any[]) => {
-    if (!data || data.length === 0) return;
-    const headers = Object.keys(data[0]);
-    const csv = [headers.join(','), ...data.map(r => headers.map(h => JSON.stringify((r as any)[h] ?? '')).join(','))].join('\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', filename);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
-
   
+
+
 
   return (
     <>
       <DataTable
         title="Lini Bisnis"
-        data={rows}
+        data={rows_column}
         columns={businessLineColumns}
         loading={loading}
         pageSize={pageSize}
@@ -102,7 +81,7 @@ export default function BusinessLinesTab({ resetKey }: Props) {
             onClick: async (row: any) => {
               const idx = (row?.no ?? 0) - 1;
               setSelectedIndex(idx);
-              const detail = await businessLinesService.getById(businessLines[idx].id);
+              const detail = await getById(businessLines[idx].id);
               console.log('detail',detail)
               setSelectedBusinessLine(detail as BusinessLineListItem);
               setIsEditOpen(true);
@@ -131,7 +110,7 @@ export default function BusinessLinesTab({ resetKey }: Props) {
         onColumnVisibilityChange={() => {}}
 
         onAdd={() => setIsAddOpen(true)}
-        onExport={() => exportCSV('lini-bisnis.csv', rows)}
+        onExport={true}
       />
 
       <AddBusinessLineModal

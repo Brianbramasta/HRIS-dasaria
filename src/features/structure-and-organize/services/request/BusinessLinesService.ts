@@ -48,7 +48,7 @@ export const businessLinesService = {
   },
 
   getById: async (id: string): Promise<any> => {
-    return apiService.get<any>(`${BaseUrl}/${id}`);
+    return apiService.get<any>(`${BaseUrl}/${id}/show`);
   },
 
   create: async (payload: { name: string; description?: string | null; memoNumber: string; skFile?: File | undefined; }): Promise<any> => {

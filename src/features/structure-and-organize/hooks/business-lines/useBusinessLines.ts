@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import {
   TableFilter,
   BusinessLineListItem,
@@ -7,6 +7,7 @@ import {
 } from '../../types/OrganizationApiTypes';
 import { businessLinesService } from '../../services/request/BusinessLinesService';
 import useFilterStore from '../../../../stores/filterStore';
+import { BLRow } from '../../types/OrganizationTableTypes';
 
 // Mapping helpers: transform raw API payload -> frontend types
 const toFileSummary = (url: string | null): FileSummary | null => {
@@ -38,6 +39,7 @@ interface UseBusinessLinesReturn {
   page: number;
   pageSize: number;
   totalPages: number;
+  rows_column: BLRow[];
   
   // Actions
   fetchBusinessLines: (filter?: Partial<TableFilter>) => Promise<void>;
@@ -231,6 +233,7 @@ export const useBusinessLines = (options?: { autoFetch?: boolean }): UseBusiness
     try {
       const resp = await businessLinesService.getById(id);
       const item = (resp as any)?.data as any;
+      console.log('getById', item);
       if (!item) return null;
       return mapToBusinessLine(item);
     } catch (err) {
@@ -249,6 +252,15 @@ export const useBusinessLines = (options?: { autoFetch?: boolean }): UseBusiness
     }
   }, [search, sortBy, sortOrder, page, pageSize, filterValue, autoFetch, fetchBusinessLines]);
   
+  const rows_column: BLRow[] = useMemo(() => {
+      return (businessLines || []).map((b, idx) => ({
+        id: (b as any).id,
+        no: idx + 1,
+        'lini-bisnis': (b as any).name ?? '—',
+        'deskripsi-umum': (b as any).description ?? '—',
+        'file-sk-dan-memo': ((b as any).skFile || (b as any).memoFile) ? 'Ada' : '—',
+      }));
+    }, [businessLines]);
 
   return {
     businessLines,
@@ -258,6 +270,7 @@ export const useBusinessLines = (options?: { autoFetch?: boolean }): UseBusiness
     page,
     pageSize,
     totalPages,
+    rows_column,
     
     fetchBusinessLines,
     createBusinessLine,
@@ -274,5 +287,6 @@ export const useBusinessLines = (options?: { autoFetch?: boolean }): UseBusiness
       setSortBy(newSortBy);
       setSortOrder(newSortOrder);
     },
+    
   };
 };
