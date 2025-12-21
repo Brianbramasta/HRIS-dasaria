@@ -1,42 +1,38 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { DataTable, DataTableColumn, DataTableAction } from '../../../../structure-and-organize/components/datatable/DataTable';
 import { PengunduranDiri } from '../../../types/Resignation';
-import usePengunduranDiri from '../../../hooks/usePengunduranDiri';
 import { ChevronDown } from 'react-feather';
-import { IconForm } from '@/icons/components/icons';
+import { IconForm, IconPencil } from '@/icons/components/icons';
 import Button from '../../../../../components/ui/button/Button';
 import { Dropdown } from '../../../../../components/ui/dropdown/Dropdown';
-import { IconPencil } from '@/icons/components/icons';
+import { usePendingReview } from '../../../hooks/resignation/usePendingReview';
 
 export default function TabPendingReview({ onOpenForm }: { onOpenForm?: () => void }) {
-  console.log('TabPendingReview', onOpenForm);
-  const navigate = useNavigate();
   const {
     data,
     loading,
     error,
     page,
     limit,
+    selectedItem,
+    showApproveModal,
+    showRejectModal,
+    tanggalEfektif,
+    isStatusDropdownOpen,
+    setTanggalEfektif,
     fetchPengunduranDiri,
     handleSearchChange,
     handleSortChange,
     handlePageChange,
     handleRowsPerPageChange,
-    approvePengunduranDiri,
-    rejectPengunduranDiri,
-  } = usePengunduranDiri({
-    initialPage: 1,
-    initialLimit: 10,
-    autoFetch: true,
-    status: 'In Progress' as const,
-  });
-
-  const [selectedItem, setSelectedItem] = useState<PengunduranDiri | null>(null);
-  const [showApproveModal, setShowApproveModal] = useState(false);
-  const [showRejectModal, setShowRejectModal] = useState(false);
-  const [tanggalEfektif, setTanggalEfektif] = useState('');
-  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
+    handleNavigateToDetail,
+    handleCloseApproveModal,
+    handleCloseRejectModal,
+    confirmApprove,
+    confirmReject,
+    toggleStatusDropdown,
+    closeStatusDropdown,
+    handleNavigateToView,
+  } = usePendingReview();
 
   // Define columns untuk DataTable
   const columns: DataTableColumn<PengunduranDiri>[] = [
@@ -120,7 +116,7 @@ export default function TabPendingReview({ onOpenForm }: { onOpenForm?: () => vo
     {
       icon: <IconPencil />,
       onClick: (row) => {
-        navigate(`/resignation/${row.id}`);
+        handleNavigateToDetail(row.id);
       },
       variant: 'outline',
       color: 'warning',
@@ -137,30 +133,7 @@ export default function TabPendingReview({ onOpenForm }: { onOpenForm?: () => vo
 //     setShowRejectModal(true);
 //   };
 
-  const confirmApprove = async () => {
-    if (!selectedItem || !tanggalEfektif) return;
-    
-    try {
-      await approvePengunduranDiri(selectedItem.id, tanggalEfektif);
-      setShowApproveModal(false);
-      setTanggalEfektif('');
-      setSelectedItem(null);
-    } catch (err) {
-      console.error('Error approving:', err);
-    }
-  };
-
-  const confirmReject = async () => {
-    if (!selectedItem) return;
-    
-    try {
-      await rejectPengunduranDiri(selectedItem.id);
-      setShowRejectModal(false);
-      setSelectedItem(null);
-    } catch (err) {
-      console.error('Error rejecting:', err);
-    }
-  };
+  // Unused functions - moved to hook
 
   if (error) {
     return (
@@ -193,7 +166,7 @@ export default function TabPendingReview({ onOpenForm }: { onOpenForm?: () => vo
         toolbarRightSlot={
           <div className="relative">
             <Button
-              onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
+              onClick={() => toggleStatusDropdown()}
               variant="outline"
               size="sm"
               className="flex items-center gap-1 dropdown-toggle"
@@ -201,13 +174,12 @@ export default function TabPendingReview({ onOpenForm }: { onOpenForm?: () => vo
               Ditinjau
               <ChevronDown size={16} />
             </Button>
-            <Dropdown isOpen={isStatusDropdownOpen} onClose={() => setIsStatusDropdownOpen(false)}>
+            <Dropdown isOpen={isStatusDropdownOpen} onClose={() => closeStatusDropdown()}>
               <div className="p-2 w-40">
                 <button
                   className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100"
                   onClick={() => {
-                    setIsStatusDropdownOpen(false);
-                    navigate('/resignation?view=pending');
+                    handleNavigateToView('pending');
                   }}
                 >
                   Ditinjau
@@ -215,8 +187,7 @@ export default function TabPendingReview({ onOpenForm }: { onOpenForm?: () => vo
                 <button
                   className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100"
                   onClick={() => {
-                    setIsStatusDropdownOpen(false);
-                    navigate('/resignation?view=reviewed');
+                    handleNavigateToView('reviewed');
                   }}
                 >
                   Selesai
@@ -304,9 +275,7 @@ export default function TabPendingReview({ onOpenForm }: { onOpenForm?: () => vo
             <div className="flex justify-end gap-3">
               <Button
                 onClick={() => {
-                  setShowApproveModal(false);
-                  setTanggalEfektif('');
-                  setSelectedItem(null);
+                  handleCloseApproveModal();
                 }}
                 variant="outline"
               >
@@ -339,8 +308,7 @@ export default function TabPendingReview({ onOpenForm }: { onOpenForm?: () => vo
             <div className="flex justify-end gap-3">
               <Button
                 onClick={() => {
-                  setShowRejectModal(false);
-                  setSelectedItem(null);
+                  handleCloseRejectModal();
                 }}
                 variant="outline"
               >

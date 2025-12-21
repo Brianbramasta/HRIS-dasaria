@@ -12,7 +12,7 @@ import { useEditContractRenewal } from '../../../../hooks/contract-renewal/useEd
 export default function PerpanjangKontrakEdit() {
   const {
     kontrakData,
-    isLoading,
+    // isLoading,
     isStatusModalOpen,
     isPengajuanModalOpen,
     setIsStatusModalOpen,
@@ -44,58 +44,58 @@ export default function PerpanjangKontrakEdit() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">NIP</label>
-            <Input type="text" value={kontrakData.employee_id || ''} disabled />
+            <Input type="text" value={kontrakData?.employee_id || ''} disabled />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Pengguna</label>
-            <Input type="text" value={kontrakData.status_perpanjangan.employee_name || ''} disabled />
+            <Input type="text" value={kontrakData?.status_perpanjangan.full_name || ''} disabled />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Posisi</label>
-            <Input type="text" value={kontrakData.status_perpanjangan.position_name || ''} disabled />
+            <Input type="text" value={kontrakData?.status_perpanjangan.position_name || ''} disabled />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Departemen</label>
-            <Input type="text" value={kontrakData.status_perpanjangan.department_name || ''} disabled />
+            <Input type="text" value={kontrakData?.status_perpanjangan.department_name || ''} disabled />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Tanggal Masuk</label>
-            <Input type="text" value={kontrakData.status_perpanjangan.start_date || ''} disabled />
+            <Input type="text" value={kontrakData?.status_perpanjangan.join_date || ''} disabled />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Tanggal Berakhir</label>
-            <Input type="text" value={kontrakData.status_perpanjangan.end_date || ''} disabled />
+            <Input type="text" value={kontrakData?.status_perpanjangan.end_date || ''} disabled />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Sisa Kontrak</label>
-            <Input type="text" value={kontrakData.status_perpanjangan.remaining_contract || ''} disabled />
+            <Input type="text" value={kontrakData?.status_perpanjangan.remaining_contract || ''} disabled />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Status Perpanjangan</label>
-            <Input type="text" value={kontrakData.status_perpanjangan.renewal_status_name || ''} disabled />
+            <Input type="text" value={kontrakData?.status_perpanjangan.renewal_status_name || ''} disabled />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Status Atasan</label>
-            <Input type="text" value={kontrakData.status_perpanjangan.supervisor_approval_status_name || ''} disabled />
+            <Input type="text" value={kontrakData?.status_perpanjangan.supervisor_approval_status_name || ''} disabled />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Status Karyawan</label>
-            <Input type="text" value={kontrakData.status_perpanjangan.employee_status_name || ''} disabled />
+            <Input type="text" value={kontrakData?.status_perpanjangan.employee_status_name || ''} disabled />
           </div>
         </div>
 
         <div className="space-y-2">
           <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Catatan</label>
-          <TextArea value={kontrakData.status_perpanjangan.notes || ''} disabled />
+          <TextArea value={kontrakData?.status_perpanjangan.notes || ''} disabled />
         </div>
         <div className='flex justify-end'>
         <Button
@@ -118,60 +118,60 @@ export default function PerpanjangKontrakEdit() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Jenis Perubahan</label>
-            <Input type="text" value={kontrakData.pengajuan_kontrak.change_type_name || ''} disabled />
+            <Input type="text" value={kontrakData?.pengajuan_kontrak.change_type_name || ''} disabled />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Perusahaan</label>
-            <Input type="text" value={kontrakData.pengajuan_kontrak.company_name || ''} disabled />
+            <Input type="text" value={kontrakData?.pengajuan_kontrak.company_name || ''} disabled />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Kantor</label>
-            <Input type="text" value={kontrakData.pengajuan_kontrak.office_name || ''} disabled />
+            <Input type="text" value={kontrakData?.pengajuan_kontrak.office_name || ''} disabled />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Direktorat</label>
-            <Input type="text" value={kontrakData.pengajuan_kontrak.directorate_name || ''} disabled />
+            <Input type="text" value={kontrakData?.pengajuan_kontrak.directorate_name || ''} disabled />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Divisi</label>
-            <Input type="text" value={kontrakData.pengajuan_kontrak.division_name || ''} disabled />
+            <Input type="text" value={kontrakData?.pengajuan_kontrak.division_name || ''} disabled />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Departemen</label>
-            <Input type="text" value={kontrakData.pengajuan_kontrak.department_name || ''} disabled />
+            <Input type="text" value={kontrakData?.pengajuan_kontrak.department_name || ''} disabled />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Position</label>
-            <Input type="text" value={kontrakData.pengajuan_kontrak.position_name || ''} disabled />
+            <Input type="text" value={kontrakData?.pengajuan_kontrak.position_name || ''} disabled />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Jabatan</label>
-            <Input type="text" value={kontrakData.pengajuan_kontrak.job_title_name || ''} disabled />
+            <Input type="text" value={kontrakData?.pengajuan_kontrak.job_title_name || ''} disabled />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Golongan</label>
-            <Input type="text" value={kontrakData.pengajuan_kontrak.grade || ''} disabled />
+            <Input type="text" value={kontrakData?.pengajuan_kontrak.grade || ''} disabled />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Jenjang Jabatan</label>
-            <Input type="text" value={kontrakData.pengajuan_kontrak.position_level_name || ''} disabled />
+            <Input type="text" value={kontrakData?.pengajuan_kontrak.position_level_name || ''} disabled />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Gaji Pokok</label>
-            <Input type="text" value={kontrakData.pengajuan_kontrak.basic_salary?.toString() || ''} disabled />
+            <Input type="text" value={kontrakData?.pengajuan_kontrak.basic_salary?.toString() || ''} disabled />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Kategori Karyawan</label>
-            <Input type="text" value={kontrakData.pengajuan_kontrak.employee_category_name || ''} disabled />
+            <Input type="text" value={kontrakData?.pengajuan_kontrak.employee_category_name || ''} disabled />
           </div>
         </div>
         <div className='flex justify-end'>
@@ -190,7 +190,7 @@ export default function PerpanjangKontrakEdit() {
       <EditStatusPerpanjanganModal
         isOpen={isStatusModalOpen}
         onClose={() => setIsStatusModalOpen(false)}
-        kontrakData={kontrakData.status_perpanjangan}
+        kontrakData={kontrakData}
         onSuccess={handleUpdateStatus}
       />
 
@@ -198,7 +198,7 @@ export default function PerpanjangKontrakEdit() {
       <EditPengajuanKontrakModal
         isOpen={isPengajuanModalOpen}
         onClose={() => setIsPengajuanModalOpen(false)}
-        kontrakData={kontrakData.pengajuan_kontrak}
+        kontrakData={kontrakData}
         onSuccess={handleUpdatePengajuan}
       />
     </div>

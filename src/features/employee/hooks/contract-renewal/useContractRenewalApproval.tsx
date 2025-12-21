@@ -63,14 +63,190 @@ export function useContractRenewalApproval(): UseContractRenewalApprovalReturn {
   const fetchContractRenewalApprovals = useCallback(async (params?: ContractRenewalFilterParams) => {
     setIsLoading(true);
     try {
-      const response = await contractRenewalService.getContractRenewalApprovals(params);
-      if (response.success && response.data) {
-        setData(response.data.data);
-        setCurrentPage(response.data.current_page);
-        setTotalPages(response.data.last_page);
-        setTotalItems(response.data.total);
-        setPerPage(response.data.per_page);
-      }
+      console.log('Fetching contract renewals with params:', params);
+      // Dummy data for testing
+      const dummyData: ContractRenewalApprovalListItem[] = [
+        {
+          id: '1',
+          employee_id: 'emp001',
+          nip: 'NIP001',
+          full_name: 'Ahmad Fauzi',
+          position_name: 'Senior Developer',
+          department_name: 'IT Development',
+          join_date: '2022-01-15',
+          end_date: '2024-01-15',
+          remaining_contract: '2 bulan',
+          status: 1,
+          status_name: 'Pending',
+          renewal_detail: 'Detail perpanjangan tersedia',
+          notes: 'Menunggu persetujuan',
+          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Ahmad',
+        },
+        {
+          id: '2',
+          employee_id: 'emp002',
+          nip: 'NIP002',
+          full_name: 'Siti Nurhaliza',
+          position_name: 'UI/UX Designer',
+          department_name: 'Design',
+          join_date: '2022-03-20',
+          end_date: '2024-03-20',
+          remaining_contract: '4 bulan',
+          status: 2,
+          status_name: 'Diperpanjang',
+          renewal_detail: 'Detail perpanjangan tersedia',
+          notes: 'Perpanjangan kontrak 1 tahun disetujui',
+          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Siti',
+        },
+        {
+          id: '3',
+          employee_id: 'emp003',
+          nip: 'NIP003',
+          full_name: 'Budi Santoso',
+          position_name: 'Project Manager',
+          department_name: 'Project Management',
+          join_date: '2021-06-10',
+          end_date: '2023-12-31',
+          remaining_contract: 'Expired',
+          status: 1,
+          status_name: 'Pending',
+          renewal_detail: 'Detail perpanjangan tersedia',
+          notes: 'Menunggu keputusan manajemen',
+          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Budi',
+        },
+        {
+          id: '4',
+          employee_id: 'emp004',
+          nip: 'NIP004',
+          full_name: 'Dewi Lestari',
+          position_name: 'HR Specialist',
+          department_name: 'Human Resources',
+          join_date: '2022-08-01',
+          end_date: '2024-08-01',
+          remaining_contract: '8 bulan',
+          status: 1,
+          status_name: 'Pending',
+          renewal_detail: null,
+          notes: null,
+          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Dewi',
+        },
+        {
+          id: '5',
+          employee_id: 'emp005',
+          nip: 'NIP005',
+          full_name: 'Rizky Pratama',
+          position_name: 'Backend Developer',
+          department_name: 'IT Development',
+          join_date: '2021-11-15',
+          end_date: '2024-02-15',
+          remaining_contract: '3 bulan',
+          status: 2,
+          status_name: 'Diperpanjang',
+          renewal_detail: 'Detail perpanjangan tersedia',
+          notes: 'Disetujui dengan kenaikan posisi',
+          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Rizky',
+        },
+        {
+          id: '6',
+          employee_id: 'emp006',
+          nip: 'NIP006',
+          full_name: 'Maya Anggraini',
+          position_name: 'Marketing Manager',
+          department_name: 'Marketing',
+          join_date: '2022-04-10',
+          end_date: '2024-04-10',
+          remaining_contract: '5 bulan',
+          status: 3,
+          status_name: 'Ditolak',
+          renewal_detail: 'Detail perpanjangan tersedia',
+          notes: 'Tidak memenuhi target kinerja',
+          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Maya',
+        },
+        {
+          id: '7',
+          employee_id: 'emp007',
+          nip: 'NIP007',
+          full_name: 'Andi Wijaya',
+          position_name: 'QA Engineer',
+          department_name: 'Quality Assurance',
+          join_date: '2021-09-05',
+          end_date: '2024-05-05',
+          remaining_contract: '6 bulan',
+          status: 2,
+          status_name: 'Diperpanjang',
+          renewal_detail: 'Detail perpanjangan tersedia',
+          notes: 'Perpanjangan 2 tahun disetujui',
+          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Andi',
+        },
+        {
+          id: '8',
+          employee_id: 'emp008',
+          nip: 'NIP008',
+          full_name: 'Linda Susanti',
+          position_name: 'Finance Analyst',
+          department_name: 'Finance',
+          join_date: '2022-02-28',
+          end_date: '2024-02-28',
+          remaining_contract: '3 bulan',
+          status: 1,
+          status_name: 'Pending',
+          renewal_detail: 'Detail perpanjangan tersedia',
+          notes: 'Menunggu review kinerja',
+          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Linda',
+        },
+        {
+          id: '9',
+          employee_id: 'emp009',
+          nip: 'NIP009',
+          full_name: 'Hendra Gunawan',
+          position_name: 'DevOps Engineer',
+          department_name: 'IT Infrastructure',
+          join_date: '2021-12-01',
+          end_date: '2024-06-01',
+          remaining_contract: '7 bulan',
+          status: 1,
+          status_name: 'Pending',
+          renewal_detail: 'Detail perpanjangan tersedia',
+          notes: 'Sedang dalam proses evaluasi',
+          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Hendra',
+        },
+        {
+          id: '10',
+          employee_id: 'emp010',
+          nip: 'NIP010',
+          full_name: 'Ratna Sari',
+          position_name: 'Content Writer',
+          department_name: 'Content & Media',
+          join_date: '2022-07-20',
+          end_date: '2024-07-20',
+          remaining_contract: '8 bulan',
+          status: 2,
+          status_name: 'Diperpanjang',
+          renewal_detail: 'Detail perpanjangan tersedia',
+          notes: 'Perpanjangan dengan kenaikan gaji disetujui',
+          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Ratna',
+        },
+      ];
+
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Use dummy data instead of API call
+      setData(dummyData);
+      setCurrentPage(1);
+      setTotalPages(1);
+      setTotalItems(dummyData.length);
+      setPerPage(10);
+
+      // Uncomment below to use real API
+      // const response = await contractRenewalService.getContractRenewalApprovals(params);
+      // if (response.success && response.data) {
+      //   setData(response.data.data);
+      //   setCurrentPage(response.data.current_page);
+      //   setTotalPages(response.data.last_page);
+      //   setTotalItems(response.data.total);
+      //   setPerPage(response.data.per_page);
+      // }
     } catch (error: any) {
       addNotification({
         title: 'Error',
@@ -108,7 +284,7 @@ export function useContractRenewalApproval(): UseContractRenewalApprovalReturn {
 
     try {
       await contractRenewalService.rejectContractRenewal(selectedKontrak.id, {
-        notes: alasanPenolakan,
+        reason: alasanPenolakan,
       });
       addNotification({
         title: 'Success',
@@ -175,7 +351,7 @@ export function useContractRenewalApproval(): UseContractRenewalApprovalReturn {
       format: (value, row) => (
         <div className="flex items-center gap-2">
           <img
-            src={row.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${value}`}
+            src={row.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${value}`}
             alt={value}
             className="h-8 w-8 rounded-full"
           />

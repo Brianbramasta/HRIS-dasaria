@@ -51,18 +51,18 @@ export default function EditStatusPerpanjanganModal({
   kontrakData,
   onSuccess,
 }: EditStatusPerpanjanganModalProps) {
-  const [statusPerpanjangan, setStatusPerpanjangan] = useState(kontrakData.statusPerpanjangan);
-  const [statusAtasan, setStatusAtasan] = useState(kontrakData.statusAtasan);
-  const [statusKaryawan, setStatusKaryawan] = useState(kontrakData.statusKaryawan);
-  const [catatan, setCatatan] = useState(kontrakData.catatan);
+  const [statusPerpanjangan, setStatusPerpanjangan] = useState(kontrakData?.statusPerpanjangan);
+  const [statusAtasan, setStatusAtasan] = useState(kontrakData?.statusAtasan);
+  const [statusKaryawan, setStatusKaryawan] = useState(kontrakData?.statusKaryawan);
+  const [catatan, setCatatan] = useState(kontrakData?.catatan);
   const [submitting, setSubmitting] = useState(false);
 
   // Sync with prop changes
   useEffect(() => {
-    setStatusPerpanjangan(kontrakData.statusPerpanjangan);
-    setStatusAtasan(kontrakData.statusAtasan);
-    setStatusKaryawan(kontrakData.statusKaryawan);
-    setCatatan(kontrakData.catatan);
+    setStatusPerpanjangan(kontrakData?.statusPerpanjangan);
+    setStatusAtasan(kontrakData?.statusAtasan);
+    setStatusKaryawan(kontrakData?.statusKaryawan);
+    setCatatan(kontrakData?.catatan);
   }, [kontrakData]);
 
   const handleSubmit = () => {
@@ -89,37 +89,37 @@ export default function EditStatusPerpanjanganModal({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300">NIP</label>
-              <Input type="text" value={kontrakData.idKaryawan} disabled />
+              <Input type="text" value={kontrakData?.idKaryawan} disabled />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Pengguna</label>
-              <Input type="text" value={kontrakData.pengguna} disabled />
+              <Input type="text" value={kontrakData?.pengguna} disabled />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Posisi</label>
-              <Input type="text" value={kontrakData.posisi} disabled />
+              <Input type="text" value={kontrakData?.posisi} disabled />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Departemen</label>
-              <Input type="text" value={kontrakData.departemen} disabled />
+              <Input type="text" value={kontrakData?.departemen} disabled />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Tanggal Masuk</label>
-              <Input type="text" value={kontrakData.tanggalMasuk} disabled />
+              <Input type="text" value={kontrakData?.tanggalMasuk} disabled />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Tanggal Berakhir</label>
-              <Input type="text" value={kontrakData.tanggalBerakhir} disabled />
+              <Input type="text" value={kontrakData?.tanggalBerakhir} disabled />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Sisa Kontrak</label>
-              <Input type="text" value={kontrakData.sisaKontrak} disabled />
+              <Input type="text" value={kontrakData?.sisaKontrak} disabled />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Status Perpanjangan</label>

@@ -77,28 +77,28 @@ export default function EditPengajuanKontrakModal({
   kontrakData,
   onSuccess,
 }: EditPengajuanKontrakModalProps) {
-  const [jenisPerubahan, setJenisPerubahan] = useState(kontrakData.jenisPerubahan);
-  const [perusahaan, setPerusahaan] = useState(kontrakData.perusahaan);
-  const [kantor, setKantor] = useState(kontrakData.kantor);
-  const [direktorat, setDirektorat] = useState(kontrakData.direktorat);
-  const [divisi, setDivisi] = useState(kontrakData.divisi);
-  const [position, setPosition] = useState(kontrakData.position);
-  const [jabatan, setJabatan] = useState(kontrakData.jabatan);
-  const [jenjangJabatan, setJenjangJabatan] = useState(kontrakData.jenjangJabatan);
-  const [kategoriKaryawan, setKategoriKaryawan] = useState(kontrakData.kategoriKaryawan);
+  const [jenisPerubahan, setJenisPerubahan] = useState(kontrakData?.jenisPerubahan);
+  const [perusahaan, setPerusahaan] = useState(kontrakData?.perusahaan);
+  const [kantor, setKantor] = useState(kontrakData?.kantor);
+  const [direktorat, setDirektorat] = useState(kontrakData?.direktorat);
+  const [divisi, setDivisi] = useState(kontrakData?.divisi);
+  const [position, setPosition] = useState(kontrakData?.position);
+  const [jabatan, setJabatan] = useState(kontrakData?.jabatan);
+  const [jenjangJabatan, setJenjangJabatan] = useState(kontrakData?.jenjangJabatan);
+  const [kategoriKaryawan, setKategoriKaryawan] = useState(kontrakData?.kategoriKaryawan);
   const [submitting, setSubmitting] = useState(false);
 
   // Sync with prop changes
   useEffect(() => {
-    setJenisPerubahan(kontrakData.jenisPerubahan);
-    setPerusahaan(kontrakData.perusahaan);
-    setKantor(kontrakData.kantor);
-    setDirektorat(kontrakData.direktorat);
-    setDivisi(kontrakData.divisi);
-    setPosition(kontrakData.position);
-    setJabatan(kontrakData.jabatan);
-    setJenjangJabatan(kontrakData.jenjangJabatan);
-    setKategoriKaryawan(kontrakData.kategoriKaryawan);
+    setJenisPerubahan(kontrakData?.jenisPerubahan);
+    setPerusahaan(kontrakData?.perusahaan);
+    setKantor(kontrakData?.kantor);
+    setDirektorat(kontrakData?.direktorat);
+    setDivisi(kontrakData?.divisi);
+    setPosition(kontrakData?.position);
+    setJabatan(kontrakData?.jabatan);
+    setJenjangJabatan(kontrakData?.jenjangJabatan);
+    setKategoriKaryawan(kontrakData?.kategoriKaryawan);
   }, [kontrakData]);
 
   const handleSubmit = () => {
@@ -135,11 +135,11 @@ export default function EditPengajuanKontrakModal({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300">NIP</label>
-              <Input type="text" value={kontrakData.idKaryawan} disabled />
+              <Input type="text" value={kontrakData?.idKaryawan} disabled />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Nama</label>
-              <Input type="text" value={kontrakData.pengguna} disabled />
+              <Input type="text" value={kontrakData?.pengguna} disabled />
             </div>
           </div>
 
@@ -199,7 +199,7 @@ export default function EditPengajuanKontrakModal({
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Departemen</label>
               <Select
                 options={departemenOptions}
-                defaultValue={kontrakData.departemen}
+                defaultValue={kontrakData?.departemen}
                 onChange={() => {}}
                 placeholder="Pilih Departemen"
               />
@@ -230,7 +230,7 @@ export default function EditPengajuanKontrakModal({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Golongan</label>
-              <Input type="text" value={kontrakData.golongan} disabled />
+              <Input type="text" value={kontrakData?.golongan} disabled />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Jenjang Jabatan</label>
@@ -246,7 +246,7 @@ export default function EditPengajuanKontrakModal({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Gaji Pokok</label>
-              <Input type="text" value={kontrakData.gajiPokok} disabled />
+              <Input type="text" value={kontrakData?.gajiPokok} disabled />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Kategori Karyawan</label>

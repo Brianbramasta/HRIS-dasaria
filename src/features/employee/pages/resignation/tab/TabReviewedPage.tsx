@@ -1,32 +1,27 @@
-import { useState } from 'react';
 import { DataTable, DataTableColumn } from '../../../../structure-and-organize/components/datatable/DataTable';
 import { PengunduranDiri } from '../../../types/Resignation';
-import usePengunduranDiri from '../../../hooks/usePengunduranDiri';
 import Button from '../../../../../components/ui/button/Button';
-import { useNavigate } from 'react-router-dom';
 import { ChevronDown } from 'react-feather';
 import { Dropdown } from '../../../../../components/ui/dropdown/Dropdown';
+import { useReviewed } from '../../../hooks/resignation/useReviewed';
 
 export default function TabReviewed() {
-  const navigate = useNavigate();
-  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
   const {
     data,
     loading,
     error,
     page,
     limit,
+    isStatusDropdownOpen,
     fetchPengunduranDiri,
     handleSearchChange,
     handleSortChange,
     handlePageChange,
     handleRowsPerPageChange,
-  } = usePengunduranDiri({
-    initialPage: 1,
-    initialLimit: 10,
-    autoFetch: true,
-    status: 'Approved' as const,
-  });
+    toggleStatusDropdown,
+    closeStatusDropdown,
+    handleNavigateToView,
+  } = useReviewed();
 
   // Define columns untuk DataTable
   const columns: DataTableColumn<PengunduranDiri>[] = [
@@ -121,7 +116,7 @@ export default function TabReviewed() {
         toolbarRightSlot={
           <div className="relative">
             <Button
-              onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
+              onClick={() => toggleStatusDropdown()}
               variant="outline"
               size="sm"
               className="flex items-center gap-1 dropdown-toggle"
@@ -129,13 +124,12 @@ export default function TabReviewed() {
               Selesai
               <ChevronDown size={16} />
             </Button>
-            <Dropdown isOpen={isStatusDropdownOpen} onClose={() => setIsStatusDropdownOpen(false)}>
+            <Dropdown isOpen={isStatusDropdownOpen} onClose={() => closeStatusDropdown()}>
               <div className="p-2 w-40">
                 <button
                   className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100"
                   onClick={() => {
-                    setIsStatusDropdownOpen(false);
-                    navigate('/resignation?view=pending');
+                    handleNavigateToView('pending');
                   }}
                 >
                   Ditinjau
@@ -143,8 +137,7 @@ export default function TabReviewed() {
                 <button
                   className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100"
                   onClick={() => {
-                    setIsStatusDropdownOpen(false);
-                    navigate('/resignation?view=reviewed');
+                    handleNavigateToView('reviewed');
                   }}
                 >
                   Selesai

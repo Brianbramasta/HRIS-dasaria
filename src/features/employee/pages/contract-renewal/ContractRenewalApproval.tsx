@@ -76,8 +76,8 @@ export default function PersetujuanPerpanjanganKontrak() {
             isOpen={isModalOpen}
             onClose={handleModalClose}
             kontrakData={{
-              idKaryawan: selectedKontrak.employee_code,
-              pengguna: selectedKontrak.employee_name,
+              idKaryawan: selectedKontrak.employee_id,
+              pengguna: selectedKontrak.full_name,
               jenisPerubahan: 'Tidak ada',
               perusahaan: 'Dasaria',
               kantor: 'Head Kantor',
@@ -98,8 +98,8 @@ export default function PersetujuanPerpanjanganKontrak() {
           <KonfirmasiPenolakanKontrak
             isOpen={isRejectModalOpen}
             onClose={handleRejectModalClose}
-            idKaryawan={selectedKontrak.employee_code}
-            nama={selectedKontrak.employee_name}
+            idKaryawan={selectedKontrak.nip}
+            nama={selectedKontrak.full_name}
             onSubmit={handleRejectSubmit}
           />
         </>

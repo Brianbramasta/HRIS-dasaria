@@ -1,123 +1,30 @@
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Button from '../../../../../components/ui/button/Button';
-import { PengunduranDiri } from '../../../types/Resignation';
-import pengunduranDiriService from '../../../services/ResignationService';
-import { addNotification } from '../../../../../stores/notificationStore';
 import Label from '../../../../../components/form/Label';
-// import Input from '../../../../../components/form/input/InputField';
 import TextArea from '../../../../../components/form/input/TextArea';
 import FileInput from '../../../../../components/form/input/FileInput';
 import { Table, TableHeader, TableBody, TableRow, TableCell } from '../../../../../components/ui/table';
-import {IconHapus, IconPlus} from '@/icons/components/icons'
+import { IconHapus, IconPlus } from '@/icons/components/icons';
+import { useDetailResignation } from '../../../hooks/resignation/useDetailResignation';
 
 export default function DetailPengunduranDiriPage() {
   const { id } = useParams();
-  const navigate = useNavigate();
-  const [data, setData] = useState<PengunduranDiri | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [tanggalEfektif] = useState('');
-  const [docs, setDocs] = useState<Array<{ tipeFile: string; namaFile: string }>>([
-    { tipeFile: 'Form Exit Discussion', namaFile: 'Form Exit Discussion.pdf' },
-    { tipeFile: 'Surat Balasan Resign', namaFile: 'Surat Balasan Resign.pdf' },
-    { tipeFile: 'Berita Acara Serah Terima (BAST)', namaFile: 'BAST.pdf' },
-    { tipeFile: 'Form Exit Clearance', namaFile: 'Form Exit Clearance.pdf' },
-    { tipeFile: 'Form Exit Interview', namaFile: 'Form Exit Interview.pdf' },
-    { tipeFile: 'Form Exit Questionnaire', namaFile: 'Form Exit Questionnaire.pdf' },
-    { tipeFile: 'Informasi Garden Leave', namaFile: 'Informasi Garden Leave.pdf' },
-    { tipeFile: 'Paklaring (jika ada)', namaFile: 'Paklaring.pdf' },
-  ]);
-
-  const docTypes = [
-    'Form Exit Discussion',
-    'Surat Balasan Resign',
-    'Berita Acara Serah Terima (BAST)',
-    'Form Exit Clearance',
-    'Form Exit Interview',
-    'Form Exit Questionnaire',
-    'Informasi Garden Leave',
-    'Paklaring (jika ada)',
-  ];
-
-  const [uploadRows, setUploadRows] = useState<{ id: number; type: string; file?: File }[]>([
-    { id: 1, type: '' },
-  ]);
-
-  useEffect(() => {
-    const fetch = async () => {
-      if (!id) return;
-      setLoading(true);
-      try {
-        const res = await pengunduranDiriService.getPengunduranDiriById(id);
-        setData(res.data as unknown as PengunduranDiri);
-      } catch (err) {
-        console.log('error',err)
-        addNotification({ title: 'Gagal memuat data', description: 'Tidak dapat mengambil detail pengunduran diri.', variant: 'error' });
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetch();
-  }, [id]);
-
-  const handleApprove = async () => {
-    if (!id || !tanggalEfektif) {
-      addNotification({ title: 'Tanggal efektif kosong', description: 'Isi tanggal efektif sebelum approve.', variant: 'warning' });
-      return;
-    }
-    try {
-      await pengunduranDiriService.approvePengunduranDiri(id, tanggalEfektif);
-      addNotification({ title: 'Approved', description: 'Pengunduran diri disetujui.', variant: 'success' });
-      navigate('/pengunduran-diri');
-    } catch (err) {
-        console.log('error',err)
-      addNotification({ title: 'Gagal approve', description: 'Terjadi kesalahan saat approve.', variant: 'error' });
-    }
-  };
-
-  const handleReject = async () => {
-    if (!id) return;
-    try {
-      await pengunduranDiriService.rejectPengunduranDiri(id);
-      addNotification({ title: 'Rejected', description: 'Pengunduran diri ditolak.', variant: 'info' });
-      navigate('/pengunduran-diri');
-    } catch (err) {
-        console.log('error',err)
-      addNotification({ title: 'Gagal reject', description: 'Terjadi kesalahan saat reject.', variant: 'error' });
-    }
-  };
-
-  const handleAddRow = () => {
-    setUploadRows((prev) => {
-      const nextId = prev.length ? Math.max(...prev.map((r) => r.id)) + 1 : 1;
-      return [...prev, { id: nextId, type: '' }];
-    });
-  };
-
-  const handleRemoveRow = (id: number) => {
-    setUploadRows((prev) => prev.filter((r) => r.id !== id));
-  };
-
-  const handleRowTypeChange = (id: number, type: string) => {
-    setUploadRows((prev) => prev.map((r) => (r.id === id ? { ...r, type } : r)));
-  };
-
-  const handleRowFileChange = (id: number, e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    setUploadRows((prev) => prev.map((r) => (r.id === id ? { ...r, file } : r)));
-  };
-
-  const handleUploadRows = () => {
-    const newItems = uploadRows
-      .filter((r) => r.type && r.file)
-      .map((r) => ({ tipeFile: r.type, namaFile: r.file!.name }));
-    if (!newItems.length) {
-      addNotification({ title: 'Tidak ada file', description: 'Pilih tipe dan file sebelum upload.', variant: 'warning' });
-      return;
-    }
-    setDocs((prev) => [...newItems, ...prev]);
-    addNotification({ title: 'Berhasil', description: 'File ditambahkan ke daftar secara lokal.', variant: 'success' });
-  };
+  const {
+    data,
+    loading,
+    docs,
+    docTypes,
+    uploadRows,
+    handleApprove,
+    handleReject,
+    handleAddRow,
+    handleRemoveRow,
+    handleRowTypeChange,
+    handleRowFileChange,
+    handleUploadRows,
+    handleRemoveDocument,
+    handlePreviewPDF,
+  } = useDetailResignation(id);
 
   if (loading) {
     return <div>Memuat...</div>;
@@ -145,7 +52,7 @@ export default function DetailPengunduranDiriPage() {
               alt="Preview"
               className="h-full w-40 rounded object-cover"
             />
-            <Button size="sm" variant="primary" onClick={() => addNotification({ title: 'Preview PDF', description: 'Static preview only.', variant: 'info' })}>
+            <Button size="sm" variant="primary" onClick={handlePreviewPDF}>
               Preview PDF
             </Button>
           </div>
@@ -214,7 +121,7 @@ export default function DetailPengunduranDiriPage() {
                 {index === 0 ? (
                   <Button type="button" size="sm" variant="custom" className="px-3 py-3 rounded-full bg-green-500 text-white w-full md:w-fit" onClick={handleAddRow}><IconPlus color='white'/></Button>
                 ) : (
-                  <Button type="button" size="sm" variant="custom" className="px-3 py-3 rounded-full bg-red-500 text-white w-full md:w-fit" onClick={() => handleRemoveRow(row.id)}><IconHapus color='white'/></Button>
+                  <Button type="button" size="sm" variant="custom" className="px-3 py-3 rounded-full bg-red-500 text-white w-full md:w-fit" onClick={() => handleRemoveRow(row.id)}><IconHapus color="white"/></Button>
                 )}
               </div>
             </div>
@@ -248,7 +155,7 @@ export default function DetailPengunduranDiriPage() {
                   <TableCell className="px-4 py-3">{d.tipeFile}</TableCell>
                   <TableCell className="px-4 py-3">{d.namaFile}</TableCell>
                   <TableCell className="px-4 py-3">
-                    <Button variant="custom" size="sm" className="btn-danger" onClick={() => setDocs((prev) => prev.filter((_, idx) => idx !== i))}><IconHapus/></Button>
+                    <Button variant="custom" size="sm" className="btn-danger" onClick={() => handleRemoveDocument(i)}><IconHapus/></Button>
                   </TableCell>
                 </TableRow>
               ))}

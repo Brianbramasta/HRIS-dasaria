@@ -7,6 +7,13 @@ import {
   PengunduranDiriFilterParams,
   ResignStatus,
 } from '../types/Resignation';
+import {
+  getDummyResignationsByStatus,
+  getDummyResignationDetailById,
+} from '../data/resignationDummyData';
+
+// Enable dummy data for development
+const USE_DUMMY_DATA = import.meta.env.DEV || false;
 
 // Detail response mengikuti /api/resignations/:id/detail
 export interface ResignationDetailResponse {
@@ -37,6 +44,42 @@ class PengunduranDiriService {
    * Fetch semua data pengunduran diri dengan optional filter dan pagination
    */
   async getPengunduranDiri(params?: PengunduranDiriFilterParams): Promise<ApiResponse<PengunduranDiriListResponse>> {
+    // Return dummy data in development mode
+    if (USE_DUMMY_DATA) {
+      const status = params?.status || 'all';
+      const dummyData = getDummyResignationsByStatus(status);
+      
+      // Filter by search if provided
+      let filteredData = dummyData;
+      if (params?.search || params?.filter) {
+        const searchTerm = (params.search || params.filter || '').toLowerCase();
+        filteredData = dummyData.filter(
+          (item) =>
+            item.name?.toLowerCase().includes(searchTerm) ||
+            item.idKaryawan?.toLowerCase().includes(searchTerm) ||
+            item.department?.toLowerCase().includes(searchTerm) ||
+            item.alasan?.toLowerCase().includes(searchTerm)
+        );
+      }
+
+      // Simulate pagination
+      const page = params?.page || 1;
+      const limit = params?.limit || 10;
+      const start = (page - 1) * limit;
+      const end = start + limit;
+      const paginatedData = filteredData.slice(start, end);
+
+      return Promise.resolve({
+        data: {
+          items: paginatedData,
+          total: filteredData.length,
+          page,
+          limit,
+        } as PengunduranDiriListResponse,
+        message: 'Success (Dummy Data)',
+      });
+    }
+
     const queryParams = new URLSearchParams();
 
     // Map ke parameter yang dipakai endpoint: q, status, departmentId, sort, order
@@ -69,6 +112,21 @@ class PengunduranDiriService {
    * Fetch pengunduran diri berdasarkan ID
    */
   async getPengunduranDiriById(id: string): Promise<ApiResponse<ResignationDetailResponse>> {
+    // Return dummy data in development mode
+    if (USE_DUMMY_DATA) {
+      const dummyDetail = getDummyResignationDetailById(id);
+      if (dummyDetail) {
+        return Promise.resolve({
+          data: dummyDetail,
+          message: 'Success (Dummy Data)',
+        });
+      }
+      return Promise.reject({
+        data: null,
+        message: 'Data not found',
+      });
+    }
+
     // Gunakan endpoint detail komposit: /api/resignations/:id/detail
     return apiService.get<ResignationDetailResponse>(`${this.baseUrl}/${id}/detail`);
   }
@@ -114,6 +172,13 @@ class PengunduranDiriService {
    * Approve pengunduran diri
    */
   async approvePengunduranDiri(id: string, tanggalEfektif: string): Promise<ApiResponse<PengunduranDiri>> {
+    // Simulate success in development mode
+    if (USE_DUMMY_DATA) {
+      return Promise.resolve({
+        data: {} as PengunduranDiri,
+        message: 'Approved successfully (Dummy)',
+      });
+    }
     return this.updateStatusPengunduranDiri(id, 'Approved', tanggalEfektif);
   }
 
@@ -121,6 +186,13 @@ class PengunduranDiriService {
    * Reject pengunduran diri
    */
   async rejectPengunduranDiri(id: string): Promise<ApiResponse<PengunduranDiri>> {
+    // Simulate success in development mode
+    if (USE_DUMMY_DATA) {
+      return Promise.resolve({
+        data: {} as PengunduranDiri,
+        message: 'Rejected successfully (Dummy)',
+      });
+    }
     return this.updateStatusPengunduranDiri(id, 'Rejected');
   }
 }
