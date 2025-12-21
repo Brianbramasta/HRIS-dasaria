@@ -4,7 +4,7 @@ import Input from '../../../../components/form/input/InputField';
 import Select from '../../../../components/form/Select';
 import Label from '../../../../components/form/Label';
 import { useAuthStore } from '../../../auth/stores/AuthStore';
-import { usePTKPDropdown } from '../../hooks/form/useFromStep4';
+import { usePTKPDropdown } from '../../hooks/employee-data/form/useFromStep4';
 
 import { BANK_OPTIONS, BPJS_STATUS_OPTIONS, BPJS_TK_STATUS_OPTIONS } from '../../utils/EmployeeMappings';
 

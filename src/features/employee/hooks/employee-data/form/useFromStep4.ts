@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { employeeMasterDataService } from '../../services/EmployeeMasterData.service';
-import { PTKPDropdownItem } from '../../types/Employee';
+import { employeeMasterDataService } from '../../../services/EmployeeMasterData.service';
+import { PTKPDropdownItem } from '../../../types/Employee';
 
 export const usePTKPDropdown = () => {
   const [ptkpOptions, setPtkpOptions] = useState<{ value: string; label: string }[]>([]);

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { contractService, type ContractData, type CreateContractPayload } from '../../services/detail/ContractService';
+import { contractService, type ContractData, type CreateContractPayload } from '../../../services/detail/ContractService';
 
 import { addNotification } from '@/stores/notificationStore';
 

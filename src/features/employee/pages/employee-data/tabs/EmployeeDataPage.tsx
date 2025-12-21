@@ -2,7 +2,7 @@
 
 import { DataTable } from '../../../../structure-and-organize/components/datatable/DataTable';
 import { Karyawan } from '../../../types/Employee';
-import useKaryawan from '../../../hooks/list/useKaryawan';
+import useKaryawan from '../../../hooks/employee-data/list/useKaryawan';
 import Button from '../../../../../components/ui/button/Button';
 import AddKaryawanModal from '../../../components/modals/AddKaryawanModal';
 import DeleteKaryawanModal from '../../../components/modals/employeeData/DeleteKaryawanModal';

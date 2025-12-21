@@ -5,7 +5,7 @@ import { DataTable, type DataTableColumn, type DataTableAction } from '@/feature
 import ContractModal, { type ContractEntry } from '@/features/employee/components/modals/employeeData/contract/ContractModal';
 import { IconPencil, IconFileDetail } from '@/icons/components/icons';
 import ComponentCard from '@/components/common/ComponentCard';
-import { useContract } from '@/features/employee/hooks/detail/useContract';
+import { useContract } from '@/features/employee/hooks/employee-data/detail/useContract';
 import type { ContractHistoryItem, CreateContractPayload } from '@/features/employee/services/detail/ContractService';
 import { formatUrlFile } from '@/utils/formatUrlFile';
 import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';

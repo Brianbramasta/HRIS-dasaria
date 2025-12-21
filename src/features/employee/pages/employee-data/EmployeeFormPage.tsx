@@ -7,7 +7,7 @@ import Step05UploadDocument from '../../components/form-steps/Step05UploadDocume
 import SuccessModal from '../../components/SuccessModal';
 import Button from '../../../../components/ui/button/Button';
 import { ChevronLeft } from 'react-feather';
-import useFormulirKaryawan from '../../hooks/form/useFormulirKaryawan';
+import useFormulirKaryawan from '../../hooks/employee-data/form/useFormulirKaryawan';
 
 const TITLES_WITH_LOGIN = [
   'Data Pribadi',
