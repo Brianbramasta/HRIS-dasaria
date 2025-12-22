@@ -212,7 +212,7 @@ export const getKaryawanColumns = (
     sortable: false,
     format: (_, row) => (
       <button
-        onClick={() => navigate(`/data-karyawan/${row.id}?mode=view`)}
+        onClick={() => navigate(`/employee-data/${row.id}?mode=view`)}
         className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
         aria-label="Detail Profile"
       >

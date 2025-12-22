@@ -4,7 +4,7 @@ import Button from '@/components/ui/button/Button';
 import {  Edit2 } from 'react-feather';
 import React from 'react';
 import { useModal } from '@/hooks/useModal';
-import PersonalDocumentsModal from '@/features/employee/components/modals/employeeData/PersonalInformation/PersonalDocumentsModal';
+import PersonalDocumentsModal from '@/features/employee/components/modals/employee-data/personal-information/PersonalDocumentsModal';
 import { IconFileDetail, IconHapus, IconLengkap, IconPencil, IconTidakLengkap } from '@/icons/components/icons';
 import { formatUrlFile } from '@/utils/formatUrlFile';
 

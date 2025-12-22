@@ -8,7 +8,7 @@ import Label from '../../../../components/form/Label';
 import Button from '../../../../components/ui/button/Button';
 import { Trash2 } from 'react-feather';
 import { iconPlus as Plus } from '@/icons/components/icons';
-import { EducationItem } from '../../types/FormEmployess';
+import { EducationItem } from '../../types/FormEmployee';
 import DatePicker from '../../../../components/form/date-picker';
 import FileInput from '../../../../components/form/input/FileInput';
 import { JENIS_PENDIDIKAN_OPTIONS, JENJANG_OPTIONS } from '../../utils/EmployeeMappings';
@@ -68,7 +68,7 @@ export const Step02EducationalBackground: React.FC = () => {
 
   const removeEducationRow = (index: number) => {
     const education = step2.education || [];
-    updateStep2({ education: education.filter((_, i) => i !== index) });
+    updateStep2({ education: education.filter((_: EducationItem, i: number) => i !== index) });
   };
 
   const updateEducationField = (
@@ -77,7 +77,7 @@ export const Step02EducationalBackground: React.FC = () => {
     value: string | File | undefined,
   ) => {
     const education = step2.education || [];
-    const next = education.map((item, i) =>
+    const next = education.map((item: EducationItem, i: number) =>
       i === index ? { ...item, [field]: value } : item,
     );
     updateStep2({ education: next });
@@ -93,42 +93,45 @@ export const Step02EducationalBackground: React.FC = () => {
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Riwayat Pendidikan</h3>
 
         <div className="space-y-4">
-          {(step2.education || []).map((edu, index) => (
+          {(step2.education || []).map((edu: EducationItem, index: number) => (
             <div className="flex gap-4" key={index}>
               <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end flex-1">
                 {/* Jenis Pendidikan */}
-                <div className="md:col-span-5">
-                  <Label>Jenis Pendidikan</Label>
-                  <Select
-                    options={JENIS_PENDIDIKAN_OPTIONS}
-                    defaultValue={edu.jenisPendidikan ?? 'formal'}
-                    onChange={(value) => updateEducationField(index, 'jenisPendidikan', value)}
-                    placeholder="Pilih jenis"
-                  />
+                <div className="md:col-span-6 flex w-full gap-5">
+                    <div className="w-full">
+                        <Label>Jenis Pendidikan</Label>
+                        <Select
+                          options={JENIS_PENDIDIKAN_OPTIONS}
+                          defaultValue={edu.jenisPendidikan ?? 'formal'}
+                          onChange={(value) => updateEducationField(index, 'jenisPendidikan', value)}
+                          placeholder="Pilih jenis"
+                        />
+                      </div>
+                      <div className="md:col-span-1 flex md:justify-end items-end">
+                      {index === 0 ? (
+                        <Button
+                          onClick={addEducationRow}
+                          variant="custom"
+                          size="custom"
+                          className="bg-emerald-500 text-white ring-1 ring-inset ring-emerald-500 hover:bg-emerald-600 h-10 w-10 p-0 flex items-center justify-center"
+                          aria-label="Tambah Pendidikan"
+                        >
+                          <Plus size={24} />
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={() => removeEducationRow(index)}
+                          variant="custom"
+                          size="custom"
+                          className="bg-red-500 text-white ring-1 ring-inset ring-red-500 hover:bg-red-600 h-10 w-10 p-0 flex items-center justify-center"
+                          aria-label="Hapus Pendidikan"
+                        >
+                          <Trash2 size={18} />
+                        </Button>
+                      )}
+                    </div>
                 </div>
-                <div className="md:col-span-1 flex md:justify-end items-end">
-                {index === 0 ? (
-                  <Button
-                    onClick={addEducationRow}
-                    variant="custom"
-                    size="custom"
-                    className="bg-emerald-500 text-white ring-1 ring-inset ring-emerald-500 hover:bg-emerald-600 h-10 w-10 p-0 flex items-center justify-center"
-                    aria-label="Tambah Pendidikan"
-                  >
-                    <Plus size={24} />
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={() => removeEducationRow(index)}
-                    variant="custom"
-                    size="custom"
-                    className="bg-red-500 text-white ring-1 ring-inset ring-red-500 hover:bg-red-600 h-10 w-10 p-0 flex items-center justify-center"
-                    aria-label="Hapus Pendidikan"
-                  >
-                    <Trash2 size={18} />
-                  </Button>
-                )}
-              </div>
+                
 
                 {/* Formal Fields */}
                 {(

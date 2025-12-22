@@ -6,6 +6,7 @@ import FileInput from '../../../../../components/form/input/FileInput';
 import { Table, TableHeader, TableBody, TableRow, TableCell } from '../../../../../components/ui/table';
 import { IconHapus, IconPlus } from '@/icons/components/icons';
 import { useDetailResignation } from '../../../hooks/resignation/useDetailResignation';
+import EffectiveResignationDateModal from '../../../components/modals/resignation/EffectiveResignationDateModal';
 
 export default function DetailPengunduranDiriPage() {
   const { id } = useParams();
@@ -15,6 +16,10 @@ export default function DetailPengunduranDiriPage() {
     docs,
     docTypes,
     uploadRows,
+    isModalOpen,
+    isSubmitting,
+    handleOpenModal,
+    handleCloseModal,
     handleApprove,
     handleReject,
     handleAddRow,
@@ -172,9 +177,21 @@ export default function DetailPengunduranDiriPage() {
         </div> */}
         <div className="flex items-center gap-3">
           <Button variant="custom" className="border border-[#DC3545] text-[#DC3545]" onClick={handleReject}>Ditolak</Button>
-          <Button variant="custom" className="bg-green-500 text-white" onClick={handleApprove}>Disetujui</Button>
+          <Button variant="custom" className="bg-green-500 text-white" onClick={handleOpenModal}>Disetujui</Button>
         </div>
       </div>
+
+      {/* Modal */}
+      <EffectiveResignationDateModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onSubmit={handleApprove}
+        submitting={isSubmitting}
+        nip={data?.idKaryawan || ''}
+        namaLengkap={data?.name || ''}
+        posisi={data?.posisi || ''}
+        tanggalPengajuan={data?.tanggalPengajuan || ''}
+      />
     </div>
   );
 }

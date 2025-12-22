@@ -4,9 +4,9 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import TabPendingReview from './tab/TabPendingReviewPage';
 import TabReviewed from './tab/TabReviewedPage';
 // import Button from '../../../../components/ui/button/Button';
-import ResignKaryawanModal from '../../components/modals/ResignKaryawanModal';
+import ResignKaryawanModal from '../../components/modals/ResignEmployeeModal';
 // import { addNotification } from '../../../../stores/notificationStore';
-import ShareLinkModal from '../../components/modals/sharelink/shareLink';
+import ShareLinkModal from '../../components/modals/sharelink/ShareLink';
 
 type TabType = 'pending' | 'reviewed';
 

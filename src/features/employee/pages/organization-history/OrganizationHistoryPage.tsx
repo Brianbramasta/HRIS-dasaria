@@ -3,7 +3,7 @@ import { useOrganizationHistory } from '@/features/employee/hooks/organization-h
 import Button from '@/components/ui/button/Button';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { ChevronDown } from 'react-feather';
-import EditRiwayatOrganisasiModal from '@/features/employee/components/modals/riwayatOrganisasi/editRiwayatOrganisasiModal';
+import EditRiwayatOrganisasiModal from '@/features/employee/components/modals/organization-history/EditOrganizationHistoryModal';
 
 export default function OrganizationHistoryPage() {
   const {

@@ -47,7 +47,7 @@ class EmployeeMasterDataService {
     }
 
     const queryString = queryParams.toString();
-    const url = queryString ? `${this.basePath}/employees?${queryString}` : `${this.basePath}/employees`;
+    const url = queryString ? `${this.basePath}/employees/index?${queryString}` : `${this.basePath}/employees`;
     
     return apiService.get<PaginatedResponse<EmployeeListItem>>(url);
   }

@@ -20,6 +20,9 @@ export const useDetailResignation = (id: string | undefined) => {
   const [data, setData] = useState<PengunduranDiri | null>(null);
   const [loading, setLoading] = useState(false);
   const [tanggalEfektif, setTanggalEfektif] = useState('');
+  const [deskripsi, setDeskripsi] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [docs, setDocs] = useState<DocumentItem[]>([
     { tipeFile: 'Form Exit Discussion', namaFile: 'Form Exit Discussion.pdf' },
     { tipeFile: 'Surat Balasan Resign', namaFile: 'Surat Balasan Resign.pdf' },
@@ -64,9 +67,21 @@ export const useDetailResignation = (id: string | undefined) => {
     fetchData();
   }, [id]);
 
-  // Handle approve
-  const handleApprove = async () => {
-    if (!id || !tanggalEfektif) {
+  // Handle open modal
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  // Handle close modal
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setTanggalEfektif('');
+    setDeskripsi('');
+  };
+
+  // Handle approve from modal
+  const handleApprove = async (tanggal: string, desc: string) => {
+    if (!id || !tanggal) {
       addNotification({
         title: 'Tanggal efektif kosong',
         description: 'Isi tanggal efektif sebelum approve.',
@@ -74,13 +89,15 @@ export const useDetailResignation = (id: string | undefined) => {
       });
       return;
     }
+    setIsSubmitting(true);
     try {
-      await pengunduranDiriService.approvePengunduranDiri(id, tanggalEfektif);
+      await pengunduranDiriService.approvePengunduranDiri(id, tanggal);
       addNotification({
         title: 'Approved',
         description: 'Pengunduran diri disetujui.',
         variant: 'success',
       });
+      setIsModalOpen(false);
       navigate('/pengunduran-diri');
     } catch (err) {
       addNotification({
@@ -88,6 +105,8 @@ export const useDetailResignation = (id: string | undefined) => {
         description: 'Terjadi kesalahan saat approve.',
         variant: 'error',
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -177,9 +196,15 @@ export const useDetailResignation = (id: string | undefined) => {
     loading,
     tanggalEfektif,
     setTanggalEfektif,
+    deskripsi,
+    setDeskripsi,
+    isModalOpen,
+    isSubmitting,
     docs,
     docTypes,
     uploadRows,
+    handleOpenModal,
+    handleCloseModal,
     handleApprove,
     handleReject,
     handleAddRow,

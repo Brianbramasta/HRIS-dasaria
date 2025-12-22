@@ -791,6 +791,11 @@ span.flatpickr-weekday,
   background-color: #28A745;
 }
 
+.status-styling{
+  padding: 10px;
+  width: fit-content;
+}
+
 /* .zoom-50{
   zoom:50%
 }

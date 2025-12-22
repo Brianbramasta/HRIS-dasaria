@@ -2,7 +2,7 @@
  
 import { useMemo, useState } from 'react';
 import { DataTable, type DataTableColumn, type DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
-import PelanggaranModal, { type PelanggaranEntry } from '@/features/employee/components/modals/employeeData/pelanggaran/PelanggaranModal';
+import PelanggaranModal, { type PelanggaranEntry } from '@/features/employee/components/modals/employee-data/fraud/FraudModal';
 import { IconPencil } from '@/icons/components/icons';  
  
 

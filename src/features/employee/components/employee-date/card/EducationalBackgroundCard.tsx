@@ -4,9 +4,9 @@ import InputField from '@/components/form/input/InputField';
 import Button from '@/components/ui/button/Button';
 import { Edit2 } from 'react-feather';
 import { useModal } from '@/hooks/useModal';
-import EducationalBackgroundModal, { type EducationModalForm } from '@/features/employee/components/modals/employeeData/PersonalInformation/EducationalBackgroundModal';
+import EducationalBackgroundModal, { type EducationModalForm } from '@/features/employee/components/modals/employee-data/personal-information/EducationalBackgroundModal';
 import { IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
-import { formatUrlFile } from '@/utils/formatUrlFile';
+import LinkPreview from '@/components/shared/form/LinkPreview';
 
 interface Props {
   education: any; // API response from employee-master-data
@@ -86,29 +86,7 @@ export default function EducationalBackgroundCard({ education }: Props) {
               </div>
               <div>
                 <Label>Lihat Sertifikat</Label>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full "
-                  // style={{ justifyContent: 'space-between' }}
-                  onClick={() => window.open(formatUrlFile(item?.certificate_file), '_blank')}
-                  disabled={!item?.certificate_file}
-                  endIcon={
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <g clip-path="url(#clip0_312_23811)">
-                      <path fill-rule="evenodd" clip-rule="evenodd" d="M15.3333 0.666992H10L9.33333 1.33366L11.4107 3.41099L6.07733 8.74433L7.256 9.92299L12.5893 4.58966L14.6667 6.66699L15.3333 6.00033V0.666992ZM0.5 2.50033H7V4.16699H2.16667V13.8337H11.8333V9.00033H13.5V15.5003H0.5V2.50033Z" fill="#007BFF"/>
-                      </g>
-                      <defs>
-                      <clipPath id="clip0_312_23811">
-                      <rect width="16" height="16" fill="white"/>
-                      </clipPath>
-                      </defs>
-                    </svg>
-
-                  }
-                >
-                  Lihat Sertifikat
-                </Button>
+                <LinkPreview url={item?.certificate_file} />
               </div>
             </div>
           ))}

@@ -4,7 +4,7 @@ import InputField from '@/components/form/input/InputField';
 import Button from '@/components/ui/button/Button';
 import { Edit2 } from 'react-feather';
 import { useModal } from '@/hooks/useModal';
-import SalaryBpjsModal, { type SalaryBpjsForm } from '@/features/employee/components/modals/employeeData/PersonalInformation/SalaryBpjsModal';
+import SalaryBpjsModal, { type SalaryBpjsForm } from '@/features/employee/components/modals/employee-data/personal-information/SalaryBpjsModal';
 import { IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
 
 interface Props {

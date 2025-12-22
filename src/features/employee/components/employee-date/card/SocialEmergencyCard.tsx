@@ -4,7 +4,7 @@ import InputField from '@/components/form/input/InputField';
 import Button from '@/components/ui/button/Button';
 import { Edit2 } from 'react-feather';
 import { useModal } from '@/hooks/useModal';
-import MediaSosialModal, { type MediaSosialForm } from '@/features/employee/components/modals/employeeData/PersonalInformation/MediaSosialModal';
+import MediaSosialModal, { type MediaSosialForm } from '@/features/employee/components/modals/employee-data/personal-information/MediaSosialModal';
 import { IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
 
 interface Props {

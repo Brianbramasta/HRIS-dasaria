@@ -2,8 +2,8 @@ import { DataTable } from '../../../structure-and-organize/components/datatable/
 import { ChevronDown } from 'react-feather';
 import Button from '@/components/ui/button/Button';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
-import EditPengajuanKontrakModal from '@/features/employee/components/modals/employeeData/perpanjanganKontrak/editPengajuanKontrakModal';
-import KonfirmasiPenolakanKontrak from '@/features/employee/components/modals/employeeData/perpanjanganKontrak/konfirmasiPenolakanKontrak';
+import EditPengajuanKontrakModal from '@/features/employee/components/modals/employee-data/contract-renewal/EditContractRequestModal';
+import KonfirmasiPenolakanKontrak from '@/features/employee/components/modals/employee-data/contract-renewal/RejectionConfirmationKontrak';
 import { useContractRenewalApproval } from '../../hooks/contract-renewal/useContractRenewalApproval';
 
 

@@ -4,9 +4,9 @@ import { DataTable } from '../../../../structure-and-organize/components/datatab
 import { Karyawan } from '../../../types/Employee';
 import useKaryawan from '../../../hooks/employee-data/list/useKaryawan';
 import Button from '../../../../../components/ui/button/Button';
-import AddKaryawanModal from '../../../components/modals/AddKaryawanModal';
-import DeleteKaryawanModal from '../../../components/modals/employeeData/DeleteKaryawanModal';
-import ShareLinkModal from '../../../components/modals/sharelink/shareLink';
+import AddKaryawanModal from '../../../components/modals/AddEmployeeModal';
+import DeleteKaryawanModal from '../../../components/modals/employee-data/DeleteEmployeeModal';
+import ShareLinkModal from '../../../components/modals/sharelink/ShareLink';
 import { getKaryawanColumns, getKaryawanActions } from '../../../utils/list/TableConfig';
 
 

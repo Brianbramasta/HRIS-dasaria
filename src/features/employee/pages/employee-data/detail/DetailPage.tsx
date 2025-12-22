@@ -4,7 +4,7 @@ import Tabs from '../../../../structure-and-organize/components/Tabs';
 import PesonalInformationTab from '../../../components/employee-date/tab/PesonalInformation';
 import ContractTab from '../../../components/employee-date/tab/Contract';
 import OrganizationHistoryTab from '../../../components/employee-date/tab/OrganizationHistory';
-import PelanggaranTab from '../../../components/employee-date/tab/Pelanggaran';
+import PelanggaranTab from '../../../components/employee-date/tab/Fraud';
 import StoryPayrollTab from '../../../components/employee-date/tab/StoryPayroll';
 import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
 

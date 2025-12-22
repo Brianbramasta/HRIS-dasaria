@@ -29,7 +29,7 @@ class ApiService {
     // Base URL bisa diubah sesuai environment
     // Daftar path yang menggunakan VITE_API_URL
     // dummy path untuk testing
-    const viteUrlPaths = ['/structure-and-organize', '/data-karyawan']; // tambahkan path lain jika perlu
+    const viteUrlPaths = ['/structure-and-organize', '/employee-data']; // tambahkan path lain jika perlu
     const currentPath = window.location.pathname;
 
     // Tentukan baseURL berdasarkan apakah path termasuk dalam daftar

@@ -24,7 +24,7 @@ import DetailPengunduranDiriPage from "../features/employee/pages/resignation/de
 import PerpanjanganKontrak from "../features/employee/pages/contract-renewal/contract-renewal-hr/ContractRenewalPage";
 import PersetujuanPerpanjanganKontrak from "../features/employee/pages/contract-renewal/ContractRenewalApproval";
 import PerpanjangKontrakEdit from "../features/employee/pages/contract-renewal/contract-renewal-hr/detail/ContractRenewalEdit";
-import DataKaryawanPelanggaran from "../features/employee/components/employee-date/tab/Pelanggaran";
+import DataKaryawanPelanggaran from "../features/employee/components/employee-date/tab/Fraud";
 import OrganizationHistoryPage from "../features/employee/pages/organization-history/OrganizationHistoryPage";
 import OrganizationHistoryAtasanPage from "../features/employee/pages/organization-history/OrganizationHistoryAtasanPage";
 import Dashboard from "@/features/dashboard/pages/Dashboard";

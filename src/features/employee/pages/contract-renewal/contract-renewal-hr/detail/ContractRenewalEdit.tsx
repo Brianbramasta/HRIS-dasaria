@@ -3,8 +3,8 @@ import PayrollCard from '@/features/payroll/components/cards/Cards';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 import Button from '@/components/ui/button/Button';
-import EditStatusPerpanjanganModal from '@/features/employee/components/modals/employeeData/perpanjanganKontrak/editStatusPerpanjanganModal';
-import EditPengajuanKontrakModal from '@/features/employee/components/modals/employeeData/perpanjanganKontrak/editPengajuanKontrakModal';
+import EditStatusPerpanjanganModal from '@/features/employee/components/modals/employee-data/contract-renewal/EditContractRenewalStatusModal';
+import EditPengajuanKontrakModal from '@/features/employee/components/modals/employee-data/contract-renewal/EditContractRequestModal';
 import { useEditContractRenewal } from '../../../../hooks/contract-renewal/useEditContractRenewal';
 
 

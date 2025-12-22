@@ -437,7 +437,7 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
 
   const handleAddManual = useCallback(() => {
     setShowAddModal(false);
-    navigate('/data-karyawan/form');
+    navigate('/employee-data/form');
   }, [navigate]);
 
   const handleImportFile = useCallback(() => {

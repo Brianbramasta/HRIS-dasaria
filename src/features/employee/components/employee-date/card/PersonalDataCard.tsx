@@ -5,7 +5,7 @@ import TextArea from '@/components/form/input/TextArea';
 import Button from '@/components/ui/button/Button';
 import { Edit2 } from 'react-feather';
 import { useModal } from '@/hooks/useModal';
-import PersonalDataModal, { type PersonalDataForm } from '@/features/employee/components/modals/employeeData/PersonalInformation/PersonalDataModal';
+import PersonalDataModal, { type PersonalDataForm } from '@/features/employee/components/modals/employee-data/personal-information/PersonalDataModal';
 import { IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
 
 interface Props {
