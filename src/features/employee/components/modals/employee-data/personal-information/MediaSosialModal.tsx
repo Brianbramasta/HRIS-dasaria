@@ -1,6 +1,6 @@
 // Modal baru: memisahkan input Media Sosial & Kontak Darurat dari modal pendidikan
 import React, { useEffect, useMemo, useState } from 'react';
-import ModalAddEdit from '@/features/structure-and-organize/components/modals/shared/modal/ModalAddEdit';
+import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import InputField from '@/components/form/input/InputField';
 

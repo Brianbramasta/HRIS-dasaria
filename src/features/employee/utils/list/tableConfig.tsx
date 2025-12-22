@@ -1,4 +1,4 @@
-import { DataTableColumn, DataTableAction } from '../../../structure-and-organize/components/datatable/DataTable';
+import { DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
 import { Karyawan } from '../../types/Employee';
 import { IconFileDetail, IconHapus } from '@/icons/components/icons';
 import { renderSisaKontrakBadge } from './DateHelpers';

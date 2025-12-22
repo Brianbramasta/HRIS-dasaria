@@ -5,7 +5,7 @@
 //   Nominal Cicilan (otomatis), Surat Persetujuan Atasan (FileInput), Dokumen Pendukung (FileInput multiple), Keterangan (TextArea)
 // - Validasi: Nominal Kasbon dibatasi 25% dari Gaji Pokok; Nominal Cicilan dihitung otomatis dari periode
 import React, { useMemo, useState, useEffect } from 'react';
-import ModalAddEdit from '@/features/structure-and-organize/components/modals/shared/modal/ModalAddEdit';
+import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import Input from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';

@@ -792,8 +792,16 @@ span.flatpickr-weekday,
 }
 
 .status-styling{
-  padding: 10px;
-  width: fit-content;
+  padding: 10px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: max-content;
+  min-width: -webkit-fill-available;
+  text-align: center;
+  gap: 5px;
+  text-align: center;
+
 }
 
 /* .zoom-50{

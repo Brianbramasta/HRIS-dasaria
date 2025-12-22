@@ -1,7 +1,7 @@
 // Dokumentasi: Modal edit Tunjangan Tidak Tetap
 // Menggunakan ModalAddEdit sebagai wrapper dan InputField untuk form.
 import React, { useState, useMemo } from 'react';
-import ModalAddEdit from '@/features/structure-and-organize/components/modals/shared/modal/ModalAddEdit';
+import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import Input from '@/components/form/input/InputField';
 import type { ModalProps } from '@/features/payroll/components/layouts/LayoutDetail';

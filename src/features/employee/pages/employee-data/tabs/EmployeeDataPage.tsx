@@ -1,14 +1,35 @@
 
 
-import { DataTable } from '../../../../structure-and-organize/components/datatable/DataTable';
+import { DataTable, DataTableColumn, DataTableAction } from '../../../../../components/shared/datatable/DataTable';
 import { Karyawan } from '../../../types/Employee';
 import useKaryawan from '../../../hooks/employee-data/list/useKaryawan';
 import Button from '../../../../../components/ui/button/Button';
 import AddKaryawanModal from '../../../components/modals/AddEmployeeModal';
 import DeleteKaryawanModal from '../../../components/modals/employee-data/DeleteEmployeeModal';
 import ShareLinkModal from '../../../components/modals/sharelink/ShareLink';
-import { getKaryawanColumns, getKaryawanActions } from '../../../utils/list/TableConfig';
+import { IconFileDetail, IconHapus } from '@/icons/components/icons';
+import { formatDateToIndonesian } from '@/utils/formatDate';
 
+
+// Helper function for rendering remaining contract badge
+const renderSisaKontrakBadge = (tanggalBerakhir: string | undefined) => {
+  if (!tanggalBerakhir) {
+    return <span className="status-styling rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-800">-</span>;
+  }
+
+  const endDate = new Date(tanggalBerakhir);
+  const today = new Date();
+  const diffTime = endDate.getTime() - today.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays < 0) {
+    return <span className="status-styling rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-800">Berakhir</span>;
+  } else if (diffDays <= 30) {
+    return <span className="status-styling rounded-full bg-yellow-100 px-3 py-1 text-xs font-medium text-yellow-800">{diffDays} hari</span>;
+  } else {
+    return <span className="status-styling rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">{diffDays} hari</span>;
+  }
+};
 
 export default function DataKaryawanPage() {
   const {
@@ -44,6 +65,12 @@ export default function DataKaryawanPage() {
     handleDeleteModalClose,
     setShowDetailModal,
     setSelectedKaryawan,
+    // Column filters
+    columnFilters,
+    handleColumnFilterChange,
+    // Date range filters
+    dateRangeFilters,
+    handleDateRangeFilterChange,
   } = useKaryawan({
     initialPage: 1,
     initialLimit: 10,
@@ -51,8 +78,258 @@ export default function DataKaryawanPage() {
   });
 
   // Define columns and actions for DataTable
-  const columns = getKaryawanColumns(data, page, limit, navigate);
-  const actions = getKaryawanActions(handleDeleteClick);
+  const columns: DataTableColumn<Karyawan>[] = [
+    {
+      id: 'no',
+      label: 'No.',
+      minWidth: 50,
+      align: 'center',
+      sortable: false,
+      format: (_, row) => {
+        const index = data.indexOf(row) + 1 + (page - 1) * limit;
+        return index;
+      },
+    },
+    {
+      id: 'id',
+      label: 'NIP',
+      minWidth: 120,
+      sortable: true,
+    },
+    {
+      id: 'name',
+      label: 'Pengguna',
+      minWidth: 150,
+      sortable: true,
+      format: (value, row) => (
+        <div className="flex items-center gap-2">
+          <img
+            src={row.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${value}`}
+            alt={value}
+            className="h-8 w-8 rounded-full"
+          />
+          <span>{value}</span>
+        </div>
+      ),
+    },
+    {
+      id: 'email',
+      label: 'Email',
+      minWidth: 180,
+      sortable: true,
+      format: (value) => (
+        <a href={`mailto:${value}`} className="text-blue-600 hover:underline">
+          {value}
+        </a>
+      ),
+    },
+    {
+      id: 'birth_date',
+      label: 'Tanggal Lahir',
+      minWidth: 130,
+      sortable: true,
+      filterOptions: [
+        { label: 'Januari', value: '1' },
+        { label: 'Februari', value: '2' },
+        { label: 'Maret', value: '3' },
+        { label: 'April', value: '4' },
+        { label: 'Mei', value: '5' },
+        { label: 'Juni', value: '6' },
+        { label: 'Juli', value: '7' },
+        { label: 'Agustus', value: '8' },
+        { label: 'September', value: '9' },
+        { label: 'Oktober', value: '10' },
+        { label: 'November', value: '11' },
+        { label: 'Desember', value: '12' },
+      ],
+      format: (_, row) => formatDateToIndonesian(row.birth_date as string) || '-',
+    },
+    {
+      id: 'tanggalJoin',
+      label: 'Tanggal Masuk',
+      minWidth: 130,
+      sortable: true,
+      dateRangeFilter: true,
+      format: (_, row) => formatDateToIndonesian(row.tanggalJoin as string) || '-',
+    },
+    {
+      id: 'tanggalBerakhir',
+      label: 'Tanggal Berakhir',
+      minWidth: 140,
+      sortable: true,
+      dateRangeFilter: true,
+      format: (value) => formatDateToIndonesian(value as string) || '-',
+    },
+    {
+      id: 'sisaKontrak',
+      label: 'Sisa Kontrak',
+      minWidth: 130,
+      sortable: false,
+      filterOptions: [
+        { label: '< 1 Bulan', value: 'less_than_1_month' },
+        { label: '1–2 Bulan', value: '1_to_2_months' },
+        { label: '3–6 Bulan', value: '3_to_6_months' },
+        { label: '> 6 Bulan', value: 'more_than_6_months' },
+      ],
+      format: (_, row) => renderSisaKontrakBadge(row.tanggalBerakhir),
+    },
+    {
+      id: 'company',
+      label: 'Perusahaan',
+      minWidth: 150,
+      sortable: true,
+      format: (value) => value || '-',
+    },
+    {
+      id: 'office',
+      label: 'Kantor',
+      minWidth: 130,
+      sortable: true,
+      format: (value) => value || '-',
+    },
+    {
+      id: 'jabatan',
+      label: 'Jabatan',
+      minWidth: 130,
+      sortable: true,
+      format: (value) => value || '-',
+    },
+    {
+      id: 'jenjangJabatan',
+      label: 'Jenjang Jabatan',
+      minWidth: 140,
+      sortable: true,
+      format: (_, row) => row.jenjangJabatan || row.position_level || '-',
+    },
+    {
+      id: 'grade',
+      label: 'Golongan',
+      minWidth: 100,
+      sortable: true,
+      format: (value) => value || '-',
+    },
+    {
+      id: 'posisi',
+      label: 'Posisi',
+      minWidth: 130,
+      sortable: true,
+      format: (value) => value || '-',
+    },
+    {
+      id: 'departement',
+      label: 'Departemen',
+      minWidth: 130,
+      sortable: true,
+      format: (_, row) => row.departement || row.department || '-',
+    },
+    {
+      id: 'divisi',
+      label: 'Divisi',
+      minWidth: 130,
+      sortable: true,
+      format: (value) => value || '-',
+    },
+    {
+      id: 'direktorat',
+      label: 'Direktorat',
+      minWidth: 130,
+      sortable: true,
+      format: (value) => value || '-',
+    },
+    {
+      id: 'employment_status',
+      label: 'Status Karyawan',
+      minWidth: 130,
+      sortable: true,
+      filterOptions: [
+        { label: 'Aktif', value: 'active' },
+        { label: 'Tidak Aktif', value: 'nonaktif' },
+      ],
+      format: (value) => (
+        <span className={`inline-block rounded-full p-[10px] w-full text-center text-xs font-medium ${
+          value === 'active' || value === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+        }`}>
+          {value || '-'}
+        </span>
+      ),
+    },
+    {
+      id: 'payroll_status',
+      label: 'Status Payroll',
+      minWidth: 120,
+      sortable: true,
+      filterOptions: [
+        { label: 'Aktif', value: 'active' },
+        { label: 'Tidak Aktif', value: 'nonaktif' },
+      ],
+      format: (value) => (
+        <span className={`inline-block rounded-full p-[10px] w-full text-center text-xs font-medium ${
+          value === 'active' || value === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+        }`}>
+          {value || '-'}
+        </span>
+      ),
+    },
+    {
+      id: 'statusDataKaryawan',
+      label: 'Status Data Karyawan',
+      minWidth: 150,
+      sortable: true,
+      filterOptions: [
+        { label: 'Lengkap', value: 'complete' },
+        { label: 'Tidak Lengkap', value: 'incomplete' },
+      ],
+      format: (_, row) => {
+        const status = row.employee_data_status || '-';
+        return (
+          <span className={`inline-block rounded-full p-[10px] w-full text-center  text-xs font-medium ${
+            status === 'complete' || status === 'lengkap' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+          }`}>
+            {status || 'Lengkap'}
+          </span>
+        );
+      },
+    },
+    {
+      id: 'employee_category',
+      label: 'Kategori Karyawan',
+      minWidth: 140,
+      sortable: true,
+      format: (value) => value || '-',
+    },
+    {
+      id: 'posisiAccess',
+      label: 'Hak Akses',
+      minWidth: 120,
+      sortable: true,
+      format: (_, row) => row.posisiAccess || row.user_access || '-',
+    },
+    {
+      id: 'detail',
+      label: 'Detail Profile',
+      minWidth: 100,
+      align: 'center',
+      sortable: false,
+      format: (_, row) => (
+        <button
+          onClick={() => navigate(`/employee-data/${row.id}?mode=view`)}
+          className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
+          aria-label="Detail Profile"
+        >
+          <IconFileDetail />
+        </button>
+      ),
+    },
+  ];
+
+  const actions: DataTableAction<Karyawan>[] = [
+    {
+      icon: <IconHapus />,
+      onClick: handleDeleteClick,
+      variant: 'outline',
+      color: 'error',
+    },
+  ];
 
   if (error) {
     return (
@@ -91,6 +368,10 @@ export default function DataKaryawanPage() {
         useExternalPagination={true}
         externalPage={page}
         externalTotal={total}
+        onColumnFilterChange={handleColumnFilterChange}
+        columnFilters={columnFilters}
+        onDateRangeFilterChange={handleDateRangeFilterChange}
+        dateRangeFilters={dateRangeFilters}
       />
 
       {/* Add Karyawan Modal */}

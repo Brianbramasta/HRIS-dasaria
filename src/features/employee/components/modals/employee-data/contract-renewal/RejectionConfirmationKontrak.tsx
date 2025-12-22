@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ModalDelete from '@/features/structure-and-organize/components/modals/shared/modal/ModalDelete';
+import ModalDelete from '@/components/shared/modal/ModalDelete';
 import InputField from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 

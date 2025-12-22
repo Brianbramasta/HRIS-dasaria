@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router';
-import DataTable, { DataTableColumn, DataTableAction } from '../../components/datatable/DataTable';
+import DataTable, { DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
 // import { /*Edit,*/ Trash } from 'react-feather';
 import {  IconHapus as Trash } from '@/icons/components/icons';
 import { useCompanies } from '../../Index';

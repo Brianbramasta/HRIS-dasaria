@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DataTableColumn, DataTableAction } from '../../../structure-and-organize/components/datatable/DataTable';
+import { DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
 import { X, Check, FileText } from 'react-feather';
 import contractRenewalService from '../../services/ContractRenewalService';
 import { ContractRenewalApprovalListItem, ContractRenewalFilterParams } from '../../types/ContractRenewal';
@@ -19,6 +19,10 @@ interface UseContractRenewalApprovalReturn {
   perPage: number;
   columns: DataTableColumn<ContractRenewalApprovalListItem>[];
   actions: DataTableAction<ContractRenewalApprovalListItem>[];
+  columnFilters: Record<string, string[]>;
+  dateRangeFilters: Record<string, { startDate: string; endDate: string | null }>;
+  handleColumnFilterChange: (columnId: string, values: string[]) => void;
+  handleDateRangeFilterChange: (columnId: string, startDate: string, endDate: string | null) => void;
   setIsDropdownOpen: (value: boolean) => void;
   handleViewDetail: (row: ContractRenewalApprovalListItem) => void;
   handleModalClose: () => void;
@@ -47,7 +51,7 @@ export function useContractRenewalApproval(): UseContractRenewalApprovalReturn {
   const [perPage, setPerPage] = useState(10);
 
   const getStatusColor = useCallback((status: string) => {
-    switch (status.toLowerCase()) {
+    switch (status?.toLowerCase()) {
       case 'disetujui':
       case 'diperpanjang':
         return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400';
@@ -333,6 +337,35 @@ export function useContractRenewalApproval(): UseContractRenewalApprovalReturn {
     setIsDropdownOpen(false);
     navigate('/contract-extension');
   }, [navigate]);
+  const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
+  const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
+  
+  const handleColumnFilterChange = (columnId: string, values: string[]) => {
+    setColumnFilters((prev) => ({
+      ...prev,
+      [columnId]: values,
+    }));
+    // TODO: Implement API call with filter parameters when backend is ready
+    console.log('Column filter changed:', columnId, values);
+  };
+
+  const handleDateRangeFilterChange = (columnId: string, startDate: string, endDate: string | null) => {
+    setDateRangeFilters((prev) => ({
+      ...prev,
+      [columnId]: { startDate, endDate },
+    }));
+    // Build filter parameters for API
+    const filterParams: any = {};
+    if (startDate) {
+      filterParams[`filter_column[${columnId}][range][]`] = [startDate];
+      if (endDate) {
+        filterParams[`filter_column[${columnId}][range][]`].push(endDate);
+      }
+    }
+    // TODO: Implement API call with filter parameters when backend is ready
+    console.log('Date range filter changed:', columnId, { startDate, endDate });
+    console.log('Filter params for API:', filterParams);
+  };
 
   const columns: DataTableColumn<ContractRenewalApprovalListItem>[] = [
     {
@@ -342,9 +375,9 @@ export function useContractRenewalApproval(): UseContractRenewalApprovalReturn {
       align: 'center',
       sortable: false,
     },
-    { id: 'employee_code', label: 'NIP', minWidth: 120, sortable: true },
+    { id: 'nip', label: 'NIP', minWidth: 120, sortable: true },
     {
-      id: 'employee_name',
+      id: 'full_name',
       label: 'Pengguna',
       minWidth: 180,
       sortable: true,
@@ -363,19 +396,36 @@ export function useContractRenewalApproval(): UseContractRenewalApprovalReturn {
       ),
     },
     { id: 'department_name', label: 'Departemen', minWidth: 180, sortable: true },
-    { id: 'start_date', label: 'Tanggal Masuk', minWidth: 140, sortable: true },
-    { id: 'end_date', label: 'Tanggal Berakhir', minWidth: 150, sortable: true },
+    { 
+      id: 'join_date', 
+      label: 'Tanggal Masuk', 
+      minWidth: 140, 
+      sortable: true,
+      dateRangeFilter: true,
+    },
+    { 
+      id: 'end_date', 
+      label: 'Tanggal Berakhir', 
+      minWidth: 150, 
+      sortable: true,
+      dateRangeFilter: true,
+    },
     { id: 'remaining_contract', label: 'Sisa Kontrak', minWidth: 120, sortable: true },
     {
-      id: 'approval_status_name',
+      id: 'status_name',
       label: 'Status',
       minWidth: 140,
       sortable: true,
       format: (value) => (
-        <span className={`p-[10px] flex justify-center rounded-full text-xs font-medium ${getStatusColor(value)}`}>
+        <span className={`status-styling rounded-full text-xs font-medium ${getStatusColor(value)}`}>
           {value}
         </span>
       ),
+      filterOptions: [
+        { label: 'Pending', value: 'Pending' },
+        { label: 'Diperpanjang', value: 'Diperpanjang' },
+        { label: 'Ditolak', value: 'Ditolak' },
+      ],
     },
     {
       id: 'extension_detail',
@@ -426,6 +476,10 @@ export function useContractRenewalApproval(): UseContractRenewalApprovalReturn {
     perPage,
     columns,
     actions,
+    columnFilters,
+    dateRangeFilters,
+    handleColumnFilterChange,
+    handleDateRangeFilterChange,
     setIsDropdownOpen,
     handleViewDetail,
     handleModalClose,

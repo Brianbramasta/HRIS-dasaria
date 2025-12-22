@@ -1,7 +1,7 @@
 // Dokumentasi: Tabel "Persetujuan Kasbon" dengan kolom aksi tambahan
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DataTable, type DataTableColumn, type DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
+import { DataTable, type DataTableColumn, type DataTableAction } from '@/components/shared/datatable/DataTable';
 import { IconFileDetail } from '@/icons/components/icons';
 import { CheckCircle, XCircle } from 'react-feather';
 import Button from '@/components/ui/button/Button';

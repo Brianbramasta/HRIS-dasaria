@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
-import { PengunduranDiri, PengunduranDiriFilterParams, ResignStatus } from '../types/Resignation';
-import pengunduranDiriService from '../services/ResignationService';
-import useFilterStore from '../../../stores/filterStore';
+import { PengunduranDiri, PengunduranDiriFilterParams, ResignStatus } from '../../types/Resignation';
+import pengunduranDiriService from '../../services/ResignationService';
+import useFilterStore from '../../../../stores/filterStore';
 
 export interface UsePengunduranDiriOptions {
   initialPage?: number;

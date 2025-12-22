@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { officeService, companyService } from '../../../../services/OrganizationService';
 import Input from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
-import ModalAddEdit from '../../shared/modal/ModalAddEdit';
+import ModalAddEdit from '../../../../../../components/shared/modal/ModalAddEdit';
 import { addNotification } from '@/stores/notificationStore';
 
 interface AddBranchModalProps {

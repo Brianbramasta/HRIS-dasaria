@@ -1,7 +1,7 @@
 // Dokumentasi: Tabel "Riwayat Pengajuan Kasbon" & integrasi modal pengajuan
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DataTable, type DataTableColumn } from '@/features/structure-and-organize/components/datatable/DataTable';
+import { DataTable, type DataTableColumn } from '@/components/shared/datatable/DataTable';
 import { IconFileDetail } from '@/icons/components/icons';
 import ShareLinkModal from '@/features/employee/components/modals/sharelink/ShareLink';
 import Button from '@/components/ui/button/Button';

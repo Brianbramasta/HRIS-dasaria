@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { DataTable, DataTableColumn, DataTableAction } from '../../../structure-and-organize/components/datatable/DataTable';
+import { DataTable, DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
 import { IconHapus, IconChangePassword } from '@/icons/components/icons';
 import TambahRoleModal from '../../components/modals/AddRole';
 

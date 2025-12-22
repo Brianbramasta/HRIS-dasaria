@@ -35,18 +35,8 @@ class EmployeeMasterDataService {
    * @returns Promise dengan data karyawan dan pagination info
    */
   async getEmployees(params?: EmployeeListParams): Promise<ApiResponse<PaginatedResponse<EmployeeListItem>>> {
-    const queryParams = new URLSearchParams();
-    
-    if (params?.search) queryParams.append('search', params.search);
-    if (params?.sort) queryParams.append('sort', params.sort);
-    if (params?.column) queryParams.append('column', params.column);
-    if (params?.per_page) queryParams.append('per_page', params.per_page.toString());
-    if (params?.page) queryParams.append('page', params.page.toString());
-    if (params?.filter && params.filter.length > 0) {
-      params.filter.forEach(f => queryParams.append('filter[]', f));
-    }
-
-    const queryString = queryParams.toString();
+    // Use ApiService buildQueryString to handle all query params including filter_column
+    const queryString = apiService.buildQueryString(params);
     const url = queryString ? `${this.basePath}/employees/index?${queryString}` : `${this.basePath}/employees`;
     
     return apiService.get<PaginatedResponse<EmployeeListItem>>(url);
@@ -156,8 +146,9 @@ class EmployeeMasterDataService {
    * @returns Promise dengan array posisi
    */
   async getPositionDropdown(search?: string): Promise<PositionDropdownItem[]> {
-    const qs = search ? `?search=${encodeURIComponent(search)}` : '';
-    const resp = await apiService.get<PositionDropdownItem[]>(`${this.basePath}/position-dropdown${qs}`);
+    const queryString = apiService.buildQueryString(search ? { search } : undefined);
+    const url = queryString ? `${this.basePath}/position-dropdown?${queryString}` : `${this.basePath}/position-dropdown`;
+    const resp = await apiService.get<PositionDropdownItem[]>(url);
     return (resp as any)?.data ?? [];
   }
 

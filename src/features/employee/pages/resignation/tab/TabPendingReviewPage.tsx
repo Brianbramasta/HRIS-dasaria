@@ -1,4 +1,4 @@
-import { DataTable, DataTableColumn, DataTableAction } from '../../../../structure-and-organize/components/datatable/DataTable';
+import { DataTable, DataTableColumn, DataTableAction } from '../../../../../components/shared/datatable/DataTable';
 import { PengunduranDiri } from '../../../types/Resignation';
 import { ChevronDown } from 'react-feather';
 import { IconForm, IconPencil } from '@/icons/components/icons';
@@ -103,7 +103,7 @@ export default function TabPendingReview({ onOpenForm }: { onOpenForm?: () => vo
           'Pending': 'bg-yellow-100 text-yellow-800',
         };
         return (
-          <span className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${statusColors[value] || 'bg-gray-100 text-gray-800'}`}>
+          <span className={`status-styling rounded-full text-xs font-medium ${statusColors[value] || 'bg-gray-100 text-gray-800'}`}>
             {value}
           </span>
         );

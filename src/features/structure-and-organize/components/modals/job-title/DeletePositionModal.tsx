@@ -4,8 +4,8 @@ import { positionsService } from "../../../services/request/PositionService";
 import type { PositionListItem } from "../../../types/OrganizationApiTypes";
 import { useFileStore, /*setSkFile*/ } from '@/stores/fileStore';
 import { addNotification } from "@/stores/notificationStore";
-import ModalDelete from "../shared/modal/ModalDelete";
-import ModalDeleteContent from "../shared/modal/ModalDeleteContent";
+import ModalDelete from "../../../../../components/shared/modal/ModalDelete";
+import ModalDeleteContent from "../../../../../components/shared/modal/ModalDeleteContent";
 
 
 type Props = {

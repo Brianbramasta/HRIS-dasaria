@@ -1,4 +1,4 @@
-import { DataTable } from '../../../structure-and-organize/components/datatable/DataTable';
+import { DataTable } from '../../../../components/shared/datatable/DataTable';
 import { ChevronDown } from 'react-feather';
 import Button from '@/components/ui/button/Button';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
@@ -18,6 +18,10 @@ export default function PersetujuanPerpanjanganKontrak() {
     selectedKontrak,
     columns,
     actions,
+    columnFilters,
+    dateRangeFilters,
+    handleColumnFilterChange,
+    handleDateRangeFilterChange,
     setIsDropdownOpen,
     handleModalClose,
     handleRejectModalClose,
@@ -25,6 +29,10 @@ export default function PersetujuanPerpanjanganKontrak() {
     handleNavigateToApproval,
     handleNavigateToExtension,
   } = useContractRenewalApproval();
+
+ 
+
+  
 
   return (
     <div className="space-y-6">
@@ -39,6 +47,10 @@ export default function PersetujuanPerpanjanganKontrak() {
         filterable={true}
         loading={isLoading}
         emptyMessage="Tidak ada data kontrak"
+        onColumnFilterChange={handleColumnFilterChange}
+        columnFilters={columnFilters}
+        onDateRangeFilterChange={handleDateRangeFilterChange}
+        dateRangeFilters={dateRangeFilters}
         toolbarRightSlot={
           <div className="relative">
             <Button

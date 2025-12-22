@@ -1,7 +1,7 @@
 import React from 'react';
 import { officeService } from '../../../../services/OrganizationService';
-import ModalDelete from '../../shared/modal/ModalDelete';
-import ModalDeleteContent from '../../shared/modal/ModalDeleteContent';
+import ModalDelete from '../../../../../../components/shared/modal/ModalDelete';
+import ModalDeleteContent from '../../../../../../components/shared/modal/ModalDeleteContent';
 import { addNotification } from '@/stores/notificationStore';
 import { useFileStore } from '@/stores/fileStore';
 

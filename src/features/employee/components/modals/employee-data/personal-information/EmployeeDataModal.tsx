@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import ModalAddEdit from '@/features/structure-and-organize/components/modals/shared/modal/ModalAddEdit';
+import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import Select from '@/components/form/Select';
 // removed FileInput import as feature deleted

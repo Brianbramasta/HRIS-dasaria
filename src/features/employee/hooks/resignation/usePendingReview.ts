@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PengunduranDiri } from '../../types/Resignation';
-import usePengunduranDiri from '../usePengunduranDiri';
+import usePengunduranDiri from './usePengunduranDiri';
 
 export const usePendingReview = () => {
   const navigate = useNavigate();

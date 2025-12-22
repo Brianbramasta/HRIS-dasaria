@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import ModalAddEdit from '@/features/structure-and-organize/components/modals/shared/modal/ModalAddEdit';
+import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Input from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
 

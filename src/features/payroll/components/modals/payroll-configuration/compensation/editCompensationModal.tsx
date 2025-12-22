@@ -2,7 +2,7 @@
 // Tujuan: Menyediakan form edit dengan field Level Jabatan (Select), Kategori (Select),
 // Nominal General, Nominal Junior, Nominal Middle, Nominal Senior. Menggunakan wrapper ModalAddEdit.
 import React, { useEffect, useMemo, useState } from 'react';
-import ModalAddEdit from '@/features/structure-and-organize/components/modals/shared/modal/ModalAddEdit';
+import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import Select from '@/components/form/Select';
 import Input from '@/components/form/input/InputField';

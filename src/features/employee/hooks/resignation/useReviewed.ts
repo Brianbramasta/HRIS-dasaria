@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import usePengunduranDiri from '../usePengunduranDiri';
+import usePengunduranDiri from './usePengunduranDiri';
 
 export const useReviewed = () => {
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ export const useReviewed = () => {
     initialPage: 1,
     initialLimit: 10,
     autoFetch: true,
-    status: 'Approved' as const,
+    status: 'Disetujui' as const,
   });
 
   // Handle status dropdown toggle

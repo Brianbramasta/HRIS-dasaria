@@ -2,8 +2,8 @@ import React from 'react';
 // import { Modal } from '../../../../../components/ui/modal/index';
 import { businessLinesService } from '../../../services/request/BusinessLinesService';
 import { BusinessLineListItem } from '../../../types/OrganizationApiTypes';
-import ModalDelete from '../shared/modal/ModalDelete';
-import ModalDeleteContent from '../shared/modal/ModalDeleteContent';
+import ModalDelete from '../../../../../components/shared/modal/ModalDelete';
+import ModalDeleteContent from '../../../../../components/shared/modal/ModalDeleteContent';
 import { addNotification } from '@/stores/notificationStore';
 import { useFileStore } from '@/stores/fileStore';
 

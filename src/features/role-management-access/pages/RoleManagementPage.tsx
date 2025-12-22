@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DataTable, DataTableColumn, DataTableAction } from '../../structure-and-organize/components/datatable/DataTable';
+import { DataTable, DataTableColumn, DataTableAction } from '../../../components/shared/datatable/DataTable';
 import { IconFileDetail, IconPencil, IconHapus } from '@/icons/components/icons';
 
 interface RoleData {

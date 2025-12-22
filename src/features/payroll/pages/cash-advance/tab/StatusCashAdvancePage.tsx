@@ -1,7 +1,7 @@
 // Dokumentasi: Tabel "Status Kasbon" menggunakan DataTable
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DataTable, type DataTableColumn } from '@/features/structure-and-organize/components/datatable/DataTable';
+import { DataTable, type DataTableColumn } from '@/components/shared/datatable/DataTable';
 import { IconFileDetail } from '@/icons/components/icons';
 
 type StatusKasbonRow = {

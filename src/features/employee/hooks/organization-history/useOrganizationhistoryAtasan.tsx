@@ -5,8 +5,6 @@ import organizationHistoryService, {
   OrganizationHistoryFilterParams,
 } from '../../services/OrganizationHistoryService';
 import useFilterStore from '../../../../stores/filterStore';
-import type { DataTableColumn, DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
-import { IconFileDetail } from '@/icons/components/icons';
 
 type OrgHistoryListRow = OrganizationHistoryItem & { statusPerubahan: 'Rekomendasi' | 'Selesai' };
 
@@ -238,76 +236,10 @@ export function useOrganizationHistoryAtasan(options: UseOrganizationHistoryAtas
     []
   );
 
-  // Format date helper
-  const formatDate = useCallback((iso: string) => {
-    if (!iso) return '-';
-    const d = new Date(iso);
-    const fmt = new Intl.DateTimeFormat('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-    return fmt.format(d);
-  }, []);
-
   // Add status to rows
   const rowsWithStatus: OrgHistoryListRow[] = useMemo(
     () => (data || []).map((r, idx) => ({ ...r, statusPerubahan: idx % 2 === 0 ? 'Rekomendasi' : 'Selesai' })),
     [data]
-  );
-
-  // Define columns
-  const columns: DataTableColumn<OrgHistoryListRow>[] = useMemo(
-    () => [
-      { id: 'no', label: 'No.', align: 'center', format: (_v, row) => data.findIndex((r) => r.id === row.id) + 1 },
-      { id: 'idKaryawan', label: 'NIP' },
-      {
-        id: 'user',
-        label: 'User',
-        format: (_v, row) => (
-          <div className="flex items-center gap-2">
-            <img
-              src={(row.user?.avatar as string) || `https://api.dicebear.com/7.x/avataaars/svg?seed=${row.user?.name || 'User'}`}
-              alt={row.user?.name || 'User'}
-              className="h-6 w-6 rounded-full"
-            />
-            <span>{row.user?.name || '-'}</span>
-          </div>
-        ),
-      },
-      { id: 'jenisPerubahan', label: 'Jenis Perubahan' },
-      { id: 'tanggalEfektif', label: 'Tanggal Efektif', format: (v) => formatDate(v as string) },
-      { id: 'posisiLama', label: 'Posisi Lama' },
-      { id: 'posisiBaru', label: 'Posisi Baru' },
-      { id: 'divisiLama', label: 'Divisi Lama' },
-      { id: 'divisiBaru', label: 'Divisi Baru' },
-      { id: 'direktoratLama', label: 'Direktorat Lama' },
-      { id: 'direktoratBaru', label: 'Direktorat Baru' },
-      { id: 'alasanPerubahan', label: 'Alasan Perubahan' },
-      {
-        id: 'statusPerubahan',
-        label: 'Status Perubahan',
-        align: 'center',
-        format: (v: string) => {
-          const val = (v as string) || '-';
-          const isRekom = val === 'Rekomendasi';
-          const base = 'inline-flex items-center rounded-lg px-3 py-1 text-xs font-medium';
-          const cls = isRekom ? 'bg-orange-100 text-orange-600' : 'bg-green-100 text-green-600';
-          return <span className={`${base} ${cls}`}>{val}</span>;
-        },
-      },
-    ],
-    [data, formatDate]
-  );
-
-  // Define actions (Atasan only has view action)
-  const actions: DataTableAction<OrgHistoryListRow>[] = useMemo(
-    () => [
-      {
-        icon: <IconFileDetail />,
-        className: 'text-gray-700',
-        onClick: (row) => {
-          navigate(`/organization-history/preview?id=${row.id}`);
-        },
-      },
-    ],
-    [navigate]
   );
 
   // Handle modal open for add
@@ -360,10 +292,6 @@ export function useOrganizationHistoryAtasan(options: UseOrganizationHistoryAtas
     // Modal states
     isEditOrgOpen,
     isDropdownOpen,
-    
-    // Table configuration
-    columns,
-    actions,
     
     // API operations
     fetchOrganizationHistory,

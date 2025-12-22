@@ -1,6 +1,6 @@
 import  { useMemo, useState } from 'react';
 import { Link } from 'react-router';
-import DataTable, { DataTableColumn } from '../../components/datatable/DataTable';
+import DataTable, { DataTableColumn } from '../../../../components/shared/datatable/DataTable';
 // import { Edit, Trash } from 'react-feather';
 import { IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
 import {

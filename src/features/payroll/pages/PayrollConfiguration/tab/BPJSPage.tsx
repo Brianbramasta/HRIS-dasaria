@@ -1,6 +1,6 @@
 // Dokumentasi: Halaman BPJS + integrasi Modal Edit BPJS untuk update data
 import {  useState } from 'react';
-import { DataTable, type DataTableColumn, type DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
+import { DataTable, type DataTableColumn, type DataTableAction } from '@/components/shared/datatable/DataTable';
 // import { Edit } from 'react-feather';
 import { IconPencil } from '@/icons/components/icons';
 import EditBpjsModal from '@/features/payroll/components/modals/payroll-configuration/bpjs/editBpjsModal';

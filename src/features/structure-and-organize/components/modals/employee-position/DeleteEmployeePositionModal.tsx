@@ -3,9 +3,9 @@ import { employeePositionsService } from '../../../services/request/EmployeePosi
 import type { EmployeePositionListItem } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 // import HeaderModalDelete from '../shared/modal/HeaderModalDelete';
-import ModalDelete from '../shared/modal/ModalDelete';
+import ModalDelete from '../../../../../components/shared/modal/ModalDelete';
 import { addNotification } from '@/stores/notificationStore';
-import ModalDeleteContent from '../shared/modal/ModalDeleteContent';
+import ModalDeleteContent from '../../../../../components/shared/modal/ModalDeleteContent';
 
 interface DeleteEmployeePositionModalProps {
   isOpen: boolean;

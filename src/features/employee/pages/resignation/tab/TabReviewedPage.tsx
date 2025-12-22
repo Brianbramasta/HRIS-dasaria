@@ -1,4 +1,4 @@
-import { DataTable, DataTableColumn } from '../../../../structure-and-organize/components/datatable/DataTable';
+import { DataTable, DataTableColumn } from '../../../../../components/shared/datatable/DataTable';
 import { PengunduranDiri } from '../../../types/Resignation';
 import Button from '../../../../../components/ui/button/Button';
 import { ChevronDown } from 'react-feather';
@@ -84,6 +84,24 @@ export default function TabReviewed() {
       sortable: false,
       format: (value) => (
         <span className="line-clamp-2 text-sm text-gray-600">
+          {value}
+        </span>
+      ),
+    },
+    {
+      id: 'status',
+      label: 'Status',
+      minWidth: 130,
+      align: 'center',
+      sortable: true,
+      format: (value) => (
+        <span
+          className={`status-styling rounded-full px-3 py-1 text-sm font-medium ${
+            value === 'Disetujui'
+              ? 'bg-green-100 text-green-700'
+              : 'bg-red-100 text-red-700'
+          }`}
+        >
           {value}
         </span>
       ),

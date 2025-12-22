@@ -187,6 +187,48 @@ class ApiService {
 
     return response.data;
   }
+
+  /**
+   * Utility method untuk build query string dengan support filter_column parameters
+   * Handles complex nested array parameters like filter_column[column_name][in][]=value
+   * @param params - Object containing query parameters
+   * @returns Query string ready to append to URL
+   */
+  public buildQueryString(params?: Record<string, any>): string {
+    if (!params) return '';
+
+    const queryParams = new URLSearchParams();
+    let additionalParams = '';
+
+    Object.keys(params).forEach(key => {
+      const value = params[key];
+
+      // Handle filter_column[column_name][in][] parameters separately
+      if (key.startsWith('filter_column[')) {
+        if (Array.isArray(value)) {
+          value.forEach(v => {
+            additionalParams += additionalParams || queryParams.toString() ? '&' : '';
+            additionalParams += `${encodeURIComponent(key)}=${encodeURIComponent(v)}`;
+          });
+        }
+      }
+      // Handle regular array parameters (e.g., filter[])
+      else if (Array.isArray(value)) {
+        value.forEach(v => {
+          queryParams.append(`${key}[]`, v);
+        });
+      }
+      // Handle regular parameters
+      else if (value !== undefined && value !== null && value !== '') {
+        queryParams.append(key, value.toString());
+      }
+    });
+
+    const baseQuery = queryParams.toString();
+    return baseQuery && additionalParams 
+      ? `${baseQuery}&${additionalParams}` 
+      : baseQuery || additionalParams;
+  }
 }
 
 // Export singleton instance

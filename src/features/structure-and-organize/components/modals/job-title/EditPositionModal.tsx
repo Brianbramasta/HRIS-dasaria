@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import ModalAddEdit from "../shared/modal/ModalAddEdit";
+import ModalAddEdit from "../../../../../components/shared/modal/ModalAddEdit";
 import { positionsService } from "../../../services/request/PositionService";
 import type { PositionListItem } from "../../../types/OrganizationApiTypes";
 import { useFileStore } from '@/stores/fileStore';
-import FileInput from "../shared/field/FileInput";
+import FileInput from "../../../../../components/shared/field/FileInput";
 
 import Input from "@/components/form/input/InputField";
 import { addNotification } from "@/stores/notificationStore";

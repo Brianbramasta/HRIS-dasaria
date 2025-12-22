@@ -1,7 +1,7 @@
 // import ExpandCard from '@/features/structure-and-organize/components/card/ExpandCard';
  
 import { useMemo, useState } from 'react';
-import { DataTable, type DataTableColumn, type DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
+import { DataTable, type DataTableColumn, type DataTableAction } from '@/components/shared/datatable/DataTable';
 import PelanggaranModal, { type PelanggaranEntry } from '@/features/employee/components/modals/employee-data/fraud/FraudModal';
 import { IconPencil } from '@/icons/components/icons';  
  

@@ -6,7 +6,7 @@ import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 import Select from '@/components/form/Select';
 import FileInput from '@/components/form/input/FileInput';
-import ModalAddEdit from '../shared/modal/ModalAddEdit';
+import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
 import { addNotification } from '@/stores/notificationStore';
 import {  TrashBinIcon } from '@/icons';
 import { iconPlus } from '@/icons/components/icons';

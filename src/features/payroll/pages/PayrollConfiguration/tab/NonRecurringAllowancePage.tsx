@@ -1,6 +1,6 @@
 // Dokumentasi: Tabel Tunjangan Tidak Tetap + integrasi Modal Tambah/Edit
 import  { useMemo, useState } from 'react';
-import DataTable, { type DataTableColumn, type DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
+import DataTable, { type DataTableColumn, type DataTableAction } from '@/components/shared/datatable/DataTable';
 import { IconPencil, IconHapus } from '@/icons/components/icons';
 import EditTunjanganTidakTetapModal from '@/features/payroll/components/modals/payroll-configuration/non-recurring-allowance/EditNonRecurringAllowanceModal';
 

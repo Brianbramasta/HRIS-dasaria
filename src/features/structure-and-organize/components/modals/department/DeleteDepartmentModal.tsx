@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 // import { Modal } from '../../../../../components/ui/modal/index';
 import { departmentsService } from '../../../services/request/DepartmentsService';
 import type { DepartmentListItem } from '../../../types/OrganizationApiTypes';
-import ModalDelete from '../shared/modal/ModalDelete';
-import ModalDeleteContent from '../shared/modal/ModalDeleteContent';
+import ModalDelete from '../../../../../components/shared/modal/ModalDelete';
+import ModalDeleteContent from '../../../../../components/shared/modal/ModalDeleteContent';
 import { addNotification } from '@/stores/notificationStore';
 
 interface DeleteDepartmentModalProps {

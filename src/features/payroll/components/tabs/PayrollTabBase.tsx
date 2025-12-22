@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router';
-import DataTable, { DataTableColumn, DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
+import DataTable, { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
 import Button from '@/components/ui/button/Button';
 import { IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
 import { IconDownloadTemplate, IconImport } from '@/icons/components/icons';

@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import ModalAddEdit from '@/features/structure-and-organize/components/modals/shared/modal/ModalAddEdit';
+import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import InputField from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 import Select from '@/components/form/Select';
-import FileInput from '@/features/structure-and-organize/components/modals/shared/field/FileInput';
+import FileInput from '@/components/shared/field/FileInput';
 import DatePicker from '@/components/form/date-picker';
 
 export type PelanggaranEntry = {

@@ -23,6 +23,8 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
   const [limit, setLimit] = useState(initialLimit);
   const [isInitialFetch, setIsInitialFetch] = useState(true);
   const filterValue = useFilterStore((s) => s.filters['Data Master Karyawan'] ?? '');
+  const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
+  const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
 
   // Modal states
   const [selectedKaryawan, setSelectedKaryawan] = useState<Karyawan | null>(null);
@@ -189,6 +191,33 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
           queryParams.filter = Array.isArray(filterParam) ? filterParam : [filterParam];
         }
 
+        // Add column filters - format: filter_column[column_name][in][]=value
+        Object.entries(columnFilters).forEach(([columnId, values]) => {
+          if (values && values.length > 0) {
+            values.forEach((value) => {
+              const key = `filter_column[${columnId}][in][]`;
+              if (!queryParams[key]) {
+                queryParams[key] = [];
+              }
+              queryParams[key].push(value);
+            });
+          }
+        });
+
+        // Add date range filters - format: filter_column[column_name][range][]=start_date & filter_column[column_name][range][]=end_date
+        Object.entries(dateRangeFilters).forEach(([columnId, dateRange]) => {
+          if (dateRange && dateRange.startDate) {
+            const key = `filter_column[${columnId}][range][]`;
+            if (!queryParams[key]) {
+              queryParams[key] = [];
+            }
+            queryParams[key].push(dateRange.startDate);
+            if (dateRange.endDate) {
+              queryParams[key].push(dateRange.endDate);
+            }
+          }
+        });
+
         const response = await employeeMasterDataService.getEmployees(queryParams);
         
         // API returns { meta: { status, message }, data: {...} } not the standard ApiResponse
@@ -213,7 +242,7 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
         setLoading(false);
       }
     },
-    [page, limit, filterValue]
+    [page, limit, filterValue, columnFilters, dateRangeFilters]
   );
 
   // Auto-fetch when page, limit, or filter changes
@@ -229,7 +258,7 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, limit, filterValue, autoFetch]);
+  }, [page, limit, filterValue, columnFilters, dateRangeFilters, autoFetch]);
 
   const createKaryawan = useCallback(
     async (formData: FormData) => {
@@ -453,6 +482,22 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
     setShowDeleteModal(false);
   }, []);
 
+  const handleColumnFilterChange = useCallback((columnId: string, values: string[]) => {
+    setColumnFilters((prev) => ({
+      ...prev,
+      [columnId]: values,
+    }));
+  }, []);
+
+  const handleDateRangeFilterChange = useCallback((columnId: string, startDate: string, endDate: string | null) => {
+    setDateRangeFilters((prev) => ({
+      ...prev,
+      [columnId]: { startDate, endDate },
+    }));
+  }, []);
+
+  
+
   return {
     data,
     loading,
@@ -490,6 +535,12 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
     handleDeleteModalClose,
     setShowDetailModal,
     setSelectedKaryawan,
+    // Column filters
+    columnFilters,
+    handleColumnFilterChange,
+    // Date range filters
+    dateRangeFilters,
+    handleDateRangeFilterChange,
   };
 }
 

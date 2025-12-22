@@ -1,6 +1,6 @@
 // DOK: Integrasi Select Lini Bisnis dan dropdown BL
 import React, { useEffect, useState } from 'react';
-import ModalAddEdit from '../../shared/modal/ModalAddEdit';
+import ModalAddEdit from '../../../../../../components/shared/modal/ModalAddEdit';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 import FileInput from '@/components/form/input/FileInput';

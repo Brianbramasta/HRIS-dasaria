@@ -1,6 +1,6 @@
 // Dokumentasi: Halaman Acuan Potongan + integrasi Modal Edit untuk update data
 import  {  useState } from 'react';
-import { DataTable, type DataTableColumn, type DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
+import { DataTable, type DataTableColumn, type DataTableAction } from '@/components/shared/datatable/DataTable';
 import { IconPencil, IconHapus } from '@/icons/components/icons';
 import EditAcuanPotonganModal from '@/features/payroll/components/modals/payroll-configuration/deduction-reference/EditDeductionReferenceModal';
 

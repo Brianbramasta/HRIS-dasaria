@@ -1,6 +1,6 @@
 // Dokumentasi: Komponen tabel ulang tahun bulan ini menggunakan DataTable
 import { useMemo } from 'react';
-import DataTable, { type DataTableColumn } from '@/features/structure-and-organize/components/datatable/DataTable';
+import DataTable, { type DataTableColumn } from '@/components/shared/datatable/DataTable';
 
 type BirthdayRow = {
   no?: number;

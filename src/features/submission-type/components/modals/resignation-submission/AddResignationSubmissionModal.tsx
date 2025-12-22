@@ -4,12 +4,12 @@
 // - Field aktif: Tanggal Pengajuan (DatePicker), Alasan Pengunduran Diri (TextArea), Surat Pengunduran Diri (FileInput)
 // - Submit akan mengirim seluruh nilai form melalui `onSave` lalu menutup modal
 import React, { useMemo, useState, useEffect } from 'react';
-import ModalAddEdit from '@/features/structure-and-organize/components/modals/shared/modal/ModalAddEdit';
+import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import Input from '@/components/form/input/InputField';
 import DatePicker from '@/components/form/date-picker';
 import TextArea from '@/components/form/input/TextArea';
-import FileInput from '@/features/structure-and-organize/components/modals/shared/field/FileInput';
+import FileInput from '@/components/shared/field/FileInput';
 import PopupBerhasil from '../../shared/modals/SuccessModal';
 
 export type PengunduranDiriForm = {

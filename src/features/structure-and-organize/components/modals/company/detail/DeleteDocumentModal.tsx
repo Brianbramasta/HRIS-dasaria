@@ -1,8 +1,8 @@
 import React from 'react';
 // Dokumentasi: Integrasi service companiesService untuk hapus dokumen perusahaan
 import { companiesService } from '../../../../services/request/CompaniesService';
-import ModalDelete from '../../shared/modal/ModalDelete';
-import ModalDeleteContent from '../../shared/modal/ModalDeleteContent';
+import ModalDelete from '../../../../../../components/shared/modal/ModalDelete';
+import ModalDeleteContent from '../../../../../../components/shared/modal/ModalDeleteContent';
 import { addNotification } from '@/stores/notificationStore';
 
 interface DeleteDocumentModalProps {

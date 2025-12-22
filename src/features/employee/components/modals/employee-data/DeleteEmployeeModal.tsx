@@ -1,5 +1,5 @@
 import React from 'react';
-import ModalDelete from '../../../../structure-and-organize/components/modals/shared/modal/ModalDelete';
+import ModalDelete from '../../../../../components/shared/modal/ModalDelete';
 import type { Karyawan } from '../../../types/Employee';
 
 type Props = {

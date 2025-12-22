@@ -1,7 +1,7 @@
 import { useMemo, useState, type ReactNode, useEffect } from 'react';
 import type { Karyawan } from '@/features/employee/types/Employee';
 import Button from '@/components/ui/button/Button';
-import { DataTable, type DataTableColumn, type DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
+import { DataTable, type DataTableColumn, type DataTableAction } from '@/components/shared/datatable/DataTable';
 import ContractModal, { type ContractEntry } from '@/features/employee/components/modals/employee-data/contract/ContractModal';
 import { IconPencil, IconFileDetail } from '@/icons/components/icons';
 import ComponentCard from '@/components/common/ComponentCard';

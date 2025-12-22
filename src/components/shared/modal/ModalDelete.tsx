@@ -1,6 +1,6 @@
 import React from 'react';
-import { Modal } from '../../../../../../components/ui/modal/index';
-import type { Office } from '../../../../types/OrganizationTypes';
+import { Modal } from '../../ui/modal/index';
+import type { Office } from '../../../features/structure-and-organize/types/OrganizationTypes';
 
 interface DeleteOfficeModalProps {
   isOpen: boolean;

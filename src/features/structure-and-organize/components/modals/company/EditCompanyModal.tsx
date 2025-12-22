@@ -4,9 +4,9 @@ import { useBusinessLines } from '../../../hooks/business-lines/useBusinessLines
 import type { CompanyListItem, BusinessLineListItem } from '../../../types/OrganizationApiTypes';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
-import FileInput from '../shared/field/FileInput';
+import FileInput from '../../../../../components/shared/field/FileInput';
 import Select from '@/components/form/Select';
-import ModalAddEdit from '../shared/modal/ModalAddEdit';
+import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
 import { addNotification } from '@/stores/notificationStore';
 
 

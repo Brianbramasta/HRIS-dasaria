@@ -2,7 +2,7 @@
 
 // Dokumentasi: Tabel Tunjangan Hari Raya + integrasi Modal Edit THR
 import  { useMemo, useState } from 'react';
-import DataTable, { type DataTableColumn, type DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
+import DataTable, { type DataTableColumn, type DataTableAction } from '@/components/shared/datatable/DataTable';
 import { IconPencil } from '@/icons/components/icons';
 import Switch from '@/components/form/switch/Switch';
 import EditThrModal from '@/features/payroll/components/modals/payroll-configuration/thr/EditThrModal';

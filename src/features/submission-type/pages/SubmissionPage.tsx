@@ -4,7 +4,7 @@
 // - Menampilkan tombol "Tambah Pengajuan" menggunakan Button bawaan DataTable
 // - Integrasi: Buka popup Pengajuan Kasbon saat memilih "Kasbon" di Select atau klik tombol Tambah
 import { useMemo, useState } from "react";
-import DataTable from "../../structure-and-organize/components/datatable/DataTable";
+import DataTable from "../../../components/shared/datatable/DataTable";
 import Select from "../../../components/form/Select";
 // import { FileText } from "react-feather";
 import { IconFileDetail as FileText } from "@/icons/components/icons";

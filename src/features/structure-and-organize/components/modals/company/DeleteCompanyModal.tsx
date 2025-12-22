@@ -2,8 +2,8 @@ import React from 'react';
 import { companyService } from '../../../services/OrganizationService';
 import type { CompanyListItem } from '../../../types/OrganizationApiTypes';
 import { addNotification } from '@/stores/notificationStore';
-import ModalDelete from '../shared/modal/ModalDelete';
-import ModalDeleteContent from '../shared/modal/ModalDeleteContent';
+import ModalDelete from '../../../../../components/shared/modal/ModalDelete';
+import ModalDeleteContent from '../../../../../components/shared/modal/ModalDeleteContent';
 import { useFileStore } from '@/stores/fileStore';
 
 

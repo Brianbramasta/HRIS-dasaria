@@ -1,5 +1,5 @@
 import React from 'react';
-import ModalDelete from '@/features/structure-and-organize/components/modals/shared/modal/ModalDelete';
+import ModalDelete from '@/components/shared/modal/ModalDelete';
 
 // Dokumentasi: Modal konfirmasi penghapusan data gaji karyawan, menggunakan ModalDelete shared
 type Props = {

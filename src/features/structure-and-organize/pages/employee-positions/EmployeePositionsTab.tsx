@@ -1,6 +1,6 @@
 // Penyesuaian besar: halaman Posisi Pegawai kompatibel dengan pagination eksternal DataTable
 import React, { useMemo, useState } from 'react';
-import DataTable, { DataTableColumn, DataTableAction } from '../../components/datatable/DataTable';
+import DataTable, { DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
 // import { Edit, Trash } from 'react-feather';
 import { IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
 import { useEmployeePositions } from '../../Index';

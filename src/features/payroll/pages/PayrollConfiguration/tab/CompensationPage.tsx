@@ -1,7 +1,7 @@
 // Dokumentasi: Tabel Kompensasi menggunakan DataTable dengan kolom No., Level Jabatan, Kategori, General, Junior, Middle, Senior, dan Aksi
 // Dokumentasi: Integrasi Modal EditKompensasiModal - buka saat tombol edit diklik
 import { useMemo, useState } from 'react';
-import { DataTable, type DataTableColumn, type DataTableAction } from '@/features/structure-and-organize/components/datatable/DataTable';
+import { DataTable, type DataTableColumn, type DataTableAction } from '@/components/shared/datatable/DataTable';
 // import { Edit } from 'react-feather';
 import { IconPencil } from '@/icons/components/icons';
 import EditKompensasiModal, { type EditKompensasiForm } from '@/features/payroll/components/modals/payroll-configuration/compensation/editCompensationModal';

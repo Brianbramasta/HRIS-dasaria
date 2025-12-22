@@ -1,8 +1,8 @@
 import { useState } from "react";
-import ModalAddEdit from "../shared/modal/ModalAddEdit";
+import ModalAddEdit from "../../../../../components/shared/modal/ModalAddEdit";
 import { positionsService } from "../../../services/request/PositionService";
 import { useFileStore } from '@/stores/fileStore';
-import FileInput from "../shared/field/FileInput";
+import FileInput from "../../../../../components/shared/field/FileInput";
 import Input from "@/components/form/input/InputField";
 // Ubah: Mengganti komponen Select untuk grade menjadi InputField biasa
 // Alasan: Sesuai permintaan, input grade kini berupa teks

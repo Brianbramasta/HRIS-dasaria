@@ -1,4 +1,4 @@
-export type ResignStatus = 'In Progress' | 'Pending' | 'Approved' | 'Rejected';
+export type ResignStatus = 'In Progress' | 'Pending' | 'Approved' | 'Rejected' | 'Disetujui' | 'Ditolak';
 
 export interface PengunduranDiri {
   id: string;
@@ -23,7 +23,7 @@ export interface PengunduranDiriPending extends PengunduranDiri {
 }
 
 export interface PengunduranDiriReviewed extends PengunduranDiri {
-  status: 'Approved' | 'Rejected';
+  status: 'Approved' | 'Rejected' ;
 }
 
 export interface CreatePengunduranDiriDto {

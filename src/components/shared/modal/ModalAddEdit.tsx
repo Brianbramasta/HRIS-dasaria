@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal } from '../../../../../../components/ui/modal/index';
+import { Modal } from '../../ui/modal/index';
 import Button from '@/components/ui/button/Button';
 
 

@@ -15,7 +15,7 @@ export * from './hooks/usePositions';
 export * from './hooks/useEmployeePositions';
 
 // Components
-export * from './components/datatable/DataTable';
+export * from '../../components/shared/datatable/DataTable';
 export * from './components/Tabs';
 
 // Pages

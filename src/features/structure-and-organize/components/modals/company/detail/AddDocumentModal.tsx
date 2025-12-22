@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 // Dokumentasi: Integrasi service companiesService untuk tambah dokumen perusahaan
 import { companiesService } from '../../../../services/request/CompaniesService';
-import ModalAddEdit from '../../shared/modal/ModalAddEdit';
+import ModalAddEdit from '../../../../../../components/shared/modal/ModalAddEdit';
 import FileInput from '../../../../../../components/form/input/FileInput';
 import { addNotification } from '@/stores/notificationStore';
 import { TrashBinIcon } from '@/icons';

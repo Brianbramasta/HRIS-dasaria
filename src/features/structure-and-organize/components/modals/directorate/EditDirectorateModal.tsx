@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { directoratesService } from '../../../services/request/DirectoratesService';
 import type { DirectorateListItem } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
-import FileInput from '../shared/field/FileInput';
-import ModalAddEdit from '../shared/modal/ModalAddEdit';
+import FileInput from '../../../../../components/shared/field/FileInput';
+import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
 
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';

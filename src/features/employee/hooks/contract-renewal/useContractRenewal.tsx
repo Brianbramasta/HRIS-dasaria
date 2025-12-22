@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DataTableColumn, DataTableAction } from '../../../structure-and-organize/components/datatable/DataTable';
+import { DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
 import { FileText } from 'react-feather';
 import { IconPencil as Edit } from '@/icons/components/icons';
 // import contractRenewalService from '../../services/ContractRenewalService';
@@ -17,6 +17,10 @@ interface UseContractRenewalReturn {
   perPage: number;
   columns: DataTableColumn<ContractRenewalListItem>[];
   actions: DataTableAction<ContractRenewalListItem>[];
+  columnFilters: Record<string, string[]>;
+  dateRangeFilters: Record<string, { startDate: string; endDate: string | null }>;
+  handleColumnFilterChange: (columnId: string, values: string[]) => void;
+  handleDateRangeFilterChange: (columnId: string, startDate: string, endDate: string | null) => void;
   setIsDropdownOpen: (value: boolean) => void;
   handleNavigateToApproval: () => void;
   handleNavigateToExtension: () => void;
@@ -318,6 +322,36 @@ export function useContractRenewal(): UseContractRenewalReturn {
     navigate(`/contract-extension/detail/${row.employee_id}`);
   }, [navigate]);
 
+  const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
+  const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
+  
+  const handleColumnFilterChange = (columnId: string, values: string[]) => {
+    setColumnFilters((prev) => ({
+      ...prev,
+      [columnId]: values,
+    }));
+    // TODO: Implement API call with filter parameters when backend is ready
+    console.log('Column filter changed:', columnId, values);
+  };
+
+  const handleDateRangeFilterChange = (columnId: string, startDate: string, endDate: string | null) => {
+    setDateRangeFilters((prev) => ({
+      ...prev,
+      [columnId]: { startDate, endDate },
+    }));
+    // Build filter parameters for API
+    const filterParams: any = {};
+    if (startDate) {
+      filterParams[`filter_column[${columnId}][range][]`] = [startDate];
+      if (endDate) {
+        filterParams[`filter_column[${columnId}][range][]`].push(endDate);
+      }
+    }
+    // TODO: Implement API call with filter parameters when backend is ready
+    console.log('Date range filter changed:', columnId, { startDate, endDate });
+    console.log('Filter params for API:', filterParams);
+  };
+
   const columns: DataTableColumn<ContractRenewalListItem>[] = [
     {
       id: 'no',
@@ -347,8 +381,20 @@ export function useContractRenewal(): UseContractRenewalReturn {
       ),
     },
     { id: 'department_name', label: 'Departemen', minWidth: 180, sortable: true },
-    { id: 'join_date', label: 'Tanggal Masuk', minWidth: 140, sortable: true },
-    { id: 'end_date', label: 'Tanggal Berakhir', minWidth: 150, sortable: true },
+    { 
+      id: 'join_date', 
+      label: 'Tanggal Masuk', 
+      minWidth: 140, 
+      sortable: true,
+      dateRangeFilter: true,
+    },
+    { 
+      id: 'end_date', 
+      label: 'Tanggal Berakhir', 
+      minWidth: 150, 
+      sortable: true,
+      dateRangeFilter: true,
+    },
     { id: 'remaining_contract', label: 'Sisa Kontrak', minWidth: 120, sortable: true },
     {
       id: 'renewal_status_name',
@@ -356,10 +402,17 @@ export function useContractRenewal(): UseContractRenewalReturn {
       minWidth: 180,
       sortable: true,
       format: (value) => (
-        <span className={`p-[10px] flex justify-center rounded-full text-xs font-medium ${getStatusColor(value)}`}>
+        <span className={`status-styling rounded-full text-xs font-medium ${getStatusColor(value)}`}>
           {value}
         </span>
       ),
+      filterOptions: [
+        { label: 'Pending', value: 'Pending' },
+        { label: 'Diperpanjang', value: 'Diperpanjang' },
+        { label: 'Ditolak', value: 'Ditolak' },
+        { label: 'Menunggu Jadwal Negoisasi', value: 'Menunggu Jadwal Negoisasi' },
+        { label: 'Negoisasi', value: 'Negoisasi' },
+      ],
     },
     {
       id: 'supervisor_approval_status_name',
@@ -367,10 +420,15 @@ export function useContractRenewal(): UseContractRenewalReturn {
       minWidth: 140,
       sortable: true,
       format: (value) => (
-        <span className={`p-[10px] flex justify-center rounded-full text-xs font-medium ${getStatusColor(value)}`}>
+        <span className={`status-styling rounded-full text-xs font-medium ${getStatusColor(value)}`}>
           {value}
         </span>
       ),
+      filterOptions: [
+        { label: 'Pending', value: 'Pending' },
+        { label: 'Disetujui', value: 'Disetujui' },
+        { label: 'Ditolak', value: 'Ditolak' },
+      ],
     },
     {
       id: 'contract_submission_detail',
@@ -382,7 +440,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
         <FileText size={16} className="inline text-gray-500" />
       ),
     },
-    { id: 'negotiation_date', label: 'Tanggal Negoisasi', minWidth: 160, sortable: true },
+    { id: 'negotiation_date', label: 'Tanggal Negoisasi', minWidth: 160, sortable: true, dateRangeFilter: true },
     { id: 'notes', label: 'Catatan', minWidth: 150, sortable: false },
     {
       id: 'employee_status_name',
@@ -390,10 +448,17 @@ export function useContractRenewal(): UseContractRenewalReturn {
       minWidth: 140,
       sortable: true,
       format: (value) => (
-        <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(value)}`}>
+        <span className={`status-styling rounded-full text-xs font-medium ${getStatusColor(value)}`}>
           {value}
         </span>
       ),
+      filterOptions: [
+        { label: 'Pending', value: 'Pending' },
+        { label: 'Disetujui', value: 'Disetujui' },
+        { label: 'Negoisasi', value: 'Negoisasi' },
+        { label: 'Info', value: 'Info' },
+        { label: 'Ditolak', value: 'Ditolak' },
+      ],
     },
   ];
 
@@ -420,6 +485,10 @@ export function useContractRenewal(): UseContractRenewalReturn {
     perPage,
     columns,
     actions,
+    columnFilters,
+    dateRangeFilters,
+    handleColumnFilterChange,
+    handleDateRangeFilterChange,
     setIsDropdownOpen,
     handleNavigateToApproval,
     handleNavigateToExtension,
