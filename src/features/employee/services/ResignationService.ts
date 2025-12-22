@@ -70,13 +70,18 @@ class PengunduranDiriService {
       const paginatedData = filteredData.slice(start, end);
 
       return Promise.resolve({
+        success: true,
+        message: 'Success (Dummy Data)',
         data: {
-          items: paginatedData,
+          data: paginatedData,
           total: filteredData.length,
           page,
           limit,
-        } as PengunduranDiriListResponse,
-        message: 'Success (Dummy Data)',
+        },
+        meta: {
+          status: 200,
+          message: 'Success',
+        },
       });
     }
 
@@ -117,8 +122,13 @@ class PengunduranDiriService {
       const dummyDetail = getDummyResignationDetailById(id);
       if (dummyDetail) {
         return Promise.resolve({
-          data: dummyDetail,
+          success: true,
           message: 'Success (Dummy Data)',
+          data: dummyDetail,
+          meta: {
+            status: 200,
+            message: 'Success',
+          },
         });
       }
       return Promise.reject({
@@ -175,8 +185,13 @@ class PengunduranDiriService {
     // Simulate success in development mode
     if (USE_DUMMY_DATA) {
       return Promise.resolve({
-        data: {} as PengunduranDiri,
+        success: true,
         message: 'Approved successfully (Dummy)',
+        data: {} as PengunduranDiri,
+        meta: {
+          status: 200,
+          message: 'Success',
+        },
       });
     }
     return this.updateStatusPengunduranDiri(id, 'Approved', tanggalEfektif);
@@ -189,8 +204,13 @@ class PengunduranDiriService {
     // Simulate success in development mode
     if (USE_DUMMY_DATA) {
       return Promise.resolve({
-        data: {} as PengunduranDiri,
+        success: true,
         message: 'Rejected successfully (Dummy)',
+        data: {} as PengunduranDiri,
+        meta: {
+          status: 200,
+          message: 'Success',
+        },
       });
     }
     return this.updateStatusPengunduranDiri(id, 'Rejected');

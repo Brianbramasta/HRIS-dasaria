@@ -5,7 +5,7 @@ import Select from '../../../../components/form/Select';
 import Label from '../../../../components/form/Label';
 import InputField from '../../../../components/form/input/InputField';
 import employeeMasterDataService from '../../services/EmployeeMasterData.service';
-import { JENJANG_JABATAN_OPTIONS, HAK_AKSES_OPTIONS, STATUS_PAYROLL_OPTIONS, KATEGORI_KARYAWAN_OPTIONS, EMPLOYMENT_STATUS_OPTIONS } from '../../utils/EmployeeMappings';
+import { JENJANG_JABATAN_OPTIONS, STATUS_PAYROLL_OPTIONS, KATEGORI_KARYAWAN_OPTIONS, EMPLOYMENT_STATUS_OPTIONS } from '../../utils/EmployeeMappings';
 
 
 export const Step03EmployeeData: React.FC = () => {

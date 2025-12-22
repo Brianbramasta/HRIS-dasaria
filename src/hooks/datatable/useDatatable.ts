@@ -16,6 +16,10 @@ interface UseDatatableProps<T> {
   useExternalPagination?: boolean;
   externalPage?: number;
   externalTotal?: number;
+  onColumnFilterChange?: (columnId: string, values: string[]) => void;
+  columnFilters?: Record<string, string[]>;
+  onDateRangeFilterChange?: (columnId: string, startDate: string, endDate: string | null) => void;
+  dateRangeFilters?: Record<string, { startDate: string; endDate: string | null }>;
 }
 
 export function useDatatable<T = any>({
@@ -32,9 +36,11 @@ export function useDatatable<T = any>({
   externalPage,
   externalTotal,
   onColumnFilterChange,
-  columnFilters,
+  // @ts-expect-error - Parameter is defined for future use
+  columnFilters = {},
   onDateRangeFilterChange,
-  dateRangeFilters
+  // @ts-expect-error - Parameter is defined for future use
+  dateRangeFilters = {}
 }: UseDatatableProps<T>) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(pageSize);

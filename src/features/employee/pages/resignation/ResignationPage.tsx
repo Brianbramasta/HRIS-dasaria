@@ -22,10 +22,6 @@ export default function PengunduranDiriPage() {
     setActiveTab(view === 'reviewed' ? 'reviewed' : 'pending');
   }, [searchParams]);
 
-  const handleAddResign = () => {
-    setIsModalOpen(true);
-  };
-
   const handleShareLink = () => {
     setIsModalOpen(false);
     setIsShareOpen(true);
@@ -48,7 +44,7 @@ export default function PengunduranDiriPage() {
         </div> */}
 
         <div className="p-6">
-          {activeTab === 'pending' && <TabPendingReview onOpenForm={handleAddResign} />}
+          {activeTab === 'pending' && <TabPendingReview />}
           {activeTab === 'reviewed' && <TabReviewed />}
         </div>
       {/* </div> */}

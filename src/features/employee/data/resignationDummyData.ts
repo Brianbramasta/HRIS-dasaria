@@ -5,7 +5,6 @@ import { ResignationDetailResponse } from '../services/ResignationService';
 export const dummyPendingResignations: PengunduranDiri[] = [
   {
     id: '1',
-    karyawanId: 'KRY001',
     idKaryawan: 'NIP-2024-001',
     name: 'Ahmad Rizki',
     email: 'ahmad.rizki@company.com',
@@ -14,13 +13,12 @@ export const dummyPendingResignations: PengunduranDiri[] = [
     department: 'IT Development',
     departmentId: 'DEPT001',
     tanggalPengajuan: '2024-12-01',
-    tanggalEfektif: null,
+    tanggalEfektif: undefined,
     alasan: 'Mendapat tawaran pekerjaan baru dengan posisi yang lebih sesuai dengan karir saya.',
     status: 'In Progress',
   },
   {
     id: '2',
-    karyawanId: 'KRY002',
     idKaryawan: 'NIP-2024-002',
     name: 'Siti Nurhaliza',
     email: 'siti.nur@company.com',
@@ -29,13 +27,12 @@ export const dummyPendingResignations: PengunduranDiri[] = [
     department: 'Marketing',
     departmentId: 'DEPT002',
     tanggalPengajuan: '2024-12-05',
-    tanggalEfektif: null,
+    tanggalEfektif: undefined,
     alasan: 'Ingin fokus mengurus keluarga dan mengembangkan bisnis pribadi.',
     status: 'In Progress',
   },
   {
     id: '3',
-    karyawanId: 'KRY003',
     idKaryawan: 'NIP-2024-003',
     name: 'Budi Santoso',
     email: 'budi.santoso@company.com',
@@ -44,13 +41,12 @@ export const dummyPendingResignations: PengunduranDiri[] = [
     department: 'Finance',
     departmentId: 'DEPT003',
     tanggalPengajuan: '2024-12-08',
-    tanggalEfektif: null,
+    tanggalEfektif: undefined,
     alasan: 'Melanjutkan pendidikan S2 di luar negeri.',
     status: 'Pending',
   },
   {
     id: '4',
-    karyawanId: 'KRY004',
     idKaryawan: 'NIP-2024-004',
     name: 'Dewi Lestari',
     email: 'dewi.lestari@company.com',
@@ -59,13 +55,12 @@ export const dummyPendingResignations: PengunduranDiri[] = [
     department: 'Human Resources',
     departmentId: 'DEPT004',
     tanggalPengajuan: '2024-12-10',
-    tanggalEfektif: null,
+    tanggalEfektif: undefined,
     alasan: 'Pindah domisili ke kota lain karena alasan keluarga.',
     status: 'In Progress',
   },
   {
     id: '5',
-    karyawanId: 'KRY005',
     idKaryawan: 'NIP-2024-005',
     name: 'Eko Prasetyo',
     email: 'eko.prasetyo@company.com',
@@ -74,7 +69,7 @@ export const dummyPendingResignations: PengunduranDiri[] = [
     department: 'Design',
     departmentId: 'DEPT005',
     tanggalPengajuan: '2024-12-12',
-    tanggalEfektif: null,
+    tanggalEfektif: undefined,
     alasan: 'Mencari pengalaman baru di startup untuk mengembangkan skill design.',
     status: 'Pending',
   },
@@ -84,7 +79,6 @@ export const dummyPendingResignations: PengunduranDiri[] = [
 export const dummyApprovedResignations: PengunduranDiri[] = [
   {
     id: '101',
-    karyawanId: 'KRY101',
     idKaryawan: 'NIP-2023-101',
     name: 'Fajar Mulyono',
     email: 'fajar.mulyono@company.com',
@@ -99,7 +93,6 @@ export const dummyApprovedResignations: PengunduranDiri[] = [
   },
   {
     id: '102',
-    karyawanId: 'KRY102',
     idKaryawan: 'NIP-2023-102',
     name: 'Gita Savitri',
     email: 'gita.savitri@company.com',
@@ -114,7 +107,6 @@ export const dummyApprovedResignations: PengunduranDiri[] = [
   },
   {
     id: '103',
-    karyawanId: 'KRY103',
     idKaryawan: 'NIP-2023-103',
     name: 'Hendra Wijaya',
     email: 'hendra.wijaya@company.com',
@@ -129,7 +121,6 @@ export const dummyApprovedResignations: PengunduranDiri[] = [
   },
   {
     id: '104',
-    karyawanId: 'KRY104',
     idKaryawan: 'NIP-2023-104',
     name: 'Intan Permatasari',
     email: 'intan.permata@company.com',
@@ -144,7 +135,6 @@ export const dummyApprovedResignations: PengunduranDiri[] = [
   },
   {
     id: '105',
-    karyawanId: 'KRY105',
     idKaryawan: 'NIP-2023-105',
     name: 'Joko Widodo',
     email: 'joko.widodo@company.com',
@@ -163,7 +153,7 @@ export const dummyApprovedResignations: PengunduranDiri[] = [
 export const dummyResignationDetail: ResignationDetailResponse = {
   resign: {
     id: '1',
-    karyawanId: 'KRY001',
+    karyawanId: null,
     idKaryawanStr: 'NIP-2024-001',
     name: 'Ahmad Rizki',
     departmentName: 'IT Development',
@@ -202,7 +192,7 @@ export const getDummyResignationDetailById = (id: string): ResignationDetailResp
   return {
     resign: {
       id: resignation.id,
-      karyawanId: resignation.karyawanId,
+      karyawanId: null,
       idKaryawanStr: resignation.idKaryawan,
       name: resignation.name,
       departmentName: resignation.department,
@@ -212,11 +202,11 @@ export const getDummyResignationDetailById = (id: string): ResignationDetailResp
       status: resignation.status,
     },
     karyawanSummary: {
-      id: resignation.karyawanId,
+      id: resignation.idKaryawan,
       idKaryawan: resignation.idKaryawan,
       name: resignation.name,
       email: resignation.email || null,
-      posisi: resignation.posisi,
+      posisi: resignation.posisi || null,
     },
   };
 };

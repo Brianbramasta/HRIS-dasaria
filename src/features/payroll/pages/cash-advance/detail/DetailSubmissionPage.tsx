@@ -1,5 +1,5 @@
 // Documentation: Cash Advance Submission Detail Page with read-only fields
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ChevronLeft } from 'react-feather';
 import PayrollCard from '@/features/payroll/components/cards/Cards';
 import Input from '@/components/form/input/InputField';
@@ -7,7 +7,6 @@ import TextArea from '@/components/form/input/TextArea';
 
 export default function DetailSubmissionPage() {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
 
   // Documentation: Sample static data - in real app this would come from API/state based on id
   const cashAdvanceData = {

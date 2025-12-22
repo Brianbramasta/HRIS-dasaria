@@ -1,6 +1,6 @@
 // Service: Employee Master Data – Lengkap sesuai kontrak API karyawan
 import apiService, { ApiResponse } from '../../../services/api';
-import { FormulirKaryawanData } from '../types/FormEmployess';
+import { FormulirKaryawanData } from '../types/FormEmployee';
 import {
   EmployeeListParams,
   PaginatedResponse,
@@ -188,7 +188,7 @@ class EmployeeMasterDataService {
     payload.append('ktp_address', formData.step1.alamatKtp);
 
     // Step 2: Educational Background
-    formData.step2.education.forEach((edu, index) => {
+    formData.step2.education.forEach((edu: any, index: number) => {
       if (edu.jenisPendidikan === 'formal') {
         payload.append(`education_formal_detail[${index}][education_level]`, edu.jenjang);
         payload.append(`education_formal_detail[${index}][institution_name]`, edu.namaLembaga);
@@ -243,7 +243,7 @@ class EmployeeMasterDataService {
     payload.append('employee_category', formData.step3Employee.kategoriKaryawan);
 
     // Step 4: Documents
-    formData.step4.documents.forEach((doc, index) => {
+    formData.step4.documents.forEach((doc: any, index: number) => {
       payload.append(`documents[${index}][file_type]`, doc.tipeFile);
       if (doc.file) payload.append(`documents[${index}][file]`, doc.file);
     });

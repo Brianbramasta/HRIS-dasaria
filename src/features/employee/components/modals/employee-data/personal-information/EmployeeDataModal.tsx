@@ -71,12 +71,6 @@ const OFFICE_OPTIONS = [
   { label: 'Cabang A', value: 'Cabang A' },
 ];
 
-const USER_ACCESS_OPTIONS = [
-  { label: 'Employee', value: 'Employee' },
-  { label: 'Manager', value: 'Manager' },
-  { label: 'Admin', value: 'Admin' },
-];
-
 const DIREKTORAT_OPTIONS = [
   { label: 'SDM', value: 'SDM' },
   { label: 'Operasional', value: 'Operasional' },

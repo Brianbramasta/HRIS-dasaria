@@ -2,7 +2,7 @@
 // fallback ke tombol default (Ekspor & Tambah) menggunakan onExport dan onAdd bila slot tidak disediakan.
 // Dokumentasi: Menambahkan toolbarLeftSlotAtas agar layout atas bisa menempatkan input di kiri
 // Dokumentasi: Menambahkan column filter support dengan filterOptions untuk menampilkan icon filter di header kolom tertentu
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import { Table, TableHeader, TableBody, TableRow, TableCell } from '../../ui/table';
 import PaginationWithIcon from '../../tables/DataTables/TableOne/PaginationWithIcon';
 import Button from '../../ui/button/Button';
@@ -136,10 +136,7 @@ export function DataTable<T = any>({
     page,
     rowsPerPage,
     searchTerm,
-    orderBy,
-    order,
     visibleColumns,
-    filteredData,
     sortedData,
     paginatedData,
     displayColumns,
@@ -317,7 +314,7 @@ export function DataTable<T = any>({
                         className="ml-1 cursor-pointer hover:opacity-80"
                         onClick={(e) => handleFilterIconClick(column.id, e)}
                       >
-                        <IconColumnFilter size={12} color={columnFilters[column.id]?.length > 0 ? '#3B82F6' : '#FFFFFF'} />
+                        <IconColumnFilter size={20} color={columnFilters[column.id]?.length > 0 ? '#3B82F6' : '#FFFFFF'} />
                       </span>
                     )}
                     {column.dateRangeFilter && (
@@ -329,7 +326,7 @@ export function DataTable<T = any>({
                         onClick={(e) => handleDateRangeIconClick(column.id, e)}
                       >
                         <IconCalendarFilter 
-                          size={12} 
+                          size={20} 
                           color={(dateRangeFilters[column.id]?.startDate) ? '#3B82F6' : '#FFFFFF'} 
                         />
                       </span>

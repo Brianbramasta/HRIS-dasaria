@@ -1,4 +1,3 @@
-import React from 'react';
 import { Modal } from '../../../../components/ui/modal/index';
 import Button from '../../../../components/ui/button/Button';
 import Checkbox from '../../../../components/form/input/Checkbox';

@@ -7,7 +7,7 @@ import Select from '@/components/form/Select';
 import DatePicker from '@/components/form/date-picker';
 import FileInput from '@/components/form/input/FileInput';
 import { Plus, Trash2 } from 'react-feather';
-import type { EducationItem as EducationItemType } from '@/features/employee/types/FormEmployess';
+import type { EducationItem as EducationItemType } from '@/features/employee/types/FormEmployee';
 
 // Tipe form lokal untuk modal pendidikan (tanpa media sosial)
 export type EducationModalForm = {

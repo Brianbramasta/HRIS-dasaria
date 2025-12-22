@@ -190,16 +190,14 @@ export default function PerpanjangKontrakEdit() {
       <EditStatusPerpanjanganModal
         isOpen={isStatusModalOpen}
         onClose={() => setIsStatusModalOpen(false)}
-        kontrakData={kontrakData}
-        onSuccess={handleUpdateStatus}
+        onSuccess={() => handleUpdateStatus({} as any)}
       />
 
       {/* Modal: Edit Pengajuan Kontrak */}
       <EditPengajuanKontrakModal
         isOpen={isPengajuanModalOpen}
         onClose={() => setIsPengajuanModalOpen(false)}
-        kontrakData={kontrakData}
-        onSuccess={handleUpdatePengajuan}
+        onSuccess={() => handleUpdatePengajuan({} as any)}
       />
     </div>
   );

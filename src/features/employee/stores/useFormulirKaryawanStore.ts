@@ -7,7 +7,7 @@ import {
   Step4FormData,
   StepCompletionStatus,
   EmployeeDataFormData,
-} from '../types/FormEmployess';
+} from '../types/FormEmployee';
 
 // LocalStorage key untuk form data karyawan
 const FORM_STORAGE_KEY = 'formulir_karyawan_draft';

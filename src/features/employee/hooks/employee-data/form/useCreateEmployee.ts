@@ -2,7 +2,7 @@
 import { useCallback } from 'react';
 import { useFormulirKaryawanStore } from '../../../stores/useFormulirKaryawanStore';
 import employeeMasterDataService from '../../../services/EmployeeMasterData.service';
-import { EducationItem, DocumentItem } from '../../types/FormEmployess';
+import { EducationItem, DocumentItem } from '../../../types/FormEmployee';
 import { useAuthStore } from '../../../../auth/stores/AuthStore';
 import {
   mapAgamaToCode,

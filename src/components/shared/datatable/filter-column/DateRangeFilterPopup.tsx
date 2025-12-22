@@ -22,7 +22,15 @@ export const DateRangeFilterPopup: React.FC<DateRangeFilterPopupProps> = ({
   startDate: initialStartDate,
   endDate: initialEndDate,
 }) => {
-  const [tempStartDate, setTempStartDate] = useState<string>(initialStartDate || '');
+  const getTodayDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const [tempStartDate, setTempStartDate] = useState<string>(initialStartDate || getTodayDate());
   const [tempEndDate, setTempEndDate] = useState<string>(initialEndDate || '');
   const [showEndDate, setShowEndDate] = useState<boolean>(!!initialEndDate);
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
@@ -31,7 +39,7 @@ export const DateRangeFilterPopup: React.FC<DateRangeFilterPopupProps> = ({
   const popupRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setTempStartDate(initialStartDate || '');
+    setTempStartDate(initialStartDate || getTodayDate());
     setTempEndDate(initialEndDate || '');
     setShowEndDate(!!initialEndDate);
   }, [initialStartDate, initialEndDate, isOpen]);
@@ -327,7 +335,7 @@ export const DateRangeFilterPopup: React.FC<DateRangeFilterPopupProps> = ({
             value={formatDateToIndonesian(tempStartDate)}
             readOnly
             placeholder="Feb 22, 2025"
-            className="flex-1 text-sm px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white cursor-pointer w-full"
+            className="flex-1 text-sm px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white cursor-pointer w-full text-center"
             onClick={() => setSelectingStartDate(true)}
           />
           {showEndDate && (
@@ -336,7 +344,7 @@ export const DateRangeFilterPopup: React.FC<DateRangeFilterPopupProps> = ({
               value={formatDateToIndonesian(tempEndDate)}
               readOnly
               placeholder="Feb 27, 2025"
-              className="flex-1 text-sm px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white cursor-pointer w-full"
+              className="flex-1 text-sm px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white cursor-pointer w-full text-center"
               onClick={() => setSelectingStartDate(false)}
             />
           )}
@@ -348,7 +356,8 @@ export const DateRangeFilterPopup: React.FC<DateRangeFilterPopupProps> = ({
 
       {/* End date toggle */}
       <div className="px-4 pb-3">
-        <label className="flex items-center gap-2 cursor-pointer">
+        <label className="flex items- justify-between gap-2 cursor-pointer">
+          <span className="text-sm text-gray-700 dark:text-gray-300">End date</span>
           <div className="relative">
             <input
               type="checkbox"
@@ -364,7 +373,7 @@ export const DateRangeFilterPopup: React.FC<DateRangeFilterPopupProps> = ({
             />
             <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#004969]"></div>
           </div>
-          <span className="text-sm text-gray-700 dark:text-gray-300">end date</span>
+          
         </label>
       </div>
 

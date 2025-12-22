@@ -80,7 +80,7 @@ export const useDetailResignation = (id: string | undefined) => {
   };
 
   // Handle approve from modal
-  const handleApprove = async (tanggal: string, desc: string) => {
+  const handleApprove = async (tanggal: string) => {
     if (!id || !tanggal) {
       addNotification({
         title: 'Tanggal efektif kosong',

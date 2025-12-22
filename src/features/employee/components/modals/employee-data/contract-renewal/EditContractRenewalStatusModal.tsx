@@ -29,7 +29,7 @@ const statusKaryawanOptions = [
 interface EditStatusPerpanjanganModalProps {
   isOpen: boolean;
   onClose: () => void;
-  kontrakData: {
+  kontrakData?: {
     idKaryawan: string;
     pengguna: string;
     posisi: string;

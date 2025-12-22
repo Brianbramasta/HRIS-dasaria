@@ -52,7 +52,7 @@ const kategoriKaryawanOptions = [
 interface EditPengajuanKontrakModalProps {
   isOpen: boolean;
   onClose: () => void;
-  kontrakData: {
+  kontrakData?: {
     idKaryawan: string;
     pengguna: string;
     jenisPerubahan: string;

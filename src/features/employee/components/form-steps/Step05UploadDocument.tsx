@@ -7,7 +7,7 @@ import FileInput from '../../../../components/form/input/FileInput';
 import { TrashBinIcon  } from '@/icons';
 import {iconPlus as PlusIcon} from '@/icons/components/icons';
 import DocumentsTable from '../../../structure-and-organize/components/table/TableGlobal';
-import { DocumentItem } from '../../types/FormEmployess';
+import { DocumentItem } from '../../types/FormEmployee';
 import { DOCUMENT_TYPE_OPTIONS } from '../../utils/EmployeeMappings';
 
 

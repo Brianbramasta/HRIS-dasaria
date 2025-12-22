@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { businessLinesService } from '../../services/request/BusinessLinesService';
 import { formatUrlFile } from '@/utils/formatUrlFile';
-import { BusinessLineDetailResponse, FileSummary } from '../../types/OrganizationApiTypes';
+import { FileSummary } from '../../types/OrganizationApiTypes';
 
 type PersonalFileRow = {
   no: number;

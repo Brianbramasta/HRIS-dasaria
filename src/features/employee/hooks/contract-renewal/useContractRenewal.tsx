@@ -6,6 +6,7 @@ import { IconPencil as Edit } from '@/icons/components/icons';
 // import contractRenewalService from '../../services/ContractRenewalService';
 import { ContractRenewalListItem, ContractRenewalFilterParams } from '../../types/ContractRenewal';
 import { useNotificationStore } from '@/stores/notificationStore';
+import { formatDateToIndonesian } from '@/utils/formatDate';
 
 interface UseContractRenewalReturn {
   data: ContractRenewalListItem[];
@@ -362,7 +363,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
     },
     { id: 'nip', label: 'NIP', minWidth: 120, sortable: true },
     {
-      id: 'employee_name',
+      id: 'full_name',
       label: 'Pengguna',
       minWidth: 180,
       sortable: true,
@@ -374,8 +375,8 @@ export function useContractRenewal(): UseContractRenewalReturn {
             className="h-8 w-8 rounded-full"
           />
           <div>
-            <div className="text-sm font-medium">{value}</div>
-            <div className="text-[11px] text-gray-500">{row.position_name || 'Employee'}</div>
+            <div className="text-sm font-medium min-w-max">{value}</div>
+            <div className="text-[11px] text-gray-500 min-w-max">{row.position_name || 'Employee'}</div>
           </div>
         </div>
       ),
@@ -387,6 +388,11 @@ export function useContractRenewal(): UseContractRenewalReturn {
       minWidth: 140, 
       sortable: true,
       dateRangeFilter: true,
+      format: (value) => (
+        <div className="flex items-center gap-2">
+          <div>{formatDateToIndonesian(value)}</div>
+        </div>
+      ),
     },
     { 
       id: 'end_date', 
@@ -394,6 +400,11 @@ export function useContractRenewal(): UseContractRenewalReturn {
       minWidth: 150, 
       sortable: true,
       dateRangeFilter: true,
+      format: (value) => (
+        <div className="flex items-center gap-2">
+          <div>{formatDateToIndonesian(value)}</div>
+        </div>
+      ),
     },
     { id: 'remaining_contract', label: 'Sisa Kontrak', minWidth: 120, sortable: true },
     {
@@ -440,7 +451,11 @@ export function useContractRenewal(): UseContractRenewalReturn {
         <FileText size={16} className="inline text-gray-500" />
       ),
     },
-    { id: 'negotiation_date', label: 'Tanggal Negoisasi', minWidth: 160, sortable: true, dateRangeFilter: true },
+    { id: 'negotiation_date', label: 'Tanggal Negoisasi', minWidth: 160, sortable: true, dateRangeFilter: true, format: (value) => (
+      <div className="flex items-center gap-2">
+        <div>{formatDateToIndonesian(value)}</div>
+      </div>
+    ) },
     { id: 'notes', label: 'Catatan', minWidth: 150, sortable: false },
     {
       id: 'employee_status_name',

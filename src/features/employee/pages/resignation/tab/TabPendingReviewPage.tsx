@@ -6,7 +6,7 @@ import Button from '../../../../../components/ui/button/Button';
 import { Dropdown } from '../../../../../components/ui/dropdown/Dropdown';
 import { usePendingReview } from '../../../hooks/resignation/usePendingReview';
 
-export default function TabPendingReview({ onOpenForm }: { onOpenForm?: () => void }) {
+export default function TabPendingReview() {
   const {
     data,
     loading,

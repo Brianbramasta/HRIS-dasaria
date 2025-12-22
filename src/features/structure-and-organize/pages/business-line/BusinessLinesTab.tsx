@@ -1,4 +1,4 @@
-import  { useMemo, useState } from 'react';
+import  { useState } from 'react';
 import { Link } from 'react-router';
 import DataTable, { DataTableColumn } from '../../../../components/shared/datatable/DataTable';
 // import { Edit, Trash } from 'react-feather';
@@ -12,7 +12,6 @@ import DeleteBusinessLineModal from '../../components/modals/business-line/Delet
 import { addNotification } from '../../../../stores/notificationStore';
 
 import type { BLRow } from '../../types/OrganizationTableTypes';
-import { businessLinesService } from '../../services/request/BusinessLinesService';
 import type { BusinessLineListItem } from '../../types/OrganizationApiTypes';
 import { FileText } from '@/icons/components/icons';
 import { useFileStore } from '@/stores/fileStore';
@@ -110,7 +109,7 @@ export default function BusinessLinesTab({ resetKey }: Props) {
         onColumnVisibilityChange={() => {}}
 
         onAdd={() => setIsAddOpen(true)}
-        onExport={true}
+        onExport={() => {}}
       />
 
       <AddBusinessLineModal
