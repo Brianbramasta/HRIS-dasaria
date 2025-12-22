@@ -1,35 +1,6 @@
 import { apiService } from '../../../../services/api';
-import {
-  PaginatedResponse,
-  TableFilter,
-  OfficeListItem,
-  FileSummary,
-} from '../../types/OrganizationApiTypes';
 
-const toFileSummary = (url: string | null): FileSummary | null => {
-  if (!url) return null;
-  const parts = url.split('/');
-  const fileName = parts[parts.length - 1] || '';
-  const ext = fileName.includes('.') ? (fileName.split('.').pop() || '') : '';
-  return {
-    fileName,
-    fileUrl: url,
-    fileType: ext,
-    size: null,
-  };
-};
-
-const mapToOffice = (item: any): OfficeListItem => ({
-  id: item.id ?? item.id ?? '',
-  name: item.office_name ?? item.name ?? '',
-  description: item.office_description ?? item.description ?? null,
-  memoNumber: item.office_decree_number ?? item.memoNumber ?? null,
-  skFile: toFileSummary(item.office_decree_file_url ?? item.office_decree_file ?? null),
-  companyId: item.id_company ?? null,
-  companyIds: Array.isArray(item.companies) 
-    ? item.companies.map((company: any) => company.id ?? company.id_company ?? null).filter(Boolean)
-    : item.id_company ? [item.id_company] : [],
-});
+const BaseUrl = '/organizational-structure/office-master-data/';
 
 const toSortField = (field?: string): string => {
   const map: Record<string, string> = {
@@ -52,7 +23,7 @@ const appendFilters = (params: URLSearchParams, filter?: string | string[]) => {
 };
 
 export const officesService = {
-  getList: async (filter: TableFilter): Promise<PaginatedResponse<OfficeListItem>> => {
+  getList: async (filter: any): Promise<any> => {
     const params = new URLSearchParams();
     if (filter.page) params.append('page', String(filter.page));
     if (filter.pageSize) params.append('per_page', String(filter.pageSize));
@@ -63,27 +34,11 @@ export const officesService = {
       params.append('sort', filter.sortOrder);
     }
     const qs = params.toString();
-    const result = await apiService.get<any>(`/organizational-structure/offices${qs ? `?${qs}` : ''}`);
-    const payload = (result as any);
-    const items = payload?.data?.data ?? [];
-    const total = payload?.data?.total ?? (items?.length || 0);
-    const page = payload?.data?.current_page ?? filter.page;
-    const perPage = payload?.data?.per_page ?? filter.pageSize;
-    const totalPages = perPage ? Math.ceil(total / perPage) : 1;
-    return {
-      data: (items || []).map(mapToOffice),
-      total,
-      page,
-      pageSize: perPage,
-      totalPages,
-    };
+    return apiService.get<any>(`${BaseUrl}offices${qs ? `?${qs}` : ''}`);
   },
 
-  getById: async (id: string): Promise<OfficeListItem> => {
-    const result = await apiService.get<any>(`/organizational-structure/offices/${id}`);
-    const body = (result as any)?.data ?? {};
-    const item = body?.data ?? body;
-    return mapToOffice(item);
+  getById: async (id: string): Promise<any> => {
+    return apiService.get<any>(`${BaseUrl}offices/${id}`);
   },
 
   create: async (payload: {
@@ -93,7 +48,7 @@ export const officesService = {
     description?: string | null;
     memoNumber: string;
     skFile?: File | null;
-  }): Promise<OfficeListItem> => {
+  }): Promise<any> => {
     const formData = new FormData();
     formData.append('office_name', payload.name);
     const ids = Array.isArray(payload.companyIds) && payload.companyIds.length > 0
@@ -108,13 +63,11 @@ export const officesService = {
     if (payload.skFile) {
       formData.append('office_decree_file', payload.skFile);
     }
-    const created = await apiService.post<any>(
-      '/organizational-structure/offices',
+    return apiService.post<any>(
+      `${BaseUrl}offices`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
-    const item = (created as any).data as any;
-    return mapToOffice(item);
   },
 
   update: async (id: string, payload: {
@@ -124,7 +77,7 @@ export const officesService = {
     description?: string | null;
     memoNumber: string;
     skFile?: File | null;
-  }): Promise<OfficeListItem> => {
+  }): Promise<any> => {
     const formData = new FormData();
     formData.append('_method', 'PATCH');
     if (payload.name !== undefined) formData.append('office_name', payload.name);
@@ -141,27 +94,22 @@ export const officesService = {
     if (payload.skFile) {
       formData.append('office_decree_file', payload.skFile);
     }
-    const updated = await apiService.post<any>(
-      `/organizational-structure/offices/${id}`,
+    return apiService.post<any>(
+      `${BaseUrl}offices/${id}`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
-    const item = (updated as any).data as any;
-    return mapToOffice(item);
   },
 
-  delete: async (id: string, payload: { memoNumber: string; skFile: File; }): Promise<{ success: true }> => {
+  delete: async (id: string, payload: { memoNumber: string; skFile: File; }): Promise<any> => {
     const formData = new FormData();
     formData.append('_method', 'DELETE');
     if (payload.memoNumber) formData.append('office_delete_decree_number', payload.memoNumber);
     if (payload.skFile) formData.append('office_delete_decree_file', payload.skFile);
-    const resp = await apiService.post<any>(
-      `/organizational-structure/offices/${id}`,
+    return apiService.post<any>(
+      `${BaseUrl}offices/${id}`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
-    const body = (resp as any)?.data ?? {};
-    const status = body?.meta?.status ?? (resp as any)?.status ?? 200;
-    return { success: status === 200 } as { success: true };
   },
 };

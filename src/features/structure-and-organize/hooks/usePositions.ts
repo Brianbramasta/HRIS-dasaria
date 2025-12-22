@@ -1,8 +1,34 @@
 // Penyesuaian hooks Jabatan agar sesuai kontrak API 1.7 (job-title)
 import { useState, useCallback, useEffect } from 'react';
 import { positionsService } from '../services/request/PositionService';
-import { PositionListItem, TableFilter } from '../types/OrganizationApiTypes';
+import { PositionListItem, TableFilter, FileSummary } from '../types/OrganizationApiTypes';
 import useFilterStore from '../../../stores/filterStore';
+
+// Mapping helpers
+const toFileSummary = (url: string | null): FileSummary | null => {
+  if (!url) return null;
+  const parts = url.split('/');
+  const fileName = parts[parts.length - 1] || '';
+  const ext = fileName.includes('.') ? (fileName.split('.').pop() || '') : '';
+  return {
+    fileName,
+    fileUrl: url,
+    fileType: ext,
+    size: null,
+  };
+};
+
+const mapToPosition = (item: any): PositionListItem => ({
+  id: item.id ?? item.id ?? '',
+  name: item.job_title_name ?? item.name ?? '',
+  grade: item.grade ?? null,
+  jobDescription: item.job_title_description ?? item.description ?? null,
+  directSubordinates: typeof item.direct_subordinate === 'string'
+    ? item.direct_subordinate.split(',').map((s: string) => s.trim()).filter(Boolean)
+    : Array.isArray(item.direct_subordinate) ? item.direct_subordinate : [],
+  memoNumber: item.job_title_decree_number ?? null,
+  skFile: toFileSummary(item.job_title_decree_file_url ?? item.job_title_decree_file ?? null),
+});
 
 interface UsePositionsReturn {
   positions: PositionListItem[];
@@ -42,7 +68,7 @@ export const usePositions = (): UsePositionsReturn => {
     setError(null);
     
     try {
-      const response = await positionsService.getList({
+      const result = await positionsService.getList({
         page,
         pageSize,
         search: filter?.search ?? search,
@@ -51,9 +77,16 @@ export const usePositions = (): UsePositionsReturn => {
         sortOrder: filter?.sortOrder ?? sortOrder,
       });
       
-      setPositions(response.data);
-      setTotal(response.total);
-      setTotalPages(response.totalPages);
+      const payload = (result as any);
+      const items = payload?.data?.data ?? [];
+      const total = payload?.data?.total ?? (items?.length || 0);
+      const currentPage = payload?.data?.current_page ?? page;
+      const perPage = payload?.data?.per_page ?? pageSize;
+      const totalPagesCount = perPage ? Math.ceil(total / perPage) : 1;
+      
+      setPositions((items || []).map(mapToPosition));
+      setTotal(total);
+      setTotalPages(totalPagesCount);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch positions');
     } finally {
@@ -67,7 +100,9 @@ export const usePositions = (): UsePositionsReturn => {
     setError(null);
     
     try {
-      const newPosition = await positionsService.create(positionData);
+      const created = await positionsService.create(positionData);
+      const item = (created as any).data as any;
+      const newPosition = mapToPosition(item);
       setPositions(prev => [...prev, newPosition]);
       await fetchPositions();
     } catch (err) {
@@ -84,7 +119,9 @@ export const usePositions = (): UsePositionsReturn => {
     setError(null);
     
     try {
-      const updatedPosition = await positionsService.update(id, positionData);
+      const updated = await positionsService.update(id, positionData);
+      const item = (updated as any).data as any;
+      const updatedPosition = mapToPosition(item);
       setPositions(prev => prev.map(position => 
         position.id === id ? updatedPosition : position
       ));

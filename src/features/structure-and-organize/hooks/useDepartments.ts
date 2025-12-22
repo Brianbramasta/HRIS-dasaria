@@ -1,8 +1,32 @@
 // Penyesuaian hooks Departemen agar sesuai kontrak API 1.7 (departments)
 import { useState, useCallback, useEffect } from 'react';
 import { departmentsService } from '../services/request/DepartmentsService';
-import { DepartmentListItem, TableFilter } from '../types/OrganizationApiTypes';
+import { DepartmentListItem, TableFilter, FileSummary } from '../types/OrganizationApiTypes';
 import useFilterStore from '../../../stores/filterStore';
+
+// Mapping helpers
+const toFileSummary = (url: string | null): FileSummary | null => {
+  if (!url) return null;
+  const parts = url.split('/');
+  const fileName = parts[parts.length - 1] || '';
+  const ext = fileName.includes('.') ? (fileName.split('.').pop() || '') : '';
+  return {
+    fileName,
+    fileUrl: url,
+    fileType: ext,
+    size: null,
+  };
+};
+
+const mapToDepartment = (item: any): DepartmentListItem => ({
+  id: item.id ?? item.id ?? '',
+  name: item.department_name ?? item.name ?? '',
+  description: item.department_description ?? item.description ?? null,
+  divisionId: item.division_id ?? null,
+  divisionName: item.division_name ?? null,
+  memoNumber: item.department_decree_number ?? null,
+  skFile: toFileSummary(item.department_decree_file_url ?? item.department_decree_file ?? null),
+});
 
 interface UseDepartmentsReturn {
   departments: DepartmentListItem[];
@@ -42,7 +66,7 @@ export const useDepartments = (): UseDepartmentsReturn => {
     setError(null);
     
     try {
-      const response = await departmentsService.getList({
+      const result = await departmentsService.getList({
         page,
         pageSize,
         search: filter?.search ?? search,
@@ -51,9 +75,16 @@ export const useDepartments = (): UseDepartmentsReturn => {
         sortOrder: filter?.sortOrder ?? sortOrder,
       });
       
-      setDepartments(response.data);
-      setTotal(response.total);
-      setTotalPages(response.totalPages);
+      const payload = (result as any);
+      const items = payload?.data?.data ?? [];
+      const total = payload?.data?.total ?? (items?.length || 0);
+      const currentPage = payload?.data?.current_page ?? page;
+      const perPage = payload?.data?.per_page ?? pageSize;
+      const totalPagesCount = perPage ? Math.ceil(total / perPage) : 1;
+      
+      setDepartments((items || []).map(mapToDepartment));
+      setTotal(total);
+      setTotalPages(totalPagesCount);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch departments');
     } finally {
@@ -67,7 +98,9 @@ export const useDepartments = (): UseDepartmentsReturn => {
     setError(null);
     
     try {
-      const newDepartment = await departmentsService.create(departmentData);
+      const created = await departmentsService.create(departmentData);
+      const item = (created as any).data as any;
+      const newDepartment = mapToDepartment(item);
       setDepartments(prev => [...prev, newDepartment]);
       await fetchDepartments();
     } catch (err) {
@@ -84,7 +117,9 @@ export const useDepartments = (): UseDepartmentsReturn => {
     setError(null);
     
     try {
-      const updatedDepartment = await departmentsService.update(id, departmentData);
+      const updated = await departmentsService.update(id, departmentData);
+      const item = (updated as any).data as any;
+      const updatedDepartment = mapToDepartment(item);
       setDepartments(prev => prev.map(department => 
         department.id === id ? updatedDepartment : department
       ));

@@ -1,7 +1,33 @@
 import { useState, useCallback, useEffect } from 'react';
 import { officesService } from '../services/request/OfficesService';
-import { OfficeListItem, TableFilter } from '../types/OrganizationApiTypes';
+import { OfficeListItem, TableFilter, FileSummary } from '../types/OrganizationApiTypes';
 import useFilterStore from '../../../stores/filterStore';
+
+// Mapping helpers
+const toFileSummary = (url: string | null): FileSummary | null => {
+  if (!url) return null;
+  const parts = url.split('/');
+  const fileName = parts[parts.length - 1] || '';
+  const ext = fileName.includes('.') ? (fileName.split('.').pop() || '') : '';
+  return {
+    fileName,
+    fileUrl: url,
+    fileType: ext,
+    size: null,
+  };
+};
+
+const mapToOffice = (item: any): OfficeListItem => ({
+  id: item.id ?? item.id ?? '',
+  name: item.office_name ?? item.name ?? '',
+  description: item.office_description ?? item.description ?? null,
+  memoNumber: item.office_decree_number ?? item.memoNumber ?? null,
+  skFile: toFileSummary(item.office_decree_file_url ?? item.office_decree_file ?? null),
+  companyId: item.id_company ?? null,
+  companyIds: Array.isArray(item.companies)
+    ? item.companies.map((company: any) => company.id ?? company.id_company ?? null).filter(Boolean)
+    : item.id_company ? [item.id_company] : [],
+});
 
 interface UseOfficesReturn {
   offices: OfficeListItem[];
@@ -43,7 +69,7 @@ export const useOffices = (): UseOfficesReturn => {
     setError(null);
     
     try {
-      const response = await officesService.getList({
+      const result = await officesService.getList({
         page,
         pageSize,
         search: filter?.search ?? search,
@@ -52,9 +78,16 @@ export const useOffices = (): UseOfficesReturn => {
         sortOrder: filter?.sortOrder ?? sortOrder,
       });
       
-      setOffices(response.data);
-      setTotal(response.total);
-      setTotalPages(response.totalPages);
+      const payload = (result as any);
+      const items = payload?.data?.data ?? [];
+      const total = payload?.data?.total ?? (items?.length || 0);
+      const currentPage = payload?.data?.current_page ?? page;
+      const perPage = payload?.data?.per_page ?? pageSize;
+      const totalPagesCount = perPage ? Math.ceil(total / perPage) : 1;
+      
+      setOffices((items || []).map(mapToOffice));
+      setTotal(total);
+      setTotalPages(totalPagesCount);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch offices');
     } finally {
@@ -68,7 +101,9 @@ export const useOffices = (): UseOfficesReturn => {
     setError(null);
     
     try {
-      const newOffice = await officesService.create(officeData as any);
+      const created = await officesService.create(officeData as any);
+      const item = (created as any).data as any;
+      const newOffice = mapToOffice(item);
       setOffices(prev => [...prev, newOffice]);
       await fetchOffices();
     } catch (err) {
@@ -85,7 +120,9 @@ export const useOffices = (): UseOfficesReturn => {
     setError(null);
     
     try {
-      const updatedOffice = await officesService.update(id, officeData as any);
+      const updated = await officesService.update(id, officeData as any);
+      const item = (updated as any).data as any;
+      const updatedOffice = mapToOffice(item);
       setOffices(prev => prev.map(office => 
         office.id === id ? updatedOffice : office
       ));

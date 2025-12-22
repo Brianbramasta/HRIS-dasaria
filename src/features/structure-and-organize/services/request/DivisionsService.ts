@@ -1,33 +1,6 @@
 import { apiService } from '../../../../services/api';
-import {
-  PaginatedResponse,
-  TableFilter,
-  DivisionListItem,
-  FileSummary,
-} from '../../types/OrganizationApiTypes';
 
-const toFileSummary = (url: string | null): FileSummary | null => {
-  if (!url) return null;
-  const parts = url.split('/');
-  const fileName = parts[parts.length - 1] || '';
-  const ext = fileName.includes('.') ? (fileName.split('.').pop() || '') : '';
-  return {
-    fileName,
-    fileUrl: url,
-    fileType: ext,
-    size: null,
-  };
-};
-
-const mapToDivision = (item: any): DivisionListItem => ({
-  id:  item.id ?? '',
-  name: item.division_name ?? item.name ?? '',
-  description: item.division_description ?? item.description ?? null,
-  directorateId: item.directorate_id ?? null,
-  directorateName: item.directorate_name ?? null,
-  memoNumber: item.division_decree_number ?? null,
-  skFile: toFileSummary(item.division_decree_file_url ?? item.division_decree_file ?? null),
-});
+const BaseUrl = '/organizational-structure/division-master-data/';
 
 const toSortField = (field?: string): string => {
   const map: Record<string, string> = {
@@ -50,7 +23,7 @@ const appendFilters = (params: URLSearchParams, filter?: string | string[]) => {
 };
 
 export const divisionsService = {
-  getList: async (filter: TableFilter): Promise<PaginatedResponse<DivisionListItem>> => {
+  getList: async (filter: any): Promise<any> => {
     const params = new URLSearchParams();
     if (filter.page) params.append('page', String(filter.page));
     if (filter.pageSize) params.append('per_page', String(filter.pageSize));
@@ -62,29 +35,14 @@ export const divisionsService = {
       params.append('sort', `${field}:${order}`);
     }
     const qs = params.toString();
-    const result = await apiService.get<any>(`/organizational-structure/divisions${qs ? `?${qs}` : ''}`);
-    const payload = (result as any);
-    const items = payload?.data?.data ?? [];
-    const total = payload?.data?.total ?? (items?.length || 0);
-    const page = payload?.data?.current_page ?? filter.page;
-    const perPage = payload?.data?.per_page ?? filter.pageSize;
-    const totalPages = perPage ? Math.ceil(total / perPage) : 1;
-    return {
-      data: (items || []).map(mapToDivision),
-      total,
-      page,
-      pageSize: perPage,
-      totalPages,
-    };
+    return apiService.get<any>(`${BaseUrl}divisions${qs ? `?${qs}` : ''}`);
   },
 
-  getById: async (id: string): Promise<DivisionListItem> => {
-    const result = await apiService.get<any>(`/organizational-structure/divisions/${id}`);
-    const item = (result as any).data as any;
-    return mapToDivision(item);
+  getById: async (id: string): Promise<any> => {
+    return apiService.get<any>(`${BaseUrl}divisions/${id}`);
   },
 
-  create: async (payload: { name: string; directorateId: string; description?: string | null; memoNumber: string; skFile: File; }): Promise<DivisionListItem> => {
+  create: async (payload: { name: string; directorateId: string; description?: string | null; memoNumber: string; skFile: File; }): Promise<any> => {
     const form = new FormData();
     form.append('division_name', payload.name);
     form.append('directorate_id', payload.directorateId);
@@ -94,14 +52,12 @@ export const divisionsService = {
     }
     form.append('division_decree_file', payload.skFile);
 
-    const created = await apiService.post<any>('/organizational-structure/divisions', form, {
+    return apiService.post<any>(`${BaseUrl}divisions`, form, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
-    const item = (created as any).data as any;
-    return mapToDivision(item);
   },
 
-  update: async (id: string, payload: { name?: string; directorateId?: string; description?: string | null; memoNumber: string; skFile?: File | null; }): Promise<DivisionListItem> => {
+  update: async (id: string, payload: { name?: string; directorateId?: string; description?: string | null; memoNumber: string; skFile?: File | null; }): Promise<any> => {
     const form = new FormData();
     form.append('_method', 'PATCH');
     if (payload.name !== undefined) form.append('division_name', payload.name);
@@ -112,30 +68,25 @@ export const divisionsService = {
     }
     if (payload.skFile) form.append('division_decree_file', payload.skFile);
 
-    const updated = await apiService.post<any>(`/organizational-structure/divisions/${id}`, form, {
+    return apiService.post<any>(`${BaseUrl}divisions/${id}`, form, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
-    const item = (updated as any).data as any;
-    return mapToDivision(item);
   },
 
-  delete: async (id: string, payload: { memoNumber: string; skFile: File; }): Promise<{ success: true }> => {
+  delete: async (id: string, payload: { memoNumber: string; skFile: File; }): Promise<any> => {
     const form = new FormData();
     form.append('_method', 'DELETE');
     if (payload.memoNumber) form.append('division_deleted_decree_number', payload.memoNumber);
     if (payload.skFile) form.append('division_deleted_decree_file', payload.skFile);
-    const resp = await apiService.post<any>(`/organizational-structure/divisions/${id}`, form, {
+    return apiService.post<any>(`${BaseUrl}divisions/${id}`, form, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
-    return { success: !!(resp as any).success } as { success: true };
   },
   // Mengambil dropdown divisi untuk kebutuhan select
-  getDropdown: async (search?: string): Promise<DivisionListItem[]> => {
+  getDropdown: async (search?: string): Promise<any> => {
     const params = new URLSearchParams();
     if (search) params.append('search', search);
     const qs = params.toString();
-    const result = await apiService.get<any>(`/organizational-structure/divisions-dropdown${qs ? `?${qs}` : ''}`);
-    const items = (result as any)?.data ?? [];
-    return (items || []).map(mapToDivision);
+    return apiService.get<any>(`${BaseUrl}divisions-dropdown${qs ? `?${qs}` : ''}`);
   },
 };

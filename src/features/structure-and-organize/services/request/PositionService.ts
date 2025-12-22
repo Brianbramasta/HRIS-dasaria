@@ -1,36 +1,6 @@
 import { apiService } from '../../../../services/api';
-import {
-  PaginatedResponse,
-  TableFilter,
-  PositionListItem,
-  FileSummary,
-} from '../../types/OrganizationApiTypes';
 
-// Penyesuaian service Jabatan sesuai kontrak API 1.7 (job-title)
-const toFileSummary = (url: string | null): FileSummary | null => {
-  if (!url) return null;
-  const parts = url.split('/');
-  const fileName = parts[parts.length - 1] || '';
-  const ext = fileName.includes('.') ? (fileName.split('.').pop() || '') : '';
-  return {
-    fileName,
-    fileUrl: url,
-    fileType: ext,
-    size: null,
-  };
-};
-
-const mapToPosition = (item: any): PositionListItem => ({
-  id: item.id ?? item.id ?? '',
-  name: item.job_title_name ?? item.name ?? '',
-  grade: item.grade ?? null,
-  jobDescription: item.job_title_description ?? item.description ?? null,
-  directSubordinates: typeof item.direct_subordinate === 'string'
-    ? item.direct_subordinate.split(',').map((s: string) => s.trim()).filter(Boolean)
-    : Array.isArray(item.direct_subordinate) ? item.direct_subordinate : [],
-  memoNumber: item.job_title_decree_number ?? null,
-  skFile: toFileSummary(item.job_title_decree_file_url ?? item.job_title_decree_file ?? null),
-});
+const BaseUrl = '/organizational-structure/job-master-data/';
 
 const toSortField = (field?: string): string => {
   const map: Record<string, string> = {
@@ -56,7 +26,7 @@ const appendFilters = (params: URLSearchParams, filter?: string | string[]) => {
 
 export const positionsService = {
   // Mengambil list jabatan dengan query sesuai kontrak API
-  getList: async (filter: TableFilter): Promise<PaginatedResponse<PositionListItem>> => {
+  getList: async (filter: any): Promise<any> => {
     const params = new URLSearchParams();
     if (filter.page) params.append('page', String(filter.page));
     if (filter.pageSize) params.append('per_page', String(filter.pageSize));
@@ -68,44 +38,18 @@ export const positionsService = {
       params.append('sort', `${field}:${order}`);
     }
     const qs = params.toString();
-    const result = await apiService.get<any>(`/organizational-structure/job-title${qs ? `?${qs}` : ''}`);
-    const payload = (result as any);
-    const items = payload?.data?.data ?? [];
-    const total = payload?.data?.total ?? (items?.length || 0);
-    const page = payload?.data?.current_page ?? filter.page;
-    const perPage = payload?.data?.per_page ?? filter.pageSize;
-    const totalPages = perPage ? Math.ceil(total / perPage) : 1;
-    return {
-      data: (items || []).map(mapToPosition),
-      total,
-      page,
-      pageSize: perPage,
-      totalPages,
-    };
+    return apiService.get<any>(`${BaseUrl}job-title${qs ? `?${qs}` : ''}`);
   },
 
   // Dokumentasi: Mengambil dropdown jabatan sesuai pola collection 1.8
-  getDropdown: async (search?: string): Promise<PositionListItem[]> => {
+  getDropdown: async (search?: string): Promise<any> => {
     const qs = search ? `?search=${encodeURIComponent(search)}` : '';
-    const result = await apiService.get<any>(`/organizational-structure/job-title-dropdown${qs}`);
-    const items = (result as any).data as { id: string; job_title_name: string }[];
-    return (items || []).map((i) => ({
-      id: i.id,
-      name: i.job_title_name,
-      grade: null,
-      jobDescription: null,
-      directSubordinates: [],
-      memoNumber: null,
-      skFile: null,
-    }));
+    return apiService.get<any>(`${BaseUrl}job-title-dropdown${qs}`);
   },
 
   // Dokumentasi: Mengambil detail jabatan berdasarkan ID sesuai kontrak API 1.7 (GET /organizational-structure/job-title/{id_job_title})
-  detail: async (id: string): Promise<PositionListItem> => {
-    const result = await apiService.get<any>(`/organizational-structure/job-title/${id}`);
-    const payload = (result as any);
-    const item = payload?.data?.data ?? payload?.data ?? payload;
-    return mapToPosition(item);
+  detail: async (id: string): Promise<any> => {
+    return apiService.get<any>(`${BaseUrl}job-title/${id}`);
   },
 
   // Menyimpan data jabatan (multipart/form-data)
@@ -116,7 +60,7 @@ export const positionsService = {
     directSubordinates?: string[];
     memoNumber: string;
     skFile: File;
-  }): Promise<PositionListItem> => {
+  }): Promise<any> => {
     const form = new FormData();
     form.append('job_title_name', payload.name);
     if (payload.grade !== undefined && payload.grade !== null) form.append('grade', payload.grade);
@@ -124,9 +68,7 @@ export const positionsService = {
     if (payload.directSubordinates && payload.directSubordinates.length > 0) form.append('direct_subordinate', payload.directSubordinates.join(', '));
     form.append('job_title_decree_number', payload.memoNumber);
     form.append('job_title_decree_file', payload.skFile);
-    const created = await apiService.post<any>('/organizational-structure/job-title', form, { headers: { 'Content-Type': 'multipart/form-data' } });
-    const item = (created as any).data as any;
-    return mapToPosition(item);
+    return apiService.post<any>(`${BaseUrl}job-title`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
   },
 
   // Update data jabatan (POST + _method=PATCH)
@@ -137,7 +79,7 @@ export const positionsService = {
     directSubordinates?: string[];
     memoNumber: string;
     skFile?: File | null;
-  }): Promise<PositionListItem> => {
+  }): Promise<any> => {
     const form = new FormData();
     form.append('_method', 'PATCH');
     if (payload.name !== undefined) form.append('job_title_name', payload.name);
@@ -146,18 +88,15 @@ export const positionsService = {
     if (payload.directSubordinates && payload.directSubordinates.length > 0) form.append('direct_subordinate', payload.directSubordinates.join(', '));
     form.append('job_title_decree_number', payload.memoNumber);
     if (payload.skFile) form.append('job_title_decree_file', payload.skFile);
-    const updated = await apiService.post<any>(`/organizational-structure/job-title/${id}`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
-    const item = (updated as any).data as any;
-    return mapToPosition(item);
+    return apiService.post<any>(`${BaseUrl}job-title/${id}`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
   },
 
   // Hapus data jabatan (POST + _method=DELETE)
-  delete: async (id: string, payload: { memoNumber: string; skFile?: File; }): Promise<{ success: true }> => {
+  delete: async (id: string, payload: { memoNumber: string; skFile?: File; }): Promise<any> => {
     const form = new FormData();
     form.append('_method', 'DELETE');
     if (payload.memoNumber) form.append('job_title_deleted_decree_number', payload.memoNumber);
     if (payload.skFile) form.append('job_title_deleted_decree_file', payload.skFile);
-    const resp = await apiService.post<any>(`/organizational-structure/job-title/${id}`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
-    return { success: !!(resp as any).success } as { success: true };
+    return apiService.post<any>(`${BaseUrl}job-title/${id}`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
   },
 };

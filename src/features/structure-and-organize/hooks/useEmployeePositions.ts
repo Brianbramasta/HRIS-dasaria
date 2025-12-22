@@ -1,7 +1,39 @@
 import { useState, useCallback } from 'react';
 import { employeePositionsService } from '../services/request/EmployeePositionsService';
-import { EmployeePositionListItem, TableFilter } from '../types/OrganizationApiTypes';
+import { EmployeePositionListItem, TableFilter, FileSummary } from '../types/OrganizationApiTypes';
 import useFilterStore from '../../../stores/filterStore';
+
+// Mapping helpers
+const toFileSummary = (url: string | null): FileSummary | null => {
+  if (!url) return null;
+  const parts = url.split('/');
+  const fileName = parts[parts.length - 1] || '';
+  const ext = fileName.includes('.') ? (fileName.split('.').pop() || '') : '';
+  return {
+    fileName,
+    fileUrl: url,
+    fileType: ext,
+    size: null,
+  };
+};
+
+const mapToEmployeePosition = (item: any): EmployeePositionListItem => ({
+  id: item.id ?? item.id ?? '',
+  name: item.position_name ?? item.name ?? '',
+  positionId: item.job_title_id ?? item.positionId ?? null,
+  positionName: item.job_title_name ?? item.positionName ?? null,
+  directorateId: item.directorate_id ?? item.directorateId ?? null,
+  directorateName: item.directorate_name ?? item.directorateName ?? null,
+  divisionId: item.division_id ?? item.divisionId ?? null,
+  divisionName: item.division_name ?? item.divisionName ?? null,
+  departmentId: item.department_id ?? item.departmentId ?? null,
+  departmentName: item.department_name ?? item.departmentName ?? null,
+  description: item.position_description ?? item.description ?? null,
+  startDate: item.start_date ?? item.startDate ?? null,
+  endDate: item.end_date ?? item.endDate ?? null,
+  memoNumber: item.position_decree_number ?? item.memoNumber ?? null,
+  skFile: toFileSummary(item.position_decree_file_url ?? item.position_decree_file ?? null),
+});
 
 interface UseEmployeePositionsReturn {
   employeePositions: EmployeePositionListItem[];
@@ -65,8 +97,7 @@ export const useEmployeePositions = (): UseEmployeePositionsReturn => {
     setError(null);
     
     try {
-      // Dokumentasi: dukung override page & pageSize dari parameter agar event eksternal tidak membaca state lama
-      const response = await employeePositionsService.getList({
+      const result = await employeePositionsService.getList({
         page: filter?.page ?? page,
         pageSize: filter?.pageSize ?? pageSize,
         search: filter?.search ?? search,
@@ -75,9 +106,24 @@ export const useEmployeePositions = (): UseEmployeePositionsReturn => {
         sortOrder: filter?.sortOrder ?? sortOrder,
       });
       
-      setEmployeePositions(response.data);
-      setTotal(response.total);
-      setTotalPages(response.totalPages);
+      const payload = (result as any);
+      const topData = payload?.data;
+      const items = Array.isArray(topData)
+        ? topData
+        : Array.isArray(topData?.data)
+          ? topData.data
+          : Array.isArray(payload?.data?.data)
+            ? payload.data.data
+            : [];
+      const pagination = payload?.pagination ?? (Array.isArray(topData) ? undefined : topData) ?? {};
+      const total = pagination?.total ?? items.length ?? 0;
+      const currentPage = pagination?.current_page ?? filter?.page ?? page ?? 1;
+      const perPage = pagination?.per_page ?? filter?.pageSize ?? pageSize ?? items.length;
+      const totalPagesCount = pagination?.last_page ?? (perPage ? Math.ceil(total / perPage) : 1);
+      
+      setEmployeePositions((items || []).map(mapToEmployeePosition));
+      setTotal(total);
+      setTotalPages(totalPagesCount);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch employee positions');
     } finally {
@@ -101,7 +147,10 @@ export const useEmployeePositions = (): UseEmployeePositionsReturn => {
     setError(null);
     
     try {
-      const newEmployeePosition = await employeePositionsService.create(employeePositionData);
+      const created = await employeePositionsService.create(employeePositionData);
+      const body = (created as any).data ?? {};
+      const item = body?.data ?? body;
+      const newEmployeePosition = mapToEmployeePosition(item);
       setEmployeePositions(prev => [...prev, newEmployeePosition]);
       await fetchEmployeePositions();
     } catch (err) {
@@ -128,7 +177,10 @@ export const useEmployeePositions = (): UseEmployeePositionsReturn => {
     setError(null);
     
     try {
-      const updatedEmployeePosition = await employeePositionsService.update(id, employeePositionData);
+      const updated = await employeePositionsService.update(id, employeePositionData);
+      const body = (updated as any).data ?? {};
+      const item = body?.data ?? body;
+      const updatedEmployeePosition = mapToEmployeePosition(item);
       setEmployeePositions(prev => prev.map(employeePosition => 
         employeePosition.id === id ? updatedEmployeePosition : employeePosition
       ));

@@ -1,24 +1,6 @@
 import { apiService } from '../../../../services/api';
-import {
-  PaginatedResponse,
-  TableFilter,
-  CompanyListItem,
-  CompanyDetailResponse,
-} from '../../types/OrganizationApiTypes';
 
 const BaseUrl = '/organizational-structure/company-master-data/companies';
-
-const mapToCompany = (item: any): CompanyListItem => ({
-  id: item.id ?? item.uuid_perusahaan ?? item.id ?? '',
-  name: item.company_name ?? item.nama_perusahaan ?? item.name ?? '',
-  description: item.company_description ?? item.deskripsi_perusahaan ?? item.description ?? null,
-  businessLineId: item.id_bl ?? item.fk_uuid_lini_bisnis ?? item.businessLineId ?? null,
-  businessLineName:
-  item.business_line_name ?? item.businessLineName ?? item.lini_bisnis?.nama_lini_bisnis ?? item.bl_name ??item.business_line?.bl_name ?? null,
-  memoNumber: item.company_decree_number ?? item.memoNumber ?? null,
-  skFile: null,
-  logo: item.logo ?? null,
-});
 
 const toSortField = (field?: string): string => {
   const map: Record<string, string> = {
@@ -42,7 +24,7 @@ const appendFilters = (params: URLSearchParams, filter?: string | string[]) => {
 };
 
 export const companiesService = {
-  getList: async (filter: TableFilter): Promise<PaginatedResponse<CompanyListItem>> => {
+  getList: async (filter: any): Promise<any> => {
     const params = new URLSearchParams();
     if (filter.page) params.append('page', String(filter.page));
     if (filter.pageSize) params.append('per_page', String(filter.pageSize));
@@ -53,98 +35,18 @@ export const companiesService = {
       params.append('sort', filter.sortOrder);
     }
     const qs = params.toString();
-    const result = await apiService.get<any>(`${BaseUrl}${qs ? `?${qs}` : ''}`);
-    const payload = (result as any);
-    const topData = payload?.data;
-    const items = Array.isArray(topData)
-      ? topData
-      : Array.isArray(topData?.data)
-        ? topData.data
-        : Array.isArray(payload?.data?.data)
-          ? payload.data.data
-          : [];
-    const pagination = payload?.pagination ?? (Array.isArray(topData) ? undefined : topData) ?? {};
-    const total = pagination?.total ?? items.length ?? 0;
-    const page = pagination?.current_page ?? filter.page ?? 1;
-    const perPage = pagination?.per_page ?? filter.pageSize ?? items.length;
-    const totalPages = pagination?.last_page ?? (perPage ? Math.ceil(total / perPage) : 1);
-
-    console.log('data1', items);
-    console.log('mapToCompany1', mapToCompany);
-    return {
-      data: (items || []).map(mapToCompany),
-      total,
-      page,
-      pageSize: perPage,
-      totalPages,
-    };
+    return apiService.get<any>(`${BaseUrl}${qs ? `?${qs}` : ''}`);
   },
 
-  getDropdown: async (): Promise<Array<{ id: string; name: string }>> => {
-    const result = await apiService.get<any>(`/organizational-structure/companies-dropdown`);
-    const body = (result as any)?.data ?? {};
-    const items = Array.isArray(body)
-      ? body
-      : Array.isArray(body?.data)
-        ? body.data
-        : Array.isArray((result as any)?.data?.data)
-          ? (result as any).data.data
-          : [];
-    return (items || []).map((it: any) => ({
-      id: it.id ?? it.uuid_perusahaan ?? it.id ?? '',
-      name: it.company_name ?? it.nama_perusahaan ?? it.name ?? '',
-    }));
+  getDropdown: async (): Promise<any> => {
+    return apiService.get<any>(`/organizational-structure/companies-dropdown`);
   },
 
-  getDetail: async (id: string): Promise<CompanyDetailResponse> => {
-    const result = await apiService.get<any>(`${BaseUrl}/${id}/detail`);
-    const body = (result as any).data ?? {};
-    const item = body.data ?? body;
-    const company = mapToCompany(item);
-    return {
-      company: {
-        id: company.id,
-        name: company.name,
-        logo: company.logo ?? null,
-        businessLineId: company.businessLineId ?? null,
-        businessLineName: company.businessLineName ?? null,
-        description: company.description,
-        address: item.address ?? null,
-        employeeCount: item.total_employees ?? item.employee_count ?? item.employees ?? null,
-        postalCode: item.postal_code ?? item.postal ?? null,
-        email: item.email ?? null,
-        phone: item.phone ?? null,
-        industry: item.industry ?? null,
-        founded: item.founded_year ?? null,
-        type: item.company_type ?? item.type ?? null,
-        website: item.website ?? null,
-        createdAt: item.created_at ?? null,
-        memoNumber: company.memoNumber ?? null,
-        skFile: null,
-      },
-      branches: Array.isArray(item.offices)
-        ? item.offices.map((o: any) => ({
-            id: o.id_office ?? o.id ?? '',
-            name: o.office_name ?? o.name ?? '',
-            address: o.address ?? null,
-            employeeCount: o.office_employee_count ?? o.employee_count ?? null,
-          }))
-        : [],
-      documents: Array.isArray(item.documents)
-        ? item.documents.map((d: any) => {
-            return {
-              id:d.id_cd?? '',
-              fileName: d.cd_name ?? d.name ?? '',
-              number: d.cd_decree_number ?? d.memoNumber ?? '',
-              type: d.deleted_at ? 'archive' : 'active',
-              fileUrl: d.cd_file ?? d.url ?? d.link ?? null,
-            } as any;
-          })
-        : [],
-    };
+  getDetail: async (id: string): Promise<any> => {
+    return apiService.get<any>(`${BaseUrl}/${id}/detail`);
   },
 
-  create: async (payload: any): Promise<CompanyListItem> => {
+  create: async (payload: any): Promise<any> => {
     const formData = new FormData();
     formData.append('company_name', payload.name);
     formData.append('id_bl', payload.businessLineId);
@@ -172,9 +74,7 @@ export const companiesService = {
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
-    const body = (created as any).data ?? {};
-    const comp = body.company ?? body.data?.company ?? body.data ?? body;
-    return mapToCompany(comp);
+    return created;
   },
 
   update: async (id: string, payload: {
@@ -193,7 +93,7 @@ export const companiesService = {
     logoFileId?: string | null;
     memoNumber?: string;
     skFile?: File | null;
-  }): Promise<CompanyListItem> => {
+  }): Promise<any> => {
     const formData = new FormData();
     formData.append('_method', 'PUT');
     if (payload.name !== undefined) formData.append('company_name', payload.name);
@@ -215,9 +115,7 @@ export const companiesService = {
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
-    const body = (updated as any).data ?? {};
-    const comp = body.company ?? body.data?.company ?? body.data ?? body;
-    return mapToCompany(comp);
+    return updated;
   },
 
   // Dokumentasi singkat: Update data perusahaan by UUID sesuai kontrak API (PATCH)
@@ -237,7 +135,7 @@ export const companiesService = {
       description?: string | null;
       id_bl?: string | null;
     }
-  ): Promise<CompanyListItem> => {
+  ): Promise<any> => {
     const formData = new FormData();
     formData.append('_method', 'PATCH');
     if (payload.address !== undefined && payload.address !== null) formData.append('address', payload.address);
@@ -258,12 +156,10 @@ export const companiesService = {
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
-    const body = (updated as any).data ?? {};
-    const comp = body.company ?? body.data?.company ?? body.data ?? body;
-    return mapToCompany(comp);
+    return updated;
   },
 
-  delete: async (id: string, payload: { memoNumber: string; skFile: File; }): Promise<{ success: true }> => {
+  delete: async (id: string, payload: { memoNumber: string; skFile: File; }): Promise<any> => {
     const formData = new FormData();
     formData.append('_method', 'DELETE');
     if (payload.memoNumber) formData.append('company_delete_decree_number', payload.memoNumber);
@@ -273,16 +169,14 @@ export const companiesService = {
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
-    const body = (resp as any)?.data ?? {};
-    const status = body?.meta?.status ?? (resp as any)?.status ?? 200;
-    return { success: status === 200 } as { success: true };
+    return resp;
   },
 
   // Dokumentasi: Menambahkan dokumen perusahaan sesuai kontrak API
   addDocuments: async (
     id: string,
     documents: Array<{ name: string; number: string; file: File }>
-  ): Promise<Array<{ fileName: string; number: string; fileUrl: string | null }>> => {
+  ): Promise<any> => {
     const formData = new FormData();
     (documents || []).forEach((d, i) => {
       formData.append(`documents[${i}][cd_name]`, d.name);
@@ -294,26 +188,14 @@ export const companiesService = {
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
-    const body = (created as any)?.data ?? {};
-    const items = Array.isArray(body?.data)
-      ? body.data
-      : Array.isArray((created as any)?.data?.data)
-        ? (created as any).data.data
-        : Array.isArray(body)
-          ? body
-          : [];
-    return (items || []).map((d: any) => ({
-      fileName: d?.cd_name ?? '',
-      number: d?.cd_decree_number ?? '',
-      fileUrl: d?.cd_file ?? null,
-    }));
+    return created;
   },
 
   // Dokumentasi: Menghapus dokumen perusahaan sesuai kontrak API
   deleteDocuments: async (
     id: string,
     payload: { memoNumber: string; skFile: File }
-  ): Promise<{ success: true }> => {
+  ): Promise<any> => {
     const formData = new FormData();
     if (payload.memoNumber) formData.append('cd_deleted_decree', payload.memoNumber);
     if (payload.skFile) formData.append('cd_deleted_decree_file', payload.skFile);
@@ -322,8 +204,6 @@ export const companiesService = {
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
-    const body = (resp as any)?.data ?? {};
-    const status = body?.meta?.status ?? (resp as any)?.status ?? 200;
-    return { success: status === 200 } as { success: true };
+    return resp;
   },
 };

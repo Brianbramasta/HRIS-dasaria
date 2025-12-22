@@ -1,34 +1,6 @@
 import { apiService } from '../../../../services/api';
-import {
-  PaginatedResponse,
-  TableFilter,
-  DepartmentListItem,
-  FileSummary,
-} from '../../types/OrganizationApiTypes';
 
-// Penyesuaian service Departemen sesuai kontrak API 1.7 (departments)
-const toFileSummary = (url: string | null): FileSummary | null => {
-  if (!url) return null;
-  const parts = url.split('/');
-  const fileName = parts[parts.length - 1] || '';
-  const ext = fileName.includes('.') ? (fileName.split('.').pop() || '') : '';
-  return {
-    fileName,
-    fileUrl: url,
-    fileType: ext,
-    size: null,
-  };
-};
-
-const mapToDepartment = (item: any): DepartmentListItem => ({
-  id: item.id ?? item.id ?? '',
-  name: item.department_name ?? item.name ?? '',
-  description: item.department_description ?? item.description ?? null,
-  divisionId: item.division_id ?? null,
-  divisionName: item.division_name ?? null,
-  memoNumber: item.department_decree_number ?? null,
-  skFile: toFileSummary(item.department_decree_file_url ?? item.department_decree_file ?? null),
-});
+const BaseUrl = '/organizational-structure/department-master-data/';
 
 const toSortField = (field?: string): string => {
   const map: Record<string, string> = {
@@ -51,8 +23,7 @@ const appendFilters = (params: URLSearchParams, filter?: string | string[]) => {
 };
 
 export const departmentsService = {
-  // Mengambil list departemen dengan query sesuai kontrak API
-  getList: async (filter: TableFilter): Promise<PaginatedResponse<DepartmentListItem>> => {
+  getList: async (filter: any): Promise<any> => {
     const params = new URLSearchParams();
     if (filter.page) params.append('page', String(filter.page));
     if (filter.pageSize) params.append('per_page', String(filter.pageSize));
@@ -64,60 +35,29 @@ export const departmentsService = {
       params.append('sort', `${field}:${order}`);
     }
     const qs = params.toString();
-    const result = await apiService.get<any>(`/organizational-structure/departments${qs ? `?${qs}` : ''}`);
-    const payload = (result as any);
-    const items = payload?.data?.data ?? [];
-    const total = payload?.data?.total ?? (items?.length || 0);
-    const page = payload?.data?.current_page ?? filter.page;
-    const perPage = payload?.data?.per_page ?? filter.pageSize;
-    const totalPages = perPage ? Math.ceil(total / perPage) : 1;
-    return {
-      data: (items || []).map(mapToDepartment),
-      total,
-      page,
-      pageSize: perPage,
-      totalPages,
-    };
+    return apiService.get<any>(`${BaseUrl}departments${qs ? `?${qs}` : ''}`);
   },
 
-  // Mengambil detail departemen by ID sesuai kontrak API
-  getById: async (id: string): Promise<DepartmentListItem> => {
-    const result = await apiService.get<any>(`/organizational-structure/departments/${id}`);
-    const item = (result as any).data as any;
-    return mapToDepartment(item);
+  getById: async (id: string): Promise<any> => {
+    return apiService.get<any>(`${BaseUrl}departments/${id}`);
   },
 
-  // Dokumentasi: Mengambil dropdown departemen sesuai pola collection 1.9
-  getDropdown: async (search?: string): Promise<DepartmentListItem[]> => {
+  getDropdown: async (search?: string): Promise<any> => {
     const qs = search ? `?search=${encodeURIComponent(search)}` : '';
-    const result = await apiService.get<any>(`/organizational-structure/departments-dropdown${qs}`);
-    const items = (result as any).data as { id: string; department_name: string }[];
-    return (items || []).map((i) => ({
-      id: i.id,
-      name: i.department_name,
-      description: null,
-      divisionId: null,
-      divisionName: null,
-      memoNumber: null,
-      skFile: null,
-    }));
+    return apiService.get<any>(`${BaseUrl}departments-dropdown${qs}`);
   },
 
-  // Menyimpan data departemen (multipart/form-data)
-  create: async (payload: { name: string; divisionId: string; description?: string | null; memoNumber: string; skFile: File; }): Promise<DepartmentListItem> => {
+  create: async (payload: { name: string; divisionId: string; description?: string | null; memoNumber: string; skFile: File; }): Promise<any> => {
     const form = new FormData();
     form.append('department_name', payload.name);
     form.append('division_id', payload.divisionId);
     form.append('department_decree_number', payload.memoNumber);
     if (payload.description !== undefined && payload.description !== null) form.append('department_description', payload.description);
     form.append('department_decree_file', payload.skFile);
-    const created = await apiService.post<any>('/organizational-structure/departments', form, { headers: { 'Content-Type': 'multipart/form-data' } });
-    const item = (created as any).data as any;
-    return mapToDepartment(item);
+    return apiService.post<any>(`${BaseUrl}departments`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
   },
 
-  // Update data departemen (POST + _method=PATCH)
-  update: async (id: string, payload: { name?: string; divisionId?: string; description?: string | null; memoNumber: string; skFile?: File | null; }): Promise<DepartmentListItem> => {
+  update: async (id: string, payload: { name?: string; divisionId?: string; description?: string | null; memoNumber: string; skFile?: File | null; }): Promise<any> => {
     const form = new FormData();
     form.append('_method', 'PATCH');
     if (payload.name !== undefined) form.append('department_name', payload.name);
@@ -125,18 +65,14 @@ export const departmentsService = {
     form.append('department_decree_number', payload.memoNumber);
     if (payload.description !== undefined && payload.description !== null) form.append('department_description', payload.description);
     if (payload.skFile) form.append('department_decree_file', payload.skFile);
-    const updated = await apiService.post<any>(`/organizational-structure/departments/${id}`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
-    const item = (updated as any).data as any;
-    return mapToDepartment(item);
+    return apiService.post<any>(`${BaseUrl}departments/${id}`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
   },
 
-  // Hapus data departemen (POST + _method=DELETE)
-  delete: async (id: string, payload: { memoNumber: string; skFile?: File; }): Promise<{ success: true }> => {
+  delete: async (id: string, payload: { memoNumber: string; skFile?: File; }): Promise<any> => {
     const form = new FormData();
     form.append('_method', 'DELETE');
     if (payload.memoNumber) form.append('department_deleted_decree_number', payload.memoNumber);
     if (payload.skFile) form.append('department_deleted_decree_file', payload.skFile);
-    const resp = await apiService.post<any>(`/organizational-structure/departments/${id}`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
-    return { success: !!(resp as any).success } as { success: true };
+    return apiService.post<any>(`${BaseUrl}departments/${id}`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
   },
 };

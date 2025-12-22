@@ -1,8 +1,32 @@
 // Penyesuaian hooks Divisi agar sesuai kontrak API terbaru (1.7)
 import { useState, useCallback, useEffect } from 'react';
 import { divisionsService } from '../services/request/DivisionsService';
-import { DivisionListItem, TableFilter } from '../types/OrganizationApiTypes';
+import { DivisionListItem, TableFilter, FileSummary } from '../types/OrganizationApiTypes';
 import useFilterStore from '../../../stores/filterStore';
+
+// Mapping helpers
+const toFileSummary = (url: string | null): FileSummary | null => {
+  if (!url) return null;
+  const parts = url.split('/');
+  const fileName = parts[parts.length - 1] || '';
+  const ext = fileName.includes('.') ? (fileName.split('.').pop() || '') : '';
+  return {
+    fileName,
+    fileUrl: url,
+    fileType: ext,
+    size: null,
+  };
+};
+
+const mapToDivision = (item: any): DivisionListItem => ({
+  id: item.id ?? '',
+  name: item.division_name ?? item.name ?? '',
+  description: item.division_description ?? item.description ?? null,
+  directorateId: item.directorate_id ?? null,
+  directorateName: item.directorate_name ?? null,
+  memoNumber: item.division_decree_number ?? null,
+  skFile: toFileSummary(item.division_decree_file_url ?? item.division_decree_file ?? null),
+});
 
 interface UseDivisionsReturn {
   divisions: DivisionListItem[];
@@ -44,7 +68,7 @@ export const useDivisions = (): UseDivisionsReturn => {
     setError(null);
     
     try {
-      const response = await divisionsService.getList({
+      const result = await divisionsService.getList({
         page,
         pageSize,
         search: filter?.search ?? search,
@@ -53,9 +77,16 @@ export const useDivisions = (): UseDivisionsReturn => {
         sortOrder: filter?.sortOrder ?? sortOrder,
       });
       
-      setDivisions(response.data);
-      setTotal(response.total);
-      setTotalPages(response.totalPages);
+      const payload = (result as any);
+      const items = payload?.data?.data ?? [];
+      const total = payload?.data?.total ?? (items?.length || 0);
+      const currentPage = payload?.data?.current_page ?? page;
+      const perPage = payload?.data?.per_page ?? pageSize;
+      const totalPagesCount = perPage ? Math.ceil(total / perPage) : 1;
+      
+      setDivisions((items || []).map(mapToDivision));
+      setTotal(total);
+      setTotalPages(totalPagesCount);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch divisions');
     } finally {
@@ -69,7 +100,9 @@ export const useDivisions = (): UseDivisionsReturn => {
     setError(null);
     
     try {
-      const newDivision = await divisionsService.create(divisionData);
+      const created = await divisionsService.create(divisionData);
+      const item = (created as any).data as any;
+      const newDivision = mapToDivision(item);
       setDivisions(prev => [...prev, newDivision]);
       await fetchDivisions();
     } catch (err) {
@@ -86,7 +119,9 @@ export const useDivisions = (): UseDivisionsReturn => {
     setError(null);
     
     try {
-      const updatedDivision = await divisionsService.update(id, divisionData);
+      const updated = await divisionsService.update(id, divisionData);
+      const item = (updated as any).data as any;
+      const updatedDivision = mapToDivision(item);
       setDivisions(prev => prev.map(division => 
         division.id === id ? updatedDivision : division
       ));
@@ -136,7 +171,9 @@ export const useDivisions = (): UseDivisionsReturn => {
 
   // Optional: menyediakan helper dropdown divisi sesuai kebutuhan form
   const getDropdown = useCallback(async (search?: string) => {
-    return divisionsService.getDropdown(search);
+    const result = await divisionsService.getDropdown(search);
+    const items = (result as any)?.data ?? [];
+    return (items || []).map(mapToDivision);
   }, []);
 
   useEffect(() => {
