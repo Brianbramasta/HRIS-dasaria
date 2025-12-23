@@ -120,6 +120,8 @@ interface UseCompaniesReturn {
     skFileId: string;
   }) => Promise<CompanyListItem | null>;
   deleteCompany: (id: string, payload: { memoNumber: string; skFile: File; }) => Promise<boolean>;
+  getDropdown: () => Promise<any[]>;
+  getDetail: (id: string) => Promise<any>;
   
   // Pagination
   setPage: (page: number) => void;
@@ -284,6 +286,26 @@ export const useCompanies = (): UseCompaniesReturn => {
     }
   }, [fetchCompanies]);
 
+  const getDropdown = useCallback(async (): Promise<any[]> => {
+    try {
+      const result = await companiesService.getDropdown();
+      return result.data || [];
+    } catch (err) {
+      console.error('Error fetching company dropdown:', err);
+      return [];
+    }
+  }, []);
+
+  const getDetail = useCallback(async (id: string): Promise<any> => {
+    try {
+      const result = await companiesService.getDetail(id);
+      return result;
+    } catch (err) {
+      console.error('Error fetching company detail:', err);
+      throw err;
+    }
+  }, []);
+
   useEffect(() => {
     fetchCompanies();
   }, [search, sortBy, sortOrder, page, pageSize, filterValue, fetchCompanies]);
@@ -301,6 +323,8 @@ export const useCompanies = (): UseCompaniesReturn => {
     createCompany,
     updateCompany,
     deleteCompany,
+    getDropdown,
+    getDetail,
     
     setPage,
     setPageSize,

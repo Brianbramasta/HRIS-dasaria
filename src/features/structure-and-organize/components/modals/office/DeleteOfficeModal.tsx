@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-// import { Modal } from '../../../../../components/ui/modal/index';
-import { officesService } from '../../../services/request/OfficesService';
 import type { OfficeListItem } from '../../../types/OrganizationApiTypes';
 import ModalDelete from '../../../../../components/shared/modal/ModalDelete';
 import ModalDeleteContent from '../../../../../components/shared/modal/ModalDeleteContent';
 import { addNotification } from '@/stores/notificationStore';
 import { useFileStore } from '@/stores/fileStore';
+import { useOffices } from '../../../hooks/useOffices';
 
 
 interface DeleteOfficeModalProps {
@@ -20,6 +19,7 @@ const DeleteOfficeModal: React.FC<DeleteOfficeModalProps> = ({ isOpen, onClose, 
   const [skFileName, setSkFileName] = useState('');
   const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
+  const { deleteOffice } = useOffices();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
@@ -39,7 +39,7 @@ const DeleteOfficeModal: React.FC<DeleteOfficeModalProps> = ({ isOpen, onClose, 
         }
     setSubmitting(true);
     try {
-      await officesService.delete(office.id, {
+      await deleteOffice(office.id, {
         memoNumber: memoNumber.trim(),
         skFile: skFile.file as File,
       });

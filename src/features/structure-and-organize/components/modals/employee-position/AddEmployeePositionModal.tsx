@@ -1,16 +1,16 @@
-// Dokumentasi: Modal tambah Posisi Pegawai dengan dropdown dinamis menggunakan service
+// Dokumentasi: Modal tambah Posisi Pegawai dengan dropdown dinamis menggunakan hooks
 import React, { useEffect, useMemo, useState } from 'react';
-import { employeePositionsService } from '../../../services/request/EmployeePositionsService';
 import type { EmployeePositionListItem } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import FileInput from '../../../../../components/shared/field/FileInput';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
 import { addNotification } from '@/stores/notificationStore';
 import Select from '@/components/form/Select';
-import { positionsService } from '../../../services/request/PositionService';
-import { directoratesService } from '../../../services/request/DirectoratesService';
-import { divisionsService } from '../../../services/request/DivisionsService';
-import { departmentsService } from '../../../services/request/DepartmentsService';
+import { useEmployeePositions } from '../../../hooks/useEmployeePositions';
+import { usePositions } from '../../../hooks/usePositions';
+import { useDirectorates } from '../../../hooks/useDirectorates';
+import { useDivisions } from '../../../hooks/useDivisions';
+import { useDepartments } from '../../../hooks/useDepartments';
 
 interface AddEmployeePositionModalProps {
   isOpen: boolean;
@@ -28,6 +28,11 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
   const [description, setDescription] = useState('');
   const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
+  const { createEmployeePosition } = useEmployeePositions();
+  const { getDropdown: getPositionDropdown } = usePositions();
+  const { getDropdown: getDirectorateDropdown } = useDirectorates();
+  const { getDropdown: getDivisionDropdown } = useDivisions();
+  const { getDropdown: getDepartmentDropdown } = useDepartments();
   // Dokumentasi: state opsi dropdown (posisi/jabatan, direktorat, divisi, departemen)
   const [positionOptions, setPositionOptions] = useState<{ value: string; label: string }[]>([]);
   const [directorateOptions, setDirectorateOptions] = useState<{ value: string; label: string }[]>([]);
@@ -46,26 +51,26 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
     if (!isOpen) return;
     (async () => {
       try {
-        // Dokumentasi: posisi/jabatan - gunakan endpoint dropdown dari service
-        const posItems = await positionsService.getDropdown('');
-        setPositionOptions((posItems.data || []).map((p:any) => ({ value: p.id, label: p.job_title_name })));
+        // Dokumentasi: posisi/jabatan - gunakan endpoint dropdown dari hook
+        const posItems = await getPositionDropdown('');
+        setPositionOptions((posItems || []).map((p:any) => ({ value: p.id, label: p.job_title_name })));
 
         // direktorat: endpoint dropdown
-        const dirItems = await directoratesService.getDropdown('');
-        setDirectorateOptions((dirItems.data || []).map((d:any) => ({ value: d.id, label: d.directorate_name })));
+        const dirItems = await getDirectorateDropdown('');
+        setDirectorateOptions((dirItems || []).map((d:any) => ({ value: d.id, label: d.directorate_name })));
 
         // divisi: endpoint dropdown
-        const divItems = await divisionsService.getDropdown('');
-        setDivisionOptions((divItems.data || []).map((d:any) => ({ value: d.id, label: d.division_name })));
+        const divItems = await getDivisionDropdown('');
+        setDivisionOptions((divItems || []).map((d:any) => ({ value: d.id, label: d.division_name })));
 
-        // Dokumentasi: departemen - gunakan endpoint dropdown dari service
-        const depItems = await departmentsService.getDropdown('');
-        setDepartmentOptionsAll((depItems.data || []).map((d:any) => ({ value: d.id, label: d.department_name })));
+        // Dokumentasi: departemen - gunakan endpoint dropdown dari hook
+        const depItems = await getDepartmentDropdown('');
+        setDepartmentOptionsAll((depItems || []).map((d:any) => ({ value: d.id, label: d.department_name })));
       } catch (e) {
         console.error('Gagal memuat dropdown', e);
       }
     })();
-  }, [isOpen]);
+  }, [isOpen, getPositionDropdown, getDirectorateDropdown, getDivisionDropdown, getDepartmentDropdown]);
 
   // Dokumentasi: submit pembuatan Posisi Pegawai - kirim File asli untuk position_decree_file
   const handleSubmit = async () => {
@@ -82,7 +87,7 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
     }
     setSubmitting(true);
     try {
-      const created = await employeePositionsService.create({
+      await createEmployeePosition({
         name: name.trim(),
         positionId: jabatan.trim(),
         directorateId: direktorat.trim() || null,
@@ -93,7 +98,7 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
         memoNumber: memoNumber.trim(),
         skFile: skFile?.file || null,
       });
-      onSuccess?.(created);
+      onSuccess?.(null as any);
       setName('');
       setJabatan('');
       setDirektorat('');
@@ -142,9 +147,9 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
               onChange={(v) => setJabatan(v)}
               onSearch={async (q) => {
                 try {
-                  // Dokumentasi: cari dropdown jabatan via service.getDropdown
-                  const items = await positionsService.getDropdown(q);
-                  setPositionOptions((items.data || []).map((p:any) => ({ value: p.id, label: p.job_title_name })));
+                  // Dokumentasi: cari dropdown jabatan via hook.getDropdown
+                  const items = await getPositionDropdown(q);
+                  setPositionOptions((items || []).map((p:any) => ({ value: p.id, label: p.job_title_name })));
                 } catch (e) { console.error(e); }
               }}
             />
@@ -159,8 +164,8 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
               onChange={(v) => setDirektorat(v)}
               onSearch={async (q) => {
                 try {
-                  const items = await directoratesService.getDropdown(q);
-                  setDirectorateOptions((items.data || []).map((d:any) => ({ value: d.id, label: d.directorate_name })));
+                  const items = await getDirectorateDropdown(q);
+                  setDirectorateOptions((items || []).map((d:any) => ({ value: d.id, label: d.directorate_name })));
                 } catch (e) { console.error(e); }
               }}
             />
@@ -175,8 +180,8 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
               onChange={(v) => { setDivisi(v); /* reset departemen jika divisi berubah */ setDepartemen(''); }}
               onSearch={async (q) => {
                 try {
-                  const items = await divisionsService.getDropdown(q);
-                  setDivisionOptions((items.data || []).map((d:any) => ({ value: d.id, label: d.division_name })));
+                  const items = await getDivisionDropdown(q);
+                  setDivisionOptions((items || []).map((d:any) => ({ value: d.id, label: d.division_name })));
                 } catch (e) { console.error(e); }
               }}
             />
@@ -191,9 +196,9 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
               onChange={(v) => setDepartemen(v)}
               onSearch={async (q) => {
                 try {
-                  // Dokumentasi: cari dropdown departemen via service.getDropdown
-                  const items = await departmentsService.getDropdown(q);
-                  setDepartmentOptionsAll((items.data || []).map((d:any) => ({ value: d.id, label: d.department_name })));
+                  // Dokumentasi: cari dropdown departemen via hook.getDropdown
+                  const items = await getDepartmentDropdown(q);
+                  setDepartmentOptionsAll((items || []).map((d:any) => ({ value: d.id, label: d.department_name })));
                 } catch (e) { console.error(e); }
               }}
             />

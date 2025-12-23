@@ -45,6 +45,7 @@ interface UseOfficesReturn {
   // DOK: updateOffice mendukung multi-select perusahaan melalui companyIds
   updateOffice: (id: string, payload: { companyIds?: string[]; name?: string; description?: string | null; memoNumber: string; skFile?: File | null; }) => Promise<void>;
   deleteOffice: (id: string, payload: { memoNumber: string; skFile: File; }) => Promise<void>;
+  getById: (id: string) => Promise<OfficeListItem | null>;
   setPage: (page: number) => void;
   setPageSize: (pageSize: number) => void;
   setSearch: (search: string) => void;
@@ -169,6 +170,21 @@ export const useOffices = (): UseOfficesReturn => {
     setSortOrder(newSortOrder);
   }, []);
 
+  const getById = useCallback(async (id: string): Promise<OfficeListItem | null> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const detail = await officesService.getById(id);
+      return mapToOffice(detail.data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to get office');
+      console.error('Error getting office by id:', err);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchOffices();
   }, [fetchOffices, filterValue]);
@@ -185,6 +201,7 @@ export const useOffices = (): UseOfficesReturn => {
     createOffice,
     updateOffice,
     deleteOffice,
+    getById,
     setPage: handleSetPage,
     setPageSize: handleSetPageSize,
     setSearch: handleSetSearch,

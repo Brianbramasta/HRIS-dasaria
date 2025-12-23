@@ -1,12 +1,10 @@
 import { useState } from "react";
 import ModalAddEdit from "../../../../../components/shared/modal/ModalAddEdit";
-import { positionsService } from "../../../services/request/PositionService";
 import { useFileStore } from '@/stores/fileStore';
 import FileInput from "../../../../../components/shared/field/FileInput";
 import Input from "@/components/form/input/InputField";
-// Ubah: Mengganti komponen Select untuk grade menjadi InputField biasa
-// Alasan: Sesuai permintaan, input grade kini berupa teks
 import { addNotification } from "@/stores/notificationStore";
+import { usePositions } from '../../../hooks/usePositions';
 
 
 
@@ -27,6 +25,7 @@ export const AddPositionModal = ({ isOpen, onClose, onSuccess }: Props) => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const skFile = useFileStore((s) => s.skFile);
+  const { createPosition } = usePositions();
   // Ubah: gradeOptions dihapus karena tidak lagi menggunakan Select
 
   const handleInputChange = (
@@ -63,7 +62,7 @@ export const AddPositionModal = ({ isOpen, onClose, onSuccess }: Props) => {
           memoNumber: rest.memoNumber,
           skFile: skFile?.file as File,
         };
-      await positionsService.create(payload);
+      await createPosition(payload);
       onSuccess();
       onClose();
     } catch (error) {

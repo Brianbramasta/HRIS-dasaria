@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { employeePositionsService } from '../../../services/request/EmployeePositionsService';
 import type { EmployeePositionListItem } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
-// import HeaderModalDelete from '../shared/modal/HeaderModalDelete';
 import ModalDelete from '../../../../../components/shared/modal/ModalDelete';
 import { addNotification } from '@/stores/notificationStore';
 import ModalDeleteContent from '../../../../../components/shared/modal/ModalDeleteContent';
+import { useEmployeePositions } from '../../../hooks/useEmployeePositions';
 
 interface DeleteEmployeePositionModalProps {
   isOpen: boolean;
@@ -18,6 +17,7 @@ const DeleteEmployeePositionModal: React.FC<DeleteEmployeePositionModalProps> = 
   const [memoNumber, setMemoNumber] = useState('');
   const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
+  const { deleteEmployeePosition } = useEmployeePositions();
 
   const handleFileChange = (/*_e: React.ChangeEvent<HTMLInputElement>*/) => {};
 
@@ -35,7 +35,7 @@ const DeleteEmployeePositionModal: React.FC<DeleteEmployeePositionModalProps> = 
     }
     setSubmitting(true);
     try {
-      await employeePositionsService.delete(employeePosition.id, { memoNumber: memoNumber.trim(), skFileId: skFile?.path || skFile?.name });
+      await deleteEmployeePosition(employeePosition.id, { memoNumber: memoNumber.trim(), skFileId: skFile?.path || skFile?.name });
       onSuccess?.(employeePosition.id);
       onClose();
     } catch (err) {

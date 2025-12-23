@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-// import { Modal } from '../../../../../components/ui/modal/index';
-import { departmentsService } from '../../../services/request/DepartmentsService';
 import type { DepartmentListItem } from '../../../types/OrganizationApiTypes';
 import ModalDelete from '../../../../../components/shared/modal/ModalDelete';
 import ModalDeleteContent from '../../../../../components/shared/modal/ModalDeleteContent';
 import { addNotification } from '@/stores/notificationStore';
+import { useDepartments } from '../../../hooks/useDepartments';
 
 interface DeleteDepartmentModalProps {
   isOpen: boolean;
@@ -18,6 +17,7 @@ const DeleteDepartmentModal: React.FC<DeleteDepartmentModalProps> = ({ isOpen, o
   const [skFileName, setSkFileName] = useState('');
   const [skFile, setSkFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const { deleteDepartment } = useDepartments();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
@@ -39,7 +39,7 @@ const DeleteDepartmentModal: React.FC<DeleteDepartmentModalProps> = ({ isOpen, o
     }
     setSubmitting(true);
     try {
-      await departmentsService.delete(department.id, { memoNumber: memoNumber.trim(), skFile });
+      await deleteDepartment(department.id, { memoNumber: memoNumber.trim(), skFile });
       onSuccess?.();
       onClose();
     } catch (err) {

@@ -1,11 +1,10 @@
 import { useState } from "react";
-// import { Modal } from "../../../../../components/ui/modal/index";
-import { positionsService } from "../../../services/request/PositionService";
 import type { PositionListItem } from "../../../types/OrganizationApiTypes";
-import { useFileStore, /*setSkFile*/ } from '@/stores/fileStore';
+import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from "@/stores/notificationStore";
 import ModalDelete from "../../../../../components/shared/modal/ModalDelete";
 import ModalDeleteContent from "../../../../../components/shared/modal/ModalDeleteContent";
+import { usePositions } from '../../../hooks/usePositions';
 
 
 type Props = {
@@ -24,6 +23,7 @@ export const DeletePositionModal = ({
   const [memoNumber, setMemoNumber] = useState('');
   const skFile = useFileStore((s) => s.skFile);
   const [isLoading, setIsLoading] = useState(false);
+  const { deletePosition } = usePositions();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -46,7 +46,7 @@ export const DeletePositionModal = ({
 
     setIsLoading(true);
     try {
-      await positionsService.delete(position.id, { memoNumber: memoNumber.trim(), skFile: skFile?.file });
+      await deletePosition(position.id, { memoNumber: memoNumber.trim(), skFile: skFile?.file });
       onSuccess();
       onClose();
     } catch (error) {

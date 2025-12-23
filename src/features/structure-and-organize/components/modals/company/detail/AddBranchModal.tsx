@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { officeService, companyService } from '../../../../services/OrganizationService';
+import { officeService } from '../../../../services/OrganizationService';
 import Input from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
 import ModalAddEdit from '../../../../../../components/shared/modal/ModalAddEdit';
 import { addNotification } from '@/stores/notificationStore';
+import { useCompanies } from '../../../../hooks/useCompanies';
 
 interface AddBranchModalProps {
   isOpen: boolean;
@@ -19,6 +20,7 @@ const AddBranchModal: React.FC<AddBranchModalProps> = ({ isOpen, onClose, compan
   const [employeeCount, setEmployeeCount] = useState<number | ''>('');
   const [branchOptions, setBranchOptions] = useState<{ value: string; label: string; meta?: any }[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const { getDetail: getCompanyDetail } = useCompanies();
 
   const handleSubmit = async () => {
     if (!selectedBranch || !companyId) return;
@@ -57,7 +59,7 @@ const AddBranchModal: React.FC<AddBranchModalProps> = ({ isOpen, onClose, compan
       try {
         // load company name
         if (companyId) {
-          const c = await companyService.getDetail(companyId);
+          const c = await getCompanyDetail(companyId);
           setCompanyName(c.company?.name || '');
         }
 
@@ -72,7 +74,7 @@ const AddBranchModal: React.FC<AddBranchModalProps> = ({ isOpen, onClose, compan
         console.error(e);
       }
     })();
-  }, [isOpen, companyId]);
+  }, [isOpen, companyId, getCompanyDetail]);
 
   // when user selects a branch option, auto-fill jumlah karyawan if available
   useEffect(() => {

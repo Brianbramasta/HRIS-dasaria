@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { officesService } from '../../../services/request/OfficesService';
-import { companiesService } from '../../../services/request/CompaniesService';
 import type { OfficeListItem } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import FileInput from '../../../../../components/shared/field/FileInput';
@@ -9,7 +7,8 @@ import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 import MultiSelect from '@/components/form/MultiSelect';
 import { addNotification } from '@/stores/notificationStore';
-import { mapToOffice } from '@/features/structure-and-organize/Index';
+import { useOffices } from '../../../hooks/useOffices';
+import { useCompanies } from '../../../hooks/useCompanies';
 
 
 
@@ -29,14 +28,16 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
   // DOK: gunakan companyIds sebagai multi-select perusahaan pada update kantor
   const [companyIds, setCompanyIds] = useState<string[]>([]);
   const [companyOptions, setCompanyOptions] = useState<{ value: string; text: string }[]>([]);
+  const { updateOffice, getById } = useOffices();
+  const { getDropdown: getCompanyDropdown, getDetail: getCompanyDetail } = useCompanies();
 
   useEffect(() => {
     if (!isOpen || !office?.id) return;
     (async () => {
       try {
-        const response_detail = await officesService.getById(office.id);
-        const fresh = mapToOffice(response_detail.data);
-        console.log('office detail', mapToOffice(fresh));
+        const fresh = await getById(office.id);
+        if (!fresh) return;
+        console.log('office detail', fresh);
         setName(fresh.name || '');
         setMemoNumber(fresh.memoNumber || '');
         setDescription(fresh.description || '');
@@ -49,13 +50,13 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
         setCompanyIds(selectedIds);
         console.log('selectedIds', selectedIds);
         console.log('initialIds', initialIds);
-        const res = await companiesService.getDropdown();
-        const opts = res.data.map((c: any) => ({ value: c.id, text: c.name }));
+        const res = await getCompanyDropdown();
+        const opts = res.map((c: any) => ({ value: c.id, text: c.name }));
         // ensure all selected ids exist in options
         const missing = selectedIds.filter((id) => !opts.some((o: any) => o.value === id));
         for (const id of missing) {
           try {
-            const detail = await companiesService.getDetail(id);
+            const detail = await getCompanyDetail(id);
             opts.push({ value: id, text: detail.company.name });
           } catch (e) {
             void e;
@@ -66,7 +67,7 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
         console.error('Failed to fetch office detail', e);
       }
     })();
-  }, [isOpen, office]);
+  }, [isOpen, office, getById, getCompanyDropdown, getCompanyDetail]);
 
   const handleFileChange = (/*_e: React.ChangeEvent<HTMLInputElement>*/) => {
     // metadata file dikelola oleh FileInput melalui store
@@ -76,18 +77,9 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
   const handleSubmit = async () => {
     if (!office) return;
     if (!name.trim()) return;
-    // if (!skFile?.name){
-    //       addNotification({
-    //         variant: 'error',
-    //         title: 'Office tidak ditambahkan',
-    //         description: 'File Wajib di isi',
-    //         hideDuration: 4000,
-    //       });
-    //       return;
-    //     }
     setSubmitting(true);
     try {
-      const updated = await officesService.update(office.id, {
+      const updated = await updateOffice(office.id, {
         companyIds: companyIds,
         name: name.trim(),
         description: description.trim() || null,

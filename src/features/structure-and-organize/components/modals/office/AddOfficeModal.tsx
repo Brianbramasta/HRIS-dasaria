@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { officesService } from '../../../services/request/OfficesService';
-import { companiesService } from '../../../services/request/CompaniesService';
 import type { OfficeListItem } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import FileInput from '../../../../../components/shared/field/FileInput';
@@ -9,6 +7,8 @@ import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 import { addNotification } from '@/stores/notificationStore';
 import MultiSelect from '@/components/form/MultiSelect';
+import { useOffices } from '../../../hooks/useOffices';
+import { useCompanies } from '../../../hooks/useCompanies';
 
 
 
@@ -27,19 +27,21 @@ const AddOfficeModal: React.FC<AddOfficeModalProps> = ({ isOpen, onClose, onSucc
   const [description, setDescription] = useState('');
   const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
+  const { createOffice } = useOffices();
+  const { getDropdown: getCompanyDropdown } = useCompanies();
 
   useEffect(() => {
     if (!isOpen) return;
     (async () => {
       try {
-        const res = await companiesService.getDropdown();
-        console.log('companies', res.data);
-        setCompanyOptions(res.data.map((c: any) => ({ value: c.id, text: c.company_name })));
+        const res = await getCompanyDropdown();
+        console.log('companies', res);
+        setCompanyOptions(res.map((c: any) => ({ value: c.id, text: c.company_name })));
       } catch (e) {
         console.error('Failed to fetch companies', e);
       }
     })();
-  }, [isOpen]);
+  }, [isOpen, getCompanyDropdown]);
 
   const handleFileChange = (/*_e: React.ChangeEvent<HTMLInputElement>*/) => {
     // metadata file dikelola oleh FileInput melalui store
@@ -68,7 +70,7 @@ const AddOfficeModal: React.FC<AddOfficeModalProps> = ({ isOpen, onClose, onSucc
     }
     setSubmitting(true);
     try {
-      const created = await officesService.create({
+      const created = await createOffice({
         companyIds: companyIds,
         name: name.trim(),
         description: description.trim() || null,

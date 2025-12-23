@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-// import { Modal } from '../../../../../components/ui/modal/index';
-import { directoratesService } from '../../../services/request/DirectoratesService';
 import type { DirectorateListItem } from '../../../types/OrganizationApiTypes';
 import ModalDelete from '../../../../../components/shared/modal/ModalDelete';
 import ModalDeleteContent from '../../../../../components/shared/modal/ModalDeleteContent';
 import { addNotification } from '@/stores/notificationStore';
 import { useFileStore } from '@/stores/fileStore';
+import { useDirectorates } from '../../../hooks/useDirectorates';
 
 interface DeleteDirectorateModalProps {
   isOpen: boolean;
@@ -19,6 +18,7 @@ const DeleteDirectorateModal: React.FC<DeleteDirectorateModalProps> = ({ isOpen,
   const [skFileName, setSkFileName] = useState('');
   const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
+  const { deleteDirectorate } = useDirectorates();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
@@ -37,7 +37,7 @@ const DeleteDirectorateModal: React.FC<DeleteDirectorateModalProps> = ({ isOpen,
           return};
     setSubmitting(true);
     try {
-      await directoratesService.delete(directorate.id, {
+      await deleteDirectorate(directorate.id, {
         memoNumber: memoNumber.trim(),
         skFile: skFile.file as File,
       });

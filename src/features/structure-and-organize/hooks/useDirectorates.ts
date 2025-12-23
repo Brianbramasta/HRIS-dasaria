@@ -43,6 +43,7 @@ interface UseDirectoratesReturn {
   createDirectorate: (payload: { name: string; description?: string | null; memoNumber: string; skFile?: File | null; }) => Promise<void>;
   updateDirectorate: (id: string, payload: { name?: string; description?: string | null; memoNumber: string; skFile?: File | null; }) => Promise<void>;
   deleteDirectorate: (id: string, payload: { memoNumber: string; skFile: File; }) => Promise<void>;
+  getDropdown: (search?: string) => Promise<{ id: string; directorate_name: string }[]>;
   setPage: (page: number) => void;
   setPageSize: (pageSize: number) => void;
   setSearch: (search: string) => void;
@@ -194,6 +195,16 @@ export const useDirectorates = (): UseDirectoratesReturn => {
     setSortOrder(newSortOrder);
   }, []);
 
+  const getDropdown = useCallback(async (search?: string): Promise<{ id: string; directorate_name: string }[]> => {
+    try {
+      const result = await directoratesService.getDropdown(search || '');
+      return result.data || [];
+    } catch (err) {
+      console.error('Error fetching directorate dropdown:', err);
+      return [];
+    }
+  }, []);
+
   // Export directorates to CSV
   const exportToCSV = useCallback((filename: string) => {
     if (!rows || rows.length === 0) return;
@@ -230,6 +241,7 @@ export const useDirectorates = (): UseDirectoratesReturn => {
     createDirectorate,
     updateDirectorate,
     deleteDirectorate,
+    getDropdown,
     setPage: handleSetPage,
     setPageSize: handleSetPageSize,
     setSearch: handleSetSearch,

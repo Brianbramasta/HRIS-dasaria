@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-// import { Modal } from '../../../../../components/ui/modal/index';
-import { divisionsService } from '../../../services/request/DivisionsService';
 import type { DivisionListItem } from '../../../types/OrganizationApiTypes';
 import ModalDelete from '../../../../../components/shared/modal/ModalDelete';
 import ModalDeleteContent from '../../../../../components/shared/modal/ModalDeleteContent';
 import { addNotification } from '@/stores/notificationStore';
 import { useFileStore } from '@/stores/fileStore';
+import { useDivisions } from '../../../hooks/useDivisions';
 
 interface DeleteDivisionModalProps {
   isOpen: boolean;
@@ -19,6 +18,7 @@ const DeleteDivisionModal: React.FC<DeleteDivisionModalProps> = ({ isOpen, onClo
   const [skFileName, setSkFileName] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const skFileMeta = useFileStore((s) => s.skFile);
+  const { deleteDivision } = useDivisions();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
@@ -37,7 +37,7 @@ const DeleteDivisionModal: React.FC<DeleteDivisionModalProps> = ({ isOpen, onClo
           return};
     setSubmitting(true);
     try {
-      await divisionsService.delete(division.id, { memoNumber: memoNumber.trim(), skFile: skFileMeta.file as File });
+      await deleteDivision(division.id, { memoNumber: memoNumber.trim(), skFile: skFileMeta.file as File });
       onSuccess?.();
       onClose();
     } catch (err) {

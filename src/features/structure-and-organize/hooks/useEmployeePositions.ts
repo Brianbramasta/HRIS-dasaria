@@ -70,6 +70,7 @@ interface UseEmployeePositionsReturn {
     skFile?: File | null;
   }) => Promise<void>;
   deleteEmployeePosition: (id: string, payload: { memoNumber: string; skFileId: string; }) => Promise<void>;
+  detail: (id: string) => Promise<EmployeePositionListItem | null>;
   setPage: (page: number) => void;
   setPageSize: (pageSize: number) => void;
   setSearch: (search: string) => void;
@@ -227,6 +228,21 @@ export const useEmployeePositions = (): UseEmployeePositionsReturn => {
     setSortOrder(newSortOrder);
   }, []);
 
+  const detail = useCallback(async (id: string): Promise<EmployeePositionListItem | null> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await employeePositionsService.detail(id);
+      return mapToEmployeePosition(result.data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to get employee position detail');
+      console.error('Error getting employee position detail:', err);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   // Dokumentasi: tidak auto-fetch di hook agar initial fetch di Page hanya terjadi sekali
   // (Page memanggil fetchEmployeePositions() saat mount sehingga sort default hanya berjalan sekali)
 
@@ -242,6 +258,7 @@ export const useEmployeePositions = (): UseEmployeePositionsReturn => {
     createEmployeePosition,
     updateEmployeePosition,
     deleteEmployeePosition,
+    detail,
     setPage: handleSetPage,
     setPageSize: handleSetPageSize,
     setSearch: handleSetSearch,

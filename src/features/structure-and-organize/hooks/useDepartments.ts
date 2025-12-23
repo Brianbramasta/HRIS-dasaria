@@ -42,6 +42,8 @@ interface UseDepartmentsReturn {
   createDepartment: (payload: { name: string; divisionId: string; description?: string | null; memoNumber: string; skFile: File; }) => Promise<void>;
   updateDepartment: (id: string, payload: { name?: string; divisionId?: string; description?: string | null; memoNumber: string; skFile?: File | null; }) => Promise<void>;
   deleteDepartment: (id: string, payload: { memoNumber: string; skFile?: File; }) => Promise<void>;
+  getById: (id: string) => Promise<DepartmentListItem | null>;
+  getDropdown: (search?: string) => Promise<{ id: string; department_name: string }[]>;
   setPage: (page: number) => void;
   setPageSize: (pageSize: number) => void;
   setSearch: (search: string) => void;
@@ -167,6 +169,31 @@ export const useDepartments = (): UseDepartmentsReturn => {
     setSortOrder(newSortOrder);
   }, []);
 
+  const getById = useCallback(async (id: string): Promise<DepartmentListItem | null> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const detail = await departmentsService.getById(id);
+      return mapToDepartment(detail.data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to get department');
+      console.error('Error getting department by id:', err);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const getDropdown = useCallback(async (search?: string): Promise<{ id: string; department_name: string }[]> => {
+    try {
+      const result = await departmentsService.getDropdown(search || '');
+      return result.data || [];
+    } catch (err) {
+      console.error('Error fetching department dropdown:', err);
+      return [];
+    }
+  }, []);
+
   useEffect(() => {
     fetchDepartments();
   }, [fetchDepartments, filterValue]);
@@ -183,6 +210,8 @@ export const useDepartments = (): UseDepartmentsReturn => {
     createDepartment,
     updateDepartment,
     deleteDepartment,
+    getById,
+    getDropdown,
     setPage: handleSetPage,
     setPageSize: handleSetPageSize,
     setSearch: handleSetSearch,

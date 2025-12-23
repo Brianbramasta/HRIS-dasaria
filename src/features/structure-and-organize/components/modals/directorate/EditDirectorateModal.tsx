@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react';
-// import { Modal } from '../../../../../components/ui/modal/index';
-import { directoratesService } from '../../../services/request/DirectoratesService';
 import type { DirectorateListItem } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import FileInput from '../../../../../components/shared/field/FileInput';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
-
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 import { addNotification } from '@/stores/notificationStore';
-// import { addNotification } from '@/stores/notificationStore';
+import { useDirectorates } from '../../../hooks/useDirectorates';
 
 interface EditDirectorateModalProps {
   isOpen: boolean;
@@ -24,6 +21,7 @@ const EditDirectorateModal: React.FC<EditDirectorateModalProps> = ({ isOpen, onC
   const [memoNumber, setMemoNumber] = useState('');
   const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
+  const { updateDirectorate } = useDirectorates();
 
   useEffect(() => {
     if (isOpen && directorate) {
@@ -37,17 +35,9 @@ const EditDirectorateModal: React.FC<EditDirectorateModalProps> = ({ isOpen, onC
 
   const handleSubmit = async () => {
     if (!directorate) return;
-    // if (!skFile?.file) {
-    //       addNotification({
-    //         variant: 'error',
-    //         title: ' Direktorat tidak diupdate',
-    //         description: 'File Wajib di isi',
-    //         hideDuration: 4000,
-    //       });
-    //       return};
     setSubmitting(true);
     try {
-      await directoratesService.update(directorate.id, {
+      await updateDirectorate(directorate.id, {
         name,
         description,
         memoNumber,

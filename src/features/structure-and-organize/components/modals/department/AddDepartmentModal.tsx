@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from 'react';
-// import { Modal } from '../../../../../components/ui/modal/index';
-import { departmentsService } from '../../../services/request/DepartmentsService';
-import { divisionsService } from '../../../services/request/DivisionsService';
 import type { DivisionDropdown } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import FileInput from '../../../../../components/shared/field/FileInput';
@@ -10,6 +7,8 @@ import Input from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
 import TextArea from '@/components/form/input/TextArea';
 import { addNotification } from '@/stores/notificationStore';
+import { useDepartments } from '../../../hooks/useDepartments';
+import { useDivisions } from '../../../hooks/useDivisions';
 
 interface AddDepartmentModalProps {
   isOpen: boolean;
@@ -25,19 +24,21 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ isOpen, onClose
   const skFile = useFileStore((s) => s.skFile);
   const [divisions, setDivisions] = useState<DivisionDropdown[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const { createDepartment } = useDepartments();
+  const { getDropdown: getDivisionDropdown } = useDivisions();
 
   // Mengambil dropdown Divisi sesuai kontrak API 1.7
   useEffect(() => {
     const loadDivisions = async () => {
       try {
-        const res = await divisionsService.getDropdown('');
-        setDivisions(res.data || []);
+        const res = await getDivisionDropdown('');
+        setDivisions(res || []);
       } catch (err) {
         console.error('Failed to load divisions', err);
       }
     };
     if (isOpen) loadDivisions();
-  }, [isOpen]);
+  }, [isOpen, getDivisionDropdown]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -64,7 +65,7 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ isOpen, onClose
       return;
     }
     try {
-      await departmentsService.create({
+      await createDepartment({
         name,
         divisionId,
         description: description || null,

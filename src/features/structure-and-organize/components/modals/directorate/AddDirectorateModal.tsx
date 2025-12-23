@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-// import { Modal } from '../../../../../components/ui/modal/index';
-import { directoratesService } from '../../../services/request/DirectoratesService';
 import { useFileStore } from '@/stores/fileStore';
 import FileInput from '../../../../../components/shared/field/FileInput';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 import { addNotification } from '@/stores/notificationStore';
+import { useDirectorates } from '../../../hooks/useDirectorates';
 
 interface AddDirectorateModalProps {
   isOpen: boolean;
@@ -20,6 +19,7 @@ const AddDirectorateModal: React.FC<AddDirectorateModalProps> = ({ isOpen, onClo
   const [memoNumber, setMemoNumber] = useState('');
   const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
+  const { createDirectorate } = useDirectorates();
 
   useEffect(() => {
     if (!isOpen) {
@@ -45,7 +45,7 @@ const AddDirectorateModal: React.FC<AddDirectorateModalProps> = ({ isOpen, onClo
     }
     setSubmitting(true);
     try {
-      await directoratesService.create({
+      await createDirectorate({
         name,
         description: description || null,
         memoNumber,

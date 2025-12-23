@@ -1,15 +1,11 @@
 import { useState, useEffect } from "react";
 import ModalAddEdit from "../../../../../components/shared/modal/ModalAddEdit";
-import { positionsService } from "../../../services/request/PositionService";
 import type { PositionListItem } from "../../../types/OrganizationApiTypes";
 import { useFileStore } from '@/stores/fileStore';
 import FileInput from "../../../../../components/shared/field/FileInput";
-
 import Input from "@/components/form/input/InputField";
 import { addNotification } from "@/stores/notificationStore";
-import { mapToPosition } from "../../../hooks/usePositions";
-// Ubah: Mengganti komponen Select untuk grade menjadi InputField biasa
-// Alasan: Sesuai permintaan, input grade kini berupa teks
+import { usePositions } from "../../../hooks/usePositions";
 
 type Props = {
   isOpen: boolean;
@@ -29,15 +25,17 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
   });
   const [isLoading, setIsLoading] = useState(false);
   const skFile = useFileStore((s) => s.skFile);
+  const { updatePosition, detail } = usePositions();
   // Ubah: gradeOptions dihapus karena tidak lagi menggunakan Select
   
   // Dokumentasi: Saat modal dibuka, ambil detail jabatan by ID sesuai kontrak API
   useEffect(() => {
     if (!isOpen || !position?.id) return;
     setIsLoading(true);
-    positionsService.detail(position.id)
-      .then((p) => {
-        const mappedPosition = mapToPosition(p.data);
+    (async () => {
+      try {
+        const mappedPosition = await detail(position.id);
+        if (!mappedPosition) return;
         setFormData({
           name: mappedPosition.name || "",
           grade: (mappedPosition.grade as string) || "",
@@ -48,8 +46,7 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
           jobDescription: mappedPosition.jobDescription || "",
           skFile: null,
         });
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Failed to fetch position detail:", error);
         addNotification({
           variant: 'error',
@@ -57,9 +54,11 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
           description: 'Terjadi kesalahan saat memuat data jabatan.',
           hideDuration: 4000,
         });
-      })
-      .finally(() => setIsLoading(false));
-  }, [isOpen, position?.id]);
+      } finally {
+        setIsLoading(false);
+      }
+    })();
+  }, [isOpen, position?.id, detail]);
 
   useEffect(() => {
     if (position) {
@@ -91,16 +90,6 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
 
   const handleSubmit = async () => {
     if (!position) return;
-    // if (!skFile?.file) {
-    //   addNotification({
-    //     variant: 'error',
-    //     title: 'Jabatan tidak diupdate',
-    //     description: 'File Wajib di isi',
-    //     hideDuration: 4000,
-    //   });
-    //   return;
-    // }
-
     setIsLoading(true);
     try {
       const { directSubordinates, ...rest } = formData;
@@ -112,7 +101,7 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
           memoNumber: rest.memoNumber,
           skFile: skFile?.file as File,
         };
-      await positionsService.update(position.id, payload);
+      await updatePosition(position.id, payload);
       onSuccess();
       onClose();
     } catch (error) {

@@ -43,11 +43,11 @@ interface UseDivisionsReturn {
   createDivision: (payload: { name: string; directorateId: string; description?: string | null; memoNumber: string; skFile: File; }) => Promise<void>;
   updateDivision: (id: string, payload: { name?: string; directorateId?: string; description?: string | null; memoNumber: string; skFile: File; }) => Promise<void>;
   deleteDivision: (id: string, payload: { memoNumber: string; skFile: File; }) => Promise<void>;
+  getDropdown: (search?: string) => Promise<{ id: string; division_name: string }[]>;
   setPage: (page: number) => void;
   setPageSize: (pageSize: number) => void;
   setSearch: (search: string) => void;
   setSort: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
-  getDropdown: (search?: string) => Promise<DivisionListItem[]>;
 }
 
 export const useDivisions = (): UseDivisionsReturn => {
@@ -170,10 +170,14 @@ export const useDivisions = (): UseDivisionsReturn => {
   }, []);
 
   // Optional: menyediakan helper dropdown divisi sesuai kebutuhan form
-  const getDropdown = useCallback(async (search?: string) => {
-    const result = await divisionsService.getDropdown(search);
-    const items = (result as any)?.data ?? [];
-    return (items || []).map(mapToDivision);
+  const getDropdown = useCallback(async (search?: string): Promise<{ id: string; division_name: string }[]> => {
+    try {
+      const result = await divisionsService.getDropdown(search || '');
+      return result.data || [];
+    } catch (err) {
+      console.error('Error fetching division dropdown:', err);
+      return [];
+    }
   }, []);
 
   useEffect(() => {

@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from 'react';
-// import { Modal } from '../../../../../components/ui/modal/index';
-import { divisionsService } from '../../../services/request/DivisionsService';
-import { directoratesService } from '../../../services/request/DirectoratesService';
 import type { DivisionListItem, DirectorateListItem, DirectorateDropdown } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import FileInput from '../../../../../components/shared/field/FileInput';
@@ -10,6 +7,8 @@ import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 import Select from '@/components/form/Select';
 import { addNotification } from '@/stores/notificationStore';
+import { useDivisions } from '../../../hooks/useDivisions';
+import { useDirectorates } from '../../../hooks/useDirectorates';
 
 interface EditDivisionModalProps {
   isOpen: boolean;
@@ -26,19 +25,21 @@ const EditDivisionModal: React.FC<EditDivisionModalProps> = ({ isOpen, onClose, 
   const skFile = useFileStore((s) => s.skFile);
   const [directorates, setDirectorates] = useState<DirectorateDropdown[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const { updateDivision } = useDivisions();
+  const { getDropdown: getDirectorateDropdown } = useDirectorates();
 
   useEffect(() => {
     const loadDirectorates = async () => {
       try {
         // Menggunakan endpoint dropdown direktorat untuk mengambil opsi lebih ringan
-        const res = await directoratesService.getDropdown('');
-        setDirectorates(res.data || []);
+        const res = await getDirectorateDropdown('');
+        setDirectorates(res || []);
       } catch (err) {
         console.error('Failed to load directorates', err);
       }
     };
     if (isOpen) loadDirectorates();
-  }, [isOpen]);
+  }, [isOpen, getDirectorateDropdown]);
 
   useEffect(() => {
     console.log('Division', division);
@@ -56,13 +57,13 @@ const EditDivisionModal: React.FC<EditDivisionModalProps> = ({ isOpen, onClose, 
     if (!division) return;
     setSubmitting(true);
     try {
-      await divisionsService.update(division.id, {
+      await updateDivision(division.id, {
         name,
         directorateId,
         description: description || null,
         memoNumber,
         // Kirim file SK jika ada perubahan
-        ...(skFile?.file ? { skFile: skFile.file as File } : {}),
+        skFile: (skFile?.file ? skFile.file as File : null) as any,
       });
       onSuccess?.();
       onClose();
