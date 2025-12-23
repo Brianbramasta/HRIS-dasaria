@@ -1,53 +1,35 @@
 import { apiService } from '../../../../services/api';
 
-const BaseUrl = '/organizational-structure/position-master-data/';
+class EmployeePositionsService {
+  private readonly basePath = '/organizational-structure/position-master-data/';
 
-// Konversi nama kolom sort dari UI ke field API Posisi
-const toSortField = (field?: string): string => {
-  const map: Record<string, string> = {
-    name: 'position_name',
-    'Nama Posisi': 'position_name',
-    'Nama Jabatan': 'job_title_name',
-    Jabatan: 'job_title_name',
-  };
-  return map[field || ''] || 'position_name';
-};
+  /**
+   * Get Positions List
+   * @param filter - Filter parameters
+   * @returns Promise dengan data posisi
+   */
+  async getList(filter: any): Promise<any> {
+    const qs = apiService.buildQueryString(filter);
+    return apiService.get<any>(`${this.basePath}positions${qs ? `?${qs}` : ''}`);
+  }
 
-// Tambahkan filter[] sesuai kontrak API
-const appendFilters = (params: URLSearchParams, filter?: string | string[]) => {
-  if (!filter) return;
-  const values = Array.isArray(filter)
-    ? filter
-    : String(filter)
-        .split(',')
-        .map((s) => s.trim())
-        .filter(Boolean);
-  values.forEach((v) => params.append('filter[]', v));
-};
+  /**
+   * Get Position Detail
+   * Ambil detail Posisi (GET /organizational-structure/positions/{id_position})
+   * @param id - Position ID
+   * @returns Promise dengan detail posisi
+   */
+  async detail(id: string): Promise<any> {
+    return apiService.get<any>(`${this.basePath}positions/${id}/show`);
+  }
 
-// Dokumentasi: Service Posisi Pegawai - kirim File asli untuk field position_decree_file pada create/update
-export const employeePositionsService = {
-  getList: async (filter: any): Promise<any> => {
-    const params = new URLSearchParams();
-    if (filter.page) params.append('page', String(filter.page));
-    if (filter.pageSize) params.append('per_page', String(filter.pageSize));
-    if (filter.search) params.append('search', filter.search);
-    appendFilters(params, filter.filter);
-    if (filter.sortBy && filter.sortOrder) {
-      params.append('column', toSortField(filter.sortBy));
-      params.append('sort', filter.sortOrder);
-    }
-    const qs = params.toString();
-    return apiService.get<any>(`${BaseUrl}positions${qs ? `?${qs}` : ''}`);
-  },
-
-  // Ambil detail Posisi (GET /organizational-structure/positions/{id_position})
-  detail: async (id: string): Promise<any> => {
-    return apiService.get<any>(`${BaseUrl}positions/${id}/show`);
-  },
-
-  // Dokumentasi: Create Posisi - kirim File untuk position_decree_file (multipart/form-data)
-  create: async (payload: {
+  /**
+   * Create Position
+   * Dokumentasi: Create Posisi - kirim File untuk position_decree_file (multipart/form-data)
+   * @param payload - Data untuk membuat posisi
+   * @returns Promise dengan response API
+   */
+  async create(payload: {
     name: string;
     positionId: string;
     directorateId?: string | null;
@@ -57,7 +39,7 @@ export const employeePositionsService = {
     endDate?: string | null;
     memoNumber: string;
     skFile?: File | null;
-  }): Promise<any> => {
+  }): Promise<any> {
     const form = new FormData();
     form.append('position_name', payload.name);
     form.append('job_title_id', payload.positionId);
@@ -68,14 +50,20 @@ export const employeePositionsService = {
     // Dokumentasi: kirim File asli (bukan string id/path)
     if (payload.skFile) form.append('position_decree_file', payload.skFile);
     return apiService.post<any>(
-      `${BaseUrl}positions`,
+      `${this.basePath}positions`,
       form,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
-  },
+  }
 
-  // Dokumentasi: Update Posisi - kirim File untuk position_decree_file (POST + _method=PATCH, multipart)
-  update: async (id: string, payload: {
+  /**
+   * Update Position
+   * Dokumentasi: Update Posisi - kirim File untuk position_decree_file (POST + _method=PATCH, multipart)
+   * @param id - Position ID
+   * @param payload - Data untuk update posisi
+   * @returns Promise dengan response API
+   */
+  async update(id: string, payload: {
     name?: string;
     positionId?: string;
     directorateId?: string | null;
@@ -86,7 +74,7 @@ export const employeePositionsService = {
     memoNumber: string;
     description?: string;
     skFile?: File | null;
-  }): Promise<any> => {
+  }): Promise<any> {
     const form = new FormData();
     form.append('_method', 'PATCH');
     if (payload.name !== undefined) form.append('position_name', payload.name);
@@ -99,22 +87,30 @@ export const employeePositionsService = {
     // Dokumentasi: kirim File asli bila tersedia
     if (payload.skFile) form.append('position_decree_file', payload.skFile);
     return apiService.post<any>(
-      `${BaseUrl}positions/${id}/update`,
+      `${this.basePath}positions/${id}/update`,
       form,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
-  },
+  }
 
-  // Delete Posisi (POST + _method=DELETE, multipart)
-  delete: async (id: string, payload: { memoNumber: string; skFileId: string; }): Promise<any> => {
+  /**
+   * Delete Position
+   * Delete Posisi (POST + _method=DELETE, multipart)
+   * @param id - Position ID
+   * @param payload - Memo number dan file ID untuk delete
+   * @returns Promise dengan response API
+   */
+  async delete(id: string, payload: { memoNumber: string; skFileId: string; }): Promise<any> {
     const form = new FormData();
     form.append('_method', 'DELETE');
     if (payload.memoNumber) form.append('position_deleted_decree_number', payload.memoNumber);
     if (payload.skFileId) form.append('position_deleted_decree_file', payload.skFileId);
     return apiService.post<any>(
-      `${BaseUrl}positions/${id}/delete`,
+      `${this.basePath}positions/${id}/delete`,
       form,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
-  },
-};
+  }
+}
+
+export const employeePositionsService = new EmployeePositionsService();

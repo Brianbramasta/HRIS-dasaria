@@ -1,57 +1,52 @@
 import { apiService } from '../../../../services/api';
 
-const BaseUrl = '/organizational-structure/business-master-data/';
+class BusinessLinesService {
+  private readonly basePath = '/organizational-structure/business-master-data/';
 
-const appendFilters = (params: URLSearchParams, filter?: string | string[]) => {
-  if (!filter) return;
-  const values = Array.isArray(filter)
-    ? filter
-    : String(filter)
-        .split(',')
-        .map((s) => s.trim())
-        .filter(Boolean);
-  values.forEach((v) => params.append('filter[]', v));
-};
+  /**
+   * Get Business Lines List - Returns the raw API response. Mapping is handled by caller (hooks) per architecture rules.
+   * @param filter - Filter parameters
+   * @returns Promise dengan data business lines
+   */
+  async getList(filter: any): Promise<any> {
+    const qs = apiService.buildQueryString(filter);
+    return apiService.get<any>(`${this.basePath}business-lines${qs ? `?${qs}` : ''}`);
+  }
 
-const toSortField = (field?: string): string => {
-  const map: Record<string, string> = {
-    name: 'bl_name',
-    'Lini Bisnis': 'bl_name',
-    'Deskripsi Umum': 'bl_description',
-  };
-  return map[field || ''] || 'bl_name';
-};
-
-export const businessLinesService = {
-  // Returns the raw API response. Mapping is handled by caller (hooks) per architecture rules.
-  getList: async (filter: any): Promise<any> => {
-    const params = new URLSearchParams();
-    if (filter?.page) params.append('page', String(filter.page));
-    if (filter?.pageSize) params.append('per_page', String(filter.pageSize));
-    if (filter?.search) params.append('search', filter.search);
-    appendFilters(params, filter?.filter);
-    if (filter?.sortBy && filter?.sortOrder) {
-      params.append('column', toSortField(filter.sortBy));
-      params.append('sort', filter.sortOrder);
-    }
-    const qs = params.toString();
-    return apiService.get<any>(`${BaseUrl}business-lines${qs ? `?${qs}` : ''}`);
-  },
-
-  getDropdown: async (search?: string): Promise<any> => {
+  /**
+   * Get Business Lines Dropdown
+   * @param search - Optional search query untuk filter
+   * @returns Promise dengan data business lines untuk dropdown
+   */
+  async getDropdown(search?: string): Promise<any> {
     const qs = search ? `?search=${encodeURIComponent(search)}` : '';
-    return apiService.get<any>(`${BaseUrl}business-lines-dropdown${qs}`);
-  },
+    return apiService.get<any>(`${this.basePath}business-lines-dropdown${qs}`);
+  }
 
-  getDetail: async (id: string): Promise<any> => {
-    return apiService.get<any>(`${BaseUrl}business-lines/${id}/detail`);
-  },
+  /**
+   * Get Business Line Detail
+   * @param id - Business line ID
+   * @returns Promise dengan detail business line
+   */
+  async getDetail(id: string): Promise<any> {
+    return apiService.get<any>(`${this.basePath}business-lines/${id}/detail`);
+  }
 
-  getById: async (id: string): Promise<any> => {
-    return apiService.get<any>(`${BaseUrl}business-lines/${id}/show`);
-  },
+  /**
+   * Get Business Line by ID
+   * @param id - Business line ID
+   * @returns Promise dengan data business line
+   */
+  async getById(id: string): Promise<any> {
+    return apiService.get<any>(`${this.basePath}business-lines/${id}/show`);
+  }
 
-  create: async (payload: { name: string; description?: string | null; memoNumber: string; skFile?: File | undefined; }): Promise<any> => {
+  /**
+   * Create Business Line
+   * @param payload - Data untuk membuat business line
+   * @returns Promise dengan response API
+   */
+  async create(payload: { name: string; description?: string | null; memoNumber: string; skFile?: File | undefined; }): Promise<any> {
     const formData = new FormData();
     formData.append('bl_name', payload.name);
     formData.append('bl_decree_number', payload.memoNumber);
@@ -61,10 +56,16 @@ export const businessLinesService = {
     if (payload.skFile) {
       formData.append('bl_decree_file', payload.skFile);
     }
-    return apiService.post<any>(`${BaseUrl}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
-  },
+    return apiService.post<any>(`${this.basePath}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+  }
 
-  update: async (id: string, payload: { name?: string; description?: string | null; memoNumber: string; skFile?: File | null; }): Promise<any> => {
+  /**
+   * Update Business Line
+   * @param id - Business line ID
+   * @param payload - Data untuk update business line
+   * @returns Promise dengan response API
+   */
+  async update(id: string, payload: { name?: string; description?: string | null; memoNumber: string; skFile?: File | null; }): Promise<any> {
     const formData = new FormData();
     formData.append('_method', 'PUT');
     if (payload.name !== undefined) formData.append('bl_name', payload.name);
@@ -75,16 +76,24 @@ export const businessLinesService = {
     if (payload.skFile) {
       formData.append('bl_decree_file', payload.skFile as File);
     }
-    return apiService.post<any>(`${BaseUrl}business-lines${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
-  },
+    return apiService.post<any>(`${this.basePath}business-lines${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+  }
 
-  delete: async (id: string, payload: { memoNumber: string; skFile?: File | undefined; }): Promise<any> => {
+  /**
+   * Delete Business Line
+   * @param id - Business line ID
+   * @param payload - Memo number dan file untuk delete
+   * @returns Promise dengan response API
+   */
+  async delete(id: string, payload: { memoNumber: string; skFile?: File | undefined; }): Promise<any> {
     const formData = new FormData();
     formData.append('_method', 'DELETE');
     if (payload.memoNumber) formData.append('bl_delete_decree_number', payload.memoNumber);
     if (payload.skFile) {
       formData.append('bl_delete_decree_file', payload.skFile as File);
     }
-    return apiService.post<any>(`${BaseUrl}business-lines${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
-  },
-};
+    return apiService.post<any>(`${this.basePath}business-lines${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+  }
+}
+
+export const businessLinesService = new BusinessLinesService();

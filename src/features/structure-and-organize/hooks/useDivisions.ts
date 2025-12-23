@@ -1,22 +1,11 @@
 // Penyesuaian hooks Divisi agar sesuai kontrak API terbaru (1.7)
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { divisionsService } from '../services/request/DivisionsService';
-import { DivisionListItem, TableFilter, FileSummary } from '../types/OrganizationApiTypes';
+import { DivisionListItem, TableFilter } from '../types/OrganizationApiTypes';
 import useFilterStore from '../../../stores/filterStore';
+import { toFileSummary } from '../utils/shared/toFileSummary';
 
 // Mapping helpers
-const toFileSummary = (url: string | null): FileSummary | null => {
-  if (!url) return null;
-  const parts = url.split('/');
-  const fileName = parts[parts.length - 1] || '';
-  const ext = fileName.includes('.') ? (fileName.split('.').pop() || '') : '';
-  return {
-    fileName,
-    fileUrl: url,
-    fileType: ext,
-    size: null,
-  };
-};
 
 export const mapToDivision = (item: any): DivisionListItem => ({
   id: item.id ?? '',
@@ -27,6 +16,16 @@ export const mapToDivision = (item: any): DivisionListItem => ({
   memoNumber: item.division_decree_number ?? null,
   skFile: toFileSummary(item.division_decree_file_url ?? item.division_decree_file ?? null),
 });
+
+// Map UI sort field to API column
+const toSortField = (field?: string): string => {
+  const map: Record<string, string> = {
+    name: 'division_name',
+    'Nama Divisi': 'division_name',
+    'Deskripsi Umum': 'division_description',
+  };
+  return map[field || ''] || 'division_name';
+};
 
 interface UseDivisionsReturn {
   divisions: DivisionListItem[];
@@ -70,24 +69,21 @@ export const useDivisions = (): UseDivisionsReturn => {
   const fetchDivisions = useCallback(async (filter?: TableFilter) => {
     setLoading(true);
     setError(null);
-    
     try {
-      const result = await divisionsService.getList({
-        page,
-        pageSize,
+      const params = {
+        page: filter?.page ?? page,
+        per_page: filter?.pageSize ?? pageSize,
         search: filter?.search ?? search,
+        column: filter?.sortBy ? toSortField(filter.sortBy) : toSortField(sortBy),
+        sort: filter?.sortOrder ?? sortOrder ?? undefined,
         filter: filter?.filter ?? filterValue,
-        sortBy: filter?.sortBy ?? sortBy,
-        sortOrder: filter?.sortOrder ?? sortOrder,
-      });
-      
+      };
+      const result = await divisionsService.getList(params);
       const payload = (result as any);
       const items = payload?.data?.data ?? [];
       const total = payload?.data?.total ?? (items?.length || 0);
-      const currentPage = payload?.data?.current_page ?? page;
       const perPage = payload?.data?.per_page ?? pageSize;
       const totalPagesCount = perPage ? Math.ceil(total / perPage) : 1;
-      
       setDivisions((items || []).map(mapToDivision));
       setTotal(total);
       setTotalPages(totalPagesCount);

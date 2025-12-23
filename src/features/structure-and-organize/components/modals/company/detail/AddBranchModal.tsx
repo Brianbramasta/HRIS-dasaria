@@ -64,7 +64,7 @@ const AddBranchModal: React.FC<AddBranchModalProps> = ({ isOpen, onClose, compan
         }
 
         // load offices as branch options (prefer same company offices)
-        const res = await officeService.getList({ search: '', page: 1, pageSize: 200, sortBy: 'name', sortOrder: 'asc' });
+        const res = await officeService.getList({ page: 1, per_page: 200, search: '', column: 'office_name', sort: 'asc' });
         const all = res.data || [];
         // prefer offices of same company
         const same = all.filter((o: any) => String(o.companyId) === String(companyId));

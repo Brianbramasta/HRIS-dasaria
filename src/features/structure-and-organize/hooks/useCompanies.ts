@@ -1,21 +1,14 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { 
   TableFilter,
   CompanyListItem,
-  FileSummary,
   CompanyDetailResponse,
 } from '../types/OrganizationApiTypes';
 import { companiesService } from '../services/request/CompaniesService';
 import useFilterStore from '../../../stores/filterStore';
+import { toFileSummary } from '../utils/shared/toFileSummary';
 
 // Mapping helpers
-const toFileSummary = (url: string | null): FileSummary | null => {
-  if (!url) return null;
-  const parts = url.split('/');
-  const fileName = parts[parts.length - 1] || '';
-  const ext = fileName.includes('.') ? (fileName.split('.').pop() || '') : '';
-  return { fileName, fileUrl: url, fileType: ext, size: null };
-};
 
 const mapToCompany = (item: any): CompanyListItem => ({
   id: item.id ?? item.uuid_perusahaan ?? item.id ?? '',
@@ -28,6 +21,17 @@ const mapToCompany = (item: any): CompanyListItem => ({
   skFile: toFileSummary(item.company_decree_file_url ?? item.company_decree_file ?? null),
   logo: item.logo ?? null,
 });
+
+// Map UI sort field to API column
+const toSortField = (field?: string): string => {
+  const map: Record<string, string> = {
+    name: 'company_name',
+    'Nama Perusahaan': 'company_name',
+    'Deskripsi Umum': 'company_description',
+    'Lini Bisnis': 'business_line_name',
+  };
+  return map[field || ''] || 'company_name';
+};
 
 export const mapToCompanyDetail = (result: any): CompanyDetailResponse => {
   const body = (result as any).data ?? {};
@@ -154,14 +158,15 @@ export const useCompanies = (): UseCompaniesReturn => {
     setError(null);
     
     try {
-      const result = await companiesService.getList({
-        search: filter?.search ?? search,
-        filter: filter?.filter ?? filterValue,
-        sortBy: filter?.sortBy ?? sortBy,
-        sortOrder: filter?.sortOrder ?? sortOrder,
+      const params = {
         page: filter?.page ?? page,
-        pageSize: filter?.pageSize ?? pageSize,
-      });
+        per_page: filter?.pageSize ?? pageSize,
+        search: filter?.search ?? search,
+        column: filter?.sortBy ? toSortField(filter.sortBy) : toSortField(sortBy),
+        sort: filter?.sortOrder ?? sortOrder ?? undefined,
+        filter: filter?.filter ?? filterValue,
+      };
+      const result = await companiesService.getList(params);
       
       const payload = (result as any);
       const topData = payload?.data;
@@ -174,7 +179,7 @@ export const useCompanies = (): UseCompaniesReturn => {
             : [];
       const pagination = payload?.pagination ?? (Array.isArray(topData) ? undefined : topData) ?? {};
       const total = pagination?.total ?? items.length ?? 0;
-      const currentPage = pagination?.current_page ?? filter?.page ?? page ?? 1;
+      // const currentPage = pagination?.current_page ?? filter?.page ?? page ?? 1;
       const perPage = pagination?.per_page ?? filter?.pageSize ?? pageSize ?? items.length;
       const totalPages = pagination?.last_page ?? (perPage ? Math.ceil(total / perPage) : 1);
       

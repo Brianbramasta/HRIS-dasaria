@@ -198,25 +198,41 @@ class ApiService {
     if (!params) return '';
 
     const queryParams = new URLSearchParams();
-    let additionalParams = '';
+    const extraParts: string[] = [];
 
-    Object.keys(params).forEach(key => {
+    Object.keys(params).forEach((key) => {
       const value = params[key];
 
       // Handle filter_column[column_name][in][] parameters separately
       if (key.startsWith('filter_column[')) {
-        if (Array.isArray(value)) {
-          value.forEach(v => {
-            additionalParams += additionalParams || queryParams.toString() ? '&' : '';
-            additionalParams += `${encodeURIComponent(key)}=${encodeURIComponent(v)}`;
-          });
-        }
-      }
-      // Handle regular array parameters (e.g., filter[])
-      else if (Array.isArray(value)) {
-        value.forEach(v => {
-          queryParams.append(`${key}[]`, v);
+        const values = Array.isArray(value)
+          ? value
+          : value === undefined || value === null
+          ? []
+          : String(value)
+              .split(',')
+              .map((s) => s.trim())
+              .filter(Boolean);
+
+        values.forEach((v) => {
+          extraParts.push(`${encodeURIComponent(key)}=${encodeURIComponent(v)}`);
         });
+      }
+      // Handle `filter` which can be string (comma-separated) or array and should become multiple `filter[]` entries
+      else if (key === 'filter') {
+        if (value === undefined || value === null || value === '') return;
+        const values = Array.isArray(value)
+          ? value
+          : String(value)
+              .split(',')
+              .map((s) => s.trim())
+              .filter(Boolean);
+
+        values.forEach((v) => queryParams.append('filter[]', v));
+      }
+      // Handle regular array parameters (e.g., tags -> tags[])
+      else if (Array.isArray(value)) {
+        value.forEach((v) => queryParams.append(`${key}[]`, v));
       }
       // Handle regular parameters
       else if (value !== undefined && value !== null && value !== '') {
@@ -225,9 +241,9 @@ class ApiService {
     });
 
     const baseQuery = queryParams.toString();
-    return baseQuery && additionalParams 
-      ? `${baseQuery}&${additionalParams}` 
-      : baseQuery || additionalParams;
+    const extraQuery = extraParts.join('&');
+    if (baseQuery && extraQuery) return `${baseQuery}&${extraQuery}`;
+    return baseQuery || extraQuery;
   }
 }
 

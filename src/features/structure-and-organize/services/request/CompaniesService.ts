@@ -1,52 +1,41 @@
 import { apiService } from '../../../../services/api';
 
-const BaseUrl = '/organizational-structure/company-master-data/';
+class CompaniesService {
+  private readonly basePath = '/organizational-structure/company-master-data/';
 
-const toSortField = (field?: string): string => {
-  const map: Record<string, string> = {
-    name: 'company_name',
-    'Nama Perusahaan': 'company_name',
-    'Deskripsi Umum': 'company_description',
-    'Lini Bisnis': 'business_line_name',
-  };
-  return map[field || ''] || 'company_name';
-};
+  /**
+   * Get Companies List
+   * @param filter - Filter parameters
+   * @returns Promise dengan data perusahaan
+   */
+  async getList(filter: any): Promise<any> {
+    const qs = apiService.buildQueryString(filter);
+    return apiService.get<any>(`${this.basePath}companies${qs ? `?${qs}` : ''}`);
+  }
 
-const appendFilters = (params: URLSearchParams, filter?: string | string[]) => {
-  if (!filter) return;
-  const values = Array.isArray(filter)
-    ? filter
-    : String(filter)
-        .split(',')
-        .map((s) => s.trim())
-        .filter(Boolean);
-  values.forEach((v) => params.append('filter[]', v));
-};
+  /**
+   * Get Companies Dropdown
+   * @returns Promise dengan data perusahaan untuk dropdown
+   */
+  async getDropdown(): Promise<any> {
+    return apiService.get<any>(`${this.basePath}companies-dropdown`);
+  }
 
-export const companiesService = {
-  getList: async (filter: any): Promise<any> => {
-    const params = new URLSearchParams();
-    if (filter.page) params.append('page', String(filter.page));
-    if (filter.pageSize) params.append('per_page', String(filter.pageSize));
-    if (filter.search) params.append('search', filter.search);
-    appendFilters(params, filter.filter);
-    if (filter.sortBy && filter.sortOrder) {
-      params.append('column', toSortField(filter.sortBy));
-      params.append('sort', filter.sortOrder);
-    }
-    const qs = params.toString();
-    return apiService.get<any>(`${BaseUrl}companies${qs ? `?${qs}` : ''}`);
-  },
+  /**
+   * Get Company Detail
+   * @param id - Company ID
+   * @returns Promise dengan detail perusahaan
+   */
+  async getDetail(id: string): Promise<any> {
+    return apiService.get<any>(`${this.basePath}companies/${id}/detail`);
+  }
 
-  getDropdown: async (): Promise<any> => {
-    return apiService.get<any>(`${BaseUrl}companies-dropdown`);
-  },
-
-  getDetail: async (id: string): Promise<any> => {
-    return apiService.get<any>(`${BaseUrl}companies/${id}/detail`);
-  },
-
-  create: async (payload: any): Promise<any> => {
+  /**
+   * Create Company
+   * @param payload - Data untuk membuat perusahaan
+   * @returns Promise dengan response API
+   */
+  async create(payload: any): Promise<any> {
     const formData = new FormData();
     formData.append('company_name', payload.name);
     // formData.append('id_bl', payload.businessLineId);
@@ -71,14 +60,20 @@ export const companiesService = {
       }
     }
     const created = await apiService.post<any>(
-      `${BaseUrl}companies`,
+      `${this.basePath}companies`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
     return created;
-  },
+  }
 
-  update: async (id: string, payload: {
+  /**
+   * Update Company
+   * @param id - Company ID
+   * @param payload - Data untuk update perusahaan
+   * @returns Promise dengan response API
+   */
+  async update(id: string, payload: {
     name?: string;
     businessLineId?: string;
     description?: string | null;
@@ -94,7 +89,7 @@ export const companiesService = {
     logoFileId?: string | null;
     memoNumber?: string;
     skFile?: File | null;
-  }): Promise<any> => {
+  }): Promise<any> {
     const formData = new FormData();
     formData.append('_method', 'PUT');
     if (payload.name !== undefined) formData.append('company_name', payload.name);
@@ -112,15 +107,21 @@ export const companiesService = {
       }
     }
     const updated = await apiService.post<any>(
-      `${BaseUrl}companies/${id}/update`,
+      `${this.basePath}companies/${id}/update`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
     return updated;
-  },
+  }
 
-  // Dokumentasi singkat: Update data perusahaan by UUID sesuai kontrak API (PATCH)
-  updateDetailByUuid: async (
+  /**
+   * Update Company Detail by UUID
+   * Dokumentasi: Update data perusahaan by UUID sesuai kontrak API (PATCH)
+   * @param id - Company ID
+   * @param payload - Data untuk update detail perusahaan
+   * @returns Promise dengan response API
+   */
+  async updateDetailByUuid(
     id: string,
     payload: {
       address?: string | null;
@@ -136,7 +137,7 @@ export const companiesService = {
       description?: string | null;
       id_bl?: string | null;
     }
-  ): Promise<any> => {
+  ): Promise<any> {
     const formData = new FormData();
     formData.append('_method', 'PATCH');
     if (payload.address !== undefined && payload.address !== null) formData.append('address', payload.address);
@@ -153,31 +154,43 @@ export const companiesService = {
     if (payload.id_bl !== undefined && payload.id_bl !== null) formData.append('id_bl', payload.id_bl);
     
     const updated = await apiService.post<any>(
-      `${BaseUrl}companies/${id}/update`,
+      `${this.basePath}companies/${id}/update`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
     return updated;
-  },
+  }
 
-  delete: async (id: string, payload: { memoNumber: string; skFile: File; }): Promise<any> => {
+  /**
+   * Delete Company
+   * @param id - Company ID
+   * @param payload - Memo number dan file untuk delete
+   * @returns Promise dengan response API
+   */
+  async delete(id: string, payload: { memoNumber: string; skFile: File; }): Promise<any> {
     const formData = new FormData();
     formData.append('_method', 'DELETE');
     if (payload.memoNumber) formData.append('company_delete_decree_number', payload.memoNumber);
     if (payload.skFile) formData.append('company_delete_decree_file', payload.skFile);
     const resp = await apiService.post<any>(
-      `${BaseUrl}companies/${id}/delete`,
+      `${this.basePath}companies/${id}/delete`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
     return resp;
-  },
+  }
 
-  // Dokumentasi: Menambahkan dokumen perusahaan sesuai kontrak API
-  addDocuments: async (
+  /**
+   * Add Company Documents
+   * Dokumentasi: Menambahkan dokumen perusahaan sesuai kontrak API
+   * @param id - Company ID
+   * @param documents - Array dokumen yang akan ditambahkan
+   * @returns Promise dengan response API
+   */
+  async addDocuments(
     id: string,
     documents: Array<{ name: string; number: string; file: File }>
-  ): Promise<any> => {
+  ): Promise<any> {
     const formData = new FormData();
     (documents || []).forEach((d, i) => {
       formData.append(`documents[${i}][cd_name]`, d.name);
@@ -185,27 +198,35 @@ export const companiesService = {
       formData.append(`documents[${i}][cd_file]`, d.file);
     });
     const created = await apiService.post<any>(
-      `${BaseUrl}companies/${id}/documents`,
+      `${this.basePath}companies/${id}/documents`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
     return created;
-  },
+  }
 
-  // Dokumentasi: Menghapus dokumen perusahaan sesuai kontrak API
-  deleteDocuments: async (
+  /**
+   * Delete Company Documents
+   * Dokumentasi: Menghapus dokumen perusahaan sesuai kontrak API
+   * @param id - Company ID
+   * @param payload - Memo number dan file untuk delete dokumen
+   * @returns Promise dengan response API
+   */
+  async deleteDocuments(
     id: string,
     payload: { memoNumber: string; skFile: File }
-  ): Promise<any> => {
+  ): Promise<any> {
     const formData = new FormData();
     formData.append('_method', 'DELETE');
     if (payload.memoNumber) formData.append('cd_deleted_decree', payload.memoNumber);
     if (payload.skFile) formData.append('cd_deleted_decree_file', payload.skFile);
     const resp = await apiService.post<any>(
-      `${BaseUrl}companies/${id}/deletedocuments`,
+      `${this.basePath}companies/${id}/deletedocuments`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
     return resp;
-  },
-};
+  }
+}
+
+export const companiesService = new CompaniesService();

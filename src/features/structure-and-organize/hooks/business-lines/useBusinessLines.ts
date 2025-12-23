@@ -8,20 +8,9 @@ import {
 import { businessLinesService } from '../../services/request/BusinessLinesService';
 import useFilterStore from '../../../../stores/filterStore';
 import { BLRow } from '../../types/OrganizationTableTypes';
+import { toFileSummary } from '../../utils/shared';
 
 // Mapping helpers: transform raw API payload -> frontend types
-const toFileSummary = (url: string | null): FileSummary | null => {
-  if (!url) return null;
-  const parts = url.split('/');
-  const fileName = parts[parts.length - 1] || '';
-  const ext = fileName.includes('.') ? fileName.split('.').pop() || '' : '';
-  return {
-    fileName,
-    fileUrl: url,
-    fileType: ext,
-    size: null,
-  };
-};
 
 const mapToBusinessLine = (item: any): BusinessLineListItem => ({
   id: item.id,
@@ -30,6 +19,16 @@ const mapToBusinessLine = (item: any): BusinessLineListItem => ({
   memoNumber: item.bl_decree_number ?? null,
   skFile: toFileSummary(item.bl_decree_file_url ?? item.bl_decree_file ?? null),
 });
+
+// Map UI sort field to API column
+const toSortField = (field?: string): string => {
+  const map: Record<string, string> = {
+    name: 'bl_name',
+    'Lini Bisnis': 'bl_name',
+    'Deskripsi Umum': 'bl_description',
+  };
+  return map[field || ''] || 'bl_name';
+};
 
 interface UseBusinessLinesReturn {
   businessLines: BusinessLineListItem[];
@@ -77,14 +76,15 @@ export const useBusinessLines = (options?: { autoFetch?: boolean }): UseBusiness
     setError(null);
     
     try {
-      const response = await businessLinesService.getList({
-        search: filter?.search ?? search,
-        filter: filter?.filter ?? filterValue,
-        sortBy: filter?.sortBy ?? sortBy,
-        sortOrder: filter?.sortOrder ?? sortOrder,
+      const params = {
         page: filter?.page ?? page,
-        pageSize: filter?.pageSize ?? pageSize,
-      });
+        per_page: filter?.pageSize ?? pageSize,
+        search: filter?.search ?? search,
+        column: filter?.sortBy ? toSortField(filter.sortBy) : toSortField(sortBy),
+        sort: filter?.sortOrder ?? sortOrder ?? undefined,
+        filter: filter?.filter ?? filterValue,
+      };
+      const response = await businessLinesService.getList(params);
 
       // service returns raw API response; extract payload and map here
       const payload = (response as any)?.data ?? {};

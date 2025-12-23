@@ -1,22 +1,10 @@
 // Penyesuaian hooks Jabatan agar sesuai kontrak API 1.7 (job-title)
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { positionsService } from '../services/request/PositionService';
-import { PositionListItem, TableFilter, FileSummary } from '../types/OrganizationApiTypes';
+import { PositionListItem, TableFilter } from '../types/OrganizationApiTypes';
 import useFilterStore from '../../../stores/filterStore';
+import { toFileSummary } from '../utils/shared/index';
 
-// Mapping helpers
-const toFileSummary = (url: string | null): FileSummary | null => {
-  if (!url) return null;
-  const parts = url.split('/');
-  const fileName = parts[parts.length - 1] || '';
-  const ext = fileName.includes('.') ? (fileName.split('.').pop() || '') : '';
-  return {
-    fileName,
-    fileUrl: url,
-    fileType: ext,
-    size: null,
-  };
-};
 
 export const mapToPosition = (item: any): PositionListItem => ({
   id: item.id ?? item.id ?? '',
@@ -29,6 +17,18 @@ export const mapToPosition = (item: any): PositionListItem => ({
   memoNumber: item.job_title_decree_number ?? null,
   skFile: toFileSummary(item.job_title_decree_file_url ?? item.job_title_decree_file ?? null),
 });
+
+// Map UI sort field to API column
+const toSortField = (field?: string): string => {
+  const map: Record<string, string> = {
+    name: 'job_title_name',
+    'Nama Posisi': 'job_title_name',
+    'Nama Jabatan': 'job_title_name',
+    'Jabatan': 'job_title_name',
+    grade: 'grade',
+  };
+  return map[field || ''] || 'job_title_name';
+};
 
 interface UsePositionsReturn {
   positions: PositionListItem[];
@@ -74,19 +74,20 @@ export const usePositions = (): UsePositionsReturn => {
     setError(null);
     
     try {
-      const result = await positionsService.getList({
-        page,
-        pageSize,
+      const params = {
+        page: filter?.page ?? page,
+        per_page: filter?.pageSize ?? pageSize,
         search: filter?.search ?? search,
+        column: filter?.sortBy ? toSortField(filter.sortBy) : toSortField(sortBy),
+        sort: filter?.sortOrder ?? sortOrder ?? undefined,
         filter: filter?.filter ?? filterValue,
-        sortBy: filter?.sortBy ?? sortBy,
-        sortOrder: filter?.sortOrder ?? sortOrder,
-      });
+      };
+      const result = await positionsService.getList(params);
       
       const payload = (result as any);
       const items = payload?.data?.data ?? [];
       const total = payload?.data?.total ?? (items?.length || 0);
-      const currentPage = payload?.data?.current_page ?? page;
+      // const currentPage = payload?.data?.current_page ?? page;
       const perPage = payload?.data?.per_page ?? pageSize;
       const totalPagesCount = perPage ? Math.ceil(total / perPage) : 1;
       

@@ -1,21 +1,10 @@
 import { useState, useCallback } from 'react';
 import { employeePositionsService } from '../services/request/EmployeePositionsService';
-import { EmployeePositionListItem, TableFilter, FileSummary } from '../types/OrganizationApiTypes';
+import { EmployeePositionListItem, TableFilter } from '../types/OrganizationApiTypes';
 import useFilterStore from '../../../stores/filterStore';
+import { toFileSummary } from '../utils/shared/toFileSummary';
 
 // Mapping helpers
-const toFileSummary = (url: string | null): FileSummary | null => {
-  if (!url) return null;
-  const parts = url.split('/');
-  const fileName = parts[parts.length - 1] || '';
-  const ext = fileName.includes('.') ? (fileName.split('.').pop() || '') : '';
-  return {
-    fileName,
-    fileUrl: url,
-    fileType: ext,
-    size: null,
-  };
-};
 
 export const mapToEmployeePosition = (item: any): EmployeePositionListItem => ({
   id: item.id ?? item.id ?? '',
@@ -34,6 +23,17 @@ export const mapToEmployeePosition = (item: any): EmployeePositionListItem => ({
   memoNumber: item.position_decree_number ?? item.memoNumber ?? null,
   skFile: toFileSummary(item.position_decree_file_url ?? item.position_decree_file ?? null),
 });
+
+// Map UI sort field to API column
+const toSortField = (field?: string): string => {
+  const map: Record<string, string> = {
+    name: 'position_name',
+    'Nama Posisi': 'position_name',
+    'Nama Jabatan': 'job_title_name',
+    Jabatan: 'job_title_name',
+  };
+  return map[field || ''] || 'position_name';
+};
 
 interface UseEmployeePositionsReturn {
   employeePositions: EmployeePositionListItem[];
@@ -98,14 +98,15 @@ export const useEmployeePositions = (): UseEmployeePositionsReturn => {
     setError(null);
     
     try {
-      const result = await employeePositionsService.getList({
+      const params = {
         page: filter?.page ?? page,
-        pageSize: filter?.pageSize ?? pageSize,
+        per_page: filter?.pageSize ?? pageSize,
         search: filter?.search ?? search,
+        column: filter?.sortBy ? toSortField(filter.sortBy) : toSortField(sortBy),
+        sort: filter?.sortOrder ?? sortOrder ?? undefined,
         filter: filter?.filter ?? filterValue,
-        sortBy: filter?.sortBy ?? sortBy,
-        sortOrder: filter?.sortOrder ?? sortOrder,
-      });
+      };
+      const result = await employeePositionsService.getList(params);
       
       const payload = (result as any);
       const topData = payload?.data;
@@ -118,7 +119,7 @@ export const useEmployeePositions = (): UseEmployeePositionsReturn => {
             : [];
       const pagination = payload?.pagination ?? (Array.isArray(topData) ? undefined : topData) ?? {};
       const total = pagination?.total ?? items.length ?? 0;
-      const currentPage = pagination?.current_page ?? filter?.page ?? page ?? 1;
+      // const currentPage = pagination?.current_page ?? filter?.page ?? page ?? 1;
       const perPage = pagination?.per_page ?? filter?.pageSize ?? pageSize ?? items.length;
       const totalPagesCount = pagination?.last_page ?? (perPage ? Math.ceil(total / perPage) : 1);
       

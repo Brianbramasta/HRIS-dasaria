@@ -1,48 +1,34 @@
 import { apiService } from '../../../../services/api';
 
-const BaseUrl = '/organizational-structure/directorate-master-data/';
+class DirectoratesService {
+  private readonly basePath = '/organizational-structure/directorate-master-data/';
 
-const toSortField = (field?: string): string => {
-  const map: Record<string, string> = {
-    name: 'directorate_name',
-    'Nama Direktorat': 'directorate_name',
-    'Deskripsi Umum': 'directorate_description',
-  };
-  return map[field || ''] || 'directorate_name';
-};
+  /**
+   * Get Directorates List
+   * @param filter - Filter parameters
+   * @returns Promise dengan data direktorat
+   */
+  async getList(filter: any): Promise<any> {
+    const qs = apiService.buildQueryString(filter);
+    return apiService.get<any>(`${this.basePath}directorates${qs ? `?${qs}` : ''}`);
+  }
 
-const appendFilters = (params: URLSearchParams, filter?: string | string[]) => {
-  if (!filter) return;
-  const values = Array.isArray(filter)
-    ? filter
-    : String(filter)
-        .split(',')
-        .map((s) => s.trim())
-        .filter(Boolean);
-  values.forEach((v) => params.append('filter[]', v));
-};
-
-export const directoratesService = {
-  getList: async (filter: any): Promise<any> => {
-    const params = new URLSearchParams();
-    if (filter.page) params.append('page', String(filter.page));
-    if (filter.pageSize) params.append('per_page', String(filter.pageSize));
-    if (filter.search) params.append('search', filter.search);
-    appendFilters(params, filter.filter);
-    if (filter.sortBy && filter.sortOrder) {
-      params.append('column', toSortField(filter.sortBy));
-      params.append('sort', filter.sortOrder);
-    }
-    const qs = params.toString();
-    return apiService.get<any>(`${BaseUrl}directorates${qs ? `?${qs}` : ''}`);
-  },
-
-  getDropdown: async (search?: string): Promise<any> => {
+  /**
+   * Get Directorates Dropdown
+   * @param search - Optional search query untuk filter
+   * @returns Promise dengan data direktorat untuk dropdown
+   */
+  async getDropdown(search?: string): Promise<any> {
     const qs = search ? `?search=${encodeURIComponent(search)}` : '';
-    return apiService.get<any>(`${BaseUrl}directorates-dropdown${qs}`);
-  },
+    return apiService.get<any>(`${this.basePath}directorates-dropdown${qs}`);
+  }
 
-  create: async (payload: { name: string; description?: string | null; memoNumber: string; skFile?: File | null; }): Promise<any> => {
+  /**
+   * Create Directorate
+   * @param payload - Data untuk membuat direktorat
+   * @returns Promise dengan response API
+   */
+  async create(payload: { name: string; description?: string | null; memoNumber: string; skFile?: File | null; }): Promise<any> {
     const formData = new FormData();
     formData.append('directorate_name', payload.name);
     formData.append('directorate_decree_number', payload.memoNumber);
@@ -53,13 +39,19 @@ export const directoratesService = {
       formData.append('directorate_decree_file', payload.skFile);
     }
     return apiService.post<any>(
-      `${BaseUrl}directorates`,
+      `${this.basePath}directorates`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
-  },
+  }
 
-  update: async (id: string, payload: { name?: string; description?: string | null; memoNumber: string; skFile?: File | null; }): Promise<any> => {
+  /**
+   * Update Directorate
+   * @param id - Directorate ID
+   * @param payload - Data untuk update direktorat
+   * @returns Promise dengan response API
+   */
+  async update(id: string, payload: { name?: string; description?: string | null; memoNumber: string; skFile?: File | null; }): Promise<any> {
     const formData = new FormData();
     formData.append('_method', 'PATCH');
     if (payload.name !== undefined) formData.append('directorate_name', payload.name);
@@ -71,21 +63,29 @@ export const directoratesService = {
       formData.append('directorate_decree_file', payload.skFile);
     }
     return apiService.post<any>(
-      `${BaseUrl}directorates/${id}/update`,
+      `${this.basePath}directorates/${id}/update`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
-  },
+  }
 
-  delete: async (id: string, payload: { memoNumber: string; skFile: File; }): Promise<any> => {
+  /**
+   * Delete Directorate
+   * @param id - Directorate ID
+   * @param payload - Memo number dan file untuk delete
+   * @returns Promise dengan response API
+   */
+  async delete(id: string, payload: { memoNumber: string; skFile: File; }): Promise<any> {
     const formData = new FormData();
     formData.append('_method', 'DELETE');
     if (payload.memoNumber) formData.append('directorate_deleted_decree_number', payload.memoNumber);
     if (payload.skFile) formData.append('directorate_deleted_decree_file', payload.skFile);
     return apiService.post<any>(
-      `${BaseUrl}directorates/${id}/delete`,
+      `${this.basePath}directorates/${id}/delete`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
-  },
-};
+  }
+}
+
+export const directoratesService = new DirectoratesService();

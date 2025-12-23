@@ -1,21 +1,9 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { officesService } from '../services/request/OfficesService';
-import { OfficeListItem, TableFilter, FileSummary } from '../types/OrganizationApiTypes';
+import { OfficeListItem, TableFilter } from '../types/OrganizationApiTypes';
 import useFilterStore from '../../../stores/filterStore';
+import { toFileSummary } from '../utils/shared/index';
 
-// Mapping helpers
-const toFileSummary = (url: string | null): FileSummary | null => {
-  if (!url) return null;
-  const parts = url.split('/');
-  const fileName = parts[parts.length - 1] || '';
-  const ext = fileName.includes('.') ? (fileName.split('.').pop() || '') : '';
-  return {
-    fileName,
-    fileUrl: url,
-    fileType: ext,
-    size: null,
-  };
-};
 
 export const mapToOffice = (item: any): OfficeListItem => ({
   id: item.id ?? item.id ?? '',
@@ -28,6 +16,16 @@ export const mapToOffice = (item: any): OfficeListItem => ({
     ? item.companies.map((company: any) => company.id ?? company.id_company ?? null).filter(Boolean)
     : item.id_company ? [item.id_company] : [],
 });
+
+// Map UI sort field to API column
+const toSortField = (field?: string): string => {
+  const map: Record<string, string> = {
+    name: 'office_name',
+    'Nama Kantor': 'office_name',
+    'Deskripsi Umum': 'office_description',
+  };
+  return map[field || ''] || 'office_name';
+};
 
 interface UseOfficesReturn {
   offices: OfficeListItem[];
@@ -72,24 +70,21 @@ export const useOffices = (): UseOfficesReturn => {
   const fetchOffices = useCallback(async (filter?: TableFilter) => {
     setLoading(true);
     setError(null);
-    
     try {
-      const result = await officesService.getList({
-        page,
-        pageSize,
+      const params = {
+        page: filter?.page ?? page,
+        per_page: filter?.pageSize ?? pageSize,
         search: filter?.search ?? search,
+        column: filter?.sortBy ? toSortField(filter.sortBy) : toSortField(sortBy),
+        sort: filter?.sortOrder ?? sortOrder ?? undefined,
         filter: filter?.filter ?? filterValue,
-        sortBy: filter?.sortBy ?? sortBy,
-        sortOrder: filter?.sortOrder ?? sortOrder,
-      });
-      
+      };
+      const result = await officesService.getList(params);
       const payload = (result as any);
       const items = payload?.data?.data ?? [];
       const total = payload?.data?.total ?? (items?.length || 0);
-      const currentPage = payload?.data?.current_page ?? page;
       const perPage = payload?.data?.per_page ?? pageSize;
       const totalPagesCount = perPage ? Math.ceil(total / perPage) : 1;
-      
       setOffices((items || []).map(mapToOffice));
       setTotal(total);
       setTotalPages(totalPagesCount);

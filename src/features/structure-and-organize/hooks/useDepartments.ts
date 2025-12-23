@@ -1,22 +1,11 @@
 // Penyesuaian hooks Departemen agar sesuai kontrak API 1.7 (departments)
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { departmentsService } from '../services/request/DepartmentsService';
-import { DepartmentListItem, TableFilter, FileSummary } from '../types/OrganizationApiTypes';
+import { DepartmentListItem, TableFilter } from '../types/OrganizationApiTypes';
 import useFilterStore from '../../../stores/filterStore';
+import { toFileSummary } from '../utils/shared/toFileSummary';
 
 // Mapping helpers
-const toFileSummary = (url: string | null): FileSummary | null => {
-  if (!url) return null;
-  const parts = url.split('/');
-  const fileName = parts[parts.length - 1] || '';
-  const ext = fileName.includes('.') ? (fileName.split('.').pop() || '') : '';
-  return {
-    fileName,
-    fileUrl: url,
-    fileType: ext,
-    size: null,
-  };
-};
 
 export const mapToDepartment = (item: any): DepartmentListItem => ({
   id: item.id ?? item.id ?? '',
@@ -27,6 +16,16 @@ export const mapToDepartment = (item: any): DepartmentListItem => ({
   memoNumber: item.department_decree_number ?? null,
   skFile: toFileSummary(item.department_decree_file_url ?? item.department_decree_file ?? null),
 });
+
+// Map UI sort field to API column
+const toSortField = (field?: string): string => {
+  const map: Record<string, string> = {
+    name: 'department_name',
+    'Nama Departemen': 'department_name',
+    'Nama Divisi': 'division_name',
+  };
+  return map[field || ''] || 'department_name';
+};
 
 interface UseDepartmentsReturn {
   departments: DepartmentListItem[];
@@ -72,19 +71,20 @@ export const useDepartments = (): UseDepartmentsReturn => {
     setError(null);
     
     try {
-      const result = await departmentsService.getList({
-        page,
-        pageSize,
+      const params = {
+        page: filter?.page ?? page,
+        per_page: filter?.pageSize ?? pageSize,
         search: filter?.search ?? search,
+        column: filter?.sortBy ? toSortField(filter.sortBy) : toSortField(sortBy),
+        sort: filter?.sortOrder ?? sortOrder ?? undefined,
         filter: filter?.filter ?? filterValue,
-        sortBy: filter?.sortBy ?? sortBy,
-        sortOrder: filter?.sortOrder ?? sortOrder,
-      });
+      };
+      const result = await departmentsService.getList(params);
       
       const payload = (result as any);
       const items = payload?.data?.data ?? [];
       const total = payload?.data?.total ?? (items?.length || 0);
-      const currentPage = payload?.data?.current_page ?? page;
+      // const currentPage = payload?.data?.current_page ?? page;
       const perPage = payload?.data?.per_page ?? pageSize;
       const totalPagesCount = perPage ? Math.ceil(total / perPage) : 1;
       
