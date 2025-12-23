@@ -37,7 +37,11 @@ interface UseDirectoratesReturn {
   pageSize: number;
   totalPages: number;
   rows: DirectorateRow[];
-  
+  filterValue: string;
+  search: string;
+  sortBy: string;
+  sortOrder: 'asc' | 'desc' | null;
+
   // Actions
   fetchDirectorates: (filter?: TableFilter) => Promise<void>;
   createDirectorate: (payload: { name: string; description?: string | null; memoNumber: string; skFile?: File | null; }) => Promise<void>;
@@ -60,8 +64,8 @@ export const useDirectorates = (): UseDirectoratesReturn => {
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
   const [search, setSearch] = useState('');
-  const [sortBy, setSortBy] = useState<string | undefined>(undefined);
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | undefined>(undefined);
+  const [sortBy, setSortBy] = useState('name');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
   const filterValue = useFilterStore((s) => s.filters['Direktorat'] ?? '');
 
   // Map directorates to table rows
@@ -224,9 +228,7 @@ export const useDirectorates = (): UseDirectoratesReturn => {
     URL.revokeObjectURL(url);
   }, [rows]);
 
-  useEffect(() => {
-    fetchDirectorates();
-  }, [fetchDirectorates, filterValue]);
+  
 
   return {
     directorates,
@@ -237,6 +239,11 @@ export const useDirectorates = (): UseDirectoratesReturn => {
     pageSize,
     totalPages,
     rows,
+    filterValue,
+    search,
+    sortBy,
+    sortOrder,
+
     fetchDirectorates,
     createDirectorate,
     updateDirectorate,

@@ -11,7 +11,7 @@ export * from './hooks/useOffices';
 export * from './hooks/useDirectorates';
 export * from './hooks/useDivisions';
 export * from './hooks/useDepartments';
-export * from './hooks/usePositions';
+export * from './hooks/useJobTitle';
 export * from './hooks/useEmployeePositions';
 
 // Components

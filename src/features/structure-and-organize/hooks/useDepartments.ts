@@ -36,6 +36,10 @@ interface UseDepartmentsReturn {
   page: number;
   pageSize: number;
   totalPages: number;
+  filterValue: string;
+  search: string;
+  sortBy: string;
+  sortOrder: 'asc' | 'desc' | null;
   
   // Actions
   fetchDepartments: (filter?: TableFilter) => Promise<void>;
@@ -194,9 +198,7 @@ export const useDepartments = (): UseDepartmentsReturn => {
     }
   }, []);
 
-  useEffect(() => {
-    fetchDepartments();
-  }, [fetchDepartments, filterValue]);
+  
 
   return {
     departments,
@@ -206,6 +208,10 @@ export const useDepartments = (): UseDepartmentsReturn => {
     page,
     pageSize,
     totalPages,
+    filterValue,
+    search,
+    sortBy,
+    sortOrder,
     fetchDepartments,
     createDepartment,
     updateDepartment,

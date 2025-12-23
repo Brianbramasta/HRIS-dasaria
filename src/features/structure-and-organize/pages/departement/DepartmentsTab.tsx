@@ -1,4 +1,4 @@
-import  { useMemo, useState } from 'react';
+import  { useEffect, useMemo, useState } from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
 // import { Edit, Trash } from 'react-feather';
 import { IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
@@ -27,7 +27,7 @@ const departmentColumns: DataTableColumn<DepartmentRow>[] = [
 
 export default function DepartmentsTab({ resetKey }: Props) {
   // Sinkronisasi pagination eksternal dengan DataTable (server-side pagination)
-  const { departments, fetchDepartments, setSearch, setPage, setPageSize, setSort, page, pageSize, total } = useDepartments() as any;
+  const { departments, fetchDepartments, setSearch, setPage, setPageSize, setSort, page, pageSize, total, search, sortBy, sortOrder, filterValue } = useDepartments() as any;
   const addModal = useModal(false);
   const editModal = useModal(false);
   const deleteModal = useModal(false);
@@ -64,6 +64,10 @@ export default function DepartmentsTab({ resetKey }: Props) {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   };
+
+  useEffect(() => {
+    fetchDepartments();
+  }, [fetchDepartments, page, pageSize, search, sortBy, sortOrder, filterValue]);
 
 
   return (

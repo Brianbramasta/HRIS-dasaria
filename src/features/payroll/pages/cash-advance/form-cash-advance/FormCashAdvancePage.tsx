@@ -184,5 +184,5 @@ import Input from '../../../../../components/form/input/InputField';
 import DatePicker from '../../../../../components/form/date-picker';
 import Select from '../../../../../components/form/Select';
 import { useDepartments } from '../../../../structure-and-organize/hooks/useDepartments';
-import { usePositions } from '../../../../structure-and-organize/hooks/usePositions';
+import { usePositions } from '../../../../structure-and-organize/hooks/useJobTitle';
 import { IconShare } from '@/icons/components/icons';

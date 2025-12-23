@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
 // import { Edit, Trash } from 'react-feather';
 import { IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
@@ -26,7 +26,7 @@ const positionColumns: DataTableColumn<PositionRow>[] = [
 
 // Dokumentasi: Halaman Jabatan menggunakan pagination eksternal agar kompatibel dengan DataTable
 export default function PositionsTab({ resetKey }: Props) {
-  const { positions, fetchPositions, setSearch, setPage, setPageSize, setSort, page, pageSize, total, loading } = usePositions();
+  const { positions, fetchPositions, setSearch, setPage, setPageSize, setSort, page, pageSize, total, loading, search, sortBy, sortOrder, filterValue } = usePositions();
   const addModal = useModal(false);
   const editModal = useModal(false);
   const deleteModal = useModal(false);
@@ -83,6 +83,10 @@ export default function PositionsTab({ resetKey }: Props) {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   };
+
+  useEffect(() => {
+    fetchPositions();
+  }, [fetchPositions, page, pageSize, search, sortBy, sortOrder, filterValue]);
 
 
   return (

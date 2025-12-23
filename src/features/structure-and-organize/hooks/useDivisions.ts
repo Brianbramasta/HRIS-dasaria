@@ -36,6 +36,10 @@ interface UseDivisionsReturn {
   page: number;
   pageSize: number;
   totalPages: number;
+  filterValue: string;
+  search: string;
+  sortBy: string;
+  sortOrder: 'asc' | 'desc' | null;
   
   // Actions
   fetchDivisions: (filter?: TableFilter) => Promise<void>;
@@ -180,9 +184,9 @@ export const useDivisions = (): UseDivisionsReturn => {
     }
   }, []);
 
-  useEffect(() => {
-    fetchDivisions();
-  }, [fetchDivisions, filterValue]);
+  
+
+  
 
   return {
     divisions,
@@ -192,6 +196,10 @@ export const useDivisions = (): UseDivisionsReturn => {
     page,
     pageSize,
     totalPages,
+    filterValue,
+    search,
+    sortBy,
+    sortOrder,
     fetchDivisions,
     createDivision,
     updateDivision,

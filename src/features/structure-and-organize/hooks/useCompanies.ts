@@ -82,6 +82,10 @@ interface UseCompaniesReturn {
   page: number;
   pageSize: number;
   totalPages: number;
+  search: string;
+  sortBy: string;
+  sortOrder: 'asc' | 'desc' | null;
+  filterValue: string;
   
   // Actions
   fetchCompanies: (filter?: Partial<TableFilter>) => Promise<void>;
@@ -306,9 +310,7 @@ export const useCompanies = (): UseCompaniesReturn => {
     }
   }, []);
 
-  useEffect(() => {
-    fetchCompanies();
-  }, [search, sortBy, sortOrder, page, pageSize, filterValue, fetchCompanies]);
+ 
 
   return {
     companies,
@@ -318,7 +320,11 @@ export const useCompanies = (): UseCompaniesReturn => {
     page,
     pageSize,
     totalPages,
-    
+    search,
+    sortBy,
+    sortOrder,
+    filterValue,
+
     fetchCompanies,
     createCompany,
     updateCompany,

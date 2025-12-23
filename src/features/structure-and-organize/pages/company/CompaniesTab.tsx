@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Link } from 'react-router';
 import DataTable, { DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
 // import { /*Edit,*/ Trash } from 'react-feather';
@@ -29,13 +29,17 @@ const companyColumns: DataTableColumn<CompanyRow>[] = [
 ];
 
 export default function CompaniesTab({ resetKey }: Props) {
-  const { companies, fetchCompanies, setSearch, setPage, setPageSize, setSort, page, pageSize, total, loading } = useCompanies();
+  const { companies, fetchCompanies, setSearch, setPage, setPageSize, setSort, page, pageSize, total, loading, search, sortBy, sortOrder, filterValue } = useCompanies();
 
   const [isAddOpen, setAddOpen] = React.useState(false);
   const [isEditOpen, setEditOpen] = React.useState(false);
   const [isDeleteOpen, setDeleteOpen] = React.useState(false);
   const [selectedCompany, setSelectedCompany] = React.useState<CompanyListItem | null>(null);
   const fileStore = useFileStore();
+
+   useEffect(() => {
+    fetchCompanies();
+  }, [search, sortBy, sortOrder, page, pageSize, filterValue, fetchCompanies]);
   
 
   const rows: (CompanyRow & { id?: string })[] = useMemo(() => {
@@ -61,6 +65,7 @@ export default function CompaniesTab({ resetKey }: Props) {
         setDeleteOpen(true);
       }, variant: 'outline', className: 'border-0', color: 'error', icon: <Trash  /> },
   ] as DataTableAction<any>[];
+  
 
   // const exportCSV = (filename: string, data: any[]) => {
   //   if (!data || data.length === 0) return;

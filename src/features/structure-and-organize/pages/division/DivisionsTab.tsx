@@ -1,4 +1,4 @@
-import  { useMemo, useState } from 'react';
+import  { useEffect, useMemo, useState } from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
 // import { Edit, Trash } from 'react-feather';
 import { IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
@@ -30,7 +30,7 @@ const divisionColumns: DataTableColumn<DivisionRow>[] = [
 ];
 
 export default function DivisionsTab({ resetKey }: Props) {
-  const { divisions, fetchDivisions, setSearch, setPage, setPageSize, setSort } = useDivisions();
+  const { divisions, fetchDivisions, setSearch, setPage, setPageSize, setSort, page, pageSize, search, sortBy, sortOrder, filterValue } = useDivisions();
   const addModal = useModal(false);
   const editModal = useModal(false);
   const deleteModal = useModal(false);
@@ -96,6 +96,10 @@ export default function DivisionsTab({ resetKey }: Props) {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   };
+
+  useEffect(() => {
+    fetchDivisions();
+  }, [fetchDivisions, page, pageSize, search, sortBy, sortOrder, filterValue]);
 
 
   return (

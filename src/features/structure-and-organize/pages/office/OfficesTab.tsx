@@ -1,4 +1,4 @@
-import  { useMemo, useState } from 'react';
+import  { useEffect, useMemo, useState } from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
 // import { Edit, Trash } from 'react-feather';
 import { IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
@@ -31,12 +31,16 @@ const officeColumns: DataTableColumn<OfficeRow>[] = [
 ];
 
 export default function OfficesTab({ resetKey }: Props) {
-  const { offices, fetchOffices, setSearch, setPage, setPageSize, setSort, page, pageSize, total } = useOffices();
+  const { offices, fetchOffices, setSearch, setPage, setPageSize, setSort, page, pageSize, total, search, sortBy, sortOrder, filterValue } = useOffices();
   const addModal = useModal(false);
   const editModal = useModal(false);
   const deleteModal = useModal(false);
   const [selected, setSelected] = useState<OfficeListItem | null>(null);
   const fileStore = useFileStore();
+
+  useEffect(() => {
+    fetchOffices();
+  }, [page, pageSize, search, sortBy, sortOrder, filterValue, fetchOffices]);
 
   const rows: OfficeRow[] = useMemo(() => {
     return (offices || []).map((o, idx) => ({

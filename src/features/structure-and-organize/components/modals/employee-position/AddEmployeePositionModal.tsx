@@ -7,7 +7,7 @@ import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
 import { addNotification } from '@/stores/notificationStore';
 import Select from '@/components/form/Select';
 import { useEmployeePositions } from '../../../hooks/useEmployeePositions';
-import { usePositions } from '../../../hooks/usePositions';
+import { usePositions } from '../../../hooks/useJobTitle';
 import { useDirectorates } from '../../../hooks/useDirectorates';
 import { useDivisions } from '../../../hooks/useDivisions';
 import { useDepartments } from '../../../hooks/useDepartments';

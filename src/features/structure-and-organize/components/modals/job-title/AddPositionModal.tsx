@@ -4,7 +4,7 @@ import { useFileStore } from '@/stores/fileStore';
 import FileInput from "../../../../../components/shared/field/FileInput";
 import Input from "@/components/form/input/InputField";
 import { addNotification } from "@/stores/notificationStore";
-import { usePositions } from '../../../hooks/usePositions';
+import { usePositions } from '../../../hooks/useJobTitle';
 
 
 

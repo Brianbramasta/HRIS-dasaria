@@ -12,7 +12,7 @@ import { useCompanies } from '../../../../structure-and-organize/hooks/useCompan
 import { useDirectorates } from '../../../../structure-and-organize/hooks/useDirectorates';
 import { useDivisions } from '../../../../structure-and-organize/hooks/useDivisions';
 import { useDepartments } from '../../../../structure-and-organize/hooks/useDepartments';
-import { usePositions } from '../../../../structure-and-organize/hooks/usePositions';
+import { usePositions } from '../../../../structure-and-organize/hooks/useJobTitle';
 import { useFileStore } from '@/stores/fileStore';
 import { IconShare } from '@/icons/components/icons';
 

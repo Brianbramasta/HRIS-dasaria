@@ -4,7 +4,7 @@ import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from "@/stores/notificationStore";
 import ModalDelete from "../../../../../components/shared/modal/ModalDelete";
 import ModalDeleteContent from "../../../../../components/shared/modal/ModalDeleteContent";
-import { usePositions } from '../../../hooks/usePositions';
+import { usePositions } from '../../../hooks/useJobTitle';
 
 
 type Props = {

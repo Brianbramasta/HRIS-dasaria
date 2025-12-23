@@ -38,7 +38,11 @@ interface UsePositionsReturn {
   page: number;
   pageSize: number;
   totalPages: number;
-  
+  search: string;
+  sortBy: string;
+  sortOrder: 'asc' | 'desc';
+  filterValue: string;
+
   // Actions
   fetchPositions: (filter?: TableFilter) => Promise<void>;
   createPosition: (payload: { name: string; grade?: string | null; jobDescription?: string | null; directSubordinates?: string[]; memoNumber: string; skFile: File; }) => Promise<void>;
@@ -196,9 +200,7 @@ export const usePositions = (): UsePositionsReturn => {
     }
   }, []);
 
-  useEffect(() => {
-    fetchPositions();
-  }, [fetchPositions, filterValue]);
+  
 
   return {
     positions,
@@ -208,6 +210,10 @@ export const usePositions = (): UsePositionsReturn => {
     page,
     pageSize,
     totalPages,
+    search,
+    sortBy,
+    sortOrder,
+    filterValue,
     fetchPositions,
     createPosition,
     updatePosition,

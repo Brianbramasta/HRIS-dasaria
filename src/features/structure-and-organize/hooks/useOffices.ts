@@ -37,7 +37,11 @@ interface UseOfficesReturn {
   page: number;
   pageSize: number;
   totalPages: number;
-  
+  filterValue: string;
+  search: string;
+  sortBy: string;
+  sortOrder: 'asc' | 'desc' | null;
+
   // Actions
   fetchOffices: (filter?: TableFilter) => Promise<void>;
   // DOK: createOffice kini mendukung multi-select perusahaan melalui companyIds
@@ -185,9 +189,7 @@ export const useOffices = (): UseOfficesReturn => {
     }
   }, []);
 
-  useEffect(() => {
-    fetchOffices();
-  }, [fetchOffices, filterValue]);
+  
 
   return {
     offices,
@@ -197,6 +199,10 @@ export const useOffices = (): UseOfficesReturn => {
     page,
     pageSize,
     totalPages,
+    filterValue,
+    search,
+    sortBy,
+    sortOrder,
     fetchOffices,
     createOffice,
     updateOffice,

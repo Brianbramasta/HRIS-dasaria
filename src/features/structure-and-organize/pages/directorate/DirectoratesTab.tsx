@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
 // import { Edit, Trash } from 'react-feather';
 import { IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
@@ -24,7 +24,7 @@ const directorateColumns: DataTableColumn<DirectorateRow>[] = [
 ];
 
 export default function DirectoratesTab({ resetKey }: Props) {
-  const { rows, fetchDirectorates, setSearch, setPage, setPageSize, setSort, page, pageSize, total, exportToCSV } = useDirectorates();
+  const { rows, fetchDirectorates, setSearch, setPage, setPageSize, setSort, page, pageSize, total, exportToCSV, search, sortBy, sortOrder, filterValue } = useDirectorates();
   const addModal = useModal(false);
   const editModal = useModal(false);
   const deleteModal = useModal(false);
@@ -35,6 +35,10 @@ export default function DirectoratesTab({ resetKey }: Props) {
     { label: '', onClick: (row: any) => { setSelected(row.raw as DirectorateListItem); editModal.openModal(); }, variant: 'outline', className: 'border-0', icon: <Edit  /> },
     { label: '', onClick: (row: any) => { setSelected(row.raw as DirectorateListItem); deleteModal.openModal(); }, variant: 'outline', className: 'border-0', color: 'error', icon: <Trash  /> },
   ] as DataTableAction<any>[];
+
+  useEffect(() => {
+    fetchDirectorates();
+  }, [fetchDirectorates, page, pageSize, search, sortBy, sortOrder, filterValue]);
 
   return (
     <>
