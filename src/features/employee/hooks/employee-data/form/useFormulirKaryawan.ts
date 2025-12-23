@@ -4,6 +4,19 @@ import { useFormulirKaryawanStore } from '../../../stores/useFormulirKaryawanSto
 import useCreateEmployee from './useCreateEmployee';
 import { useAuthStore } from '../../../../auth/stores/AuthStore';
 import { addNotification } from '@/stores/notificationStore';
+import { employeeMasterDataService } from '../../../services/EmployeeMasterData.service';
+
+export interface DropdownOption {
+  label: string;
+  value: string;
+}
+
+
+export const getReligionDropdownOptions = async (search?: string): Promise<DropdownOption[]> => {
+  const data = await employeeMasterDataService.getReligionDropdown(search);
+  console.log('Religion dropdown data:', data);
+  return (data || []).map((r: any) => ({ label: r.name, value: r.id }));
+};
 
 export interface UseFormulirKaryawanReturn {
   // Store states

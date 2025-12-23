@@ -87,7 +87,7 @@ export const JENIS_KELAMIN_OPTIONS = [
 ];
 
 export const STATUS_MENIKAH_OPTIONS = [
-  { label: 'Belum Menikah', value: 'belum_menikah' },
+  { label: 'Tidak Menikah', value: 'tidak_menikah' },
   { label: 'Menikah', value: 'menikah' },
 ];
 
@@ -103,7 +103,6 @@ export const TANGGUNGAN_OPTIONS = [
   { label: '1', value: '1' },
   { label: '2', value: '2' },
   { label: '3', value: '3' },
-  { label: '4+', value: '4' },
 ];
 
 // form 2

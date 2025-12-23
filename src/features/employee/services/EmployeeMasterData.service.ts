@@ -15,6 +15,11 @@ import {
   PTKPDropdownItem,
 } from '../types/Employee';
 
+interface ReligionDropdownItem {
+    id: string;
+    religion_name: string;
+  }
+
 class EmployeeMasterDataService {
   private readonly basePath = 'employee-master-data';
 
@@ -83,7 +88,7 @@ class EmployeeMasterDataService {
    */
   async getCompanyDropdown(search?: string): Promise<CompanyDropdownItem[]> {
     const qs = search ? `?search=${encodeURIComponent(search)}` : '';
-    const resp = await apiService.get<CompanyDropdownItem[]>(`${this.basePath}/companies${qs}`);
+    const resp = await apiService.get<CompanyDropdownItem[]>(`${this.basePath}/employees/companies${qs}`);
     return (resp as any)?.data ?? [];
   }
 
@@ -94,7 +99,7 @@ class EmployeeMasterDataService {
    */
   async getOfficeDropdown(search?: string, idCompany?: string): Promise<OfficeDropdownItem[]> {
     const qs = search ? `?search=${encodeURIComponent(search)}` : '';
-    const resp = await apiService.get<OfficeDropdownItem[]>(`${this.basePath}/offices/${idCompany}/${qs}`);
+    const resp = await apiService.get<OfficeDropdownItem[]>(`${this.basePath}/employees/offices/${idCompany}/${qs}`);
     return (resp as any)?.data ?? [];
   }
 
@@ -105,7 +110,7 @@ class EmployeeMasterDataService {
    */
   async getDirectorateDropdown(search?: string): Promise<DirectorateDropdownItem[]> {
     const qs = search ? `?search=${encodeURIComponent(search)}` : '';
-    const resp = await apiService.get<DirectorateDropdownItem[]>(`${this.basePath}/directorate${qs}`);
+    const resp = await apiService.get<DirectorateDropdownItem[]>(`${this.basePath}/employees/directorate${qs}`);
     return (resp as any)?.data ?? [];
   }
 
@@ -115,7 +120,7 @@ class EmployeeMasterDataService {
    * @returns Promise dengan array divisi
    */
   async getDivisionsByDirectorate(idDirectorate: string): Promise<DivisionDropdownItem[]> {
-    const resp = await apiService.get<DivisionDropdownItem[]>(`${this.basePath}/division/${idDirectorate}`);
+    const resp = await apiService.get<DivisionDropdownItem[]>(`${this.basePath}/employees/division/${idDirectorate}`);
     return (resp as any)?.data ?? [];
   }
 
@@ -125,7 +130,7 @@ class EmployeeMasterDataService {
    * @returns Promise dengan array departemen
    */
   async getDepartmentsByDivision(idDivision: string): Promise<DepartmentDropdownItem[]> {
-    const resp = await apiService.get<DepartmentDropdownItem[]>(`${this.basePath}/department/${idDivision}`);
+    const resp = await apiService.get<DepartmentDropdownItem[]>(`${this.basePath}/employees/department/${idDivision}`);
     return (resp as any)?.data ?? [];
   }
 
@@ -136,7 +141,7 @@ class EmployeeMasterDataService {
    */
   async getJobTitleDropdown(search?: string): Promise<JobTitleDropdownItem[]> {
     const qs = search ? `?search=${encodeURIComponent(search)}` : '';
-    const resp = await apiService.get<JobTitleDropdownItem[]>(`${this.basePath}/jabatan-dropdown${qs}`);
+    const resp = await apiService.get<JobTitleDropdownItem[]>(`${this.basePath}/employees/jabatan-dropdown${qs}`);
     return (resp as any)?.data ?? [];
   }
 
@@ -147,7 +152,7 @@ class EmployeeMasterDataService {
    */
   async getPositionDropdown(search?: string): Promise<PositionDropdownItem[]> {
     const queryString = apiService.buildQueryString(search ? { search } : undefined);
-    const url = queryString ? `${this.basePath}/position-dropdown?${queryString}` : `${this.basePath}/position-dropdown`;
+    const url = queryString ? `${this.basePath}/employees/position-dropdown?${queryString}` : `${this.basePath}/employees/position-dropdown`;
     const resp = await apiService.get<PositionDropdownItem[]>(url);
     return (resp as any)?.data ?? [];
   }
@@ -159,7 +164,19 @@ class EmployeeMasterDataService {
    */
   async getPTKPDropdown(search?: string): Promise<PTKPDropdownItem[]> {
     const qs = search ? `?search=${encodeURIComponent(search)}` : '';
-    const resp = await apiService.get<PTKPDropdownItem[]>(`${this.basePath}/ptkp-status-dropdown${qs}`);
+    const resp = await apiService.get<PTKPDropdownItem[]>(`${this.basePath}/employees/ptkp-status-dropdown${qs}`);
+    return (resp as any)?.data ?? [];
+  }
+
+  /**
+   * Dropdown: Agama
+   * @param search - Optional search query untuk filter agama
+   * @returns Promise dengan array agama
+   */
+  
+  async getReligionDropdown(search?: string): Promise<ReligionDropdownItem[]> {
+    const qs = search ? `?search=${encodeURIComponent(search)}` : '';
+    const resp = await apiService.get<ReligionDropdownItem[]>(`${this.basePath}/employees/religion-dropdown${qs}`);
     return (resp as any)?.data ?? [];
   }
 

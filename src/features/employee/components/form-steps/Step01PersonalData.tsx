@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFormulirKaryawanStore } from '../../stores/useFormulirKaryawanStore';
 import Input from '../../../../components/form/input/InputField';
 import Select from '../../../../components/form/Select';
@@ -6,14 +6,16 @@ import TextArea from '../../../../components/form/input/TextArea';
 import Label from '../../../../components/form/Label';
 import DatePicker from '../../../../components/form/date-picker';
 import FileInput from '../../../../components/form/input/FileInput';
-import { AGAMA_OPTIONS, PENDIDIKAN_OPTIONS, JENIS_KELAMIN_OPTIONS, STATUS_MENIKAH_OPTIONS, GOLONGAN_DARAH_OPTIONS, 
+import { PENDIDIKAN_OPTIONS, JENIS_KELAMIN_OPTIONS, STATUS_MENIKAH_OPTIONS, GOLONGAN_DARAH_OPTIONS, 
 TANGGUNGAN_OPTIONS } from '../../utils/EmployeeMappings';
+import { getReligionDropdownOptions } from '../../hooks/employee-data/form/useFormulirKaryawan';
 
 
 
 export const Step01PersonalData: React.FC = () => {
   const { formData, updateStep1 } = useFormulirKaryawanStore();
   const step1 = formData.step1;
+  const [agamaOptions, setAgamaOptions] = useState<any[]>([]);
 
   const handleChange = (field: string, value: string) => {
     updateStep1({ [field]: value } as any);
@@ -23,6 +25,14 @@ export const Step01PersonalData: React.FC = () => {
     const file = event.target.files?.[0] || null;
     updateStep1({ fotoProfil: file } as any);
   };
+  useEffect(() => {
+    let mounted = true;
+    getReligionDropdownOptions().then((opts) => {
+      if (mounted) setAgamaOptions(opts);
+    }).catch(() => {});
+
+    return () => { mounted = false; };
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -75,7 +85,7 @@ export const Step01PersonalData: React.FC = () => {
           <div>
             <Label>Agama</Label>
             <Select
-              options={AGAMA_OPTIONS}
+              options={agamaOptions}
               defaultValue={step1.agama}
               onChange={(value) => handleChange('agama', value)}
               placeholder="Select"
@@ -178,7 +188,7 @@ export const Step01PersonalData: React.FC = () => {
             />
           </div>
           {/* Upload Foto Profil */}
-        <div className="mt-4">
+        <div className="">
           <Label>Upload Foto Profil</Label>
           <FileInput onChange={handleFileChange} />
           {/* {step1.fotoProfil && (
