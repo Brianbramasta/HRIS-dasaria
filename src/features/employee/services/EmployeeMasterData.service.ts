@@ -20,6 +20,42 @@ interface ReligionDropdownItem {
     religion_name: string;
   }
 
+interface EducationDropdownItem {
+    id_education: string;
+    education_name: string;
+  }
+
+interface PositionLevelDropdownItem {
+    id_level: string;
+    level_name: string;
+  }
+
+interface EmployeeCategoryDropdownItem {
+    id_category: string;
+    category_name: string;
+  }
+
+interface ContractStatusDropdownItem {
+    id_status: string;
+    status_name: string;
+  }
+
+interface DocumentTypeDropdownItem {
+    id_doc_type: string;
+    doc_type_name: string;
+  }
+
+interface ResignationStatusDropdownItem {
+    id_resign_status: string;
+    resign_status_name: string;
+  }
+
+interface BankDropdownItem {
+    id_bank: string;
+    bank_code: string;
+    bank_name: string;
+  }
+
 class EmployeeMasterDataService {
   private readonly basePath = 'employee-master-data';
 
@@ -173,10 +209,86 @@ class EmployeeMasterDataService {
    * @param search - Optional search query untuk filter agama
    * @returns Promise dengan array agama
    */
-  
   async getReligionDropdown(search?: string): Promise<ReligionDropdownItem[]> {
     const qs = search ? `?search=${encodeURIComponent(search)}` : '';
     const resp = await apiService.get<ReligionDropdownItem[]>(`${this.basePath}/employees/religion-dropdown${qs}`);
+    return (resp as any)?.data ?? [];
+  }
+
+  /**
+   * Dropdown: Pendidikan
+   * @param search - Optional search query untuk filter pendidikan
+   * @returns Promise dengan array pendidikan
+   */
+  async getEducationDropdown(search?: string): Promise<EducationDropdownItem[]> {
+    const qs = search ? `?search=${encodeURIComponent(search)}` : '';
+    const resp = await apiService.get<EducationDropdownItem[]>(`${this.basePath}/employees/education-dropdown${qs}`);
+    return (resp as any)?.data ?? [];
+  }
+
+  /**
+   * Dropdown: Jenjang Jabatan
+   * @param search - Optional search query untuk filter jenjang jabatan
+   * @returns Promise dengan array jenjang jabatan
+   */
+  async getPositionLevelDropdown(search?: string): Promise<PositionLevelDropdownItem[]> {
+    const qs = search ? `?search=${encodeURIComponent(search)}` : '';
+    const resp = await apiService.get<PositionLevelDropdownItem[]>(`${this.basePath}/employees/position-level-dropdown${qs}`);
+    return (resp as any)?.data ?? [];
+  }
+
+  /**
+   * Dropdown: Kategori Karyawan
+   * @param search - Optional search query untuk filter kategori karyawan
+   * @returns Promise dengan array kategori karyawan
+   */
+  async getEmployeeCategoryDropdown(search?: string): Promise<EmployeeCategoryDropdownItem[]> {
+    const qs = search ? `?search=${encodeURIComponent(search)}` : '';
+    const resp = await apiService.get<EmployeeCategoryDropdownItem[]>(`${this.basePath}/employees/employee-category-dropdown${qs}`);
+    return (resp as any)?.data ?? [];
+  }
+
+  /**
+   * Dropdown: Status Kontrak
+   * @param search - Optional search query untuk filter status kontrak
+   * @returns Promise dengan array status kontrak
+   */
+  async getContractStatusDropdown(search?: string): Promise<ContractStatusDropdownItem[]> {
+    const qs = search ? `?search=${encodeURIComponent(search)}` : '';
+    const resp = await apiService.get<ContractStatusDropdownItem[]>(`${this.basePath}/employees/contract-status-dropdown${qs}`);
+    return (resp as any)?.data ?? [];
+  }
+
+  /**
+   * Dropdown: Tipe Dokumen
+   * @param search - Optional search query untuk filter tipe dokumen
+   * @returns Promise dengan array tipe dokumen
+   */
+  async getDocumentTypeDropdown(search?: string): Promise<DocumentTypeDropdownItem[]> {
+    const qs = search ? `?search=${encodeURIComponent(search)}` : '';
+    const resp = await apiService.get<DocumentTypeDropdownItem[]>(`${this.basePath}/employees/document-type-dropdown${qs}`);
+    return (resp as any)?.data ?? [];
+  }
+
+  /**
+   * Dropdown: Status Pengunduran Diri
+   * @param search - Optional search query untuk filter status pengunduran diri
+   * @returns Promise dengan array status pengunduran diri
+   */
+  async getResignationStatusDropdown(search?: string): Promise<ResignationStatusDropdownItem[]> {
+    const qs = search ? `?search=${encodeURIComponent(search)}` : '';
+    const resp = await apiService.get<ResignationStatusDropdownItem[]>(`${this.basePath}/employees/resignation-status-dropdown${qs}`);
+    return (resp as any)?.data ?? [];
+  }
+
+  /**
+   * Dropdown: Bank
+   * @param search - Optional search query untuk filter bank
+   * @returns Promise dengan array bank
+   */
+  async getBankDropdown(search?: string): Promise<BankDropdownItem[]> {
+    const qs = search ? `?search=${encodeURIComponent(search)}` : '';
+    const resp = await apiService.get<BankDropdownItem[]>(`${this.basePath}/employees/bank-dropdown${qs}`);
     return (resp as any)?.data ?? [];
   }
 

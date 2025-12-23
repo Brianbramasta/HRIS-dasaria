@@ -1,4 +1,30 @@
-# Data Master Karyawan
+# Data Master Karyawan (Employee Master Data)
+
+## Daftar API Endpoints
+
+1. [List Karyawan (Index)](#list-karyawan-index)
+2. [Detail Profil Karyawan](#detail-profil-karyawan)
+3. [Tambah Data Karyawan](#tambah-data-karyawan)
+4. [Update Data Karyawan](#update-data-karyawan)
+5. [Hapus Data Karyawan](#hapus-data-karyawan)
+6. [Dropdown Perusahaan](#dropdown-perusahaan)
+7. [Dropdown Kantor](#dropdown-kantor)
+8. [Dropdown Direktorat](#dropdown-direktorat)
+9. [Dropdown Divisi by Direktorat](#dropdown-divisi-by-direktorat)
+10. [Dropdown Departemen by Divisi](#dropdown-departemen-by-divisi)
+11. [Dropdown Jabatan + Golongan](#dropdown-jabatan--golongan)
+12. [Dropdown Posisi](#dropdown-posisi)
+13. [Dropdown PTKP](#dropdown-ptkp)
+14. [Dropdown Pendidikan](#dropdown-pendidikan)
+15. [Dropdown Jenjang Jabatan](#dropdown-jenjang-jabatan)
+16. [Dropdown Kategori Karyawan](#dropdown-kategori-karyawan)
+17. [Dropdown Status Kontrak](#dropdown-status-kontrak)
+18. [Dropdown Tipe Dokumen](#dropdown-tipe-dokumen)
+19. [Dropdown Agama](#dropdown-agama)
+20. [Dropdown Status Pengunduran Diri](#dropdown-status-pengunduran-diri)
+21. [Dropdown Bank](#dropdown-bank)
+
+---
 
 ## List Karyawan (Index)
 
@@ -307,127 +333,127 @@ GET {{base_url}}/api/employee-master-data/employees?search=tes44@gmail.com&sort=
 
 ```json
 {
-    "meta": {
-        "status": 200,
-        "message": "Success get employee detail"
+  "meta": {
+    "status": 200,
+    "message": "Success get employee detail"
+  },
+  "data": {
+    "Data_Pribadi": {
+      "id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
+      "full_name": "Brian Bramasta 2",
+      "national_id": "345617",
+      "email": "Brianaldybramastaerrr@gmail.com",
+      "religion": "Christianity - Protestant",
+      "blood_type": "B",
+      "birth_place": "Bojonegoro",
+      "birth_date": "2025-12-01",
+      "last_education": "SD",
+      "marital_status": "Belum Menikah",
+      "gender": "Laki-laki",
+      "household_dependents": "1",
+      "phone_number": "333333",
+      "current_address": "aa",
+      "ktp_address": "aa"
     },
-    "data": {
-        "Data_Pribadi": {
-            "id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
-            "full_name": "Brian Bramasta 2",
-            "national_id": "345617",
-            "email": "Brianaldybramastaerrr@gmail.com",
-            "religion": "Christianity - Protestant",
-            "blood_type": "B",
-            "birth_place": "Bojonegoro",
-            "birth_date": "2025-12-01",
-            "last_education": "SD",
-            "marital_status": "Belum Menikah",
-            "gender": "Laki-laki",
-            "household_dependents": "1",
-            "phone_number": "333333",
-            "current_address": "aa",
-            "ktp_address": "aa"
-        },
-        "Data_Pendidikan": {
-            "employee_id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
-            "formal_educations": [
-                {
-                    "id": "019b2b02-dd76-7255-a6ce-0a6118e45d97",
-                    "education_level": "S1",
-                    "institution_name": "test",
-                    "degree": "aha",
-                    "final_grade": "3",
-                    "major": "test",
-                    "graduation_year": "2022",
-                    "employee_id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
-                    "created_at": "2025-12-17T06:32:46.000000Z",
-                    "updated_at": "2025-12-17T06:32:46.000000Z"
-                }
-            ],
-            "non_formal_educations": [
-                {
-                    "id": "019b2b02-dd7a-700b-a21e-d80cafb8baef",
-                    "employee_id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
-                    "certificate_name": "test",
-                    "institution_name": "testtttt",
-                    "start_date": "2025-12-01",
-                    "end_date": "2025-12-01",
-                    "certificate_id": "55466647",
-                    "certificate_file": "EmployeeMasterData\/Education\/non-formal\/f9e5fd1d-a7af-4e32-915c-1865a586e4a1.pdf",
-                    "deleted_at": null,
-                    "created_at": "2025-12-17T06:32:46.000000Z",
-                    "updated_at": "2025-12-17T06:32:46.000000Z"
-                }
-            ]
-        },
-        "Data_Sosial_media": {
-            "employee_id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
-            "social_media": [
-                {
-                    "id": "019b2b02-dd7e-7154-8620-b115a5409e54",
-                    "facebook_name": "https:\/\/brianaldybramasta.my.id\/",
-                    "instagram_name": "https:\/\/brianaldybramasta.my.id\/",
-                    "linkedin_name": "https:\/\/brianaldybramasta.my.id\/",
-                    "twitter_name": "https:\/\/brianaldybramasta.my.id\/",
-                    "relative_social_media": "https:\/\/brianaldybramasta.my.id\/",
-                    "emergency_contact_number": "08999999999",
-                    "emergency_contact_name": "siapa ya",
-                    "emergency_contact_relationship": "oke",
-                    "employee_id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
-                    "deleted_at": null,
-                    "created_at": "2025-12-17T06:32:46.000000Z",
-                    "updated_at": "2025-12-17T06:32:46.000000Z"
-                }
-            ]
-        },
-        "Data_Keuangan": {
-            "employee_id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
-            "bank_account_number": "235566666",
-            "bank_name": "bca",
-            "bank_account_holder": "test",
-            "npwp": "345678999",
-            "ptkp_code": "K\/3"
-        },
-        "Data_BPJS": {
-            "employee_id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
-            "bpjs_employment_number": "123455555",
-            "bpjs_employment_status": "Aktif",
-            "bpjs_health_number": "123333",
-            "bpjs_health_status": "Aktif"
-        },
-        "Data_Employment_Posisi": {
-            "employee_id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
-            "employment_status": "Evaluasi",
-            "resignation_status": null,
-            "created_at": "2025-12-17T06:32:46.000000Z",
-            "updated_at": "2025-12-17T06:32:46.000000Z",
-            "company_name": "PT. Artificial Intelligence Indonesia",
-            "office_name": "ini kantor ai",
-            "directorate_name": "ini nama direktorat 3 jadi 4",
-            "division_name": "ini divisi 1",
-            "department_name": "Human Resource Development",
-            "job_title_name": null,
-            "grade": "DA-001",
-            "position_name": "Accounting Manager",
-            "start_date": "2025-11-01",
-            "end_date": "2026-11-01",
-            "position_level": "Genereal",
-            "payroll_status": "aktif",
-            "employee_category": "Staff",
-            "user_access": "no"
-        },
-        "Data_Dokumen": {
-            "employee_id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
-            "documents": [
-                {
-                    "file_type": "Kartu Tanda Penduduk",
-                    "file": "EmployeeMasterData\/Document\/372552d2-5553-45ef-9f50-84e39d0cf406.pdf",
-                    "name_file": "dummy-pdf_2.pdf"
-                }
-            ]
+    "Data_Pendidikan": {
+      "employee_id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
+      "formal_educations": [
+        {
+          "id": "019b2b02-dd76-7255-a6ce-0a6118e45d97",
+          "education_level": "S1",
+          "institution_name": "test",
+          "degree": "aha",
+          "final_grade": "3",
+          "major": "test",
+          "graduation_year": "2022",
+          "employee_id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
+          "created_at": "2025-12-17T06:32:46.000000Z",
+          "updated_at": "2025-12-17T06:32:46.000000Z"
         }
+      ],
+      "non_formal_educations": [
+        {
+          "id": "019b2b02-dd7a-700b-a21e-d80cafb8baef",
+          "employee_id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
+          "certificate_name": "test",
+          "institution_name": "testtttt",
+          "start_date": "2025-12-01",
+          "end_date": "2025-12-01",
+          "certificate_id": "55466647",
+          "certificate_file": "EmployeeMasterData/Education/non-formal/f9e5fd1d-a7af-4e32-915c-1865a586e4a1.pdf",
+          "deleted_at": null,
+          "created_at": "2025-12-17T06:32:46.000000Z",
+          "updated_at": "2025-12-17T06:32:46.000000Z"
+        }
+      ]
+    },
+    "Data_Sosial_media": {
+      "employee_id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
+      "social_media": [
+        {
+          "id": "019b2b02-dd7e-7154-8620-b115a5409e54",
+          "facebook_name": "https://brianaldybramasta.my.id/",
+          "instagram_name": "https://brianaldybramasta.my.id/",
+          "linkedin_name": "https://brianaldybramasta.my.id/",
+          "twitter_name": "https://brianaldybramasta.my.id/",
+          "relative_social_media": "https://brianaldybramasta.my.id/",
+          "emergency_contact_number": "08999999999",
+          "emergency_contact_name": "siapa ya",
+          "emergency_contact_relationship": "oke",
+          "employee_id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
+          "deleted_at": null,
+          "created_at": "2025-12-17T06:32:46.000000Z",
+          "updated_at": "2025-12-17T06:32:46.000000Z"
+        }
+      ]
+    },
+    "Data_Keuangan": {
+      "employee_id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
+      "bank_account_number": "235566666",
+      "bank_name": "bca",
+      "bank_account_holder": "test",
+      "npwp": "345678999",
+      "ptkp_code": "K/3"
+    },
+    "Data_BPJS": {
+      "employee_id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
+      "bpjs_employment_number": "123455555",
+      "bpjs_employment_status": "Aktif",
+      "bpjs_health_number": "123333",
+      "bpjs_health_status": "Aktif"
+    },
+    "Data_Employment_Posisi": {
+      "employee_id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
+      "employment_status": "Evaluasi",
+      "resignation_status": null,
+      "created_at": "2025-12-17T06:32:46.000000Z",
+      "updated_at": "2025-12-17T06:32:46.000000Z",
+      "company_name": "PT. Artificial Intelligence Indonesia",
+      "office_name": "ini kantor ai",
+      "directorate_name": "ini nama direktorat 3 jadi 4",
+      "division_name": "ini divisi 1",
+      "department_name": "Human Resource Development",
+      "job_title_name": null,
+      "grade": "DA-001",
+      "position_name": "Accounting Manager",
+      "start_date": "2025-11-01",
+      "end_date": "2026-11-01",
+      "position_level": "Genereal",
+      "payroll_status": "aktif",
+      "employee_category": "Staff",
+      "user_access": "no"
+    },
+    "Data_Dokumen": {
+      "employee_id": "019b2b02-dd65-7084-a30f-1f943a3d2e64",
+      "documents": [
+        {
+          "file_type": "Kartu Tanda Penduduk",
+          "file": "EmployeeMasterData/Document/372552d2-5553-45ef-9f50-84e39d0cf406.pdf",
+          "name_file": "dummy-pdf_2.pdf"
+        }
+      ]
     }
+  }
 }
 ```
 
@@ -749,6 +775,641 @@ GET {{base_url}}/api/employee-master-data/employees?search=tes44@gmail.com&sort=
       "ptkp_code": "TK/0",
       "ptkp_description": "Tidak Kawin, Tanggungan 0",
       "ptkp_amount": 54000000
+    }
+  ]
+}
+```
+
+---
+
+## Dropdown Pendidikan
+
+**URL:** `{{base_url}}/api/employee-master-data/education-dropdown`  
+**Method:** GET
+
+**Query Parameters (opsional):**
+
+- `search` - Pencarian pendidikan
+
+**Response:**
+
+```json
+{
+  "meta": { "status": 200, "message": "Success get education for dropdown" },
+  "data": [
+    {
+      "id_education": "1",
+      "education_name": "SMA"
+    },
+    {
+      "id_education": "2",
+      "education_name": "Diploma"
+    },
+    {
+      "id_education": "3",
+      "education_name": "S1"
+    },
+    {
+      "id_education": "4",
+      "education_name": "S2"
+    }
+  ]
+}
+```
+
+---
+
+## Dropdown Jenjang Jabatan
+
+**URL:** `{{base_url}}/api/employee-master-data/position-level-dropdown`  
+**Method:** GET
+
+**Query Parameters (opsional):**
+
+- `search` - Pencarian jenjang jabatan
+
+**Response:**
+
+```json
+{
+  "meta": {
+    "status": 200,
+    "message": "Success get position level for dropdown"
+  },
+  "data": [
+    {
+      "id_level": "1",
+      "level_name": "Staff"
+    },
+    {
+      "id_level": "2",
+      "level_name": "Supervisor"
+    },
+    {
+      "id_level": "3",
+      "level_name": "Manager"
+    }
+  ]
+}
+```
+
+---
+
+## Dropdown Kategori Karyawan
+
+**URL:** `{{base_url}}/api/employee-master-data/employee-category-dropdown`  
+**Method:** GET
+
+**Query Parameters (opsional):**
+
+- `search` - Pencarian kategori karyawan
+
+**Response:**
+
+```json
+{
+  "meta": {
+    "status": 200,
+    "message": "Success get employee category for dropdown"
+  },
+  "data": [
+    {
+      "id_category": "1",
+      "category_name": "Permanent"
+    },
+    {
+      "id_category": "2",
+      "category_name": "Contract"
+    },
+    {
+      "id_category": "3",
+      "category_name": "Internship"
+    }
+  ]
+}
+```
+
+---
+
+## Dropdown Status Kontrak
+
+**URL:** `{{base_url}}/api/employee-master-data/contract-status-dropdown`  
+**Method:** GET
+
+**Query Parameters (opsional):**
+
+- `search` - Pencarian status kontrak
+
+**Response:**
+
+```json
+{
+  "meta": {
+    "status": 200,
+    "message": "Success get contract status for dropdown"
+  },
+  "data": [
+    {
+      "id_status": "1",
+      "status_name": "Active"
+    },
+    {
+      "id_status": "2",
+      "status_name": "Inactive"
+    },
+    {
+      "id_status": "3",
+      "status_name": "Expired"
+    }
+  ]
+}
+```
+
+---
+
+## Dropdown Tipe Dokumen
+
+**URL:** `{{base_url}}/api/employee-master-data/document-type-dropdown`  
+**Method:** GET
+
+**Query Parameters (opsional):**
+
+- `search` - Pencarian tipe dokumen
+
+**Response:**
+
+```json
+{
+  "meta": {
+    "status": 200,
+    "message": "Success get document type for dropdown"
+  },
+  "data": [
+    {
+      "id_doc_type": "1",
+      "doc_type_name": "KTP"
+    },
+    {
+      "id_doc_type": "2",
+      "doc_type_name": "NPWP"
+    },
+    {
+      "id_doc_type": "3",
+      "doc_type_name": "BPJS"
+    }
+  ]
+}
+```
+
+---
+
+## Dropdown Agama
+
+**URL:** `{{base_url}}/api/employee-master-data/religion-dropdown`  
+**Method:** GET
+
+**Query Parameters (opsional):**
+
+- `search` - Pencarian agama
+
+**Response:**
+
+```json
+{
+  "meta": { "status": 200, "message": "Success get religion for dropdown" },
+  "data": [
+    {
+      "id_religion": "1",
+      "religion_name": "Islam"
+    },
+    {
+      "id_religion": "2",
+      "religion_name": "Kristen"
+    },
+    {
+      "id_religion": "3",
+      "religion_name": "Katolik"
+    },
+    {
+      "id_religion": "4",
+      "religion_name": "Hindu"
+    },
+    {
+      "id_religion": "5",
+      "religion_name": "Buddha"
+    }
+  ]
+}
+```
+
+---
+
+## Dropdown Status Pengunduran Diri
+
+**URL:** `{{base_url}}/api/employee-master-data/resignation-status-dropdown`  
+**Method:** GET
+
+**Query Parameters (opsional):**
+
+- `search` - Pencarian status pengunduran diri
+
+**Response:**
+
+```json
+{
+  "meta": {
+    "status": 200,
+    "message": "Success get resignation status for dropdown"
+  },
+  "data": [
+    {
+      "id_resign_status": "1",
+      "resign_status_name": "Pending"
+    },
+    {
+      "id_resign_status": "2",
+      "resign_status_name": "Approved"
+    },
+    {
+      "id_resign_status": "3",
+      "resign_status_name": "Rejected"
+    }
+  ]
+}
+```
+
+---
+
+## Dropdown Bank
+
+**URL:** `{{base_url}}/api/employee-master-data/bank-dropdown`  
+**Method:** GET
+
+**Query Parameters (opsional):**
+
+- `search` - Pencarian bank
+
+**Response:**
+
+```json
+{
+  "meta": { "status": 200, "message": "Success get bank for dropdown" },
+  "data": [
+    {
+      "id_bank": "1",
+      "bank_code": "BCA",
+      "bank_name": "Bank Central Asia"
+    },
+    {
+      "id_bank": "2",
+      "bank_code": "BRI",
+      "bank_name": "Bank Rakyat Indonesia"
+    },
+    {
+      "id_bank": "3",
+      "bank_code": "MANDIRI",
+      "bank_name": "Bank Mandiri"
+    }
+  ]
+}
+```
+
+---
+
+## Tambah Data Karyawan
+
+**URL:** `{{base_url}}/api/employee-master-data/employees`  
+**Method:** POST
+
+**Request Body (form-data):**
+
+```
+- full_name (string, required) - Nama lengkap karyawan
+- national_id (string, required) - Nomor identitas nasional
+- email (string, required) - Email karyawan
+- birth_place (string) - Tempat lahir
+- birth_date (date) - Tanggal lahir (YYYY-MM-DD)
+- religion (integer) - ID agama
+- blood_type (string) - Golongan darah
+- marital_status (integer) - Status perkawinan
+- gender (integer) - Jenis kelamin (1=Laki-laki, 2=Perempuan)
+- household_dependents (integer) - Jumlah tanggungan
+- phone_number (string) - Nomor telepon
+- current_address (string) - Alamat tempat tinggal saat ini
+- ktp_address (string) - Alamat KTP
+- bank_name (string) - Nama bank
+- bank_account_number (string) - Nomor rekening bank
+- bank_account_holder (string) - Nama pemilik rekening
+- npwp (string) - Nomor NPWP
+- ptkp_id (string) - ID PTKP
+- bpjs_employment_number (string) - Nomor BPJS Ketenagakerjaan
+- bpjs_employment_status (integer) - Status BPJS Ketenagakerjaan
+- bpjs_health_number (string) - Nomor BPJS Kesehatan
+- bpjs_health_status (integer) - Status BPJS Kesehatan
+- employment_status (integer) - Status kepegawaian
+- last_education (integer) - ID tingkat pendidikan
+- company_id (string) - ID perusahaan
+- office_id (string) - ID kantor
+- directorate_id (string) - ID direktorat
+- division_id (string) - ID divisi
+- department_id (string) - ID departemen
+- job_title_id (string) - ID jabatan
+- position_id (string) - ID posisi
+- start_date (date) - Tanggal mulai kerja (YYYY-MM-DD)
+- end_date (date) - Tanggal akhir kontrak (YYYY-MM-DD)
+- position_level (integer) - Jenjang jabatan
+- employee_category (integer) - Kategori karyawan
+- payroll_status (integer) - Status payroll
+- user_access (string) - Akses user (yes/no)
+```
+
+**Response:**
+
+```json
+{
+  "meta": {
+    "status": 201,
+    "message": "Employee created successfully"
+  },
+  "data": {
+    "id": "019b1849-49a7-73ff-933a-195100f11608",
+    "full_name": "Brian Bramasta",
+    "national_id": 12222,
+    "email": "brianaldybramasta@gmail.com",
+    "created_at": "2025-12-13T15:16:54.000000Z",
+    "updated_at": "2025-12-13T15:16:54.000000Z"
+  }
+}
+```
+
+---
+
+## Detail Profil Karyawan
+
+**URL:** `{{base_url}}/api/employee-master-data/employees/{id}/show`  
+**Method:** GET
+
+**Path Parameters:**
+
+- `id` (string, required) - UUID karyawan
+
+**Response:**
+
+```json
+{
+  "meta": {
+    "status": 200,
+    "message": "Success get employee detail"
+  },
+  "data": {
+    "id": "019b1849-49a7-73ff-933a-195100f11608",
+    "full_name": "Brian Bramasta",
+    "national_id": 12222,
+    "email": "Brianaldybramasta@gmail.com",
+    "religion": 2,
+    "blood_type": "O",
+    "birth_place": "Bojonegoro",
+    "birth_date": "2025-12-14",
+    "last_education": 7,
+    "marital_status": 1,
+    "gender": 1,
+    "household_dependents": 1,
+    "phone_number": "88886",
+    "current_address": "aa",
+    "ktp_address": "aa",
+    "bank_account_number": 66666,
+    "bank_name": "bca",
+    "bank_account_holder": "test",
+    "npwp": 222,
+    "ptkp_id": "00d21049-85ff-40e9-8b8a-f77be7d6b57e",
+    "bpjs_employment_number": 4444,
+    "bpjs_employment_status": 1,
+    "bpjs_health_number": 555,
+    "bpjs_health_status": 1,
+    "employment_status": 3,
+    "resignation_status": null,
+    "created_at": "2025-12-13T15:16:54.000000Z",
+    "updated_at": "2025-12-13T15:16:54.000000Z",
+    "start_date": "2025-12-01",
+    "end_date": "2025-12-16",
+    "position_level": 1,
+    "payroll_status": 1,
+    "employee_category": 2,
+    "user_access": "no",
+    "company_name": "PT. Digital Inovasi Indonesia",
+    "office_name": "Branch Office Bandung",
+    "job_title_name": "Consultant",
+    "grade": "CN1",
+    "position_name": "Accountant",
+    "department_name": "Tax Accounting Department",
+    "division_name": "Accounting Division"
+  }
+}
+```
+
+---
+
+## Update Data Karyawan
+
+**URL:** `{{base_url}}/api/employee-master-data/employees/{id}/update`  
+**Method:** POST
+
+**Path Parameters:**
+
+- `id` (string, required) - UUID karyawan
+
+**Request Body (form-data):**
+
+Sama dengan endpoint "Tambah Data Karyawan"
+
+**Response:**
+
+```json
+{
+  "meta": {
+    "status": 200,
+    "message": "Employee updated successfully"
+  },
+  "data": {
+    "id": "019b1849-49a7-73ff-933a-195100f11608",
+    "full_name": "Brian Bramasta",
+    "email": "brianaldybramasta@gmail.com",
+    "updated_at": "2025-12-13T16:30:00.000000Z"
+  }
+}
+```
+
+---
+
+## Hapus Data Karyawan
+
+**URL:** `{{base_url}}/api/employee-master-data/employees/{id}/delete`  
+**Method:** POST
+
+**Path Parameters:**
+
+- `id` (string, required) - UUID karyawan
+
+**Response:**
+
+```json
+{
+  "meta": {
+    "status": 200,
+    "message": "Employee deleted successfully"
+  },
+  "data": null
+}
+```
+
+---
+
+## Dropdown Perusahaan
+
+**URL:** `{{base_url}}/api/employee-master-data/company-dropdown`  
+**Method:** GET
+
+**Query Parameters (opsional):**
+
+- `search` - Pencarian perusahaan
+
+**Response:**
+
+```json
+{
+  "meta": { "status": 200, "message": "Success get companies for dropdown" },
+  "data": [
+    {
+      "id_company": "019ad2df-c7c1-7108-b57a-1b3c4e1dd8fa",
+      "company_name": "PT. Digital Inovasi Indonesia"
+    }
+  ]
+}
+```
+
+---
+
+## Dropdown Kantor
+
+**URL:** `{{base_url}}/api/employee-master-data/office-dropdown`  
+**Method:** GET
+
+**Query Parameters (opsional):**
+
+- `search` - Pencarian kantor
+
+**Response:**
+
+```json
+{
+  "meta": { "status": 200, "message": "Success get offices for dropdown" },
+  "data": [
+    {
+      "id_office": "019ad2e0-47dd-70f7-ad23-3c51a04b6edb",
+      "office_name": "Branch Office Bandung"
+    }
+  ]
+}
+```
+
+---
+
+## Dropdown Direktorat
+
+**URL:** `{{base_url}}/api/employee-master-data/directorate-dropdown`  
+**Method:** GET
+
+**Query Parameters (opsional):**
+
+- `search` - Pencarian direktorat
+
+**Response:**
+
+```json
+{
+  "meta": { "status": 200, "message": "Success get directorates for dropdown" },
+  "data": [
+    {
+      "id_directorate": "019ad2e1-9d8e-708f-8e13-f17e49ed8cea",
+      "directorate_name": "IT Operations Directorate"
+    }
+  ]
+}
+```
+
+---
+
+## Dropdown Divisi by Direktorat
+
+**URL:** `{{base_url}}/api/employee-master-data/division-dropdown?directorate_id={directorate_id}`  
+**Method:** GET
+
+**Query Parameters:**
+
+- `directorate_id` (string, required) - ID direktorat
+- `search` (string, opsional) - Pencarian divisi
+
+**Response:**
+
+```json
+{
+  "meta": { "status": 200, "message": "Success get divisions for dropdown" },
+  "data": [
+    {
+      "id_division": "019ad2e3-3f1e-716e-8e30-5ce4a4e5c06b",
+      "division_name": "Accounting Division"
+    }
+  ]
+}
+```
+
+---
+
+## Dropdown Departemen by Divisi
+
+**URL:** `{{base_url}}/api/employee-master-data/department-dropdown?division_id={division_id}`  
+**Method:** GET
+
+**Query Parameters:**
+
+- `division_id` (string, required) - ID divisi
+- `search` (string, opsional) - Pencarian departemen
+
+**Response:**
+
+```json
+{
+  "meta": { "status": 200, "message": "Success get departments for dropdown" },
+  "data": [
+    {
+      "id_department": "019ad2e4-b68b-7083-a2ab-87a31f27c3db",
+      "department_name": "Tax Accounting Department"
+    }
+  ]
+}
+```
+
+---
+
+## Dropdown Jabatan + Golongan
+
+**URL:** `{{base_url}}/api/employee-master-data/job-title-dropdown`  
+**Method:** GET
+
+**Query Parameters (opsional):**
+
+- `search` - Pencarian jabatan
+
+**Response:**
+
+```json
+{
+  "meta": { "status": 200, "message": "Success get job title for dropdown" },
+  "data": [
+    {
+      "id_job_title": "019aee8b-ab6d-707c-8fc8-34147caf1254",
+      "job_title_name": "Manager",
+      "grade": "MGR-001"
     }
   ]
 }
