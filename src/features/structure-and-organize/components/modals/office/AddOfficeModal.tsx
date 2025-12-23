@@ -33,7 +33,8 @@ const AddOfficeModal: React.FC<AddOfficeModalProps> = ({ isOpen, onClose, onSucc
     (async () => {
       try {
         const res = await companiesService.getDropdown();
-        setCompanyOptions(res.map((c) => ({ value: c.id, text: c.name })));
+        console.log('companies', res.data);
+        setCompanyOptions(res.data.map((c: any) => ({ value: c.id, text: c.company_name })));
       } catch (e) {
         console.error('Failed to fetch companies', e);
       }

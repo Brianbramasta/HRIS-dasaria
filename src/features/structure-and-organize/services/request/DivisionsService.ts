@@ -39,7 +39,7 @@ export const divisionsService = {
   },
 
   getById: async (id: string): Promise<any> => {
-    return apiService.get<any>(`${BaseUrl}divisions/${id}`);
+    return apiService.get<any>(`${BaseUrl}divisions/${id}/show`);
   },
 
   create: async (payload: { name: string; directorateId: string; description?: string | null; memoNumber: string; skFile: File; }): Promise<any> => {
@@ -68,7 +68,7 @@ export const divisionsService = {
     }
     if (payload.skFile) form.append('division_decree_file', payload.skFile);
 
-    return apiService.post<any>(`${BaseUrl}divisions/${id}`, form, {
+    return apiService.post<any>(`${BaseUrl}divisions/${id}/update`, form, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
@@ -78,7 +78,7 @@ export const divisionsService = {
     form.append('_method', 'DELETE');
     if (payload.memoNumber) form.append('division_deleted_decree_number', payload.memoNumber);
     if (payload.skFile) form.append('division_deleted_decree_file', payload.skFile);
-    return apiService.post<any>(`${BaseUrl}divisions/${id}`, form, {
+    return apiService.post<any>(`${BaseUrl}divisions/${id}/delete`, form, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },

@@ -20,7 +20,7 @@ const toFileSummary = (url: string | null): FileSummary | null => {
   };
 };
 
-const mapToDirectorate = (item: any): DirectorateListItem => ({
+export const mapToDirectorate = (item: any): DirectorateListItem => ({
   id: item.id ?? item.id ?? '',
   name: item.directorate_name ?? item.name ?? '',
   description: item.directorate_description ?? item.description ?? null,

@@ -17,7 +17,7 @@ const toFileSummary = (url: string | null): FileSummary | null => {
   };
 };
 
-const mapToOffice = (item: any): OfficeListItem => ({
+export const mapToOffice = (item: any): OfficeListItem => ({
   id: item.id ?? item.id ?? '',
   name: item.office_name ?? item.name ?? '',
   description: item.office_description ?? item.description ?? null,

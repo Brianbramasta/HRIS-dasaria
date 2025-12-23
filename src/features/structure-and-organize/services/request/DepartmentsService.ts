@@ -39,7 +39,7 @@ export const departmentsService = {
   },
 
   getById: async (id: string): Promise<any> => {
-    return apiService.get<any>(`${BaseUrl}departments/${id}`);
+    return apiService.get<any>(`${BaseUrl}departments/${id}/show`);
   },
 
   getDropdown: async (search?: string): Promise<any> => {
@@ -65,7 +65,7 @@ export const departmentsService = {
     form.append('department_decree_number', payload.memoNumber);
     if (payload.description !== undefined && payload.description !== null) form.append('department_description', payload.description);
     if (payload.skFile) form.append('department_decree_file', payload.skFile);
-    return apiService.post<any>(`${BaseUrl}departments/${id}`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return apiService.post<any>(`${BaseUrl}departments/${id}/update`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
   },
 
   delete: async (id: string, payload: { memoNumber: string; skFile?: File; }): Promise<any> => {
@@ -73,6 +73,6 @@ export const departmentsService = {
     form.append('_method', 'DELETE');
     if (payload.memoNumber) form.append('department_deleted_decree_number', payload.memoNumber);
     if (payload.skFile) form.append('department_deleted_decree_file', payload.skFile);
-    return apiService.post<any>(`${BaseUrl}departments/${id}`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return apiService.post<any>(`${BaseUrl}departments/${id}/delete`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
   },
 };

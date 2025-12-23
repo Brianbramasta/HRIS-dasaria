@@ -18,7 +18,7 @@ const toFileSummary = (url: string | null): FileSummary | null => {
   };
 };
 
-const mapToPosition = (item: any): PositionListItem => ({
+export const mapToPosition = (item: any): PositionListItem => ({
   id: item.id ?? item.id ?? '',
   name: item.job_title_name ?? item.name ?? '',
   grade: item.grade ?? null,

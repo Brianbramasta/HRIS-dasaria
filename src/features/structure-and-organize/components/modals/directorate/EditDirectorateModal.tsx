@@ -70,7 +70,7 @@ const EditDirectorateModal: React.FC<EditDirectorateModalProps> = ({ isOpen, onC
 
   return (
     <ModalAddEdit 
-    isOpen={isOpen}
+      isOpen={isOpen}
       onClose={onClose}
       handleSubmit={handleSubmit}
       submitting={submitting}

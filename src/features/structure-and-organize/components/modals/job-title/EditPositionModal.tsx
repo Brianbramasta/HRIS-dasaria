@@ -7,6 +7,7 @@ import FileInput from "../../../../../components/shared/field/FileInput";
 
 import Input from "@/components/form/input/InputField";
 import { addNotification } from "@/stores/notificationStore";
+import { mapToPosition } from "../../../hooks/usePositions";
 // Ubah: Mengganti komponen Select untuk grade menjadi InputField biasa
 // Alasan: Sesuai permintaan, input grade kini berupa teks
 
@@ -36,14 +37,15 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
     setIsLoading(true);
     positionsService.detail(position.id)
       .then((p) => {
+        const mappedPosition = mapToPosition(p.data);
         setFormData({
-          name: p.name || "",
-          grade: (p.grade as string) || "",
-          directSubordinates: Array.isArray(p.directSubordinates)
-            ? p.directSubordinates.join(", ")
+          name: mappedPosition.name || "",
+          grade: (mappedPosition.grade as string) || "",
+          directSubordinates: Array.isArray(mappedPosition.directSubordinates)
+            ? mappedPosition.directSubordinates.join(", ")
             : "",
-          memoNumber: p.memoNumber || "",
-          jobDescription: p.jobDescription || "",
+          memoNumber: mappedPosition.memoNumber || "",
+          jobDescription: mappedPosition.jobDescription || "",
           skFile: null,
         });
       })

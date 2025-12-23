@@ -71,7 +71,7 @@ export const directoratesService = {
       formData.append('directorate_decree_file', payload.skFile);
     }
     return apiService.post<any>(
-      `${BaseUrl}directorates/${id}`,
+      `${BaseUrl}directorates/${id}/update`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
@@ -83,7 +83,7 @@ export const directoratesService = {
     if (payload.memoNumber) formData.append('directorate_deleted_decree_number', payload.memoNumber);
     if (payload.skFile) formData.append('directorate_deleted_decree_file', payload.skFile);
     return apiService.post<any>(
-      `${BaseUrl}directorates/${id}`,
+      `${BaseUrl}directorates/${id}/delete`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 // import { Modal } from '../../../../../components/ui/modal/index';
 import { departmentsService } from '../../../services/request/DepartmentsService';
 import { divisionsService } from '../../../services/request/DivisionsService';
-import type { DepartmentListItem, DivisionListItem } from '../../../types/OrganizationApiTypes';
+import type { DepartmentListItem, DivisionDropdown } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import FileInput from '../../../../../components/shared/field/FileInput';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
@@ -10,6 +10,7 @@ import Input from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
 import TextArea from '@/components/form/input/TextArea';
 import { addNotification } from '@/stores/notificationStore';
+import {mapToDepartment} from '../../../hooks/useDepartments'
 
 interface EditDepartmentModalProps {
   isOpen: boolean;
@@ -24,7 +25,7 @@ const EditDepartmentModal: React.FC<EditDepartmentModalProps> = ({ isOpen, onClo
   const [description, setDescription] = useState('');
   const [memoNumber, setMemoNumber] = useState('');
   const skFile = useFileStore((s) => s.skFile);
-  const [divisions, setDivisions] = useState<DivisionListItem[]>([]);
+  const [divisions, setDivisions] = useState<DivisionDropdown[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
   // Alur edit: ambil detail departemen terlebih dahulu, kemudian dropdown divisi
@@ -33,12 +34,13 @@ const EditDepartmentModal: React.FC<EditDepartmentModalProps> = ({ isOpen, onClo
       try {
         if (!department?.id) return;
         const detail = await departmentsService.getById(department.id);
-        setName(detail.name || '');
-        setDivisionId(detail.divisionId || '');
-        setDescription(detail.description || '');
-        setMemoNumber(detail.memoNumber || '');
+        const mappedDepartment = mapToDepartment(detail.data);
+        setName(mappedDepartment.name || '');
+        setDivisionId(mappedDepartment.divisionId || '');
+        setDescription(mappedDepartment.description || '');
+        setMemoNumber(mappedDepartment.memoNumber || '');
         const dd = await divisionsService.getDropdown('');
-        setDivisions(dd || []);
+        setDivisions(dd.data || []);
       } catch (err) {
         console.error('Failed to initialize edit department', err);
         addNotification({
@@ -109,7 +111,7 @@ const EditDepartmentModal: React.FC<EditDepartmentModalProps> = ({ isOpen, onClo
           <Select
             required
             onChange={(e) => setDivisionId(e)}
-            options={divisions.map((d) => ({ value: d.id, label: d.name }))}
+            options={divisions.map((d) => ({ value: d.id, label: d.division_name }))}
             defaultValue={divisionId}
           />
         </div>

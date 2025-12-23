@@ -35,12 +35,12 @@ export default function DataKaryawanPage() {
   const {
     data,
     loading,
-    error,
+    // error,
     total,
     page,
     limit,
     navigate,
-    fetchKaryawan,
+    // fetchKaryawan,
     handleSearchChange,
     handleSortChange,
     handlePageChange,
@@ -331,16 +331,16 @@ export default function DataKaryawanPage() {
     },
   ];
 
-  if (error) {
-    return (
-      <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
-        <p className="font-semibold mb-2">Error: {error}</p>
-        <Button onClick={() => fetchKaryawan()} variant="primary" size="sm" className="mt-2">
-          Coba Lagi
-        </Button>
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
+  //       <p className="font-semibold mb-2">Error: {error}</p>
+  //       <Button onClick={() => fetchKaryawan()} variant="primary" size="sm" className="mt-2">
+  //         Coba Lagi
+  //       </Button>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="space-y-6">

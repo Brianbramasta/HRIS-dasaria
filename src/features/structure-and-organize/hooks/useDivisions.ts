@@ -18,7 +18,7 @@ const toFileSummary = (url: string | null): FileSummary | null => {
   };
 };
 
-const mapToDivision = (item: any): DivisionListItem => ({
+export const mapToDivision = (item: any): DivisionListItem => ({
   id: item.id ?? '',
   name: item.division_name ?? item.name ?? '',
   description: item.division_description ?? item.description ?? null,

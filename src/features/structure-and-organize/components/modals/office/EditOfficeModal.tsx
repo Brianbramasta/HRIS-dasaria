@@ -9,6 +9,7 @@ import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 import MultiSelect from '@/components/form/MultiSelect';
 import { addNotification } from '@/stores/notificationStore';
+import { mapToOffice } from '@/features/structure-and-organize/Index';
 
 
 
@@ -33,7 +34,9 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
     if (!isOpen || !office?.id) return;
     (async () => {
       try {
-        const fresh = await officesService.getById(office.id);
+        const response_detail = await officesService.getById(office.id);
+        const fresh = mapToOffice(response_detail.data);
+        console.log('office detail', mapToOffice(fresh));
         setName(fresh.name || '');
         setMemoNumber(fresh.memoNumber || '');
         setDescription(fresh.description || '');
@@ -47,9 +50,9 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
         console.log('selectedIds', selectedIds);
         console.log('initialIds', initialIds);
         const res = await companiesService.getDropdown();
-        const opts = res.map((c) => ({ value: c.id, text: c.name }));
+        const opts = res.data.map((c: any) => ({ value: c.id, text: c.name }));
         // ensure all selected ids exist in options
-        const missing = selectedIds.filter((id) => !opts.some((o) => o.value === id));
+        const missing = selectedIds.filter((id) => !opts.some((o: any) => o.value === id));
         for (const id of missing) {
           try {
             const detail = await companiesService.getDetail(id);

@@ -43,7 +43,7 @@ export const employeePositionsService = {
 
   // Ambil detail Posisi (GET /organizational-structure/positions/{id_position})
   detail: async (id: string): Promise<any> => {
-    return apiService.get<any>(`${BaseUrl}positions/${id}`);
+    return apiService.get<any>(`${BaseUrl}positions/${id}/show`);
   },
 
   // Dokumentasi: Create Posisi - kirim File untuk position_decree_file (multipart/form-data)
@@ -99,7 +99,7 @@ export const employeePositionsService = {
     // Dokumentasi: kirim File asli bila tersedia
     if (payload.skFile) form.append('position_decree_file', payload.skFile);
     return apiService.post<any>(
-      `${BaseUrl}positions/${id}`,
+      `${BaseUrl}positions/${id}/update`,
       form,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
@@ -112,7 +112,7 @@ export const employeePositionsService = {
     if (payload.memoNumber) form.append('position_deleted_decree_number', payload.memoNumber);
     if (payload.skFileId) form.append('position_deleted_decree_file', payload.skFileId);
     return apiService.post<any>(
-      `${BaseUrl}positions/${id}`,
+      `${BaseUrl}positions/${id}/delete`,
       form,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );

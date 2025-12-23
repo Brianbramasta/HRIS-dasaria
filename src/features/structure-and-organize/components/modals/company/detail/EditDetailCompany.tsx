@@ -271,8 +271,7 @@ const EditDetailCompany: React.FC<EditDetailCompanyProps> = ({ isOpen, onClose, 
               <Input value={form.companySize || '0'} disabled onChange={(e:any) => handleChange('companySize', e.target.value)} />
             </div>
             <div>
-              // DOK: Gunakan block arrow agar parameter 'date' dianggap terpakai oleh TS
-              // Alasan: mencegah TS6133 ('date' tidak dibaca) saat kita hanya butuh dateString
+            
               <DatePicker
                 id="company-founded"
                 label="Tanggal Didirikan"

@@ -18,7 +18,7 @@ const toFileSummary = (url: string | null): FileSummary | null => {
   };
 };
 
-const mapToDepartment = (item: any): DepartmentListItem => ({
+export const mapToDepartment = (item: any): DepartmentListItem => ({
   id: item.id ?? item.id ?? '',
   name: item.department_name ?? item.name ?? '',
   description: item.department_description ?? item.description ?? null,

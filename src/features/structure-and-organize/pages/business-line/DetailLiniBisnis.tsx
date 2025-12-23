@@ -47,7 +47,7 @@ export default function DetailLiniBisnis() {
       {/* Daftar Perusahaan */}
       <ExpandCard title="Daftar Perusahaan" withHeaderDivider defaultOpen>
         <DocumentsTable
-        title='Perusahaan'
+          title='Perusahaan'
           items={companies as any}
           columns={[
             { id: 'no', label: 'No.', align: 'center' },

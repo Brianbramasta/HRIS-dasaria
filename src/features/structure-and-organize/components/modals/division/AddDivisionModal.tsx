@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 // import { Modal } from '../../../../../components/ui/modal/index';
 import { divisionsService } from '../../../services/request/DivisionsService';
 import { directoratesService } from '../../../services/request/DirectoratesService';
-import type { DirectorateListItem } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import FileInput from '../../../../../components/shared/field/FileInput';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
@@ -17,14 +16,17 @@ interface AddDivisionModalProps {
   onClose: () => void;
   onSuccess?: () => void;
 }
-
+interface DirectorateDropwdown {
+  id: string;
+  directorate_name: string;
+}
 const AddDivisionModal: React.FC<AddDivisionModalProps> = ({ isOpen, onClose, onSuccess }) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [directorateId, setDirectorateId] = useState('');
   const [memoNumber, setMemoNumber] = useState('');
   const skFile = useFileStore((s) => s.skFile);
-  const [directorates, setDirectorates] = useState<DirectorateListItem[]>([]);
+  const [directorates, setDirectorates] = useState<DirectorateDropwdown[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -32,7 +34,7 @@ const AddDivisionModal: React.FC<AddDivisionModalProps> = ({ isOpen, onClose, on
       try {
         // Menggunakan endpoint dropdown direktorat untuk mengambil opsi lebih ringan
         const res = await directoratesService.getDropdown('');
-        setDirectorates(res || []);
+        setDirectorates(res.data || []);
       } catch (err) {
         console.error('Failed to load directorates', err);
       }
@@ -122,7 +124,7 @@ const AddDivisionModal: React.FC<AddDivisionModalProps> = ({ isOpen, onClose, on
           </select> */}
           <Select
             required
-            options={directorates.map(d => ({ value: d.id, label: d.name }))}
+            options={directorates.map(d => ({ value: d.id, label: d.directorate_name }))}
             placeholder="Select directorate"
             onChange={(v) => setDirectorateId(v)}
             defaultValue={directorateId}

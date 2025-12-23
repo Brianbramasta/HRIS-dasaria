@@ -1,6 +1,6 @@
 import { apiService } from '../../../../services/api';
 
-const BaseUrl = '/organizational-structure/company-master-data/companies';
+const BaseUrl = '/organizational-structure/company-master-data/';
 
 const toSortField = (field?: string): string => {
   const map: Record<string, string> = {
@@ -35,21 +35,22 @@ export const companiesService = {
       params.append('sort', filter.sortOrder);
     }
     const qs = params.toString();
-    return apiService.get<any>(`${BaseUrl}${qs ? `?${qs}` : ''}`);
+    return apiService.get<any>(`${BaseUrl}companies${qs ? `?${qs}` : ''}`);
   },
 
   getDropdown: async (): Promise<any> => {
-    return apiService.get<any>(`/organizational-structure/companies-dropdown`);
+    return apiService.get<any>(`${BaseUrl}companies-dropdown`);
   },
 
   getDetail: async (id: string): Promise<any> => {
-    return apiService.get<any>(`${BaseUrl}/${id}/detail`);
+    return apiService.get<any>(`${BaseUrl}companies/${id}/detail`);
   },
 
   create: async (payload: any): Promise<any> => {
     const formData = new FormData();
     formData.append('company_name', payload.name);
-    formData.append('id_bl', payload.businessLineId);
+    // formData.append('id_bl', payload.businessLineId);
+    formData.append('business_line_id', payload.businessLineId);
     if (payload.description !== undefined && payload.description !== null) {
       formData.append('company_description', payload.description);
     }
@@ -70,7 +71,7 @@ export const companiesService = {
       }
     }
     const created = await apiService.post<any>(
-      `${BaseUrl}`,
+      `${BaseUrl}companies`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
@@ -111,7 +112,7 @@ export const companiesService = {
       }
     }
     const updated = await apiService.post<any>(
-      `${BaseUrl}/${id}`,
+      `${BaseUrl}companies/${id}/update`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
@@ -152,7 +153,7 @@ export const companiesService = {
     if (payload.id_bl !== undefined && payload.id_bl !== null) formData.append('id_bl', payload.id_bl);
     
     const updated = await apiService.post<any>(
-      `${BaseUrl}/${id}`,
+      `${BaseUrl}companies/${id}/update`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
@@ -165,7 +166,7 @@ export const companiesService = {
     if (payload.memoNumber) formData.append('company_delete_decree_number', payload.memoNumber);
     if (payload.skFile) formData.append('company_delete_decree_file', payload.skFile);
     const resp = await apiService.post<any>(
-      `${BaseUrl}/${id}`,
+      `${BaseUrl}companies/${id}/delete`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
@@ -184,7 +185,7 @@ export const companiesService = {
       formData.append(`documents[${i}][cd_file]`, d.file);
     });
     const created = await apiService.post<any>(
-      `${BaseUrl}/${id}/documents`,
+      `${BaseUrl}companies/${id}/documents`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
@@ -197,10 +198,11 @@ export const companiesService = {
     payload: { memoNumber: string; skFile: File }
   ): Promise<any> => {
     const formData = new FormData();
+    formData.append('_method', 'DELETE');
     if (payload.memoNumber) formData.append('cd_deleted_decree', payload.memoNumber);
     if (payload.skFile) formData.append('cd_deleted_decree_file', payload.skFile);
     const resp = await apiService.post<any>(
-      `${BaseUrl}/${id}/deletedocuments`,
+      `${BaseUrl}companies/${id}/deletedocuments`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );

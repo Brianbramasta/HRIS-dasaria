@@ -83,6 +83,10 @@ export interface DirectorateListItem {
   memoNumber: string | null;
   skFile: FileSummary | null;
 }
+export interface DirectorateDropdown {
+  id: string;
+  directorate_name: string;
+}
 
 export interface DivisionListItem {
   id: string;
@@ -92,6 +96,10 @@ export interface DivisionListItem {
   directorateName: string | null;
   memoNumber: string | null;
   skFile: FileSummary | null;
+}
+export interface DivisionDropdown {
+  id: string;
+  division_name: string;
 }
 
 export interface DepartmentListItem {

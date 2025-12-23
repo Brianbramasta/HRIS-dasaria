@@ -2,7 +2,7 @@ import  { useMemo, useState } from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
 // import { Edit, Trash } from 'react-feather';
 import { IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
-import { useDivisions } from '../../Index';
+import {  useDivisions } from '../../Index';
 import type { DivisionRow } from '../../types/OrganizationTableTypes';
 import type { DivisionListItem } from '../../types/OrganizationApiTypes';
 import { useModal } from '../../../../hooks/useModal';
@@ -15,6 +15,7 @@ type Props = { resetKey: string };
 import { useFileStore } from '@/stores/fileStore';
 import { formatUrlFile } from '@/utils/formatUrlFile';
 import { divisionsService } from '../../services/request/DivisionsService';
+import { mapToDivision } from '../../hooks/useDivisions';
 
 
 const divisionColumns: DataTableColumn<DivisionRow>[] = [
@@ -56,9 +57,12 @@ export default function DivisionsTab({ resetKey }: Props) {
       icon: <Edit />,
       onClick: async (row: any) => {
         const id = row?.raw?.id;
+        console.log('id', id);
         if (id) {
           const detail = await divisionsService.getById(id);
-          setSelected(detail as DivisionListItem);
+          console.log('detail', detail);
+          const mappedDetail = mapToDivision(detail.data);
+          setSelected(mappedDetail as DivisionListItem);
         } else {
           setSelected(row.raw as DivisionListItem);
         }

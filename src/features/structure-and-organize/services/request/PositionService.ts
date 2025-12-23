@@ -49,7 +49,7 @@ export const positionsService = {
 
   // Dokumentasi: Mengambil detail jabatan berdasarkan ID sesuai kontrak API 1.7 (GET /organizational-structure/job-title/{id_job_title})
   detail: async (id: string): Promise<any> => {
-    return apiService.get<any>(`${BaseUrl}job-title/${id}`);
+    return apiService.get<any>(`${BaseUrl}job-title/${id}/show`);
   },
 
   // Menyimpan data jabatan (multipart/form-data)
@@ -88,7 +88,7 @@ export const positionsService = {
     if (payload.directSubordinates && payload.directSubordinates.length > 0) form.append('direct_subordinate', payload.directSubordinates.join(', '));
     form.append('job_title_decree_number', payload.memoNumber);
     if (payload.skFile) form.append('job_title_decree_file', payload.skFile);
-    return apiService.post<any>(`${BaseUrl}job-title/${id}`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return apiService.post<any>(`${BaseUrl}job-title/${id}/update`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
   },
 
   // Hapus data jabatan (POST + _method=DELETE)
@@ -97,6 +97,6 @@ export const positionsService = {
     form.append('_method', 'DELETE');
     if (payload.memoNumber) form.append('job_title_deleted_decree_number', payload.memoNumber);
     if (payload.skFile) form.append('job_title_deleted_decree_file', payload.skFile);
-    return apiService.post<any>(`${BaseUrl}job-title/${id}`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return apiService.post<any>(`${BaseUrl}job-title/${id}/delete`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
   },
 };

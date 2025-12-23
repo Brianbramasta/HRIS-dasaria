@@ -38,7 +38,7 @@ export const officesService = {
   },
 
   getById: async (id: string): Promise<any> => {
-    return apiService.get<any>(`${BaseUrl}offices/${id}`);
+    return apiService.get<any>(`${BaseUrl}offices/${id}/show`);
   },
 
   create: async (payload: {
@@ -95,7 +95,7 @@ export const officesService = {
       formData.append('office_decree_file', payload.skFile);
     }
     return apiService.post<any>(
-      `${BaseUrl}offices/${id}`,
+      `${BaseUrl}offices/${id}/update`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );
@@ -107,7 +107,7 @@ export const officesService = {
     if (payload.memoNumber) formData.append('office_delete_decree_number', payload.memoNumber);
     if (payload.skFile) formData.append('office_delete_decree_file', payload.skFile);
     return apiService.post<any>(
-      `${BaseUrl}offices/${id}`,
+      `${BaseUrl}offices/${id}/delete`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );

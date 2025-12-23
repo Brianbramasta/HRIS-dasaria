@@ -1,6 +1,6 @@
 import { apiService } from '../../../../services/api';
 
-const BaseUrl = '/organizational-structure/business-master-data/business-lines';
+const BaseUrl = '/organizational-structure/business-master-data/';
 
 const appendFilters = (params: URLSearchParams, filter?: string | string[]) => {
   if (!filter) return;
@@ -35,20 +35,20 @@ export const businessLinesService = {
       params.append('sort', filter.sortOrder);
     }
     const qs = params.toString();
-    return apiService.get<any>(`${BaseUrl}${qs ? `?${qs}` : ''}`);
+    return apiService.get<any>(`${BaseUrl}business-lines${qs ? `?${qs}` : ''}`);
   },
 
   getDropdown: async (search?: string): Promise<any> => {
     const qs = search ? `?search=${encodeURIComponent(search)}` : '';
-    return apiService.get<any>(`${BaseUrl}${qs}`);
+    return apiService.get<any>(`${BaseUrl}business-lines-dropdown${qs}`);
   },
 
   getDetail: async (id: string): Promise<any> => {
-    return apiService.get<any>(`${BaseUrl}/${id}/detail`);
+    return apiService.get<any>(`${BaseUrl}business-lines/${id}/detail`);
   },
 
   getById: async (id: string): Promise<any> => {
-    return apiService.get<any>(`${BaseUrl}/${id}/show`);
+    return apiService.get<any>(`${BaseUrl}business-lines/${id}/show`);
   },
 
   create: async (payload: { name: string; description?: string | null; memoNumber: string; skFile?: File | undefined; }): Promise<any> => {
@@ -75,7 +75,7 @@ export const businessLinesService = {
     if (payload.skFile) {
       formData.append('bl_decree_file', payload.skFile as File);
     }
-    return apiService.post<any>(`${BaseUrl}/${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return apiService.post<any>(`${BaseUrl}business-lines${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
   },
 
   delete: async (id: string, payload: { memoNumber: string; skFile?: File | undefined; }): Promise<any> => {
@@ -85,6 +85,6 @@ export const businessLinesService = {
     if (payload.skFile) {
       formData.append('bl_delete_decree_file', payload.skFile as File);
     }
-    return apiService.post<any>(`${BaseUrl}/${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return apiService.post<any>(`${BaseUrl}business-lines${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
   },
 };

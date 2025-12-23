@@ -11,6 +11,7 @@ import { directoratesService } from '../../../services/request/DirectoratesServi
 import { divisionsService } from '../../../services/request/DivisionsService';
 import { departmentsService } from '../../../services/request/DepartmentsService';
 import { addNotification } from '@/stores/notificationStore';
+import { mapToEmployeePosition } from '../../../hooks/useEmployeePositions';
 
 interface EditEmployeePositionModalProps {
   isOpen: boolean;
@@ -45,29 +46,30 @@ const EditEmployeePositionModal: React.FC<EditEmployeePositionModalProps> = ({ i
     (async () => {
       try {
         const detail = await employeePositionsService.detail(employeePosition.id);
-        setName(detail.name || '');
-        setJabatan(detail.positionId || '');
-        setDirektorat(detail.directorateId || '');
-        setDivisi(detail.divisionId || '');
-        setDepartemen(detail.departmentId || '');
-        setMemoNumber(detail.memoNumber || '');
-        setDescription((detail as any).description || '');
-        console.log('Detail Posisi Pegawai', detail);
+        const mappedDetail = mapToEmployeePosition(detail.data);
+        setName(mappedDetail.name || '');
+        setJabatan(mappedDetail.positionId || '');
+        setDirektorat(mappedDetail.directorateId || '');
+        setDivisi(mappedDetail.divisionId || '');
+        setDepartemen(mappedDetail.departmentId || '');
+        setMemoNumber(mappedDetail.memoNumber || '');
+        setDescription((mappedDetail as any).description || '');
+        console.log('Detail Posisi Pegawai', mappedDetail);
         console.log('positionId', detail.positionId)
         // Setelah detail, muat dropdown
         // Dokumentasi: dropdown jabatan pakai service.getDropdown
         const posItems = await positionsService.getDropdown('');
-        setPositionOptions((posItems || []).map((p) => ({ value: p.id, label: p.name })));
+        setPositionOptions((posItems.data || []).map((p:any) => ({ value: p.id, label: p.job_title_name })));
         console.log('positionOptions', posItems);
         const dirItems = await directoratesService.getDropdown('');
-        setDirectorateOptions((dirItems || []).map((d) => ({ value: d.id, label: d.name })));
+        setDirectorateOptions((dirItems.data || []).map((d:any) => ({ value: d.id, label: d.directorate_name })));
 
         const divItems = await divisionsService.getDropdown('');
-        setDivisionOptions((divItems || []).map((d) => ({ value: d.id, label: d.name })));
+        setDivisionOptions((divItems.data || []).map((d:any) => ({ value: d.id, label: d.division_name })));
 
         // Dokumentasi: dropdown departemen pakai service.getDropdown
         const depItems = await departmentsService.getDropdown('');
-        setDepartmentOptionsAll((depItems || []).map((d) => ({ value: d.id, label: d.name })));
+        setDepartmentOptionsAll((depItems.data || []).map((d:any) => ({ value: d.id, label: d.department_name })));
       } catch (e) {
         console.error('Gagal inisialisasi edit posisi pegawai', e);
       }
@@ -148,7 +150,7 @@ const EditEmployeePositionModal: React.FC<EditEmployeePositionModalProps> = ({ i
                 try {
                   // Dokumentasi: cari dropdown jabatan via service.getDropdown
                   const items = await positionsService.getDropdown(q);
-                  setPositionOptions((items || []).map((p) => ({ value: p.id, label: p.name })));
+                  setPositionOptions((items.data || []).map((p:any) => ({ value: p.id, label: p.name })));
                 } catch (e) { console.error(e); }
               }}
             />
@@ -164,7 +166,7 @@ const EditEmployeePositionModal: React.FC<EditEmployeePositionModalProps> = ({ i
               onSearch={async (q) => {
                 try {
                   const items = await directoratesService.getDropdown(q);
-                  setDirectorateOptions((items || []).map((d) => ({ value: d.id, label: d.name })));
+                  setDirectorateOptions((items.data || []).map((d:any) => ({ value: d.id, label: d.name })));
                 } catch (e) { console.error(e); }
               }}
             />
@@ -180,7 +182,7 @@ const EditEmployeePositionModal: React.FC<EditEmployeePositionModalProps> = ({ i
               onSearch={async (q) => {
                 try {
                   const items = await divisionsService.getDropdown(q);
-                  setDivisionOptions((items || []).map((d) => ({ value: d.id, label: d.name })));
+                  setDivisionOptions((items.data || []).map((d:any) => ({ value: d.id, label: d.name })));
                 } catch (e) { console.error(e); }
               }}
             />
@@ -197,7 +199,7 @@ const EditEmployeePositionModal: React.FC<EditEmployeePositionModalProps> = ({ i
                 try {
                   // Dokumentasi: cari dropdown departemen via service.getDropdown
                   const items = await departmentsService.getDropdown(q);
-                  setDepartmentOptionsAll((items || []).map((d) => ({ value: d.id, label: d.name })));
+                  setDepartmentOptionsAll((items.data || []).map((d:any) => ({ value: d.id, label: d.name })));
                 } catch (e) { console.error(e); }
               }}
             />

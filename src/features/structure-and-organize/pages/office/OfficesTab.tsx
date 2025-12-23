@@ -17,7 +17,7 @@ type Props = { resetKey: string };
 
 const officeColumns: DataTableColumn<OfficeRow>[] = [
   { id: 'no', label: 'No', sortable: false },
-  { id: 'Office', label: 'Kantor', sortable: true },
+  { id: 'nama-kantor', label: 'Kantor', sortable: true },
   { id: 'deskripsi-umum', label: 'Deskripsi Umum', sortable: true },
   { id: 'file-sk-dan-memo', label: 'File SK dan Memo', sortable: false, align: 'center', isAction: true, format: (row: OfficeRow) => (
     // <div onClick={() => {

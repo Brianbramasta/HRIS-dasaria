@@ -16,10 +16,11 @@ import { addNotification } from '@/stores/notificationStore';
 import { IconPencil, IconHapus, iconPlus, IconFileDetail } from '@/icons/components/icons';
 // import { TrashBinIcon as TrashIcon, PencilIcon as EditIcon, EyeIcon } from '@/icons/index';
 import DocumentsTable from '../../../components/table/TableGlobal';
-import { formatDate } from '@/utils/formatDate';
+import {  formatDateToIndonesian } from '@/utils/formatDate';
 import { formatImage } from '@/utils/formatImage';
 import { formatUrlFile } from '@/utils/formatUrlFile';
 import { useFileStore } from '@/stores/fileStore';
+import { mapToCompanyDetail } from '../../../hooks/useCompanies';
 
 const DetailPerusahaan: React.FC = () => {
   const { id } = useParams();
@@ -48,14 +49,16 @@ const DetailPerusahaan: React.FC = () => {
     try {
       // Gunakan endpoint komposit: GET /companies/:id/detail
       const detail = await companyService.getDetail(id);
-      setCompany(detail?.company || null);
-      setBranches(detail?.branches || []);
+      const mappedDetail = mapToCompanyDetail(detail);
+      setCompany(mappedDetail?.company || null);
+      setBranches(mappedDetail?.branches || []);
       // Map dokumen agar tetap kompatibel dengan UI yang memfilter berdasarkan 'type'
-      const docs = (detail?.documents || []).map((d: any) => ({
+      const docs = (mappedDetail?.documents || []).map((d: any) => ({
         ...d,
         // Jika API tidak menyediakan 'type', default-kan ke 'active' agar UI tidak kosong
         type: d?.type ?? 'active',
       }));
+      console.log('Documents', docs);
       setDocuments(docs);
     } catch (err) {
       console.error('Failed to load company detail', err);
@@ -79,7 +82,7 @@ const DetailPerusahaan: React.FC = () => {
 
   const customInformation = [
       { label: 'Industry', value: company?.industry || company?.businessLineName || '—' },
-      { label: 'Didirikan', value: formatDate(company?.founded) || '—' },
+      { label: 'Didirikan', value: formatDateToIndonesian(company?.founded) || '—' },
       { label: 'Type', value: company?.type || '—' },
       { label: 'Website', value: company?.website || '—' },
   ];
@@ -100,7 +103,7 @@ const DetailPerusahaan: React.FC = () => {
         label: 'Delete',
         icon: <IconHapus />,
         className: 'h-9 w-9 flex items-center justify-center rounded-lg  text-white ',
-        onClick: (r: any) => { setSelectedDoc(r); setDeleteDocOpen(true); },
+        onClick: (r: any) => { setSelectedDoc(r); setDeleteDocOpen(true); console.log('Delete Dokumen', r); },
       },
       {
         label: 'Detail',
@@ -119,24 +122,7 @@ const DetailPerusahaan: React.FC = () => {
 
   
 
-    // const dummyDocuments = React.useMemo(() => ([
-    //   { id: 1, fileName: 'Dokumen.pdf', name: 'Akta Pendirian Perusahaan (Update 2025)', size: '1MB', type: 'active' },
-    //   { id: 2, fileName: 'Dokumen.pdf', name: 'Dokumen2', size: '1MB', type: 'active' },
-    //   { id: 3, fileName: 'Dokumen.pdf', name: 'Dokumen2', size: '1MB', type: 'active' },
-    //   { id: 4, fileName: 'Dokumen.pdf', name: 'Akta Pendirian Perusahaan', size: '1MB', type: 'archive' },
-    // ]), []);
 
-    
-  //   return (
-  //     <>
-  //       {dataKiri.map((data, idx) => (
-  //         <div key={idx}>
-  //           <strong>{data.label}:</strong> <div className="text-gray-600">{data.value}</div>
-  //         </div>
-  //       ))}
-  //     </>
-  //   );
-  // };
 
   return (
     <div className="p-4 md:p-6">

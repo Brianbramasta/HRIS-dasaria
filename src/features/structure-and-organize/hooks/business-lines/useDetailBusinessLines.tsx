@@ -46,7 +46,7 @@ const mapToBusinessLineDetail = (item: any): { businessLine: any; personalFiles:
   if (deleteSk) personalFiles.push(deleteSk);
   const companies = Array.isArray(item?.companies)
     ? item.companies.map((c: any) => ({
-        id: c.id_company || '',
+        id: c.id || '',
         name: c.company_name || '',
         details: c.company_description ?? null,
       }))

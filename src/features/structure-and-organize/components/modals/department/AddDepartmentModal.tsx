@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 // import { Modal } from '../../../../../components/ui/modal/index';
 import { departmentsService } from '../../../services/request/DepartmentsService';
 import { divisionsService } from '../../../services/request/DivisionsService';
-import type { DivisionListItem } from '../../../types/OrganizationApiTypes';
+import type { DivisionDropdown } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import FileInput from '../../../../../components/shared/field/FileInput';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
@@ -23,7 +23,7 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ isOpen, onClose
   const [description, setDescription] = useState('');
   const [memoNumber, setMemoNumber] = useState('');
   const skFile = useFileStore((s) => s.skFile);
-  const [divisions, setDivisions] = useState<DivisionListItem[]>([]);
+  const [divisions, setDivisions] = useState<DivisionDropdown[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
   // Mengambil dropdown Divisi sesuai kontrak API 1.7
@@ -31,7 +31,7 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ isOpen, onClose
     const loadDivisions = async () => {
       try {
         const res = await divisionsService.getDropdown('');
-        setDivisions(res || []);
+        setDivisions(res.data || []);
       } catch (err) {
         console.error('Failed to load divisions', err);
       }
@@ -110,7 +110,7 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ isOpen, onClose
           
           <Select
           required
-            options={divisions.map((d) => ({ value: d.id, label: d.name }))}
+            options={divisions.map((d) => ({ value: d.id, label: d.division_name }))}
             onChange={(e) => setDivisionId(e)}
             defaultValue={divisionId}
             className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"

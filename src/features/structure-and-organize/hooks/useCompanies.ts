@@ -29,7 +29,7 @@ const mapToCompany = (item: any): CompanyListItem => ({
   logo: item.logo ?? null,
 });
 
-const mapToCompanyDetail = (result: any): CompanyDetailResponse => {
+export const mapToCompanyDetail = (result: any): CompanyDetailResponse => {
   const body = (result as any).data ?? {};
   const item = body.data ?? body;
   const company = mapToCompany(item);
@@ -64,7 +64,7 @@ const mapToCompanyDetail = (result: any): CompanyDetailResponse => {
       : [],
     documents: Array.isArray(item.documents)
       ? item.documents.map((d: any) => ({
-          id: d.id_cd ?? '',
+          id: d.id?? '',
           fileName: d.cd_name ?? d.name ?? '',
           number: d.cd_decree_number ?? d.memoNumber ?? '',
           type: d.deleted_at ? 'archive' : 'active',

@@ -1,11 +1,11 @@
 import React from 'react';
-import PersonalDataCard from '@/features/employee/components/employee-date/card/PersonalDataCard';
-import EducationalBackgroundCard from '@/features/employee/components/employee-date/card/EducationalBackgroundCard';
-import SocialEmergencyCard from '@/features/employee/components/employee-date/card/SocialEmergencyCard';
-import EmployeeDataCard from '@/features/employee/components/employee-date/card/EmployeeDataCard';
-import SalaryCard from '@/features/employee/components/employee-date/card/SalaryCard';
-import BPJSCard from '@/features/employee/components/employee-date/card/BPJSCard';
-import PersonalDocumentsCard from '@/features/employee/components/employee-date/card/PersonalDocumentsCard';
+import PersonalDataCard from '@/features/employee/components/employee-data/card/PersonalDataCard';
+import EducationalBackgroundCard from '@/features/employee/components/employee-data/card/EducationalBackgroundCard';
+import SocialEmergencyCard from '@/features/employee/components/employee-data/card/SocialEmergencyCard';
+import EmployeeDataCard from '@/features/employee/components/employee-data/card/EmployeeDataCard';
+import SalaryCard from '@/features/employee/components/employee-data/card/SalaryCard';
+import BPJSCard from '@/features/employee/components/employee-data/card/BPJSCard';
+import PersonalDocumentsCard from '@/features/employee/components/employee-data/card/PersonalDocumentsCard';
 import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
 
 interface Props {

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 // import { Modal } from '../../../../../components/ui/modal/index';
 import { divisionsService } from '../../../services/request/DivisionsService';
 import { directoratesService } from '../../../services/request/DirectoratesService';
-import type { DivisionListItem, DirectorateListItem } from '../../../types/OrganizationApiTypes';
+import type { DivisionListItem, DirectorateListItem, DirectorateDropdown } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import FileInput from '../../../../../components/shared/field/FileInput';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
@@ -24,7 +24,7 @@ const EditDivisionModal: React.FC<EditDivisionModalProps> = ({ isOpen, onClose, 
   const [directorateId, setDirectorateId] = useState('');
   const [memoNumber, setMemoNumber] = useState('');
   const skFile = useFileStore((s) => s.skFile);
-  const [directorates, setDirectorates] = useState<DirectorateListItem[]>([]);
+  const [directorates, setDirectorates] = useState<DirectorateDropdown[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ const EditDivisionModal: React.FC<EditDivisionModalProps> = ({ isOpen, onClose, 
       try {
         // Menggunakan endpoint dropdown direktorat untuk mengambil opsi lebih ringan
         const res = await directoratesService.getDropdown('');
-        setDirectorates(res || []);
+        setDirectorates(res.data || []);
       } catch (err) {
         console.error('Failed to load directorates', err);
       }
@@ -104,7 +104,7 @@ const EditDivisionModal: React.FC<EditDivisionModalProps> = ({ isOpen, onClose, 
        
           <Select
             required
-            options={directorates.map((d) => ({ value: d.id, label: d.name }))}
+            options={directorates.map((d) => ({ value: d.id, label: d.directorate_name }))}
             placeholder="Pilih Direktorat"
             onChange={(v) => setDirectorateId(v)}
             defaultValue={directorateId}

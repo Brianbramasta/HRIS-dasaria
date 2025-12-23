@@ -58,6 +58,7 @@ const DeleteDocumentModal: React.FC<DeleteDocumentModalProps> = ({ isOpen, onClo
     }
     setSubmitting(true);
     try {
+      console.log('delete document', document?.id);
       await companiesService.deleteDocuments(document?.id, { memoNumber, skFile });
       onSuccess?.();
       onClose();

@@ -1,11 +1,11 @@
 import { useEffect, useMemo } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import Tabs from '../../../../structure-and-organize/components/Tabs';
-import PesonalInformationTab from '../../../components/employee-date/tab/PesonalInformation';
-import ContractTab from '../../../components/employee-date/tab/Contract';
-import OrganizationHistoryTab from '../../../components/employee-date/tab/OrganizationHistory';
-import PelanggaranTab from '../../../components/employee-date/tab/Fraud';
-import StoryPayrollTab from '../../../components/employee-date/tab/StoryPayroll';
+import PesonalInformationTab from '../../../components/employee-data/tab/PesonalInformation';
+import ContractTab from '../../../components/employee-data/tab/Contract';
+import OrganizationHistoryTab from '../../../components/employee-data/tab/OrganizationHistory';
+import PelanggaranTab from '../../../components/employee-data/tab/Fraud';
+import StoryPayrollTab from '../../../components/employee-data/tab/StoryPayroll';
 import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
 
 function useQuery() {
