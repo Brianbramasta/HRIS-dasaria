@@ -292,6 +292,13 @@ class EmployeeMasterDataService {
     return (resp as any)?.data ?? [];
   }
 
+  // /employee-status-dropdown
+  async getEmployeeStatusDropdown(search?: string): Promise<any[]> {
+    const qs = search ? `?search=${encodeURIComponent(search)}` : '';
+    const resp = await apiService.get<any[]>(`${this.basePath}/employees/employee-status-dropdown${qs}`);
+    return (resp as any)?.data ?? [];
+  }
+
   /**
    * Helper: Convert FormulirKaryawanData to FormData for API
    * @param formData - Data formulir karyawan

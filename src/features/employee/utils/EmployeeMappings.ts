@@ -141,9 +141,8 @@ export const HAK_AKSES_OPTIONS = [
 ];
 
 export const STATUS_PAYROLL_OPTIONS = [
-  { label: 'Active', value: '1' },
-  { label: 'Inactive', value: '2' },
-  { label: 'Suspended', value: '3' },
+  { label: 'Aktif', value: 'Aktif' },
+  { label: 'Tidak Aktif', value: 'Tidak Aktif' },
 ];
 
 export const KATEGORI_KARYAWAN_OPTIONS = [

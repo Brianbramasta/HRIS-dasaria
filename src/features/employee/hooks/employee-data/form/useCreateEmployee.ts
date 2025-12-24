@@ -101,9 +101,9 @@ export function useCreateEmployee() {
       appendIfValue(fd, 'job_title_id', formData.step3Employee.jabatan);
       appendIfValue(fd, 'start_date', formatIndonesianToISO(formData.step3Employee.tanggalMasuk));
       appendIfValue(fd, 'end_date', formatIndonesianToISO(formData.step3Employee.tanggalAkhir));
-      appendIfValue(fd, 'position_level', formData.step3Employee.jenjangJabatan);
+      appendIfValue(fd, 'position_level_id', formData.step3Employee.jenjangJabatan);
       appendIfValue(fd, 'payroll_status', formData.step3Employee.statusPayroll);
-      appendIfValue(fd, 'employee_category', formData.step3Employee.kategoriKaryawan);
+      appendIfValue(fd, 'employee_category_id', formData.step3Employee.kategoriKaryawan);
       appendIfValue(fd, 'employment_status', formData.step3Employee.employmentStatus);
       // appendIfValue(fd, 'resignation_status', formData.step3Employee.resignationStatus);
     }

@@ -21,8 +21,8 @@ export const Step05UploadDocument: React.FC = () => {
         <div className="">
           <div className="space-y-3">
             {rows.map((row, idx) => (
-              <div key={`${row.id}-${resetKey}`} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-                <div className="md:col-span-5">
+              <div key={`${row.id}-${resetKey}`} className="flex md:flex-row flex-col gap-4 items-end">
+                <div className="w-full">
                   <Label>Tipe File</Label>
                   <Select
                     options={DOCUMENT_TYPE_OPTIONS}
@@ -31,35 +31,35 @@ export const Step05UploadDocument: React.FC = () => {
                     placeholder="Pilih Jenis Dokumen"
                   />
                 </div>
-                <div className="md:col-span-6">
+                <div className="w-full">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Unggah file</label>
                   <FileInput multiple onChange={(e) => handleFilesChange(row.id, e)} />
                 </div>
-                <div className="md:col-span-1 flex items-center justify-end gap-2">
-                { idx === 0  && (
-                    <button
-                    type="button"
-                    className="h-9 w-9 flex items-center justify-center rounded-lg bg-green-500 hover:bg-green-600"
-                    onClick={addRow}
-                    aria-label="Tambah baris"
-                  >
-                    <PlusIcon size={20} />
-                  </button>)}
-                  {rows.length > 1 && idx!= 0 && (
+                <div className="md:w-fit  w-full flex flex-col md:flex-row items-center justify-end gap-2">
+                  {rows.length > 1  && idx !== rows.length - 1 && (
                     <button
                       type="button"
-                      className="h-9 w-9 flex items-center justify-center rounded-lg bg-red-500 hover:bg-red-600"
+                      className="h-11 md:w-11 flex items-center justify-center rounded-lg bg-red-500 hover:bg-red-600 w-full"
                       onClick={() => removeRow(row.id)}
                       aria-label="Hapus baris"
                     >
                       <TrashBinIcon className="h-5 w-5 text-white" />
                     </button>
                   )}
+                       { idx === rows.length - 1 && (
+                    <button
+                    type="button"
+                    className="h-11 md:w-11 flex items-center justify-center rounded-lg bg-green-500 hover:bg-green-600 w-full"
+                    onClick={addRow}
+                    aria-label="Tambah baris"
+                  >
+                    <PlusIcon size={20} />
+                  </button>)}
                 </div>
               </div>
             ))}
             <div className="flex justify-end">
-              <Button onClick={handleUpload}>Unggah</Button>
+              <Button className='w-full md:w-fit' onClick={handleUpload}>Unggah</Button>
             </div>
           </div>
         </div>

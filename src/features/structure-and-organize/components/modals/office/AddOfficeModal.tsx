@@ -15,7 +15,7 @@ import { useCompanies } from '../../../hooks/useCompanies';
 interface AddOfficeModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess?: (created: OfficeListItem) => void;
+  onSuccess?: () => void;
 }
 
 const AddOfficeModal: React.FC<AddOfficeModalProps> = ({ isOpen, onClose, onSuccess }) => {
@@ -70,14 +70,14 @@ const AddOfficeModal: React.FC<AddOfficeModalProps> = ({ isOpen, onClose, onSucc
     }
     setSubmitting(true);
     try {
-      const created = await createOffice({
+      await createOffice({
         companyIds: companyIds,
         name: name.trim(),
         description: description.trim() || null,
         memoNumber: memoNumber.trim(),
         skFile: skFile?.file || undefined,
       });
-      onSuccess?.(created);
+      onSuccess?.();
       setName('');
       setCompanyIds([]);
       setMemoNumber('');

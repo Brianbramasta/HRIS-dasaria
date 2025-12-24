@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { employeeMasterDataService } from '../../../services/EmployeeMasterData.service';
 import { PTKPDropdownItem } from '../../../types/Employee';
-import { getReligionDropdownOptions, getEducationDropdownOptions, getBankDropdownOptions, getDocumentTypeDropdownOptions, getEmployeeCategoryDropdownOptions } from './useFormulirKaryawan';
+import { getReligionDropdownOptions, getEducationDropdownOptions, getBankDropdownOptions, getDocumentTypeDropdownOptions, getEmployeeCategoryDropdownOptions, getPositionLevelDropdownOptions, getEmployeeStatusDropdownOptions } from './useFormulirKaryawan';
 import { useFormulirKaryawanStore } from '@/features/employee/stores/useFormulirKaryawanStore';
 import { DocumentItem, EducationItem } from '../../../types/FormEmployee';
 
@@ -168,6 +168,8 @@ export const useStep3Data = () => {
   const [positionOptions, setPositionOptions] = useState<any[]>([]);
   const [kategoriKaryawanOptions, setKategoriKaryawanOptions] = useState<any[]>([]);
   const [selectedGrade, setSelectedGrade] = useState<string>('');
+  const [positionLevelOptions, setPositionLevelOptions] = useState<any[]>([]);
+  const [employeeStatusOptions, setEmployeeStatusOptions] = useState<any[]>([]);
   
   const { formData,updateStep3Employee } = useFormulirKaryawanStore();
   const step3 = formData.step3Employee;
@@ -212,6 +214,12 @@ export const useStep3Data = () => {
       try {
         const kategori = await getEmployeeCategoryDropdownOptions();
         setKategoriKaryawanOptions(kategori);
+
+        const positionLevels = await getPositionLevelDropdownOptions();
+        setPositionLevelOptions(positionLevels);
+
+        const employeeStatuses = await getEmployeeStatusDropdownOptions();
+        setEmployeeStatusOptions(employeeStatuses);
 
         const companies = await employeeMasterDataService.getCompanyDropdown();
         setCompanyOptions((companies || []).map((i: any) => ({ label: i.company_name, value: i.id })));
@@ -284,6 +292,8 @@ export const useStep3Data = () => {
     positionOptions,
     kategoriKaryawanOptions,
     selectedGrade,
+    positionLevelOptions,
+    employeeStatusOptions,
     setSelectedGrade,
     handleChange
   };

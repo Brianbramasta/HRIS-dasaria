@@ -1,9 +1,9 @@
 
 
 import { DataTable, DataTableColumn, DataTableAction } from '../../../../../components/shared/datatable/DataTable';
-import { Karyawan } from '../../../types/Employee';
+import {  Karyawan } from '../../../types/Employee';
 import useKaryawan from '../../../hooks/employee-data/list/useKaryawan';
-import Button from '../../../../../components/ui/button/Button';
+// import Button from '../../../../../components/ui/button/Button';
 import AddKaryawanModal from '../../../components/modals/AddEmployeeModal';
 import DeleteKaryawanModal from '../../../components/modals/employee-data/DeleteEmployeeModal';
 import ShareLinkModal from '../../../components/modals/sharelink/ShareLink';
@@ -31,6 +31,74 @@ const renderSisaKontrakBadge = (tanggalBerakhir: string | undefined) => {
   }
 };
 
+// Helper function for employment status badge with color mapping
+const renderEmploymentStatusBadge = (value: string | undefined) => {
+  if (!value) {
+    return <span className="inline-block rounded-full p-[10px] w-full text-center text-xs font-medium bg-gray-100 text-gray-800">-</span>;
+  }
+
+  const statusValue = value.toLowerCase().trim();
+  let bgClass = '';
+  let textClass = '';
+
+  if (statusValue === 'aktif' || statusValue === 'active') {
+    bgClass = 'bg-green-100';
+    textClass = 'text-green-800';
+  } else if (statusValue === 'pengunduran diri' || statusValue === 'resign') {
+    bgClass = 'bg-blue-100';
+    textClass = 'text-blue-800';
+  } else if (statusValue === 'tidak aktif' || statusValue === 'inactive') {
+    bgClass = 'bg-red-100';
+    textClass = 'text-red-800';
+  } else if (statusValue === 'evaluasi' || statusValue === 'evaluation') {
+    bgClass = 'bg-orange-100';
+    textClass = 'text-orange-800';
+  } else {
+    bgClass = 'bg-gray-100';
+    textClass = 'text-gray-800';
+  }
+
+  return (
+    <span className={`inline-block rounded-full p-[10px] w-full text-center text-xs font-medium ${bgClass} ${textClass}`}>
+      {value}
+    </span>
+  );
+};
+
+// Helper function for payroll status badge
+const renderPayrollStatusBadge = (value: string | undefined) => {
+  if (!value) {
+    return <span className="inline-block rounded-full p-[10px] w-full text-center text-xs font-medium bg-gray-100 text-gray-800">-</span>;
+  }
+
+  const statusValue = value.toLowerCase().trim();
+  const bgClass = (statusValue === 'aktif' || statusValue === 'active') ? 'bg-green-100' : 'bg-red-100';
+  const textClass = (statusValue === 'aktif' || statusValue === 'active') ? 'text-green-800' : 'text-red-800';
+
+  return (
+    <span className={`inline-block rounded-full p-[10px] w-full text-center text-xs font-medium ${bgClass} ${textClass}`}>
+      {value}
+    </span>
+  );
+};
+
+// Helper function for employee data status badge
+const renderEmployeeDataStatusBadge = (value: string | undefined) => {
+  if (!value) {
+    return <span className="inline-block rounded-full p-[10px] w-full text-center text-xs font-medium bg-gray-100 text-gray-800">-</span>;
+  }
+
+  const statusValue = value.toLowerCase().trim();
+  const bgClass = (statusValue === 'lengkap' || statusValue === 'complete') ? 'bg-green-100' : 'bg-red-100';
+  const textClass = (statusValue === 'lengkap' || statusValue === 'complete') ? 'text-green-800' : 'text-red-800';
+
+  return (
+    <span className={`inline-block rounded-full p-[10px] w-full text-center text-xs font-medium ${bgClass} ${textClass}`}>
+      {value}
+    </span>
+  );
+};
+
 export default function DataKaryawanPage() {
   const {
     data,
@@ -47,7 +115,7 @@ export default function DataKaryawanPage() {
     handleRowsPerPageChange,
     // Modal states
     selectedKaryawan,
-    showDetailModal,
+    // showDetailModal,
     showAddModal,
     showShareModal,
     showDeleteModal,
@@ -63,8 +131,8 @@ export default function DataKaryawanPage() {
     handleImportFile,
     handleShareModalClose,
     handleDeleteModalClose,
-    setShowDetailModal,
-    setSelectedKaryawan,
+    // setShowDetailModal,
+    // setSelectedKaryawan,
     // Column filters
     columnFilters,
     handleColumnFilterChange,
@@ -97,18 +165,18 @@ export default function DataKaryawanPage() {
       sortable: true,
     },
     {
-      id: 'name',
+      id: 'full_name',
       label: 'Pengguna',
       minWidth: 150,
       sortable: true,
-      format: (value, row) => (
+      format: (_, row) => (
         <div className="flex items-center gap-2">
           <img
-            src={row.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${value}`}
-            alt={value}
+            src={row.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${row.full_name}`}
+            alt={row.full_name}
             className="h-8 w-8 rounded-full"
           />
-          <span>{value}</span>
+          <span>{row.full_name}</span>
         </div>
       ),
     },
@@ -145,15 +213,15 @@ export default function DataKaryawanPage() {
       format: (_, row) => formatDateToIndonesian(row.birth_date as string) || '-',
     },
     {
-      id: 'tanggalJoin',
+      id: 'start_date',
       label: 'Tanggal Masuk',
       minWidth: 130,
       sortable: true,
       dateRangeFilter: true,
-      format: (_, row) => formatDateToIndonesian(row.tanggalJoin as string) || '-',
+      format: (_, row) => formatDateToIndonesian(row.start_date as string) || '-',
     },
     {
-      id: 'tanggalBerakhir',
+      id: 'end_date',
       label: 'Tanggal Berakhir',
       minWidth: 140,
       sortable: true,
@@ -161,7 +229,7 @@ export default function DataKaryawanPage() {
       format: (value) => formatDateToIndonesian(value as string) || '-',
     },
     {
-      id: 'sisaKontrak',
+      id: 'contract_remaining_status',
       label: 'Sisa Kontrak',
       minWidth: 130,
       sortable: false,
@@ -171,7 +239,7 @@ export default function DataKaryawanPage() {
         { label: '3–6 Bulan', value: '3_to_6_months' },
         { label: '> 6 Bulan', value: 'more_than_6_months' },
       ],
-      format: (_, row) => renderSisaKontrakBadge(row.tanggalBerakhir),
+      format: (_, row) => renderSisaKontrakBadge(row.end_date),
     },
     {
       id: 'company',
@@ -188,18 +256,18 @@ export default function DataKaryawanPage() {
       format: (value) => value || '-',
     },
     {
-      id: 'jabatan',
+      id: 'job_title',
       label: 'Jabatan',
       minWidth: 130,
       sortable: true,
       format: (value) => value || '-',
     },
     {
-      id: 'jenjangJabatan',
+      id: 'position_level',
       label: 'Jenjang Jabatan',
       minWidth: 140,
       sortable: true,
-      format: (_, row) => row.jenjangJabatan || row.position_level || '-',
+      format: (value) => value || '-',
     },
     {
       id: 'grade',
@@ -209,28 +277,28 @@ export default function DataKaryawanPage() {
       format: (value) => value || '-',
     },
     {
-      id: 'posisi',
+      id: 'position',
       label: 'Posisi',
       minWidth: 130,
       sortable: true,
       format: (value) => value || '-',
     },
     {
-      id: 'departement',
+      id: 'department',
       label: 'Departemen',
       minWidth: 130,
       sortable: true,
-      format: (_, row) => row.departement || row.department || '-',
+      format: (_, row) => row.department || '-',
     },
     {
-      id: 'divisi',
+      id: 'division',
       label: 'Divisi',
       minWidth: 130,
       sortable: true,
       format: (value) => value || '-',
     },
     {
-      id: 'direktorat',
+      id: 'directorate',
       label: 'Direktorat',
       minWidth: 130,
       sortable: true,
@@ -242,16 +310,12 @@ export default function DataKaryawanPage() {
       minWidth: 130,
       sortable: true,
       filterOptions: [
-        { label: 'Aktif', value: 'active' },
-        { label: 'Tidak Aktif', value: 'nonaktif' },
+        { label: 'Aktif', value: 'aktif' },
+        { label: 'Tidak Aktif', value: 'tidak aktif' },
+        { label: 'Pengunduran Diri', value: 'pengunduran diri' },
+        { label: 'Evaluasi', value: 'evaluasi' },
       ],
-      format: (value) => (
-        <span className={`inline-block rounded-full p-[10px] w-full text-center text-xs font-medium ${
-          value === 'active' || value === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-        }`}>
-          {value || '-'}
-        </span>
-      ),
+      format: (value) => renderEmploymentStatusBadge(value),
     },
     {
       id: 'payroll_status',
@@ -259,36 +323,21 @@ export default function DataKaryawanPage() {
       minWidth: 120,
       sortable: true,
       filterOptions: [
-        { label: 'Aktif', value: 'active' },
-        { label: 'Tidak Aktif', value: 'nonaktif' },
+        { label: 'Aktif', value: 'aktif' },
+        { label: 'Tidak Aktif', value: 'tidak aktif' },
       ],
-      format: (value) => (
-        <span className={`inline-block rounded-full p-[10px] w-full text-center text-xs font-medium ${
-          value === 'active' || value === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-        }`}>
-          {value || '-'}
-        </span>
-      ),
+      format: (value) => renderPayrollStatusBadge(value),
     },
     {
-      id: 'statusDataKaryawan',
+      id: 'employee_data_status',
       label: 'Status Data Karyawan',
       minWidth: 150,
       sortable: true,
       filterOptions: [
-        { label: 'Lengkap', value: 'complete' },
-        { label: 'Tidak Lengkap', value: 'incomplete' },
+        { label: 'Lengkap', value: 'lengkap' },
+        { label: 'Belum Lengkap', value: 'belum lengkap' },
       ],
-      format: (_, row) => {
-        const status = row.employee_data_status || '-';
-        return (
-          <span className={`inline-block rounded-full p-[10px] w-full text-center  text-xs font-medium ${
-            status === 'complete' || status === 'lengkap' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-          }`}>
-            {status || 'Lengkap'}
-          </span>
-        );
-      },
+      format: (value) => renderEmployeeDataStatusBadge(value),
     },
     {
       id: 'employee_category',
@@ -298,11 +347,11 @@ export default function DataKaryawanPage() {
       format: (value) => value || '-',
     },
     {
-      id: 'posisiAccess',
+      id: 'user_access',
       label: 'Hak Akses',
       minWidth: 120,
       sortable: true,
-      format: (_, row) => row.posisiAccess || row.user_access || '-',
+      format: (_, row) => row.user_access || '-',
     },
     {
       id: 'detail',
@@ -372,6 +421,7 @@ export default function DataKaryawanPage() {
         columnFilters={columnFilters}
         onDateRangeFilterChange={handleDateRangeFilterChange}
         dateRangeFilters={dateRangeFilters}
+        resetKey="DataMasterKaryawan"
       />
 
       {/* Add Karyawan Modal */}
@@ -397,7 +447,7 @@ export default function DataKaryawanPage() {
       />
 
       {/* Detail Modal */}
-      {showDetailModal && selectedKaryawan && (
+      {/* {showDetailModal && selectedKaryawan && (
         <DetailKaryawanModal
           karyawan={selectedKaryawan}
           isOpen={showDetailModal}
@@ -406,122 +456,122 @@ export default function DataKaryawanPage() {
             setSelectedKaryawan(null);
           }}
         />
-      )}
+      )} */}
     </div>
   );
 }
 
 // Simple Detail Modal Component
-function DetailKaryawanModal({
-  karyawan,
-  isOpen,
-  onClose,
-}: {
-  karyawan: Karyawan;
-  isOpen: boolean;
-  onClose: () => void;
-}) {
-  if (!isOpen) return null;
+// function DetailKaryawanModal({
+//   karyawan,
+//   isOpen,
+//   onClose,
+// }: {
+//   karyawan: Karyawan;
+//   isOpen: boolean;
+//   onClose: () => void;
+// }) {
+//   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white p-6 dark:bg-gray-900">
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-        >
-          <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+//   return (
+//     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+//       <div className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white p-6 dark:bg-gray-900">
+//         {/* Close button */}
+//         <button
+//           onClick={onClose}
+//           className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+//         >
+//           <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+//             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+//           </svg>
+//         </button>
 
-        <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-white">Detail Karyawan</h2>
+//         <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-white">Detail Karyawan</h2>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          {/* Avatar */}
-          <div className="col-span-2 flex justify-center">
-            <img
-              src={karyawan.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${karyawan.name}`}
-              alt={karyawan.name}
-              className="h-32 w-32 rounded-full"
-            />
-          </div>
+//         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+//           {/* Avatar */}
+//           <div className="col-span-2 flex justify-center">
+//             <img
+//               src={karyawan.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${karyawan.name}`}
+//               alt={karyawan.name}
+//               className="h-32 w-32 rounded-full"
+//             />
+//           </div>
 
-          {/* Information Grid */}
-          <div>
-            <label className="text-sm font-medium text-gray-500 dark:text-gray-400">NIP</label>
-            <p className="mt-1 text-gray-900 dark:text-white">{karyawan.idKaryawan}</p>
-          </div>
+//           {/* Information Grid */}
+//           <div>
+//             <label className="text-sm font-medium text-gray-500 dark:text-gray-400">NIP</label>
+//             <p className="mt-1 text-gray-900 dark:text-white">{karyawan.idKaryawan}</p>
+//           </div>
 
-          <div>
-            <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Nama</label>
-            <p className="mt-1 text-gray-900 dark:text-white">{karyawan.name}</p>
-          </div>
+//           <div>
+//             <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Nama</label>
+//             <p className="mt-1 text-gray-900 dark:text-white">{karyawan.name}</p>
+//           </div>
 
-          <div>
-            <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Email</label>
-            <p className="mt-1 text-gray-900 dark:text-white">{karyawan.email}</p>
-          </div>
+//           <div>
+//             <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Email</label>
+//             <p className="mt-1 text-gray-900 dark:text-white">{karyawan.email}</p>
+//           </div>
 
-          <div>
-            <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Posisi</label>
-            <p className="mt-1 text-gray-900 dark:text-white">{karyawan.posisi}</p>
-          </div>
+//           <div>
+//             <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Posisi</label>
+//             <p className="mt-1 text-gray-900 dark:text-white">{karyawan.posisi}</p>
+//           </div>
 
-          <div>
-            <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Jabatan</label>
-            <p className="mt-1 text-gray-900 dark:text-white">{karyawan.jabatan}</p>
-          </div>
+//           <div>
+//             <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Jabatan</label>
+//             <p className="mt-1 text-gray-900 dark:text-white">{karyawan.jabatan}</p>
+//           </div>
 
-          <div>
-            <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Perusahaan</label>
-            <p className="mt-1 text-gray-900 dark:text-white">{karyawan.company}</p>
-          </div>
+//           <div>
+//             <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Perusahaan</label>
+//             <p className="mt-1 text-gray-900 dark:text-white">{karyawan.company}</p>
+//           </div>
 
-          <div>
-            <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Departemen</label>
-            <p className="mt-1 text-gray-900 dark:text-white">{karyawan.department || '-'}</p>
-          </div>
+//           <div>
+//             <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Departemen</label>
+//             <p className="mt-1 text-gray-900 dark:text-white">{karyawan.department || '-'}</p>
+//           </div>
 
-          <div>
-            <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Kantor</label>
-            <p className="mt-1 text-gray-900 dark:text-white">{karyawan.office || '-'}</p>
-          </div>
+//           <div>
+//             <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Kantor</label>
+//             <p className="mt-1 text-gray-900 dark:text-white">{karyawan.office || '-'}</p>
+//           </div>
 
-          <div>
-            <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Tanggal Join</label>
-            <p className="mt-1 text-gray-900 dark:text-white">{karyawan.tanggalJoin}</p>
-          </div>
+//           <div>
+//             <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Tanggal Join</label>
+//             <p className="mt-1 text-gray-900 dark:text-white">{karyawan.tanggalJoin}</p>
+//           </div>
 
-          <div>
-            <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Tanggal Berakhir</label>
-            <p className="mt-1 text-gray-900 dark:text-white">{karyawan.tanggalBerakhir || '-'}</p>
-          </div>
+//           <div>
+//             <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Tanggal Berakhir</label>
+//             <p className="mt-1 text-gray-900 dark:text-white">{karyawan.tanggalBerakhir || '-'}</p>
+//           </div>
 
-          <div>
-            <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Status</label>
-            <p className="mt-1">
-              <span
-                className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${
-                  karyawan.status === 'aktif'
-                    ? 'bg-green-100 text-green-800'
-                    : 'bg-gray-100 text-gray-800'
-                }`}
-              >
-                {karyawan.status || '-'}
-              </span>
-            </p>
-          </div>
-        </div>
+//           <div>
+//             <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Status</label>
+//             <p className="mt-1">
+//               <span
+//                 className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${
+//                   karyawan.status === 'aktif'
+//                     ? 'bg-green-100 text-green-800'
+//                     : 'bg-gray-100 text-gray-800'
+//                 }`}
+//               >
+//                 {karyawan.status || '-'}
+//               </span>
+//             </p>
+//           </div>
+//         </div>
 
-        {/* Close Button */}
-        <div className="mt-8 flex justify-end gap-3">
-          <Button onClick={onClose} variant="outline">
-            Tutup
-          </Button>
-        </div>
-      </div>
-    </div>
-  );
-}
+//         {/* Close Button */}
+//         <div className="mt-8 flex justify-end gap-3">
+//           <Button onClick={onClose} variant="outline">
+//             Tutup
+//           </Button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }

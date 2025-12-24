@@ -208,7 +208,7 @@ export function DataTable<T = any>({
           <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{title}</h2>
         )}
         {/* Dokumentasi: Bar atas dengan layout kiri (input/Select) dan kanan (tombol) */}
-        <div className="flex items-center justify-between gap-3 mb-4">
+        <div className="flex flex-col items-start gap-1 md:items-center md:justify-between md:gap-3 md:flex-row mb-4 ">
           {!isNewLine && title && (
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{title}</h2>
           )}

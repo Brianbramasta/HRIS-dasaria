@@ -3,11 +3,11 @@ import DatePicker from '../../../../components/form/date-picker';
 import Select from '../../../../components/form/Select';
 import Label from '../../../../components/form/Label';
 import InputField from '../../../../components/form/input/InputField';
-import { JENJANG_JABATAN_OPTIONS, STATUS_PAYROLL_OPTIONS, EMPLOYMENT_STATUS_OPTIONS } from '../../utils/EmployeeMappings';
+import {  STATUS_PAYROLL_OPTIONS } from '../../utils/EmployeeMappings';
 import { useStep3Data } from '../../hooks/employee-data/form/useFromStep';
 
 export const Step03EmployeeData: React.FC = () => {
-  const { companyOptions, officeOptions, directorateOptions, divisionOptions, departmentOptions, jobTitleOptions, positionOptions, kategoriKaryawanOptions, handleChange, selectedGrade, step3 } = useStep3Data();
+  const { companyOptions, officeOptions, directorateOptions, divisionOptions, departmentOptions, jobTitleOptions, positionOptions, kategoriKaryawanOptions,positionLevelOptions,employeeStatusOptions, handleChange, selectedGrade, step3 } = useStep3Data();
 
   return (
     <div className="space-y-6">
@@ -21,7 +21,7 @@ export const Step03EmployeeData: React.FC = () => {
             <div>
               <Label>Status Karyawan</Label>
               <Select
-                options={EMPLOYMENT_STATUS_OPTIONS}
+                options={employeeStatusOptions}
                 defaultValue={step3.employmentStatus}
                 onChange={(value) => handleChange('employmentStatus', value)}
                 placeholder="Select"
@@ -123,7 +123,7 @@ export const Step03EmployeeData: React.FC = () => {
             <div>
               <Label>Jenjang Jabatan</Label>
               <Select
-                options={JENJANG_JABATAN_OPTIONS}
+                options={positionLevelOptions}
                 defaultValue={step3.jenjangJabatan}
                 onChange={(value) => handleChange('jenjangJabatan', value)}
                 placeholder="Select"

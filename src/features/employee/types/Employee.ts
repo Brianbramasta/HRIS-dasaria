@@ -2,6 +2,7 @@ export interface Karyawan {
   // Core Identity
   id: string;
   idKaryawan: string;
+  employee_id?: string;
   name: string;
   full_name?: string; // API field
   email: string;
@@ -22,12 +23,14 @@ export interface Karyawan {
   ktp_address?: string;
   
   // Position & Organization
-  posisi: string;
+  position: string;
   position_name?: string; // API field
   jabatan: string;
   job_title_name?: string; // API field
+  job_title?: string;
   jenjangJabatan?: string | number;
-  position_level?: number; // API field for jenjang jabatan
+
+  position_level?: string; // API field for jenjang jabatan
   grade?: string;
   
   // Company & Structure
@@ -41,9 +44,9 @@ export interface Karyawan {
   department_name?: string; // API field
   departement?: string; // alias tampilan untuk department
   departmentId?: string;
-  divisi?: string;
+  division?: string;
   division_name?: string; // API field
-  direktorat?: string;
+  directorate?: string;
   directorate_name?: string; // API field for direktorat
   
   // Employment Details
@@ -54,7 +57,7 @@ export interface Karyawan {
   employment_status?: number | string;
   status?: 'aktif' | 'cuti' | 'resign' | 'nonaktif' | 'active';
   statusPayroll?: string | number;
-  payroll_status?: number; // API field
+  payroll_status?: string; // API field
   employee_data_status?: string;
   resignation_status?: string | null; // API field
   kategori?: string;
@@ -209,53 +212,31 @@ export interface PaginatedResponse<T> {
 
 // Interface untuk Employee List Item (API Response)
 export interface EmployeeListItem {
-  id: string;
-  full_name: string;
-  national_id: number;
-  email: string;
-  position: string;
-  department: string;
-  // Additional fields dari API response
-  religion?: number;
-  blood_type?: string;
-  birth_place?: string;
+  avatar?: string | null;
   birth_date?: string;
-  last_education?: number;
-  marital_status?: number;
-  gender?: number;
-  household_dependents?: number;
-  phone_number?: string;
-  current_address?: string;
-  ktp_address?: string;
-  bank_account_number?: number;
-  bank_name?: string;
-  bank_account_holder?: string;
-  npwp?: number;
-  ptkp_id?: string;
-  bpjs_employment_number?: number;
-  bpjs_employment_status?: number;
-  bpjs_health_number?: number;
-  bpjs_health_status?: number;
-  employment_status?: number;
-  resignation_status?: string | null;
-  deleted_at?: string | null;
-  start_date?: string;
-  end_date?: string;
-  position_level?: number;
-  payroll_status?: number;
-  employee_category?: number;
-  user_access?: string;
-  company_name?: string;
-  office_name?: string;
-  job_title_name?: string;
-  grade?: string;
-  position_name?: string;
-  department_name?: string;
-  division_name?: string;
-  directorate_name?: string;
+  company?: string;
+  contract_remaining_days?: number | null;
+  contract_remaining_months?: number | null;
+  contract_remaining_status?: string;
+  department?: string;
+  directorate?: string;
+  division?: string;
+  email: string;
+  employee_category?: string;
   employee_data_status?: string;
-  created_at?: string;
-  updated_at?: string;
+  employee_id?: string;
+  employment_status?: string;
+  end_date?: string;
+  full_name: string;
+  grade?: string;
+  id: string;
+  job_title?: string;
+  office?: string;
+  payroll_status?: string;
+  position?: string;
+  position_level?: string;
+  start_date?: string;
+  user_access?: string | null;
 }
 
 // ========================================

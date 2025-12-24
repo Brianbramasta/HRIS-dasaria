@@ -16,7 +16,7 @@ interface EditOfficeModalProps {
   isOpen: boolean;
   onClose: () => void;
   office?: OfficeListItem | null;
-  onSuccess?: (updated: OfficeListItem) => void;
+  onSuccess?: () => void;
 }
 
 const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, office, onSuccess }) => {
@@ -79,14 +79,14 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
     if (!name.trim()) return;
     setSubmitting(true);
     try {
-      const updated = await updateOffice(office.id, {
+      await updateOffice(office.id, {
         companyIds: companyIds,
         name: name.trim(),
         description: description.trim() || null,
         memoNumber: memoNumber.trim(),
         skFile: skFile?.file || null,
       });
-      onSuccess?.(updated);
+      onSuccess?.();
       onClose();
     } catch (err) {
       console.error('Failed to update office', err);

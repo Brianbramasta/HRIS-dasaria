@@ -42,6 +42,18 @@ export const getDocumentTypeDropdownOptions = async (search?: string): Promise<D
   return (data || []).map((d: any) => ({ label: d.name, value: d.id }));
 }
 
+export const getPositionLevelDropdownOptions = async (search?: string): Promise<DropdownOption[]> => {
+  const data = await employeeMasterDataService.getPositionLevelDropdown(search);
+  console.log('Position Level dropdown data:', data);
+  return (data || []).map((p: any) => ({ label: p.name, value: p.id }));
+}
+
+export const getEmployeeStatusDropdownOptions = async (search?: string): Promise<DropdownOption[]> => {
+  const data = await employeeMasterDataService.getEmployeeStatusDropdown(search);
+  console.log('Employee Status dropdown data:', data);
+  return (data || []).map((s: any) => ({ label: s.name, value: s.id }));
+}
+
 export interface UseFormulirKaryawanReturn {
   // Store states
   currentStep: number;
@@ -116,7 +128,7 @@ export const useFormulirKaryawan = (): UseFormulirKaryawanReturn => {
           description: 'Penambahan Data Karyawan Berhasil Dikonfirmasi',
           hideDuration: 5000,
         });
-        navigate('/data-karyawan');
+        navigate('/employee-data');
       } else {
         // Jika user tidak login, tampilkan success modal
         setShowSuccessModal(true);
