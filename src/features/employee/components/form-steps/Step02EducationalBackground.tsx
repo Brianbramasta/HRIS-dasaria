@@ -1,7 +1,6 @@
 // Refactor Step 2: Tambahkan pilihan jenis pendidikan (Formal/Non-Formal)
 // dan tampilkan field secara kondisional termasuk DatePicker & FileInput.
-import React, { useEffect } from 'react';
-import { useFormulirKaryawanStore } from '../../stores/useFormulirKaryawanStore';
+import React from 'react';
 import Input from '../../../../components/form/input/InputField';
 import Select from '../../../../components/form/Select';
 import Label from '../../../../components/form/Label';
@@ -11,81 +10,21 @@ import { iconPlus as Plus } from '@/icons/components/icons';
 import { EducationItem } from '../../types/FormEmployee';
 import DatePicker from '../../../../components/form/date-picker';
 import FileInput from '../../../../components/form/input/FileInput';
-import { JENIS_PENDIDIKAN_OPTIONS, JENJANG_OPTIONS } from '../../utils/EmployeeMappings';
+import { JENIS_PENDIDIKAN_OPTIONS } from '../../utils/EmployeeMappings';
+import { useStep2Data } from '../../hooks/employee-data/form/useFromStep';
 
 
 
 export const Step02EducationalBackground: React.FC = () => {
-  const { formData, updateStep2 } = useFormulirKaryawanStore();
-  const step2 = formData.step2;
+  
+  const { pendidikanTerakhir, addEducationRow, removeEducationRow, updateEducationField, handleChange, step2 } = useStep2Data();
+  
 
-  useEffect(() => {
-    if (!step2.education || step2.education.length === 0) {
-      updateStep2({
-        education: [
-          {
-            jenisPendidikan: 'formal',
-            jenjang: '',
-            namaLembaga: '',
-            gelar: '',
-            nilaiPendidikan: '',
-            jurusanKeahlian: '',
-            tahunLulus: '',
-            // Non-formal defaults
-            namaSertifikat: '',
-            organisasiPenerbit: '',
-            tanggalPenerbitan: '',
-            tanggalKedaluwarsa: '',
-            idKredensial: '',
-          },
-        ],
-      });
-    }
-  }, [step2.education, updateStep2]);
+  // fetching moved to `useStep2Data` hook
 
-  const addEducationRow = () => {
-    const education = step2.education || [];
-    updateStep2({
-      education: [
-        ...education,
-        {
-          jenisPendidikan: 'formal',
-          jenjang: '',
-          namaLembaga: '',
-          gelar: '',
-          nilaiPendidikan: '',
-          jurusanKeahlian: '',
-          tahunLulus: '',
-          namaSertifikat: '',
-          organisasiPenerbit: '',
-          tanggalPenerbitan: '',
-          tanggalKedaluwarsa: '',
-          idKredensial: '',
-        },
-      ],
-    });
-  };
+ 
 
-  const removeEducationRow = (index: number) => {
-    const education = step2.education || [];
-    updateStep2({ education: education.filter((_: EducationItem, i: number) => i !== index) });
-  };
-
-  const updateEducationField = (
-    index: number,
-    field: keyof EducationItem,
-    value: string | File | undefined,
-  ) => {
-    const education = step2.education || [];
-    const next = education.map((item: EducationItem, i: number) =>
-      i === index ? { ...item, [field]: value } : item,
-    );
-    updateStep2({ education: next });
-  };
-
-  const handleChange = (field: string, value: string) => {
-    updateStep2({ [field]: value } as any);
-  };
+  
 
   return (
     <div className="space-y-6">
@@ -141,7 +80,7 @@ export const Step02EducationalBackground: React.FC = () => {
                     <div className="md:col-span-2">
                       <Label>Jenjang</Label>
                       <Select
-                        options={JENJANG_OPTIONS}
+                        options={pendidikanTerakhir}
                         defaultValue={edu.jenjang}
                         onChange={(value) => updateEducationField(index, 'jenjang', value)}
                         placeholder="Select"

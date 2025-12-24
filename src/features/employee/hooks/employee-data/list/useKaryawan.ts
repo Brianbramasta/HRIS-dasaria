@@ -4,6 +4,7 @@ import { Karyawan, KaryawanFilterParams, EmployeeListItem } from '../../../types
 import employeeMasterDataService from '../../../services/EmployeeMasterData.service';
 import useFilterStore from '../../../../../stores/filterStore';
 import { addNotification } from '../../../../../stores/notificationStore';
+import errorHandle from '@/utils/errorHandle';
 
 export interface UseKaryawanOptions {
   initialPage?: number;
@@ -238,6 +239,8 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan saat memuat data';
         setError(errorMessage);
+        console.error('Fetch Karyawan error:', err);
+        errorHandle(err)
       } finally {
         setLoading(false);
       }

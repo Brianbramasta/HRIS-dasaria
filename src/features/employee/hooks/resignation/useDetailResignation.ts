@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { PengunduranDiri } from '../../types/Resignation';
 import pengunduranDiriService from '../../services/ResignationService';
 import { addNotification } from '../../../../stores/notificationStore';
+// import { error } from 'console';
+import errorHandle from '@/utils/errorHandle';
 
 interface UploadRow {
   id: number;
@@ -55,11 +57,12 @@ export const useDetailResignation = (id: string | undefined) => {
         const res = await pengunduranDiriService.getPengunduranDiriById(id);
         setData(res.data as unknown as PengunduranDiri);
       } catch (err) {
-        addNotification({
-          title: 'Gagal memuat data',
-          description: 'Tidak dapat mengambil detail pengunduran diri.',
-          variant: 'error',
-        });
+        errorHandle(err);
+        // addNotification({
+        //   title: 'Gagal memuat data',
+        //   description: 'Tidak dapat mengambil detail pengunduran diri.',
+        //   variant: 'error',
+        // });
       } finally {
         setLoading(false);
       }
@@ -100,11 +103,12 @@ export const useDetailResignation = (id: string | undefined) => {
       setIsModalOpen(false);
       navigate('/pengunduran-diri');
     } catch (err) {
-      addNotification({
-        title: 'Gagal approve',
-        description: 'Terjadi kesalahan saat approve.',
-        variant: 'error',
-      });
+      errorHandle(err);
+      // addNotification({
+      //   title: 'Gagal approve',
+      //   description: 'Terjadi kesalahan saat approve.',
+      //   variant: 'error',
+      // });
     } finally {
       setIsSubmitting(false);
     }
@@ -122,11 +126,12 @@ export const useDetailResignation = (id: string | undefined) => {
       });
       navigate('/pengunduran-diri');
     } catch (err) {
-      addNotification({
-        title: 'Gagal reject',
-        description: 'Terjadi kesalahan saat reject.',
-        variant: 'error',
-      });
+      errorHandle(err);
+      // addNotification({
+      //   title: 'Gagal reject',
+      //   description: 'Terjadi kesalahan saat reject.',
+      //   variant: 'error',
+      // });
     }
   };
 

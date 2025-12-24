@@ -18,6 +18,30 @@ export const getReligionDropdownOptions = async (search?: string): Promise<Dropd
   return (data || []).map((r: any) => ({ label: r.name, value: r.id }));
 };
 
+export const getEducationDropdownOptions = async (search?: string): Promise<DropdownOption[]> => {
+  const data = await employeeMasterDataService.getEducationDropdown(search);
+  console.log('Education dropdown data:', data);
+  return (data || []).map((e: any) => ({ label: e.name, value: e.id }));
+}
+
+export const getEmployeeCategoryDropdownOptions = async (search?: string): Promise<DropdownOption[]> => {
+  const data = await employeeMasterDataService.getEmployeeCategoryDropdown(search);
+  console.log('Employee Category dropdown data:', data);
+  return (data || []).map((c: any) => ({ label: c.name, value: c.id }));
+}
+
+export const getBankDropdownOptions = async (search?: string): Promise<DropdownOption[]> => {
+  const data = await employeeMasterDataService.getBankDropdown(search);
+  console.log('Bank dropdown data:', data);
+  return (data || []).map((b: any) => ({ label: b.name, value: b.id }));
+}
+
+export const getDocumentTypeDropdownOptions = async (search?: string): Promise<DropdownOption[]> => {
+  const data = await employeeMasterDataService.getDocumentTypeDropdown(search);
+  console.log('Document Type dropdown data:', data);
+  return (data || []).map((d: any) => ({ label: d.name, value: d.id }));
+}
+
 export interface UseFormulirKaryawanReturn {
   // Store states
   currentStep: number;

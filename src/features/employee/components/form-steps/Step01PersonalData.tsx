@@ -1,38 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { useFormulirKaryawanStore } from '../../stores/useFormulirKaryawanStore';
+import React from 'react';
 import Input from '../../../../components/form/input/InputField';
 import Select from '../../../../components/form/Select';
 import TextArea from '../../../../components/form/input/TextArea';
 import Label from '../../../../components/form/Label';
 import DatePicker from '../../../../components/form/date-picker';
 import FileInput from '../../../../components/form/input/FileInput';
-import { PENDIDIKAN_OPTIONS, JENIS_KELAMIN_OPTIONS, STATUS_MENIKAH_OPTIONS, GOLONGAN_DARAH_OPTIONS, 
+import {  JENIS_KELAMIN_OPTIONS, STATUS_MENIKAH_OPTIONS, GOLONGAN_DARAH_OPTIONS, 
 TANGGUNGAN_OPTIONS } from '../../utils/EmployeeMappings';
-import { getReligionDropdownOptions } from '../../hooks/employee-data/form/useFormulirKaryawan';
+import { useStep1Data } from '../../hooks/employee-data/form/useFromStep';
 
 
 
 export const Step01PersonalData: React.FC = () => {
-  const { formData, updateStep1 } = useFormulirKaryawanStore();
-  const step1 = formData.step1;
-  const [agamaOptions, setAgamaOptions] = useState<any[]>([]);
-
-  const handleChange = (field: string, value: string) => {
-    updateStep1({ [field]: value } as any);
-  };
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0] || null;
-    updateStep1({ fotoProfil: file } as any);
-  };
-  useEffect(() => {
-    let mounted = true;
-    getReligionDropdownOptions().then((opts) => {
-      if (mounted) setAgamaOptions(opts);
-    }).catch(() => {});
-
-    return () => { mounted = false; };
-  }, []);
+ 
+  const { agamaOptions, pendidikanOptions, step1, handleChange, handleFileChange } = useStep1Data();
+  
+  // fetching moved to `useStep1Data` hook
 
   return (
     <div className="space-y-6">
@@ -131,7 +114,7 @@ export const Step01PersonalData: React.FC = () => {
           <div>
             <Label>Pendidikan Terakhir</Label>
             <Select
-              options={PENDIDIKAN_OPTIONS}
+              options={pendidikanOptions}
               defaultValue={step1.pendidikanTerakhir}
               onChange={(value) => handleChange('pendidikanTerakhir', value)}
               placeholder="Select"

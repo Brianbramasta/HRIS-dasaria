@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PengunduranDiri } from '../../types/Resignation';
 import usePengunduranDiri from './usePengunduranDiri';
+import errorHandle from '@/utils/errorHandle';
 
 export const usePendingReview = () => {
   const navigate = useNavigate();
@@ -70,6 +71,7 @@ export const usePendingReview = () => {
       handleCloseApproveModal();
     } catch (err) {
       // Error handled in hook
+      errorHandle(err);
     }
   };
 
@@ -82,6 +84,7 @@ export const usePendingReview = () => {
       handleCloseRejectModal();
     } catch (err) {
       // Error handled in hook
+      errorHandle(err);
     }
   };
 

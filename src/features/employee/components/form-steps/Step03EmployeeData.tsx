@@ -1,162 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { useFormulirKaryawanStore } from '../../stores/useFormulirKaryawanStore';
+import React from 'react';
 import DatePicker from '../../../../components/form/date-picker';
 import Select from '../../../../components/form/Select';
 import Label from '../../../../components/form/Label';
 import InputField from '../../../../components/form/input/InputField';
-import employeeMasterDataService from '../../services/EmployeeMasterData.service';
-import { JENJANG_JABATAN_OPTIONS, STATUS_PAYROLL_OPTIONS, KATEGORI_KARYAWAN_OPTIONS, EMPLOYMENT_STATUS_OPTIONS } from '../../utils/EmployeeMappings';
-
+import { JENJANG_JABATAN_OPTIONS, STATUS_PAYROLL_OPTIONS, EMPLOYMENT_STATUS_OPTIONS } from '../../utils/EmployeeMappings';
+import { useStep3Data } from '../../hooks/employee-data/form/useFromStep';
 
 export const Step03EmployeeData: React.FC = () => {
-  const { formData, updateStep3Employee } = useFormulirKaryawanStore();
-  const step3 = formData.step3Employee;
-
-  const [companyOptions, setCompanyOptions] = useState<{ label: string; value: string }[]>([]);
-  const [officeOptions, setOfficeOptions] = useState<{ label: string; value: string }[]>([]);
-  const [directorateOptions, setDirectorateOptions] = useState<{ label: string; value: string }[]>([]);
-  const [divisionOptions, setDivisionOptions] = useState<{ label: string; value: string }[]>([]);
-  const [departmentOptions, setDepartmentOptions] = useState<{ label: string; value: string }[]>([]);
-  const [jobTitleOptions, setJobTitleOptions] = useState<{ label: string; value: string; grade?: string }[]>([]);
-  const [positionOptions, setPositionOptions] = useState<{ label: string; value: string }[]>([]);
-  const [selectedGrade, setSelectedGrade] = useState<string>('');
-
-  const handleChange = (field: string, value: string) => {
-    updateStep3Employee({ [field]: value } as any);
-    
-    // Reset dependent fields when parent selection changes
-    if (field === 'company') {
-      updateStep3Employee({ kantor: '' } as any);
-      setOfficeOptions([]);
-    } else if (field === 'direktorat') {
-      updateStep3Employee({ divisi: '', departemen: '' } as any);
-      setDivisionOptions([]);
-      setDepartmentOptions([]);
-    } else if (field === 'divisi') {
-      updateStep3Employee({ departemen: '' } as any);
-      setDepartmentOptions([]);
-    } else if (field === 'jabatan') {
-      // Find the selected job title's grade
-      const selectedJob = jobTitleOptions.find(job => job.value === value);
-      console.log('Selected Job Title Grade:', selectedJob?.grade)
-      console.log('jobTitleOptions:', jobTitleOptions)
-      console.log('value:', value)
-      if (selectedJob?.grade) {
-        setSelectedGrade(selectedJob.grade);
-        updateStep3Employee({ golongan: selectedJob.grade } as any);
-      }
-    }
-  };
-
-  // Initial fetch: Company, Office, Directorate, Position, Job Title
-  useEffect(() => {
-    const fetchInitialData = async () => {
-      try {
-        // Fetch companies
-        const companies = await employeeMasterDataService.getCompanyDropdown();
-        setCompanyOptions((companies || []).map((i: any) => ({ 
-          label: i.company_name, 
-          value: i.id
-        })));
-
-        // Fetch directorates
-        const directorates = await employeeMasterDataService.getDirectorateDropdown();
-        setDirectorateOptions((directorates || []).map((i: any) => ({ 
-          label: i.directorate_name, 
-          value: i.id 
-        })));
-
-        // Fetch positions
-        const positions = await employeeMasterDataService.getPositionDropdown();
-        setPositionOptions((positions || []).map((i: any) => ({ 
-          label: i.position_name, 
-          value: i.id
-        })));
-
-        // Fetch job titles with grade
-        const jobTitles = await employeeMasterDataService.getJobTitleDropdown();
-        setJobTitleOptions((jobTitles || []).map((i: any) => ({ 
-          label: i.job_title_name, 
-          value: i.id,
-          grade: i.grade
-        })));
-
-        // If jabatan is already selected, set the grade
-        if (step3.jabatan) {
-          const selectedJob = jobTitles.find((i: any) => i.id_job_title === step3.jabatan);
-          if (selectedJob?.grade) {
-            setSelectedGrade(selectedJob.grade);
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching initial data:', error);
-      }
-    };
-    fetchInitialData();
-  }, []);
-
-  // Fetch divisions when directorate changes
-  useEffect(() => {
-    const fetchDivisions = async () => {
-      if (!step3.direktorat) {
-        setDivisionOptions([]);
-        return;
-      }
-      try {
-        const items = await employeeMasterDataService.getDivisionsByDirectorate(step3.direktorat);
-        setDivisionOptions((items || []).map((i: any) => ({ 
-          label: i.division_name, 
-          value: i.id 
-        })));
-      } catch (error) {
-        console.error('Error fetching divisions:', error);
-        setDivisionOptions([]);
-      }
-    };
-    fetchDivisions();
-  }, [step3.direktorat]);
-
-  // Fetch departments when division changes
-  useEffect(() => {
-    const fetchDepartments = async () => {
-      if (!step3.divisi) {
-        setDepartmentOptions([]);
-        return;
-      }
-      try {
-        const items = await employeeMasterDataService.getDepartmentsByDivision(step3.divisi);
-        setDepartmentOptions((items || []).map((i: any) => ({ 
-          label: i.department_name, 
-          value: i.id 
-        })));
-      } catch (error) {
-        console.error('Error fetching departments:', error);
-        setDepartmentOptions([]);
-      }
-    };
-    fetchDepartments();
-  }, [step3.divisi]);
-
-  // Fetch offices when company changes
-  useEffect(() => {
-    const fetchOffices = async () => {
-      if (!step3.company) {
-        setOfficeOptions([]);
-        return;
-      }
-      try {
-        const items = await employeeMasterDataService.getOfficeDropdown('', step3.company);
-        setOfficeOptions((items || []).map((i: any) => ({ 
-          label: i.office_name, 
-          value: i.id 
-        })));
-      } catch (error) {
-        console.error('Error fetching offices:', error);
-        setOfficeOptions([]);
-      }
-    };
-    fetchOffices();
-  }, [step3.company]);
+  const { companyOptions, officeOptions, directorateOptions, divisionOptions, departmentOptions, jobTitleOptions, positionOptions, kategoriKaryawanOptions, handleChange, selectedGrade, step3 } = useStep3Data();
 
   return (
     <div className="space-y-6">
@@ -212,6 +63,7 @@ export const Step03EmployeeData: React.FC = () => {
                 defaultValue={step3.kantor}
                 onChange={(value) => handleChange('kantor', value)}
                 placeholder="Select"
+                disabled={officeOptions.length === 0}
               />
             </div>
             <div>
@@ -221,6 +73,7 @@ export const Step03EmployeeData: React.FC = () => {
                 defaultValue={step3.direktorat}
                 onChange={(value) => handleChange('direktorat', value)}
                 placeholder="Select"
+                
                 required
               />
             </div>
@@ -230,6 +83,7 @@ export const Step03EmployeeData: React.FC = () => {
                 options={divisionOptions.length > 0 ? divisionOptions : [{ label: 'Pilih direktorat terlebih dahulu', value: '' }]}
                 defaultValue={step3.divisi}
                 onChange={(value) => handleChange('divisi', value)}
+                disabled={divisionOptions.length === 0}
                 placeholder="Select"
               />
             </div>
@@ -243,6 +97,7 @@ export const Step03EmployeeData: React.FC = () => {
                 options={departmentOptions.length > 0 ? departmentOptions : [{ label: 'Pilih divisi terlebih dahulu', value: '' }]}
                 defaultValue={step3.departemen}
                 onChange={(value) => handleChange('departemen', value)}
+                disabled={departmentOptions.length === 0}
                 placeholder="Select"
               />
             </div>
@@ -306,7 +161,7 @@ export const Step03EmployeeData: React.FC = () => {
             <div>
               <Label>Kategori Karyawan</Label>
               <Select
-                options={KATEGORI_KARYAWAN_OPTIONS}
+                options={kategoriKaryawanOptions}
                 defaultValue={step3.kategoriKaryawan}
                 onChange={(value) => handleChange('kategoriKaryawan', value)}
                 placeholder="Select"

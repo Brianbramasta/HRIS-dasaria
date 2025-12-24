@@ -65,7 +65,7 @@ class EmployeeMasterDataService {
    * @returns Promise dengan response API
    */
   async createEmployee(payload: FormData): Promise<ApiResponse<any>> {
-    return apiService.post<any>(`${this.basePath}/employees`, payload, {
+    return apiService.post<any>(`${this.basePath}/employees/store`, payload, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   }
@@ -222,7 +222,7 @@ class EmployeeMasterDataService {
    */
   async getEducationDropdown(search?: string): Promise<EducationDropdownItem[]> {
     const qs = search ? `?search=${encodeURIComponent(search)}` : '';
-    const resp = await apiService.get<EducationDropdownItem[]>(`${this.basePath}/employees/education-dropdown${qs}`);
+    const resp = await apiService.get<EducationDropdownItem[]>(`${this.basePath}/employees/education-level-dropdown${qs}`);
     return (resp as any)?.data ?? [];
   }
 

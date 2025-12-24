@@ -1,5 +1,4 @@
 import React from 'react';
-import { useFormulirKaryawanStore } from '../../stores/useFormulirKaryawanStore';
 import Select from '../../../../components/form/Select';
 import Label from '../../../../components/form/Label';
 import Button from '../../../../components/ui/button/Button';
@@ -7,70 +6,13 @@ import FileInput from '../../../../components/form/input/FileInput';
 import { TrashBinIcon  } from '@/icons';
 import {iconPlus as PlusIcon} from '@/icons/components/icons';
 import DocumentsTable from '../../../structure-and-organize/components/table/TableGlobal';
-import { DocumentItem } from '../../types/FormEmployee';
-import { DOCUMENT_TYPE_OPTIONS } from '../../utils/EmployeeMappings';
-
+import { useStep5Data } from '../../hooks/employee-data/form/useFromStep';
 
 
 export const Step05UploadDocument: React.FC = () => {
-  const { formData, updateStep4 } = useFormulirKaryawanStore();
-  const step4 = formData.step4;
-
-  const [rows, setRows] = React.useState<{ id: number; tipeFile: string; files: File[] }[]>([
-    { id: 1, tipeFile: '', files: [] },
-  ]);
-  const [resetKey, setResetKey] = React.useState(0);
-
-  const addRow = () => {
-    setRows((prev) => {
-      const nextId = prev.length ? Math.max(...prev.map((r) => r.id)) + 1 : 1;
-      return [...prev, { id: nextId, tipeFile: '', files: [] }];
-    });
-  };
-
-  const removeRow = (id: number) => {
-    setRows((prev) => prev.filter((r) => r.id !== id));
-  };
-
-  const handleTypeChange = (id: number, value: string) => {
-    setRows((prev) => prev.map((r) => (r.id === id ? { ...r, tipeFile: value } : r)));
-  };
-
-  const handleFilesChange = (id: number, event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files || []);
-    setRows((prev) => prev.map((r) => (r.id === id ? { ...r, files } : r)));
-  };
-
-  const handleUpload = () => {
-    const documents = step4.documents || [];
-    const newDocs: DocumentItem[] = [];
-    rows.forEach((r) => {
-      if (!r.tipeFile || r.files.length === 0) return;
-      r.files.forEach((file) => {
-        newDocs.push({
-          tipeFile: r.tipeFile,
-          namaFile: file.name,
-          file,
-          filePath: URL.createObjectURL(file),
-        });
-      });
-    });
-    if (newDocs.length) {
-      updateStep4({ documents: [...documents, ...newDocs] });
-      setRows([{ id: 1, tipeFile: '', files: [] }]);
-      setResetKey((k) => k + 1);
-    }
-  };
-
-  const handleRemoveDocument = (index: number) => {
-    const documents = step4.documents || [];
-    const newDocuments = documents.filter((_, i) => i !== index);
-    updateStep4({ documents: newDocuments });
-  };
-
-  const getDocumentTypeLabel = (type: string) => {
-    return DOCUMENT_TYPE_OPTIONS.find((opt) => opt.value === type)?.label || type;
-  };
+  
+  const { documentTypeOptions: DOCUMENT_TYPE_OPTIONS, rows, resetKey,step4, addRow, removeRow, handleTypeChange, handleFilesChange, handleUpload, handleRemoveDocument, getDocumentTypeLabel } = useStep5Data();
+  
 
   return (
     <div className="space-y-6">
@@ -126,10 +68,10 @@ export const Step05UploadDocument: React.FC = () => {
       <div>
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Daftar Dokumen</h3>
         {(
-          (step4.documents || []).length > 0
+          (step4?.documents || []).length > 0
         ) ? (
           <DocumentsTable
-            items={(step4.documents || []).map((doc, idx) => ({
+            items={(step4?.documents || []).map((doc, idx) => ({
               id: idx,
               tipeFile: doc.tipeFile,
               namaFile: doc.namaFile,

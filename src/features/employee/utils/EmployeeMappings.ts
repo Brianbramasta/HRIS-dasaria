@@ -82,13 +82,13 @@ export const PENDIDIKAN_OPTIONS = [
 ];
 
 export const JENIS_KELAMIN_OPTIONS = [
-  { label: 'Laki-laki', value: 'laki-laki' },
-  { label: 'Perempuan', value: 'perempuan' },
+  { label: 'Laki-laki', value: 'Laki-laki' },
+  { label: 'Perempuan', value: 'Perempuan' },
 ];
 
 export const STATUS_MENIKAH_OPTIONS = [
-  { label: 'Tidak Menikah', value: 'tidak_menikah' },
-  { label: 'Menikah', value: 'menikah' },
+  { label: 'Tidak Menikah', value: 'Tidak Menikah' },
+  { label: 'Menikah', value: 'Menikah' },
 ];
 
 export const GOLONGAN_DARAH_OPTIONS = [
@@ -179,13 +179,13 @@ export const BANK_OPTIONS = [
 ];
 
 export const BPJS_STATUS_OPTIONS = [
-  { label: 'Aktif', value: 'aktif' },
-  { label: 'Nonaktif', value: 'nonaktif' },
+  { label: 'Aktif', value: 'Aktif' },
+  { label: 'Tidak Aktif', value: 'Tidak Aktif' },
 ];
 
 export const BPJS_TK_STATUS_OPTIONS = [
-  { label: 'Aktif', value: 'aktif' },
-  { label: 'Nonaktif', value: 'nonaktif' },
+  { label: 'Aktif', value: 'Aktif' },
+  { label: 'Tidak Aktif', value: 'Tidak Aktif' },
 ];
 
 // form 5

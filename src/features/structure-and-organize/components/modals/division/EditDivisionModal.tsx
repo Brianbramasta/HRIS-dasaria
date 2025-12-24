@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import type { DivisionListItem, DirectorateListItem, DirectorateDropdown } from '../../../types/OrganizationApiTypes';
+import type { DivisionListItem,DirectorateDropdown } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import FileInput from '../../../../../components/shared/field/FileInput';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';

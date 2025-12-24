@@ -1,5 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { startLoading, stopLoading } from '../stores/loadingStore';
+import handleApiError from '../utils/errorHandle';
 
 // Interface untuk response API
 export interface ApiResponse<T = any> {
@@ -100,7 +101,14 @@ class ApiService {
           }
         }
 
-        // Format error response
+        // Show notification using global handler (extracts messages from response)
+        try {
+          handleApiError(error, { title: 'API Error' });
+        } catch (err) {
+          // ignore notification errors
+        }
+
+        // Format error response (kept for upstream handling)
         const formattedError: ApiError = {
           success: false,
           message: error.response?.data?.message || 'Terjadi kesalahan',

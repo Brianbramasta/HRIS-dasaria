@@ -36,11 +36,7 @@ export function useDatatable<T = any>({
   externalPage,
   externalTotal,
   onColumnFilterChange,
-  // @ts-expect-error - Parameter is defined for future use
-  columnFilters = {},
   onDateRangeFilterChange,
-  // @ts-expect-error - Parameter is defined for future use
-  dateRangeFilters = {}
 }: UseDatatableProps<T>) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(pageSize);

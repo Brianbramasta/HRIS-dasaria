@@ -4,9 +4,9 @@ import Input from '../../../../components/form/input/InputField';
 import Select from '../../../../components/form/Select';
 import Label from '../../../../components/form/Label';
 import { useAuthStore } from '../../../auth/stores/AuthStore';
-import { usePTKPDropdown } from '../../hooks/employee-data/form/useFromStep4';
-
-import { BANK_OPTIONS, BPJS_STATUS_OPTIONS, BPJS_TK_STATUS_OPTIONS } from '../../utils/EmployeeMappings';
+import { usePTKPDropdown } from '../../hooks/employee-data/form/useFromStep';
+import {  BPJS_STATUS_OPTIONS, BPJS_TK_STATUS_OPTIONS } from '../../utils/EmployeeMappings';
+import { useStep4Data } from '../../hooks/employee-data/form/useFromStep';
 
 
 
@@ -15,6 +15,7 @@ export const Step04SalaryBpjs: React.FC = () => {
   const step3 = formData.step3;
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const { ptkpOptions, loading, fetchPTKPOptions } = usePTKPDropdown();
+  const { bankOptions } = useStep4Data();
 
   const handleChange = (field: string, value: string) => {
     updateStep3({ [field]: value } as any);
@@ -33,7 +34,7 @@ export const Step04SalaryBpjs: React.FC = () => {
         (<div className="grid grid-cols-1 mb-4">
             <Label>Bank</Label>
             <Select
-              options={BANK_OPTIONS}
+              options={bankOptions}
               defaultValue={step3.bank}
               onChange={(value) => handleChange('bank', value)}
               placeholder="Select"
@@ -47,7 +48,7 @@ export const Step04SalaryBpjs: React.FC = () => {
           <div>
             <Label>Bank</Label>
             <Select
-              options={BANK_OPTIONS}
+              options={bankOptions}
               defaultValue={step3.bank}
               onChange={(value) => handleChange('bank', value)}
               placeholder="Select"
