@@ -7,7 +7,7 @@ import Select from '@/components/form/Select';
 import FileInput from '@/components/shared/field/FileInput';
 import DatePicker from '@/components/form/date-picker';
 import { formatDateToIndonesian } from '@/utils/formatDate';
-import { getContractStatusDropdownOptions, getContractEndStatusDropdownOptions } from '@/features/employee/hooks/employee-data/form/useFormulirKaryawan';
+import { getContractStatusDropdownOptions, getContractEndStatusDropdownOptions } from '@/features/employee/hooks/employee-data/detail/useContract';
 import LinkPreview from '@/components/shared/form/LinkPreview';
 
 export type ContractEntry = {

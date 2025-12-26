@@ -61,6 +61,11 @@ export interface CreateContractResponse {
   created_at: string;
 }
 
+interface ContractStatusDropdownItem {
+    id_status: string;
+    status_name: string;
+  }
+
 class ContractService {
   private readonly basePath = 'employee-master-data/employees';
 
@@ -97,6 +102,23 @@ class ContractService {
     return apiService.get<ContractData>(`${this.basePath}/${employeeId}/contract-for-edit`);
   }
 
+   /**
+   * Dropdown: Status Kontrak
+   * @param search - Optional search query untuk filter status kontrak
+   * @returns Promise dengan array status kontrak
+   */
+  async getContractStatusDropdown(search?: string): Promise<ContractStatusDropdownItem[]> {
+    const qs = search ? `?search=${encodeURIComponent(search)}` : '';
+    const resp = await apiService.get<ContractStatusDropdownItem[]>(`${this.basePath}/employees/contract-status-dropdown${qs}`);
+    return (resp as any)?.data ?? [];
+  }
+
+   // /api/employee-master-data/employees/contract-end-status-dropdown
+  async getContractEndStatusDropdown(search?: string): Promise<any[]> {
+    const qs = search ? `?search=${encodeURIComponent(search)}` : '';
+    const resp = await apiService.get<any[]>(`${this.basePath}/employees/contract-end-status-dropdown${qs}`);
+    return (resp as any)?.data ?? [];
+  }
   /**
    * Create Contract - Membuat kontrak baru untuk karyawan
    * @param employeeId - ID karyawan

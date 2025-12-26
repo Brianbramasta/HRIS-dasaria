@@ -1,12 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
 import { contractService, type ContractData, type CreateContractPayload } from '../../../services/detail/ContractService';
 
-import { employeeMasterDataService } from '../../../services/EmployeeMasterData.service';
 import { addNotification } from '@/stores/notificationStore';
 
 export interface UseContractOptions {
   employeeId: string;
   autoFetch?: boolean;
+}
+export interface DropdownOption {
+  label: string;
+  value: string;
 }
 
 export interface UseContractReturn {
@@ -24,8 +27,22 @@ export function getContractForEdit(employeeId: string) {
 }
 
 export function getContractEndStatusDropdown(employeeId: string) {
-  return employeeMasterDataService.getContractEndStatusDropdown(employeeId);
+  return contractService.getContractEndStatusDropdown(employeeId);
 }
+
+export const getContractEndStatusDropdownOptions = async (search?: string): Promise<DropdownOption[]> => {
+  const data = await contractService.getContractEndStatusDropdown(search);
+  console.log('Contract End Status dropdown data:', data);
+  return (data || []).map((s: any) => ({ label: s.name, value: s.id }));
+}
+
+
+export const getContractStatusDropdownOptions = async (search?: string): Promise<DropdownOption[]> => {
+  const data = await contractService.getContractStatusDropdown(search);
+  console.log('Contract Status dropdown data:', data);
+  return (data || []).map((s: any) => ({ label: s.name, value: s.id }));
+}
+
 
 // edit
 // /api/employee-master-data/employees/{id}/update-contract/{contractId}

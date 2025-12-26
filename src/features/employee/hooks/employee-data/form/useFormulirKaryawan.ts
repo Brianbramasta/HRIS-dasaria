@@ -54,18 +54,6 @@ export const getEmployeeStatusDropdownOptions = async (search?: string): Promise
   return (data || []).map((s: any) => ({ label: s.name, value: s.id }));
 }
 
-export const getContractEndStatusDropdownOptions = async (search?: string): Promise<DropdownOption[]> => {
-  const data = await employeeMasterDataService.getContractEndStatusDropdown(search);
-  console.log('Contract End Status dropdown data:', data);
-  return (data || []).map((s: any) => ({ label: s.name, value: s.id }));
-}
-
-
-export const getContractStatusDropdownOptions = async (search?: string): Promise<DropdownOption[]> => {
-  const data = await employeeMasterDataService.getContractStatusDropdown(search);
-  console.log('Contract Status dropdown data:', data);
-  return (data || []).map((s: any) => ({ label: s.name, value: s.id }));
-}
 
 export interface UseFormulirKaryawanReturn {
   // Store states

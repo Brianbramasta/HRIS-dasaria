@@ -35,10 +35,7 @@ interface EmployeeCategoryDropdownItem {
     category_name: string;
   }
 
-interface ContractStatusDropdownItem {
-    id_status: string;
-    status_name: string;
-  }
+
 
 interface DocumentTypeDropdownItem {
     id_doc_type: string;
@@ -248,16 +245,7 @@ class EmployeeMasterDataService {
     return (resp as any)?.data ?? [];
   }
 
-  /**
-   * Dropdown: Status Kontrak
-   * @param search - Optional search query untuk filter status kontrak
-   * @returns Promise dengan array status kontrak
-   */
-  async getContractStatusDropdown(search?: string): Promise<ContractStatusDropdownItem[]> {
-    const qs = search ? `?search=${encodeURIComponent(search)}` : '';
-    const resp = await apiService.get<ContractStatusDropdownItem[]>(`${this.basePath}/employees/contract-status-dropdown${qs}`);
-    return (resp as any)?.data ?? [];
-  }
+ 
 
   /**
    * Dropdown: Tipe Dokumen
@@ -292,12 +280,7 @@ class EmployeeMasterDataService {
     return (resp as any)?.data ?? [];
   }
 
-  // /api/employee-master-data/employees/contract-end-status-dropdown
-  async getContractEndStatusDropdown(search?: string): Promise<any[]> {
-    const qs = search ? `?search=${encodeURIComponent(search)}` : '';
-    const resp = await apiService.get<any[]>(`${this.basePath}/employees/contract-end-status-dropdown${qs}`);
-    return (resp as any)?.data ?? [];
-  }
+ 
 
   // /employee-status-dropdown
   async getEmployeeStatusDropdown(search?: string): Promise<any[]> {

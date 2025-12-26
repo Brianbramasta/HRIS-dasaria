@@ -2,7 +2,10 @@ import { useMemo, useState, type ReactNode, useEffect } from 'react';
 import type { Karyawan } from '@/features/employee/types/Employee';
 import Button from '@/components/ui/button/Button';
 import { DataTable, type DataTableColumn, type DataTableAction } from '@/components/shared/datatable/DataTable';
-import ContractModal, { type ContractEntry } from '@/features/employee/components/modals/employee-data/contract/ContractModal';
+import AddContractModal from '@/features/employee/components/modals/employee-data/contract/AddContractModal';
+import EditContractModal from '@/features/employee/components/modals/employee-data/contract/EditContractModal';
+import DetailContractModal from '@/features/employee/components/modals/employee-data/contract/DetailContractModal';
+import type { ContractEntry } from '@/features/employee/components/modals/employee-data/contract/BaseModal';
 import { IconPencil, IconFileDetail } from '@/icons/components/icons';
 import ComponentCard from '@/components/common/ComponentCard';
 import { getContractForEdit, useContract, updateContract } from '@/features/employee/hooks/employee-data/detail/useContract';
@@ -19,12 +22,6 @@ interface Props {
   isEditable?: boolean;
 }
 
-const formatDate = (iso: string) => {
-  if (!iso) return '-';
-  const d = new Date(iso);
-  const fmt = new Intl.DateTimeFormat('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-  return fmt.format(d);
-};
 
 function SummaryItem({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -83,14 +80,15 @@ export default function ContractTab({ employeeId: employeeIdProp, data }: Props)
     }
   }, [contractData, detail]);
 
-  const [isModalOpen, setModalOpen] = useState(false);
-  const [modalMode, setModalMode] = useState<'add' | 'edit'>('add');
-  const [editing, setEditing] = useState<ContractEntry | null>(null);
+  const [isAddModalOpen, setAddModalOpen] = useState(false);
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const [isDetailModalOpen, setDetailModalOpen] = useState(false);
+  const [editingData, setEditingData] = useState<ContractEntry | null>(null);
+  const [detailData, setDetailData] = useState<ContractEntry | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleAdd = () => {
-    setModalMode('add');
-    setEditing({
+    setEditingData({
       full_name: summary.full_name,
       contract_status_id: '',
       last_contract_signed_date: '',
@@ -101,17 +99,13 @@ export default function ContractTab({ employeeId: employeeIdProp, data }: Props)
       deskripsi: '',
     });
     setSelectedFile(null);
-    setModalOpen(true);
+    setAddModalOpen(true);
   };
 
-  const handleEditRow = (row: ContractHistoryItem) => {
-    setModalMode('edit');
+  const handleViewDetail = (row: ContractHistoryItem) => {
     getContractForEdit(row.id as unknown as string).then((response) => {
       const data = response.data as any;
-      console.log('Edit Contract Data:', data);
-      
-      // Map API response to ContractEntry
-      setEditing({
+      setDetailData({
         id: row.id,
         full_name: data.full_name || detail?.Data_Pribadi.full_name,
         contract_status_id: data.contract_status_id,
@@ -124,53 +118,75 @@ export default function ContractTab({ employeeId: employeeIdProp, data }: Props)
         contract_end_status_name: data.contract_end_status_name,
         file_contract: data.file_contract,
       });
+      setDetailModalOpen(true);
     });
-
-    setSelectedFile(null);
-    setModalOpen(true);
   };
 
-  const handleSubmit = async (entry: ContractEntry) => {
-    if (modalMode === 'add') {
-      // For add mode, file is required
-      if (!selectedFile) {
-        alert('Please select a contract file');
-        return;
-      }
-
-      const payload: CreateContractPayload = {
-        contract_status: parseInt(entry.contract_status_id) || 1,
-        last_contract_signed_date: entry.last_contract_signed_date,
-        end_date: entry.end_date,
-        contract_type: entry.contract_type === 'PKWT' ? 1 : entry.contract_type === 'PKWTT' ? 2 : 1,
-        contract_number: String(entry.contract_number),
-        file_contract: selectedFile || new File([], ''),
-      };
-
-      const success = await createContract(payload);
-      if (success) {
-        setModalOpen(false);
-        setSelectedFile(null);
-      }
-    } else if (modalMode === 'edit' && entry.id) {
-      // Handle edit mode
-      const formData = new FormData();
-      formData.append('contract_status_id', entry.contract_status_id);
-      formData.append('contract_end_status_id', entry.contract_end_status_id || '');
-      formData.append('note_for_resign', entry.catatan || '');
-      
-      if (selectedFile) {
-        formData.append('file_for_resign', selectedFile);
-      }
-      
-      try {
-        await updateContract(employeeId, entry.id, formData as any);
-        setModalOpen(false);
-        setSelectedFile(null);
-      } catch (err: any) {
-        console.error('Update contract error:', err);
-      }
+  const handleAddSubmit = async (entry: ContractEntry) => {
+    // For add mode, file is required
+    if (!selectedFile) {
+      alert('Please select a contract file');
+      return;
     }
+
+    const payload: CreateContractPayload = {
+      contract_status: parseInt(entry.contract_status_id) || 1,
+      last_contract_signed_date: entry.last_contract_signed_date,
+      end_date: entry.end_date,
+      contract_type: entry.contract_type === 'PKWT' ? 1 : entry.contract_type === 'PKWTT' ? 2 : 1,
+      contract_number: String(entry.contract_number),
+      file_contract: selectedFile || new File([], ''),
+    };
+
+    const success = await createContract(payload);
+    if (success) {
+      setAddModalOpen(false);
+      setSelectedFile(null);
+    }
+  };
+
+  const handleEditSubmit = async (entry: ContractEntry) => {
+    if (!entry.id) return;
+
+    const formData = new FormData();
+    formData.append('contract_status_id', entry.contract_status_id);
+    formData.append('contract_end_status_id', entry.contract_end_status_id || '');
+    formData.append('note_for_resign', entry.catatan || '');
+    
+    if (selectedFile) {
+      formData.append('file_for_resign', selectedFile);
+    }
+    
+    try {
+      await updateContract(employeeId, entry.id, formData as any);
+      setEditModalOpen(false);
+      setSelectedFile(null);
+    } catch (err: any) {
+      console.error('Update contract error:', err);
+    }
+  };
+
+  const handleEditRow = (row: ContractHistoryItem) => {
+    getContractForEdit(row.id as unknown as string).then((response) => {
+      const data = response.data as any;
+      
+      // Map API response to ContractEntry
+      setEditingData({
+        id: row.id,
+        full_name: data.full_name || detail?.Data_Pribadi.full_name,
+        contract_status_id: data.contract_status_id,
+        contract_status_name: data.contract_status_name,
+        last_contract_signed_date: data.last_contract_signed_date,
+        end_date: data.end_date,
+        contract_type: data.contract_type,
+        contract_number: data.contract_number,
+        contract_end_status_id: data.contract_end_status_id,
+        contract_end_status_name: data.contract_end_status_name,
+        file_contract: data.file_contract,
+      });
+      setSelectedFile(null);
+      setEditModalOpen(true);
+    });
   };
 
   const columns: DataTableColumn<ContractHistoryItem>[] = [
@@ -187,9 +203,7 @@ export default function ContractTab({ employeeId: employeeIdProp, data }: Props)
       color: 'error',
       icon: <IconFileDetail />,
       onClick: (row) => {
-        if (row.file_contract) {
-          window.open(formatUrlFile(row.file_contract), '_blank');
-        }
+        handleViewDetail(row);
       },
     },
     {
@@ -243,19 +257,39 @@ export default function ContractTab({ employeeId: employeeIdProp, data }: Props)
       </div>
 
       {/* Add/Edit Modal */}
-      <ContractModal
-        isOpen={isModalOpen}
-        mode={modalMode}
-        initialData={editing}
+      <AddContractModal
+        isOpen={isAddModalOpen}
+        initialData={editingData}
         onClose={() => {
-          setModalOpen(false);
+          setAddModalOpen(false);
           setSelectedFile(null);
           clearSkFile();
         }}
-        onSubmit={handleSubmit}
+        onSubmit={handleAddSubmit}
         submitting={isSubmitting}
         onFileChange={setSelectedFile}
-        showStatusBerakhir={modalMode === 'edit'}
+      />
+
+      <EditContractModal
+        isOpen={isEditModalOpen}
+        initialData={editingData}
+        onClose={() => {
+          setEditModalOpen(false);
+          setSelectedFile(null);
+          clearSkFile();
+        }}
+        onSubmit={handleEditSubmit}
+        submitting={isSubmitting}
+        onFileChange={setSelectedFile}
+      />
+
+      <DetailContractModal
+        isOpen={isDetailModalOpen}
+        initialData={detailData}
+        onClose={() => {
+          setDetailModalOpen(false);
+          setDetailData(null);
+        }}
       />
     </>
   );
