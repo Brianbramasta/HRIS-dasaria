@@ -27,7 +27,9 @@ import PerpanjangKontrakEdit from "../features/employee/pages/contract-renewal/c
 import DataKaryawanPelanggaran from "../features/employee/components/employee-data/tab/Fraud";
 import OrganizationHistoryPage from "../features/employee/pages/organization-history/OrganizationHistoryPage";
 import OrganizationHistoryAtasanPage from "../features/employee/pages/organization-history/OrganizationHistoryAtasanPage";
-import Dashboard from "@/features/dashboard/pages/Dashboard";
+import DashboardPage from "@/features/dashboard/pages/index";
+import Dashboard from "@/features/dashboard/pages/tab/Dashboard";
+import Notification from "@/features/dashboard/pages/tab/Notification";
 // import DaftarPenggajianPage from "@/features/penggajian/pages/daftarPenggajianPage";
 import KonfigurasiPenggajianPage from "@/features/payroll/pages/PayrollConfiguration/PayrollConfigurationPage";
 // Dokumentasi: Import tab untuk Konfigurasi Penggajian
@@ -85,7 +87,14 @@ export default function AppRoutes() {
         <Route path="/resignation/form" element={<FormResignPage />} />
         {/* Protected routes */}
         <Route element={<ProtectedOutlet />}> 
-          <Route index path="/" element={<Dashboard />} />
+          <Route path="/dashboard" element={<DashboardPage />}>
+            <Route index element={<Dashboard />} />
+            <Route path="notification" element={<Notification />} />
+          </Route>
+          <Route path="/" element={<DashboardPage />}>
+            <Route index element={<Dashboard />} />
+          </Route>
+          {/* <Route index path="/" element={<Dashboard />} /> */}
           <Route path="/structure-and-organize" element={<StructureAndOrganize />}>
             <Route index element={<BusinessLinesTab resetKey="business-lines" />} />
             <Route path="business-lines" element={<BusinessLinesTab resetKey="business-lines" />} />

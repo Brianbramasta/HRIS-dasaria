@@ -1,6 +1,6 @@
 // Dokumentasi: Halaman induk Kasbon, Tabs disembunyikan pada halaman formulir
 import { Outlet, useLocation } from 'react-router-dom';
-import Tabs from '@/features/structure-and-organize/components/Tabs';
+import Tabs from '@/components/shared/Tabs';
 import { useEffect, useState } from 'react';
 
 export default function KasbonPage() {

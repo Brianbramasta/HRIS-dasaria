@@ -12,6 +12,10 @@ export interface ContractSummary {
   kontrak_ke: number;
   status_berakhir: string;
   kontrak_aktif?: string;
+  contract_status_id?: string;
+  contract_status_name?: string;
+  contract_end_status_id?: string;
+  contract_end_status_name?: string;
 }
 
 export interface ContractHistoryItem {
@@ -23,6 +27,7 @@ export interface ContractHistoryItem {
   last_contract_signed_date: string;
   end_date: string;
   file_contract: string;
+  note: string;
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
@@ -66,6 +71,30 @@ class ContractService {
    */
   async getContractData(employeeId: string): Promise<ApiResponse<ContractData>> {
     return apiService.get<ContractData>(`${this.basePath}/${employeeId}/data-kontrak`);
+  }
+
+  // edit
+  // /api/employee-master-data/employees/{id}/update-contract/{contractId}
+  async updateContract(
+    employeeId: string,
+    contractId: string,
+    payload: FormData
+  ): Promise<ApiResponse<CreateContractResponse>> {
+    console.log('ContractService.updateContract payload:', payload);
+    payload.append('_method', 'PATCH');
+    console.log('ContractService.updateContract payload 2:', payload);
+
+    return apiService.post<CreateContractResponse>(
+      `${this.basePath}/${employeeId}/update-contract/${contractId}`,
+      payload,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }
+    );
+  }
+  // /api/employee-master-data/employees/{id}/contract-for-edit
+  async getContractForEdit(employeeId: string): Promise<ApiResponse<ContractData>> {
+    return apiService.get<ContractData>(`${this.basePath}/${employeeId}/contract-for-edit`);
   }
 
   /**

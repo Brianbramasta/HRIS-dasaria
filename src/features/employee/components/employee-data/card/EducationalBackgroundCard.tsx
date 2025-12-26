@@ -30,7 +30,7 @@ export default function EducationalBackgroundCard({ education }: Props) {
       <div className="space-y-6">
         <h4 className="text-lg font-semibold">Pendidikan Formal</h4>
         {formalEducation.length > 0 ? formalEducation.map((item: any, idx: number) => (
-          <div key={idx} className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div key={idx} className="grid grid-cols-1 gap-4 md:grid-cols-3 border-b border-gray-200 pb-6 last:border-0">
             <div>
               <Label>Jenjang</Label>
               <InputField value={item?.education_level || ''} readonly={true} />
@@ -63,7 +63,7 @@ export default function EducationalBackgroundCard({ education }: Props) {
         <div className="mt-8 space-y-6">
           <h4 className="text-lg font-semibold">Pendidikan Non-Formal</h4>
           {nonFormalEducation.map((item: any, idx: number) => (
-            <div key={`nonformal-${idx}`} className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div key={`nonformal-${idx}`} className="grid grid-cols-1 gap-4 md:grid-cols-3 border-gray-200 pb-6 last:border-0">
               <div>
                 <Label>Nama Sertifikat</Label>
                 <InputField value={item?.certificate_name || ''} readonly={true} />

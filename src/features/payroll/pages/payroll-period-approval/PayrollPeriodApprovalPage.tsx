@@ -2,7 +2,7 @@
 
 // Dokumentasi: Halaman Approval Periode Gajian dengan skema Tabs + Outlet, mirip PeriodePenggajianPage
 import { Outlet, useLocation } from 'react-router-dom';
-import Tabs from '@/features/structure-and-organize/components/Tabs';
+import Tabs from '@/components/shared/Tabs';
 
 export default function ApprovalPeriodeGajianPage() {
   // Dokumentasi: menentukan tab aktif dan menyembunyikan Tabs saat halaman detail

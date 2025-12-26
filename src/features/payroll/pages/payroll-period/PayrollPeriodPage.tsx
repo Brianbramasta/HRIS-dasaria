@@ -2,7 +2,7 @@
 
 // Dokumentasi: Halaman induk Periode Penggajian dengan skema Tabs + Outlet (mirip StrukturOrganisasiPage)
 import { Outlet, useLocation } from 'react-router-dom';
-import Tabs from '@/features/structure-and-organize/components/Tabs';
+import Tabs from '@/components/shared/Tabs';
 
 export default function PeriodePenggajianPage() {
   const location = useLocation();

@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-import Tabs from '../../../../structure-and-organize/components/Tabs';
+import Tabs from '../../../../../components/shared/Tabs';
 import PesonalInformationTab from '../../../components/employee-data/tab/PesonalInformation';
 import ContractTab from '../../../components/employee-data/tab/Contract';
 import OrganizationHistoryTab from '../../../components/employee-data/tab/OrganizationHistory';
@@ -52,10 +52,10 @@ export default function DetailKaryawanPage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {detail?.Data_Sosial_media.social_media[0]?.twitter_name && <a href={detail?.Data_Sosial_media.social_media[0]?.twitter_name} target='_blank'><img src='/images/icons/sosial-media/x.svg'/></a>}
-            {detail?.Data_Sosial_media.social_media[0]?.linkedin_name && <a href={detail?.Data_Sosial_media.social_media[0]?.linkedin_name} target='_blank'><img src='/images/icons/sosial-media/linkedin.svg'/></a>}
-            {detail?.Data_Sosial_media.social_media[0]?.facebook_name && <a href={detail?.Data_Sosial_media.social_media[0]?.facebook_name} target='_blank'><img src='/images/icons/sosial-media/facebook.svg'/></a>}
-            {detail?.Data_Sosial_media.social_media[0]?.instagram_name && <a href={detail?.Data_Sosial_media.social_media[0]?.instagram_name} target='_blank'><img src='/images/icons/sosial-media/instagram.svg'/></a>}
+            {detail?.Data_Social_Media[0]?.twitter_name && <a href={detail?.Data_Social_Media[0]?.twitter_name} target='_blank'><img src='/images/icons/sosial-media/x.svg'/></a>}
+            {detail?.Data_Social_Media[0]?.linkedin_name && <a href={detail?.Data_Social_Media[0]?.linkedin_name} target='_blank'><img src='/images/icons/sosial-media/linkedin.svg'/></a>}
+            {detail?.Data_Social_Media[0]?.facebook_name && <a href={detail?.Data_Social_Media[0]?.facebook_name} target='_blank'><img src='/images/icons/sosial-media/facebook.svg'/></a>}
+            {detail?.Data_Social_Media[0]?.instagram_name && <a href={detail?.Data_Social_Media[0]?.instagram_name} target='_blank'><img src='/images/icons/sosial-media/instagram.svg'/></a>}
           </div>
         </div>
       </div>

@@ -292,6 +292,13 @@ class EmployeeMasterDataService {
     return (resp as any)?.data ?? [];
   }
 
+  // /api/employee-master-data/employees/contract-end-status-dropdown
+  async getContractEndStatusDropdown(search?: string): Promise<any[]> {
+    const qs = search ? `?search=${encodeURIComponent(search)}` : '';
+    const resp = await apiService.get<any[]>(`${this.basePath}/employees/contract-end-status-dropdown${qs}`);
+    return (resp as any)?.data ?? [];
+  }
+
   // /employee-status-dropdown
   async getEmployeeStatusDropdown(search?: string): Promise<any[]> {
     const qs = search ? `?search=${encodeURIComponent(search)}` : '';

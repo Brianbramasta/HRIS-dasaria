@@ -42,7 +42,7 @@ const columns: DataTableColumn<BirthdayRow>[] = [
       'Mengundurkan Diri': 'bg-violet-100 text-violet-700',
     };
     return (
-      <span className={`inline-flex items-center justify-center rounded-full px-3 py-1 text-xs font-semibold ${map[val]}`}>{val}</span>
+      <span className={`status-styling items-center justify-center rounded-full text-xs font-semibold ${map[val]}`}>{val}</span>
     );
   } },
   { id: 'kategoriKaryawan', label: 'Kategori Karyawan', sortable: true },
@@ -67,7 +67,7 @@ export default function TableUlangtahun() {
   const rows = useMemo(() => sampleRows.map((r, idx) => ({ ...r, no: idx + 1 })), []);
   return (
     <DataTable
-      title="Yang Ulang Tahun Bulan ini"
+      title="🎂 Yang Ulang Tahun Bulan ini"
       data={rows}
       columns={columns}
       pageSize={10}

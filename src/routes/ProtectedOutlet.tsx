@@ -18,7 +18,7 @@ export default function ProtectedOutlet() {
   // Role-based access via centralized policy
   const path = location.pathname;
   if (!canAccessRoute(user?.role, path)) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   return <Outlet />;

@@ -27,7 +27,7 @@ const navItems: NavItem[] = [
   {
     icon: <CalenderIcon />,
     name: "Dashboard",
-    path: "/",
+    path: "/dashboard",
   },{
     icon: <> {iconStrukturOrganisasi({ size: 16 })} </>,
     name: "Struktur dan Organisasi",
@@ -331,7 +331,7 @@ const AppSidebar: React.FC = () => {
           !isExpanded && !isHovered ? "lg:justify-center" : "justify-center"
         }`}
       >
-        <Link to="/">
+        <Link to="/dashboard">
           {isExpanded || isHovered || isMobileOpen ? (
             <>
               <img

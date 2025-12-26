@@ -15,7 +15,8 @@ export default function SocialEmergencyCard({ personalInformation }: Props) {
   const { isOpen, openModal, closeModal } = useModal(false);
   
   // Extract social media and emergency contact data from social_media array
-  const socialEmergencyData = personalInformation?.social_media[0] || {};
+  const socialEmergencyData = personalInformation[0] || {};
+  console.log('socialEmergencyData', socialEmergencyData);
   
   const initialData: MediaSosialForm = {
     facebook: socialEmergencyData.facebook_name || '',

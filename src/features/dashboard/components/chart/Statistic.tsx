@@ -58,7 +58,7 @@ export default function Statistik() {
       series={series}
       categories={categories}
       colors={["#2a31d8", "#c2d6ff"]}
-      curve="smooth"
+      // curve="smooth"
       tabOptions={tabOptions}
       selectedTab={period}
       onTabChange={(id) => setPeriod(id as typeof period)}

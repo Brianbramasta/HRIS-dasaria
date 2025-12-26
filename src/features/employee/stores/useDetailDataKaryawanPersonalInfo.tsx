@@ -4,7 +4,7 @@ import { employeeMasterDataService } from '@/features/employee/services/Employee
 interface PersonalInfoDetail {
   Data_Pribadi: any;
   Data_Pendidikan: any;
-  Data_Sosial_media: any;
+  Data_Social_Media: any;
   Data_Employment_Posisi: any;
   Data_Keuangan: any;
   Data_BPJS: any;
@@ -29,7 +29,7 @@ export const useDetailDataKaryawanPersonalInfo = create<DetailDataKaryawanPerson
       try {
         set({ loading: true, error: null });
         const res = await employeeMasterDataService.getEmployeeDetailPersonal(employeeId);
-        console.log('res.data', res);
+        console.log('res.data', res.data.Data_Social_Media[0]);
         set({ detail: res.data, loading: false });
       } catch (err) {
         const msg = err instanceof Error ? err.message : 'Gagal memuat detail karyawan';

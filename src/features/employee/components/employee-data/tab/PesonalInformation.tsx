@@ -34,7 +34,7 @@ export default function PesonalInformationTab({ employeeId }: Props) {
     <div className="space-y-6">
       <PersonalDataCard data={detail.Data_Pribadi} />
       <EducationalBackgroundCard education={detail.Data_Pendidikan} />
-      <SocialEmergencyCard personalInformation={detail.Data_Sosial_media} />
+      <SocialEmergencyCard personalInformation={detail.Data_Social_Media} />
       <EmployeeDataCard data={detail.Data_Employment_Posisi} />
       <SalaryCard financeAndCompliance={detail.Data_Keuangan} />
       <BPJSCard financeAndCompliance={detail.Data_BPJS} />

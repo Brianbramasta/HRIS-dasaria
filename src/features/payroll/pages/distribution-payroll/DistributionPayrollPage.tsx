@@ -1,6 +1,6 @@
 // Dokumentasi: Halaman Distribusi Gaji menggunakan skema Tabs + Outlet (mirip PeriodePenggajianPage)
 import { Outlet, useLocation } from 'react-router-dom';
-import Tabs from '@/features/structure-and-organize/components/Tabs';
+import Tabs from '@/components/shared/Tabs';
 
 export default function DistribusiGajiPage() {
   const location = useLocation();

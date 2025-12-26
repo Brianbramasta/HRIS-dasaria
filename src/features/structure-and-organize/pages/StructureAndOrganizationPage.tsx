@@ -1,5 +1,5 @@
 import { Outlet, useLocation } from 'react-router-dom';
-import Tabs from '../components/Tabs';
+import Tabs from '../../../components/shared/Tabs';
 
 
 

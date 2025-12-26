@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { contractService, type ContractData, type CreateContractPayload } from '../../../services/detail/ContractService';
 
+import { employeeMasterDataService } from '../../../services/EmployeeMasterData.service';
 import { addNotification } from '@/stores/notificationStore';
 
 export interface UseContractOptions {
@@ -16,6 +17,49 @@ export interface UseContractReturn {
   fetchContractData: () => Promise<void>;
   createContract: (payload: CreateContractPayload) => Promise<boolean>;
   refresh: () => Promise<void>;
+}
+
+export function getContractForEdit(employeeId: string) {
+  return contractService.getContractForEdit(employeeId);
+}
+
+export function getContractEndStatusDropdown(employeeId: string) {
+  return employeeMasterDataService.getContractEndStatusDropdown(employeeId);
+}
+
+// edit
+// /api/employee-master-data/employees/{id}/update-contract/{contractId}
+export interface UpdateContractPayload extends FormData {
+  contract_status_id?: string;
+  contract_end_status_id?: string;
+  note_for_resign?: string;
+  file_for_resign?: File;
+}
+export async function updateContract(
+  employeeId: string,
+  contractId: string,
+  payload: UpdateContractPayload
+) {
+  try {
+    console.log('Updating contract with payload:', payload);
+    const response = await contractService.updateContract(employeeId, contractId, payload);
+    addNotification({
+      title: 'Success',
+      description: 'Contract updated successfully',
+      variant: 'success',
+      hideDuration: 5000,
+    });
+    return response;
+  } catch (err: any) {
+    const errorMessage = err?.message || 'Failed to update contract';
+    addNotification({
+      title: 'Error',
+      description: errorMessage,
+      variant: 'error',
+      hideDuration: 5000,
+    });
+    throw err;
+  }
 }
 
 export function useContract({ employeeId, autoFetch = true }: UseContractOptions): UseContractReturn {
