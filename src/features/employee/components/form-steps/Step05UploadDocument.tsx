@@ -17,7 +17,7 @@ export const Step05UploadDocument: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Berkas / Dokumen</h3>
+        <h4 className="text-lg font-semibold text-gray-500 dark:text-white mb-4">Berkas / Dokumen</h4>
         <div className="">
           <div className="space-y-3">
             {rows.map((row, idx) => (
@@ -66,7 +66,7 @@ export const Step05UploadDocument: React.FC = () => {
       </div>
 
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Daftar Dokumen</h3>
+        <h4 className="text-lg font-semibold text-gray-500 dark:text-white mb-4">Daftar Dokumen</h4>
         {(
           (step4?.documents || []).length > 0
         ) ? (

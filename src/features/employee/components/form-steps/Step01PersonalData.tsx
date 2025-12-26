@@ -21,9 +21,9 @@ export const Step01PersonalData: React.FC = () => {
     <div className="space-y-6">
       {/* Personal Data Section */}
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <h4 className="text-lg font-semibold text-gray-500 dark:text-white mb-4">
           Personal Data
-        </h3>
+        </h4>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Nama Lengkap */}

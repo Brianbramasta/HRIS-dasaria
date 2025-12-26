@@ -11,6 +11,7 @@ export interface ContractSummary {
   sisa_kontrak: string;
   kontrak_ke: number;
   status_berakhir: string;
+  kontrak_aktif?: string;
 }
 
 export interface ContractHistoryItem {

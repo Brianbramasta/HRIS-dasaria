@@ -205,12 +205,12 @@ export function DataTable<T = any>({
     <div className={`rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900 ${className}`}>
       <div className=" border-gray-200 p-6 dark:border-gray-800">
         {isNewLine && title && (
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{title}</h2>
+          <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-0">{title}</h4>
         )}
         {/* Dokumentasi: Bar atas dengan layout kiri (input/Select) dan kanan (tombol) */}
         <div className="flex flex-col items-start gap-1 md:items-center md:justify-between md:gap-3 md:flex-row mb-4 ">
           {!isNewLine && title && (
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{title}</h2>
+            <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-0">{title}</h4>
           )}
           <div className="flex-1 min-w-0">
             {toolbarLeftSlotAtas}

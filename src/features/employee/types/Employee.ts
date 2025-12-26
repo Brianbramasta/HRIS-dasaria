@@ -1,7 +1,7 @@
 export interface Karyawan {
   // Core Identity
   id: string;
-  idKaryawan: string;
+  idKaryawan?: string;
   employee_id?: string;
   name: string;
   full_name?: string; // API field
@@ -62,6 +62,7 @@ export interface Karyawan {
   resignation_status?: string | null; // API field
   kategori?: string;
   employee_category?: number | string; // API field
+  contract_remaining?: number | string |null;
   
   // Access & Permissions
   posisiAccess?: string;
@@ -215,9 +216,7 @@ export interface EmployeeListItem {
   avatar?: string | null;
   birth_date?: string;
   company?: string;
-  contract_remaining_days?: number | null;
-  contract_remaining_months?: number | null;
-  contract_remaining_status?: string;
+  contract_remaining?: number | null;
   department?: string;
   directorate?: string;
   division?: string;

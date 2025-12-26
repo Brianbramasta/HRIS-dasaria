@@ -61,19 +61,20 @@ export default function FormulirKaryawanPage() {
       <div className=" mx-auto">
         {/* Page Title */}
         <h1 className="text-xl font-bold text-gray-900 dark:text-white mb-8">
-          {isAuthenticated ? 'Tambah Data Karyawan' : 'Form Pendaftaran Karyawan (Public)'}
+          {isAuthenticated ? 'Tambah Data Karyawan' : 'Form Pendaftaran Karyawan'}
         </h1>
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 sm:p-8 mb-4">
             {/* Progress Bar */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col items-start gap-4 md:gap-0 md:items-center md:justify-between md:flex-row">
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Langkah {currentStep} dari {totalSteps}</p>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white">{(isAuthenticated ? TITLES_WITH_LOGIN : TITLES_PUBLIC)[currentStep - 1]}</h3>
+              <h5 className="text-sm text-gray-500 dark:text-gray-400">Langkah {currentStep} dari {totalSteps}</h5>
+              <h3 className=" text-gray-900 dark:text-white">{(isAuthenticated ? TITLES_WITH_LOGIN : TITLES_PUBLIC)[currentStep - 1]}</h3>
             </div>
-            <div className="w-1/2">
-              <ProgressBarWithOutsideLabel percent={Math.round((currentStep / totalSteps) * 100)} />
+            <div className="w-full md:w-1/2">
+              <ProgressBarWithOutsideLabel percent={Math.round((currentStep / totalSteps) * 100)} parentClass={'justify-end'} />
             </div>
           </div>
+            <div  className="mt-4  text-gray-700 dark:text-gray-300 text-justify">Selamat datang! Silakan lengkapi data pribadi Anda untuk mempercepat proses pendaftaran. Kami menjamin kerahasiaan informasi Anda hanya akan digunakan untuk keperluan administrasi internal perusahaan.</div>
         </div>
 
         {/* Main Card */}

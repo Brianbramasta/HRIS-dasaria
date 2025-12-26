@@ -12,23 +12,55 @@ import { formatDateToIndonesian } from '@/utils/formatDate';
 
 
 // Helper function for rendering remaining contract badge
-const renderSisaKontrakBadge = (tanggalBerakhir: string | undefined) => {
-  if (!tanggalBerakhir) {
+const renderSisaKontrakBadge = (sisaKontrak: string | undefined) => {
+  console.log('sisaKontrak:', sisaKontrak);
+  if (!sisaKontrak) {
     return <span className="status-styling rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-800">-</span>;
   }
 
-  const endDate = new Date(tanggalBerakhir);
-  const today = new Date();
-  const diffTime = endDate.getTime() - today.getTime();
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  const sisaKontrakStr = sisaKontrak.toString().toLowerCase().trim();
 
-  if (diffDays < 0) {
-    return <span className="status-styling rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-800">Berakhir</span>;
-  } else if (diffDays <= 30) {
-    return <span className="status-styling rounded-full bg-yellow-100 px-3 py-1 text-xs font-medium text-yellow-800">{diffDays} hari</span>;
+  // Determine badge color based on the value
+  let bgClass = '';
+  let textClass = '';
+
+  if (sisaKontrakStr === 'berakhir') {
+    // Merah = Berakhir
+    bgClass = 'bg-red-100';
+    textClass = 'text-red-800';
+  } else if (sisaKontrakStr.includes('hari')) {
+    // Merah = Kurang dari 1 bulan (1-6 hari)
+    bgClass = 'bg-pink-100';
+    textClass = 'text-pink-800';
+  } else if (sisaKontrakStr.includes('minggu')) {
+    // Merah/Pink = Kurang dari 1 bulan (1-4 minggu)
+    bgClass = 'bg-pink-100';
+    textClass = 'text-pink-800';
+  } else if (sisaKontrakStr.includes('bulan')) {
+    // Extract bulan number to determine color
+    const match = sisaKontrakStr.match(/(\d+)/);
+    if (match) {
+      const bulanNum = parseInt(match[1]);
+      if (bulanNum <= 2) {
+        // Orange = 1-2 Bulan
+        bgClass = 'bg-orange-100';
+        textClass = 'text-orange-800';
+      } else if (bulanNum >= 3 && bulanNum <= 6) {
+        // Biru = 3-6 Bulan
+        bgClass = 'bg-blue-100';
+        textClass = 'text-blue-800';
+      } else if (bulanNum > 6) {
+        // Hijau = Lebih dari 6 Bulan
+        bgClass = 'bg-green-100';
+        textClass = 'text-green-800';
+      }
+    }
   } else {
-    return <span className="status-styling rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">{diffDays} hari</span>;
+    bgClass = 'bg-gray-300';
+    textClass = 'text-[#404040]';
   }
+
+  return <span className={`status-styling rounded-full px-3 py-1 text-xs font-medium ${bgClass} ${textClass}`}>{sisaKontrak}</span>;
 };
 
 // Helper function for employment status badge with color mapping
@@ -229,7 +261,7 @@ export default function DataKaryawanPage() {
       format: (value) => formatDateToIndonesian(value as string) || '-',
     },
     {
-      id: 'contract_remaining_status',
+      id: 'contract_remaining',
       label: 'Sisa Kontrak',
       minWidth: 130,
       sortable: false,
@@ -239,7 +271,7 @@ export default function DataKaryawanPage() {
         { label: '3–6 Bulan', value: '3_to_6_months' },
         { label: '> 6 Bulan', value: 'more_than_6_months' },
       ],
-      format: (_, row) => renderSisaKontrakBadge(row.end_date),
+      format: (value) => renderSisaKontrakBadge(value),
     },
     {
       id: 'company',

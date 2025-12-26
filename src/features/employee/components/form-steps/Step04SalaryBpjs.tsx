@@ -25,9 +25,9 @@ export const Step04SalaryBpjs: React.FC = () => {
     <div className="space-y-6">
       {/* Salary Section */}
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <h4 className="text-lg font-semibold text-gray-500 dark:text-white mb-4">
           Salary
-        </h3>
+        </h4>
         <div>
           {/* Bank */}
         {isAuthenticated &&  
@@ -113,9 +113,9 @@ export const Step04SalaryBpjs: React.FC = () => {
 
       {/* BPJS Section */}
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <h4 className="text-lg font-semibold text-gray-500 dark:text-white mb-4">
           BPJS
-        </h3>
+        </h4>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* No. BPJS Ketenagakerjaan */}

@@ -76,9 +76,7 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
       payroll_status: apiData.payroll_status || '-',
       employee_data_status: apiData.employee_data_status,
       employee_category: apiData.employee_category,
-      contract_remaining_days: apiData.contract_remaining_days,
-      contract_remaining_months: apiData.contract_remaining_months,
-      contract_remaining_status: apiData.contract_remaining_status,
+      contract_remaining: apiData.contract_remaining,
       
       // Access & Permissions
       user_access: apiData.user_access || undefined,

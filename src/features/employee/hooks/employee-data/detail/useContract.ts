@@ -35,6 +35,7 @@ export function useContract({ employeeId, autoFetch = true }: UseContractOptions
 
     try {
       const response = await contractService.getContractData(employeeId);
+      console.log('Fetched Contract Data:', response.data);
       setContractData(response.data);
     } catch (err: any) {
       const errorMessage = err?.message || 'Failed to fetch contract data';

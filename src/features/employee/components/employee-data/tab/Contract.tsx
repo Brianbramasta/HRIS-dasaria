@@ -9,6 +9,8 @@ import { useContract } from '@/features/employee/hooks/employee-data/detail/useC
 import type { ContractHistoryItem, CreateContractPayload } from '@/features/employee/services/detail/ContractService';
 import { formatUrlFile } from '@/utils/formatUrlFile';
 import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
+import PdfPreviewEmbed from '@/components/shared/modal/PdfPreviewEmbed';
+import { clearSkFile } from '@/stores/fileStore';
 
 interface Props {
   employeeId?: string;
@@ -54,6 +56,7 @@ export default function ContractTab({ employeeId: employeeIdProp, data }: Props)
     kontrakKe: 6,
     statusBerakhir: '-',
     deskripsi: '',
+    fileContractUrl: '',
   });
 
   const [rows, setRows] = useState<ContractHistoryItem[]>([]);
@@ -61,6 +64,7 @@ export default function ContractTab({ employeeId: employeeIdProp, data }: Props)
   // Update summary and rows when contract data is loaded
   useEffect(() => {
     if (contractData) {
+      console.log('Contract Data Loaded:', contractData);
       setSummary({
         namaLengkap: detail?.Data_Pribadi.full_name || '',
         statusKontrak: contractData.summary?.status_kontrak,
@@ -71,6 +75,7 @@ export default function ContractTab({ employeeId: employeeIdProp, data }: Props)
         kontrakKe: contractData.summary?.kontrak_ke,
         statusBerakhir: contractData.summary?.status_berakhir,
         deskripsi: '',
+        fileContractUrl: contractData.summary?.kontrak_aktif,
       });
       setRows(contractData.contracts);
     }
@@ -174,13 +179,14 @@ export default function ContractTab({ employeeId: employeeIdProp, data }: Props)
     <>
       <ComponentCard title="Kontrak">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-5">
-          {/* Left Image + Preview */}
+          {/* Left PDF Preview */}
           <div className="col-span-1">
-            <div className="rounded-xl overflow-hidden border border-gray-200 bg-gray-50">
-              <img src="/images/user/user-10.png" alt="Preview" className="w-full h-56 object-cover" />
-            </div>
+            <PdfPreviewEmbed 
+              fileUrl={summary?.fileContractUrl ? formatUrlFile(summary?.fileContractUrl as string) : undefined}
+              className="w-full h-56"
+            />
             <div className="mt-3 w-full flex justify-center">
-              <Button variant="primary" disabled={isLoading}>Pratinjau PDF</Button>
+              <Button variant="primary" onClick={() => window.open(formatUrlFile(summary?.fileContractUrl as string), '_blank')} disabled={summary?.fileContractUrl === null || summary?.fileContractUrl === undefined}>Pratinjau PDF</Button>
             </div>
           </div>
 
@@ -220,6 +226,7 @@ export default function ContractTab({ employeeId: employeeIdProp, data }: Props)
         onClose={() => {
           setModalOpen(false);
           setSelectedFile(null);
+          clearSkFile();
         }}
         onSubmit={handleSubmit}
         submitting={isSubmitting}

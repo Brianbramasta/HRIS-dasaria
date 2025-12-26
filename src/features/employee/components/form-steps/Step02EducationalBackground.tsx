@@ -29,7 +29,7 @@ export const Step02EducationalBackground: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Riwayat Pendidikan</h3>
+        <h4 className="text-lg font-semibold text-gray-500 dark:text-white mb-4">Riwayat Pendidikan</h4>
 
         <div className="space-y-4">
           {(step2.education || []).map((edu: EducationItem, index: number) => (
@@ -200,7 +200,7 @@ export const Step02EducationalBackground: React.FC = () => {
       </div>
 
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Media Sosial & Kontak Darurat</h3>
+        <h4 className="text-lg font-semibold text-gray-500 dark:text-white mb-4">Media Sosial & Kontak Darurat</h4>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>

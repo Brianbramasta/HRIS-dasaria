@@ -20,6 +20,7 @@ export type ContractEntry = {
   statusBerakhir: string;
   deskripsi?: string;
   fileName?: string;
+  fileContractUrl?: String;
 };
 
 interface ContractModalProps {
