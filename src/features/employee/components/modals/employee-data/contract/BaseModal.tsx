@@ -8,6 +8,7 @@ import FileInput from '@/components/shared/field/FileInput';
 import DatePicker from '@/components/form/date-picker';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 import LinkPreview from '@/components/shared/form/LinkPreview';
+import { formatUrlFile } from '@/utils/formatUrlFile';
 
 export type ContractEntry = {
   id?: string;
@@ -23,7 +24,8 @@ export type ContractEntry = {
   deskripsi?: string;
   fileName?: string;
   file_contract?: string;
-  catatan?: string;
+  note?: string;
+  file_end_contract?: string;
   dokumenBerakhir?: string;
   lamaBekerja?: string;
 };
@@ -45,6 +47,7 @@ interface BaseContractModalProps {
   showStatusBerakhir?: boolean;
   isLoading?: boolean;
   maxWidth?: string;
+  isEditStatusBerakhir?: boolean;
 }
 
 const defaultJenisKontrakOptions = [
@@ -69,6 +72,7 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
   showStatusBerakhir = false,
   isLoading = false,
   maxWidth = 'max-w-3xl',
+  isEditStatusBerakhir = false,
 }) => {
   const content = (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -98,26 +102,29 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
       </div>
 
       {/* TTD Kontrak Terakhir */}
-      <div>
+      <div className={form.contract_type === 'PKWTT' ? 'md:col-span-2' : ''}>
         <DatePicker
           id="last_contract_signed_date"
           label="TTD Kontrak Terakhir"
           placeholder="Pilih Tanggal"
           defaultDate={formatDateToIndonesian(form.last_contract_signed_date) || undefined}
           onChange={isReadonly ? () => {} : onDateChange('last_contract_signed_date')}
+          disabled={isReadonly}
         />
       </div>
 
       {/* Berakhir Kontrak */}
-      <div>
+     {form.contract_type !== 'PKWTT' && <div>
         <DatePicker
           id="end_date"
           label="Berakhir Kontrak"
           placeholder="Pilih Tanggal"
           defaultDate={formatDateToIndonesian(form.end_date) || undefined}
           onChange={isReadonly ? () => {} : onDateChange('end_date')}
+          disabled={isReadonly}
+          
         />
-      </div>
+      </div>}
 
       {/* Jenis Kontrak */}
       <div>
@@ -140,7 +147,7 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
           min="0"
           value={form.contract_number}
           onChange={(e) => onInputChange('contract_number', Number(e.target.value))}
-          readonly={isReadonly}
+          readonly={true}
         />
       </div>
 
@@ -153,7 +160,7 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
             placeholder="Select"
             defaultValue={form.contract_end_status_id}
             onChange={(v) => onInputChange('contract_end_status_id', v)}
-            disabled={isReadonly}
+            disabled={isReadonly  && !isEditStatusBerakhir}
           />
         </div>
       )}
@@ -161,15 +168,16 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
       {/* Dokumen Kontrak */}
       <div className="md:col-span-2">
         <Label>Dokumen Kontrak</Label>
-        {isReadonly ? (
+        {form.file_contract ? (
           <LinkPreview
             label="Lihat Detail"
-            url={form.file_contract ? String(form.file_contract) : undefined}
+            url={form.file_contract ? formatUrlFile(form.file_contract) : undefined}
           />
         ) : (
           <FileInput
             skFileName={form.fileName || ''}
             onChange={onFileChange || (() => {})}
+            isLabel={false}
           />
         )}
       </div>
@@ -181,16 +189,22 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
           <TextArea
             placeholder="Enter as description ..."
             rows={4}
-            value={form.catatan || ''}
-            onChange={(v) => onInputChange('catatan', v)}
-            disabled={isReadonly}
+            value={form.note || ''}
+            onChange={(v) => onInputChange('note', v)}
+            disabled={isReadonly && !isEditStatusBerakhir}
           />
         </div>
       )}
 
       {/* Unggah Dokumen Berakhir - hanya tampil saat edit mode dan Status Berakhir diisi */}
-      {showStatusBerakhir && form.contract_end_status_id && form.contract_end_status_id !== '' && !isReadonly && (
+      {showStatusBerakhir && form.contract_end_status_id && form.contract_end_status_id !== ''  && (
         <div className="col-span-2">
+          <Label>Dokumen Berakhir</Label>
+          {isReadonly && !isEditStatusBerakhir ?   (<LinkPreview
+            label="Lihat Detail"
+            url={form.file_end_contract ? formatUrlFile(form.file_end_contract) : undefined}
+            
+          /> ): (
           <FileInput
             skFileName={form.dokumenBerakhir || ''}
             onChange={(e) => {
@@ -202,8 +216,9 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
                 onFileChange?.(e);
               }
             }}
-            isLabel={true}
-          />
+            isLabel={false}
+          />)
+          }
         </div>
       )}
     </div>
@@ -218,6 +233,7 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
       handleSubmit={onSubmit}
       submitting={submitting || isLoading}
       maxWidth={maxWidth}
+      isSubmit={isReadonly && !isEditStatusBerakhir? false : true}
     />
   );
 };
