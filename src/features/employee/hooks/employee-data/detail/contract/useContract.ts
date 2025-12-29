@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo, type ReactNode } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { contractService, type ContractData, type CreateContractPayload } from '../../../../services/detail/ContractService';
 import type { ContractHistoryItem } from '../../../../services/detail/ContractService';
 import { addNotification } from '@/stores/notificationStore';
@@ -20,7 +20,7 @@ export type ContractEntry = {
   fileName?: string;
   file_contract?: string;
   note?: string;
-  file_end_contract?: string;
+  file_for_resign?: string;
   dokumenBerakhir?: string;
   lamaBekerja?: string;
 };
@@ -162,13 +162,15 @@ export function useAddSubmit(createContract: (payload: CreateContractPayload) =>
     }
 
     const payload: CreateContractPayload = {
-      contract_status: entry.contract_status_id,
+      contract_status_id: entry.contract_status_id,
       last_contract_signed_date: entry.last_contract_signed_date,
-      end_date: entry.contract_type === 'PKWT' ? entry.end_date : null,
       contract_type: entry.contract_type,
       contract_number: String(entry.contract_number),
       file_contract: selectedFile || new File([], ''),
     };
+    if (entry.contract_type === 'PKWT') {
+      payload.end_date = entry.end_date;
+    }
 
     const success = await createContract(payload);
     if (success) {
@@ -200,7 +202,7 @@ export function useEdit() {
       contract_end_status_name: data.contract_end_status_name,
       file_contract: data.file_contract,
       note: data.note,
-      file_end_contract: data.file_end_contract,
+      file_for_resign: data.file_for_resign,
     };
 
     return editingData;
@@ -255,7 +257,7 @@ export function useDetail() {
       contract_end_status_name: data.contract_end_status_name,
       file_contract: data.file_contract,
       note: data.note,
-      file_end_contract: data.file_end_contract,
+      file_for_resign: data.file_for_resign,
     };
 
     return detailData;

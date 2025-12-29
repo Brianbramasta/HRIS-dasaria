@@ -40,10 +40,11 @@ export interface ContractData {
 
 // Request Types
 export interface CreateContractPayload {
-  contract_status: number; // 1=active, 2=inactive, 3=probation, 4=resigned
+  contract_status?: string; // 1=active, 2=inactive, 3=probation, 4=resigned
+  contract_status_id: string; // 1=active, 2=inactive, 3=probation, 4=resigned
   last_contract_signed_date: string; // YYYY-MM-DD
-  end_date: string; // YYYY-MM-DD
-  contract_type: number; // 1=PKWT, 2=PKWTT
+  end_date?: string; // YYYY-MM-DD
+  contract_type: string; // 1=PKWT, 2=PKWTT
   contract_number: string;
   file_contract: File;
 }
@@ -109,14 +110,14 @@ class ContractService {
    */
   async getContractStatusDropdown(search?: string): Promise<ContractStatusDropdownItem[]> {
     const qs = search ? `?search=${encodeURIComponent(search)}` : '';
-    const resp = await apiService.get<ContractStatusDropdownItem[]>(`${this.basePath}/employees/contract-status-dropdown${qs}`);
+    const resp = await apiService.get<ContractStatusDropdownItem[]>(`${this.basePath}/contract-status-dropdown${qs}`);
     return (resp as any)?.data ?? [];
   }
 
-   // /api/employee-master-data/employees/contract-end-status-dropdown
+   // /api/employee-master-data/contract-end-status-dropdown
   async getContractEndStatusDropdown(search?: string): Promise<any[]> {
     const qs = search ? `?search=${encodeURIComponent(search)}` : '';
-    const resp = await apiService.get<any[]>(`${this.basePath}/employees/contract-end-status-dropdown${qs}`);
+    const resp = await apiService.get<any[]>(`${this.basePath}/contract-end-status-dropdown${qs}`);
     return (resp as any)?.data ?? [];
   }
   /**
@@ -129,17 +130,18 @@ class ContractService {
     employeeId: string,
     payload: CreateContractPayload
   ): Promise<ApiResponse<CreateContractResponse>> {
-    const formData = new FormData();
-    formData.append('contract_status', payload.contract_status.toString());
-    formData.append('last_contract_signed_date', payload.last_contract_signed_date);
-    formData.append('end_date', payload.end_date);
-    formData.append('contract_type', payload.contract_type.toString());
-    formData.append('contract_number', payload.contract_number);
-    formData.append('file_contract', payload.file_contract);
+    // const formData = new FormData();
+    // formData.append('contract_status_id', payload.contract_status.toString());
+    // formData.append('last_contract_signed_date', payload.last_contract_signed_date);
+    // formData.append('end_date', payload.end_date);
+    // formData.append('contract_type', payload.contract_type.toString());
+    // formData.append('contract_number', payload.contract_number);
+    // formData.append('file_contract', payload.file_contract);
+    
 
     return apiService.post<CreateContractResponse>(
       `${this.basePath}/${employeeId}/kontrak`,
-      formData,
+      payload,
       {
         headers: { 'Content-Type': 'multipart/form-data' },
       }

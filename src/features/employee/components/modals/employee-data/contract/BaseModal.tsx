@@ -25,7 +25,7 @@ export type ContractEntry = {
   fileName?: string;
   file_contract?: string;
   note?: string;
-  file_end_contract?: string;
+  file_for_resign?: string;
   dokumenBerakhir?: string;
   lamaBekerja?: string;
 };
@@ -202,7 +202,7 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
           <Label>Dokumen Berakhir</Label>
           {isReadonly && !isEditStatusBerakhir ?   (<LinkPreview
             label="Lihat Detail"
-            url={form.file_end_contract ? formatUrlFile(form.file_end_contract) : undefined}
+            url={form.file_for_resign ? formatUrlFile(form.file_for_resign) : undefined}
             
           /> ): (
           <FileInput
