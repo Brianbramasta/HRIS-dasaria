@@ -27,7 +27,7 @@ import PerpanjangKontrakEdit from "../features/employee/pages/contract-renewal/c
 import DataKaryawanPelanggaran from "../features/employee/components/employee-data/tab/Fraud";
 import OrganizationHistoryPage from "../features/employee/pages/organization-history/OrganizationHistoryPage";
 import OrganizationHistoryAtasanPage from "../features/employee/pages/organization-history/OrganizationHistoryAtasanPage";
-import DashboardPage from "@/features/dashboard/pages/index";
+import DashboardPage from "@/features/dashboard/pages/Index";
 import Dashboard from "@/features/dashboard/pages/tab/Dashboard";
 import Notification from "@/features/dashboard/pages/tab/Notification";
 // import DaftarPenggajianPage from "@/features/penggajian/pages/daftarPenggajianPage";
@@ -66,6 +66,10 @@ import DashboardPenggajianPage from "@/features/payroll/pages/dashboard-payroll/
 
 import ApprovalPeriodeGajianPage from "@/features/payroll/pages/payroll-period-approval/PayrollPeriodApprovalPage";
 import DistribusiGajiPage from "@/features/payroll/pages/distribution-payroll/DistributionPayrollPage";
+// Dokumentasi: Import tab untuk Distribusi Gaji
+import NonAEDistributionTab from "@/features/payroll/pages/distribution-payroll/tab/NonAEPages";
+import AEDistributionTab from "@/features/payroll/pages/distribution-payroll/tab/AEPages";
+import PKLDistributionTab from "@/features/payroll/pages/distribution-payroll/tab/PKLPages";
 import JenisPengajuanPage from "@/features/submission-type/pages/SubmissionPage";
 
 
@@ -163,19 +167,13 @@ export default function AppRoutes() {
             <Route path="detail-pkl/:id" element={<DetailGajiPKLPage />} />
           </Route>
           
-          {/* // Dokumentasi: Nested route untuk Distribusi Gaji dengan empat tab */}
+          {/* // Dokumentasi: Nested route untuk Distribusi Gaji dengan tiga tab */}
           <Route path="/salary-distribution" element={<DistribusiGajiPage />}>
             {/* Dokumentasi: index default Non-AE untuk /salary-distribution */}
-            <Route index element={<NonAETab />} />
-            <Route path="non-ae" element={<NonAETab />} />
-            <Route path="ae" element={<AETab />} />
-            <Route path="pkl" element={<PKLTab />} />
-            <Route path="thr" element={<THRTab />} />
-            {/* detail distribusi */}
-            <Route path="detail-ae/:id" element={<DetailGajiAEPage />} />
-            <Route path="detail-non-ae/:id" element={<DetailGajiNonAEPage />} />
-            <Route path="detail-thr/:id" element={<DetailGajiTHRPage />} />
-            <Route path="detail-pkl/:id" element={<DetailGajiPKLPage />} />
+            <Route index element={<NonAEDistributionTab />} />
+            <Route path="non-ae" element={<NonAEDistributionTab />} />
+            <Route path="ae" element={<AEDistributionTab />} />
+            <Route path="pkl" element={<PKLDistributionTab />} />
           </Route>
           
           <Route path="/employee-data" element={<DataKaryawanIndexPage />} />

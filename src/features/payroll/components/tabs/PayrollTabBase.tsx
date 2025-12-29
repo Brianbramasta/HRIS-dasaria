@@ -18,6 +18,7 @@ type Props<TRow extends BaseRow> = {
   title?: string;
   onDetailNavigation?: (id: string) => void;
   toolbarRightSlot?: React.ReactNode;
+  customActions?: DataTableAction<TRow>[];
 };
 
 export default function PenggajianTabBase<TRow extends BaseRow>({
@@ -28,6 +29,7 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
   title = 'Periode Gajian',
   onDetailNavigation,
   toolbarRightSlot,
+  customActions,
 }: Props<TRow>) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -79,24 +81,29 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
     return [selectCol, ...baseColumns];
   }, [isApprovalPage, isDistribusiPage, selected, baseColumns, rows, allChecked]);
 
-  const actions: DataTableAction<TRow>[] = [
-    {
-      label: '',
-      icon: <Edit />,
-      onClick: (row) => {
-        const id = (row as BaseRow).idKaryawan;
-        if (onDetailNavigation) {
-          onDetailNavigation(id);
-        } else {
-          navigate(`${detailPathPrefix}/${id}`);
-        }
+  const actions: DataTableAction<TRow>[] = useMemo(() => {
+    // Dokumentasi: jika ada custom actions, gunakan itu, jika tidak gunakan default actions
+    if (customActions) return customActions;
+
+    return [
+      {
+        label: '',
+        icon: <Edit />,
+        onClick: (row) => {
+          const id = (row as BaseRow).idKaryawan;
+          if (onDetailNavigation) {
+            onDetailNavigation(id);
+          } else {
+            navigate(`${detailPathPrefix}/${id}`);
+          }
+        },
+        variant: 'outline',
+        className: 'border-0',
       },
-      variant: 'outline',
-      className: 'border-0',
-    },
-    // Dokumentasi: tombol hapus membuka modal konfirmasi
-    { label: '', icon: <Trash />, onClick: (row) => { setRowToDelete(row as TRow); setShowDelete(true); }, variant: 'outline', className: 'border-0', color: 'error' },
-  ];
+      // Dokumentasi: tombol hapus membuka modal konfirmasi
+      { label: '', icon: <Trash />, onClick: (row) => { setRowToDelete(row as TRow); setShowDelete(true); }, variant: 'outline', className: 'border-0', color: 'error' },
+    ];
+  }, [customActions, navigate, detailPathPrefix, onDetailNavigation]);
 
   const toolbarRightSlotAtas = isApprovalPage
     ? (<>
