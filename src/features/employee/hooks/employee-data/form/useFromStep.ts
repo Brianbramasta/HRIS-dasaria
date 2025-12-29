@@ -8,7 +8,7 @@ import { DocumentItem, EducationItem } from '../../../types/FormEmployee';
 // NOTE: The hooks below centralize business logic used across form steps 1-5.
 // Each exported hook includes a comment indicating which form step(s) use it.
 
-export const usePTKPDropdown = () => {
+export const usePTKPDropdown = (isOpen?: boolean) => {
   const [ptkpOptions, setPtkpOptions] = useState<{ value: string; label: string }[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -30,8 +30,10 @@ export const usePTKPDropdown = () => {
   };
 
   useEffect(() => {
-    fetchPTKPOptions();
-  }, []);
+    if (isOpen) {
+      fetchPTKPOptions();
+    }
+  }, [isOpen]);
 
   return {
     ptkpOptions,
@@ -158,7 +160,7 @@ export const useStep2Data = () => {
 };
 
 // digunakan di form 3
-export const useStep3Data = () => {
+export const useStep3Data = (isOpen?: boolean) => {
   const [companyOptions, setCompanyOptions] = useState<any[]>([]);
   const [officeOptions, setOfficeOptions] = useState<any[]>([]);
   const [directorateOptions, setDirectorateOptions] = useState<any[]>([]);
@@ -210,6 +212,9 @@ export const useStep3Data = () => {
   }, [jobTitleOptions, step3.jabatan]);
 
   useEffect(() => {
+    // Hanya fetch ketika modal dibuka atau ketika isOpen tidak didefinisikan (untuk form)
+    if (isOpen === false) return;
+
     const fetchInitialData = async () => {
       try {
         const kategori = await getEmployeeCategoryDropdownOptions();
@@ -237,7 +242,7 @@ export const useStep3Data = () => {
       }
     };
     fetchInitialData();
-  }, []);
+  }, [isOpen]);
 
   // divisions when directorate changes
   useEffect(() => {
@@ -300,14 +305,16 @@ export const useStep3Data = () => {
 };
 
 // digunakan di form 4
-export const useStep4Data = () => {
+export const useStep4Data = (isOpen?: boolean) => {
   const [bankOptions, setBankOptions] = useState<any[]>([]);
 
   useEffect(() => {
+    if (isOpen === false) return;
+    
     let mounted = true;
     getBankDropdownOptions().then((opts:any) => { if (mounted) setBankOptions(opts); }).catch(() => {});
     return () => { mounted = false; };
-  }, []);
+  }, [isOpen]);
 
   return { bankOptions };
 };

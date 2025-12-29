@@ -452,7 +452,7 @@ export function useContractTab({ employeeIdProp, data }: UseContractTabProps): U
     if (contractData) {
       console.log('Contract Data Loaded:', contractData);
       setSummary({
-        full_name: detail?.Data_Pribadi.full_name || '',
+        full_name: detail?.Personal_Data?.full_name || '',
         contract_status_id: contractData.summary?.contract_status_id || '',
         contract_status_name: contractData.summary?.status_kontrak,
         last_contract_signed_date: contractData.summary?.ttd_kontrak_terakhir,

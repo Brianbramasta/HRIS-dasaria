@@ -8,6 +8,11 @@ import DatePicker from '@/components/form/date-picker';
 import FileInput from '@/components/form/input/FileInput';
 import { Plus, Trash2 } from 'react-feather';
 import type { EducationItem as EducationItemType } from '@/features/employee/types/FormEmployee';
+import { JENIS_PENDIDIKAN_OPTIONS } from '@/features/employee/utils/EmployeeMappings';
+import { getEducationDropdownOptions } from '@/features/employee/hooks/employee-data/form/useFormulirKaryawan';
+import Button from '@/components/ui/button/Button';
+import { iconPlus as IconPlus } from '@/icons/components/icons';
+import { formatDateToIndonesian, formatDateToISO, formatIndonesianToISO } from '@/utils/formatDate';
 
 // Tipe form lokal untuk modal pendidikan (tanpa media sosial)
 export type EducationModalForm = {
@@ -21,21 +26,6 @@ interface Props {
   onSubmit: (data: EducationModalForm) => void;
   submitting?: boolean;
 }
-
-const JENJANG_OPTIONS = [
-  { label: 'SD/MI', value: 'SD' },
-  { label: 'SMP/MTs', value: 'SMP' },
-  { label: 'SMA/SMK/MA', value: 'SMA' },
-  { label: 'Diploma (D3)', value: 'D3' },
-  { label: 'Sarjana (S1)', value: 'S1' },
-  { label: 'Magister (S2)', value: 'S2' },
-  { label: 'Doktor (S3)', value: 'S3' },
-];
-
-const JENIS_PENDIDIKAN_OPTIONS = [
-  { label: 'Pendidikan Formal', value: 'formal' },
-  { label: 'Pendidikan Non-Formal', value: 'non-formal' },
-];
 
 // Default satu baris data pendidikan
 const defaultEduRow: EducationItemType = {
@@ -62,6 +52,7 @@ const emptyForm: EducationModalForm = {
 const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSubmit, submitting = false }) => {
   // State form pendidikan
   const [form, setForm] = useState<EducationModalForm>(emptyForm);
+  const [pendidikanOptions, setPendidikanOptions] = useState<any[]>([]);
   const title = useMemo(() => 'Edit Riwayat Pendidikan', []);
 
   // Inisialisasi data ketika modal dibuka/initialData berubah
@@ -71,8 +62,30 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
     setForm({ ...base, education: ensuredEducation });
   }, [initialData, isOpen]);
 
+  // Fetch pendidikan options dari API hanya saat modal dibuka
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    let mounted = true;
+    getEducationDropdownOptions()
+      .then((opts: any) => {
+        if (mounted) setPendidikanOptions(opts);
+      })
+      .catch(() => {});
+    return () => {
+      mounted = false;
+    };
+  }, [isOpen]);
+
   // Handler update field pendidikan per baris
   const updateEducationField = (index: number, field: keyof EducationItemType, value: any) => {
+
+    
+    if (field === 'tanggalPenerbitan' || field === 'tanggalKedaluwarsa') {
+      // Jika perlu format khusus, lakukan di sini
+      value = formatIndonesianToISO(value);
+    }
+    console.log('Updating education field:', { index, field, value });
     setForm((prev) => {
       const next = [...prev.education];
       next[index] = { ...next[index], [field]: value } as EducationItemType;
@@ -111,35 +124,39 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
             <div className="flex gap-4" key={idx}>
               <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end flex-1">
                 {/* Jenis Pendidikan */}
-                <div className="md:col-span-5">
-                  <Label>Jenis Pendidikan</Label>
-                  <Select
-                    options={JENIS_PENDIDIKAN_OPTIONS}
-                    defaultValue={edu.jenisPendidikan ?? 'formal'}
-                    onChange={(value) => updateEducationField(idx, 'jenisPendidikan', value)}
-                    placeholder="Pilih jenis"
-                  />
-                </div>
-                <div className="md:col-span-1 flex md:justify-end items-end">
-                  {idx === 0 ? (
-                    <button
-                      type="button"
-                      onClick={addEducationRow}
-                      className="h-10 w-10 rounded-lg bg-emerald-600 text-white flex items-center justify-center"
-                      title="Tambah Pendidikan"
-                    >
-                      <Plus size={18} />
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => removeEducationRow(idx)}
-                      className="h-10 w-10 rounded-lg bg-red-600 text-white flex items-center justify-center"
-                      title="Hapus Pendidikan"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  )}
+                <div className="md:col-span-6 flex w-full gap-5">
+                  <div className="w-full">
+                    <Label>Jenis Pendidikan</Label>
+                    <Select
+                      options={JENIS_PENDIDIKAN_OPTIONS}
+                      defaultValue={edu.jenisPendidikan ?? 'formal'}
+                      onChange={(value) => updateEducationField(idx, 'jenisPendidikan', value)}
+                      placeholder="Pilih jenis"
+                    />
+                  </div>
+                  <div className="md:col-span-1 flex md:justify-end items-end">
+                    {idx === 0 ? (
+                      <Button
+                        onClick={addEducationRow}
+                        variant="custom"
+                        size="custom"
+                        className="bg-emerald-500 text-white ring-1 ring-inset ring-emerald-500 hover:bg-emerald-600 h-10 w-10 p-0 flex items-center justify-center"
+                        aria-label="Tambah Pendidikan"
+                      >
+                        <IconPlus size={24} />
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={() => removeEducationRow(idx)}
+                        variant="custom"
+                        size="custom"
+                        className="bg-red-500 text-white ring-1 ring-inset ring-red-500 hover:bg-red-600 h-10 w-10 p-0 flex items-center justify-center"
+                        aria-label="Hapus Pendidikan"
+                      >
+                        <Trash2 size={18} />
+                      </Button>
+                    )}
+                  </div>
                 </div>
 
                 {/* Field Formal */}
@@ -148,7 +165,7 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
                     <div className="md:col-span-2">
                       <Label>Jenjang</Label>
                       <Select
-                        options={JENJANG_OPTIONS}
+                        options={pendidikanOptions}
                         defaultValue={edu.jenjang}
                         onChange={(value) => updateEducationField(idx, 'jenjang', value)}
                         placeholder="Select"
@@ -173,6 +190,7 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
                     <div className="md:col-span-2">
                       <Label>Nilai Pendidikan Terakhir</Label>
                       <InputField
+                        type="number"
                         placeholder="Masukkan nilai"
                         value={edu.nilaiPendidikan}
                         onChange={(e) => updateEducationField(idx, 'nilaiPendidikan', e.target.value)}
@@ -189,6 +207,7 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
                     <div className="md:col-span-2">
                       <Label>Tahun Lulus</Label>
                       <InputField
+                        type="number"
                         placeholder="Masukkan tahun lulus"
                         value={edu.tahunLulus}
                         onChange={(e) => updateEducationField(idx, 'tahunLulus', e.target.value)}

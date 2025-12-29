@@ -6,6 +6,9 @@ import Select from '@/components/form/Select';
 import TextArea from '@/components/form/input/TextArea';
 import DatePicker from '@/components/form/date-picker';
 import FileInput from '@/components/form/input/FileInput';
+import {  JENIS_KELAMIN_OPTIONS, STATUS_MENIKAH_OPTIONS, GOLONGAN_DARAH_OPTIONS, TANGGUNGAN_OPTIONS } from '@/features/employee/utils/EmployeeMappings';
+import { getReligionDropdownOptions, getEducationDropdownOptions } from '@/features/employee/hooks/employee-data/form/useFormulirKaryawan';
+import { UpdatePersonalDataPayload } from '@/features/employee/services/detail/PersonalInformationService';
 
 export type PersonalDataForm = {
   idKaryawan?: string;
@@ -24,6 +27,7 @@ export type PersonalDataForm = {
   alamatKtp?: string;
   agama?: string;
   fotoProfil?: File | null;
+  avatarUrl?: string;
 };
 
 interface PersonalDataModalProps {
@@ -32,6 +36,7 @@ interface PersonalDataModalProps {
   onClose: () => void;
   onSubmit: (data: PersonalDataForm) => void;
   submitting?: boolean;
+  employeeId?: string;
 }
 
 const emptyForm: PersonalDataForm = {
@@ -51,58 +56,34 @@ const emptyForm: PersonalDataForm = {
   alamatKtp: '',
   agama: '',
   fotoProfil: null,
+  avatarUrl: '',
 };
 
-const AGAMA_OPTIONS = [
-  { label: 'Islam', value: 'Islam' },
-  { label: 'Kristen', value: 'Kristen' },
-  { label: 'Katolik', value: 'Katolik' },
-  { label: 'Hindu', value: 'Hindu' },
-  { label: 'Buddha', value: 'Buddha' },
-  { label: 'Konghucu', value: 'Konghucu' },
-];
-
-const JK_OPTIONS = [
-  { label: 'Perempuan', value: 'Perempuan' },
-  { label: 'Laki-laki', value: 'Laki-laki' },
-];
-
-const GOL_DARAH_OPTIONS = [
-  { label: 'A', value: 'A' },
-  { label: 'B', value: 'B' },
-  { label: 'AB', value: 'AB' },
-  { label: 'O', value: 'O' },
-];
-
-const PENDIDIKAN_OPTIONS = [
-  { label: 'SD', value: 'SD' },
-  { label: 'SMP', value: 'SMP' },
-  { label: 'SMA/SMK', value: 'SMA' },
-  { label: 'D3', value: 'D3' },
-  { label: 'S1', value: 'S1' },
-  { label: 'S2', value: 'S2' },
-];
-
-const STATUS_MENIKAH_OPTIONS = [
-  { label: 'Belum Menikah', value: 'Belum Menikah' },
-  { label: 'Menikah', value: 'Menikah' },
-];
-
-const TANGGUNGAN_OPTIONS = [
-  { label: '0', value: '0' },
-  { label: '1', value: '1' },
-  { label: '2', value: '2' },
-  { label: '3', value: '3' },
-  { label: '4+', value: '4+' },
-];
-
-const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialData, onClose, onSubmit, submitting = false }) => {
+const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialData, onClose, onSubmit, submitting = false, employeeId }) => {
   const [form, setForm] = useState<PersonalDataForm>(emptyForm);
+  const [agamaOptions, setAgamaOptions] = useState<any[]>([]);
+  const [pendidikanOptions, setPendidikanOptions] = useState<any[]>([]);
   const title = useMemo(() => 'Edit Data Pribadi', []);
 
   useEffect(() => {
     setForm(initialData ? { ...emptyForm, ...initialData } : emptyForm);
   }, [initialData, isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    let mounted = true;
+    Promise.all([getReligionDropdownOptions(), getEducationDropdownOptions()])
+      .then(([religions, educations]) => {
+        if (!mounted) return;
+        setAgamaOptions(religions);
+        setPendidikanOptions(educations);
+      })
+      .catch(() => {});
+      
+
+    return () => { mounted = false; };
+  }, [isOpen]);
 
   const handleInput = (key: keyof PersonalDataForm, value: any) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -111,6 +92,35 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;
     setForm((prev) => ({ ...prev, fotoProfil: file }));
+  };
+
+  /**
+   * Map form data (camelCase) to API payload (snake_case)
+   * Sesuai dengan dokumentasi api.contract.personal.information.md
+   */
+  const mapFormToPayload = (): UpdatePersonalDataPayload => {
+    return {
+      full_name: form.namaLengkap,
+      email: form.email,
+      national_id: form.nik,
+      birth_place: form.tempatLahir,
+      birth_date: form.tanggalLahir, // Already in YYYY-MM-DD format
+      religion_id: form.agama,
+      gender: form.jenisKelamin,
+      phone_number: form.nomorTelepon,
+      blood_type: form.golDarah,
+      last_education_id: form.pendidikanTerakhir,
+      marital_status: form.statusMenikah,
+      household_dependents: form.jumlahTanggungan ? parseInt(form.jumlahTanggungan, 10) : undefined,
+      avatar: form.fotoProfil || undefined,
+      current_address: form.alamatDomisili,
+      ktp_address: form.alamatKtp,
+    };
+  };
+
+  const handleSubmit = () => {
+    const payload = mapFormToPayload();
+    onSubmit(payload as any); // Cast to PersonalDataForm type for parent compatibility
   };
 
   const content = (
@@ -135,7 +145,7 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
         </div>
         <div>
           <Label>Agama</Label>
-          <Select options={AGAMA_OPTIONS} defaultValue={form.agama || ''} onChange={(v) => handleInput('agama', v)} placeholder="Select" />
+          <Select options={agamaOptions} defaultValue={form.agama || ''} onChange={(v) => handleInput('agama', v)} placeholder="Select" />
         </div>
 
         <div>
@@ -144,7 +154,7 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
         </div>
         <div>
           <Label>Gol. Darah</Label>
-          <Select options={GOL_DARAH_OPTIONS} defaultValue={form.golDarah || ''} onChange={(v) => handleInput('golDarah', v)} placeholder="Select" />
+          <Select options={GOLONGAN_DARAH_OPTIONS} defaultValue={form.golDarah || ''} onChange={(v) => handleInput('golDarah', v)} placeholder="Select" />
         </div>
 
         <div>
@@ -158,12 +168,12 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
         </div>
         <div>
           <Label>Pendidikan Terakhir</Label>
-          <Select options={PENDIDIKAN_OPTIONS} defaultValue={form.pendidikanTerakhir || ''} onChange={(v) => handleInput('pendidikanTerakhir', v)} placeholder="Select" />
+          <Select options={pendidikanOptions} defaultValue={form.pendidikanTerakhir || ''} onChange={(v) => handleInput('pendidikanTerakhir', v)} placeholder="Select" />
         </div>
 
         <div>
           <Label>Jenis Kelamin</Label>
-          <Select options={JK_OPTIONS} defaultValue={form.jenisKelamin || ''} onChange={(v) => handleInput('jenisKelamin', v)} placeholder="Select" />
+          <Select options={JENIS_KELAMIN_OPTIONS} defaultValue={form.jenisKelamin || ''} onChange={(v) => handleInput('jenisKelamin', v)} placeholder="Select" />
         </div>
         <div>
           <Label>Status Menikah</Label>
@@ -182,11 +192,12 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
         <div className="md:col-span-2">
           <Label>Upload Foto Profil</Label>
           <FileInput onChange={handleFileChange} />
-          {form.fotoProfil && (
-            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-              File dipilih: {form.fotoProfil.name}
-            </p>
-          )}
+          {/* {form.avatarUrl && (
+           <div className='mt-2'>
+            <LinkPreview url={form.avatarUrl as string} label='Lihat Avatar'/>
+
+           </div>
+          )} */}
         </div>
 
         <div>
@@ -207,7 +218,7 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
       isOpen={isOpen}
       onClose={onClose}
       content={content}
-      handleSubmit={() => onSubmit(form)}
+      handleSubmit={handleSubmit}
       submitting={!!submitting}
       maxWidth="max-w-5xl"
     />

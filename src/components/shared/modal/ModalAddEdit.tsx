@@ -17,7 +17,7 @@ interface ModalAddEditProps {
   isSubmit?: boolean;
 }
 
-const ModalAddEdit: React.FC<ModalAddEditProps> = ({ title=null, content, isOpen, onClose,  handleSubmit, submitting, maxWidth, confirmTitleButton = 'Simpan', closeTitleButton = 'Tutup', isSubmit = false }) => {
+const ModalAddEdit: React.FC<ModalAddEditProps> = ({ title=null, content, isOpen, onClose,  handleSubmit, submitting, maxWidth, confirmTitleButton = 'Simpan', closeTitleButton = 'Tutup', isSubmit = true }) => {
   
 
   return (

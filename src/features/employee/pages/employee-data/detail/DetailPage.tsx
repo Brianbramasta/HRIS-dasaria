@@ -42,20 +42,20 @@ export default function DetailKaryawanPage() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex flex-col md:flex-row items-center gap-3">
             <img
-              src={detail?.Data_Pribadi?.avatar ?? 'https://api.dicebear.com/7.x/avataaars/svg?seed=${id}'}
+              src={detail?.Personal_Data?.avatar ?? 'https://api.dicebear.com/7.x/avataaars/svg?seed=${id}'}
               alt="Employee Avatar"
               className="h-12 w-12 rounded-full"
             />
             <div className='text-center md:text-left'>
-              <div className="text-base font-semibold">{detail?.Data_Pribadi?.full_name}</div>
-              <div className="text-sm text-gray-500">{detail?.Data_Employment_Posisi?.department_name} | {detail?.Data_Employment_Posisi?.user_access}</div>
+              <div className="text-base font-semibold">{detail?.Personal_Data?.full_name}</div>
+              <div className="text-sm text-gray-500">{detail?.Employment_Position_Data?.department_name} | {detail?.Employment_Position_Data?.user_access}</div>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {detail?.Data_Social_Media[0]?.twitter_name && <a href={detail?.Data_Social_Media[0]?.twitter_name} target='_blank'><img src='/images/icons/sosial-media/x.svg'/></a>}
-            {detail?.Data_Social_Media[0]?.linkedin_name && <a href={detail?.Data_Social_Media[0]?.linkedin_name} target='_blank'><img src='/images/icons/sosial-media/linkedin.svg'/></a>}
-            {detail?.Data_Social_Media[0]?.facebook_name && <a href={detail?.Data_Social_Media[0]?.facebook_name} target='_blank'><img src='/images/icons/sosial-media/facebook.svg'/></a>}
-            {detail?.Data_Social_Media[0]?.instagram_name && <a href={detail?.Data_Social_Media[0]?.instagram_name} target='_blank'><img src='/images/icons/sosial-media/instagram.svg'/></a>}
+            {detail?.Social_Media_Data[0]?.twitter_name && <a href={detail?.Social_Media_Data[0]?.twitter_name} target='_blank'><img src='/images/icons/sosial-media/x.svg'/></a>}
+            {detail?.Social_Media_Data[0]?.linkedin_name && <a href={detail?.Social_Media_Data[0]?.linkedin_name} target='_blank'><img src='/images/icons/sosial-media/linkedin.svg'/></a>}
+            {detail?.Social_Media_Data[0]?.facebook_name && <a href={detail?.Social_Media_Data[0]?.facebook_name} target='_blank'><img src='/images/icons/sosial-media/facebook.svg'/></a>}
+            {detail?.Social_Media_Data[0]?.instagram_name && <a href={detail?.Social_Media_Data[0]?.instagram_name} target='_blank'><img src='/images/icons/sosial-media/instagram.svg'/></a>}
           </div>
         </div>
       </div>

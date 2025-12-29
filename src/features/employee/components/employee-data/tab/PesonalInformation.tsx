@@ -18,6 +18,7 @@ export default function PesonalInformationTab({ employeeId }: Props) {
 
   React.useEffect(() => {
     fetchDetail(employeeId);
+    console.log('Fetching detail for employeeId:', employeeId);
   }, [employeeId, fetchDetail]);
 
   if (loading) {
@@ -32,13 +33,13 @@ export default function PesonalInformationTab({ employeeId }: Props) {
 
   return (
     <div className="space-y-6">
-      <PersonalDataCard data={detail.Data_Pribadi} />
-      <EducationalBackgroundCard education={detail.Data_Pendidikan} />
-      <SocialEmergencyCard personalInformation={detail.Data_Social_Media} />
-      <EmployeeDataCard data={detail.Data_Employment_Posisi} />
-      <SalaryCard financeAndCompliance={detail.Data_Keuangan} />
-      <BPJSCard financeAndCompliance={detail.Data_BPJS} />
-      <PersonalDocumentsCard documents={detail.Data_Dokumen} />
+      <PersonalDataCard data={detail.Personal_Data} employeeId={employeeId} />
+      <EducationalBackgroundCard education={detail.Education_Data} />
+      <SocialEmergencyCard personalInformation={detail.Social_Media_Data} />
+      <EmployeeDataCard data={detail.Employment_Position_Data} />
+      <SalaryCard salaryData={detail.Salary_Data} bpjsData={detail.BPJS_Data} />
+      <BPJSCard salaryData={detail.Salary_Data} bpjsData={detail.BPJS_Data} />
+      <PersonalDocumentsCard documents={detail.Document_Data} />
     </div>
   );
 }

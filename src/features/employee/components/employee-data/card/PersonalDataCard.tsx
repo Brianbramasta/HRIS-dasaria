@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import ExpandCard from '@/features/structure-and-organize/components/card/ExpandCard';
 import Label from '@/components/form/Label';
 import InputField from '@/components/form/input/InputField';
@@ -7,19 +8,75 @@ import { Edit2 } from 'react-feather';
 import { useModal } from '@/hooks/useModal';
 import PersonalDataModal, { type PersonalDataForm } from '@/features/employee/components/modals/employee-data/personal-information/PersonalDataModal';
 import { IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
-
+import { usePersonalInformation } from '@/features/employee/hooks/employee-data/detail/contract/usePersonalInformation';
+import { UpdatePersonalDataPayload } from '@/features/employee/services/detail/PersonalInformationService';
+import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
+import { addNotification } from '@/stores/notificationStore';
 interface Props {
   data: any; // API response from employee-master-data
+  employeeId: string; // ID karyawan untuk API call
 }
 
-export default function PersonalDataCard({ data }: Props) {
+export default function PersonalDataCard({ data, employeeId }: Props) {
   const { isOpen, openModal, closeModal } = useModal(false);
+  const { loading, error, updatePersonalData, resetError } = usePersonalInformation(employeeId);
+  const { fetchDetail } = useDetailDataKaryawanPersonalInfo()
 
   const initialForm: PersonalDataForm = {
     idKaryawan: data?.id || '',
     namaLengkap: data?.full_name || '',
     email: data?.email || '',
+    nik: data?.national_id ? String(data.national_id) : '',
+    tempatLahir: data?.birth_place || '',
+    tanggalLahir: data?.birth_date || '',
+    jenisKelamin: data?.gender || '',
+    golDarah: data?.blood_type || '',
+    pendidikanTerakhir: data?.last_education_id || '',
+    statusMenikah: data?.marital_status || '',
+    nomorTelepon: data?.phone_number || '',
+    jumlahTanggungan: data?.household_dependents ? String(data.household_dependents) : '0',
+    alamatDomisili: data?.current_address || '',
+    alamatKtp: data?.ktp_address || '',
+    agama: data?.religion_id || '',
+    fotoProfil:  null,
+    avatarUrl: data?.avatar || '',
   };
+
+  /**
+   * Handle submit dari modal - panggil hook untuk API request
+   */
+  const handleSubmitPersonalData = useCallback(
+    async (payload: UpdatePersonalDataPayload) => {
+      try {
+        // Call hook untuk update data ke API
+        console.log('Submitting personal data payload:', payload);
+        console.log('Employee ID:', employeeId);
+        await updatePersonalData(employeeId, payload);
+        closeModal();
+        fetchDetail(employeeId);
+        addNotification({ 
+          variant: 'success',
+          title: 'Berhasil',
+          description: 'Data pribadi berhasil diperbarui.',
+          hideDuration: 3000 });
+
+        // Optional: Show success notification
+        console.log('Personal data updated successfully');
+      } catch (err) {
+        console.error('Failed to update personal data:', err);
+        // Error sudah di-set di hook state, dapat ditampilkan
+      }
+    },
+    [employeeId, updatePersonalData, closeModal]
+  );
+
+  /**
+   * Handle close modal dengan reset error
+   */
+  const handleCloseModal = useCallback(() => {
+    resetError();
+    closeModal();
+  }, [closeModal, resetError]);
 
   const isComplete = !!data?.id &&
     !!data?.full_name &&
@@ -106,7 +163,7 @@ export default function PersonalDataCard({ data }: Props) {
           <div>
             <Label htmlFor="jumlahTanggungan">Jumlah Tanggungan sesuai KK</Label>
             <div className="pointer-events-none opacity-60">
-              <InputField id="jumlahTanggungan" value={data?.household_dependents || ''} readonly={true} />
+              <InputField id="jumlahTanggungan" value={data?.household_dependents || '0'} readonly={true} />
             </div>
           </div>
           <div>
@@ -121,15 +178,20 @@ export default function PersonalDataCard({ data }: Props) {
         </Button>
       </div>
 
+      {/* Show error if exists */}
+      {error && (
+        <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
+          {error}
+        </div>
+      )}
+
       <PersonalDataModal
         isOpen={isOpen}
         initialData={initialForm}
-        onClose={closeModal}
-        onSubmit={(payload) => {
-          console.log('Save Personal Data', payload);
-          closeModal();
-        }}
-        submitting={false}
+        onClose={handleCloseModal}
+        onSubmit={handleSubmitPersonalData}
+        submitting={loading}
+        employeeId={employeeId}
       />
     </ExpandCard>
   );

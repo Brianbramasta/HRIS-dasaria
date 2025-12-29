@@ -1010,7 +1010,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base_url}}/api/organizational-structure/company-master-data/companies/019ad7eb-5df0-7383-b933-c4f1c208db39/detail",
+									"raw": "{{base_url}}/api/organizational-structure/company-master-data/companies/019b493b-dcbb-723e-9b0b-5b513fe5159a/detail",
 									"host": [
 										"{{base_url}}"
 									],
@@ -1019,7 +1019,7 @@
 										"organizational-structure",
 										"company-master-data",
 										"companies",
-										"019ad7eb-5df0-7383-b933-c4f1c208db39",
+										"019b493b-dcbb-723e-9b0b-5b513fe5159a",
 										"detail"
 									]
 								}
@@ -2785,7 +2785,7 @@
 												"method": "GET",
 												"header": [],
 												"url": {
-													"raw": "{{base_url}}/api/employee-master-data/employees/019b2b0f-cb59-7228-b9fb-25a4c24eff35/data-personal",
+													"raw": "{{base_url}}/api/employee-master-data/employees/DSR011/data-personal",
 													"host": [
 														"{{base_url}}"
 													],
@@ -2793,10 +2793,550 @@
 														"api",
 														"employee-master-data",
 														"employees",
-														"019b2b0f-cb59-7228-b9fb-25a4c24eff35",
+														"DSR011",
 														"data-personal"
 													]
 												}
+											},
+											"response": []
+										},
+										{
+											"name": "update peronal data",
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "formdata",
+													"formdata": [
+														{
+															"key": "_method",
+															"value": "PATCH",
+															"type": "text"
+														},
+														{
+															"key": "full_name",
+															"value": "tes update 1",
+															"type": "text"
+														},
+														{
+															"key": "national_id",
+															"value": "",
+															"type": "text"
+														},
+														{
+															"key": "birth_place",
+															"value": "",
+															"type": "text"
+														},
+														{
+															"key": "birth_date",
+															"value": "",
+															"type": "text"
+														},
+														{
+															"key": "religion_id",
+															"value": "",
+															"type": "text"
+														},
+														{
+															"key": "email",
+															"value": "",
+															"type": "text"
+														},
+														{
+															"key": "gender",
+															"value": "",
+															"type": "text"
+														},
+														{
+															"key": "phone_number",
+															"value": "",
+															"type": "text"
+														},
+														{
+															"key": "blood_type",
+															"value": "",
+															"type": "text"
+														},
+														{
+															"key": "last_education_id",
+															"value": "",
+															"type": "text"
+														},
+														{
+															"key": "marital_status",
+															"value": "",
+															"type": "text"
+														},
+														{
+															"key": "household_dependents",
+															"value": "",
+															"type": "text"
+														},
+														{
+															"key": "avatar",
+															"type": "file",
+															"src": []
+														},
+														{
+															"key": "current_address",
+															"value": "",
+															"type": "text"
+														},
+														{
+															"key": "ktp_address",
+															"value": "",
+															"type": "text"
+														}
+													]
+												},
+												"url": {
+													"raw": "{{base_url}}/api/employee-master-data/employees/DSR011/update-personal-data",
+													"host": [
+														"{{base_url}}"
+													],
+													"path": [
+														"api",
+														"employee-master-data",
+														"employees",
+														"DSR011",
+														"update-personal-data"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "update education",
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "formdata",
+													"formdata": [
+														{
+															"key": "_method",
+															"value": "PATCH",
+															"type": "text"
+														},
+														{
+															"key": "non_formal_education[0][certificate_name]",
+															"value": "ini sertifikat oke kita tes update ",
+															"type": "text"
+														},
+														{
+															"key": "non_formal_education[0][institution_name]",
+															"value": "kampus negeri",
+															"type": "text"
+														},
+														{
+															"key": "non_formal_education[0][start_date]",
+															"value": "2020-01-01",
+															"type": "text"
+														},
+														{
+															"key": "non_formal_education[0][end_date]",
+															"value": "2025-01-01",
+															"type": "text"
+														},
+														{
+															"key": "non_formal_education[0][certificate_id]",
+															"value": "ini id oke lagi",
+															"type": "text"
+														},
+														{
+															"key": "non_formal_education[0][certificate_file]",
+															"type": "file",
+															"src": [],
+															"disabled": true
+														},
+														{
+															"key": "non_formal_education[1][certificate_name]",
+															"value": "",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "non_formal_education[1][institution_name]",
+															"value": "",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "non_formal_education[1][start_date]",
+															"value": "",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "non_formal_education[1][end_date]",
+															"value": "",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "non_formal_education[1][certificate_id]",
+															"value": "",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "non_formal_education[1][certificate_file]",
+															"type": "file",
+															"src": [],
+															"disabled": true
+														},
+														{
+															"key": "non_formal_education[2][certificate_name]",
+															"value": "",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "non_formal_education[2][institution_name]",
+															"value": "",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "non_formal_education[2][start_date]",
+															"value": "",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "non_formal_education[2][end_date]",
+															"value": "",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "non_formal_education[2][certificate_id]",
+															"value": "",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "non_formal_education[2][certificate_file]",
+															"type": "file",
+															"src": [],
+															"disabled": true
+														},
+														{
+															"key": "tes",
+															"value": "",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "tes",
+															"value": "",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "education_formal_detail[0][education_level_id]",
+															"value": "06840e2a-cb39-461d-85a6-977b56fcb9c9",
+															"type": "text"
+														},
+														{
+															"key": "education_formal_detail[0][institution_name]",
+															"value": "hasbu",
+															"type": "text"
+														},
+														{
+															"key": "education_formal_detail[0][degree]",
+															"value": "strkom",
+															"type": "text"
+														},
+														{
+															"key": "education_formal_detail[0][final_grade]",
+															"value": "4",
+															"type": "text"
+														},
+														{
+															"key": "education_formal_detail[0][major]",
+															"value": "teknologi informasi",
+															"type": "text"
+														},
+														{
+															"key": "education_formal_detail[0][graduation_year]",
+															"value": "2025",
+															"type": "text"
+														},
+														{
+															"key": "education_formal_detail[1][education_level_id]",
+															"value": "06840e2a-cb39-461d-85a6-977b56fcb9c9",
+															"type": "text"
+														},
+														{
+															"key": "education_formal_detail[1][institution_name]",
+															"value": "tes",
+															"type": "text"
+														},
+														{
+															"key": "education_formal_detail[1][degree]",
+															"value": "4",
+															"type": "text"
+														},
+														{
+															"key": "education_formal_detail[1][final_grade]",
+															"value": "4",
+															"type": "text"
+														},
+														{
+															"key": "education_formal_detail[1][major]",
+															"value": "tes",
+															"type": "text"
+														},
+														{
+															"key": "education_formal_detail[1][graduation_year]",
+															"value": "2025",
+															"type": "text"
+														},
+														{
+															"key": "education_formal_detail[2][education_level_id]",
+															"value": "",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "education_formal_detail[2][institution_name]",
+															"value": "",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "education_formal_detail[2][degree]",
+															"value": "",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "education_formal_detail[2][final_grade]",
+															"value": "",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "education_formal_detail[2][major]",
+															"value": "",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "education_formal_detail[2][graduation_year]",
+															"value": "",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "tes",
+															"value": "",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "tes",
+															"value": "",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "non_formal_education[0][id]",
+															"value": "019b5ec3-1a32-72f7-b2f7-b5d58f2a2ff7",
+															"type": "text"
+														},
+														{
+															"key": "non_formal_education[1][id]",
+															"value": "",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "non_formal_education[2][id]",
+															"value": "",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "tes",
+															"value": "",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "tes",
+															"value": "",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "education_formal_detail[0][id]",
+															"value": "019b5ec3-1a2c-7387-9a90-297da6fb3fff",
+															"type": "text"
+														},
+														{
+															"key": "education_formal_detail[1][id]",
+															"value": "019b5ec3-1a30-7352-ac45-6ff3f23a3c6f",
+															"type": "text"
+														},
+														{
+															"key": "education_formal_detail[2][id]",
+															"value": "",
+															"type": "text",
+															"disabled": true
+														}
+													]
+												},
+												"url": {
+													"raw": "{{base_url}}/api/employee-master-data/employees/DSR011/update-education-data",
+													"host": [
+														"{{base_url}}"
+													],
+													"path": [
+														"api",
+														"employee-master-data",
+														"employees",
+														"DSR011",
+														"update-education-data"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "update social media",
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "formdata",
+													"formdata": [
+														{
+															"key": "_method",
+															"value": "PATCH",
+															"type": "text"
+														},
+														{
+															"key": "facebook_name",
+															"value": "ini facebokk rizal ",
+															"type": "text"
+														},
+														{
+															"key": "instagram_name",
+															"value": "",
+															"type": "text"
+														},
+														{
+															"key": "linkedin_name",
+															"value": "",
+															"type": "text"
+														},
+														{
+															"key": "twitter_name",
+															"value": "",
+															"type": "text"
+														},
+														{
+															"key": "relative_social_media",
+															"value": "",
+															"type": "text"
+														},
+														{
+															"key": "emergency_contact_number",
+															"value": "",
+															"type": "text"
+														},
+														{
+															"key": "emergency_contact_name",
+															"value": "",
+															"type": "text"
+														},
+														{
+															"key": "emergency_contact_relationship",
+															"value": "",
+															"type": "text"
+														}
+													]
+												},
+												"url": {
+													"raw": "{{base_url}}/api/employee-master-data/employees/DSR011/update-social-media-data",
+													"host": [
+														"{{base_url}}"
+													],
+													"path": [
+														"api",
+														"employee-master-data",
+														"employees",
+														"DSR011",
+														"update-social-media-data"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "update salary",
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "formdata",
+													"formdata": [
+														{
+															"key": "_method",
+															"value": "PATCH",
+															"type": "text"
+														},
+														{
+															"key": "bank_account_number",
+															"value": "34534635",
+															"type": "text"
+														},
+														{
+															"key": "bank_account_holder",
+															"value": "morimana 2",
+															"type": "text"
+														},
+														{
+															"key": "bank_id",
+															"value": "2dadc10c-e891-4b93-b400-4c8ef32aaff7",
+															"type": "text"
+														},
+														{
+															"key": "npwp",
+															"value": "",
+															"type": "text"
+														},
+														{
+															"key": "ptkp_id",
+															"value": "205ff4d2-71a9-4a97-8287-87d5f34b1fa7",
+															"type": "text"
+														}
+													]
+												},
+												"url": {
+													"raw": "{{base_url}}/api/employee-master-data/employees/DSR011/update-salary-data",
+													"host": [
+														"{{base_url}}"
+													],
+													"path": [
+														"api",
+														"employee-master-data",
+														"employees",
+														"DSR011",
+														"update-salary-data"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "New Request",
+											"request": {
+												"method": "GET",
+												"header": []
 											},
 											"response": []
 										}
@@ -2814,8 +3354,8 @@
 													"mode": "formdata",
 													"formdata": [
 														{
-															"key": "contract_status",
-															"value": "1",
+															"key": "contract_status_id",
+															"value": "44f70981-d9ca-4814-88e7-8c0836ac6f4c",
 															"description": "1=active, 2=inactive, 3=probation, 4=resigned",
 															"type": "text"
 														},
@@ -2826,18 +3366,18 @@
 														},
 														{
 															"key": "end_date",
-															"value": "2025-01-15",
+															"value": "2026-01-15",
 															"type": "text"
 														},
 														{
 															"key": "contract_type",
-															"value": "1",
+															"value": "PKWT",
 															"description": "1 = pkwt, 2 = pkwtt",
 															"type": "text"
 														},
 														{
 															"key": "contract_number",
-															"value": "1",
+															"value": "2",
 															"type": "text"
 														},
 														{
@@ -2848,7 +3388,7 @@
 													]
 												},
 												"url": {
-													"raw": "{{base_url}}/api/employee-master-data/employees/019b2b20-41d2-7205-8b89-bd5d73f2a7d0/kontrak",
+													"raw": "{{base_url}}/api/employee-master-data/employees/DSR008/kontrak",
 													"host": [
 														"{{base_url}}"
 													],
@@ -2856,7 +3396,7 @@
 														"api",
 														"employee-master-data",
 														"employees",
-														"019b2b20-41d2-7205-8b89-bd5d73f2a7d0",
+														"DSR008",
 														"kontrak"
 													]
 												}
@@ -2937,7 +3477,7 @@
 												"method": "GET",
 												"header": [],
 												"url": {
-													"raw": "{{base_url}}/api/employee-master-data/employees/019b2b20-41d2-7205-8b89-bd5d73f2a7d0/data-kontrak",
+													"raw": "{{base_url}}/api/employee-master-data/employees/DSR008/data-kontrak",
 													"host": [
 														"{{base_url}}"
 													],
@@ -2945,7 +3485,7 @@
 														"api",
 														"employee-master-data",
 														"employees",
-														"019b2b20-41d2-7205-8b89-bd5d73f2a7d0",
+														"DSR008",
 														"data-kontrak"
 													]
 												}
@@ -2982,6 +3522,147 @@
 													"body": "{\r\n    \"meta\": {\r\n        \"status\": 200,\r\n        \"message\": \"Success get employee contract data\"\r\n    },\r\n    \"data\": {\r\n        \"summary\": {\r\n            \"status_kontrak\": \"aktif\",\r\n            \"ttd_kontrak_terakhir\": \"2024-01-15\",\r\n            \"berakhir_kontrak\": \"2025-01-15\",\r\n            \"jenis_kontrak\": \"PKWT\",\r\n            \"lama_bekerja\": \"1 year 11 months before\",\r\n            \"sisa_kontrak\": \"Sudah berakhir\",\r\n            \"kontrak_ke\": 3,\r\n            \"status_berakhir\": \"Masih Aktif\"\r\n        },\r\n        \"contracts\": [\r\n            {\r\n                \"id\": \"019b2b50-935d-7233-9566-ec2ff1d66ab3\",\r\n                \"employee_id\": \"019b2b20-41d2-7205-8b89-bd5d73f2a7d0\",\r\n                \"contract_number\": \"1\",\r\n                \"contract_type\": \"PKWT\",\r\n                \"contract_status\": \"aktif\",\r\n                \"last_contract_signed_date\": \"2024-01-15\",\r\n                \"end_date\": \"2025-01-15\",\r\n                \"file_contract\": \"http://192.168.2.154:8000/storage/contracts/phpE04B.tmp\",\r\n                \"created_at\": \"2025-12-17 07:57:39\",\r\n                \"updated_at\": \"2025-12-17 07:57:39\",\r\n                \"deleted_at\": null\r\n            },\r\n            {\r\n                \"id\": \"019b2b64-09f0-702c-815a-b56903aa3a8d\",\r\n                \"employee_id\": \"019b2b20-41d2-7205-8b89-bd5d73f2a7d0\",\r\n                \"contract_number\": \"1\",\r\n                \"contract_type\": \"PKWT\",\r\n                \"contract_status\": \"aktif\",\r\n                \"last_contract_signed_date\": \"2024-01-15\",\r\n                \"end_date\": \"2025-01-15\",\r\n                \"file_contract\": \"http://192.168.2.154:8000/storage/contracts/php56F7.tmp\",\r\n                \"created_at\": \"2025-12-17 08:18:55\",\r\n                \"updated_at\": \"2025-12-17 08:18:55\",\r\n                \"deleted_at\": null\r\n            },\r\n            {\r\n                \"id\": \"019b2b69-84d0-70c2-96ec-bc5fe7902888\",\r\n                \"employee_id\": \"019b2b20-41d2-7205-8b89-bd5d73f2a7d0\",\r\n                \"contract_number\": \"1\",\r\n                \"contract_type\": \"PKWT\",\r\n                \"contract_status\": \"aktif\",\r\n                \"last_contract_signed_date\": \"2024-01-15\",\r\n                \"end_date\": \"2025-01-15\",\r\n                \"file_contract\": \"http://192.168.2.154:8000/storage/contracts/f8c5a84d-588d-468b-be52-dcf845bda4fd.pdf\",\r\n                \"created_at\": \"2025-12-17 08:24:54\",\r\n                \"updated_at\": \"2025-12-17 08:24:54\",\r\n                \"deleted_at\": null\r\n            }\r\n        ]\r\n    }\r\n}"
 												}
 											]
+										},
+										{
+											"name": "Dropdown Contract Status",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{base_url}}/api/employee-master-data/employees/contract-status-dropdown",
+													"host": [
+														"{{base_url}}"
+													],
+													"path": [
+														"api",
+														"employee-master-data",
+														"employees",
+														"contract-status-dropdown"
+													],
+													"query": [
+														{
+															"key": "name",
+															"value": "aktif",
+															"disabled": true
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Dropdown Contract Status End",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{base_url}}/api/employee-master-data/employees/contract-end-status-dropdown",
+													"host": [
+														"{{base_url}}"
+													],
+													"path": [
+														"api",
+														"employee-master-data",
+														"employees",
+														"contract-end-status-dropdown"
+													],
+													"query": [
+														{
+															"key": "name",
+															"value": "phk",
+															"disabled": true
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "show to pop up modal",
+											"protocolProfileBehavior": {
+												"disableBodyPruning": true
+											},
+											"request": {
+												"method": "GET",
+												"header": [],
+												"body": {
+													"mode": "formdata",
+													"formdata": []
+												},
+												"url": {
+													"raw": "{{base_url}}/api/employee-master-data/employees/019b5009-5e79-71d5-bbcf-a3ca2acd0f14/contract-for-edit",
+													"host": [
+														"{{base_url}}"
+													],
+													"path": [
+														"api",
+														"employee-master-data",
+														"employees",
+														"019b5009-5e79-71d5-bbcf-a3ca2acd0f14",
+														"contract-for-edit"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "edit contrac",
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "formdata",
+													"formdata": [
+														{
+															"key": "contract_end_status_id",
+															"value": "21127007-8b4a-4106-b08a-e409ea1f5772",
+															"type": "text"
+														},
+														{
+															"key": "note_for_resign",
+															"value": "phk",
+															"type": "text"
+														},
+														{
+															"key": "file_for_resign",
+															"type": "file",
+															"src": "/D:/tes1.pdf"
+														},
+														{
+															"key": "_method",
+															"value": "PATCH",
+															"type": "text"
+														},
+														{
+															"key": "contract_status_id",
+															"value": "",
+															"type": "text",
+															"disabled": true
+														},
+														{
+															"key": "note_for_resign",
+															"value": "",
+															"type": "text",
+															"disabled": true
+														}
+													]
+												},
+												"url": {
+													"raw": "{{base_url}}/api/employee-master-data/employees/DSR009/update-contract/019b67f9-7bec-70c1-8c4e-0a4a3ba6e82f",
+													"host": [
+														"{{base_url}}"
+													],
+													"path": [
+														"api",
+														"employee-master-data",
+														"employees",
+														"DSR009",
+														"update-contract",
+														"019b67f9-7bec-70c1-8c4e-0a4a3ba6e82f"
+													]
+												}
+											},
+											"response": []
 										}
 									]
 								}
@@ -3152,28 +3833,28 @@
 									"formdata": [
 										{
 											"key": "full_name",
-											"value": "tes probation",
+											"value": "tes probation lagi ",
 											"type": "text"
 										},
 										{
 											"key": "national_id",
-											"value": "50641562",
+											"value": "50641571",
 											"type": "text"
 										},
 										{
 											"key": "email",
-											"value": "tes11@gmail.com",
+											"value": "tes20@gmail.com",
 											"type": "text"
 										},
 										{
-											"key": "religion",
-											"value": "1",
+											"key": "religion_id",
+											"value": "ba20c832-8eb7-4ff7-ab78-68484755f7ef",
 											"description": "1 = islam, 2 = protestant, 3 = catholic, 4 = hindu, 5 = buddhist, 6 = confucianism",
 											"type": "text"
 										},
 										{
 											"key": "blood_type",
-											"value": "b+",
+											"value": "b",
 											"type": "text"
 										},
 										{
@@ -3187,8 +3868,8 @@
 											"type": "text"
 										},
 										{
-											"key": "last_education",
-											"value": "7",
+											"key": "last_education_id",
+											"value": "06840e2a-cb39-461d-85a6-977b56fcb9c9",
 											"description": "1 = sd, 2 = smp, 3 = sma, 4 = d1, 5 = d2, 6 = d3, 7 = s1, 8 = s2, 9 = s3",
 											"type": "text"
 										},
@@ -3246,7 +3927,7 @@
 										},
 										{
 											"key": "ptkp_id",
-											"value": "84649b16-fa71-4074-bd90-49b36386f983",
+											"value": "205ff4d2-71a9-4a97-8287-87d5f34b1fa7",
 											"type": "text"
 										},
 										{
@@ -3272,11 +3953,10 @@
 											"type": "text"
 										},
 										{
-											"key": "employment_status",
-											"value": "1",
+											"key": "employment_status_id",
+											"value": "88af828e-6ace-4e51-99a1-05b54914dde7",
 											"description": "1=active, 2=inactive, 3=probation, 4=resigned",
-											"type": "text",
-											"disabled": true
+											"type": "text"
 										},
 										{
 											"key": "resignation_status",
@@ -3285,8 +3965,8 @@
 											"disabled": true
 										},
 										{
-											"key": "documents[0][file_type]",
-											"value": "1",
+											"key": "documents[0][document_type_id]",
+											"value": "0336bb98-9b5b-43d2-b4dc-07b750906d8e",
 											"description": "1: Foto Terbaru 2: Kartu Tanda Penduduk\n3: Ijazah Terakhir 4: Kartu Keluarga 5: BPJS Kesehatan 6: BPJS Ketenagakerjaan 7: NPWP 8: Surat Keterangan Pengalaman Kerja 9: Surat Perjanjian Bersama10: NDA 11: Jobdesk 12: Pakta Integritas 13: PKWT/PKWTT",
 											"type": "text"
 										},
@@ -3302,8 +3982,8 @@
 											"disabled": true
 										},
 										{
-											"key": "education_formal_detail[0][education_level]",
-											"value": "1",
+											"key": "education_formal_detail[0][education_level_id]",
+											"value": "06840e2a-cb39-461d-85a6-977b56fcb9c9",
 											"description": "1 = sd, 2 = smp, 3 = sma, 4 = d1, 5 = d2, 6 = d3, 7 = s1, 8 = s2, 9 = s3\t",
 											"type": "text"
 										},
@@ -3333,8 +4013,8 @@
 											"type": "text"
 										},
 										{
-											"key": "education_formal_detail[1][education_level]",
-											"value": "2",
+											"key": "education_formal_detail[1][education_level_id]",
+											"value": "06840e2a-cb39-461d-85a6-977b56fcb9c9",
 											"type": "text"
 										},
 										{
@@ -3364,37 +4044,37 @@
 										},
 										{
 											"key": "company_id",
-											"value": "019ae365-412f-701f-983f-b17071f92ba2",
+											"value": "019b493b-dcbb-723e-9b0b-5b513fe5159a",
 											"type": "text"
 										},
 										{
 											"key": "office_id",
-											"value": "019af2d8-b94d-70ea-85ba-03c0c9be7ef9",
+											"value": "019b49db-5deb-70b0-90b0-f809b6b19505",
 											"type": "text"
 										},
 										{
 											"key": "directorate_id",
-											"value": "019ae21e-7ff8-7315-80a5-a139bbc01e52",
+											"value": "019b4948-a941-71c3-8ff5-96d7aebef5b6",
 											"type": "text"
 										},
 										{
 											"key": "division_id",
-											"value": "019ae833-9eee-71a2-929f-918f233f6d4e",
+											"value": "019b495b-df75-7028-90c7-d27d92813b76",
 											"type": "text"
 										},
 										{
 											"key": "department_id",
-											"value": "019aed99-53bc-71af-aa7f-07b317ff29d8",
+											"value": "019b4976-3df7-700b-ae68-c73682551d2e",
 											"type": "text"
 										},
 										{
 											"key": "position_id",
-											"value": "019af20b-fabf-725a-98d8-d19d2022165c",
+											"value": "019b4987-cb3b-7349-a13a-e318f738b76b",
 											"type": "text"
 										},
 										{
 											"key": "job_title_id",
-											"value": "019aee3e-b586-727f-9464-6d819a5e6278",
+											"value": "019b497c-b843-7334-8806-f3971c92fefc",
 											"type": "text"
 										},
 										{
@@ -3408,8 +4088,8 @@
 											"type": "text"
 										},
 										{
-											"key": "position_level",
-											"value": "1",
+											"key": "position_level_id",
+											"value": "1c2fb0d4-3134-443c-a190-34b67f6342b6",
 											"description": "1: General, 2: Junior, 3: Middle, 4: Senior",
 											"type": "text"
 										},
@@ -3420,8 +4100,8 @@
 											"type": "text"
 										},
 										{
-											"key": "employee_category",
-											"value": "2",
+											"key": "employee_category_id",
+											"value": "c62158fa-eb4a-4d9b-ba81-345bc8a74ade",
 											"description": "1: Non-Staff, 2: Staff, 3: Partner",
 											"type": "text"
 										},
@@ -3506,18 +4186,29 @@
 											"key": "emergency_contact_relationship",
 											"value": "ibu ",
 											"type": "text"
+										},
+										{
+											"key": "bank_id",
+											"value": "2dadc10c-e891-4b93-b400-4c8ef32aaff7",
+											"type": "text"
 										}
 									]
 								},
 								"url": {
-									"raw": "{{base_url}}/api/employee-master-data/employees",
+									"raw": "http://127.0.0.1:8000/api/employee-master-data/employees/store",
+									"protocol": "http",
 									"host": [
-										"{{base_url}}"
+										"127",
+										"0",
+										"0",
+										"1"
 									],
+									"port": "8000",
 									"path": [
 										"api",
 										"employee-master-data",
-										"employees"
+										"employees",
+										"store"
 									]
 								}
 							},
@@ -3697,33 +4388,6 @@
 							"response": []
 						},
 						{
-							"name": "Dropdown Contract Status",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{base_url}}/api/employee-master-data/employees/contract-status-dropdown",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"api",
-										"employee-master-data",
-										"employees",
-										"contract-status-dropdown"
-									],
-									"query": [
-										{
-											"key": "name",
-											"value": "aktif",
-											"disabled": true
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
 							"name": "Dropdown Document Type",
 							"request": {
 								"method": "GET",
@@ -3808,7 +4472,26 @@
 							"name": "Dropdown Bank",
 							"request": {
 								"method": "GET",
-								"header": []
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/employee-master-data/employees/bank-dropdown",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"employee-master-data",
+										"employees",
+										"bank-dropdown"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Bank Aceh",
+											"disabled": true
+										}
+									]
+								}
 							},
 							"response": []
 						},
@@ -3816,7 +4499,26 @@
 							"name": "New Request",
 							"request": {
 								"method": "GET",
-								"header": []
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/employee-master-data/employees/employee-status-dropdown",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"employee-master-data",
+										"employees",
+										"employee-status-dropdown"
+									],
+									"query": [
+										{
+											"key": "status_name",
+											"value": "aktif",
+											"disabled": true
+										}
+									]
+								}
 							},
 							"response": []
 						}

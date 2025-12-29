@@ -1,0 +1,608 @@
+// Hook: Personal Information
+import { useState, useCallback } from 'react';
+import {
+  personalInformationService,
+  PersonalInformationData,
+  PersonalDataResponse,
+  EducationFormalItem,
+  EducationNonFormalItem,
+  SocialMediaDataResponse,
+  SalaryDataResponse,
+  UpdatePersonalDataPayload,
+  UpdateEducationDataPayload,
+  UpdateSocialMediaDataPayload,
+  UpdateSalaryDataPayload,
+} from '@/features/employee/services/detail/PersonalInformationService';
+import { addNotification } from '@/stores/notificationStore';
+import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
+
+// ===================== Mapped Types =====================
+
+export interface MappedPersonalData {
+  fullName: string;
+  nationalId: string | null;
+  birthPlace: string | null;
+  birthDate: string | null;
+  religionId: string | null;
+  email: string | null;
+  gender: string | null;
+  phoneNumber: string | null;
+  bloodType: string | null;
+  lastEducationId: string | null;
+  maritalStatus: string | null;
+  householdDependents: number | null;
+  avatar: string | null;
+  currentAddress: string | null;
+  ktpAddress: string | null;
+}
+
+export interface MappedEducationFormal {
+  id: string;
+  educationLevelId: string;
+  institutionName: string;
+  degree: string;
+  finalGrade: string | number;
+  major: string;
+  graduationYear: string | number;
+}
+
+export interface MappedEducationNonFormal {
+  id: string;
+  certificateName: string;
+  institutionName: string;
+  startDate: string;
+  endDate: string;
+  certificateId: string;
+  certificateFile: string | null;
+}
+
+export interface MappedSocialMedia {
+  facebookName: string | null;
+  instagramName: string | null;
+  linkedinName: string | null;
+  twitterName: string | null;
+  relativeSocialMedia: string | null;
+  emergencyContactNumber: string | null;
+  emergencyContactName: string | null;
+  emergencyContactRelationship: string | null;
+}
+
+export interface MappedSalary {
+  bankAccountNumber: string | null;
+  bankAccountHolder: string | null;
+  bankId: string | null;
+  npwp: string | null;
+  ptpkId: string | null;
+}
+
+export interface MappedPersonalInformation {
+  personal: MappedPersonalData;
+  educationFormal: MappedEducationFormal[];
+  educationNonFormal: MappedEducationNonFormal[];
+  socialMedia: MappedSocialMedia;
+  salary: MappedSalary;
+}
+
+// ===================== Hook State Types =====================
+
+export interface UsePersonalInformationState {
+  data: MappedPersonalInformation | null;
+  loading: boolean;
+  error: string | null;
+}
+
+export interface UsePersonalInformationActions {
+  getPersonalInformation: (employeeId: string) => Promise<void>;
+  updatePersonalData: (employeeId: string, payload: UpdatePersonalDataPayload) => Promise<void>;
+  updateEducationData: (employeeId: string, payload: UpdateEducationDataPayload) => Promise<void>;
+  updateSocialMediaData: (employeeId: string, payload: UpdateSocialMediaDataPayload) => Promise<void>;
+  updateSalaryData: (employeeId: string, payload: UpdateSalaryDataPayload) => Promise<void>;
+  resetError: () => void;
+}
+
+// ===================== Mapping Functions =====================
+
+/**
+ * Map snake_case API response ke camelCase untuk UI
+ */
+const mapPersonalData = (data: PersonalDataResponse): MappedPersonalData => {
+  return {
+    fullName: data.full_name,
+    nationalId: data.national_id,
+    birthPlace: data.birth_place,
+    birthDate: data.birth_date,
+    religionId: data.religion_id,
+    email: data.email,
+    gender: data.gender,
+    phoneNumber: data.phone_number,
+    bloodType: data.blood_type,
+    lastEducationId: data.last_education_id,
+    maritalStatus: data.marital_status,
+    householdDependents: data.household_dependents,
+    avatar: data.avatar,
+    currentAddress: data.current_address,
+    ktpAddress: data.ktp_address,
+  };
+};
+
+/**
+ * Map education formal item
+ */
+const mapEducationFormal = (data: EducationFormalItem): MappedEducationFormal => {
+  return {
+    id: data.id,
+    educationLevelId: data.education_level_id,
+    institutionName: data.institution_name,
+    degree: data.degree,
+    finalGrade: data.final_grade,
+    major: data.major,
+    graduationYear: data.graduation_year,
+  };
+};
+
+/**
+ * Map education non-formal item
+ */
+const mapEducationNonFormal = (data: EducationNonFormalItem): MappedEducationNonFormal => {
+  return {
+    id: data.id,
+    certificateName: data.certificate_name,
+    institutionName: data.institution_name,
+    startDate: data.start_date,
+    endDate: data.end_date,
+    certificateId: data.certificate_id,
+    certificateFile: data.certificate_file,
+  };
+};
+
+/**
+ * Map social media data
+ */
+const mapSocialMedia = (data: SocialMediaDataResponse): MappedSocialMedia => {
+  return {
+    facebookName: data.facebook_name,
+    instagramName: data.instagram_name,
+    linkedinName: data.linkedin_name,
+    twitterName: data.twitter_name,
+    relativeSocialMedia: data.relative_social_media,
+    emergencyContactNumber: data.emergency_contact_number,
+    emergencyContactName: data.emergency_contact_name,
+    emergencyContactRelationship: data.emergency_contact_relationship,
+  };
+};
+
+/**
+ * Map salary data
+ */
+const mapSalary = (data: SalaryDataResponse): MappedSalary => {
+  return {
+    bankAccountNumber: data.bank_account_number,
+    bankAccountHolder: data.bank_account_holder,
+    bankId: data.bank_id,
+    npwp: data.npwp,
+    ptpkId: data.ptkp_id,
+  };
+};
+
+/**
+ * Map full personal information response
+ */
+const mapPersonalInformation = (data: PersonalInformationData): MappedPersonalInformation => {
+  return {
+    personal: mapPersonalData(data.personal),
+    educationFormal: data.education_formal.map(mapEducationFormal),
+    educationNonFormal: data.education_non_formal.map(mapEducationNonFormal),
+    socialMedia: mapSocialMedia(data.social_media),
+    salary: mapSalary(data.salary),
+  };
+};
+
+/**
+ * Map education data from modal form to API payload
+ * Sesuai dengan dokumentasi api.contract.personal.information.md
+ */
+interface EducationModalForm {
+  education: Array<{
+    id?: string;
+    jenisPendidikan?: string;
+    // Formal fields
+    jenjang?: string;
+    namaLembaga?: string;
+    gelar?: string;
+    nilaiPendidikan?: string | number;
+    jurusanKeahlian?: string;
+    tahunLulus?: string | number;
+    // Non-formal fields
+    namaSertifikat?: string;
+    organisasiPenerbit?: string;
+    tanggalPenerbitan?: string;
+    tanggalKedaluwarsa?: string;
+    idKredensial?: string;
+    fileSertifikat?: File | null;
+  }>;
+}
+
+interface EducationFormalDetailItem {
+  id?: string;
+  education_level_id: string;
+  institution_name: string;
+  degree: string;
+  final_grade: string | number;
+  major: string;
+  graduation_year: string | number;
+}
+
+interface EducationNonFormalDetailItem {
+  id?: string;
+  certificate_name: string;
+  institution_name: string;
+  start_date: string;
+  end_date: string;
+  certificate_id: string;
+  certificate_file?: File;
+}
+
+const mapEducationModalToPayload = (modalData: EducationModalForm): UpdateEducationDataPayload => {
+  const formalEducation: EducationFormalDetailItem[] = [];
+  const nonFormalEducation: EducationNonFormalDetailItem[] = [];
+
+  modalData.education.forEach((item) => {
+    if (item.jenisPendidikan === 'formal') {
+      // Formal education - hanya tambahkan field yang ada
+      const formalItem: EducationFormalDetailItem = {
+        education_level_id: item.jenjang || '',
+        institution_name: item.namaLembaga || '',
+        degree: item.gelar || '',
+        final_grade: item.nilaiPendidikan || '',
+        major: item.jurusanKeahlian || '',
+        graduation_year: item.tahunLulus || '',
+      };
+      
+      // Tambahkan ID jika ada (untuk update existing)
+      if (item.id) {
+        formalItem.id = item.id;
+      }
+      
+      formalEducation.push(formalItem);
+    } else if (item.jenisPendidikan === 'non-formal') {
+      // Non-formal education
+      const nonFormalItem: EducationNonFormalDetailItem = {
+        certificate_name: item.namaSertifikat || '',
+        institution_name: item.organisasiPenerbit || '',
+        start_date: item.tanggalPenerbitan || '',
+        end_date: item.tanggalKedaluwarsa || '',
+        certificate_id: item.idKredensial || '',
+      };
+      
+      // Tambahkan ID jika ada (untuk update existing)
+      if (item.id) {
+        nonFormalItem.id = item.id;
+      }
+      
+      // Tambahkan file jika ada
+      if (item.fileSertifikat) {
+        nonFormalItem.certificate_file = item.fileSertifikat;
+      }
+      
+      nonFormalEducation.push(nonFormalItem);
+    }
+  });
+
+  return {
+    education_formal_detail: formalEducation.length > 0 ? formalEducation : undefined,
+    non_formal_education: nonFormalEducation.length > 0 ? nonFormalEducation : undefined,
+  };
+};
+
+/**
+ * Map personal data for sending to API (filter undefined values dan ensure snake_case)
+ * Sesuai dengan dokumentasi api.contract.personal.information.md
+ */
+const mapUpdatePersonalPayload = (data: UpdatePersonalDataPayload): UpdatePersonalDataPayload => {
+  const mapped: any = {};
+
+  // Full name
+  if (data.full_name !== undefined && data.full_name !== null && data.full_name !== '') {
+    mapped.full_name = data.full_name;
+  }
+  
+  // National ID
+  if (data.national_id !== undefined && data.national_id !== null && data.national_id !== '') {
+    mapped.national_id = data.national_id;
+  }
+  
+  // Birth Place
+  if (data.birth_place !== undefined && data.birth_place !== null && data.birth_place !== '') {
+    mapped.birth_place = data.birth_place;
+  }
+  
+  // Birth Date (ISO format)
+  if (data.birth_date !== undefined && data.birth_date !== null && data.birth_date !== '') {
+    mapped.birth_date = data.birth_date;
+  }
+  
+  // Religion ID
+  if (data.religion_id !== undefined && data.religion_id !== null && data.religion_id !== '') {
+    mapped.religion_id = data.religion_id;
+  }
+  
+  // Email
+  if (data.email !== undefined && data.email !== null && data.email !== '') {
+    mapped.email = data.email;
+  }
+  
+  // Gender (M/F)
+  if (data.gender !== undefined && data.gender !== null && data.gender !== '') {
+    mapped.gender = data.gender;
+  }
+  
+  // Phone Number
+  if (data.phone_number !== undefined && data.phone_number !== null && data.phone_number !== '') {
+    mapped.phone_number = data.phone_number;
+  }
+  
+  // Blood Type
+  if (data.blood_type !== undefined && data.blood_type !== null && data.blood_type !== '') {
+    mapped.blood_type = data.blood_type;
+  }
+  
+  // Last Education ID
+  if (data.last_education_id !== undefined && data.last_education_id !== null && data.last_education_id !== '') {
+    mapped.last_education_id = data.last_education_id;
+  }
+  
+  // Marital Status
+  if (data.marital_status !== undefined && data.marital_status !== null && data.marital_status !== '') {
+    mapped.marital_status = data.marital_status;
+  }
+  
+  // Household Dependents
+  if (data.household_dependents !== undefined && data.household_dependents !== null && data.household_dependents !== '') {
+    mapped.household_dependents = data.household_dependents;
+  }
+  
+  // Avatar (File object)
+  if (data.avatar !== undefined && data.avatar !== null) {
+    mapped.avatar = data.avatar;
+  }
+  
+  // Current Address
+  if (data.current_address !== undefined && data.current_address !== null && data.current_address !== '') {
+    mapped.current_address = data.current_address;
+  }
+  
+  // KTP Address
+  if (data.ktp_address !== undefined && data.ktp_address !== null && data.ktp_address !== '') {
+    mapped.ktp_address = data.ktp_address;
+  }
+
+  return mapped;
+};
+
+// ===================== Hook Implementation =====================
+
+/**
+ * Hook untuk mengelola Personal Information Karyawan
+ * @param employeeId - ID karyawan (opsional, bisa diset saat call)
+ * @returns Object dengan state dan action functions
+ */
+export const usePersonalInformation = (employeeId?: string): UsePersonalInformationState & UsePersonalInformationActions => {
+  const [data, setData] = useState<MappedPersonalInformation | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { fetchDetail } = useDetailDataKaryawanPersonalInfo()
+
+  /**
+   * Get Personal Information Data
+   */
+  const getPersonalInformation = useCallback(
+    async (id: string = employeeId!) => {
+      if (!id) {
+        setError('Employee ID is required');
+        return;
+      }
+
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await personalInformationService.getPersonalInformationData(id);
+
+        if (response.success && response.data) {
+          const mappedData = mapPersonalInformation(response.data);
+          setData(mappedData);
+        } else {
+          setError(response.message || 'Failed to fetch personal information');
+        }
+      } catch (err: any) {
+        const errorMessage = err?.message || 'An error occurred while fetching personal information';
+        setError(errorMessage);
+        console.error('getPersonalInformation error:', err);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [employeeId]
+  );
+
+  /**
+   * Update Personal Data
+   */
+  const updatePersonalData = useCallback(
+    async (id: string = employeeId!, payload: UpdatePersonalDataPayload) => {
+      if (!id) {
+        setError('Employee ID is required');
+        return;
+      }
+
+      setLoading(true);
+      setError(null);
+
+      try {
+        const mappedPayload = mapUpdatePersonalPayload(payload);
+        const response = await personalInformationService.updatePersonalData(id, mappedPayload);
+
+        if (response.success && response.data && data) {
+          const updatedPersonal = mapPersonalData(response.data);
+          setData({
+            ...data,
+            personal: updatedPersonal,
+          });
+        } else {
+          setError(response.message || 'Failed to update personal data');
+        }
+      } catch (err: any) {
+        const errorMessage = err?.message || 'An error occurred while updating personal data';
+        setError(errorMessage);
+        console.error('updatePersonalData error:', err);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [employeeId, data]
+  );
+
+  /**
+   * Update Education Data
+   */
+  const updateEducationData = useCallback(
+    async (id: string = employeeId!, payload: UpdateEducationDataPayload | EducationModalForm) => {
+      if (!id) {
+        setError('Employee ID is required');
+        return;
+      }
+
+      setLoading(true);
+      setError(null);
+
+      try {
+        // Map modal form to API payload jika diperlukan
+        const mappedPayload = (payload && 'education' in payload) 
+          ? mapEducationModalToPayload(payload as EducationModalForm)
+          : payload as UpdateEducationDataPayload;
+
+        const response = await personalInformationService.updateEducationData(id, mappedPayload);
+        console.log('updateEducationData response:', response);
+        if (response.meta.status === 200  ) {
+            addNotification({ 
+            variant: 'success',
+            title: 'Berhasil',
+            description: 'Data pendidikan berhasil diperbarui.',
+            hideDuration: 3000 });
+            fetchDetail(id);
+
+        //   const educationFormal = (response.data.education_formal || []).map(mapEducationFormal);
+        //   const educationNonFormal = (response.data.education_non_formal || []).map(mapEducationNonFormal);
+        
+        //   setData({
+        //     ...data,
+        //     educationFormal,
+        //     educationNonFormal,
+        //   });
+        } else {
+          setError(response.message || 'Failed to update education data');
+        }
+      } catch (err: any) {
+        const errorMessage = err?.message || 'An error occurred while updating education data';
+        setError(errorMessage);
+        console.error('updateEducationData error:', err);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [employeeId, data]
+  );
+
+  /**
+   * Update Social Media Data
+   */
+  const updateSocialMediaData = useCallback(
+    async (id: string = employeeId!, payload: UpdateSocialMediaDataPayload) => {
+      if (!id) {
+        setError('Employee ID is required');
+        return;
+      }
+
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await personalInformationService.updateSocialMediaData(id, payload);
+
+        if (response.success && response.data && data) {
+          const updatedSocialMedia = mapSocialMedia(response.data);
+          setData({
+            ...data,
+            socialMedia: updatedSocialMedia,
+          });
+        } else {
+          setError(response.message || 'Failed to update social media data');
+        }
+      } catch (err: any) {
+        const errorMessage = err?.message || 'An error occurred while updating social media data';
+        setError(errorMessage);
+        console.error('updateSocialMediaData error:', err);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [employeeId, data]
+  );
+
+  /**
+   * Update Salary Data
+   */
+  const updateSalaryData = useCallback(
+    async (id: string = employeeId!, payload: UpdateSalaryDataPayload) => {
+      if (!id) {
+        setError('Employee ID is required');
+        return;
+      }
+
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await personalInformationService.updateSalaryData(id, payload);
+
+        if (response.success && response.data && data) {
+          const updatedSalary = mapSalary(response.data);
+          setData({
+            ...data,
+            salary: updatedSalary,
+          });
+        } else {
+          setError(response.message || 'Failed to update salary data');
+        }
+      } catch (err: any) {
+        const errorMessage = err?.message || 'An error occurred while updating salary data';
+        setError(errorMessage);
+        console.error('updateSalaryData error:', err);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [employeeId, data]
+  );
+
+  /**
+   * Reset Error State
+   */
+  const resetError = useCallback(() => {
+    setError(null);
+  }, []);
+
+  return {
+    data,
+    loading,
+    error,
+    getPersonalInformation,
+    updatePersonalData,
+    updateEducationData,
+    updateSocialMediaData,
+    updateSalaryData,
+    resetError,
+  };
+};
+
+export default usePersonalInformation;

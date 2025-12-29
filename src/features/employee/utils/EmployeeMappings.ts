@@ -82,7 +82,7 @@ export const PENDIDIKAN_OPTIONS = [
 ];
 
 export const JENIS_KELAMIN_OPTIONS = [
-  { label: 'Laki-laki', value: 'Laki-laki' },
+  { label: 'Laki-laki', value: 'Laki-Laki' },
   { label: 'Perempuan', value: 'Perempuan' },
 ];
 

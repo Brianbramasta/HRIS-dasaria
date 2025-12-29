@@ -6,39 +6,57 @@ import { Edit2 } from 'react-feather';
 import { useModal } from '@/hooks/useModal';
 import EmployeeDataModal, { type EmployeeDataForm } from '@/features/employee/components/modals/employee-data/personal-information/EmployeeDataModal';
 import { IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
+import { useMemo } from 'react';
 
 interface Props {
-  data: any; // API response from employee-master-data
+  data: any; // API response from employee-master-data (Employment_Position_Data)
 }
 
 export default function EmployeeDataCard({ data }: Props) {
   const { isOpen, openModal, closeModal } = useModal(false);
 
-  const initialForm: EmployeeDataForm = {
-    company: data?.company_name || '',
-    departemen: data?.department_name || '',
-    divisi: data?.division_name || '',
-    direktorate: data?.directorate_name || '',
-    office: data?.office_name || '',
-    position: data?.position_level || '',
-    jabatan: data?.job_title_name || '',
-    joinDate: data?.start_date || '',
-    endDate: data?.end_date || '',
-    grade: data?.grade || '',
-    statusKaryawan: data?.employment_status || '',
-    statusPayroll: data?.payroll_status || '',
-    userAccess: data?.user_access || '',
-    kategoriKaryawan: data?.employee_category || '',
-  };
+  // Transform API data ke format modal dengan mapping yang benar
+  const initialForm: EmployeeDataForm = useMemo(() => {
+    return {
+      company: data?.company_name || '',
+      company_id: data?.company_id || '',
+      kantor: data?.office_name || '',
+      kantor_id: data?.office_id || '',
+      direktorat: data?.directorate_name || '',
+      direktorat_id: data?.directorate_id || '',
+      divisi: data?.division_name || '',
+      divisi_id: data?.division_id || '',
+      departemen: data?.department_name || '',
+      departemen_id: data?.department_id || '',
+      position: data?.position_name || '',
+      position_id: data?.position_id || '',
+      jabatan: data?.job_title_name || '',
+      jabatan_id: data?.job_title_id || '',
+      tanggalMasuk: data?.start_date || '',
+      tanggalAkhir: data?.end_date || '',
+      golongan: data?.grade || '',
+      statusKaryawan: data?.employment_status || '',
+      statusPayroll: data?.payroll_status || '',
+      userAccess: data?.user_access || '',
+      kategoriKaryawan: data?.employee_category || '',
+      kategori_karyawan_id: data?.employee_category_id || '',
+      jenjangJabatan: data?.position_level || '',
+      jenjang_jabatan_id: data?.position_level_id || '',
+    };
+  }, [data]);
 
-  const isComplete = !!data?.company_name &&
-    !!data?.department_name &&
-    !!data?.start_date &&
-    !!data?.office_name &&
-    !!data?.employment_status &&
-    !!data?.payroll_status &&
-    !!data?.employee_category &&
-    !!data?.position_level;
+  const isComplete = useMemo(() => {
+    return !!(
+      data?.company_name &&
+      data?.department_name &&
+      data?.start_date &&
+      data?.office_name &&
+      data?.employment_status &&
+      data?.payroll_status &&
+      data?.employee_category &&
+      data?.position_level
+    );
+  }, [data]);
 
   return (
     <ExpandCard title="Data Karyawan" leftIcon={isComplete ? <IconLengkap /> : <IconTidakLengkap />} withHeaderDivider>
@@ -72,7 +90,6 @@ export default function EmployeeDataCard({ data }: Props) {
             <Label>Divisi</Label>
             <InputField value={data?.division_name || ''} readonly={true} />
           </div>
-          
         </div>
 
         <div className="space-y-4">
@@ -82,7 +99,7 @@ export default function EmployeeDataCard({ data }: Props) {
           </div>
           <div>
             <Label>Position</Label>
-            <InputField value={data?.position_level || ''} readonly={true} />
+            <InputField value={data?.position_name || ''} readonly={true} />
           </div>
           <div>
             <Label>Jabatan</Label>
@@ -96,10 +113,6 @@ export default function EmployeeDataCard({ data }: Props) {
             <Label>Golongan</Label>
             <InputField value={data?.grade || ''} readonly={true} />
           </div>
-          {/* <div>
-            <Label>Hak Akses Pengguna</Label>
-            <InputField value={data?.user_access || ''} readonly={true} />
-          </div> */}
           <div>
             <Label>Status PayRoll</Label>
             <InputField value={data?.payroll_status || ''} readonly={true} />
@@ -111,12 +124,14 @@ export default function EmployeeDataCard({ data }: Props) {
         </div>
       </div>
 
-      <div className="mt-4 flex justify-end">
-        <Button variant="primary" size="sm" onClick={openModal}>
-          <Edit2 size={16} className="mr-2" /> Edit
-        </Button>
-      </div>
-
+    {/* tanyakan rafi rulenya */}
+      {data?.employment_status !== 'Aktif' && (
+        <div className="mt-4 flex justify-end">
+          <Button variant="primary" size="sm" onClick={openModal}>
+            <Edit2 size={16} className="mr-2" /> Edit
+          </Button>
+        </div>
+      )}
       <EmployeeDataModal
         isOpen={isOpen}
         initialData={initialForm}

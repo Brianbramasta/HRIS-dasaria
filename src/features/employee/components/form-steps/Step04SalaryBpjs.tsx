@@ -14,8 +14,8 @@ export const Step04SalaryBpjs: React.FC = () => {
   const { formData, updateStep3 } = useFormulirKaryawanStore();
   const step3 = formData.step3;
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  const { ptkpOptions, loading, fetchPTKPOptions } = usePTKPDropdown();
-  const { bankOptions } = useStep4Data();
+  const { ptkpOptions, loading, fetchPTKPOptions } = usePTKPDropdown(true);
+  const { bankOptions } = useStep4Data(true);
 
   const handleChange = (field: string, value: string) => {
     updateStep3({ [field]: value } as any);

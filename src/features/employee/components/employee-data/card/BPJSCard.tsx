@@ -8,51 +8,53 @@ import SalaryBpjsModal, { type SalaryBpjsForm } from '@/features/employee/compon
 import { IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
 
 interface Props {
-  financeAndCompliance: any; // API response from employee-master-data
+  salaryData?: any; // Salary_Data from API response
+  bpjsData?: any;  // BPJS_Data from API response
 }
 
-export default function BPJSCard({ financeAndCompliance }: Props) {
+export default function BPJSCard({ salaryData, bpjsData }: Props) {
   const { isOpen, openModal, closeModal } = useModal(false);
+  
   const initialData: SalaryBpjsForm = {
     gaji: '',
-    bank: '',
-    noRekening: '',
-    namaAkunBank: '',
-    npwp: '',
-    ptkpStatus: '',
-    noBpjsKS: financeAndCompliance?.bpjs_health_number || '',
-    statusBpjsKS: financeAndCompliance?.bpjs_health_status || '',
-    noBpjsTK: financeAndCompliance?.bpjs_employment_number || '',
-    statusBpjsTK: financeAndCompliance?.bpjs_employment_status || '',
+    bank: salaryData?.bank_id || '',
+    noRekening: salaryData?.bank_account_number?.toString() || '',
+    namaAkunBank: salaryData?.bank_account_holder || '',
+    npwp: salaryData?.npwp || '',
+    ptkpStatus: salaryData?.ptkp_id || '',
+    noBpjsKS: bpjsData?.bpjs_health_number?.toString() || '',
+    statusBpjsKS: bpjsData?.bpjs_health_status || '',
+    noBpjsTK: bpjsData?.bpjs_employment_number?.toString() || '',
+    statusBpjsTK: bpjsData?.bpjs_employment_status || '',
     nominalBpjsTK: '',
   };
-  const isComplete = !!financeAndCompliance?.bpjs_health_number &&
-    !!financeAndCompliance?.bpjs_health_status &&
-    !!financeAndCompliance?.bpjs_employment_number &&
-    !!financeAndCompliance?.bpjs_employment_status;
+
+  const isComplete = !!(
+    bpjsData?.bpjs_health_number &&
+    bpjsData?.bpjs_health_status &&
+    bpjsData?.bpjs_employment_number &&
+    bpjsData?.bpjs_employment_status
+  );
+
   return (
     <ExpandCard title="BPJS" leftIcon={isComplete ? <IconLengkap /> : <IconTidakLengkap />} withHeaderDivider>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
           <Label>No. BPJS Kesehatan</Label>
-          <InputField value={financeAndCompliance?.bpjs_health_number || ''} readonly={true} />
+          <InputField value={bpjsData?.bpjs_health_number || ''} readonly={true} />
         </div>
         <div>
           <Label>Status BPJS Kesehatan</Label>
-          <InputField value={financeAndCompliance?.bpjs_health_status || ''} readonly={true} />
+          <InputField value={bpjsData?.bpjs_health_status || ''} readonly={true} />
         </div>
         <div>
           <Label>No. BPJS Ketenagakerjaan</Label>
-          <InputField value={financeAndCompliance?.bpjs_employment_number || ''} readonly={true} />
+          <InputField value={bpjsData?.bpjs_employment_number || ''} readonly={true} />
         </div>
         <div>
           <Label>Status BPJS Ketenagakerjaan</Label>
-          <InputField value={financeAndCompliance?.bpjs_employment_status || ''} readonly={true} />
+          <InputField value={bpjsData?.bpjs_employment_status || ''} readonly={true} />
         </div>
-        {/* <div>
-          <Label>Nominal BPJS TK</Label>
-          <InputField value={financeAndCompliance.nominalBpjsTk || ''} readonly={true} />
-        </div> */}
       </div>
       <div className="mt-4 flex justify-end">
         <Button variant="primary" size="sm" onClick={openModal}>

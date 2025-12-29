@@ -1,0 +1,291 @@
+// Service: Employee Personal Information Data
+import apiService, { ApiResponse } from '../../../../services/api';
+
+// ===================== Response Types =====================
+
+export interface PersonalDataResponse {
+  full_name: string;
+  national_id: string | null;
+  birth_place: string | null;
+  birth_date: string | null;
+  religion_id: string | null;
+  email: string | null;
+  gender: string | null;
+  phone_number: string | null;
+  blood_type: string | null;
+  last_education_id: string | null;
+  marital_status: string | null;
+  household_dependents: number | null;
+  avatar: string | null;
+  current_address: string | null;
+  ktp_address: string | null;
+}
+
+export interface EducationFormalItem {
+  id: string;
+  education_level_id: string;
+  institution_name: string;
+  degree: string;
+  final_grade: string | number;
+  major: string;
+  graduation_year: string | number;
+}
+
+export interface EducationNonFormalItem {
+  id: string;
+  certificate_name: string;
+  institution_name: string;
+  start_date: string;
+  end_date: string;
+  certificate_id: string;
+  certificate_file: string | null;
+}
+
+export interface SocialMediaDataResponse {
+  facebook_name: string | null;
+  instagram_name: string | null;
+  linkedin_name: string | null;
+  twitter_name: string | null;
+  relative_social_media: string | null;
+  emergency_contact_number: string | null;
+  emergency_contact_name: string | null;
+  emergency_contact_relationship: string | null;
+}
+
+export interface SalaryDataResponse {
+  bank_account_number: string | null;
+  bank_account_holder: string | null;
+  bank_id: string | null;
+  npwp: string | null;
+  ptkp_id: string | null;
+}
+
+export interface PersonalInformationData {
+  personal: PersonalDataResponse;
+  education_formal: EducationFormalItem[];
+  education_non_formal: EducationNonFormalItem[];
+  social_media: SocialMediaDataResponse;
+  salary: SalaryDataResponse;
+}
+
+// ===================== Request Payload Types =====================
+
+export interface UpdatePersonalDataPayload {
+  full_name?: string;
+  national_id?: string;
+  birth_place?: string;
+  birth_date?: string; // YYYY-MM-DD
+  religion_id?: string;
+  email?: string;
+  gender?: string;
+  phone_number?: string;
+  blood_type?: string;
+  last_education_id?: string;
+  marital_status?: string;
+  household_dependents?: string | number;
+  avatar?: File;
+  current_address?: string;
+  ktp_address?: string;
+}
+
+export interface EducationFormalDetailItem {
+  id?: string;
+  education_level_id: string;
+  institution_name: string;
+  degree: string;
+  final_grade: string | number;
+  major: string;
+  graduation_year: string | number;
+}
+
+export interface EducationNonFormalDetailItem {
+  id?: string;
+  certificate_name: string;
+  institution_name: string;
+  start_date: string; // YYYY-MM-DD
+  end_date: string; // YYYY-MM-DD
+  certificate_id: string;
+  certificate_file?: File;
+}
+
+export interface UpdateEducationDataPayload {
+  education_formal_detail?: EducationFormalDetailItem[];
+  non_formal_education?: EducationNonFormalDetailItem[];
+}
+
+export interface UpdateSocialMediaDataPayload {
+  facebook_name?: string;
+  instagram_name?: string;
+  linkedin_name?: string;
+  twitter_name?: string;
+  relative_social_media?: string;
+  emergency_contact_number?: string;
+  emergency_contact_name?: string;
+  emergency_contact_relationship?: string;
+}
+
+export interface UpdateSalaryDataPayload {
+  bank_account_number?: string;
+  bank_account_holder?: string;
+  bank_id?: string;
+  npwp?: string;
+  ptkp_id?: string;
+}
+
+class PersonalInformationService {
+  private readonly basePath = 'employee-master-data/employees';
+
+  /**
+   * Get Data Informasi Pribadi - Mengambil semua data pribadi karyawan
+   * @param employeeId - ID karyawan
+   * @returns Promise dengan data personal, pendidikan, media sosial, dan gaji
+   */
+  async getPersonalInformationData(employeeId: string): Promise<ApiResponse<any>> {
+    return apiService.get<any>(`${this.basePath}/${employeeId}/data-personal`);
+  }
+
+  /**
+   * Update Data Pribadi - Mengupdate informasi personal karyawan
+   * @param employeeId - ID karyawan
+   * @param payload - Data pribadi yang akan diupdate
+   * @returns Promise dengan response data yang diupdate
+   */
+  async updatePersonalData(
+    employeeId: string,
+    payload: UpdatePersonalDataPayload
+  ): Promise<ApiResponse<PersonalDataResponse>> {
+    const formData = this.buildFormData(payload);
+    formData.append('_method', 'PATCH');
+
+    return apiService.post<PersonalDataResponse>(
+      `${this.basePath}/${employeeId}/update-personal-data`,
+      formData,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }
+    );
+  }
+
+  /**
+   * Update Data Pendidikan - Mengupdate pendidikan formal dan non-formal
+   * @param employeeId - ID karyawan
+   * @param payload - Data pendidikan yang akan diupdate
+   * @returns Promise dengan response data pendidikan yang diupdate
+   */
+  async updateEducationData(
+    employeeId: string,
+    payload: UpdateEducationDataPayload
+  ): Promise<ApiResponse<{ education_formal: EducationFormalItem[]; education_non_formal: EducationNonFormalItem[] }>> {
+    const formData = new FormData();
+    formData.append('_method', 'PATCH');
+
+    // Handle Pendidikan Formal
+    if (payload.education_formal_detail && payload.education_formal_detail.length > 0) {
+      payload.education_formal_detail.forEach((edu, index) => {
+        if (edu.id) {
+          formData.append(`education_formal_detail[${index}][id]`, edu.id);
+        }
+        formData.append(`education_formal_detail[${index}][education_level_id]`, edu.education_level_id);
+        formData.append(`education_formal_detail[${index}][institution_name]`, edu.institution_name);
+        formData.append(`education_formal_detail[${index}][degree]`, edu.degree);
+        formData.append(`education_formal_detail[${index}][final_grade]`, edu.final_grade.toString());
+        formData.append(`education_formal_detail[${index}][major]`, edu.major);
+        formData.append(`education_formal_detail[${index}][graduation_year]`, edu.graduation_year.toString());
+      });
+    }
+
+    // Handle Pendidikan Non-Formal
+    if (payload.non_formal_education && payload.non_formal_education.length > 0) {
+      payload.non_formal_education.forEach((edu, index) => {
+        if (edu.id) {
+          formData.append(`non_formal_education[${index}][id]`, edu.id);
+        }
+        formData.append(`non_formal_education[${index}][certificate_name]`, edu.certificate_name);
+        formData.append(`non_formal_education[${index}][institution_name]`, edu.institution_name);
+        formData.append(`non_formal_education[${index}][start_date]`, edu.start_date);
+        formData.append(`non_formal_education[${index}][end_date]`, edu.end_date);
+        formData.append(`non_formal_education[${index}][certificate_id]`, edu.certificate_id);
+        if (edu.certificate_file) {
+          formData.append(`non_formal_education[${index}][certificate_file]`, edu.certificate_file);
+        }
+      });
+    }
+
+    return apiService.post<{ education_formal: EducationFormalItem[]; education_non_formal: EducationNonFormalItem[] }>(
+      `${this.basePath}/${employeeId}/update-education-data`,
+      formData,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }
+    );
+  }
+
+  /**
+   * Update Data Media Sosial - Mengupdate informasi media sosial dan kontak darurat
+   * @param employeeId - ID karyawan
+   * @param payload - Data media sosial yang akan diupdate
+   * @returns Promise dengan response data media sosial yang diupdate
+   */
+  async updateSocialMediaData(
+    employeeId: string,
+    payload: UpdateSocialMediaDataPayload
+  ): Promise<ApiResponse<SocialMediaDataResponse>> {
+    const formData = this.buildFormData(payload);
+    formData.append('_method', 'PATCH');
+
+    return apiService.post<SocialMediaDataResponse>(
+      `${this.basePath}/${employeeId}/update-social-media-data`,
+      formData,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }
+    );
+  }
+
+  /**
+   * Update Data Gaji - Mengupdate informasi gaji dan perpajakan
+   * @param employeeId - ID karyawan
+   * @param payload - Data gaji dan perpajakan yang akan diupdate
+   * @returns Promise dengan response data gaji yang diupdate
+   */
+  async updateSalaryData(
+    employeeId: string,
+    payload: UpdateSalaryDataPayload
+  ): Promise<ApiResponse<SalaryDataResponse>> {
+    const formData = this.buildFormData(payload);
+    formData.append('_method', 'PATCH');
+
+    return apiService.post<SalaryDataResponse>(
+      `${this.basePath}/${employeeId}/update-salary-data`,
+      formData,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }
+    );
+  }
+
+  /**
+   * Helper method - Mengkonversi object payload ke FormData
+   * @param payload - Object dengan key-value untuk dikonversi
+   * @returns FormData instance
+   */
+  private buildFormData(payload: any): FormData {
+    const formData = new FormData();
+
+    Object.keys(payload).forEach((key) => {
+      const value = payload[key];
+      if (value !== undefined && value !== null && value !== '') {
+        if (value instanceof File) {
+          formData.append(key, value);
+        } else {
+          formData.append(key, value.toString());
+        }
+      }
+    });
+
+    return formData;
+  }
+}
+
+export const personalInformationService = new PersonalInformationService();
+export default personalInformationService;
