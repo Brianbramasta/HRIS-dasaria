@@ -3333,10 +3333,55 @@
 											"response": []
 										},
 										{
-											"name": "New Request",
+											"name": "update bpjs employe",
 											"request": {
-												"method": "GET",
-												"header": []
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "formdata",
+													"formdata": [
+														{
+															"key": "_method",
+															"value": "PATCH",
+															"type": "text"
+														},
+														{
+															"key": "bpjs_employment_number",
+															"value": "1",
+															"type": "text"
+														},
+														{
+															"key": "bpjs_employment_status",
+															"value": "Tidak Aktif",
+															"description": "Aktif, Tidak Aktif",
+															"type": "text"
+														},
+														{
+															"key": "bpjs_health_number",
+															"value": "1",
+															"type": "text"
+														},
+														{
+															"key": "bpjs_health_status",
+															"value": "Tidak Aktif",
+															"description": "Aktif, Tidak Aktif",
+															"type": "text"
+														}
+													]
+												},
+												"url": {
+													"raw": "{{base_url}}/api/employee-master-data/employees/DSR011/update-bpjs-data",
+													"host": [
+														"{{base_url}}"
+													],
+													"path": [
+														"api",
+														"employee-master-data",
+														"employees",
+														"DSR011",
+														"update-bpjs-data"
+													]
+												}
 											},
 											"response": []
 										}
@@ -3713,13 +3758,14 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{base_url}}/api/employee-master-data/directorate",
+									"raw": "{{base_url}}/api/employee-master-data/employees/directorate",
 									"host": [
 										"{{base_url}}"
 									],
 									"path": [
 										"api",
 										"employee-master-data",
+										"employees",
 										"directorate"
 									]
 								}

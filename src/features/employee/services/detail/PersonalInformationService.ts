@@ -60,12 +60,20 @@ export interface SalaryDataResponse {
   ptkp_id: string | null;
 }
 
+export interface BpjsDataResponse {
+  bpjs_employment_number: string | null;
+  bpjs_employment_status: string | null;
+  bpjs_health_number: string | null;
+  bpjs_health_status: string | null;
+}
+
 export interface PersonalInformationData {
   personal: PersonalDataResponse;
   education_formal: EducationFormalItem[];
   education_non_formal: EducationNonFormalItem[];
   social_media: SocialMediaDataResponse;
   salary: SalaryDataResponse;
+  bpjs?: BpjsDataResponse;
 }
 
 // ===================== Request Payload Types =====================
@@ -130,6 +138,13 @@ export interface UpdateSalaryDataPayload {
   bank_id?: string;
   npwp?: string;
   ptkp_id?: string;
+}
+
+export interface UpdateBpjsDataPayload {
+  bpjs_employment_number?: string;
+  bpjs_employment_status?: string;
+  bpjs_health_number?: string;
+  bpjs_health_status?: string;
 }
 
 class PersonalInformationService {
@@ -257,6 +272,28 @@ class PersonalInformationService {
 
     return apiService.post<SalaryDataResponse>(
       `${this.basePath}/${employeeId}/update-salary-data`,
+      formData,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }
+    );
+  }
+
+  /**
+   * Update Data BPJS - Mengupdate informasi BPJS Ketenagakerjaan dan Kesehatan
+   * @param employeeId - ID karyawan
+   * @param payload - Data BPJS yang akan diupdate
+   * @returns Promise dengan response data BPJS yang diupdate
+   */
+  async updateBpjsData(
+    employeeId: string,
+    payload: UpdateBpjsDataPayload
+  ): Promise<ApiResponse<BpjsDataResponse>> {
+    const formData = this.buildFormData(payload);
+    formData.append('_method', 'PATCH');
+
+    return apiService.post<BpjsDataResponse>(
+      `${this.basePath}/${employeeId}/update-bpjs-data`,
       formData,
       {
         headers: { 'Content-Type': 'multipart/form-data' },

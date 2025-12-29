@@ -6,13 +6,21 @@ import { Edit2 } from 'react-feather';
 import { useModal } from '@/hooks/useModal';
 import MediaSosialModal, { type MediaSosialForm } from '@/features/employee/components/modals/employee-data/personal-information/MediaSosialModal';
 import { IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
+import { usePersonalInformation } from '@/features/employee/hooks/employee-data/detail/contract/usePersonalInformation';
+import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
 
 interface Props {
   personalInformation: any; // API response from Data_Sosial_media.social_media array
+  employeeId?: string; // ID karyawan untuk update
 }
 
 export default function SocialEmergencyCard({ personalInformation }: Props) {
   const { isOpen, openModal, closeModal } = useModal(false);
+  
+  const {detail} = useDetailDataKaryawanPersonalInfo();
+  const employeeId = detail?.Personal_Data?.id;
+  const { updateSocialMediaData, loading: submitting } = usePersonalInformation(employeeId);
+
   
   // Extract social media and emergency contact data from social_media array
   const socialEmergencyData = personalInformation[0] || {};
@@ -82,12 +90,21 @@ export default function SocialEmergencyCard({ personalInformation }: Props) {
         isOpen={isOpen}
         initialData={initialData}
         onClose={closeModal}
-        onSubmit={(payload) => {
-          // Simpan perubahan sosial & kontak darurat
-          console.log('Save Sosial & Kontak Darurat', payload);
-          closeModal();
+        onSubmit={async (payload) => {
+          // Panggil updateSocialMediaData dengan payload dari modal
+          if (!employeeId) {
+            console.error('Employee ID is required');
+            return;
+          }
+          
+          try {
+            await updateSocialMediaData(employeeId, payload as any);
+            closeModal();
+          } catch (error) {
+            console.error('Failed to update social media data:', error);
+          }
         }}
-        submitting={false}
+        submitting={submitting}
       />
     </ExpandCard>
   );

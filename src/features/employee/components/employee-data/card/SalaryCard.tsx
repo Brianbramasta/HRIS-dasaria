@@ -6,14 +6,20 @@ import { Edit2 } from 'react-feather';
 import { useModal } from '@/hooks/useModal';
 import SalaryBpjsModal, { type SalaryBpjsForm } from '@/features/employee/components/modals/employee-data/personal-information/SalaryBpjsModal';
 import { IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
+import { usePersonalInformation } from '@/features/employee/hooks/employee-data/detail/contract/usePersonalInformation';
+import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
 
 interface Props {
+  employeeId?: string;
   salaryData?: any; // Salary_Data from API response
   bpjsData?: any;  // BPJS_Data from API response
 }
 
-export default function SalaryCard({ salaryData, bpjsData }: Props) {
+export default function SalaryCard({  salaryData, bpjsData }: Props) {
   const { isOpen, openModal, closeModal } = useModal(false);
+  const {detail} = useDetailDataKaryawanPersonalInfo();
+    const employeeId = detail?.Personal_Data?.id;
+  const { updateSalaryData, updateBpjsData, loading } = usePersonalInformation(employeeId);
   
   const initialData: SalaryBpjsForm = {
     gaji: '',
@@ -81,13 +87,12 @@ export default function SalaryCard({ salaryData, bpjsData }: Props) {
 
       <SalaryBpjsModal
         isOpen={isOpen}
+        employeeId={employeeId}
         initialData={initialData}
         onClose={closeModal}
-        onSubmit={(payload) => {
-          console.log('Save Salary & BPJS', payload);
-          closeModal();
-        }}
-        submitting={false}
+        onSubmitSalary={updateSalaryData}
+        onSubmitBpjs={updateBpjsData}
+        submitting={loading}
       />
     </ExpandCard>
   );

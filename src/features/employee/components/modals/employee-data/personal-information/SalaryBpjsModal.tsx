@@ -5,6 +5,7 @@ import InputField from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
 import { usePTKPDropdown, useStep4Data } from '../../../../hooks/employee-data/form/useFromStep';
 import { BPJS_STATUS_OPTIONS, BPJS_TK_STATUS_OPTIONS } from '../../../../utils/EmployeeMappings';
+import { UpdateSalaryDataPayload, UpdateBpjsDataPayload } from '@/features/employee/services/detail/PersonalInformationService';
 
 export type SalaryBpjsForm = {
   gaji?: string;
@@ -22,14 +23,25 @@ export type SalaryBpjsForm = {
 
 interface Props {
   isOpen: boolean;
+  employeeId?: string;
   initialData?: SalaryBpjsForm | null;
   onClose: () => void;
-  onSubmit: (data: SalaryBpjsForm) => void;
+  onSubmitSalary?: (employeeId: string, payload: UpdateSalaryDataPayload) => Promise<void>;
+  onSubmitBpjs?: (employeeId: string, payload: UpdateBpjsDataPayload) => Promise<void>;
   submitting?: boolean;
 }
 
-const SalaryBpjsModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSubmit, submitting = false }) => {
+const SalaryBpjsModal: React.FC<Props> = ({ 
+  isOpen, 
+  employeeId = '', 
+  initialData, 
+  onClose, 
+  onSubmitSalary,
+  onSubmitBpjs,
+  submitting = false 
+}) => {
   const [form, setForm] = useState<SalaryBpjsForm>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const title = useMemo(() => 'Edit Salary & BPJS', []);
   const { ptkpOptions, loading: ptkpLoading, fetchPTKPOptions } = usePTKPDropdown(isOpen);
   const { bankOptions } = useStep4Data(isOpen);
@@ -40,6 +52,49 @@ const SalaryBpjsModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSubm
 
   const handleInput = (key: keyof SalaryBpjsForm, value: any) => {
     setForm((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleSubmit = async () => {
+    if (!employeeId) {
+      console.error('Employee ID is required');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      // Prepare Salary Data Payload (sesuai dokumentasi API)
+      const salaryPayload: UpdateSalaryDataPayload = {
+        bank_id: form.bank,
+        bank_account_number: form.noRekening,
+        bank_account_holder: form.namaAkunBank,
+        npwp: form.npwp,
+        ptkp_id: form.ptkpStatus,
+      };
+
+      // Prepare BPJS Data Payload (sesuai dokumentasi API)
+      const bpjsPayload: UpdateBpjsDataPayload = {
+        bpjs_employment_number: form.noBpjsTK,
+        bpjs_employment_status: form.statusBpjsTK,
+        bpjs_health_number: form.noBpjsKS,
+        bpjs_health_status: form.statusBpjsKS,
+      };
+
+      // Call salary update if handler exists
+      if (onSubmitSalary) {
+        await onSubmitSalary(employeeId, salaryPayload);
+      }
+
+      // Call BPJS update if handler exists
+      if (onSubmitBpjs) {
+        await onSubmitBpjs(employeeId, bpjsPayload);
+      }
+
+      onClose();
+    } catch (err) {
+      console.error('Error submitting salary and BPJS data:', err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const content = (
@@ -140,8 +195,8 @@ const SalaryBpjsModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSubm
       isOpen={isOpen}
       onClose={onClose}
       content={content}
-      handleSubmit={() => onSubmit(form)}
-      submitting={!!submitting}
+      handleSubmit={handleSubmit}
+      submitting={isSubmitting || !!submitting}
       maxWidth="max-w-5xl"
     />
   );

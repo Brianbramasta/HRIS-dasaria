@@ -1,6 +1,6 @@
 # Kontrak API – Informasi Pribadi Karyawan (Detail)
 
-Dokumen ini merinci kontrak API untuk fitur `Informasi Pribadi` dalam halaman Detail Karyawan. Setiap operasi dapat mengelola data personal, pendidikan, media sosial, dan informasi gaji. Diselaraskan dengan Postman collection yang tersedia.
+Dokumen ini merinci kontrak API untuk fitur `Informasi Pribadi` dalam halaman Detail Karyawan. Setiap operasi dapat mengelola data personal, pendidikan, media sosial, informasi gaji, dan data BPJS. Diselaraskan dengan Postman collection yang tersedia.
 
 ## Konvensi Umum
 
@@ -283,6 +283,40 @@ Dokumen ini merinci kontrak API untuk fitur `Informasi Pribadi` dalam halaman De
 
 ---
 
+## Operasi CRUD – Data BPJS
+
+### Update Data BPJS
+
+**Endpoint**: `POST /api/employee-master-data/employees/{employeeId}/update-bpjs-data`
+
+**Method Spoofing**: Gunakan field `_method: PATCH` dalam form data.
+
+**Path Parameters**:
+- `employeeId` (string, required) – ID karyawan
+
+**Request Body** (form-data):
+- `_method` (text, required) – nilai: `PATCH`
+- `bpjs_employment_number` (text, optional) – nomor BPJS Ketenagakerjaan
+- `bpjs_employment_status` (text, optional) – status BPJS Ketenagakerjaan (`Aktif` | `Tidak Aktif`)
+- `bpjs_health_number` (text, optional) – nomor BPJS Kesehatan
+- `bpjs_health_status` (text, optional) – status BPJS Kesehatan (`Aktif` | `Tidak Aktif`)
+
+**Response** (200 OK):
+```json
+{
+  "data": {
+    "bpjs_employment_number": "string | null",
+    "bpjs_employment_status": "string | null",
+    "bpjs_health_number": "string | null",
+    "bpjs_health_status": "string | null"
+  }
+}
+```
+
+**Status**: `200 OK`
+
+---
+
 ## Contoh Request cURL
 
 ### Get Data Informasi Pribadi
@@ -349,6 +383,18 @@ curl -X POST \
   -F "bank_id=2dadc10c-e891-4b93-b400-4c8ef32aaff7" \
   -F "npwp=12345678901234" \
   -F "ptkp_id=205ff4d2-71a9-4a97-8287-87d5f34b1fa7"
+```
+
+### Update Data BPJS
+```bash
+curl -X POST \
+  "http://localhost:3000/api/employee-master-data/employees/DSR011/update-bpjs-data" \
+  -H "Authorization: Bearer <token>" \
+  -F "_method=PATCH" \
+  -F "bpjs_employment_number=1000123456789" \
+  -F "bpjs_employment_status=Aktif" \
+  -F "bpjs_health_number=2000987654321" \
+  -F "bpjs_health_status=Aktif"
 ```
 
 ---

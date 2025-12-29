@@ -8,10 +8,12 @@ import {
   EducationNonFormalItem,
   SocialMediaDataResponse,
   SalaryDataResponse,
+  BpjsDataResponse,
   UpdatePersonalDataPayload,
   UpdateEducationDataPayload,
   UpdateSocialMediaDataPayload,
   UpdateSalaryDataPayload,
+  UpdateBpjsDataPayload,
 } from '@/features/employee/services/detail/PersonalInformationService';
 import { addNotification } from '@/stores/notificationStore';
 import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
@@ -75,12 +77,20 @@ export interface MappedSalary {
   ptpkId: string | null;
 }
 
+export interface MappedBpjs {
+  bpjsEmploymentNumber: string | null;
+  bpjsEmploymentStatus: string | null;
+  bpjsHealthNumber: string | null;
+  bpjsHealthStatus: string | null;
+}
+
 export interface MappedPersonalInformation {
   personal: MappedPersonalData;
   educationFormal: MappedEducationFormal[];
   educationNonFormal: MappedEducationNonFormal[];
   socialMedia: MappedSocialMedia;
   salary: MappedSalary;
+  bpjs: MappedBpjs;
 }
 
 // ===================== Hook State Types =====================
@@ -97,6 +107,7 @@ export interface UsePersonalInformationActions {
   updateEducationData: (employeeId: string, payload: UpdateEducationDataPayload) => Promise<void>;
   updateSocialMediaData: (employeeId: string, payload: UpdateSocialMediaDataPayload) => Promise<void>;
   updateSalaryData: (employeeId: string, payload: UpdateSalaryDataPayload) => Promise<void>;
+  updateBpjsData: (employeeId: string, payload: UpdateBpjsDataPayload) => Promise<void>;
   resetError: () => void;
 }
 
@@ -185,6 +196,18 @@ const mapSalary = (data: SalaryDataResponse): MappedSalary => {
 };
 
 /**
+ * Map BPJS data
+ */
+const mapBpjs = (data: BpjsDataResponse): MappedBpjs => {
+  return {
+    bpjsEmploymentNumber: data.bpjs_employment_number,
+    bpjsEmploymentStatus: data.bpjs_employment_status,
+    bpjsHealthNumber: data.bpjs_health_number,
+    bpjsHealthStatus: data.bpjs_health_status,
+  };
+};
+
+/**
  * Map full personal information response
  */
 const mapPersonalInformation = (data: PersonalInformationData): MappedPersonalInformation => {
@@ -194,6 +217,12 @@ const mapPersonalInformation = (data: PersonalInformationData): MappedPersonalIn
     educationNonFormal: data.education_non_formal.map(mapEducationNonFormal),
     socialMedia: mapSocialMedia(data.social_media),
     salary: mapSalary(data.salary),
+    bpjs: data.bpjs ? mapBpjs(data.bpjs) : {
+      bpjsEmploymentNumber: null,
+      bpjsEmploymentStatus: null,
+      bpjsHealthNumber: null,
+      bpjsHealthStatus: null,
+    },
   };
 };
 
@@ -408,7 +437,7 @@ export const usePersonalInformation = (employeeId?: string): UsePersonalInformat
       try {
         const response = await personalInformationService.getPersonalInformationData(id);
 
-        if (response.success && response.data) {
+        if (response.meta.status == 200 && response.data) {
           const mappedData = mapPersonalInformation(response.data);
           setData(mappedData);
         } else {
@@ -442,12 +471,12 @@ export const usePersonalInformation = (employeeId?: string): UsePersonalInformat
         const mappedPayload = mapUpdatePersonalPayload(payload);
         const response = await personalInformationService.updatePersonalData(id, mappedPayload);
 
-        if (response.success && response.data && data) {
-          const updatedPersonal = mapPersonalData(response.data);
-          setData({
-            ...data,
-            personal: updatedPersonal,
-          });
+        if (response.meta.status == 200) {
+        //   const updatedPersonal = mapPersonalData(response.data);
+        //   setData({
+        //     ...data,
+        //     personal: updatedPersonal,
+        //   });
         } else {
           setError(response.message || 'Failed to update personal data');
         }
@@ -513,11 +542,39 @@ export const usePersonalInformation = (employeeId?: string): UsePersonalInformat
     [employeeId, data]
   );
 
+/**
+ * Map social media data from modal form to API payload
+ * Sesuai dengan dokumentasi api.contract.personal.information.md
+ */
+interface MediaSosialForm {
+  facebook?: string;
+  linkedin?: string;
+  xCom?: string;
+  instagram?: string;
+  akunSosialMediaTerdekat?: string;
+  namaNoKontakDarurat?: string;
+  noKontakDarurat?: string;
+  hubunganKontakDarurat?: string;
+}
+
+const mapSocialMediaModalToPayload = (modalData: MediaSosialForm): UpdateSocialMediaDataPayload => {
+  return {
+    facebook_name: modalData.facebook !== undefined && modalData.facebook !== null && modalData.facebook !== '' ? modalData.facebook : undefined,
+    linkedin_name: modalData.linkedin !== undefined && modalData.linkedin !== null && modalData.linkedin !== '' ? modalData.linkedin : undefined,
+    twitter_name: modalData.xCom !== undefined && modalData.xCom !== null && modalData.xCom !== '' ? modalData.xCom : undefined,
+    instagram_name: modalData.instagram !== undefined && modalData.instagram !== null && modalData.instagram !== '' ? modalData.instagram : undefined,
+    relative_social_media: modalData.akunSosialMediaTerdekat !== undefined && modalData.akunSosialMediaTerdekat !== null && modalData.akunSosialMediaTerdekat !== '' ? modalData.akunSosialMediaTerdekat : undefined,
+    emergency_contact_number: modalData.noKontakDarurat !== undefined && modalData.noKontakDarurat !== null && modalData.noKontakDarurat !== '' ? modalData.noKontakDarurat : undefined,
+    emergency_contact_name: modalData.namaNoKontakDarurat !== undefined && modalData.namaNoKontakDarurat !== null && modalData.namaNoKontakDarurat !== '' ? modalData.namaNoKontakDarurat : undefined,
+    emergency_contact_relationship: modalData.hubunganKontakDarurat !== undefined && modalData.hubunganKontakDarurat !== null && modalData.hubunganKontakDarurat !== '' ? modalData.hubunganKontakDarurat : undefined,
+  };
+};
+
   /**
    * Update Social Media Data
    */
   const updateSocialMediaData = useCallback(
-    async (id: string = employeeId!, payload: UpdateSocialMediaDataPayload) => {
+    async (id: string = employeeId!, payload: UpdateSocialMediaDataPayload | MediaSosialForm) => {
       if (!id) {
         setError('Employee ID is required');
         return;
@@ -527,14 +584,19 @@ export const usePersonalInformation = (employeeId?: string): UsePersonalInformat
       setError(null);
 
       try {
-        const response = await personalInformationService.updateSocialMediaData(id, payload);
+        // Map modal form to API payload jika diperlukan
+        const mappedPayload = (payload && 'facebook' in payload) 
+          ? mapSocialMediaModalToPayload(payload as MediaSosialForm)
+          : payload as UpdateSocialMediaDataPayload;
 
-        if (response.success && response.data && data) {
-          const updatedSocialMedia = mapSocialMedia(response.data);
-          setData({
-            ...data,
-            socialMedia: updatedSocialMedia,
-          });
+        const response = await personalInformationService.updateSocialMediaData(id, mappedPayload);
+
+        if (response.meta.status == 200) {
+        //   const updatedSocialMedia = mapSocialMedia(response.data);
+        //   setData({
+        //     ...data,
+        //     socialMedia: updatedSocialMedia,
+        //   });
         } else {
           setError(response.message || 'Failed to update social media data');
         }
@@ -565,12 +627,18 @@ export const usePersonalInformation = (employeeId?: string): UsePersonalInformat
       try {
         const response = await personalInformationService.updateSalaryData(id, payload);
 
-        if (response.success && response.data && data) {
-          const updatedSalary = mapSalary(response.data);
-          setData({
-            ...data,
-            salary: updatedSalary,
-          });
+        if (response.meta.status == 200) {
+        //   const updatedSalary = mapSalary(response.data);
+        //   setData({
+        //     ...data,
+        //     salary: updatedSalary,
+        //   });
+        addNotification({ 
+            variant: 'success',
+            title: 'Berhasil',
+            description: 'Data gaji berhasil diperbarui.',
+            hideDuration: 3000 });
+            fetchDetail(id);
         } else {
           setError(response.message || 'Failed to update salary data');
         }
@@ -578,6 +646,48 @@ export const usePersonalInformation = (employeeId?: string): UsePersonalInformat
         const errorMessage = err?.message || 'An error occurred while updating salary data';
         setError(errorMessage);
         console.error('updateSalaryData error:', err);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [employeeId, data]
+  );
+
+  /**
+   * Update BPJS Data
+   */
+  const updateBpjsData = useCallback(
+    async (id: string = employeeId!, payload: UpdateBpjsDataPayload) => {
+      if (!id) {
+        setError('Employee ID is required');
+        return;
+      }
+
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await personalInformationService.updateBpjsData(id, payload);
+
+        if (response.meta.status == 200) {
+            addNotification({ 
+            variant: 'success',
+            title: 'Berhasil',
+            description: 'Data BPJS berhasil diperbarui.',
+            hideDuration: 3000 });
+            fetchDetail(id);
+        //   const updatedBpjs = mapBpjs(response.data);
+        //   setData({
+        //     ...data,
+        //     bpjs: updatedBpjs,
+        //   });
+        } else {
+          setError(response.message || 'Failed to update BPJS data');
+        }
+      } catch (err: any) {
+        const errorMessage = err?.message || 'An error occurred while updating BPJS data';
+        setError(errorMessage);
+        console.error('updateBpjsData error:', err);
       } finally {
         setLoading(false);
       }
@@ -601,6 +711,7 @@ export const usePersonalInformation = (employeeId?: string): UsePersonalInformat
     updateEducationData,
     updateSocialMediaData,
     updateSalaryData,
+    updateBpjsData,
     resetError,
   };
 };
