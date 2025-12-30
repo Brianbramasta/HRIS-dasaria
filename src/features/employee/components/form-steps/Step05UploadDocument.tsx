@@ -12,6 +12,24 @@ import { useStep5Data } from '../../hooks/employee-data/form/useFromStep';
 export const Step05UploadDocument: React.FC = () => {
   
   const { documentTypeOptions: DOCUMENT_TYPE_OPTIONS, rows, resetKey,step4, addRow, removeRow, handleTypeChange, handleFilesChange, handleUpload, handleRemoveDocument, getDocumentTypeLabel } = useStep5Data();
+  // Dokumentasi: Filter opsi tipe dokumen per baris agar tidak duplikat dengan dokumen yang sudah ada (step4.documents) dan baris pending lain
+  const getFilteredDocumentTypeOptions = (rowId: number | string) => {
+    const usedInTable = new Set<string>();
+    (step4?.documents || []).forEach((doc: any) => {
+      const id = String(doc.tipeFile || '').trim();
+      if (id) usedInTable.add(id);
+    });
+    const usedInPendingOther = new Set<string>();
+    (rows || []).forEach((r: any) => {
+      if (r.id === rowId) return;
+      const id = String(r.tipeFile || '').trim();
+      if (id) usedInPendingOther.add(id);
+    });
+    return (DOCUMENT_TYPE_OPTIONS || []).filter((opt: any) => {
+      const val = String(opt.value);
+      return !usedInTable.has(val) && !usedInPendingOther.has(val);
+    });
+  };
   
 
   return (
@@ -25,7 +43,8 @@ export const Step05UploadDocument: React.FC = () => {
                 <div className="w-full">
                   <Label>Tipe File</Label>
                   <Select
-                    options={DOCUMENT_TYPE_OPTIONS}
+                    // Dokumentasi: Terapkan opsi yang sudah difilter agar menghindari duplikasi antar baris dan dokumen yang sudah diunggah
+                    options={getFilteredDocumentTypeOptions(row.id)}
                     defaultValue={row.tipeFile}
                     onChange={(value) => handleTypeChange(row.id, value)}
                     placeholder="Pilih Jenis Dokumen"

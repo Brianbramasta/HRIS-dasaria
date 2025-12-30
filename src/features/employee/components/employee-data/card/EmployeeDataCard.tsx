@@ -33,6 +33,7 @@ export default function EmployeeDataCard({ data }: Props) {
       end_date: data?.end_date || '',
       golongan: data?.grade || '',
       employment_status_id: data?.employment_status_id || '',
+      employment_status: data?.employment_status || '',
       payroll_status: data?.payroll_status || '',
       employee_category_id: data?.employee_category_id || '',
       position_level_id: data?.position_level_id || '',

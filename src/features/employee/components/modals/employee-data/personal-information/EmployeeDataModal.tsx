@@ -7,9 +7,11 @@ import DatePicker from '@/components/form/date-picker';
 import { STATUS_PAYROLL_OPTIONS } from '@/features/employee/utils/EmployeeMappings';
 import { useStep3Data } from '@/features/employee/hooks/employee-data/form/useFromStep';
 import { employeeMasterDataService } from '@/features/employee/services/EmployeeMasterData.service';
+import { formatDateToIndonesian } from '@/utils/formatDate';
 
 // Dokumentasi: Menyesuaikan penamaan field form dengan payload API update-employment-position
 export type EmployeeDataForm = {
+  employment_status?: string;
   employment_status_id?: string;
   department_id?: string;
   position_id?: string;
@@ -99,6 +101,34 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
+  // Dokumentasi: Field dinonaktifkan bila data awal aktif ATAU data awal kosong/tidak lengkap (required belum terisi)
+  const isDisabledField = useMemo(() => {
+    const base = initialData || {};
+    const values = Object.values(base || {});
+    const allEmpty = values.length === 0 || values.every((v) => v === undefined || v === null || v === '');
+    const requiredKeys: Array<keyof EmployeeDataForm> = [
+      'employment_status_id',
+      'start_date',
+      'company_id',
+      'office_id',
+      'directorate_id',
+      'division_id',
+      'department_id',
+      'position_id',
+      'job_title_id',
+      'position_level_id',
+      'employee_category_id',
+      'payroll_status',
+    ];
+    const missingRequired = requiredKeys.some((k) => {
+      const v = (base as any)?.[k];
+      return v === undefined || v === null || v === '';
+    });
+    return base?.employment_status === 'Aktif' || allEmpty || missingRequired;
+  }, [initialData]);
+  console.log('isDisabledField', initialData);
+
+
   const content = (
     <div className="space-y-8">
       <div>
@@ -121,18 +151,20 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             <DatePicker
               id="joinDatePicker"
               label="Tanggal Masuk"
-              defaultDate={form.start_date || undefined}
+              defaultDate={formatDateToIndonesian(form.start_date as string) || undefined}
               placeholder="Pilih tanggal"
               onChange={(...args) => handleInput('start_date', args[1])}
+              disabled={isDisabledField}
             />
           </div>
           <div>
             <DatePicker
               id="endDatePicker"
               label="Tanggal Akhir"
-              defaultDate={form.end_date || undefined}
+              defaultDate={formatDateToIndonesian(form.end_date as string) || undefined}
               placeholder="— (masih aktif)"
               onChange={(...args) => handleInput('end_date', args[1])}
+              disabled={isDisabledField}
             />
           </div>
           <div>
@@ -142,6 +174,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               defaultValue={form.company_id || ''}
               onChange={(v) => handleInput('company_id', v)}
               placeholder="Select"
+              disabled={isDisabledField}
             />
           </div>
           <div>
@@ -150,7 +183,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               options={officeDropdown.length > 0 ? officeDropdown : officeOptions.length > 0 ? officeOptions : [{ label: 'Pilih perusahaan terlebih dahulu', value: '' }]}
               defaultValue={form.office_id || ''}
               onChange={(v) => handleInput('office_id', v)}
-              disabled={officeDropdown.length === 0 && officeOptions.length === 0}
+              disabled={officeDropdown.length === 0 && officeOptions.length === 0 || isDisabledField}
               placeholder="Select"
             />
           </div>
@@ -161,6 +194,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               defaultValue={form.directorate_id || ''}
               onChange={(v) => handleInput('directorate_id', v)}
               placeholder="Select"
+              disabled={isDisabledField}
             />
           </div>
           <div>
@@ -169,7 +203,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               options={divisionDropdown.length > 0 ? divisionDropdown : divisionOptions.length > 0 ? divisionOptions : [{ label: 'Pilih direktorat terlebih dahulu', value: '' }]}
               defaultValue={form.division_id || ''}
               onChange={(v) => handleInput('division_id', v)}
-              disabled={divisionDropdown.length === 0 && divisionOptions.length === 0}
+              disabled={divisionDropdown.length === 0 && divisionOptions.length === 0 || isDisabledField}
               placeholder="Select"
             />
           </div>
@@ -182,7 +216,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               options={departmentDropdown.length > 0 ? departmentDropdown : departmentOptions.length > 0 ? departmentOptions : [{ label: 'Pilih divisi terlebih dahulu', value: '' }]}
               defaultValue={form.department_id || ''}
               onChange={(v) => handleInput('department_id', v)}
-              disabled={departmentDropdown.length === 0 && departmentOptions.length === 0}
+              disabled={departmentDropdown.length === 0 && departmentOptions.length === 0 || isDisabledField}
               placeholder="Select"
             />
           </div>
@@ -193,6 +227,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               defaultValue={form.position_id || ''}
               onChange={(v) => handleInput('position_id', v)}
               placeholder="Select"
+              disabled={isDisabledField}
             />
           </div>
           <div>
@@ -202,6 +237,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               defaultValue={form.job_title_id || ''}
               onChange={(v) => handleInput('job_title_id', v)}
               placeholder="Select"
+              disabled={isDisabledField}
             />
           </div>
           <div>
@@ -211,6 +247,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               defaultValue={form.position_level_id || ''}
               onChange={(v) => handleInput('position_level_id', v)}
               placeholder="Select"
+              disabled={isDisabledField}
             />
           </div>
           <div>
@@ -219,7 +256,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               type="text"
               value={selectedGrade || form.golongan || ''}
               placeholder="Otomatis dari Jabatan"
-              disabled
+              disabled={isDisabledField}
               onChange={() => {}}
             />
           </div>
@@ -230,6 +267,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               defaultValue={form.payroll_status || ''}
               onChange={(v) => handleInput('payroll_status', v)}
               placeholder="Select"
+              disabled={isDisabledField}
             />
           </div>
           <div>
@@ -239,6 +277,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               defaultValue={form.employee_category_id || ''}
               onChange={(v) => handleInput('employee_category_id', v)}
               placeholder="Select"
+              disabled={isDisabledField}
             />
           </div>
         </div>
