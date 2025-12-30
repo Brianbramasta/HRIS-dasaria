@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router';
 import { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
 import PayrollTabBase from '@/features/payroll/components/tabs/PayrollTabBase';
 import { IconFileDetail } from '@/icons/components/icons';
+import SlipPayrollModal, { SlipPayrollModalProps } from '@/features/payroll/components/modals/distribution-payroll/SlipPayrollModal';
+import { formatCurrency } from '@/utils/formatCurrency';
 
 interface SalaryDistributionData {
   idKaryawan: string;
@@ -16,6 +18,12 @@ interface SalaryDistributionData {
   kategori: string;
   perusahaan: string;
   statusPersetujuan: 'menunggu' | 'disetujui' | 'ditolak';
+  // Additional fields for modal
+  golongan?: string;
+  divisi?: string;
+  jabatan?: string;
+  departemen?: string;
+  penerimaan?: SlipPayrollModalProps['data']['penerimaan'];
 }
 
 const mockDataAE: SalaryDistributionData[] = [
@@ -31,6 +39,18 @@ const mockDataAE: SalaryDistributionData[] = [
     kategori: 'Tetap',
     perusahaan: 'Dasaria',
     statusPersetujuan: 'disetujui',
+    golongan: 'D6',
+    divisi: '-',
+    jabatan: 'AE',
+    departemen: '-',
+    penerimaan: {
+      transport: 1_000_000,
+      insentif: 1_500_000,
+      performa: 1_500_000,
+      komisiSales: 1_500_000,
+      komisiSurveySales: 1_500_000,
+      growthReward: 1_500_000,
+    },
   },
   {
     idKaryawan: '2',
@@ -44,6 +64,18 @@ const mockDataAE: SalaryDistributionData[] = [
     kategori: 'Tetap',
     perusahaan: 'Dasaria',
     statusPersetujuan: 'disetujui',
+    golongan: 'D6',
+    divisi: '-',
+    jabatan: 'AE',
+    departemen: '-',
+    penerimaan: {
+      transport: 1_000_000,
+      insentif: 1_500_000,
+      performa: 1_500_000,
+      komisiSales: 1_500_000,
+      komisiSurveySales: 1_500_000,
+      growthReward: 1_500_000,
+    },
   },
   {
     idKaryawan: '3',
@@ -57,12 +89,27 @@ const mockDataAE: SalaryDistributionData[] = [
     kategori: 'Tetap',
     perusahaan: 'Dasaria',
     statusPersetujuan: 'menunggu',
+    golongan: 'D6',
+    divisi: '-',
+    jabatan: 'AE',
+    departemen: '-',
+    penerimaan: {
+      transport: 1_000_000,
+      insentif: 1_500_000,
+      performa: 1_500_000,
+      komisiSales: 1_500_000,
+      komisiSurveySales: 1_500_000,
+      growthReward: 1_500_000,
+    },
   },
 ];
 
 export default function AEPages() {
   const [data] = useState<SalaryDistributionData[]>(mockDataAE);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedData, setSelectedData] = useState<SalaryDistributionData | null>(null);
   const navigate = useNavigate();
+
 
   const baseColumns: DataTableColumn<SalaryDistributionData>[] = useMemo(
     () => [
@@ -158,23 +205,90 @@ export default function AEPages() {
         label: '',
         icon: <IconFileDetail />,
         onClick: (row) => {
-          navigate(`/salary-distribution/detail-ae/${row.idKaryawan}`);
+          setSelectedData(row);
+          setIsModalOpen(true);
         },
         variant: 'outline',
         className: 'border-0',
       },
     ],
-    [navigate]
+    []
   );
 
+  const modalContent = useMemo(() => {
+    if (!selectedData?.penerimaan) return null;
+    const { penerimaan } = selectedData;
+    const totalPenerimaan = Object.values(penerimaan).reduce((a, b) => a + (b || 0), 0);
+
+    return (
+      <div className="space-y-4 text-sm mb-6">
+        <div className="bg-[#525252] text-white px-4 py-2 font-bold">Penerimaan</div>
+        <div className="px-4 space-y-2">
+          <div className="flex justify-between">
+            <span>Uang Transport</span>
+            <span>{formatCurrency(penerimaan.transport || 0)}</span>
+          </div>
+
+          <div className="font-bold pt-2">Tunjangan Tidak Tetap</div>
+          <div className="pl-4 space-y-2  border-gray-200 ml-1">
+            <div className="flex justify-between">
+              <span>Insentif</span>
+              <span>{formatCurrency(penerimaan.insentif || 0)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Performa</span>
+              <span>{formatCurrency(penerimaan.performa || 0)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Komisi Sales</span>
+              <span>{formatCurrency(penerimaan.komisiSales || 0)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Komisi Survey Sales</span>
+              <span>{formatCurrency(penerimaan.komisiSurveySales || 0)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Growth Reward</span>
+              <span>{formatCurrency(penerimaan.growthReward || 0)}</span>
+            </div>
+          </div>
+
+          <div className="flex justify-between font-bold pt-3 border-gray-300 mt-2">
+            <span>Total Penerimaan</span>
+            <span>{formatCurrency(totalPenerimaan)}</span>
+          </div>
+        </div>
+      </div>
+    );
+  }, [selectedData]);
+
   return (
-    <PayrollTabBase<SalaryDistributionData>
-      resetKey="ae"
-      rows={data}
-      baseColumns={baseColumns}
-      detailPathPrefix="/salary-distribution/detail-ae"
-      title="Distribusi Gaji AE"
-      customActions={actions}
-    />
+    <>
+      <PayrollTabBase<SalaryDistributionData>
+        resetKey="ae"
+        rows={data}
+        baseColumns={baseColumns}
+        detailPathPrefix="/salary-distribution/detail-ae"
+        title="Distribusi Gaji AE"
+        customActions={actions}
+      />
+      <SlipPayrollModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        data={
+          selectedData
+            ? {
+                ...selectedData,
+                golongan: selectedData.golongan || '-',
+                divisi: selectedData.divisi || '-',
+                jabatan: selectedData.jabatan || '-',
+                departemen: selectedData.departemen || '-',
+                penerimaan: selectedData.penerimaan,
+              }
+            : undefined
+        }
+        content={modalContent}
+      />
+    </>
   );
 }

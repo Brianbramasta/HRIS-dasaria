@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import Select from '@/components/form/Select';
@@ -9,17 +9,22 @@ import {iconPlus as Plus} from '@/icons/components/icons'
 // import { Plus } from 'react-feather';
 import { TrashBinIcon } from '@/icons/index';
 import Button from '@/components/ui/button/Button';
+import { getDocumentTypeDropdownOptions } from '@/features/employee/hooks/employee-data/form/useFormulirKaryawan';
+import { addNotification } from '@/stores/notificationStore';
 
 type DocumentRow = {
   id: number;
   tipeFile: string;
+  type_id: string;
   namaFile: string;
   filePath?: string;
+  file?: File;
+  document_id?: string;
 };
 
 export type PersonalDocumentsForm = {
   tipeFile?: string;
-  pendingRows: { tipeFile?: string; fileName?: string }[];
+  pendingRows: { tipeFile?: string; type_id?: string; fileName?: string; file?: File }[];
   rows: DocumentRow[];
 };
 
@@ -31,31 +36,71 @@ interface Props {
   submitting?: boolean;
 }
 
-const TIPE_DOKUMEN_OPTIONS = [
-  { value: 'Kartu Tanda Penduduk', label: 'Kartu Tanda Penduduk' },
-  { value: 'Ijazah Terakhir', label: 'Ijazah Terakhir' },
-  { value: 'Kartu Keluarga', label: 'Kartu Keluarga' },
-  { value: 'BPJS Kesehatan', label: 'BPJS Kesehatan' },
-  { value: 'BPJS Ketenagakerjaan', label: 'BPJS Ketenagakerjaan' },
-];
-
 const PersonalDocumentsModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSubmit, submitting = false }) => {
   const title = useMemo(() => 'Edit Berkas & Dokumen', []);
+  const [documentTypeOptions, setDocumentTypeOptions] = useState<{ value: string; label: string }[]>([]);
+  // Dokumentasi: Seed untuk reset FileInput setelah unggah agar input file kosong kembali
+  const [fileResetSeed, setFileResetSeed] = useState<number>(0);
   const [form, setForm] = useState<PersonalDocumentsForm>(() => {
     const base: any = initialData || {};
     const rows: DocumentRow[] = Array.isArray(base.rows) ? base.rows : [];
-    const pendingRows: { tipeFile?: string; fileName?: string }[] = Array.isArray(base.pendingRows) && base.pendingRows.length
+    const pendingRows: { tipeFile?: string; type_id?: string; fileName?: string; file?: File }[] = Array.isArray(base.pendingRows) && base.pendingRows.length
       ? base.pendingRows
-      : [{ tipeFile: '', fileName: '' }];
+      : [{ tipeFile: '', type_id: '', fileName: '' }];
     return { tipeFile: base.tipeFile || '', pendingRows, rows } as PersonalDocumentsForm;
   });
+
+  // Dokumentasi: Sinkronisasi ulang state form ketika initialData berubah atau modal dibuka
+  useEffect(() => {
+    if (!isOpen) return;
+    const base: any = initialData || {};
+    const rows: DocumentRow[] = Array.isArray(base.rows) ? base.rows : [];
+    const pendingRows: { tipeFile?: string; type_id?: string; fileName?: string; file?: File }[] = Array.isArray(base.pendingRows) && base.pendingRows.length
+      ? base.pendingRows
+      : [{ tipeFile: '', type_id: '', fileName: '' }];
+    setForm({ tipeFile: base.tipeFile || '', pendingRows, rows });
+  }, [initialData, isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    let mounted = true;
+    getDocumentTypeDropdownOptions()
+      .then((opts) => { if (mounted) setDocumentTypeOptions(opts); })
+      .catch(() => { setDocumentTypeOptions([]); });
+    return () => { mounted = false; };
+  }, [isOpen]);
+
+  // Dokumentasi: Mengambil daftar tipe dokumen yang sudah ada di tabel (form.rows) agar tidak muncul di opsi Select
+  const usedTypeIdsRows = useMemo(() => {
+    const set = new Set<string>();
+    (form.rows || []).forEach((r) => {
+      const id = String(r.type_id || r.tipeFile || '').trim();
+      if (id) set.add(id);
+    });
+    return set;
+  }, [form.rows]);
+
+  // Dokumentasi: Filter opsi Select per baris pending; hilangkan tipe yang sudah dipakai di rows dan pending baris lain
+  const getFilteredDocumentTypeOptions = (idx: number) => {
+    if (!documentTypeOptions?.length) return [];
+    const usedInPending = new Set<string>();
+    (form.pendingRows || []).forEach((row, i) => {
+      if (i === idx) return;
+      const id = String(row.type_id || row.tipeFile || '').trim();
+      if (id) usedInPending.add(id);
+    });
+    return documentTypeOptions.filter((opt) => {
+      const val = String(opt.value);
+      return !usedTypeIdsRows.has(val) && !usedInPending.has(val);
+    });
+  };
 
   // const handleSet = (key: keyof PersonalDocumentsForm, value: any) => {
   //   setForm((prev) => ({ ...prev, [key]: value }));
   // };
 
   const addPendingRow = () => {
-    setForm((prev) => ({ ...prev, pendingRows: [...prev.pendingRows, { tipeFile: '', fileName: '' }] }));
+    setForm((prev) => ({ ...prev, pendingRows: [...prev.pendingRows, { tipeFile: '', type_id: '', fileName: '' }] }));
   };
 
   const removePendingRow = (idx: number) => {
@@ -65,31 +110,53 @@ const PersonalDocumentsModal: React.FC<Props> = ({ isOpen, initialData, onClose,
   const setPendingRowType = (idx: number, v: string) => {
     setForm((prev) => ({
       ...prev,
-      pendingRows: prev.pendingRows.map((row, i) => (i === idx ? { ...row, tipeFile: v } : row)),
+      pendingRows: prev.pendingRows.map((row, i) => (i === idx ? { ...row, tipeFile: v, type_id: v } : row)),
     }));
   };
 
-  const setPendingRowFile = (idx: number, name?: string) => {
+  const setPendingRowFile = (idx: number, file?: File, name?: string) => {
     setForm((prev) => ({
       ...prev,
-      pendingRows: prev.pendingRows.map((row, i) => (i === idx ? { ...row, fileName: name || '' } : row)),
+      pendingRows: prev.pendingRows.map((row, i) => (i === idx ? { ...row, fileName: name || '', file } : row)),
     }));
   };
 
+
   const handleUploadAdd = () => {
-    const validRows = form.pendingRows.filter((r) => r.tipeFile && r.fileName);
+    // Dokumentasi: Validasi wajib isi tipe dokumen dan file di setiap baris sebelum unggah
+    const incompleteRows = form.pendingRows.filter((r) => !(r.tipeFile && r.fileName && r.file));
+    if (incompleteRows.length) {
+      addNotification({
+        variant: 'warning',
+        title: 'Lengkapi tipe & file',
+        description: 'Silakan pilih tipe dokumen dan unggah file untuk setiap baris.',
+        hideDuration: 4000,
+      });
+      return;
+    }
+    const validRows = form.pendingRows.filter((r) => r.tipeFile && r.fileName && r.file);
     if (!validRows.length) return;
     const baseId = (form.rows[form.rows.length - 1]?.id || 0);
     const nextRows: DocumentRow[] = validRows.map((r, i) => ({
       id: baseId + i + 1,
       tipeFile: r.tipeFile as string,
+      type_id: (r.type_id as string) || (r.tipeFile as string),
       namaFile: r.fileName as string,
+      file: r.file,
     }));
-    setForm((prev) => ({ ...prev, rows: [...prev.rows, ...nextRows], pendingRows: [{ tipeFile: '', fileName: '' }] }));
+    console.log('nextRows',nextRows);
+    // Dokumentasi: Setelah unggah, kosongkan input file dengan membuat baris pending baru yang kosong
+    setForm((prev) => ({ ...prev, rows: [...prev.rows, ...nextRows], pendingRows: [{ tipeFile: '', type_id: '', fileName: '', file: undefined }] }));
+    // Dokumentasi: Tingkatkan seed agar FileInput di-remount dan file selection ter-reset
+    setFileResetSeed((s) => s + 1);
   };
 
   const handleDeleteRow = (id: number) => {
     setForm((prev) => ({ ...prev, rows: prev.rows.filter((r) => r.id !== id) }));
+  };
+
+  const getDocumentTypeLabel = (type: string) => {
+    return documentTypeOptions.find((opt) => opt.value === type)?.label || type;
   };
 
   const content = (
@@ -105,24 +172,26 @@ const PersonalDocumentsModal: React.FC<Props> = ({ isOpen, initialData, onClose,
             <div key={idx} className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_1fr_auto] items-end">
               <div>
                 <Label>Tipe File</Label>
-                <Select options={TIPE_DOKUMEN_OPTIONS} placeholder="Pilih Jenis Dokumen" defaultValue={row.tipeFile || ''} onChange={(v) => setPendingRowType(idx, v)} />
+                {/* Dokumentasi: Opsi per baris difilter agar tidak duplikat dengan baris lain dan data tabel */}
+                <Select options={getFilteredDocumentTypeOptions(idx)} placeholder="Pilih Jenis Dokumen" defaultValue={row.tipeFile || row.type_id || ''} onChange={(v) => setPendingRowType(idx, v)} />
               </div>
               <div>
                 <Label>Upload file</Label>
-                <FileInput onChange={(e) => {
+                {/* Dokumentasi: Gunakan key yang berubah (fileResetSeed) agar FileInput reset setelah unggah */}
+                <FileInput key={`file-${idx}-${fileResetSeed}`} onChange={(e) => {
                   const f = e.target.files?.[0];
-                  setPendingRowFile(idx, f ? f.name : '');
+                  setPendingRowFile(idx, f, f ? f.name : '');
                 }} />
               </div>
               <div className="flex items-center gap-2 md:pt-6">
-                {idx === 0 && (
-                  <button type="button" title="Tambah baris" onClick={addPendingRow} className="rounded-xl bg-green-600 px-3 py-3 text-white">
-                    <Plus size={16} />
-                  </button>
-                )}
-                {form.pendingRows?.length > 1 && idx > 0 && (
+                {form.pendingRows?.length > 1 && idx !== form.pendingRows.length - 1 && (
                   <button type="button" title="Hapus baris" onClick={() => removePendingRow(idx)} className="rounded-xl bg-red-600 px-3 py-3 text-white">
                     <TrashBinIcon className="h-4 w-4 text-white" />
+                  </button>
+                )}
+                {idx === form.pendingRows.length - 1 && (
+                  <button type="button" title="Tambah baris" onClick={addPendingRow} className="rounded-xl bg-green-600 px-3 py-3 text-white">
+                    <Plus size={16} />
                   </button>
                 )}
               </div>
@@ -149,7 +218,7 @@ const PersonalDocumentsModal: React.FC<Props> = ({ isOpen, initialData, onClose,
               form.rows.map((r, idx) => (
                 <TableRow key={r.id} className="border-b border-gray-100 dark:border-gray-800">
                   <TableCell className="px-6 py-4 text-center text-sm">{idx + 1}</TableCell>
-                  <TableCell className="px-6 py-4 text-sm">{r.tipeFile}</TableCell>
+                  <TableCell className="px-6 py-4 text-sm">{getDocumentTypeLabel(String(r.tipeFile))}</TableCell>
                   <TableCell className="px-6 py-4 text-sm">{r.namaFile}</TableCell>
               <TableCell className="px-6 py-4 text-center">
                 <div className="flex items-center justify-center">

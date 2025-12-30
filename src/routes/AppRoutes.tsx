@@ -69,7 +69,7 @@ import DistribusiGajiPage from "@/features/payroll/pages/distribution-payroll/Di
 // Dokumentasi: Import tab untuk Distribusi Gaji
 import NonAEDistributionTab from "@/features/payroll/pages/distribution-payroll/tab/NonAEPages";
 import AEDistributionTab from "@/features/payroll/pages/distribution-payroll/tab/AEPages";
-import PKLDistributionTab from "@/features/payroll/pages/distribution-payroll/tab/PKLPages";
+import THRDistributionTab from "@/features/payroll/pages/distribution-payroll/tab/THRPages";
 import JenisPengajuanPage from "@/features/submission-type/pages/SubmissionPage";
 
 
@@ -173,7 +173,7 @@ export default function AppRoutes() {
             <Route index element={<NonAEDistributionTab />} />
             <Route path="non-ae" element={<NonAEDistributionTab />} />
             <Route path="ae" element={<AEDistributionTab />} />
-            <Route path="pkl" element={<PKLDistributionTab />} />
+            <Route path="thr" element={<THRDistributionTab />} />
           </Route>
           
           <Route path="/employee-data" element={<DataKaryawanIndexPage />} />

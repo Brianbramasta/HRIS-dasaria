@@ -7,6 +7,8 @@ import { useModal } from '@/hooks/useModal';
 import EmployeeDataModal, { type EmployeeDataForm } from '@/features/employee/components/modals/employee-data/personal-information/EmployeeDataModal';
 import { IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
 import { useMemo } from 'react';
+import { useParams } from 'react-router-dom';
+import usePersonalInformation from '@/features/employee/hooks/employee-data/detail/contract/usePersonalInformation';
 
 interface Props {
   data: any; // API response from employee-master-data (Employment_Position_Data)
@@ -14,34 +16,26 @@ interface Props {
 
 export default function EmployeeDataCard({ data }: Props) {
   const { isOpen, openModal, closeModal } = useModal(false);
+  const { id } = useParams<{ id: string }>();
+  const { updateEmploymentPosition } = usePersonalInformation(id);
 
-  // Transform API data ke format modal dengan mapping yang benar
+  // Dokumentasi: Mapping response Employment_Position_Data -> form payload API
   const initialForm: EmployeeDataForm = useMemo(() => {
     return {
-      company: data?.company_name || '',
       company_id: data?.company_id || '',
-      kantor: data?.office_name || '',
-      kantor_id: data?.office_id || '',
-      direktorat: data?.directorate_name || '',
-      direktorat_id: data?.directorate_id || '',
-      divisi: data?.division_name || '',
-      divisi_id: data?.division_id || '',
-      departemen: data?.department_name || '',
-      departemen_id: data?.department_id || '',
-      position: data?.position_name || '',
+      office_id: data?.office_id || '',
+      directorate_id: data?.directorate_id || '',
+      division_id: data?.division_id || '',
+      department_id: data?.department_id || '',
       position_id: data?.position_id || '',
-      jabatan: data?.job_title_name || '',
-      jabatan_id: data?.job_title_id || '',
-      tanggalMasuk: data?.start_date || '',
-      tanggalAkhir: data?.end_date || '',
+      job_title_id: data?.job_title_id || '',
+      start_date: data?.start_date || '',
+      end_date: data?.end_date || '',
       golongan: data?.grade || '',
-      statusKaryawan: data?.employment_status || '',
-      statusPayroll: data?.payroll_status || '',
-      userAccess: data?.user_access || '',
-      kategoriKaryawan: data?.employee_category || '',
-      kategori_karyawan_id: data?.employee_category_id || '',
-      jenjangJabatan: data?.position_level || '',
-      jenjang_jabatan_id: data?.position_level_id || '',
+      employment_status_id: data?.employment_status_id || '',
+      payroll_status: data?.payroll_status || '',
+      employee_category_id: data?.employee_category_id || '',
+      position_level_id: data?.position_level_id || '',
     };
   }, [data]);
 
@@ -125,20 +119,29 @@ export default function EmployeeDataCard({ data }: Props) {
       </div>
 
     {/* tanyakan rafi rulenya */}
-      {data?.employment_status !== 'Aktif' && (
+      {/* {data?.employment_status !== 'Aktif' && ( */}
         <div className="mt-4 flex justify-end">
           <Button variant="primary" size="sm" onClick={openModal}>
             <Edit2 size={16} className="mr-2" /> Edit
           </Button>
         </div>
-      )}
+      {/* )} */}
       <EmployeeDataModal
         isOpen={isOpen}
         initialData={initialForm}
         onClose={closeModal}
-        onSubmit={(payload) => {
-          console.log('Save Employee Data', payload);
-          closeModal();
+        onSubmit={async (payload) => {
+          if (!id) {
+            console.error('Employee ID is missing');
+            return;
+          }
+          try {
+            await updateEmploymentPosition(id || '', payload);
+            console.log('Save Employee Data', payload);
+            closeModal();
+          } catch (error) {
+            console.error('Error updating employment position:', error);
+          }
         }}
         submitting={false}
       />

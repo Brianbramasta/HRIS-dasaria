@@ -2926,7 +2926,7 @@
 														},
 														{
 															"key": "non_formal_education[0][institution_name]",
-															"value": "kampus negeri",
+															"value": "kampus negeri kita",
 															"type": "text"
 														},
 														{
@@ -2947,8 +2947,7 @@
 														{
 															"key": "non_formal_education[0][certificate_file]",
 															"type": "file",
-															"src": [],
-															"disabled": true
+															"src": []
 														},
 														{
 															"key": "non_formal_education[1][certificate_name]",
@@ -3380,6 +3379,178 @@
 														"employees",
 														"DSR011",
 														"update-bpjs-data"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "update employee position",
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "formdata",
+													"formdata": [
+														{
+															"key": "_method",
+															"value": "PATCH",
+															"type": "text"
+														},
+														{
+															"key": "employment_status_id",
+															"value": "324295a7-0fb2-40c0-9b36-8f8d8dbcadf3",
+															"type": "text"
+														},
+														{
+															"key": "department_id",
+															"value": "",
+															"type": "text"
+														},
+														{
+															"key": "start_date",
+															"value": "",
+															"type": "text"
+														},
+														{
+															"key": "position_id",
+															"value": "",
+															"type": "text"
+														},
+														{
+															"key": "end_date",
+															"value": "",
+															"type": "text"
+														},
+														{
+															"key": "job_title_id",
+															"value": "",
+															"type": "text"
+														},
+														{
+															"key": "company_id",
+															"value": "",
+															"type": "text"
+														},
+														{
+															"key": "position_level_id",
+															"value": "3900bad2-4ac0-4308-aaa9-e28fe611477d",
+															"type": "text"
+														},
+														{
+															"key": "office_id",
+															"value": "",
+															"type": "text"
+														},
+														{
+															"key": "directorate_id",
+															"value": "",
+															"type": "text"
+														},
+														{
+															"key": "payroll_status",
+															"value": "Tidak Aktif",
+															"type": "text"
+														},
+														{
+															"key": "division_id",
+															"value": "",
+															"type": "text"
+														},
+														{
+															"key": "employee_category_id",
+															"value": "56593eb1-625d-45c1-8446-c5bfaf3e79ac",
+															"type": "text"
+														}
+													]
+												},
+												"url": {
+													"raw": "{{base_url}}/api/employee-master-data/employees/DSR011/update-employment-position",
+													"host": [
+														"{{base_url}}"
+													],
+													"path": [
+														"api",
+														"employee-master-data",
+														"employees",
+														"DSR011",
+														"update-employment-position"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "update employe documnet",
+											"request": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "formdata",
+													"formdata": [
+														{
+															"key": "_method",
+															"value": "PATCH",
+															"type": "text"
+														},
+														{
+															"key": "documents[0][id]",
+															"value": "019b5ec3-1a2a-7064-abe5-f0a27800568f",
+															"type": "text"
+														},
+														{
+															"key": "documents[0][document_type_id]",
+															"value": "0336bb98-9b5b-43d2-b4dc-07b750906d8e",
+															"type": "text"
+														},
+														{
+															"key": "documents[0][file]",
+															"type": "file",
+															"src": []
+														},
+														{
+															"key": "documents[1][id]",
+															"value": "019b6d36-34f2-7132-b3a1-34c0e73cc64b",
+															"type": "text"
+														},
+														{
+															"key": "documents[1][document_type_id]",
+															"value": "6ee15e18-c50f-4e74-b769-890b0838b113",
+															"type": "text"
+														},
+														{
+															"key": "documents[1][file]",
+															"type": "file",
+															"src": "/D:/tes1.pdf"
+														},
+														{
+															"key": "documents[2][id]",
+															"value": "019b6d36-34f7-72b9-a69b-e7c89d700be5",
+															"type": "text"
+														},
+														{
+															"key": "documents[2][document_type_id]",
+															"value": "1ef86206-5812-4336-b54c-8175cd1fd27f",
+															"type": "text"
+														},
+														{
+															"key": "documents[2][file]",
+															"type": "file",
+															"src": []
+														}
+													]
+												},
+												"url": {
+													"raw": "{{base_url}}/api/employee-master-data/employees/DSR011/update-employee-document",
+													"host": [
+														"{{base_url}}"
+													],
+													"path": [
+														"api",
+														"employee-master-data",
+														"employees",
+														"DSR011",
+														"update-employee-document"
 													]
 												}
 											},

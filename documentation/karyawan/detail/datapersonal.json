@@ -1,0 +1,141 @@
+{
+    "meta": {
+        "status": 200,
+        "message": "berhasil mendapatkan detail karyawan"
+    },
+    "data": {
+        "Personal_Data": {
+            "avatar": "http:\/\/192.168.2.154:8000\/storage\/avatars",
+            "id": "DSR011",
+            "full_name": "tes update 1344",
+            "national_id": 50641571,
+            "email": "tes20@gmail.com",
+            "religion_id": "ba20c832-8eb7-4ff7-ab78-68484755f7ef",
+            "religion": "Buddha",
+            "blood_type": "B",
+            "birth_place": "jember",
+            "birth_date": "2003-06-14",
+            "last_education_id": "06840e2a-cb39-461d-85a6-977b56fcb9c9",
+            "last_education": "S1\/D4",
+            "marital_status": "Tidak Menikah",
+            "gender": "Laki-Laki",
+            "household_dependents": 0,
+            "phone_number": "082147xxxx",
+            "current_address": "malang",
+            "ktp_address": "jember"
+        },
+        "Education_Data": {
+            "employee_id": "DSR011",
+            "formal_educations": [
+                {
+                    "id": "019b5ec3-1a2c-7387-9a90-297da6fb3fff",
+                    "education_level_id": "06840e2a-cb39-461d-85a6-977b56fcb9c9",
+                    "education_level": "S1\/D4",
+                    "institution_name": "hasbu",
+                    "degree": "strkom",
+                    "final_grade": 4,
+                    "major": "teknologi informasi",
+                    "graduation_year": 2025,
+                    "employee_id": "DSR011"
+                }
+            ],
+            "non_formal_educations": [
+                {
+                    "id": "019b5ec3-1a32-72f7-b2f7-b5d58f2a2ff7",
+                    "employee_id": "DSR011",
+                    "certificate_name": "ini sertifikat oke kita tes update",
+                    "institution_name": "kampus negeri kita",
+                    "start_date": "2020-01-01",
+                    "end_date": "2025-01-01",
+                    "certificate_id": "ini id oke lagi",
+                    "certificate_file": "EmployeeMasterData\/Education\/NonFormal\/83da2e14-3929-4876-a290-2b6deb0c8e82.pdf"
+                }
+            ]
+        },
+        "Social_Media_Data": [
+            {
+                "id": "019b5ec3-1a34-7354-a3d4-5ffa72f488b1",
+                "facebook_name": "ini facebokk rizal",
+                "instagram_name": "ini  instagram",
+                "linkedin_name": "ini linkeid",
+                "twitter_name": "ini nama twiter",
+                "relative_social_media": "gak ada",
+                "emergency_contact_number": "0821444",
+                "emergency_contact_name": "siti nurjumaatik",
+                "emergency_contact_relationship": "ibu",
+                "employee_id": "DSR011",
+                "deleted_at": null,
+                "created_at": "2025-12-27T07:43:23.000000Z",
+                "updated_at": "2025-12-28T05:26:24.000000Z"
+            }
+        ],
+        "Employment_Position_Data": {
+            "employee_id": "DSR011",
+            "employment_status_id": null,
+            "employment_status": "Unknown",
+            "resignation_status": null,
+            "company_id": "019b493b-dcbb-723e-9b0b-5b513fe5159a",
+            "company_name": "Dasaria",
+            "office_id": "019b49db-5deb-70b0-90b0-f809b6b19505",
+            "office_name": "test add",
+            "directorate_id": "019b4948-a941-71c3-8ff5-96d7aebef5b6",
+            "directorate_name": "directorat 1",
+            "division_id": "019b495b-df75-7028-90c7-d27d92813b76",
+            "division_name": "test 2",
+            "department_id": "019b4976-3df7-700b-ae68-c73682551d2e",
+            "department_name": "hris",
+            "job_title_id": "019b497c-b843-7334-8806-f3971c92fefc",
+            "job_title_name": "front end",
+            "grade": "D001",
+            "position_id": "019b4987-cb3b-7349-a13a-e318f738b76b",
+            "position_name": "test",
+            "start_date": "2025-01-01",
+            "end_date": "2025-06-01",
+            "position_level_id": "1c2fb0d4-3134-443c-a190-34b67f6342b6",
+            "position_level": "Senior",
+            "payroll_status": "Tidak Aktif",
+            "employee_category_id": "56593eb1-625d-45c1-8446-c5bfaf3e79ac",
+            "employee_category": "Non-Staff",
+            "user_access": null
+        },
+        "Salary_Data": {
+            "bank_id": "2dadc10c-e891-4b93-b400-4c8ef32aaff7",
+            "bank_name": "Bank BCA",
+            "bank_account_number": 3453461,
+            "bank_account_holder": "morimana 2",
+            "npwp": 34345,
+            "ptkp_id": "205ff4d2-71a9-4a97-8287-87d5f34b1fa7",
+            "ptkp_code": "K\/0",
+            "ptkp_category": "Married"
+        },
+        "BPJS_Data": {
+            "employee_id": "DSR011",
+            "bpjs_employment_number": 334455,
+            "bpjs_employment_status": "Aktif",
+            "bpjs_health_number": 3344553,
+            "bpjs_health_status": "Aktif"
+        },
+        "Document_Data": {
+            "documents": [
+                {
+                    "document_id": "019b5ec3-1a2a-7064-abe5-f0a27800568f",
+                    "file_type": "PKWT\/PKWTT",
+                    "file": "EmployeeMasterData\/Document\/4982367a-cdfa-436e-94f7-f4dfe50e3880.pdf",
+                    "name_file": "tes1.pdf"
+                },
+                {
+                    "document_id": "019b6d36-34f2-7132-b3a1-34c0e73cc64b",
+                    "file_type": "Ijazah Terakhir",
+                    "file": "EmployeeMasterData\/Document\/189acccb-fd84-494b-8b54-59424948cb82.pdf",
+                    "name_file": "tes1.pdf"
+                },
+                {
+                    "document_id": "019b6d36-34f7-72b9-a69b-e7c89d700be5",
+                    "file_type": "Surat Keterangan Pengalaman Kerja",
+                    "file": null,
+                    "name_file": null
+                }
+            ]
+        }
+    }
+}

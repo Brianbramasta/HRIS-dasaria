@@ -29,7 +29,7 @@ export default function DistribusiGajiPage() {
   const tabs = [
     { id: 'non-ae', label: 'Non AE', link: '/salary-distribution/non-ae' },
     { id: 'ae', label: 'AE', link: '/salary-distribution/ae' },
-    { id: 'pkl', label: 'PKL', link: '/salary-distribution/pkl' },
+    { id: 'thr', label: 'THR', link: '/salary-distribution/thr' },
   ];
 
   return (

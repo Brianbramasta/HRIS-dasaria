@@ -1,7 +1,6 @@
 // Hook: Personal Information
 import { useState, useCallback } from 'react';
 import {
-  personalInformationService,
   PersonalInformationData,
   PersonalDataResponse,
   EducationFormalItem,
@@ -14,7 +13,10 @@ import {
   UpdateSocialMediaDataPayload,
   UpdateSalaryDataPayload,
   UpdateBpjsDataPayload,
-} from '@/features/employee/services/detail/PersonalInformationService';
+  UpdateEmploymentPositionPayload,
+  UpdateEmployeeDocumentPayload,
+} from '@/features/employee/types/detail/PersonalInformation';
+import {personalInformationService} from '@/features/employee/services/detail/PersonalInformationService';
 import { addNotification } from '@/stores/notificationStore';
 import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
 
@@ -108,6 +110,8 @@ export interface UsePersonalInformationActions {
   updateSocialMediaData: (employeeId: string, payload: UpdateSocialMediaDataPayload) => Promise<void>;
   updateSalaryData: (employeeId: string, payload: UpdateSalaryDataPayload) => Promise<void>;
   updateBpjsData: (employeeId: string, payload: UpdateBpjsDataPayload) => Promise<void>;
+  updateEmploymentPosition: (employeeId: string, payload: UpdateEmploymentPositionPayload) => Promise<void>;
+  updateEmployeeDocument: (employeeId: string, payload: UpdateEmployeeDocumentPayload) => Promise<void>;
   resetError: () => void;
 }
 
@@ -696,11 +700,129 @@ const mapSocialMediaModalToPayload = (modalData: MediaSosialForm): UpdateSocialM
   );
 
   /**
-   * Reset Error State
+   * Dokumentasi: Form modal diselaraskan dengan payload API update-employment-position
    */
-  const resetError = useCallback(() => {
-    setError(null);
-  }, []);
+  interface EmploymentPositionForm {
+    employment_status_id?: string;
+    department_id?: string;
+    position_id?: string;
+    job_title_id?: string;
+    company_id?: string;
+    office_id?: string;
+    directorate_id?: string;
+    division_id?: string;
+    position_level_id?: string;
+    payroll_status?: string;
+    employee_category_id?: string;
+    start_date?: string;
+    end_date?: string;
+  }
+
+  const mapEmploymentPositionModalToPayload = (modalData: EmploymentPositionForm): UpdateEmploymentPositionPayload => {
+    const payload: any = {};
+    if (modalData.employment_status_id) payload.employment_status_id = modalData.employment_status_id;
+    if (modalData.department_id) payload.department_id = modalData.department_id;
+    if (modalData.start_date) payload.start_date = modalData.start_date;
+    if (modalData.position_id) payload.position_id = modalData.position_id;
+    if (modalData.end_date) payload.end_date = modalData.end_date;
+    if (modalData.job_title_id) payload.job_title_id = modalData.job_title_id;
+    if (modalData.company_id) payload.company_id = modalData.company_id;
+    if (modalData.position_level_id) payload.position_level_id = modalData.position_level_id;
+    if (modalData.office_id) payload.office_id = modalData.office_id;
+    if (modalData.directorate_id) payload.directorate_id = modalData.directorate_id;
+    if (modalData.payroll_status) payload.payroll_status = modalData.payroll_status;
+    if (modalData.division_id) payload.division_id = modalData.division_id;
+    if (modalData.employee_category_id) payload.employee_category_id = modalData.employee_category_id;
+    return payload;
+  };
+
+  const updateEmploymentPosition = useCallback(
+    async (id: string = employeeId!, payload: UpdateEmploymentPositionPayload | EmploymentPositionForm) => {
+      if (!id) {
+        setError('Employee ID is required');
+        return;
+      }
+
+      setLoading(true);
+      setError(null);
+      console.log('test updateEmploymentPosition', id, payload);
+
+      try {
+        let mappedPayload: UpdateEmploymentPositionPayload;
+        
+        // Simple check jika form data (cek properti yang memang ada di form modal)
+        const formPayload = payload as EmploymentPositionForm;
+        if (
+          'employment_status_id' in formPayload || 
+          'start_date' in formPayload || 
+          'office_id' in formPayload ||
+          'position_level_id' in formPayload
+        ) {
+             mappedPayload = mapEmploymentPositionModalToPayload(formPayload);
+        } else {
+             mappedPayload = payload as UpdateEmploymentPositionPayload;
+        }
+
+        const response = await personalInformationService.updateEmploymentPosition(id, mappedPayload);
+
+        if (response.meta.status == 200) {
+           addNotification({
+            variant: 'success',
+            title: 'Berhasil',
+            description: 'Data posisi berhasil diperbarui.',
+            hideDuration: 3000 });
+            fetchDetail(id);
+        } else {
+          setError(response.message || 'Failed to update employment position');
+        }
+      } catch (err: any) {
+        const errorMessage = err?.message || 'An error occurred while updating employment position';
+        setError(errorMessage);
+        console.error('updateEmploymentPosition error:', err);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [employeeId]
+  );
+
+  /**
+   * Update Employee Document
+   */
+  const updateEmployeeDocument = useCallback(
+    async (id: string = employeeId!, payload: UpdateEmployeeDocumentPayload) => {
+      if (!id) {
+        setError('Employee ID is required');
+        return;
+      }
+      console.log('test updateEmployeeDocument', id, payload);
+
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await personalInformationService.updateEmployeeDocument(id, payload);
+
+        if (response.meta.status == 200) {
+           addNotification({
+            variant: 'success',
+            title: 'Berhasil',
+            description: 'Dokumen karyawan berhasil diperbarui.',
+            hideDuration: 3000 });
+            fetchDetail(id);
+        } else {
+          setError(response.message || 'Failed to update employee document');
+        }
+      } catch (err: any) {
+        const errorMessage = err?.message || 'An error occurred while updating employee document';
+        setError(errorMessage);
+        console.error('updateEmployeeDocument error:', err);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [employeeId]
+  );
 
   return {
     data,
@@ -712,7 +834,9 @@ const mapSocialMediaModalToPayload = (modalData: MediaSosialForm): UpdateSocialM
     updateSocialMediaData,
     updateSalaryData,
     updateBpjsData,
-    resetError,
+    updateEmploymentPosition,
+    updateEmployeeDocument,
+    resetError: () => setError(null),
   };
 };
 

@@ -7,6 +7,8 @@ import { useModal } from '@/hooks/useModal';
 import PersonalDocumentsModal from '@/features/employee/components/modals/employee-data/personal-information/PersonalDocumentsModal';
 import { IconFileDetail, IconHapus, IconLengkap, IconPencil, IconTidakLengkap } from '@/icons/components/icons';
 import { formatUrlFile } from '@/utils/formatUrlFile';
+import { useParams } from 'react-router-dom';
+import usePersonalInformation from '@/features/employee/hooks/employee-data/detail/contract/usePersonalInformation';
 
 interface Props {
   documents: any; // API response from employee-master-data
@@ -15,6 +17,8 @@ interface Props {
 export default function PersonalDocumentsCard({ documents }: Props) {
   const [personalFiles, setPersonalFiles] = React.useState<Array<{ id: number | string; no: number; namaFile: string; dokumen: string }>>([]);
   const { isOpen, openModal, closeModal } = useModal(false);
+  const { id } = useParams<{ id: string }>();
+  const { updateEmployeeDocument } = usePersonalInformation(id);
 
   React.useEffect(() => {
     // Note: API response doesn't have documents field in the current contract
@@ -31,7 +35,13 @@ export default function PersonalDocumentsCard({ documents }: Props) {
     setPersonalFiles(mapped);
   }, [documents]);
 
-  const isComplete = Array.isArray(documents?.documents) && documents.documents.length > 0 && documents.documents.every((d: any) => !!d?.file_name && !!d?.file_type);
+  const optionalType = 'Surat Keterangan Pengalaman Kerja';
+  const existingTypes = new Set((documents?.documents || []).map((d: any) => d.file_type));
+  console.log('Existing types', existingTypes);
+  console.log('Has optional', existingTypes.has(optionalType));
+  console.log('Documents length', documents?.documents.length === 12 && !existingTypes.has(optionalType));
+
+  const isComplete = documents?.documents.length > 12 ? true : documents?.documents.length === 12 && !existingTypes.has(optionalType);
 
   return (
     <ExpandCard title="Berkas/Dokumen Pribadi" leftIcon={isComplete ? <IconLengkap /> : <IconTidakLengkap />} withHeaderDivider>
@@ -44,11 +54,11 @@ export default function PersonalDocumentsCard({ documents }: Props) {
             { id: 'namaFile', label: 'Nama File' },
           ]}
           actions={[
-            {
-              icon: <IconHapus />,
-              className: ' border-gray-300 text-sm hover:bg-gray-50',
-              onClick: () => {},
-            },
+            // {
+            //   icon: <IconHapus />,
+            //   className: ' border-gray-300 text-sm hover:bg-gray-50',
+            //   onClick: () => {},
+            // },
             {
               icon: <IconFileDetail />,
               className: ' border-gray-300 text-sm hover:bg-gray-50',
@@ -58,11 +68,11 @@ export default function PersonalDocumentsCard({ documents }: Props) {
                 window.open(formatUrlFile(row.fileUrl), '_blank'); 
               },
             },
-            {
-              icon: <IconPencil  />,
-              className: ' border-gray-300 text-sm hover:bg-gray-50',
-              onClick: () => {},
-            },
+            // {
+            //   icon: <IconPencil  />,
+            //   className: ' border-gray-300 text-sm hover:bg-gray-50',
+            //   onClick: () => {},
+            // },
           ]}
         />
       </div>
@@ -74,11 +84,33 @@ export default function PersonalDocumentsCard({ documents }: Props) {
 
       <PersonalDocumentsModal
         isOpen={isOpen}
-        initialData={{ tipeFile: '', pendingRows: [{ tipeFile: '', fileName: '' }], rows: [] }}
+        // Dokumentasi: Inisialisasi data modal dokumen dari response Document_Data.documents
+        initialData={{
+          tipeFile: '',
+          pendingRows: [{ tipeFile: '', fileName: '' }],
+          rows: (documents?.documents || []).map((d: any, idx: number) => ({
+            id: idx + 1,
+            document_id: d?.id || '',
+            tipeFile: d?.file_type || '',
+            type_id: d?.file_type_id || '',
+            namaFile: d?.name_file || '',
+            filePath: d?.file || '',
+          })),
+        }}
         onClose={closeModal}
-        onSubmit={(payload) => {
-          const mapped = payload.rows.map((r, idx) => ({ id: idx + 1, no: idx + 1, namaFile: r.tipeFile, dokumen: r.namaFile }));
-          setPersonalFiles(mapped);
+        onSubmit={async (payload) => {
+          // Dokumentasi: Bangun payload dokumen dengan tipe aman (id & file hanya dikirim jika ada)
+          const documentsPayload = {
+            documents: (payload.rows || []).map((r) => {
+              const item: any = {
+                document_type_id: String(r.type_id),
+              };
+              if (r.document_id) item.id = String(r.document_id);
+              if (r.file) item.file = r.file;
+              return item;
+            }),
+          };
+          await updateEmployeeDocument(id as string, documentsPayload);
           closeModal();
         }}
         submitting={false}

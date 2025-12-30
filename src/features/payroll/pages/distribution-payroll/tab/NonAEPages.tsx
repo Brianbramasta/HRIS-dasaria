@@ -3,6 +3,7 @@ import { DataTableColumn, DataTableAction } from '@/components/shared/datatable/
 import PayrollTabBase from '@/features/payroll/components/tabs/PayrollTabBase';
 import { IconFileDetail } from '@/icons/components/icons';
 import SlipPayrollModal from '@/features/payroll/components/modals/distribution-payroll/SlipPayrollModal';
+import { formatCurrency } from '@/utils/formatCurrency';
 
 interface SalaryDistributionData {
   idKaryawan: string;
@@ -64,6 +65,8 @@ export default function NonAEPages() {
   const [data] = useState<SalaryDistributionData[]>(mockDataNonAE);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState<SalaryDistributionData | null>(null);
+
+
 
   const baseColumns: DataTableColumn<SalaryDistributionData>[] = useMemo(
     () => [
@@ -153,6 +156,64 @@ export default function NonAEPages() {
     []
   );
 
+  // Dokumentasi: Memoisasi data slip gaji dari selectedEmployee untuk dipakai modal dan grid
+  const slipData = useMemo(
+    () =>
+      selectedEmployee
+        ? {
+            idKaryawan: selectedEmployee.idKaryawan,
+            nip: selectedEmployee.nip,
+            pengguna: selectedEmployee.pengguna,
+            golongan: selectedEmployee.kategori,
+            divisi: selectedEmployee.kategori,
+            jabatan: '',
+            departemen: selectedEmployee.perusahaan,
+            jenisBank: selectedEmployee.jenisBank,
+            noRekening: selectedEmployee.noRekening,
+            namaPenerima: selectedEmployee.pengguna,
+            penerimaan: {
+              gajiPokok: selectedEmployee.totalGajiBersih,
+              tunjanganTetap: selectedEmployee.totalGajiBersih * 0.1,
+              transport: selectedEmployee.totalGajiBersih * 0.05,
+              lamaKerja: selectedEmployee.totalGajiBersih * 0.03,
+              bpjsKesehatan: selectedEmployee.totalGajiBersih * 0.02,
+              bpjsPensiun: selectedEmployee.totalGajiBersih * 0.01,
+              bpjsHariTua: selectedEmployee.totalGajiBersih * 0.02,
+              bpjsKematian: selectedEmployee.totalGajiBersih * 0.02,
+              bpjsKecelakaan: selectedEmployee.totalGajiBersih * 0.02,
+              pernikahan: 0,
+              tunjanganTidakTetap: selectedEmployee.totalGajiBersih * 0.05,
+              tunjanganPph21: selectedEmployee.totalGajiBersih * 0.02,
+              insentif: selectedEmployee.totalGajiBersih * 0.02,
+              performa: selectedEmployee.totalGajiBersih * 0.01,
+            },
+            potongan: {
+              potonganTetap: selectedEmployee.totalGajiBersih * 0.08,
+              kasbon: selectedEmployee.totalGajiBersih * 0.02,
+              bpjsPensiun: selectedEmployee.totalGajiBersih * 0.01,
+              bpjsKesehatan: selectedEmployee.totalGajiBersih * 0.02,
+              bpjsHariTua: selectedEmployee.totalGajiBersih * 0.02,
+              potonganTidakTetap: selectedEmployee.totalGajiBersih * 0.03,
+              pph21: selectedEmployee.totalGajiBersih * 0.05,
+            },
+            takeHomePay: selectedEmployee.totalGajiBersih,
+            catatan: 'Mohon tidak menyebarkan slip gaji karena bersifat rahasia.',
+          }
+        : undefined,
+    [selectedEmployee]
+  );
+
+  // Dokumentasi: Perhitungan total penerimaan dan total potongan berbasis slipData
+  const totalPenerimaan = useMemo(() => {
+    if (!slipData?.penerimaan) return 0;
+    return Object.values(slipData.penerimaan).reduce((sum, val) => sum + (val || 0), 0);
+  }, [slipData?.penerimaan]);
+
+  const totalPotongan = useMemo(() => {
+    if (!slipData?.potongan) return 0;
+    return Object.values(slipData.potongan).reduce((sum, val) => sum + (val || 0), 0);
+  }, [slipData?.potongan]);
+
   const actions: DataTableAction<SalaryDistributionData>[] = useMemo(
     () => [
       {
@@ -185,50 +246,164 @@ export default function NonAEPages() {
           setIsModalOpen(false);
           setSelectedEmployee(null);
         }}
-        data={
-          selectedEmployee
-            ? {
-                idKaryawan: selectedEmployee.idKaryawan,
-                nip: selectedEmployee.nip,
-                pengguna: selectedEmployee.pengguna,
-                golongan: selectedEmployee.kategori,
-                divisi: selectedEmployee.kategori,
-                jabatan: '',
-                departemen: selectedEmployee.perusahaan,
-                jenisBank: selectedEmployee.jenisBank,
-                noRekening: selectedEmployee.noRekening,
-                namaPenerima: selectedEmployee.pengguna,
-                penerimaan: {
-                  gajiPokok: selectedEmployee.totalGajiBersih,
-                  tunjanganTetap: selectedEmployee.totalGajiBersih * 0.1,
-                  transport: selectedEmployee.totalGajiBersih * 0.05,
-                  lamaKerja: selectedEmployee.totalGajiBersih * 0.03,
-                  bpjsKesehatan: selectedEmployee.totalGajiBersih * 0.02,
-                  bpjsPensiun: selectedEmployee.totalGajiBersih * 0.01,
-                  bpjsHariTua: selectedEmployee.totalGajiBersih * 0.02,
-                  bpjsKematian: selectedEmployee.totalGajiBersih * 0.02,
-                  bpjsKecelakaan: selectedEmployee.totalGajiBersih * 0.02,
-                  pernikahan: 0,
-                  tunjanganTidakTetap: selectedEmployee.totalGajiBersih * 0.05,
-                  tunjanganPph21: selectedEmployee.totalGajiBersih * 0.02,
-                  insentif: selectedEmployee.totalGajiBersih * 0.02,
-                  performa: selectedEmployee.totalGajiBersih * 0.01,
-                },
-                potongan: {
-                  potonganTetap: selectedEmployee.totalGajiBersih * 0.08,
-                  kasbon: selectedEmployee.totalGajiBersih * 0.02,
-                  bpjsPensiun: selectedEmployee.totalGajiBersih * 0.01,
-                  bpjsKesehatan: selectedEmployee.totalGajiBersih * 0.02,
-                  bpjsHariTua: selectedEmployee.totalGajiBersih * 0.02,
-                  potonganTidakTetap: selectedEmployee.totalGajiBersih * 0.03,
-                  pph21: selectedEmployee.totalGajiBersih * 0.05,
-                },
-                takeHomePay: selectedEmployee.totalGajiBersih,
-                catatan: 'Mohon tidak menyebarkan slip gaji karena bersifat rahasia.',
-              }
-            : undefined
+        data={slipData}
+        // Dokumentasi: Konten dinamis untuk modal, berisi grid Penerimaan & Potongan
+        content={
+          slipData && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+              <div>
+                <div className="bg-[#525252] text-white px-4 py-3 font-bold text-base mb-4">Penerimaan</div>
+                <div className="space-y-1">
+                  <div className="flex justify-between py-2 text-sm dark:bg-blue-900/20 px-3">
+                    <span className="text-gray-800 dark:text-gray-200">Gaji Pokok</span>
+                    <span className="text-gray-900 dark:text-white min-w-[120px] text-left">
+                      {formatCurrency(slipData.penerimaan?.gajiPokok || 0)}
+                    </span>
+                  </div>
+                  <div>
+                    <div className="flex justify-between py-2 text-sm dark:bg-blue-900/20 px-3">
+                      <span className="text-gray-800 dark:text-gray-200 font-medium">Tunjangan Tetap</span>
+                    </div>
+                    <div className="pl-6 text-xs space-y-1">
+                      <div className="flex justify-between py-1 text-gray-700 dark:text-gray-300 px-3">
+                        <span>Transport</span>
+                        <span className="min-w-[120px] text-left">
+                          {formatCurrency(slipData.penerimaan?.transport || 0)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between py-1 text-gray-700 dark:text-gray-300 px-3">
+                        <span>Lama Kerja</span>
+                        <span className="min-w-[120px] text-left">
+                          {formatCurrency(slipData.penerimaan?.lamaKerja || 0)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between py-1 dark:bg-blue-900/20 px-3">
+                        <span>BPJS Kesehatan (2%)</span>
+                        <span className="min-w-[120px] text-left">
+                          {formatCurrency(slipData.penerimaan?.bpjsKesehatan || 0)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between py-1 dark:bg-blue-900/20 px-3">
+                        <span>BPJS Pensiun (1%)</span>
+                        <span className="min-w-[120px] text-left">
+                          {formatCurrency(slipData.penerimaan?.bpjsPensiun || 0)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between py-1 dark:bg-blue-900/20 px-3">
+                        <span>BPJS Hari Tua (2%)</span>
+                        <span className="min-w-[120px] text-left">
+                          {formatCurrency(slipData.penerimaan?.bpjsHariTua || 0)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between py-1 dark:bg-blue-900/20 px-3">
+                        <span>BPJS Kematian (2%)</span>
+                        <span className="min-w-[120px] text-left">
+                          {formatCurrency(slipData.penerimaan?.bpjsKematian || 0)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between py-1 dark:bg-blue-900/20 px-3">
+                        <span>BPJS Kecelakaan Kerja (2%)</span>
+                        <span className="min-w-[120px] text-left">
+                          {formatCurrency(slipData.penerimaan?.bpjsKecelakaan || 0)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between py-1 dark:bg-blue-900/20 px-3">
+                        <span>Pernikahan</span>
+                        <span className="min-w-[120px] text-left">
+                          {formatCurrency(slipData.penerimaan?.pernikahan || 0)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex justify-between py-2 text-sm dark:bg-blue-900/20 px-3">
+                      <span className="text-gray-800 dark:text-gray-200 font-medium">Tunjangan Tidak Tetap</span>
+                    </div>
+                    <div className="pl-6 text-xs space-y-1">
+                      <div className="flex justify-between py-1 text-gray-700 dark:text-gray-300 px-3">
+                        <span>Tunjangan PPh 21</span>
+                        <span className="min-w-[120px] text-left">
+                          {formatCurrency(slipData.penerimaan?.tunjanganPph21 || 0)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between py-1 text-gray-700 dark:text-gray-300 px-3">
+                        <span>Insentif</span>
+                        <span className="min-w-[120px] text-left">
+                          {formatCurrency(slipData.penerimaan?.insentif || 0)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between py-1 text-gray-700 dark:text-gray-300 px-3">
+                        <span>Performa</span>
+                        <span className="min-w-[120px] text-left">
+                          {formatCurrency(slipData.penerimaan?.performa || 0)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-between py-3 px-3 dark:bg-blue-900/40 font-bold text-gray-900 dark:text-white dark:border-blue-800 text-sm">
+                    <span className="min-w-[120px] text-left">Total Penerimaan</span>
+                    <span className="min-w-[120px] text-left">{formatCurrency(totalPenerimaan)}</span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className="bg-[#525252] text-white px-4 py-3 font-bold text-base mb-4">Potongan</div>
+                <div className="space-y-1">
+                  <div>
+                    <div className="flex justify-between py-2 text-sm dark:bg-red-900/20 px-3">
+                      <span className="text-gray-800 dark:text-gray-200 font-medium">Potongan Tetap</span>
+                    </div>
+                    <div className="pl-6 text-xs space-y-1">
+                      <div className="flex justify-between py-1 text-gray-700 dark:text-gray-300 px-3">
+                        <span>Kasbon</span>
+                        <span className="min-w-[120px] text-left">
+                          {formatCurrency(slipData.potongan?.kasbon || 0)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between py-1 text-gray-700 dark:text-gray-300 px-3">
+                        <span>BPJS Pensiun (1%)</span>
+                        <span className="min-w-[120px] text-left">
+                          {formatCurrency(slipData.potongan?.bpjsPensiun || 0)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between py-1 text-gray-700 dark:text-gray-300 px-3">
+                        <span>BPJS Kesehatan (2%)</span>
+                        <span className="min-w-[120px] text-left">
+                          {formatCurrency(slipData.potongan?.bpjsKesehatan || 0)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between py-1 text-gray-700 dark:text-gray-300 px-3">
+                        <span>BPJS Hari Tua (2%)</span>
+                        <span className="min-w-[120px] text-left">
+                          {formatCurrency(slipData.potongan?.bpjsHariTua || 0)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex justify-between py-2 text-sm dark:bg-red-900/20 px-3">
+                      <span className="text-gray-800 dark:text-gray-200 font-medium">Potongan Tidak Tetap</span>
+                    </div>
+                    <div className="pl-6 text-xs space-y-1">
+                      <div className="flex justify-between py-1 text-gray-700 dark:text-gray-300 px-3">
+                        <span>PPH 21</span>
+                        <span className="min-w-[120px] text-left">
+                          {formatCurrency(slipData.potongan?.pph21 || 0)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-between py-3 px-3 dark:bg-red-900/40 font-bold text-gray-900 dark:text-white border-red-200 dark:border-red-800 text-sm">
+                    <span>Total Potongan</span>
+                    <span className="min-w-[120px] text-left">{formatCurrency(totalPotongan)}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )
         }
       />
+      {/* Dokumentasi: Grid tidak lagi dirender di halaman, dipass ke modal via prop content */}
     </>
   );
 }

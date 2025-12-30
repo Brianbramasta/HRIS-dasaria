@@ -8,32 +8,22 @@ import { STATUS_PAYROLL_OPTIONS } from '@/features/employee/utils/EmployeeMappin
 import { useStep3Data } from '@/features/employee/hooks/employee-data/form/useFromStep';
 import { employeeMasterDataService } from '@/features/employee/services/EmployeeMasterData.service';
 
+// Dokumentasi: Menyesuaikan penamaan field form dengan payload API update-employment-position
 export type EmployeeDataForm = {
-  statusKaryawan?: string;
-  departemen?: string;
-  departemen_id?: string;
-  position?: string;
+  employment_status_id?: string;
+  department_id?: string;
   position_id?: string;
-  userAccess?: string;
-  jabatan?: string;
-  jabatan_id?: string;
-  company?: string;
+  job_title_id?: string;
   company_id?: string;
-  kantor?: string;
-  kantor_id?: string;
-  direktorat?: string;
-  direktorat_id?: string;
-  divisi?: string;
-  divisi_id?: string;
-  grade?: string;
-  jenjangJabatan?: string;
-  jenjang_jabatan_id?: string;
+  office_id?: string;
+  directorate_id?: string;
+  division_id?: string;
+  position_level_id?: string;
+  payroll_status?: string;
+  employee_category_id?: string;
+  start_date?: string;
+  end_date?: string;
   golongan?: string;
-  statusPayroll?: string;
-  kategoriKaryawan?: string;
-  kategori_karyawan_id?: string;
-  tanggalMasuk?: string;
-  tanggalAkhir?: string;
 };
 
 interface Props {
@@ -85,15 +75,15 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
           setOfficeDropdown((offices || []).map((i: any) => ({ label: i.office_name, value: i.id })));
         }
 
-        // Fetch divisions jika ada directorat_id
-        if (initialData.direktorat_id) {
-          const divisions = await employeeMasterDataService.getDivisionsByDirectorate(initialData.direktorat_id);
+        // Fetch divisions jika ada directorate_id
+        if (initialData.directorate_id) {
+          const divisions = await employeeMasterDataService.getDivisionsByDirectorate(initialData.directorate_id);
           setDivisionDropdown((divisions || []).map((i: any) => ({ label: i.division_name, value: i.id })));
         }
 
-        // Fetch departments jika ada divisi_id
-        if (initialData.divisi_id) {
-          const departments = await employeeMasterDataService.getDepartmentsByDivision(initialData.divisi_id);
+        // Fetch departments jika ada division_id
+        if (initialData.division_id) {
+          const departments = await employeeMasterDataService.getDepartmentsByDivision(initialData.division_id);
           setDepartmentDropdown((departments || []).map((i: any) => ({ label: i.department_name, value: i.id })));
         }
       } catch (error) {
@@ -102,9 +92,10 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
     };
 
     fetchDependentOptions();
-  }, [isOpen, initialData, initialData?.company_id, initialData?.direktorat_id, initialData?.divisi_id]);
+  }, [isOpen, initialData, initialData?.company_id, initialData?.directorate_id, initialData?.division_id]);
 
   const handleInput = (key: keyof EmployeeDataForm, value: any) => {
+    console.log('test input',key, value);
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
@@ -121,8 +112,8 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             <Label>Status Karyawan</Label>
             <Select
               options={employeeStatusOptions}
-              defaultValue={form.statusKaryawan || ''}
-              onChange={(v) => handleInput('statusKaryawan', v)}
+              defaultValue={form.employment_status_id || ''}
+              onChange={(v) => handleInput('employment_status_id', v)}
               placeholder="Select"
             />
           </div>
@@ -130,18 +121,18 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             <DatePicker
               id="joinDatePicker"
               label="Tanggal Masuk"
-              defaultDate={form.tanggalMasuk || undefined}
+              defaultDate={form.start_date || undefined}
               placeholder="Pilih tanggal"
-              onChange={(...args) => handleInput('tanggalMasuk', args[1])}
+              onChange={(...args) => handleInput('start_date', args[1])}
             />
           </div>
           <div>
             <DatePicker
               id="endDatePicker"
               label="Tanggal Akhir"
-              defaultDate={form.tanggalAkhir || undefined}
+              defaultDate={form.end_date || undefined}
               placeholder="— (masih aktif)"
-              onChange={(...args) => handleInput('tanggalAkhir', args[1])}
+              onChange={(...args) => handleInput('end_date', args[1])}
             />
           </div>
           <div>
@@ -157,8 +148,8 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             <Label>Kantor</Label>
             <Select
               options={officeDropdown.length > 0 ? officeDropdown : officeOptions.length > 0 ? officeOptions : [{ label: 'Pilih perusahaan terlebih dahulu', value: '' }]}
-              defaultValue={form.kantor_id || ''}
-              onChange={(v) => handleInput('kantor_id', v)}
+              defaultValue={form.office_id || ''}
+              onChange={(v) => handleInput('office_id', v)}
               disabled={officeDropdown.length === 0 && officeOptions.length === 0}
               placeholder="Select"
             />
@@ -167,8 +158,8 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             <Label>Direktorat</Label>
             <Select
               options={directorateOptions}
-              defaultValue={form.direktorat_id || ''}
-              onChange={(v) => handleInput('direktorat_id', v)}
+              defaultValue={form.directorate_id || ''}
+              onChange={(v) => handleInput('directorate_id', v)}
               placeholder="Select"
             />
           </div>
@@ -176,8 +167,8 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             <Label>Divisi</Label>
             <Select
               options={divisionDropdown.length > 0 ? divisionDropdown : divisionOptions.length > 0 ? divisionOptions : [{ label: 'Pilih direktorat terlebih dahulu', value: '' }]}
-              defaultValue={form.divisi_id || ''}
-              onChange={(v) => handleInput('divisi_id', v)}
+              defaultValue={form.division_id || ''}
+              onChange={(v) => handleInput('division_id', v)}
               disabled={divisionDropdown.length === 0 && divisionOptions.length === 0}
               placeholder="Select"
             />
@@ -189,8 +180,8 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             <Label>Departemen</Label>
             <Select
               options={departmentDropdown.length > 0 ? departmentDropdown : departmentOptions.length > 0 ? departmentOptions : [{ label: 'Pilih divisi terlebih dahulu', value: '' }]}
-              defaultValue={form.departemen_id || ''}
-              onChange={(v) => handleInput('departemen_id', v)}
+              defaultValue={form.department_id || ''}
+              onChange={(v) => handleInput('department_id', v)}
               disabled={departmentDropdown.length === 0 && departmentOptions.length === 0}
               placeholder="Select"
             />
@@ -208,8 +199,8 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             <Label>Jabatan</Label>
             <Select
               options={jobTitleOptions}
-              defaultValue={form.jabatan_id || ''}
-              onChange={(v) => handleInput('jabatan_id', v)}
+              defaultValue={form.job_title_id || ''}
+              onChange={(v) => handleInput('job_title_id', v)}
               placeholder="Select"
             />
           </div>
@@ -217,8 +208,8 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             <Label>Jenjang Jabatan</Label>
             <Select
               options={positionLevelOptions}
-              defaultValue={form.jenjang_jabatan_id || ''}
-              onChange={(v) => handleInput('jenjang_jabatan_id', v)}
+              defaultValue={form.position_level_id || ''}
+              onChange={(v) => handleInput('position_level_id', v)}
               placeholder="Select"
             />
           </div>
@@ -236,8 +227,8 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             <Label>Status PayRoll</Label>
             <Select
               options={STATUS_PAYROLL_OPTIONS}
-              defaultValue={form.statusPayroll || ''}
-              onChange={(v) => handleInput('statusPayroll', v)}
+              defaultValue={form.payroll_status || ''}
+              onChange={(v) => handleInput('payroll_status', v)}
               placeholder="Select"
             />
           </div>
@@ -245,8 +236,8 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             <Label>Kategori Karyawan</Label>
             <Select
               options={kategoriKaryawanOptions}
-              defaultValue={form.kategori_karyawan_id || ''}
-              onChange={(v) => handleInput('kategori_karyawan_id', v)}
+              defaultValue={form.employee_category_id || ''}
+              onChange={(v) => handleInput('employee_category_id', v)}
               placeholder="Select"
             />
           </div>
@@ -261,6 +252,8 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
       onClose={onClose}
       content={content}
       handleSubmit={() => {
+        // console.log('test submit', form);
+        // return
         onSubmit(form);
       }}
       submitting={!!submitting}

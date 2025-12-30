@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router';
 import { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
 import PayrollTabBase from '@/features/payroll/components/tabs/PayrollTabBase';
 import { IconFileDetail } from '@/icons/components/icons';
+import SlipPayrollModal from '@/features/payroll/components/modals/distribution-payroll/SlipPayrollModal';
+import { formatCurrency } from '@/utils/formatCurrency';
 
 interface SalaryDistributionData {
   idKaryawan: string;
@@ -16,9 +18,18 @@ interface SalaryDistributionData {
   kategori: string;
   perusahaan: string;
   statusPersetujuan: 'menunggu' | 'disetujui' | 'ditolak';
+  // Detail components for THR
+  detail?: {
+    gajiPokok: number;
+    tunjanganTetap: number; // This might be a sum or a header placeholder
+    transport: number;
+    lamaKerja: number;
+    jabatan: number;
+    pernikahan: number;
+  };
 }
 
-const mockDataPKL: SalaryDistributionData[] = [
+const mockDataTHR: SalaryDistributionData[] = [
   {
     idKaryawan: '1',
     pengguna: 'Eka Prasetya',
@@ -27,10 +38,18 @@ const mockDataPKL: SalaryDistributionData[] = [
     email: 'eka.prasetya@gmail.com',
     jenisBank: 'BCA',
     noRekening: '1234567890',
-    totalGajiBersih: 3_000_000,
+    totalGajiBersih: 5_000_000,
     kategori: 'Internship',
     perusahaan: 'Dasaria',
     statusPersetujuan: 'disetujui',
+    detail: {
+      gajiPokok: 1_500_000,
+      tunjanganTetap: 0, // Header placeholder
+      transport: 1_500_000,
+      lamaKerja: 1_500_000,
+      jabatan: 1_500_000,
+      pernikahan: 1_500_000,
+    },
   },
   {
     idKaryawan: '2',
@@ -44,6 +63,14 @@ const mockDataPKL: SalaryDistributionData[] = [
     kategori: 'Internship',
     perusahaan: 'Dasaria',
     statusPersetujuan: 'disetujui',
+    detail: {
+      gajiPokok: 1_000_000,
+      tunjanganTetap: 0,
+      transport: 1_000_000,
+      lamaKerja: 500_000,
+      jabatan: 500_000,
+      pernikahan: 500_000,
+    },
   },
   {
     idKaryawan: '3',
@@ -57,11 +84,23 @@ const mockDataPKL: SalaryDistributionData[] = [
     kategori: 'Internship',
     perusahaan: 'Dasaria',
     statusPersetujuan: 'menunggu',
+    detail: {
+      gajiPokok: 1_000_000,
+      tunjanganTetap: 0,
+      transport: 500_000,
+      lamaKerja: 500_000,
+      jabatan: 250_000,
+      pernikahan: 250_000,
+    },
   },
 ];
 
-export default function PKLPages() {
-  const [data] = useState<SalaryDistributionData[]>(mockDataPKL);
+
+
+export default function THRPages() {
+  const [data] = useState<SalaryDistributionData[]>(mockDataTHR);
+  const [selectedData, setSelectedData] = useState<SalaryDistributionData | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const baseColumns: DataTableColumn<SalaryDistributionData>[] = useMemo(
@@ -158,23 +197,91 @@ export default function PKLPages() {
         label: '',
         icon: <IconFileDetail />,
         onClick: (row) => {
-          navigate(`/salary-distribution/detail-pkl/${row.idKaryawan}`);
+          setSelectedData(row);
+          setIsModalOpen(true);
         },
         variant: 'outline',
         className: 'border-0',
       },
     ],
-    [navigate]
+    []
   );
 
+  const detailContent = useMemo(() => {
+    if (!selectedData?.detail) return null;
+    const d = selectedData.detail;
+    return (
+      <div className="mb-6 text-sm">
+        <div className="bg-gray-600 text-white px-4 py-2 font-bold mb-4">Penerimaan</div>
+        <div className="space-y-3 px-4 text-gray-700 dark:text-gray-300">
+          <div className="flex justify-between">
+            <span>Gaji Pokok</span>
+            <span>{formatCurrency(d.gajiPokok)}</span>
+          </div>
+          
+          <div className="font-bold text-gray-900 dark:text-white mt-4">Tunjangan Tetap</div>
+          <div className="pl-4 space-y-3">
+            <div className="flex justify-between">
+              <span>Transport</span>
+              <span>{formatCurrency(d.transport)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Lama Kerja</span>
+              <span>{formatCurrency(d.lamaKerja)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Jabatan</span>
+              <span>{formatCurrency(d.jabatan)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Pernikahan</span>
+              <span>{formatCurrency(d.pernikahan)}</span>
+            </div>
+          </div>
+
+          <div className="flex justify-between font-bold text-gray-900 dark:text-white pt-4 mt-2">
+            <span>Total Penerimaan</span>
+            <span>{formatCurrency(selectedData.totalGajiBersih)}</span>
+          </div>
+        </div>
+      </div>
+    );
+  }, [selectedData]);
+
   return (
-    <PayrollTabBase<SalaryDistributionData>
-      resetKey="pkl"
-      rows={data}
-      baseColumns={baseColumns}
-      detailPathPrefix="/salary-distribution/detail-pkl"
-      title="Distribusi Gaji PKL"
-      customActions={actions}
-    />
+    <>
+      <PayrollTabBase<SalaryDistributionData>
+        resetKey="THR"
+        rows={data}
+        baseColumns={baseColumns}
+        detailPathPrefix="/salary-distribution/detail-THR"
+        title="Distribusi Gaji THR"
+        customActions={actions}
+      />
+
+      <SlipPayrollModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Slip Tunjangan Hari Raya 2025"
+        takeHomePayLabel="Tunjangan Hari raya"
+        data={
+          selectedData
+            ? {
+                idKaryawan: selectedData.idKaryawan,
+                nip: selectedData.nip,
+                pengguna: selectedData.pengguna,
+                golongan: 'D6', // Mock data as per request/image
+                divisi: 'IT',   // Mock data
+                jabatan: 'Staff', // Mock data
+                departemen: 'HRIS', // Mock data
+                jenisBank: selectedData.jenisBank,
+                noRekening: selectedData.noRekening,
+                takeHomePay: selectedData.totalGajiBersih,
+              }
+            : undefined
+        }
+        content={detailContent}
+      />
+    </>
   );
 }

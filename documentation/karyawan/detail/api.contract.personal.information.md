@@ -1,6 +1,6 @@
 # Kontrak API – Informasi Pribadi Karyawan (Detail)
 
-Dokumen ini merinci kontrak API untuk fitur `Informasi Pribadi` dalam halaman Detail Karyawan. Setiap operasi dapat mengelola data personal, pendidikan, media sosial, informasi gaji, dan data BPJS. Diselaraskan dengan Postman collection yang tersedia.
+Dokumen ini merinci kontrak API untuk fitur `Informasi Pribadi` dalam halaman Detail Karyawan. Setiap operasi dapat mengelola data personal, pendidikan, media sosial, informasi gaji, data BPJS, data posisi/pekerjaan, dan dokumen karyawan. Diselaraskan dengan Postman collection yang tersedia.
 
 ## Konvensi Umum
 
@@ -79,7 +79,14 @@ Dokumen ini merinci kontrak API untuk fitur `Informasi Pribadi` dalam halaman De
       "bank_id": "string | null",
       "npwp": "string | null",
       "ptkp_id": "string | null"
-    }
+    },
+    "documents": [
+      {
+        "id": "string (UUID)",
+        "document_type_id": "string (UUID)",
+        "file": "string (URL)"
+      }
+    ]
   }
 }
 ```
@@ -317,6 +324,91 @@ Dokumen ini merinci kontrak API untuk fitur `Informasi Pribadi` dalam halaman De
 
 ---
 
+## Operasi CRUD – Data Posisi & Pekerjaan
+
+### Update Data Posisi
+
+**Endpoint**: `POST /api/employee-master-data/employees/{employeeId}/update-employment-position`
+
+**Method Spoofing**: Gunakan field `_method: PATCH` dalam form data.
+
+**Path Parameters**:
+- `employeeId` (string, required) – ID karyawan
+
+**Request Body** (form-data):
+- `_method` (text, required) – nilai: `PATCH`
+- `employment_status_id` (text, optional) – ID status kepegawaian (UUID)
+- `department_id` (text, optional) – ID departemen (UUID)
+- `start_date` (text, optional) – tanggal mulai (ISO date: `YYYY-MM-DD`)
+- `position_id` (text, optional) – ID posisi (UUID)
+- `end_date` (text, optional) – tanggal selesai (ISO date: `YYYY-MM-DD`)
+- `job_title_id` (text, optional) – ID job title (UUID)
+- `company_id` (text, optional) – ID perusahaan (UUID)
+- `position_level_id` (text, optional) – ID level posisi (UUID)
+- `office_id` (text, optional) – ID kantor (UUID)
+- `directorate_id` (text, optional) – ID direktorat (UUID)
+- `payroll_status` (text, optional) – status payroll (misal: `Aktif` | `Tidak Aktif`)
+- `division_id` (text, optional) – ID divisi (UUID)
+- `employee_category_id` (text, optional) – ID kategori karyawan (UUID)
+
+**Response** (200 OK):
+```json
+{
+  "data": {
+    "employment_status_id": "string (UUID)",
+    "department_id": "string (UUID)",
+    "start_date": "string (date)",
+    "position_id": "string (UUID)",
+    "job_title_id": "string (UUID)",
+    "company_id": "string (UUID)",
+    "position_level_id": "string (UUID)",
+    "office_id": "string (UUID)",
+    "directorate_id": "string (UUID)",
+    "payroll_status": "string",
+    "division_id": "string (UUID)",
+    "employee_category_id": "string (UUID)"
+  }
+}
+```
+
+**Status**: `200 OK`
+
+---
+
+## Operasi CRUD – Dokumen Karyawan
+
+### Update Dokumen Karyawan
+
+**Endpoint**: `POST /api/employee-master-data/employees/{employeeId}/update-employee-document`
+
+**Method Spoofing**: Gunakan field `_method: PATCH` dalam form data.
+
+**Path Parameters**:
+- `employeeId` (string, required) – ID karyawan
+
+**Request Body** (form-data):
+- `_method` (text, required) – nilai: `PATCH`
+- `documents[{index}][id]` (text, optional) – ID dokumen (UUID, jika update)
+- `documents[{index}][document_type_id]` (text, required) – ID tipe dokumen (UUID)
+- `documents[{index}][file]` (file, optional) – file dokumen
+
+**Response** (200 OK):
+```json
+{
+  "data": [
+    {
+      "id": "string (UUID)",
+      "document_type_id": "string (UUID)",
+      "file": "string (URL/path)"
+    }
+  ]
+}
+```
+
+**Status**: `200 OK`
+
+---
+
 ## Contoh Request cURL
 
 ### Get Data Informasi Pribadi
@@ -395,6 +487,30 @@ curl -X POST \
   -F "bpjs_employment_status=Aktif" \
   -F "bpjs_health_number=2000987654321" \
   -F "bpjs_health_status=Aktif"
+```
+
+### Update Data Posisi
+```bash
+curl -X POST \
+  "http://localhost:3000/api/employee-master-data/employees/DSR011/update-employment-position" \
+  -H "Authorization: Bearer <token>" \
+  -F "_method=PATCH" \
+  -F "employment_status_id=324295a7-0fb2-40c0-9b36-8f8d8dbcadf3" \
+  -F "position_level_id=3900bad2-4ac0-4308-aaa9-e28fe611477d" \
+  -F "employee_category_id=56593eb1-625d-45c1-8446-c5bfaf3e79ac" \
+  -F "payroll_status=Tidak Aktif"
+```
+
+### Update Dokumen Karyawan
+```bash
+curl -X POST \
+  "http://localhost:3000/api/employee-master-data/employees/DSR011/update-employee-document" \
+  -H "Authorization: Bearer <token>" \
+  -F "_method=PATCH" \
+  -F "documents[0][id]=019b5ec3-1a2a-7064-abe5-f0a27800568f" \
+  -F "documents[0][document_type_id]=0336bb98-9b5b-43d2-b4dc-07b750906d8e" \
+  -F "documents[1][document_type_id]=6ee15e18-c50f-4e74-b769-890b0838b113" \
+  -F "documents[1][file]=@/path/to/file.pdf"
 ```
 
 ---
