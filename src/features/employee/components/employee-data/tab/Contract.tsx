@@ -1,16 +1,15 @@
-import { useMemo, useState, type ReactNode, useEffect } from 'react';
+import { type ReactNode } from 'react';
 import type { Karyawan } from '@/features/employee/types/Employee';
 import Button from '@/components/ui/button/Button';
 import { DataTable, type DataTableColumn, type DataTableAction } from '@/components/shared/datatable/DataTable';
 import AddContractModal from '@/features/employee/components/modals/employee-data/contract/AddContractModal';
 import EditContractModal from '@/features/employee/components/modals/employee-data/contract/EditContractModal';
 import DetailContractModal from '@/features/employee/components/modals/employee-data/contract/DetailContractModal';
-import { useContractTab, type ContractEntry } from '@/features/employee/hooks/employee-data/detail/contract/useContract';
+import { useContractTab } from '@/features/employee/hooks/employee-data/detail/contract/useContract';
 import { IconPencil, IconFileDetail } from '@/icons/components/icons';
 import ComponentCard from '@/components/common/ComponentCard';
 import type { ContractHistoryItem } from '@/features/employee/services/detail/ContractService';
 import { formatUrlFile } from '@/utils/formatUrlFile';
-import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
 import PdfPreviewEmbed from '@/components/shared/modal/PdfPreviewEmbed';
 import { clearSkFile } from '@/stores/fileStore';
 import { formatDateToIndonesian } from '@/utils/formatDate';
@@ -18,7 +17,6 @@ import { formatDateToIndonesian } from '@/utils/formatDate';
 interface Props {
   employeeId?: string;
   data?: Karyawan;
-  isEditable?: boolean;
 }
 
 function SummaryItem({ label, children }: { label: string; children: ReactNode }) {
@@ -32,14 +30,8 @@ function SummaryItem({ label, children }: { label: string; children: ReactNode }
 
 export default function ContractTab({ employeeId: employeeIdProp, data }: Props) {
   const {
-    // detail,
-    // defaultName,
-    // memoizedEmployeeId,
-    // employeeId,
     summary,
-    // setSummary,
     rows,
-    // setRows,
     isAddModalOpen,
     setAddModalOpen,
     isEditModalOpen,
@@ -47,10 +39,8 @@ export default function ContractTab({ employeeId: employeeIdProp, data }: Props)
     isDetailModalOpen,
     setDetailModalOpen,
     editingData,
-    // setEditingData,
     detailData,
     setDetailData,
-    // selectedFile,
     setSelectedFile,
     handleAdd,
     handleViewDetail,
@@ -126,7 +116,6 @@ export default function ContractTab({ employeeId: employeeIdProp, data }: Props)
           onAdd={handleAdd}
           addButtonLabel="Tambah Dokumen"
           emptyMessage="Belum ada riwayat kontrak"
-          // isLoading={isLoading}
         />
       </div>
 

@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router';
 import { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
 import PayrollTabBase from '@/features/payroll/components/tabs/PayrollTabBase';
 import { IconFileDetail } from '@/icons/components/icons';
@@ -23,7 +22,7 @@ interface SalaryDistributionData {
   divisi?: string;
   jabatan?: string;
   departemen?: string;
-  penerimaan?: SlipPayrollModalProps['data']['penerimaan'];
+  penerimaan?: NonNullable<SlipPayrollModalProps['data']>['penerimaan'];
 }
 
 const mockDataAE: SalaryDistributionData[] = [
@@ -108,7 +107,7 @@ export default function AEPages() {
   const [data] = useState<SalaryDistributionData[]>(mockDataAE);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedData, setSelectedData] = useState<SalaryDistributionData | null>(null);
-  const navigate = useNavigate();
+  
 
 
   const baseColumns: DataTableColumn<SalaryDistributionData>[] = useMemo(
@@ -218,7 +217,7 @@ export default function AEPages() {
   const modalContent = useMemo(() => {
     if (!selectedData?.penerimaan) return null;
     const { penerimaan } = selectedData;
-    const totalPenerimaan = Object.values(penerimaan).reduce((a, b) => a + (b || 0), 0);
+    const totalPenerimaan = Object.values(penerimaan).reduce((a: number, b) => a + (b || 0), 0);
 
     return (
       <div className="space-y-4 text-sm mb-6">
@@ -255,7 +254,7 @@ export default function AEPages() {
 
           <div className="flex justify-between font-bold pt-3 border-gray-300 mt-2">
             <span>Total Penerimaan</span>
-            <span>{formatCurrency(totalPenerimaan)}</span>
+            <span>{formatCurrency(totalPenerimaan as number)}</span>
           </div>
         </div>
       </div>

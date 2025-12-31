@@ -492,7 +492,7 @@ export const usePersonalInformation = (employeeId?: string): UsePersonalInformat
         setLoading(false);
       }
     },
-    [employeeId, data]
+    [employeeId]
   );
 
   /**
@@ -543,7 +543,7 @@ export const usePersonalInformation = (employeeId?: string): UsePersonalInformat
         setLoading(false);
       }
     },
-    [employeeId, data]
+    [employeeId, fetchDetail]
   );
 
 /**
@@ -561,18 +561,21 @@ interface MediaSosialForm {
   hubunganKontakDarurat?: string;
 }
 
-const mapSocialMediaModalToPayload = (modalData: MediaSosialForm): UpdateSocialMediaDataPayload => {
-  return {
-    facebook_name: modalData.facebook !== undefined && modalData.facebook !== null && modalData.facebook !== '' ? modalData.facebook : undefined,
-    linkedin_name: modalData.linkedin !== undefined && modalData.linkedin !== null && modalData.linkedin !== '' ? modalData.linkedin : undefined,
-    twitter_name: modalData.xCom !== undefined && modalData.xCom !== null && modalData.xCom !== '' ? modalData.xCom : undefined,
-    instagram_name: modalData.instagram !== undefined && modalData.instagram !== null && modalData.instagram !== '' ? modalData.instagram : undefined,
-    relative_social_media: modalData.akunSosialMediaTerdekat !== undefined && modalData.akunSosialMediaTerdekat !== null && modalData.akunSosialMediaTerdekat !== '' ? modalData.akunSosialMediaTerdekat : undefined,
-    emergency_contact_number: modalData.noKontakDarurat !== undefined && modalData.noKontakDarurat !== null && modalData.noKontakDarurat !== '' ? modalData.noKontakDarurat : undefined,
-    emergency_contact_name: modalData.namaNoKontakDarurat !== undefined && modalData.namaNoKontakDarurat !== null && modalData.namaNoKontakDarurat !== '' ? modalData.namaNoKontakDarurat : undefined,
-    emergency_contact_relationship: modalData.hubunganKontakDarurat !== undefined && modalData.hubunganKontakDarurat !== null && modalData.hubunganKontakDarurat !== '' ? modalData.hubunganKontakDarurat : undefined,
-  };
-};
+const mapSocialMediaModalToPayload = useCallback(
+  (modalData: MediaSosialForm): UpdateSocialMediaDataPayload => {
+    return {
+      facebook_name: modalData.facebook !== undefined && modalData.facebook !== null && modalData.facebook !== '' ? modalData.facebook : undefined,
+      linkedin_name: modalData.linkedin !== undefined && modalData.linkedin !== null && modalData.linkedin !== '' ? modalData.linkedin : undefined,
+      twitter_name: modalData.xCom !== undefined && modalData.xCom !== null && modalData.xCom !== '' ? modalData.xCom : undefined,
+      instagram_name: modalData.instagram !== undefined && modalData.instagram !== null && modalData.instagram !== '' ? modalData.instagram : undefined,
+      relative_social_media: modalData.akunSosialMediaTerdekat !== undefined && modalData.akunSosialMediaTerdekat !== null && modalData.akunSosialMediaTerdekat !== '' ? modalData.akunSosialMediaTerdekat : undefined,
+      emergency_contact_number: modalData.noKontakDarurat !== undefined && modalData.noKontakDarurat !== null && modalData.noKontakDarurat !== '' ? modalData.noKontakDarurat : undefined,
+      emergency_contact_name: modalData.namaNoKontakDarurat !== undefined && modalData.namaNoKontakDarurat !== null && modalData.namaNoKontakDarurat !== '' ? modalData.namaNoKontakDarurat : undefined,
+      emergency_contact_relationship: modalData.hubunganKontakDarurat !== undefined && modalData.hubunganKontakDarurat !== null && modalData.hubunganKontakDarurat !== '' ? modalData.hubunganKontakDarurat : undefined,
+    };
+  },
+  []
+);
 
   /**
    * Update Social Media Data
@@ -612,7 +615,7 @@ const mapSocialMediaModalToPayload = (modalData: MediaSosialForm): UpdateSocialM
         setLoading(false);
       }
     },
-    [employeeId, data]
+    [employeeId, mapSocialMediaModalToPayload]
   );
 
   /**
@@ -654,7 +657,7 @@ const mapSocialMediaModalToPayload = (modalData: MediaSosialForm): UpdateSocialM
         setLoading(false);
       }
     },
-    [employeeId, data]
+    [employeeId, fetchDetail]
   );
 
   /**
@@ -696,7 +699,7 @@ const mapSocialMediaModalToPayload = (modalData: MediaSosialForm): UpdateSocialM
         setLoading(false);
       }
     },
-    [employeeId, data]
+    [employeeId, fetchDetail]
   );
 
   /**
@@ -718,23 +721,26 @@ const mapSocialMediaModalToPayload = (modalData: MediaSosialForm): UpdateSocialM
     end_date?: string;
   }
 
-  const mapEmploymentPositionModalToPayload = (modalData: EmploymentPositionForm): UpdateEmploymentPositionPayload => {
-    const payload: any = {};
-    if (modalData.employment_status_id) payload.employment_status_id = modalData.employment_status_id;
-    if (modalData.department_id) payload.department_id = modalData.department_id;
-    if (modalData.start_date) payload.start_date = modalData.start_date;
-    if (modalData.position_id) payload.position_id = modalData.position_id;
-    if (modalData.end_date) payload.end_date = modalData.end_date;
-    if (modalData.job_title_id) payload.job_title_id = modalData.job_title_id;
-    if (modalData.company_id) payload.company_id = modalData.company_id;
-    if (modalData.position_level_id) payload.position_level_id = modalData.position_level_id;
-    if (modalData.office_id) payload.office_id = modalData.office_id;
-    if (modalData.directorate_id) payload.directorate_id = modalData.directorate_id;
-    if (modalData.payroll_status) payload.payroll_status = modalData.payroll_status;
-    if (modalData.division_id) payload.division_id = modalData.division_id;
-    if (modalData.employee_category_id) payload.employee_category_id = modalData.employee_category_id;
-    return payload;
-  };
+  const mapEmploymentPositionModalToPayload = useCallback(
+    (modalData: EmploymentPositionForm): UpdateEmploymentPositionPayload => {
+      const payload: any = {};
+      if (modalData.employment_status_id) payload.employment_status_id = modalData.employment_status_id;
+      if (modalData.department_id) payload.department_id = modalData.department_id;
+      if (modalData.start_date) payload.start_date = modalData.start_date;
+      if (modalData.position_id) payload.position_id = modalData.position_id;
+      if (modalData.end_date) payload.end_date = modalData.end_date;
+      if (modalData.job_title_id) payload.job_title_id = modalData.job_title_id;
+      if (modalData.company_id) payload.company_id = modalData.company_id;
+      if (modalData.position_level_id) payload.position_level_id = modalData.position_level_id;
+      if (modalData.office_id) payload.office_id = modalData.office_id;
+      if (modalData.directorate_id) payload.directorate_id = modalData.directorate_id;
+      if (modalData.payroll_status) payload.payroll_status = modalData.payroll_status;
+      if (modalData.division_id) payload.division_id = modalData.division_id;
+      if (modalData.employee_category_id) payload.employee_category_id = modalData.employee_category_id;
+      return payload;
+    },
+    []
+  );
 
   const updateEmploymentPosition = useCallback(
     async (id: string = employeeId!, payload: UpdateEmploymentPositionPayload | EmploymentPositionForm) => {
@@ -783,7 +789,7 @@ const mapSocialMediaModalToPayload = (modalData: MediaSosialForm): UpdateSocialM
         setLoading(false);
       }
     },
-    [employeeId]
+    [employeeId, fetchDetail, mapEmploymentPositionModalToPayload]
   );
 
   /**
@@ -821,7 +827,7 @@ const mapSocialMediaModalToPayload = (modalData: MediaSosialForm): UpdateSocialM
         setLoading(false);
       }
     },
-    [employeeId]
+    [employeeId, fetchDetail]
   );
 
   return {

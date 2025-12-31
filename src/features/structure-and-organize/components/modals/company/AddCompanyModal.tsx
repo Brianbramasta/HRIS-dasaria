@@ -9,7 +9,7 @@ import FileInput from '@/components/form/input/FileInput';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
 import { addNotification } from '@/stores/notificationStore';
 import {  TrashBinIcon } from '@/icons';
-import { iconPlus } from '@/icons/components/icons';
+import { IconPlus } from '@/icons/components/icons';
 
 
 
@@ -203,7 +203,7 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
                       aria-label="Tambah dokumen"
                     >
                       <span className="inline md:hidden">Tambah</span>
-                      <span className="hidden  md:flex md:items-center md:justify-center">{iconPlus({ size: 24 })}</span>
+                      <span className="hidden  md:flex md:items-center md:justify-center"><IconPlus size={24} /></span>
                     </button>
                   ) : (
                     <button

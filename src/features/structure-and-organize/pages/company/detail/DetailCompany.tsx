@@ -13,7 +13,7 @@ import Button from '@/components/ui/button/Button';
 // DOK: Hapus import ikon tidak terpakai 'TrashBinIcon'
 // Alasan: ikon ini tidak digunakan (baris pemakaian sedang dikomentari)
 import { addNotification } from '@/stores/notificationStore';
-import { IconPencil, IconHapus, iconPlus, IconFileDetail } from '@/icons/components/icons';
+import { IconPencil, IconHapus, IconPlus, IconFileDetail } from '@/icons/components/icons';
 // import { TrashBinIcon as TrashIcon, PencilIcon as EditIcon, EyeIcon } from '@/icons/index';
 import DocumentsTable from '../../../components/table/TableGlobal';
 import {  formatDateToIndonesian } from '@/utils/formatDate';
@@ -227,7 +227,7 @@ const DetailPerusahaan: React.FC = () => {
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-3xl  font-semibold text-[#004969]">Dokumen & Arsip</h3>
                 <Button onClick={() => setAddDocOpen(true)} className="bg-blue-600 text-white px-3 py-1 rounded">
-                  {iconPlus({size:24})}
+                  <IconPlus size={24} />
                   <span className='hidden md:inline'>Dokumen Baru</span>
                 </Button>
               </div>

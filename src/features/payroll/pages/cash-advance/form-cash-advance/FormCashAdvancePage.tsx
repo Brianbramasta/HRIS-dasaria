@@ -162,7 +162,7 @@ export default function FormKasbonPage() {
                 label="Tanggal Pengajuan"
                 placeholder="hh/bb/tttt"
                 defaultDate={form.tanggalPengajuan as any}
-                onChange={(_d:any, dateStr:string) => setForm(prev => ({ ...prev, tanggalPengajuan: dateStr }))}
+                onChange={(_d:any, dateStr?:string) => setForm(prev => ({ ...prev, tanggalPengajuan: dateStr || '' }))}
               />
             </div>
           </div>

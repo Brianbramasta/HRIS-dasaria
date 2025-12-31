@@ -173,7 +173,7 @@ export const useFormulirKaryawan = (): UseFormulirKaryawanReturn => {
     } finally {
       setLoading(false);
     }
-  }, [formData, setLoading, setError, submit, clearLocalStorage, isAuthenticated, navigate]);
+  }, [setLoading, setError, submit, clearLocalStorage, isAuthenticated, navigate]);
 
   const handleBackToHome = useCallback(() => {
     resetForm();
@@ -191,7 +191,7 @@ export const useFormulirKaryawan = (): UseFormulirKaryawanReturn => {
     // The actual JSX rendering will be done in the component
     // This function just returns the current step number and authentication status
     return null;
-  }, [currentStep, isAuthenticated]);
+  }, []);
 
   useEffect(() => {
     setTotalSteps(isAuthenticated ? 5 : 4);

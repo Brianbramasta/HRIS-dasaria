@@ -7,8 +7,8 @@ interface PdfPreviewEmbedProps {
   onSuccess?: () => void;
 }
 
-export default function PdfPreviewEmbed({ fileUrl, className = '', onError, onSuccess }: PdfPreviewEmbedProps) {
-  const [isLoading, setIsLoading] = useState(false);
+export default function PdfPreviewEmbed({ fileUrl, className = '', onError }: PdfPreviewEmbedProps) {
+  const [, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   console.log('PdfPreviewEmbed fileUrl:', fileUrl);
 

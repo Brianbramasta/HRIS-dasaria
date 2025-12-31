@@ -6,13 +6,13 @@ import InputField from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
 import DatePicker from '@/components/form/date-picker';
 import FileInput from '@/components/form/input/FileInput';
-import { Plus, Trash2 } from 'react-feather';
+import { Trash2 } from 'react-feather';
 import type { EducationItem as EducationItemType } from '@/features/employee/types/FormEmployee';
 import { JENIS_PENDIDIKAN_OPTIONS } from '@/features/employee/utils/EmployeeMappings';
 import { getEducationDropdownOptions } from '@/features/employee/hooks/employee-data/form/useFormulirKaryawan';
 import Button from '@/components/ui/button/Button';
-import { iconPlus as IconPlus } from '@/icons/components/icons';
-import { formatDateToIndonesian, formatDateToISO, formatIndonesianToISO } from '@/utils/formatDate';
+import { IconPlus } from '@/icons/components/icons';
+import { formatIndonesianToISO } from '@/utils/formatDate';
 
 // Tipe form lokal untuk modal pendidikan (tanpa media sosial)
 export type EducationModalForm = {

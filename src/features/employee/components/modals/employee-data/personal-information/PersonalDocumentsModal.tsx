@@ -4,7 +4,7 @@ import Label from '@/components/form/Label';
 import Select from '@/components/form/Select';
 import FileInput from '@/components/form/input/FileInput';
 import { Table, TableHeader, TableBody, TableRow, TableCell } from '@/components/ui/table';
-import {iconPlus as Plus} from '@/icons/components/icons'
+import {IconPlus as Plus} from '@/icons/components/icons'
 // import { Plus } from 'lucide-react';
 // import { Plus } from 'react-feather';
 import { TrashBinIcon } from '@/icons/index';

@@ -4,7 +4,7 @@ import Label from '../../../../components/form/Label';
 import Button from '../../../../components/ui/button/Button';
 import FileInput from '../../../../components/form/input/FileInput';
 import { TrashBinIcon  } from '@/icons';
-import {iconPlus as PlusIcon} from '@/icons/components/icons';
+import {IconPlus as PlusIcon} from '@/icons/components/icons';
 import DocumentsTable from '../../../structure-and-organize/components/table/TableGlobal';
 import { useStep5Data } from '../../hooks/employee-data/form/useFromStep';
 

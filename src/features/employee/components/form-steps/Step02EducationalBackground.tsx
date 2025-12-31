@@ -6,7 +6,7 @@ import Select from '../../../../components/form/Select';
 import Label from '../../../../components/form/Label';
 import Button from '../../../../components/ui/button/Button';
 import { Trash2 } from 'react-feather';
-import { iconPlus as Plus } from '@/icons/components/icons';
+import { IconPlus as Plus } from '@/icons/components/icons';
 import { EducationItem } from '../../types/FormEmployee';
 import DatePicker from '../../../../components/form/date-picker';
 import FileInput from '../../../../components/form/input/FileInput';

@@ -5,7 +5,7 @@ import {  Edit2 } from 'react-feather';
 import React from 'react';
 import { useModal } from '@/hooks/useModal';
 import PersonalDocumentsModal from '@/features/employee/components/modals/employee-data/personal-information/PersonalDocumentsModal';
-import { IconFileDetail, IconHapus, IconLengkap, IconPencil, IconTidakLengkap } from '@/icons/components/icons';
+import { IconFileDetail, IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
 import { formatUrlFile } from '@/utils/formatUrlFile';
 import { useParams } from 'react-router-dom';
 import usePersonalInformation from '@/features/employee/hooks/employee-data/detail/contract/usePersonalInformation';

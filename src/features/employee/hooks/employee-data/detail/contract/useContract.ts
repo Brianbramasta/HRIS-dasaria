@@ -369,14 +369,8 @@ export interface UseContractTabProps {
 }
 
 export interface UseContractTabReturn {
-  detail: any;
-  defaultName: string;
-  memoizedEmployeeId: string;
-  employeeId: string;
   summary: ContractEntry;
-  setSummary: (summary: ContractEntry) => void;
   rows: ContractHistoryItem[];
-  setRows: (rows: ContractHistoryItem[]) => void;
   isAddModalOpen: boolean;
   setAddModalOpen: (open: boolean) => void;
   isEditModalOpen: boolean;
@@ -384,10 +378,8 @@ export interface UseContractTabReturn {
   isDetailModalOpen: boolean;
   setDetailModalOpen: (open: boolean) => void;
   editingData: ContractEntry | null;
-  setEditingData: (data: ContractEntry | null) => void;
   detailData: ContractEntry | null;
   setDetailData: (data: ContractEntry | null) => void;
-  selectedFile: File | null;
   setSelectedFile: (file: File | null) => void;
   handleAdd: () => void;
   handleViewDetail: (row: ContractHistoryItem) => Promise<void>;
@@ -396,12 +388,6 @@ export interface UseContractTabReturn {
   handleEditSubmit: (entry: ContractEntry) => Promise<void>;
   contractData: ContractData | null;
   isSubmitting: boolean;
-  createContract: (payload: CreateContractPayload) => Promise<boolean>;
-  handleAddLogic: (summary: ContractEntry) => { editingData: ContractEntry };
-  onAddSubmit: (entry: ContractEntry, selectedFile: File | null, onSuccess: () => void) => Promise<void>;
-  handleEditRowLogic: (row: ContractHistoryItem, detail: any) => Promise<ContractEntry>;
-  onEditSubmit: (entry: ContractEntry, employeeId: string, selectedFile: File | null, onSuccess: () => void) => Promise<void>;
-  handleViewDetailLogic: (row: ContractHistoryItem, detail: any) => Promise<ContractEntry>;
 }
 
 export function useContractTab({ employeeIdProp, data }: UseContractTabProps): UseContractTabReturn {
@@ -504,14 +490,8 @@ export function useContractTab({ employeeIdProp, data }: UseContractTabProps): U
   };
 
   return {
-    detail,
-    defaultName,
-    memoizedEmployeeId,
-    employeeId,
     summary,
-    setSummary,
     rows,
-    setRows,
     isAddModalOpen,
     setAddModalOpen,
     isEditModalOpen,
@@ -519,10 +499,8 @@ export function useContractTab({ employeeIdProp, data }: UseContractTabProps): U
     isDetailModalOpen,
     setDetailModalOpen,
     editingData,
-    setEditingData,
     detailData,
     setDetailData,
-    selectedFile,
     setSelectedFile,
     handleAdd,
     handleViewDetail,
@@ -531,12 +509,6 @@ export function useContractTab({ employeeIdProp, data }: UseContractTabProps): U
     handleEditSubmit,
     contractData,
     isSubmitting,
-    createContract,
-    handleAddLogic,
-    onAddSubmit,
-    handleEditRowLogic,
-    onEditSubmit,
-    handleViewDetailLogic,
   };
 }
 

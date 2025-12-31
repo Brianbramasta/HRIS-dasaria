@@ -1,5 +1,4 @@
 import create from 'zustand';
-import { employeeMasterDataService } from '@/features/employee/services/EmployeeMasterData.service';
 import { personalInformationService } from '@/features/employee/services/detail/PersonalInformationService';
 
 interface PersonalInfoDetail {

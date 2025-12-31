@@ -306,7 +306,7 @@ export function useContractRenewalApproval(): UseContractRenewalApprovalReturn {
         hideDuration: 5000,
       });
     }
-  }, [selectedKontrak, addNotification, fetchContractRenewalApprovals]);
+  }, [selectedKontrak, addNotification, fetchContractRenewalApprovals, handleRejectModalClose]);
 
   const handleApprove = useCallback(async (row: ContractRenewalApprovalListItem) => {
     try {

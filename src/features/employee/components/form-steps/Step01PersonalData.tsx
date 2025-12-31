@@ -106,7 +106,7 @@ export const Step01PersonalData: React.FC = () => {
               id="tanggalLahir"
               label="Tanggal Lahir"
               defaultDate={step1.tanggalLahir}
-              onChange={(_, dateStr) => handleChange('tanggalLahir', dateStr)}
+              onChange={(_, dateStr) => handleChange('tanggalLahir', dateStr || '')}
             />
           </div>
 

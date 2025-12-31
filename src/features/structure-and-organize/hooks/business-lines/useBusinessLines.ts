@@ -25,7 +25,12 @@ const toSortField = (field?: string): string => {
   const map: Record<string, string> = {
     name: 'bl_name',
     'Lini Bisnis': 'bl_name',
+    'lini-bisnis': 'bl_name',
+    bl_name: 'bl_name',
     'Deskripsi Umum': 'bl_description',
+    'deskripsi-umum': 'bl_description',
+    description: 'bl_description',
+    bl_description: 'bl_description',
   };
   return map[field || ''] || 'bl_name';
 };
@@ -67,7 +72,7 @@ export const useBusinessLines = (options?: { autoFetch?: boolean }): UseBusiness
   const [pageSize, setPageSize] = useState<number>(10);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [search, setSearch] = useState<string>('');
-  const [sortBy, setSortBy] = useState<string>('name');
+  const [sortBy, setSortBy] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
   const filterValue = useFilterStore((s) => s.filters['Lini Bisnis'] ?? '');
 
@@ -76,14 +81,19 @@ export const useBusinessLines = (options?: { autoFetch?: boolean }): UseBusiness
     setError(null);
     
     try {
-      const params = {
-        page: filter?.page ?? page,
-        per_page: filter?.pageSize ?? pageSize,
-        search: filter?.search ?? search,
-        column: filter?.sortBy ? toSortField(filter.sortBy) : toSortField(sortBy),
-        sort: filter?.sortOrder ?? sortOrder ?? undefined,
-        filter: filter?.filter ?? filterValue,
-      };
+      const effectivePage = filter?.page ?? page;
+      const effectivePageSize = filter?.pageSize ?? pageSize;
+      const effectiveSearch = filter?.search ?? search;
+      const effectiveSortBy = filter?.sortBy ?? sortBy;
+      const effectiveSortOrder = filter?.sortOrder ?? sortOrder;
+      const effectiveFilter = filter?.filter ?? filterValue;
+      const params: any = { page: effectivePage, per_page: effectivePageSize };
+      if (effectiveSearch) params.search = effectiveSearch;
+      if (effectiveFilter) params.filter = effectiveFilter;
+      if (effectiveSortBy) {
+        params.column = toSortField(effectiveSortBy);
+        if (effectiveSortOrder) params.sort = effectiveSortOrder;
+      }
       const response = await businessLinesService.getList(params);
 
       // service returns raw API response; extract payload and map here

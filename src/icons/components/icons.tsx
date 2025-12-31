@@ -14,7 +14,7 @@ export const FileText = ({ size = 16 }: { size?: number }) => (
   </>
 );
 
-export const iconPenggajian = ({ size = 16 , color = '#6C757D' }: { size?: number, color?: string }) => (
+export const IconPenggajian = ({ size = 16 , color = '#6C757D' }: { size?: number, color?: string }) => (
    <><svg width={size} height={size} viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
   <g clip-path="url(#clip0_4022_16646)">
   <path d="M15.75 8.25147H15.618L14.2507 4.25172L2.5155 8.25147L2.25 8.24922M1.875 8.25222H2.25L10.6095 1.57422L12.7222 4.53672" stroke={color} stroke-width="1.5" stroke-linecap="square"/>
@@ -30,7 +30,7 @@ export const iconPenggajian = ({ size = 16 , color = '#6C757D' }: { size?: numbe
   </svg>
   </>)
 
-export const iconKaryawan =  ({ size = 16, color = '#6C757D' }: { size?: number, color?: string }) => (
+export const IconKaryawan =  ({ size = 16, color = '#6C757D' }: { size?: number, color?: string }) => (
   <>
   <svg width={size} height={size} viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path fill-rule="evenodd" clip-rule="evenodd" d="M7.5 3H10.5C13.3282 3 14.7427 3 15.621 3.879C16.4992 4.758 16.5 6.17175 16.5 9C16.5 11.8282 16.5 13.2427 15.621 14.121C14.742 14.9992 13.3282 15 10.5 15H7.5C4.67175 15 3.25725 15 2.379 14.121C1.50075 13.242 1.5 11.8282 1.5 9C1.5 6.17175 1.5 4.75725 2.379 3.879C3.258 3.00075 4.67175 3 7.5 3ZM9.9375 6.75C9.9375 6.60082 9.99676 6.45774 10.1023 6.35225C10.2077 6.24676 10.3508 6.1875 10.5 6.1875H14.25C14.3992 6.1875 14.5423 6.24676 14.6477 6.35225C14.7532 6.45774 14.8125 6.60082 14.8125 6.75C14.8125 6.89918 14.7532 7.04226 14.6477 7.14775C14.5423 7.25324 14.3992 7.3125 14.25 7.3125H10.5C10.3508 7.3125 10.2077 7.25324 10.1023 7.14775C9.99676 7.04226 9.9375 6.89918 9.9375 6.75ZM10.6875 9C10.6875 8.85082 10.7468 8.70774 10.8523 8.60225C10.9577 8.49676 11.1008 8.4375 11.25 8.4375H14.25C14.3992 8.4375 14.5423 8.49676 14.6477 8.60225C14.7532 8.70774 14.8125 8.85082 14.8125 9C14.8125 9.14918 14.7532 9.29226 14.6477 9.39775C14.5423 9.50324 14.3992 9.5625 14.25 9.5625H11.25C11.1008 9.5625 10.9577 9.50324 10.8523 9.39775C10.7468 9.29226 10.6875 9.14918 10.6875 9ZM11.4375 11.25C11.4375 11.1008 11.4968 10.9577 11.6023 10.8523C11.7077 10.7468 11.8508 10.6875 12 10.6875H14.25C14.3992 10.6875 14.5423 10.7468 14.6477 10.8523C14.7532 10.9577 14.8125 11.1008 14.8125 11.25C14.8125 11.3992 14.7532 11.5423 14.6477 11.6477C14.5423 11.7532 14.3992 11.8125 14.25 11.8125H12C11.8508 11.8125 11.7077 11.7532 11.6023 11.6477C11.4968 11.5423 11.4375 11.3992 11.4375 11.25ZM8.25 6.75C8.25 7.14782 8.09196 7.52936 7.81066 7.81066C7.52936 8.09196 7.14782 8.25 6.75 8.25C6.35218 8.25 5.97064 8.09196 5.68934 7.81066C5.40804 7.52936 5.25 7.14782 5.25 6.75C5.25 6.35218 5.40804 5.97064 5.68934 5.68934C5.97064 5.40804 6.35218 5.25 6.75 5.25C7.14782 5.25 7.52936 5.40804 7.81066 5.68934C8.09196 5.97064 8.25 6.35218 8.25 6.75ZM6.75 12.75C9.75 12.75 9.75 12.0787 9.75 11.25C9.75 10.4212 8.4075 9.75 6.75 9.75C5.0925 9.75 3.75 10.4212 3.75 11.25C3.75 12.0787 3.75 12.75 6.75 12.75Z" fill={color}/>
@@ -39,7 +39,7 @@ export const iconKaryawan =  ({ size = 16, color = '#6C757D' }: { size?: number,
   </>
 )
 
-export const iconStrukturOrganisasi = ({ size = 16, color = '#6C757D' }: { size?: number, color?: string }) => (
+export const IconStrukturOrganisasi = ({ size = 16, color = '#6C757D' }: { size?: number, color?: string }) => (
   <>
     <svg width={size} height={size} viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g clip-path="url(#clip0_3179_41019)">
@@ -57,14 +57,6 @@ export const iconStrukturOrganisasi = ({ size = 16, color = '#6C757D' }: { size?
   </>
 )
 
-export const iconPlus = ({ size = 16, color = 'white' }: { size?: number, color?: string }) => (
-  <>
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="2" y="2" width="20" height="20" rx="10" stroke={color} stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1 3"/>
-      <path d="M11.9987 7.33301V16.6663M7.33203 11.9997H16.6654" stroke={color} stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-  </>
-)
 export const IconPlus = ({ size = 16, color = 'white' }: { size?: number, color?: string }) => (
   <>
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

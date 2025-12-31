@@ -4,7 +4,7 @@ import InputField from '@/components/form/input/InputField';
 import Checkbox from '@/components/form/input/Checkbox';
 import Button from '@/components/ui/button/Button';
 import { ChevronDownIcon, ChevronUpIcon, CalenderIcon } from '@/icons/index';
-import { iconPenggajian, iconKaryawan, iconStrukturOrganisasi, IconHakAksesMenu, IconJenisPengajuan } from '@/icons/components/icons';
+import { IconPenggajian, IconKaryawan, IconStrukturOrganisasi, IconHakAksesMenu, IconJenisPengajuan } from '@/icons/components/icons';
 
 interface Permission {
   lihat: boolean;
@@ -261,11 +261,11 @@ export default function EditRolePage() {
       case 'Dashboard':
         return <CalenderIcon className="h-4 w-4" style={{ color }} />;
       case 'Struktur Dan Organisasi':
-        return iconStrukturOrganisasi({ size: 16, color });
+        return IconStrukturOrganisasi({ size: 16, color });
       case 'Data Master Karyawan':
-        return iconKaryawan({ size: 16, color });
+        return IconKaryawan({ size: 16, color });
       case 'Penggajian':
-        return iconPenggajian({ size: 16, color });
+        return IconPenggajian({ size: 16, color });
       case 'Hak Akses':
         return IconHakAksesMenu({ size: 16, color });
       case 'Jenis Pengajuan':

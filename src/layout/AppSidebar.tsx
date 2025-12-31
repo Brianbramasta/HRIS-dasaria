@@ -8,7 +8,7 @@ import {
   HorizontaLDots,
  
 } from "../icons";
-import { iconPenggajian, iconKaryawan, iconStrukturOrganisasi, IconHakAksesMenu, IconJenisPengajuan }   from '@/icons/components/icons'
+import { IconPenggajian, IconKaryawan, IconStrukturOrganisasi, IconHakAksesMenu, IconJenisPengajuan }   from '@/icons/components/icons'
 import { useSidebar } from "../context/SidebarContext";
 // import SidebarWidget from "./SidebarWidget";
 import { useAuthStore } from "../features/auth/stores/AuthStore";
@@ -29,12 +29,12 @@ const navItems: NavItem[] = [
     name: "Dashboard",
     path: "/dashboard",
   },{
-    icon: <> {iconStrukturOrganisasi({ size: 16 })} </>,
+    icon: <> {IconStrukturOrganisasi({ size: 16 })} </>,
     name: "Struktur dan Organisasi",
     path: "/structure-and-organize",
   },
   {
-    icon: <> {iconKaryawan({ size: 16 })} </>,
+    icon: <> {IconKaryawan({ size: 16 })} </>,
     name: "Data Master Karyawan",
 
     subItems: [
@@ -46,7 +46,7 @@ const navItems: NavItem[] = [
     ],
   },
   {
-    icon: <> {iconPenggajian({ size: 16 })} </>,
+    icon: <> {IconPenggajian({ size: 16 })} </>,
     name: "Penggajian",
     subItems: [
       { name: "Dashboard Penggajian", path: "/payroll-dashboard", pro: false },
@@ -119,7 +119,7 @@ const AppSidebar: React.FC = () => {
     if (!submenuMatched) {
       setOpenSubmenu(null);
     }
-  }, [location, isActive]);
+  }, [location, isActive, mainMenu]);
 
   useEffect(() => {
     if (openSubmenu !== null) {
@@ -177,11 +177,11 @@ const AppSidebar: React.FC = () => {
                 console.log('nav name', nav.name)
                 const iconNode =
                   nav.name === "Data Master Karyawan"
-                    ? iconKaryawan({ size: 16, color })
+                    ? IconKaryawan({ size: 16, color })
                     : nav.name === "Penggajian"
-                    ? iconPenggajian({ size: 16, color })
+                    ? IconPenggajian({ size: 16, color })
                     : nav.name === "Struktur dan Organisasi"
-                    ? iconStrukturOrganisasi({ size: 16, color })
+                    ? IconStrukturOrganisasi({ size: 16, color })
                     : nav.name === "Hak Akses"
                     ? IconHakAksesMenu({ size: 16, color })
                     : isValidElement(nav.icon)
@@ -224,11 +224,11 @@ const AppSidebar: React.FC = () => {
                   const color = active ? 'var(--color-brand-500)' : '#6C757D';
                   const iconNode =
                     nav.name === "Data Master Karyawan"
-                      ? iconKaryawan({ size: 16, color })
+                      ? IconKaryawan({ size: 16, color })
                       : nav.name === "Penggajian"
-                      ? iconPenggajian({ size: 16, color })
+                      ? IconPenggajian({ size: 16, color })
                       : nav.name === "Struktur dan Organisasi"
-                      ? iconStrukturOrganisasi({ size: 16, color })
+                      ? IconStrukturOrganisasi({ size: 16, color })
                       : nav.name === "Hak Akses"
                       ? IconHakAksesMenu({ size: 16, color }):nav.name === "Jenis Pengajuan"
                       ? IconJenisPengajuan({ size: 16, color })

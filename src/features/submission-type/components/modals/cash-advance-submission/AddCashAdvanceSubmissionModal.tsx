@@ -91,7 +91,6 @@ const AddPengajuanKasbonModal: React.FC<Props> = ({ isOpen, onClose, defaultValu
     const periode = parseInt(form.periodeCicilan || '0', 10);
     const nominalCicilan = periode > 0 ? Math.ceil(nominalKasbon / periode) : 0;
     setForm((prev) => ({ ...prev, nominalKasbon, nominalCicilan }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.gajiPokok, form.nominalKasbon, form.periodeCicilan]);
 
   // Dokumentasi: Validasi untuk memeriksa apakah form memenuhi syarat dan ketentuan

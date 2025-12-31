@@ -21,8 +21,8 @@ export default function EducationalBackgroundCard({ education }: Props) {
   const {detail} = useDetailDataKaryawanPersonalInfo();
   const { updateEducationData, loading: submitting } = usePersonalInformation(detail?.Personal_Data?.id);
   const employeeId = detail?.Personal_Data?.id;
-  const formalEducation = education?.formal_educations || [];
-  const nonFormalEducation = education?.non_formal_educations || [];
+  const formalEducation = useMemo(() => education?.formal_educations || [], [education]);
+  const nonFormalEducation = useMemo(() => education?.non_formal_educations || [], [education]);
 
   // Transform API data ke format modal
   const initialData: EducationModalForm = useMemo(() => {

@@ -114,7 +114,7 @@ export default function EmployeePositionsTab({ resetKey }: Props) {
     setSearch(filterValue);
     setPage(1);
     fetchEmployeePositions({ search: filterValue, page: 1 });
-  }, [filterValue, hasInitialFetch]);
+  }, [filterValue, hasInitialFetch, setSearch, setPage, fetchEmployeePositions]);
 
   return (
     <>

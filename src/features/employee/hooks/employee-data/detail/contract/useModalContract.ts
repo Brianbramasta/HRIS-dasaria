@@ -38,7 +38,7 @@ const emptyForm: ContractEntry = {
  * Hook untuk mengelola state dan handlers semua contract modals
  * Digunakan oleh AddContractModal, EditContractModal, dan DetailContractModal
  */
-export function useModalContract({ isOpen, initialData, isEditable = true, isEditStatusBerakhir = false }: ModalContractOptions): UseModalContractReturn {
+export function useModalContract({ isOpen, initialData, isEditable = true }: ModalContractOptions): UseModalContractReturn {
   const [form, setForm] = useState<ContractEntry>(emptyForm);
   const [optionsContractStatus, setContractStatus] = useState<{ label: string; value: string }[]>([]);
   const [optionsContractEndStatus, setOptionsContractEndStatus] = useState<{ label: string; value: string }[]>([]);

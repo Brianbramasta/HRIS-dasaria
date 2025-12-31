@@ -21,7 +21,7 @@ export default function DetailKaryawanPage() {
   const isEditable = mode === 'edit';
   const tabParam = (query.get('tab') || 'personal-information').toLowerCase();
   const {detail, fetchDetail} = useDetailDataKaryawanPersonalInfo();
-  useEffect(() => { fetchDetail(id!); }, [id]);
+  useEffect(() => { fetchDetail(id!); }, [id, fetchDetail]);
 
   const tabs = [
     { id: 'personal-information', label: 'Personal Information' },
@@ -66,7 +66,7 @@ export default function DetailKaryawanPage() {
           case 'personal-information':
             return <PesonalInformationTab employeeId={id!} isEditable={isEditable} />;
           case 'contract':
-            return <ContractTab employeeId={id!} data={{} as any} isEditable={isEditable} />;
+            return <ContractTab employeeId={id!} data={{} as any} />;
           case 'organization-history':
             return <OrganizationHistoryTab data={{} as any} isEditable={isEditable} />;
           case 'pelanggaran':

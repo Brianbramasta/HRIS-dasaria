@@ -29,8 +29,13 @@ const toSortField = (field?: string): string => {
   const map: Record<string, string> = {
     name: 'position_name',
     'Nama Posisi': 'position_name',
+    'nama-posisi': 'position_name',
+    position_name: 'position_name',
     'Nama Jabatan': 'job_title_name',
+    'nama-jabatan': 'job_title_name',
     Jabatan: 'job_title_name',
+    jabatan: 'job_title_name',
+    job_title_name: 'job_title_name',
   };
   return map[field || ''] || 'position_name';
 };
@@ -98,14 +103,19 @@ export const useEmployeePositions = (): UseEmployeePositionsReturn => {
     setError(null);
     
     try {
-      const params = {
-        page: filter?.page ?? page,
-        per_page: filter?.pageSize ?? pageSize,
-        search: filter?.search ?? search,
-        column: filter?.sortBy ? toSortField(filter.sortBy) : toSortField(sortBy),
-        sort: filter?.sortOrder ?? sortOrder ?? undefined,
-        filter: filter?.filter ?? filterValue,
-      };
+      const effectivePage = filter?.page ?? page;
+      const effectivePageSize = filter?.pageSize ?? pageSize;
+      const effectiveSearch = filter?.search ?? search;
+      const effectiveSortBy = filter?.sortBy ?? sortBy;
+      const effectiveSortOrder = filter?.sortOrder ?? sortOrder;
+      const effectiveFilter = filter?.filter ?? filterValue;
+      const params: any = { page: effectivePage, per_page: effectivePageSize };
+      if (effectiveSearch) params.search = effectiveSearch;
+      if (effectiveFilter) params.filter = effectiveFilter;
+      if (effectiveSortBy) {
+        params.column = toSortField(effectiveSortBy);
+        if (effectiveSortOrder) params.sort = effectiveSortOrder;
+      }
       const result = await employeePositionsService.getList(params);
       
       const payload = (result as any);

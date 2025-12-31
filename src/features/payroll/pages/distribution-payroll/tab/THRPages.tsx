@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router';
 import { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
 import PayrollTabBase from '@/features/payroll/components/tabs/PayrollTabBase';
 import { IconFileDetail } from '@/icons/components/icons';
@@ -101,7 +100,7 @@ export default function THRPages() {
   const [data] = useState<SalaryDistributionData[]>(mockDataTHR);
   const [selectedData, setSelectedData] = useState<SalaryDistributionData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const navigate = useNavigate();
+
 
   const baseColumns: DataTableColumn<SalaryDistributionData>[] = useMemo(
     () => [

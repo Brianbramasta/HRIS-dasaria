@@ -23,8 +23,12 @@ const toSortField = (field?: string): string => {
   const map: Record<string, string> = {
     name: 'job_title_name',
     'Nama Posisi': 'job_title_name',
+    'nama-posisi': 'job_title_name',
     'Nama Jabatan': 'job_title_name',
+    'nama-jabatan': 'job_title_name',
     'Jabatan': 'job_title_name',
+    jabatan: 'job_title_name',
+    job_title_name: 'job_title_name',
     grade: 'grade',
   };
   return map[field || ''] || 'job_title_name';
@@ -65,7 +69,7 @@ export const usePositions = (): UsePositionsReturn => {
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
   const [search, setSearch] = useState('');
-  const [sortBy, setSortBy] = useState('name');
+  const [sortBy, setSortBy] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const filterValue = useFilterStore((s) => s.filters['Jabatan'] ?? '');
 
@@ -74,14 +78,19 @@ export const usePositions = (): UsePositionsReturn => {
     setError(null);
     
     try {
-      const params = {
-        page: filter?.page ?? page,
-        per_page: filter?.pageSize ?? pageSize,
-        search: filter?.search ?? search,
-        column: filter?.sortBy ? toSortField(filter.sortBy) : toSortField(sortBy),
-        sort: filter?.sortOrder ?? sortOrder ?? undefined,
-        filter: filter?.filter ?? filterValue,
-      };
+      const effectivePage = filter?.page ?? page;
+      const effectivePageSize = filter?.pageSize ?? pageSize;
+      const effectiveSearch = filter?.search ?? search;
+      const effectiveSortBy = filter?.sortBy ?? sortBy;
+      const effectiveSortOrder = filter?.sortOrder ?? sortOrder;
+      const effectiveFilter = filter?.filter ?? filterValue;
+      const params: any = { page: effectivePage, per_page: effectivePageSize };
+      if (effectiveSearch) params.search = effectiveSearch;
+      if (effectiveFilter) params.filter = effectiveFilter;
+      if (effectiveSortBy) {
+        params.column = toSortField(effectiveSortBy);
+        if (effectiveSortOrder) params.sort = effectiveSortOrder;
+      }
       const result = await positionsService.getList(params);
       
       const payload = (result as any);

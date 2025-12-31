@@ -5,7 +5,7 @@ import InputField from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
 import { usePTKPDropdown, useStep4Data } from '../../../../hooks/employee-data/form/useFromStep';
 import { BPJS_STATUS_OPTIONS, BPJS_TK_STATUS_OPTIONS } from '../../../../utils/EmployeeMappings';
-import { UpdateSalaryDataPayload, UpdateBpjsDataPayload } from '@/features/employee/services/detail/PersonalInformationService';
+import { UpdateSalaryDataPayload, UpdateBpjsDataPayload } from '@/features/employee/types/detail/PersonalInformation';
 
 export type SalaryBpjsForm = {
   gaji?: string;

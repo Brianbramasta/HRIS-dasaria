@@ -5,8 +5,6 @@ import employeeMasterDataService from '../../../services/EmployeeMasterData.serv
 import { EducationItem, DocumentItem } from '../../../types/FormEmployee';
 import { useAuthStore } from '../../../../auth/stores/AuthStore';
 
-import { formatIndonesianToISO } from '@/utils/formatDate';
-
 const appendIfValue = (fd: FormData, key: string, value: any) => {
   if (value !== undefined && value !== null && `${value}` !== '') {
     fd.append(key, value as any);
@@ -127,7 +125,7 @@ export function useCreateEmployee() {
     } finally {
       setLoading(false);
     }
-  }, [buildFormData, setLoading, setError]);
+  }, [buildFormData, setLoading, setError, isAuthenticated]);
 
   return { submit };
 }

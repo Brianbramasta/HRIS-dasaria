@@ -22,7 +22,12 @@ const toSortField = (field?: string): string => {
   const map: Record<string, string> = {
     name: 'directorate_name',
     'Nama Direktorat': 'directorate_name',
+    'direktorat-name': 'directorate_name',
+    directorate_name: 'directorate_name',
     'Deskripsi Umum': 'directorate_description',
+    'deskripsi-umum': 'directorate_description',
+    description: 'directorate_description',
+    directorate_description: 'directorate_description',
   };
   return map[field || ''] || 'directorate_name';
 };
@@ -63,7 +68,7 @@ export const useDirectorates = (): UseDirectoratesReturn => {
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
   const [search, setSearch] = useState('');
-  const [sortBy, setSortBy] = useState('name');
+  const [sortBy, setSortBy] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
   const filterValue = useFilterStore((s) => s.filters['Direktorat'] ?? '');
 
@@ -82,14 +87,19 @@ export const useDirectorates = (): UseDirectoratesReturn => {
     setError(null);
     
     try {
-      const params = {
-        page: filter?.page ?? page,
-        per_page: filter?.pageSize ?? pageSize,
-        search: filter?.search ?? search,
-        column: filter?.sortBy ? toSortField(filter.sortBy) : toSortField(sortBy),
-        sort: filter?.sortOrder ?? sortOrder ?? undefined,
-        filter: filter?.filter ?? filterValue,
-      };
+      const effectivePage = filter?.page ?? page;
+      const effectivePageSize = filter?.pageSize ?? pageSize;
+      const effectiveSearch = filter?.search ?? search;
+      const effectiveSortBy = filter?.sortBy ?? sortBy;
+      const effectiveSortOrder = filter?.sortOrder ?? sortOrder;
+      const effectiveFilter = filter?.filter ?? filterValue;
+      const params: any = { page: effectivePage, per_page: effectivePageSize };
+      if (effectiveSearch) params.search = effectiveSearch;
+      if (effectiveFilter) params.filter = effectiveFilter;
+      if (effectiveSortBy) {
+        params.column = toSortField(effectiveSortBy);
+        if (effectiveSortOrder) params.sort = effectiveSortOrder;
+      }
       const result = await directoratesService.getList(params);
       
       const payload = (result as any);

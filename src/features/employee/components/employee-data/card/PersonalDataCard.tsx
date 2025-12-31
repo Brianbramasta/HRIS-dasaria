@@ -67,7 +67,7 @@ export default function PersonalDataCard({ data, employeeId }: Props) {
         // Error sudah di-set di hook state, dapat ditampilkan
       }
     },
-    [employeeId, updatePersonalData, closeModal]
+    [employeeId, updatePersonalData, closeModal, fetchDetail]
   );
 
   /**

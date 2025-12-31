@@ -8,7 +8,7 @@ import DatePicker from '@/components/form/date-picker';
 import FileInput from '@/components/form/input/FileInput';
 import {  JENIS_KELAMIN_OPTIONS, STATUS_MENIKAH_OPTIONS, GOLONGAN_DARAH_OPTIONS, TANGGUNGAN_OPTIONS } from '@/features/employee/utils/EmployeeMappings';
 import { getReligionDropdownOptions, getEducationDropdownOptions } from '@/features/employee/hooks/employee-data/form/useFormulirKaryawan';
-import { UpdatePersonalDataPayload } from '@/features/employee/services/detail/PersonalInformationService';
+import { UpdatePersonalDataPayload } from '@/features/employee/types/detail/PersonalInformation';
 
 export type PersonalDataForm = {
   idKaryawan?: string;
@@ -59,7 +59,7 @@ const emptyForm: PersonalDataForm = {
   avatarUrl: '',
 };
 
-const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialData, onClose, onSubmit, submitting = false, employeeId }) => {
+const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialData, onClose, onSubmit, submitting = false }) => {
   const [form, setForm] = useState<PersonalDataForm>(emptyForm);
   const [agamaOptions, setAgamaOptions] = useState<any[]>([]);
   const [pendidikanOptions, setPendidikanOptions] = useState<any[]>([]);

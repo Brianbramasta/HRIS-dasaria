@@ -98,14 +98,14 @@ export default function DatePicker({
   const [internalIsOpen, setInternalIsOpen] = useState(false);
   const isOpen = controlledIsOpen !== undefined ? controlledIsOpen : internalIsOpen;
 
-  const setIsOpen = (open: boolean) => {
+  const setIsOpen = React.useCallback((open: boolean) => {
     if (controlledIsOpen === undefined) {
       setInternalIsOpen(open);
     }
     if (!open && onClose) {
       onClose();
     }
-  };
+  }, [controlledIsOpen, onClose]);
 
   // State seleksi
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
@@ -230,7 +230,7 @@ export default function DatePicker({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isOpen, anchorEl]);
+  }, [isOpen, anchorEl, setIsOpen]);
 
   // Posisi popup berdasar anchor input
   const getPosition = () => {

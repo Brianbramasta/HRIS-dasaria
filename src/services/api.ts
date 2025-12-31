@@ -104,7 +104,7 @@ class ApiService {
         // Show notification using global handler (extracts messages from response)
         try {
           handleApiError(error, { title: 'API Error' });
-        } catch (err) {
+        } catch {
           // ignore notification errors
         }
 
