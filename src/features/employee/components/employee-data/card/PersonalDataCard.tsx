@@ -9,7 +9,7 @@ import { useModal } from '@/hooks/useModal';
 import PersonalDataModal, { type PersonalDataForm } from '@/features/employee/components/modals/employee-data/personal-information/PersonalDataModal';
 import { IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
 import { usePersonalInformation } from '@/features/employee/hooks/employee-data/detail/contract/usePersonalInformation';
-import { UpdatePersonalDataPayload } from '@/features/employee/services/detail/PersonalInformationService';
+import { UpdatePersonalDataPayload } from '@/features/employee/types/detail/PersonalInformation';
 import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
 import { addNotification } from '@/stores/notificationStore';
 interface Props {
