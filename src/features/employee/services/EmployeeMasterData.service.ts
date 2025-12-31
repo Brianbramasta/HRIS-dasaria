@@ -68,6 +68,17 @@ class EmployeeMasterDataService {
   }
 
   /**
+   * Create Employee - Membuat data karyawan baru
+   * @param payload - FormData berisi semua data karyawan
+   * @returns Promise dengan response API
+   */
+  async createEmployeeWithoutLogin(payload: FormData): Promise<ApiResponse<any>> {
+    return apiService.post<any>(`${this.basePath}/employees/store-via-employee`, payload, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  }
+
+  /**
    * Get Employees List - Mendapatkan daftar karyawan dengan pagination
    * @param params - Query parameters untuk filtering, sorting, dan pagination
    * @returns Promise dengan data karyawan dan pagination info

@@ -178,12 +178,12 @@ export const useFormulirKaryawan = (): UseFormulirKaryawanReturn => {
   const handleBackToHome = useCallback(() => {
     resetForm();
     setShowSuccessModal(false);
-    navigate('/data-karyawan');
+    navigate('/employee-data');
   }, [resetForm, navigate]);
 
   const handleBackToDataPage = useCallback(() => {
     resetForm();
-    navigate('/data-karyawan');
+    navigate('/employee-data');
   }, [resetForm, navigate]);
 
   const renderStep = useCallback(() => {

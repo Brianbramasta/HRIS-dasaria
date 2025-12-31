@@ -28,7 +28,7 @@ export function useCreateEmployee() {
     appendIfValue(fd, 'religion_id', formData.step1.agama);
     appendIfValue(fd, 'blood_type', formData.step1.golDarah);
     appendIfValue(fd, 'birth_place', formData.step1.tempatLahir);
-    appendIfValue(fd, 'birth_date', formatIndonesianToISO(formData.step1.tanggalLahir));
+    appendIfValue(fd, 'birth_date', formData.step1.tanggalLahir);
     appendIfValue(fd, 'last_education_id', formData.step1.pendidikanTerakhir);
     appendIfValue(fd, 'marital_status', formData.step1.statusMenikah);
     appendIfValue(fd, 'gender', formData.step1.jenisKelamin);
@@ -74,8 +74,8 @@ export function useCreateEmployee() {
     if (nonFormal) {
       appendIfValue(fd, 'non_formal_education[0][certificate_name]', nonFormal.namaSertifikat);
       appendIfValue(fd, 'non_formal_education[0][institution_name]', nonFormal.organisasiPenerbit);
-      appendIfValue(fd, 'non_formal_education[0][start_date]', formatIndonesianToISO(nonFormal.tanggalPenerbitan || ''));
-      appendIfValue(fd, 'non_formal_education[0][end_date]', formatIndonesianToISO(nonFormal.tanggalKedaluwarsa || ''));
+      appendIfValue(fd, 'non_formal_education[0][start_date]', nonFormal.tanggalPenerbitan || '');
+      appendIfValue(fd, 'non_formal_education[0][end_date]', nonFormal.tanggalKedaluwarsa || '');
       appendIfValue(fd, 'non_formal_education[0][certificate_id]', nonFormal.idKredensial);
       if (nonFormal.fileSertifikat) fd.append('non_formal_education[0][certificate_file]', nonFormal.fileSertifikat);
     }
@@ -99,8 +99,8 @@ export function useCreateEmployee() {
       appendIfValue(fd, 'department_id', formData.step3Employee.departemen);
       appendIfValue(fd, 'position_id', formData.step3Employee.position);
       appendIfValue(fd, 'job_title_id', formData.step3Employee.jabatan);
-      appendIfValue(fd, 'start_date', formatIndonesianToISO(formData.step3Employee.tanggalMasuk));
-      appendIfValue(fd, 'end_date', formatIndonesianToISO(formData.step3Employee.tanggalAkhir));
+      appendIfValue(fd, 'start_date', formData.step3Employee.tanggalMasuk);
+      appendIfValue(fd, 'end_date', formData.step3Employee.tanggalAkhir);
       appendIfValue(fd, 'position_level_id', formData.step3Employee.jenjangJabatan);
       appendIfValue(fd, 'payroll_status', formData.step3Employee.statusPayroll);
       appendIfValue(fd, 'employee_category_id', formData.step3Employee.kategoriKaryawan);
@@ -117,7 +117,9 @@ export function useCreateEmployee() {
       setLoading(true);
       setError(null);
       const fd = buildFormData();
-      const res = await employeeMasterDataService.createEmployee(fd);
+      const res = isAuthenticated
+        ? await employeeMasterDataService.createEmployee(fd)
+        : await employeeMasterDataService.createEmployeeWithoutLogin(fd);
       return res.data;
     } catch (err: any) {
       setError(err?.message || 'Gagal menyimpan data karyawan');
