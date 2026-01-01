@@ -14,9 +14,32 @@ class AuthService {
 
   // Login user
   async login(data: LoginRequest): Promise<LoginResponse> {
-    const response = await apiService.post<LoginResponse>(`${this.basePath}/login`, data);
-    setAuthTokens(response.data.accessToken, response.data.refreshToken);
-    return response.data;
+    // --- DUMMY DATA START ---
+    // Simulate API delay
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    const dummyResponse: LoginResponse = {
+      accessToken: 'dummy_access_token_' + Date.now(),
+      refreshToken: 'dummy_refresh_token_' + Date.now(),
+      user: {
+        id: '1',
+        email: data.email,
+        name: 'Test User',
+        role: 'admin',
+        avatar: 'https://ui-avatars.com/api/?name=Test+User',
+        isActive: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
+    };
+
+    setAuthTokens(dummyResponse.accessToken, dummyResponse.refreshToken);
+    return dummyResponse;
+    // --- DUMMY DATA END ---
+
+    // const response = await apiService.post<LoginResponse>(`${this.basePath}/login`, data);
+    // setAuthTokens(response.data.accessToken, response.data.refreshToken);
+    // return response.data;
   }
 
   // Forgot password
