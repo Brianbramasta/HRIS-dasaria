@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DataTable, type DataTableColumn } from '@/components/shared/datatable/DataTable';
 import { IconFileDetail } from '@/icons/components/icons';
-import ShareLinkModal from '@/features/employee/components/modals/sharelink/ShareLink';
+import ShareLinkModal from '@/features/employee/components/modals/sharelink/shareLink';
 import Button from '@/components/ui/button/Button';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { ChevronDown } from 'react-feather';
