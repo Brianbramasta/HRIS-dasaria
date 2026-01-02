@@ -28,6 +28,7 @@ export default function PersonalDocumentsCard({ documents }: Props) {
       id: d.id || idx + 1,
       no: idx + 1,
       namaFile: d.name_file || '',
+      jenis_file: d?.jenis_file || '',
       fileType: d.file_type || '',
       fileUrl: d.file || '',
     }));
@@ -51,6 +52,7 @@ export default function PersonalDocumentsCard({ documents }: Props) {
           columns={[
             { id: 'no', label: 'No.', align: 'center', render: (_v, _row, idx) => idx + 1 },
             { id: 'fileType', label: 'Tipe File' },
+            { id: 'jenis_file', label: 'Jenis File' },
             { id: 'namaFile', label: 'Nama File' },
           ]}
           actions={[
@@ -90,6 +92,7 @@ export default function PersonalDocumentsCard({ documents }: Props) {
             id: idx + 1,
             document_id: d?.id || '',
             tipeFile: d?.file_type || '',
+            jenis_file: d?.jenis_file || '',
             type_id: d?.file_type_id || '',
             namaFile: d?.name_file || '',
             filePath: d?.file || '',
