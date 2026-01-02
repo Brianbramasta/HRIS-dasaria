@@ -300,6 +300,12 @@ class EmployeeMasterDataService {
     return (resp as any)?.data ?? [];
   }
 
+  // /api/employee-master-data/employees/{id}/field-document
+  async getFieldDocument(id: string): Promise<any[]> {
+    const resp = await apiService.get<any[]>(`${this.basePath}/employees/${id}/field-document`);
+    return (resp as any)?.data ?? [];
+  }
+
   /**
    * Helper: Convert FormulirKaryawanData to FormData for API
    * @param formData - Data formulir karyawan

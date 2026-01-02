@@ -52,7 +52,8 @@ export function useCreateEmployee() {
     // Documents (upload)
     (formData.step4.documents || []).forEach((doc: DocumentItem, i: number) => {
       const fileType = doc.tipeFile || '5';
-      appendIfValue(fd, `documents[${i}][document_type_id]`, fileType);
+      appendIfValue(fd, `documents[${i}][employee_document_id]`, fileType);
+      console.log('doc file:', doc.file);
       if (doc.file) fd.append(`documents[${i}][file]`, doc.file);
     });
 
@@ -102,7 +103,7 @@ export function useCreateEmployee() {
       appendIfValue(fd, 'position_level_id', formData.step3Employee.jenjangJabatan);
       appendIfValue(fd, 'payroll_status', formData.step3Employee.statusPayroll);
       appendIfValue(fd, 'employee_category_id', formData.step3Employee.kategoriKaryawan);
-      appendIfValue(fd, 'employment_status', formData.step3Employee.employmentStatus);
+      appendIfValue(fd, 'employment_status_id', formData.step3Employee.employmentStatus);
       // appendIfValue(fd, 'resignation_status', formData.step3Employee.resignationStatus);
     }
 

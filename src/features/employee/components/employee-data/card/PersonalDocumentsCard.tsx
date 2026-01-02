@@ -86,8 +86,6 @@ export default function PersonalDocumentsCard({ documents }: Props) {
         isOpen={isOpen}
         // Dokumentasi: Inisialisasi data modal dokumen dari response Document_Data.documents
         initialData={{
-          tipeFile: '',
-          pendingRows: [{ tipeFile: '', fileName: '' }],
           rows: (documents?.documents || []).map((d: any, idx: number) => ({
             id: idx + 1,
             document_id: d?.id || '',
@@ -99,18 +97,8 @@ export default function PersonalDocumentsCard({ documents }: Props) {
         }}
         onClose={closeModal}
         onSubmit={async (payload) => {
-          // Dokumentasi: Bangun payload dokumen dengan tipe aman (id & file hanya dikirim jika ada)
-          const documentsPayload = {
-            documents: (payload.rows || []).map((r) => {
-              const item: any = {
-                document_type_id: String(r.type_id),
-              };
-              if (r.document_id) item.id = String(r.document_id);
-              if (r.file) item.file = r.file;
-              return item;
-            }),
-          };
-          await updateEmployeeDocument(id as string, documentsPayload);
+          // Payload from modal is already formatted as { documents: [...] }
+          await updateEmployeeDocument(id as string, payload);
           closeModal();
         }}
         submitting={false}

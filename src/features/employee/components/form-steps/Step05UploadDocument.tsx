@@ -1,120 +1,68 @@
 import React from 'react';
-import Select from '../../../../components/form/Select';
 import Label from '../../../../components/form/Label';
-import Button from '../../../../components/ui/button/Button';
 import FileInput from '../../../../components/form/input/FileInput';
-import { TrashBinIcon  } from '@/icons';
-import {IconPlus as PlusIcon} from '@/icons/components/icons';
-import DocumentsTable from '../../../structure-and-organize/components/table/TableGlobal';
 import { useStep5Data } from '../../hooks/employee-data/form/useFromStep';
-
 
 export const Step05UploadDocument: React.FC = () => {
   
-  const { documentTypeOptions: DOCUMENT_TYPE_OPTIONS, rows, resetKey,step4, addRow, removeRow, handleTypeChange, handleFilesChange, handleUpload, handleRemoveDocument, getDocumentTypeLabel } = useStep5Data();
-  // Dokumentasi: Filter opsi tipe dokumen per baris agar tidak duplikat dengan dokumen yang sudah ada (step4.documents) dan baris pending lain
-  const getFilteredDocumentTypeOptions = (rowId: number | string) => {
-    const usedInTable = new Set<string>();
-    (step4?.documents || []).forEach((doc: any) => {
-      const id = String(doc.tipeFile || '').trim();
-      if (id) usedInTable.add(id);
-    });
-    const usedInPendingOther = new Set<string>();
-    (rows || []).forEach((r: any) => {
-      if (r.id === rowId) return;
-      const id = String(r.tipeFile || '').trim();
-      if (id) usedInPendingOther.add(id);
-    });
-    return (DOCUMENT_TYPE_OPTIONS || []).filter((opt: any) => {
-      const val = String(opt.value);
-      return !usedInTable.has(val) && !usedInPendingOther.has(val);
-    });
-  };
-  
+  const { personalDocuments, legalDocuments, loading, handleFileChange, getFileForField } = useStep5Data();
 
-  return (
-    <div className="space-y-6">
-      <div>
-        <h4 className="text-lg font-semibold text-gray-500 dark:text-white mb-4">Berkas / Dokumen</h4>
-        <div className="">
-          <div className="space-y-3">
-            {rows.map((row, idx) => (
-              <div key={`${row.id}-${resetKey}`} className="flex md:flex-row flex-col gap-4 items-end">
-                <div className="w-full">
-                  <Label>Tipe File</Label>
-                  <Select
-                    // Dokumentasi: Terapkan opsi yang sudah difilter agar menghindari duplikasi antar baris dan dokumen yang sudah diunggah
-                    options={getFilteredDocumentTypeOptions(row.id)}
-                    defaultValue={row.tipeFile}
-                    onChange={(value) => handleTypeChange(row.id, value)}
-                    placeholder="Pilih Jenis Dokumen"
-                  />
-                </div>
-                <div className="w-full">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Unggah file</label>
-                  <FileInput multiple onChange={(e) => handleFilesChange(row.id, e)} />
-                </div>
-                <div className="md:w-fit  w-full flex flex-col md:flex-row items-center justify-end gap-2">
-                  {rows.length > 1  && idx !== rows.length - 1 && (
-                    <button
-                      type="button"
-                      className="h-11 md:w-11 flex items-center justify-center rounded-lg bg-red-500 hover:bg-red-600 w-full"
-                      onClick={() => removeRow(row.id)}
-                      aria-label="Hapus baris"
-                    >
-                      <TrashBinIcon className="h-5 w-5 text-white" />
-                    </button>
-                  )}
-                       { idx === rows.length - 1 && (
-                    <button
-                    type="button"
-                    className="h-11 md:w-11 flex items-center justify-center rounded-lg bg-green-500 hover:bg-green-600 w-full"
-                    onClick={addRow}
-                    aria-label="Tambah baris"
-                  >
-                    <PlusIcon size={20} />
-                  </button>)}
-                </div>
-              </div>
-            ))}
-            <div className="flex justify-end">
-              <Button className='w-full md:w-fit' onClick={handleUpload}>Unggah</Button>
-            </div>
-          </div>
+  if (loading) {
+    return <div className="p-4 text-center text-gray-500">Memuat data dokumen...</div>;
+  }
+
+  const renderDocumentField = (doc: any) => {
+    const existingFile = getFileForField(doc.id);
+    return (
+      <div key={doc.id} className="w-full">
+        <Label className="mb-2 block">
+          Upload {doc.document_name}
+          {doc.is_mandatory === 1 ? (
+             null
+          ) : (
+            <span className="text-gray-400 ml-1 font-normal text-sm">(opsional)</span>
+          )}
+        </Label>
+        <div className="relative">
+          <FileInput 
+            multiple={false} 
+            onChange={(e) => handleFileChange(doc.id, e)} 
+          />
+          {existingFile && (
+            <p className="text-xs text-green-600 mt-1 truncate">
+              File terpilih: {existingFile.namaFile}
+            </p>
+          )}
         </div>
       </div>
+    );
+  };
 
-      <div>
-        <h4 className="text-lg font-semibold text-gray-500 dark:text-white mb-4">Daftar Dokumen</h4>
-        {(
-          (step4?.documents || []).length > 0
-        ) ? (
-          <DocumentsTable
-            items={(step4?.documents || []).map((doc, idx) => ({
-              id: idx,
-              tipeFile: doc.tipeFile,
-              namaFile: doc.namaFile,
-            }))}
-            columns={[
-              { id: 'no', label: 'No.', align: 'center', render: (_v, _row, i) => i + 1 },
-              { id: 'tipeFile', label: 'Tipe File', render: (v) => getDocumentTypeLabel(String(v)) },
-              { id: 'namaFile', label: 'Nama File' },
-            ]}
-            actions={[
-              {
-                label: 'Delete',
-                icon: <TrashBinIcon className="h-5 w-5 text-[#000]" />,
-                className: 'h-9 w-9 flex items-center justify-center rounded-lg text-white',
-                onClick: (row: any) => handleRemoveDocument(Number(row.id)),
-              },
-            ]}
-          />
-        ) : (
-          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-            <p>Tidak ada dokumen yang diupload</p>
+  return (
+    <div className="space-y-8">
+      {personalDocuments.length > 0 && (
+        <div>
+          <h4 className="text-lg font-semibold text-gray-500 dark:text-white mb-4">Berkas / Dokumen Karyawan</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {personalDocuments.map(renderDocumentField)}
           </div>
-        )}
-      </div>
+        </div>
+      )}
+
+      {legalDocuments.length > 0 && (
+        <div>
+          <h4 className="text-lg font-semibold text-gray-500 dark:text-white mb-4">Berkas / Dokumen Legal</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+             {legalDocuments.map(renderDocumentField)}
+          </div>
+        </div>
+      )}
+
+      {personalDocuments.length === 0 && legalDocuments.length === 0 && (
+        <div className="text-center py-8 text-gray-500">
+          Tidak ada dokumen yang perlu diunggah untuk kategori karyawan ini.
+        </div>
+      )}
     </div>
   );
 };

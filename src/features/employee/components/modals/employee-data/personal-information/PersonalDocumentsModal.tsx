@@ -1,16 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
-import Select from '@/components/form/Select';
 import FileInput from '@/components/form/input/FileInput';
-import { Table, TableHeader, TableBody, TableRow, TableCell } from '@/components/ui/table';
-import {IconPlus as Plus} from '@/icons/components/icons'
-// import { Plus } from 'lucide-react';
-// import { Plus } from 'react-feather';
-import { TrashBinIcon } from '@/icons/index';
 import Button from '@/components/ui/button/Button';
-import { getDocumentTypeDropdownOptions } from '@/features/employee/hooks/employee-data/form/useFormulirKaryawan';
-import { addNotification } from '@/stores/notificationStore';
+import { getFieldDocument } from '@/features/employee/hooks/employee-data/form/useFormulirKaryawan';
+import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
 
 type DocumentRow = {
   id: number;
@@ -23,14 +17,16 @@ type DocumentRow = {
 };
 
 export type PersonalDocumentsForm = {
-  tipeFile?: string;
-  pendingRows: { tipeFile?: string; type_id?: string; fileName?: string; file?: File }[];
-  rows: DocumentRow[];
+  documents: {
+    document_type_id: string;
+    file?: File;
+    id?: string; // existing document id (if updating/keeping)
+  }[];
 };
 
 interface Props {
   isOpen: boolean;
-  initialData?: PersonalDocumentsForm | null;
+  initialData?: { rows: DocumentRow[] } | null;
   onClose: () => void;
   onSubmit: (data: PersonalDocumentsForm) => void;
   submitting?: boolean;
@@ -38,125 +34,107 @@ interface Props {
 
 const PersonalDocumentsModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSubmit, submitting = false }) => {
   const title = useMemo(() => 'Edit Berkas & Dokumen', []);
-  const [documentTypeOptions, setDocumentTypeOptions] = useState<{ value: string; label: string }[]>([]);
-  // Dokumentasi: Seed untuk reset FileInput setelah unggah agar input file kosong kembali
-  const [fileResetSeed, setFileResetSeed] = useState<number>(0);
-  const [form, setForm] = useState<PersonalDocumentsForm>(() => {
-    const base: any = initialData || {};
-    const rows: DocumentRow[] = Array.isArray(base.rows) ? base.rows : [];
-    const pendingRows: { tipeFile?: string; type_id?: string; fileName?: string; file?: File }[] = Array.isArray(base.pendingRows) && base.pendingRows.length
-      ? base.pendingRows
-      : [{ tipeFile: '', type_id: '', fileName: '' }];
-    return { tipeFile: base.tipeFile || '', pendingRows, rows } as PersonalDocumentsForm;
-  });
+  const { detail } = useDetailDataKaryawanPersonalInfo();
+  const employeeCategoryId = detail?.Employment_Position_Data?.employee_category_id || '';
+  
+  const [documentFields, setDocumentFields] = useState<any[]>([]);
+  const [loadingFields, setLoadingFields] = useState(false);
+  
+  // Map field_id -> { file, fileName, existingDocId }
+  const [fileMap, setFileMap] = useState<Record<string, { file?: File, fileName?: string, existingDocId?: string }>>({});
 
-  // Dokumentasi: Sinkronisasi ulang state form ketika initialData berubah atau modal dibuka
+  // Fetch document fields from API
   useEffect(() => {
-    if (!isOpen) return;
-    const base: any = initialData || {};
-    const rows: DocumentRow[] = Array.isArray(base.rows) ? base.rows : [];
-    const pendingRows: { tipeFile?: string; type_id?: string; fileName?: string; file?: File }[] = Array.isArray(base.pendingRows) && base.pendingRows.length
-      ? base.pendingRows
-      : [{ tipeFile: '', type_id: '', fileName: '' }];
-    setForm({ tipeFile: base.tipeFile || '', pendingRows, rows });
-  }, [initialData, isOpen]);
-
-  useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || !employeeCategoryId) return;
+    
     let mounted = true;
-    getDocumentTypeDropdownOptions()
-      .then((opts) => { if (mounted) setDocumentTypeOptions(opts); })
-      .catch(() => { setDocumentTypeOptions([]); });
-    return () => { mounted = false; };
-  }, [isOpen]);
-
-  // Dokumentasi: Mengambil daftar tipe dokumen yang sudah ada di tabel (form.rows) agar tidak muncul di opsi Select
-  const usedTypeIdsRows = useMemo(() => {
-    const set = new Set<string>();
-    (form.rows || []).forEach((r) => {
-      const id = String(r.type_id || r.tipeFile || '').trim();
-      if (id) set.add(id);
-    });
-    return set;
-  }, [form.rows]);
-
-  // Dokumentasi: Filter opsi Select per baris pending; hilangkan tipe yang sudah dipakai di rows dan pending baris lain
-  const getFilteredDocumentTypeOptions = (idx: number) => {
-    if (!documentTypeOptions?.length) return [];
-    const usedInPending = new Set<string>();
-    (form.pendingRows || []).forEach((row, i) => {
-      if (i === idx) return;
-      const id = String(row.type_id || row.tipeFile || '').trim();
-      if (id) usedInPending.add(id);
-    });
-    return documentTypeOptions.filter((opt) => {
-      const val = String(opt.value);
-      return !usedTypeIdsRows.has(val) && !usedInPending.has(val);
-    });
-  };
-
-  // const handleSet = (key: keyof PersonalDocumentsForm, value: any) => {
-  //   setForm((prev) => ({ ...prev, [key]: value }));
-  // };
-
-  const addPendingRow = () => {
-    setForm((prev) => ({ ...prev, pendingRows: [...prev.pendingRows, { tipeFile: '', type_id: '', fileName: '' }] }));
-  };
-
-  const removePendingRow = (idx: number) => {
-    setForm((prev) => ({ ...prev, pendingRows: prev.pendingRows.filter((_, i) => i !== idx) }));
-  };
-
-  const setPendingRowType = (idx: number, v: string) => {
-    setForm((prev) => ({
-      ...prev,
-      pendingRows: prev.pendingRows.map((row, i) => (i === idx ? { ...row, tipeFile: v, type_id: v } : row)),
-    }));
-  };
-
-  const setPendingRowFile = (idx: number, file?: File, name?: string) => {
-    setForm((prev) => ({
-      ...prev,
-      pendingRows: prev.pendingRows.map((row, i) => (i === idx ? { ...row, fileName: name || '', file } : row)),
-    }));
-  };
-
-
-  const handleUploadAdd = () => {
-    // Dokumentasi: Validasi wajib isi tipe dokumen dan file di setiap baris sebelum unggah
-    const incompleteRows = form.pendingRows.filter((r) => !(r.tipeFile && r.fileName && r.file));
-    if (incompleteRows.length) {
-      addNotification({
-        variant: 'warning',
-        title: 'Lengkapi tipe & file',
-        description: 'Silakan pilih tipe dokumen dan unggah file untuk setiap baris.',
-        hideDuration: 4000,
+    setLoadingFields(true);
+    getFieldDocument(employeeCategoryId)
+      .then((data) => {
+        if (mounted) {
+          setDocumentFields(data || []);
+        }
+      })
+      .catch((err) => console.error('Error fetching document fields:', err))
+      .finally(() => {
+        if (mounted) setLoadingFields(false);
       });
-      return;
+      
+    return () => { mounted = false; };
+  }, [isOpen, employeeCategoryId]);
+
+  // Initialize fileMap from initialData (existing documents)
+  useEffect(() => {
+    if (isOpen && initialData?.rows) {
+      const map: Record<string, { file?: File, fileName?: string, existingDocId?: string }> = {};
+      initialData.rows.forEach((row) => {
+        if (row.type_id) {
+          map[row.type_id] = {
+            fileName: row.namaFile,
+            existingDocId: row.document_id,
+          };
+        }
+      });
+      setFileMap(map);
+    } else if (!isOpen) {
+        setFileMap({});
     }
-    const validRows = form.pendingRows.filter((r) => r.tipeFile && r.fileName && r.file);
-    if (!validRows.length) return;
-    const baseId = (form.rows[form.rows.length - 1]?.id || 0);
-    const nextRows: DocumentRow[] = validRows.map((r, i) => ({
-      id: baseId + i + 1,
-      tipeFile: r.tipeFile as string,
-      type_id: (r.type_id as string) || (r.tipeFile as string),
-      namaFile: r.fileName as string,
-      file: r.file,
-    }));
-    console.log('nextRows',nextRows);
-    // Dokumentasi: Setelah unggah, kosongkan input file dengan membuat baris pending baru yang kosong
-    setForm((prev) => ({ ...prev, rows: [...prev.rows, ...nextRows], pendingRows: [{ tipeFile: '', type_id: '', fileName: '', file: undefined }] }));
-    // Dokumentasi: Tingkatkan seed agar FileInput di-remount dan file selection ter-reset
-    setFileResetSeed((s) => s + 1);
+  }, [isOpen, initialData]);
+
+  const handleFileChange = (fieldId: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFileMap((prev) => ({
+        ...prev,
+        [fieldId]: {
+          ...prev[fieldId],
+          file: file,
+          fileName: file.name,
+        },
+      }));
+    }
   };
 
-  const handleDeleteRow = (id: number) => {
-    setForm((prev) => ({ ...prev, rows: prev.rows.filter((r) => r.id !== id) }));
+  const handleSubmit = () => {
+    const documents = Object.entries(fileMap).map(([typeId, data]) => ({
+      document_type_id: typeId,
+      file: data.file,
+      id: data.existingDocId,
+    })).filter(item => item.file || item.id); // Send if there's a new file or it's an existing document
+    
+    onSubmit({ documents });
   };
 
-  const getDocumentTypeLabel = (type: string) => {
-    return documentTypeOptions.find((opt) => opt.value === type)?.label || type;
+  const personalDocuments = documentFields.filter(d => 
+    ['Pribadi', 'Berkas / Dokumen Karyawan', 'Personal', 'Karyawan'].includes(d.document_category)
+  );
+  const legalDocuments = documentFields.filter(d => 
+    ['Legal', 'Berkas / Dokumen Legal', 'Perusahaan'].includes(d.document_category)
+  );
+
+  const renderDocumentField = (doc: any) => {
+    const currentFile = fileMap[doc.id];
+    return (
+      <div key={doc.id} className="w-full">
+        <Label className="mb-2 block">
+          Upload {doc.document_name}
+          {doc.is_mandatory === 1 ? null : (
+            <span className="text-gray-400 ml-1 font-normal text-sm">(opsional)</span>
+          )}
+        </Label>
+        <div className="relative">
+          <FileInput 
+            multiple={false} 
+            onChange={(e) => handleFileChange(doc.id, e)} 
+          />
+          {currentFile?.fileName && (
+            <p className="text-xs text-green-600 mt-1 truncate">
+              {currentFile.file ? 'File baru: ' : 'File saat ini: '} {currentFile.fileName}
+            </p>
+          )}
+        </div>
+      </div>
+    );
   };
 
   const content = (
@@ -165,78 +143,41 @@ const PersonalDocumentsModal: React.FC<Props> = ({ isOpen, initialData, onClose,
         <h2 className="text-3xl font-bold text-start">{title}</h2>
         <h4 className="text-sm text-grey-200 font-semibold">Update your details to keep your profile up-to-date.</h4>
       </div>
-      <div className="rounded-xl border border-gray-200 p-4 dark:border-gray-800">
-        <h3 className="text-xl font-semibold mb-4">Berkas / Dokumen</h3>
-        <div className="space-y-4">
-          {form.pendingRows?.map((row, idx) => (
-            <div key={idx} className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_1fr_auto] items-end">
-              <div>
-                <Label>Tipe File</Label>
-                {/* Dokumentasi: Opsi per baris difilter agar tidak duplikat dengan baris lain dan data tabel */}
-                <Select options={getFilteredDocumentTypeOptions(idx)} placeholder="Pilih Jenis Dokumen" defaultValue={row.tipeFile || row.type_id || ''} onChange={(v) => setPendingRowType(idx, v)} />
-              </div>
-              <div>
-                <Label>Upload file</Label>
-                {/* Dokumentasi: Gunakan key yang berubah (fileResetSeed) agar FileInput reset setelah unggah */}
-                <FileInput key={`file-${idx}-${fileResetSeed}`} onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  setPendingRowFile(idx, f, f ? f.name : '');
-                }} />
-              </div>
-              <div className="flex items-center gap-2 md:pt-6">
-                {form.pendingRows?.length > 1 && idx !== form.pendingRows.length - 1 && (
-                  <button type="button" title="Hapus baris" onClick={() => removePendingRow(idx)} className="rounded-xl bg-red-600 px-3 py-3 text-white">
-                    <TrashBinIcon className="h-4 w-4 text-white" />
-                  </button>
-                )}
-                {idx === form.pendingRows.length - 1 && (
-                  <button type="button" title="Tambah baris" onClick={addPendingRow} className="rounded-xl bg-green-600 px-3 py-3 text-white">
-                    <Plus size={16} />
-                  </button>
-                )}
+      
+      {loadingFields ? (
+        <div className="text-center py-8 text-gray-500">Memuat konfigurasi dokumen...</div>
+      ) : (
+        <>
+          {personalDocuments.length > 0 && (
+            <div>
+              <h4 className="text-lg font-semibold text-gray-500 dark:text-white mb-4">Berkas / Dokumen Karyawan</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {personalDocuments.map(renderDocumentField)}
               </div>
             </div>
-          ))}
-        </div>
-        <div className="mt-4 flex justify-end">
-          <Button variant='primary' onClick={handleUploadAdd} className="rounded-xl bg-brand-600 px-5 py-2 text-white">Unggah</Button>
-        </div>
-      </div>
+          )}
 
-      <div>
-        <Table className="min-w-[640px] md:min-w-full">
-          <TableHeader>
-            <TableRow className="bg-brand-900 text-white">
-              <TableCell isHeader className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">No.</TableCell>
-              <TableCell isHeader className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Tipe File</TableCell>
-              <TableCell isHeader className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Nama File</TableCell>
-              <TableCell isHeader className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">Action</TableCell>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {form.rows.length ? (
-              form.rows.map((r, idx) => (
-                <TableRow key={r.id} className="border-b border-gray-100 dark:border-gray-800">
-                  <TableCell className="px-6 py-4 text-center text-sm">{idx + 1}</TableCell>
-                  <TableCell className="px-6 py-4 text-sm">{getDocumentTypeLabel(String(r.tipeFile))}</TableCell>
-                  <TableCell className="px-6 py-4 text-sm">{r.namaFile}</TableCell>
-              <TableCell className="px-6 py-4 text-center">
-                <div className="flex items-center justify-center">
-                  <button className="rounded-md p-2 hover:bg-gray-100 dark:hover:bg-white/[0.04]" onClick={() => handleDeleteRow(r.id)} title="Hapus">
-                    <TrashBinIcon className="h-4 w-4" />
-                  </button>
-                </div>
-              </TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={4} className="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">Tidak ada berkas/dokumen pribadi</TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+          {legalDocuments.length > 0 && (
+            <div>
+              <h4 className="text-lg font-semibold text-gray-500 dark:text-white mb-4">Berkas / Dokumen Legal</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 {legalDocuments.map(renderDocumentField)}
+              </div>
+            </div>
+          )}
+
+          {personalDocuments.length === 0 && legalDocuments.length === 0 && (
+            <div className="text-center py-8 text-gray-500">
+              Tidak ada dokumen yang perlu diunggah untuk kategori karyawan ini.
+            </div>
+          )}
+        </>
+      )}
+
+      {/* <div className="mt-8 flex justify-end gap-3">
+         <Button variant="secondary" onClick={onClose}>Tutup</Button>
+         <Button variant="primary" onClick={handleSubmit} disabled={loadingFields || submitting}>Simpan Perubahan</Button>
+      </div> */}
     </div>
   );
 
@@ -245,7 +186,27 @@ const PersonalDocumentsModal: React.FC<Props> = ({ isOpen, initialData, onClose,
       isOpen={isOpen}
       onClose={onClose}
       content={content}
-      handleSubmit={() => onSubmit(form)}
+      // ModalAddEdit usually has its own footer or handleSubmit logic, but we put buttons in content for custom layout or use handleSubmit prop
+      // If ModalAddEdit renders buttons, we might want to hide them or use them.
+      // Based on previous code, it used handleSubmit prop. 
+      // But I included buttons in content to match design better or just reusing the prop.
+      // Let's use the prop for the main action if ModalAddEdit supports it, but I added buttons inside content to mimic the structure if ModalAddEdit is just a wrapper.
+      // Looking at previous code: 
+      // <Button variant='primary' onClick={handleUploadAdd} ...>Unggah</Button> was inside content.
+      // And the modal was passed handleSubmit={() => onSubmit(form)}.
+      // But here I want a "Save Changes" button at the bottom.
+      // I'll keep handleSubmit prop for the modal if it uses it for a bottom bar, but if I rendered my own buttons, I should check ModalAddEdit.
+      // Assuming ModalAddEdit renders the content wrapped in a modal.
+      // Previous code passed handleSubmit but also had a button inside content for "Unggah". 
+      // "Unggah" added to the table. Then there was no "Save" button in the previous content?
+      // Ah, previous code: handleUploadAdd just added to the table. The actual save might have been triggered by the modal's save button?
+      // "handleSubmit={() => onSubmit(form)}" was passed to ModalAddEdit.
+      // So ModalAddEdit likely renders a "Save"/"Submit" button.
+      // I will pass handleSubmit to ModalAddEdit and remove my manual buttons if ModalAddEdit provides them.
+      // However, the user design shows "Tutup" and "Simpan Perubahan".
+      // I will rely on ModalAddEdit's buttons if they exist, or if I need to customize, I might need to suppress them.
+      // Let's assume passing handleSubmit enables the default footer buttons.
+      handleSubmit={handleSubmit}
       submitting={!!submitting}
       maxWidth="max-w-5xl"
     />

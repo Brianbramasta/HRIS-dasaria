@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { employeeMasterDataService } from '../../../services/EmployeeMasterData.service';
 import { PTKPDropdownItem } from '../../../types/Employee';
-import { getReligionDropdownOptions, getEducationDropdownOptions, getBankDropdownOptions, getDocumentTypeDropdownOptions, getEmployeeCategoryDropdownOptions, getPositionLevelDropdownOptions, getEmployeeStatusDropdownOptions } from './useFormulirKaryawan';
+import { getReligionDropdownOptions, getEducationDropdownOptions, getBankDropdownOptions, getDocumentTypeDropdownOptions, getEmployeeCategoryDropdownOptions, getPositionLevelDropdownOptions, getEmployeeStatusDropdownOptions, getFieldDocument } from './useFormulirKaryawan';
 import { useFormulirKaryawanStore } from '@/features/employee/stores/useFormulirKaryawanStore';
 import { DocumentItem, EducationItem } from '../../../types/FormEmployee';
 
@@ -322,71 +322,86 @@ export const useStep4Data = (isOpen?: boolean) => {
 // digunakan di form 5
 export const useStep5Data = () => {
   const { formData, updateStep4 } = useFormulirKaryawanStore();
-  const [documentTypeOptions, setDocumentTypeOptions] = useState<any[]>([]);
+  const step3 = formData.step3Employee;
+  const step4 = formData.step4;
+  const categoryId = step3.kategoriKaryawan;
+
+  const [documentFields, setDocumentFields] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    let mounted = true;
-    getDocumentTypeDropdownOptions().then((opts:any) => { if (mounted) setDocumentTypeOptions(opts); }).catch(() => {});
-    return () => { mounted = false; };
-  }, []);
-
-  const step4 = formData.step4;
-
-  const [rows, setRows] = useState<{ id: number; tipeFile: string; files: File[] }[]>([
-    { id: 1, tipeFile: '', files: [] },
-  ]);
-  const [resetKey, setResetKey] = useState(0);
-
-  const addRow = () => {
-    setRows((prev) => {
-      const nextId = prev.length ? Math.max(...prev.map((r) => r.id)) + 1 : 1;
-      return [...prev, { id: nextId, tipeFile: '', files: [] }];
-    });
-  };
-
-  const removeRow = (id: number) => {
-    setRows((prev) => prev.filter((r) => r.id !== id));
-  };
-
-  const handleTypeChange = (id: number, value: string) => {
-    setRows((prev) => prev.map((r) => (r.id === id ? { ...r, tipeFile: value } : r)));
-  };
-
-  const handleFilesChange = (id: number, event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files || []);
-    setRows((prev) => prev.map((r) => (r.id === id ? { ...r, files } : r)));
-  };
-
-  const handleUpload = () => {
-    const documents = step4.documents || [];
-    const newDocs: DocumentItem[] = [];
-    rows.forEach((r) => {
-      if (!r.tipeFile || r.files.length === 0) return;
-      r.files.forEach((file) => {
-        newDocs.push({
-          tipeFile: r.tipeFile,
-          namaFile: file.name,
-          file,
-          filePath: URL.createObjectURL(file),
-        });
-      });
-    });
-    if (newDocs.length) {
-      updateStep4({ documents: [...documents, ...newDocs] });
-      setRows([{ id: 1, tipeFile: '', files: [] }]);
-      setResetKey((k) => k + 1);
+    if (!categoryId) {
+      console.warn('useStep5Data: No categoryId found (step3Employee.kategoriKaryawan is empty). Cannot fetch documents.');
+      return;
     }
-  };
+    
+    let mounted = true;
+    setLoading(true);
+    console.log(`useStep5Data: Fetching documents for categoryId: ${categoryId}`);
+    
+    getFieldDocument(categoryId)
+      .then((data) => {
+        if (mounted) {
+           console.log('useStep5Data: Documents fetched:', data);
+           setDocumentFields(data || []);
+        }
+      })
+      .catch((err) => console.error('useStep5Data: Error fetching document fields:', err))
+      .finally(() => {
+        if (mounted) setLoading(false);
+      });
+      
+    return () => { mounted = false; };
+  }, [categoryId]);
 
-  const handleRemoveDocument = (index: number) => {
+  const handleFileChange = (fieldId: string, event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     const documents = step4.documents || [];
-    const newDocuments = documents.filter((_, i) => i !== index);
+    
+    const existingIndex = documents.findIndex((doc: DocumentItem) => doc.tipeFile === fieldId);
+    
+    let newDocuments = [...documents];
+    
+    if (file) {
+      const newDoc: DocumentItem = {
+        tipeFile: fieldId,
+        namaFile: file.name,
+        file: file,
+        filePath: URL.createObjectURL(file),
+      };
+      
+      if (existingIndex >= 0) {
+        newDocuments[existingIndex] = newDoc;
+      } else {
+        newDocuments.push(newDoc);
+      }
+    } else {
+      if (existingIndex >= 0) {
+        newDocuments = newDocuments.filter((_, idx) => idx !== existingIndex);
+      }
+    }
+    
     updateStep4({ documents: newDocuments });
   };
 
-  const getDocumentTypeLabel = (type: string) => {
-    return documentTypeOptions.find((opt) => opt.value === type)?.label || type;
+  // Filter documents based on category
+  // Accommodate potential variations in API response strings
+  const personalDocuments = documentFields.filter(d => 
+    ['Pribadi', 'Berkas / Dokumen Karyawan', 'Personal', 'Karyawan'].includes(d.document_category)
+  );
+  const legalDocuments = documentFields.filter(d => 
+    ['Legal', 'Berkas / Dokumen Legal', 'Perusahaan'].includes(d.document_category)
+  );
+
+  const getFileForField = (fieldId: string) => {
+    return step4.documents?.find((doc: DocumentItem) => doc.tipeFile === fieldId);
   };
 
-  return { documentTypeOptions, rows, resetKey,step4, updateStep4, addRow, removeRow, handleTypeChange, handleFilesChange, handleUpload, handleRemoveDocument, getDocumentTypeLabel  };
+  return {
+    personalDocuments,
+    legalDocuments,
+    loading,
+    handleFileChange,
+    getFileForField
+  };
 };

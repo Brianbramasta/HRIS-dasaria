@@ -53,19 +53,23 @@ const Input: FC<InputProps> = ({
     inputClasses += ` bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20 dark:border-gray-700 dark:text-white/90  dark:focus:border-brand-800`;
   }
 
-  // if (type === "date" || type === "time") {
-  //   return(<>{formatDateToIndonesian(value as string)}</>)
-  // }
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (type === "number") {
+      const validValue = e.target.value.replace(/[^0-9+\-*/.,\s]/g, "");
+      e.target.value = validValue;
+    }
+    onChange?.(e);
+  };
 
   return (
     <div className="relative">
       <input
-        type={type === "date" || type === "time" ? "text" : type}
+        type={type === "date" || type === "time" || type === "number" ? "text" : type}
         id={id}
         name={name}
         placeholder={placeholder}
         value={type === "date" || type === "time" ? formatDateToIndonesian(value as string) : value}
-        onChange={onChange}
+        onChange={handleInputChange}
         min={min}
         max={max}
         step={step}
