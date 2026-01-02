@@ -53,7 +53,7 @@ export const getEmployeeStatusDropdownOptions = async (search?: string): Promise
   console.log('Employee Status dropdown data:', data);
   return (data || []).map((s: any) => ({ label: s.name, value: s.id }));
 }
-export const getFieldDocument = async (id: string): Promise<any[]> => {
+export const getFieldDocument = async (id?: string): Promise<any[]> => {
   const data = await employeeMasterDataService.getFieldDocument(id);
   return data;
 }

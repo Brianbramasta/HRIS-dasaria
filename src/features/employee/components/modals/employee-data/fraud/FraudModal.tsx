@@ -14,6 +14,8 @@ export type PelanggaranEntry = {
   tanggalKejadian: string; // yyyy-MM-dd
   jenisTindakan: string;
   masaBerlaku: string;
+  tanggalMulaiTindakan?: string;
+  tanggalBerakhirTindakan?: string;
   deskripsi: string;
   fileName?: string;
 };
@@ -48,6 +50,8 @@ const emptyForm: PelanggaranEntry = {
   tanggalKejadian: '',
   jenisTindakan: '',
   masaBerlaku: '',
+  tanggalMulaiTindakan: '',
+  tanggalBerakhirTindakan: '',
   deskripsi: '',
 };
 
@@ -70,11 +74,11 @@ const PelanggaranModal: React.FC<PelanggaranModalProps> = ({ isOpen, mode, initi
         <InputField placeholder="Nama Lengkap" value={form.namaLengkap} onChange={(e) => handleInput('namaLengkap', e.target.value)} required />
       </div>
 
-      <div>
+      <div className='col-span-2'>
         <Label>Jenis Pelanggaran</Label>
         <Select options={optionJenisPelanggaran} placeholder="Select" defaultValue={form.jenisPelanggaran} onChange={(v) => handleInput('jenisPelanggaran', v)} required />
       </div>
-      <div>
+      <div className='col-span-2'>
         <Label>Tanggal Kejadian</Label>
         <DatePicker
           id="tanggalKejadian"
@@ -84,17 +88,26 @@ const PelanggaranModal: React.FC<PelanggaranModalProps> = ({ isOpen, mode, initi
         />
       </div>
 
-      <div>
+      <div className='col-span-2'>
         <Label>Jenis Tindakan</Label>
         <Select options={optionJenisTindakan} placeholder="Select" defaultValue={form.jenisTindakan} onChange={(v) => handleInput('jenisTindakan', v)} required />
       </div>
       <div>
-        <Label>Masa Berlaku Tindakan</Label>
+        <Label>Tanggal Mulai Tindakan</Label>
         <DatePicker
-          id="masaBerlakuTindakan"
+          id="tanggalMulaiTindakan"
           placeholder="hh/bb/tttt"
-          defaultDate={form.masaBerlaku}
-          onChange={(_, dateStr) => handleInput('masaBerlaku', dateStr)}
+          defaultDate={form.tanggalMulaiTindakan}
+          onChange={(_, dateStr) => handleInput('tanggalMulaiTindakan', dateStr)}
+        />
+      </div>
+      <div>
+        <Label>Tanggal Berakhir Tindakan</Label>
+        <DatePicker
+          id="tanggalBerakhirTindakan"
+          placeholder="hh/bb/tttt"
+          defaultDate={form.tanggalBerakhirTindakan}
+          onChange={(_, dateStr) => handleInput('tanggalBerakhirTindakan', dateStr)}
         />
       </div>
 

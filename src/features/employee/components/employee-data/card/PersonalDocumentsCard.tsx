@@ -97,6 +97,8 @@ export default function PersonalDocumentsCard({ documents }: Props) {
         }}
         onClose={closeModal}
         onSubmit={async (payload) => {
+          console.log('Submit payload', payload);
+          // return;
           // Payload from modal is already formatted as { documents: [...] }
           await updateEmployeeDocument(id as string, payload);
           closeModal();

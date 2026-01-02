@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { DataTable, type DataTableColumn, type DataTableAction } from '@/components/shared/datatable/DataTable';
 import PelanggaranModal, { type PelanggaranEntry } from '@/features/employee/components/modals/employee-data/fraud/FraudModal';
 import { IconPencil } from '@/icons/components/icons';  
+import { formatDateToIndonesian } from '@/utils/formatDate';
  
 
 export default function PelanggaranTab() {
@@ -14,6 +15,8 @@ export default function PelanggaranTab() {
       tanggalKejadian: '2025-01-01',
       jenisTindakan: 'Surat Peringatan 1',
       masaBerlaku: '3 Bulan',
+      tanggalMulaiTindakan: '2026-12-12',
+      tanggalBerakhirTindakan: '2026-12-12',
       deskripsi: 'Datang terlambat berulang kali',
       fileName: undefined,
     },
@@ -23,6 +26,8 @@ export default function PelanggaranTab() {
       tanggalKejadian: '2025-01-01',
       jenisTindakan: 'Surat Peringatan 1',
       masaBerlaku: '3 Bulan',
+      tanggalMulaiTindakan: '2026-12-12',
+      tanggalBerakhirTindakan: '2026-12-12',
       deskripsi: 'Tidak mengikuti prosedur yang ditetapkan',
       fileName: undefined,
     },
@@ -32,6 +37,8 @@ export default function PelanggaranTab() {
       tanggalKejadian: '2025-01-01',
       jenisTindakan: 'Surat Peringatan 1',
       masaBerlaku: '3 Bulan',
+      tanggalMulaiTindakan: '-',
+      tanggalBerakhirTindakan: '-',
       deskripsi: 'Pelaporan yang terlambat',
       fileName: undefined,
     },
@@ -44,13 +51,14 @@ export default function PelanggaranTab() {
     () => [
       { id: 'no', label: 'No.', align: 'center', format: (v, row) => { void v; return list.findIndex((r) => r.id === row.id) + 1; } },
       { id: 'jenisPelanggaran', label: 'Jenis Pelanggaran' },
-      { id: 'tanggalKejadian', label: 'Tanggal Kejadian', format: (v) => new Date(v).toLocaleDateString('id-ID') },
+      { id: 'tanggalKejadian', label: 'Tanggal Kejadian', format: (v) => formatDateToIndonesian(v) },
       
       { id: 'deskripsi', label: 'deskripsi Pelanggaran' },
       { id: 'jenisTindakan', label: 'Jenis Tindakan' },
       { id: 'dokumen', label: 'Dokumen', format: (v) => (v ? 'Terunggah' : '-') },
       
-      { id: 'masaBerlaku', label: 'Masa Berlaku' },
+      { id: 'tanggalMulaiTindakan', label: 'Tanggal Mulai Tindakan', format: (v) => (v === '-' ? '-' : formatDateToIndonesian(v)) },
+      { id: 'tanggalBerakhirTindakan', label: 'Tanggal Berakhir Tindakan', format: (v) => (v === '-' ? '-' : formatDateToIndonesian(v)) },
     ],
     [list]
   );

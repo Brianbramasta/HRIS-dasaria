@@ -18,7 +18,7 @@ type DocumentRow = {
 
 export type PersonalDocumentsForm = {
   documents: {
-    document_type_id: string;
+    employee_document_id: string;
     file?: File;
     id?: string; // existing document id (if updating/keeping)
   }[];
@@ -97,7 +97,7 @@ const PersonalDocumentsModal: React.FC<Props> = ({ isOpen, initialData, onClose,
 
   const handleSubmit = () => {
     const documents = Object.entries(fileMap).map(([typeId, data]) => ({
-      document_type_id: typeId,
+      employee_document_id: typeId,
       file: data.file,
       id: data.existingDocId,
     })).filter(item => item.file || item.id); // Send if there's a new file or it's an existing document

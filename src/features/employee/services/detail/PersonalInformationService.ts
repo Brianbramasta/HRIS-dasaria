@@ -214,7 +214,7 @@ class PersonalInformationService {
         if (doc.id) {
           formData.append(`documents[${index}][id]`, doc.id);
         }
-        formData.append(`documents[${index}][document_type_id]`, doc.document_type_id || '');
+        formData.append(`documents[${index}][employee_document_id]`, doc.employee_document_id || '');
         if (doc.file) {
           formData.append(`documents[${index}][file]`, doc.file);
         }

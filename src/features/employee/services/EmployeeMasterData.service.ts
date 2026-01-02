@@ -301,8 +301,8 @@ class EmployeeMasterDataService {
   }
 
   // /api/employee-master-data/employees/{id}/field-document
-  async getFieldDocument(id: string): Promise<any[]> {
-    const resp = await apiService.get<any[]>(`${this.basePath}/employees/${id}/field-document`);
+  async getFieldDocument(id?: string): Promise<any[]> {
+    const resp = await apiService.get<any[]>(`${this.basePath}/employees/field-document/${id}`);
     return (resp as any)?.data ?? [];
   }
 

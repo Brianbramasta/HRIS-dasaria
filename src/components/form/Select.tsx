@@ -34,7 +34,7 @@ const Select: React.FC<SelectProps> = ({
   const ref = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
-  const [menuStyle, setMenuStyle] = useState<{ left: number; top: number; width: number }>({ left: 0, top: 0, width: 0 });
+  const [menuStyle, setMenuStyle] = useState<{ left: number; top?: number; bottom?: number; width: number }>({ left: 0, top: 0, width: 0 });
 
   const selectedLabel =
     options.find((o) => o.value === selectedValue)?.label || placeholder;
@@ -73,8 +73,26 @@ const Select: React.FC<SelectProps> = ({
       const btn = buttonRef.current;
       if (!btn) return;
       const rect = btn.getBoundingClientRect();
-      const top = rect.bottom + 4;
-      setMenuStyle({ left: rect.left, top, width: rect.width });
+      const viewportHeight = window.innerHeight;
+      const spaceBelow = viewportHeight - rect.bottom;
+      const spaceAbove = rect.top;
+      const estimatedHeight = 300; // Estimate dropdown height
+
+      if (spaceBelow < estimatedHeight && spaceAbove > spaceBelow) {
+        // Position above
+        setMenuStyle({ 
+          left: rect.left, 
+          bottom: viewportHeight - rect.top + 4, 
+          width: rect.width 
+        });
+      } else {
+        // Position below
+        setMenuStyle({ 
+          left: rect.left, 
+          top: rect.bottom + 4, 
+          width: rect.width 
+        });
+      }
     };
     reposition();
     document.addEventListener("scroll", reposition, true);
@@ -122,7 +140,13 @@ const Select: React.FC<SelectProps> = ({
         createPortal(
           <div
             ref={menuRef}
-            style={{ position: "fixed", left: menuStyle.left, top: menuStyle.top, width: menuStyle.width }}
+            style={{ 
+              position: "fixed", 
+              left: menuStyle.left, 
+              top: menuStyle.top, 
+              bottom: menuStyle.bottom, 
+              width: menuStyle.width 
+            }}
             className="z-[100000] rounded-lg border border-gray-300 bg-white shadow-lg dark:bg-gray-900 dark:border-gray-700"
           >
             <div className="p-2 border-b border-gray-200 dark:border-gray-800">
@@ -138,7 +162,7 @@ const Select: React.FC<SelectProps> = ({
                 placeholder="Cari..."
               />
             </div>
-            <ul className="max-h-44 overflow-auto py-1">
+            <ul className="max-h-60 overflow-auto py-1">
               <li>
                 <button
                   type="button"

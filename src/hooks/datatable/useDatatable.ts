@@ -89,15 +89,16 @@ export function useDatatable<T = any>({
 
   // Filter data based on search term
   const filteredData = useMemo(() => {
-    if (!searchTerm) return data;
-    return data.filter((row) =>
-      columns.some((column) => {
-        if (!visibleColumns.includes(column.id)) return false;
-        const value = row[column.id as keyof T];
-        if (value === null || value === undefined) return false;
-        return value.toString().toLowerCase().includes(searchTerm.toLowerCase());
-      })
-    );
+    return data
+    // if (!searchTerm) return data;
+    // return data.filter((row) =>
+    //   columns.some((column) => {
+    //     if (!visibleColumns.includes(column.id)) return false;
+    //     const value = row[column.id as keyof T];
+    //     if (value === null || value === undefined) return false;
+    //     return value.toString().toLowerCase().includes(searchTerm.toLowerCase());
+    //   })
+    // );
   }, [data, searchTerm, columns, visibleColumns]);
 
   // Sort filtered data

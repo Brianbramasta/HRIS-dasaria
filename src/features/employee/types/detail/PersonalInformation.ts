@@ -79,7 +79,7 @@ export interface EmploymentPositionResponse {
 
 export interface EmployeeDocumentItem {
   id: string;
-  document_type_id: string;
+  employee_document_id: string;
   file: string;
 }
 
@@ -182,7 +182,7 @@ export interface UpdateEmploymentPositionPayload {
 
 export interface EmployeeDocumentDetailItem {
   id?: string;
-  document_type_id?: string;
+  employee_document_id?: string;
   file?: File;
 }
 

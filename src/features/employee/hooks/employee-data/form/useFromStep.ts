@@ -224,7 +224,10 @@ export const useStep3Data = (isOpen?: boolean) => {
         setPositionLevelOptions(positionLevels);
 
         const employeeStatuses = await getEmployeeStatusDropdownOptions();
-        setEmployeeStatusOptions(employeeStatuses);
+        const filteredEmployeeStatuses = employeeStatuses.filter((status: any) => 
+          ['Aktif', 'Evaluasi'].includes(status.label)
+        );
+        setEmployeeStatusOptions(filteredEmployeeStatuses);
 
         const companies = await employeeMasterDataService.getCompanyDropdown();
         setCompanyOptions((companies || []).map((i: any) => ({ label: i.company_name, value: i.id })));
@@ -331,8 +334,8 @@ export const useStep5Data = () => {
 
   useEffect(() => {
     if (!categoryId) {
-      console.warn('useStep5Data: No categoryId found (step3Employee.kategoriKaryawan is empty). Cannot fetch documents.');
-      return;
+      // console.warn('useStep5Data: No categoryId found (step3Employee.kategoriKaryawan is empty). Cannot fetch documents.');
+      // return;
     }
     
     let mounted = true;
