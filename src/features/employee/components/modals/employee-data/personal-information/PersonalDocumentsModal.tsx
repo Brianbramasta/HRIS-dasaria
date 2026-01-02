@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import FileInput from '@/components/form/input/FileInput';
-import Button from '@/components/ui/button/Button';
 import { getFieldDocument } from '@/features/employee/hooks/employee-data/form/useFormulirKaryawan';
 import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
 
