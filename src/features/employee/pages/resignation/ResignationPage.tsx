@@ -6,7 +6,7 @@ import TabReviewed from './tab/TabReviewedPage';
 // import Button from '../../../../components/ui/button/Button';
 import ResignKaryawanModal from '../../components/modals/ResignEmployeeModal';
 // import { addNotification } from '../../../../stores/notificationStore';
-import ShareLinkModal from '../../components/modals/sharelink/shareLink';
+import ShareLinkModal from '../../components/modals/sharelink/ShareLinkModal';
 
 type TabType = 'pending' | 'reviewed';
 

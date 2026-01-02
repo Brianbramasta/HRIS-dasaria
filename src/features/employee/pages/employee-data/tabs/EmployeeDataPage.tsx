@@ -6,7 +6,7 @@ import useKaryawan from '../../../hooks/employee-data/list/useKaryawan';
 // import Button from '../../../../../components/ui/button/Button';
 import AddKaryawanModal from '../../../components/modals/AddEmployeeModal';
 import DeleteKaryawanModal from '../../../components/modals/employee-data/DeleteEmployeeModal';
-import ShareLinkModal from '../../../components/modals/sharelink/ShareLink';
+import ShareLinkModal from '../../../components/modals/sharelink/ShareLinkModal';
 import { IconFileDetail, IconHapus } from '@/icons/components/icons';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 
