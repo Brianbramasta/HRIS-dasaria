@@ -239,7 +239,7 @@ export default function DatePicker({
     const rect = targetEl.getBoundingClientRect();
     const popupWidth = 310;
     // Tambah tinggi sedikit jika ada toggle
-    const popupHeight = showEndDateToggle ? 520 : 450;
+    const estimatedHeight = showEndDateToggle ? 520 : 450;
     const padding = 8;
     
     let left = rect.left;
@@ -250,26 +250,40 @@ export default function DatePicker({
       left = padding;
     }
 
-    // Dokumentasi: Logika posisi vertikal
-    // Default: Posisi di bawah input dengan overlap -5px agar rapat
-    let style: React.CSSProperties = {
+    const spaceBelow = window.innerHeight - rect.bottom - padding;
+    const spaceAbove = rect.top - padding;
+
+    // Strategi posisi:
+    // 1. Coba bawah jika muat
+    // 2. Jika tidak, coba atas jika muat
+    // 3. Jika tidak muat keduanya, pilih yang space-nya lebih besar
+    
+    let isBottom = true;
+    
+    if (spaceBelow < estimatedHeight) {
+      if (spaceAbove >= estimatedHeight) {
+        isBottom = false;
+      } else {
+        // Tidak muat keduanya, pilih yang terbesar
+        if (spaceAbove > spaceBelow) {
+          isBottom = false;
+        }
+      }
+    }
+
+    const style: React.CSSProperties = {
       left,
       width: `${popupWidth}px`,
-      top: rect.bottom - 5,
     };
 
-    // Cek apakah muat di bawah (menggunakan estimasi height)
-    if ((rect.bottom - 5) + popupHeight > window.innerHeight - padding) {
-      // Jika tidak muat di bawah, taruh di atas.
-      // Dokumentasi: Gunakan properti 'bottom' alih-alih 'top' untuk menangani tinggi konten yang dinamis.
-      // Ini mencegah gap besar jika konten popup lebih pendek dari estimasi popupHeight.
-      // Jarak 5px dari sisi atas input.
-      style = {
-        left,
-        width: `${popupWidth}px`,
-        bottom: window.innerHeight - rect.top + 5,
-        top: "auto", // Reset top
-      };
+    if (isBottom) {
+      style.top = rect.bottom - 5;
+      // Batasi tinggi agar tidak overflow screen
+      style.maxHeight = spaceBelow + 5; 
+    } else {
+      style.bottom = window.innerHeight - rect.top + 5;
+      style.top = "auto";
+      style.maxHeight = spaceAbove + 5;
     }
 
     return style;
@@ -699,7 +713,7 @@ export default function DatePicker({
           style={getPosition()}
         >
           {/* Main Calendar Card */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 max-h-[calc(100vh-16px)] overflow-auto">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 flex-1 overflow-auto">
             {/* Input display (range gunakan 2 kolom) */}
             {activeMode !== "time" && (
               <div className="p-3 border-b border-gray-200 dark:border-gray-700">
