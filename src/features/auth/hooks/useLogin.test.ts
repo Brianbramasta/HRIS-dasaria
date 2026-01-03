@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react';
-import { useLogin } from '../useLogin';
-import { authService } from '../../services/AuthService';
-import * as authStoreModule from '../../stores/AuthStore';
+import { useLogin } from './useLogin';
+import { authService } from '../services/AuthService';
+import * as authStoreModule from '../stores/AuthStore';
 
 // Mocks
 const mockNavigate = jest.fn();
@@ -9,11 +9,11 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-jest.mock('../../services/auth.service', () => ({
+jest.mock('../services/AuthService', () => ({
   authService: { login: jest.fn() },
 }));
 
-jest.mock('../../stores/authStore', () => {
+jest.mock('../stores/AuthStore', () => {
   const mockSetAuth = jest.fn();
   return {
     useAuthStore: (selector: any) => selector({ setAuth: mockSetAuth }),
