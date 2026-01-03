@@ -1,4 +1,4 @@
-import { addNotification } from '../stores/notificationStore';
+// import { addNotification } from '../stores/notificationStore';
 
 export type HandleApiErrorOptions = {
   title?: string;
@@ -9,9 +9,9 @@ export type HandleApiErrorOptions = {
  * Extract messages from common API error shapes and show a notification.
  * Returns an array of extracted messages for further handling if needed.
  */
-export const handleApiError = (err: unknown, opts?: HandleApiErrorOptions): string[] => {
-  const title = opts?.title ?? 'Error';
-  const duration = opts?.hideDuration ?? 7000;
+export const handleApiError = (err: unknown /*, opts?: HandleApiErrorOptions*/): string[] => {
+  // const title = opts?.title ?? 'Error';
+  // const duration = opts?.hideDuration ?? 7000;
 
   const messages: string[] = [];
 
@@ -47,13 +47,15 @@ export const handleApiError = (err: unknown, opts?: HandleApiErrorOptions): stri
 
   // Build description (join limited messages)
   const description = messages.slice(0, 6).join('\n');
+  alert(description);
 
-  addNotification({
-    variant: 'error',
-    title,
-    description,
-    hideDuration: duration,
-  });
+  // Show notification
+  // addNotification({
+  //   variant: 'error',
+  //   title,
+  //   description,
+  //   hideDuration: duration,
+  // });
 
   return messages;
 };
