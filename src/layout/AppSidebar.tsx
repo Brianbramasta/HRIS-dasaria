@@ -41,7 +41,7 @@ const navItems: NavItem[] = [
       { name: "Data Karyawan", path: "/employee-data", pro: false },
       { name: "Perpanjangan Kontrak", path: "/contract-extension", pro: false },
       { name: "Pengunduran Diri", path: "/resignation", pro: false },
-      { name: "Riwayat Organisasi", path: "/organization-history", pro: false },
+      { name: "Perubahan Organisasi", path: "/organization-history", pro: false },
     
     ],
   },

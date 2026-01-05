@@ -154,7 +154,7 @@ class EmployeeMasterDataService {
    */
   async getDirectorateDropdown(search?: string): Promise<DirectorateDropdownItem[]> {
     const qs = search ? `?search=${encodeURIComponent(search)}` : '';
-    const resp = await apiService.get<DirectorateDropdownItem[]>(`${this.basePath}/employees/directorate${qs}`);
+    const resp = await apiService.get<DirectorateDropdownItem[]>(`${this.basePath}/employees/directorates${qs}`);
     return (resp as any)?.data ?? [];
   }
 

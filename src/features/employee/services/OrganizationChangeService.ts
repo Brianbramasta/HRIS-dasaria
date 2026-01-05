@@ -38,6 +38,7 @@ export interface OrganizationChangeListParams {
 
 export interface OrganizationChangeListItemRaw {
   id: string;
+  employee_id: string;
   full_name: string;
   jenis_perubahan: string;
   efektif_date: string;
@@ -114,17 +115,25 @@ export interface OrganizationChangeDetailRaw {
   updated_at?: string;
 }
 
+export interface DropdownItem {
+  id: string;
+  name: string;
+}
+
+
+
 class OrganizationChangeService {
-  private readonly basePath = 'employee-master-data/employees';
+  // private readonly basePath = 'employee-master-data/employees';
+  private readonly basePath = 'employee-master-data/organization-changes';
 
   /**
    * Get Organization Changes List - Mendapatkan daftar perubahan organisasi
    * @param params - Query parameters (search, sort, column, per_page, page, filter[])
    * @returns Promise dengan daftar perubahan organisasi
    */
-  async getOrganizationChanges(params?: OrganizationChangeListParams): Promise<ApiResponse<OrganizationChangeListResponseRaw>> {
+  async getOrganizationChanges(leadEmployeeId?: string | null,params?: OrganizationChangeListParams): Promise<ApiResponse<OrganizationChangeListResponseRaw>> {
     const qs = apiService.buildQueryString(params);
-    const url = qs ? `${this.basePath}/organization-changes/?${qs}` : `${this.basePath}/organization-changes/`;
+    const url = qs ? `${this.basePath}/${leadEmployeeId}?${qs}` : `${this.basePath}`;
     return apiService.get<OrganizationChangeListResponseRaw>(url);
   }
 
@@ -134,8 +143,9 @@ class OrganizationChangeService {
    * @param payload - Data perubahan organisasi (FormData)
    * @returns Promise dengan data yang dibuat
    */
-  async storeOrganizationChange(employeeId: string, payload: FormData): Promise<ApiResponse<OrganizationChangeDetailRaw>> {
-    return apiService.post<OrganizationChangeDetailRaw>(`${this.basePath}/store-organization-change/${employeeId}`, payload, {
+  async storeOrganizationChange(leadEmployeeId?: string | null, payload?: FormData): Promise<ApiResponse<OrganizationChangeDetailRaw>> {
+    const url = leadEmployeeId ? `${this.basePath}/${leadEmployeeId}` : `${this.basePath}`;
+    return apiService.post<OrganizationChangeDetailRaw>(url, payload, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   }
@@ -146,7 +156,7 @@ class OrganizationChangeService {
    * @returns Promise dengan detail perubahan organisasi
    */
   async getOrganizationChangeDetail(id: string): Promise<ApiResponse<OrganizationChangeDetailRaw>> {
-    return apiService.get<OrganizationChangeDetailRaw>(`${this.basePath}/organization-changes/${id}/show`);
+    return apiService.get<OrganizationChangeDetailRaw>(`${this.basePath}/${id}/show`);
   }
 
   /**
@@ -156,10 +166,28 @@ class OrganizationChangeService {
    * @returns Promise dengan data yang diperbarui
    */
   async updateOrganizationChange(id: string, payload: FormData): Promise<ApiResponse<OrganizationChangeDetailRaw>> {
-    return apiService.post<OrganizationChangeDetailRaw>(`${this.basePath}/organization-changes/${id}/update`, payload, {
+    return apiService.post<OrganizationChangeDetailRaw>(`${this.basePath}/${id}/update`, payload, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   }
+
+  
+  /**
+   * Get Change Type Dropdown - Mendapatkan daftar opsi perubahan organisasi
+   * @returns Promise dengan daftar opsi perubahan organisasi
+   */
+  async getChangeTypeDropdown(): Promise<ApiResponse<DropdownItem[]>> {
+    return apiService.get<DropdownItem[]>(`${this.basePath}/change-type-dropdown`);
+  }
+  // /api/employee-master-data/organization-changes/all-employee-dropdown
+  /**
+   * Get All Employee Dropdown - Mendapatkan daftar semua karyawan
+   * @returns Promise dengan daftar semua karyawan
+   */
+  async getAllEmployeeDropdown(): Promise<ApiResponse<DropdownItem[]>> {
+    return apiService.get<DropdownItem[]>(`${this.basePath}/all-employee-dropdown`);
+  }
+
 }
 
 export const organizationChangeService = new OrganizationChangeService();

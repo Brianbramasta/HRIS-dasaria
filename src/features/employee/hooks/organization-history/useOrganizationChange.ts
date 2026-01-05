@@ -22,14 +22,18 @@ export interface UseOrganizationChangeReturn {
   isLoading: boolean;
   error: string | null;
   isSubmitting: boolean;
+  changeTypeOptions: { label: string; value: string }[];
+  employeeOptions: { label: string; value: string; name: string }[];
   total: number;
   page: number;
   limit: number;
-  fetchOrganizationChanges: (params?: OrganizationChangeListParams) => Promise<void>;
-  createOrganizationChange: (employeeId: string, payload: CreateOrganizationChangePayload) => Promise<boolean>;
+  fetchOrganizationChanges: (employeeId?: string | null, params?: OrganizationChangeListParams) => Promise<void>;
+  createOrganizationChange: (leadEmployeeId?: string | null, payload?: CreateOrganizationChangePayload) => Promise<boolean>;
   getDetail: (id: string) => Promise<OrganizationChangeDetailRaw | null>;
   updateOrganizationChange: (id: string, payload: UpdateOrganizationChangePayload) => Promise<boolean>;
   refresh: () => Promise<void>;
+  fetchChangeTypeOptions: () => Promise<void>;
+  fetchEmployeeOptions: () => Promise<void>;
   handleSearchChange: (search: string) => void;
   handleSortChange: (columnId: string, order: 'asc' | 'desc') => void;
   handlePageChange: (newPage: number) => void;
@@ -50,6 +54,8 @@ export function useOrganizationChange({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [changeTypeOptions, setChangeTypeOptions] = useState<{ label: string; value: string }[]>([]);
+  const [employeeOptions, setEmployeeOptions] = useState<{ label: string; value: string; name: string }[]>([]);
 
   // Pagination & Filter States
   const [total, setTotal] = useState(0);
@@ -61,7 +67,7 @@ export function useOrganizationChange({
   const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
 
   const fetchOrganizationChanges = useCallback(
-    async (params?: OrganizationChangeListParams) => {
+    async (employeeId?: string | null, params?: OrganizationChangeListParams) => {
       setIsLoading(true);
       setError(null);
       try {
@@ -107,7 +113,8 @@ export function useOrganizationChange({
           }
         });
 
-        const resp = await organizationChangeService.getOrganizationChanges(finalParams);
+        const leadId = employeeId ?? '';
+        const resp = await organizationChangeService.getOrganizationChanges(leadId, finalParams);
 
         // Handle response structure
         const responseData = resp?.data as any; // OrganizationChangeListResponseRaw
@@ -115,7 +122,7 @@ export function useOrganizationChange({
 
         const mapped: OrganizationChangeItem[] = list.map((item) => ({
           id: item.id,
-          employee_id: '', // Not provided in list
+          employee_id: item.employee_id, // Not provided in list
           full_name: item.full_name,
           change_type: item.jenis_perubahan,
           effective_date: item.efektif_date,
@@ -194,28 +201,28 @@ export function useOrganizationChange({
   };
 
   const createOrganizationChange = useCallback(
-    async (employeeId: string, payload: CreateOrganizationChangePayload): Promise<boolean> => {
+    async (leadEmployeeId?: string | null, payload?: CreateOrganizationChangePayload): Promise<boolean> => {
       setIsSubmitting(true);
       try {
         const fd = new FormData();
-        appendIfValue(fd, 'employee_id', payload.employee_id);
-        appendIfValue(fd, 'change_type_id', payload.change_type_id);
-        appendIfValue(fd, 'efektif_date', payload.efektif_date);
-        appendIfValue(fd, 'reason', payload.reason);
-        appendIfValue(fd, 'company_id', payload.company_id);
-        appendIfValue(fd, 'office_id', payload.office_id);
-        appendIfValue(fd, 'directorate_id', payload.directorate_id);
-        appendIfValue(fd, 'division_id', payload.division_id);
-        appendIfValue(fd, 'department_id', payload.department_id);
-        appendIfValue(fd, 'job_title_id', payload.job_title_id);
-        appendIfValue(fd, 'position_id', payload.position_id);
-        appendIfValue(fd, 'position_level_id', payload.position_level_id);
-        appendIfValue(fd, 'employee_category_id', payload.employee_category_id);
-        appendIfValue(fd, 'approved_by', payload.approved_by);
-        appendIfValue(fd, 'recommended_by', payload.recommended_by);
-        if (payload.decree_file) fd.append('decree_file', payload.decree_file);
+        appendIfValue(fd, 'employee_id', payload?.employee_id);
+        appendIfValue(fd, 'change_type_id', payload?.change_type_id);
+        appendIfValue(fd, 'efektif_date', payload?.efektif_date);
+        appendIfValue(fd, 'reason', payload?.reason);
+        appendIfValue(fd, 'company_id', payload?.company_id);
+        appendIfValue(fd, 'office_id', payload?.office_id);
+        appendIfValue(fd, 'directorate_id', payload?.directorate_id);
+        appendIfValue(fd, 'division_id', payload?.division_id);
+        appendIfValue(fd, 'department_id', payload?.department_id);
+        appendIfValue(fd, 'job_title_id', payload?.job_title_id);
+        appendIfValue(fd, 'position_id', payload?.position_id);
+        appendIfValue(fd, 'position_level_id', payload?.position_level_id);
+        appendIfValue(fd, 'employee_category_id', payload?.employee_category_id);
+        appendIfValue(fd, 'approved_by', payload?.approved_by);
+        appendIfValue(fd, 'recommended_by', payload?.recommended_by);
+        if (payload?.decree_file) fd.append('decree_file', payload?.decree_file);
 
-        await organizationChangeService.storeOrganizationChange(employeeId, fd);
+        await organizationChangeService.storeOrganizationChange(leadEmployeeId ?? null, fd);
         addNotification({
           title: 'Success',
           description: 'Organization change has been created',
@@ -253,7 +260,7 @@ export function useOrganizationChange({
       try {
         const fd = new FormData();
         fd.append('_method', 'PATCH');
-        if (payload.decree_file) fd.append('decree_file', payload.decree_file);
+        if (payload?.decree_file) fd.append('decree_file', payload?.decree_file);
 
         const resp = await organizationChangeService.updateOrganizationChange(id, fd);
         const updated = resp?.data as OrganizationChangeDetailRaw;
@@ -278,6 +285,38 @@ export function useOrganizationChange({
     [detail]
   );
 
+  const fetchChangeTypeOptions = useCallback(async () => {
+    try {
+      const resp = await organizationChangeService.getChangeTypeDropdown();
+      const data = (resp as any)?.data ?? [];
+      const mapped = data.map((i: any) => ({ label: i.name, value: i.id }));
+      setChangeTypeOptions(mapped);
+    } catch (err: any) {
+      const message = err?.message || 'Failed to load change types';
+      addNotification({ title: 'Error', description: message, variant: 'error', hideDuration: 5000 });
+      setChangeTypeOptions([]);
+    }
+  }, []);
+
+  const fetchEmployeeOptions = useCallback(async () => {
+    try {
+        
+      const resp = await organizationChangeService.getAllEmployeeDropdown();
+      const data = (resp as any)?.data ?? [];
+    // need to recheck   
+      const mapped = data.map((i: any) => ({
+        label: `${i.id} - ${i.full_name}`,
+        value: i.id,
+        name: i.full_name,
+      }));
+      setEmployeeOptions(mapped);
+    } catch (err: any) {
+      const message = err?.message || 'Failed to load employees';
+      addNotification({ title: 'Error', description: message, variant: 'error', hideDuration: 5000 });
+      setEmployeeOptions([]);
+    }
+  }, []);
+
   const refresh = useCallback(async () => {
     await fetchOrganizationChanges();
   }, [fetchOrganizationChanges]);
@@ -294,6 +333,8 @@ export function useOrganizationChange({
     isLoading,
     error,
     isSubmitting,
+    changeTypeOptions,
+    employeeOptions,
     total,
     page,
     limit,
@@ -302,6 +343,8 @@ export function useOrganizationChange({
     getDetail,
     updateOrganizationChange,
     refresh,
+    fetchChangeTypeOptions,
+    fetchEmployeeOptions,
     handleSearchChange,
     handleSortChange,
     handlePageChange,

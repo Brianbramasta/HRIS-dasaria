@@ -51,7 +51,6 @@ export default function SalaryCard({  salaryData, bpjsData }: Props) {
       <div className="space-y-6">
         {/* Salary Section */}
         <div>
-          <h4 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">Salary</h4>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="md:col-span-2">
               <Label>Bank</Label>

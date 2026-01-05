@@ -4,7 +4,7 @@ import Button from '@/components/ui/button/Button';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { ChevronDown } from 'react-feather';
 import EditRiwayatOrganisasiModal from '@/features/employee/components/modals/organization-history/EditOrganizationHistoryModal';
-import { IconFileDetail } from '@/icons/components/icons';
+import { IconFileDetail, IconPencil } from '@/icons/components/icons';
 import { useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,15 +19,18 @@ export default function OrganizationHistoryAtasanPage() {
     loading,
     isEditOrgOpen,
     isDropdownOpen,
+    selectedRow,
     handleSearchChange,
     handleSortChange,
     handleAddOrganization,
+    handleEditOrganization,
     handleCloseModal,
     handleSubmitModal,
     handleDropdownToggle,
     handleDropdownClose,
     handleNavigateToHR,
     handleNavigateToAtasan,
+    detail,
   } = useOrganizationHistoryAtasan();
 
   // Format date helper
@@ -92,23 +95,31 @@ export default function OrganizationHistoryAtasanPage() {
         icon: <IconFileDetail />,
         className: 'text-gray-700',
         onClick: (row) => {
-          navigate(`/organization-history/preview?id=${row.id}`);
+          // navigate(`/organization-history/preview?id=${row.id}`);
+          navigate(`/employee-data/${row.employee_id}?mode=view&tab=organization-history`);
+        },
+      },
+      {
+        icon: <IconPencil />,
+        className: 'text-gray-700',
+        onClick: (row) => {
+          handleEditOrganization(row);
         },
       },
     ],
-    [navigate]
+    [navigate, handleEditOrganization]
   );
 
   return (
     <div className="p-4">
       <DataTable
-        title="Riwayat Organisasi & Rekomendasi"
+        title="Perubahan Organisasi & Rekomendasi"
         data={rowsWithStatus}
         columns={columns}
         actions={actions}
         loading={loading}
         filterable
-        emptyMessage="Belum ada riwayat organisasi"
+        emptyMessage="Belum ada perubahan organisasi"
         addButtonLabel="Tambah Organisasi"
         onAdd={handleAddOrganization}
         searchPlaceholder="Cari berdasarkan kata kunci"
@@ -150,6 +161,7 @@ export default function OrganizationHistoryAtasanPage() {
         onClose={handleCloseModal}
         onSubmit={handleSubmitModal}
         // submitting={isSubmitting}
+        initialData={selectedRow ? detail || undefined : undefined}
         hideSkFileUpload
       />
     </div>

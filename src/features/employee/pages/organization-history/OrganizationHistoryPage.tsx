@@ -23,6 +23,7 @@ export default function OrganizationHistoryPage() {
     handleSearchChange,
     handleSortChange,
     handleAddOrganization,
+    handleEditOrganization,
     handleCloseModal,
     handleSubmitModal,
     handleDropdownToggle,
@@ -31,6 +32,7 @@ export default function OrganizationHistoryPage() {
     handleNavigateToAtasan,
     setSelectedRow,
     setIsEditOrgOpen,
+    detail,
   } = useOrganizationHistory();
 
   // Format date helper
@@ -96,31 +98,33 @@ export default function OrganizationHistoryPage() {
         icon: <IconFileDetail />,
         className: 'text-gray-700',
         onClick: (row) => {
-          navigate(`/organization-history/preview?id=${row.id}`);
+          // console.log(row);
+          // return;
+          // navigate(`/organization-history/preview?id=${row.id}`);
+          navigate(`/employee-data/${row.employee_id}?mode=view&tab=organization-history`);
         },
       },
       {
         icon: <IconPencil />,
         className: 'text-gray-700',
         onClick: (row) => {
-          setSelectedRow(row);
-          setIsEditOrgOpen(true);
+          handleEditOrganization(row);
         },
       }
     ],
-    [navigate, setSelectedRow, setIsEditOrgOpen]
+    [navigate, handleEditOrganization]
   );
 
   return (
     <div className="p-4">
       <DataTable
-        title="Riwayat Organisasi"
+        title="Perubahan Organisasi"
         data={rowsWithStatus}
         columns={columns}
         actions={actions}
         loading={loading}
         filterable
-        emptyMessage="Belum ada riwayat organisasi"
+        emptyMessage="Belum ada perubahan organisasi"
         addButtonLabel="Tambah Organisasi"
         onAdd={handleAddOrganization}
         searchPlaceholder="Cari berdasarkan kata kunci"
@@ -162,22 +166,7 @@ export default function OrganizationHistoryPage() {
         onClose={handleCloseModal}
         onSubmit={handleSubmitModal}
         // submitting={isSubmitting}
-        initialData={selectedRow ? {
-          idKaryawan: selectedRow.employee_id,
-          nama: selectedRow.full_name,
-          jenisPerubahan: selectedRow.change_type,
-          tanggalEfektif: selectedRow.effective_date,
-          alasanPerubahan: selectedRow.reason || undefined,
-          // Map other fields back to form if they exist in selectedRow (depends on API response detail vs list)
-          company: selectedRow.new_company,
-          direktorate: selectedRow.new_directorate,
-          divisi: selectedRow.new_division,
-          departemen: selectedRow.new_department,
-          position: selectedRow.new_position,
-          jabatan: selectedRow.new_job_title,
-          jenjangJabatan: selectedRow.new_position_level,
-          kategoriKaryawan: selectedRow.new_employee_category,
-        } : undefined}
+        initialData={selectedRow ? detail || undefined : undefined}
       />
     </div>
   );
