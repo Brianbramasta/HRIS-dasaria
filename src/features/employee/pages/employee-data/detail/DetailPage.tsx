@@ -70,7 +70,7 @@ export default function DetailKaryawanPage() {
           case 'organization-history':
             return <OrganizationHistoryTab data={{} as any} isEditable={isEditable} />;
           case 'pelanggaran':
-            return <PelanggaranTab />;
+            return <PelanggaranTab employeeId={id!}/>;
           case 'story-payroll':
             return <StoryPayrollTab data={{} as any} isEditable={isEditable} />;
           default:

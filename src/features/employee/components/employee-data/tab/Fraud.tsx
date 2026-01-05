@@ -1,103 +1,173 @@
 // import ExpandCard from '@/features/structure-and-organize/components/card/ExpandCard';
  
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { DataTable, type DataTableColumn, type DataTableAction } from '@/components/shared/datatable/DataTable';
 import PelanggaranModal, { type PelanggaranEntry } from '@/features/employee/components/modals/employee-data/fraud/FraudModal';
-import { IconPencil } from '@/icons/components/icons';  
+import { IconPencil, IconHapus, FileText } from '@/icons/components/icons';  
 import { formatDateToIndonesian } from '@/utils/formatDate';
+import { formatUrlFile } from '@/utils/formatUrlFile';
+import { useFraudContract } from '@/features/employee/hooks/employee-data/detail/contract/useFraudContract';
+import type { ViolationItem, CreateViolationPayload, UpdateViolationPayload } from '@/features/employee/services/detail/FraudService';
+import { clearSkFile, useFileStore } from '@/stores/fileStore';
  
-
-export default function PelanggaranTab() {
-  const [list, setList] = useState<PelanggaranEntry[]>([
-    {
-      id: 1,
-      jenisPelanggaran: 'Tidak Disiplin',
-      tanggalKejadian: '2025-01-01',
-      jenisTindakan: 'Surat Peringatan 1',
-      masaBerlaku: '3 Bulan',
-      tanggalMulaiTindakan: '2026-12-12',
-      tanggalBerakhirTindakan: '2026-12-12',
-      deskripsi: 'Datang terlambat berulang kali',
-      fileName: undefined,
-    },
-    {
-      id: 2,
-      jenisPelanggaran: 'Tidak Disiplin',
-      tanggalKejadian: '2025-01-01',
-      jenisTindakan: 'Surat Peringatan 1',
-      masaBerlaku: '3 Bulan',
-      tanggalMulaiTindakan: '2026-12-12',
-      tanggalBerakhirTindakan: '2026-12-12',
-      deskripsi: 'Tidak mengikuti prosedur yang ditetapkan',
-      fileName: undefined,
-    },
-    {
-      id: 3,
-      jenisPelanggaran: 'Tidak Disiplin',
-      tanggalKejadian: '2025-01-01',
-      jenisTindakan: 'Surat Peringatan 1',
-      masaBerlaku: '3 Bulan',
-      tanggalMulaiTindakan: '-',
-      tanggalBerakhirTindakan: '-',
-      deskripsi: 'Pelaporan yang terlambat',
-      fileName: undefined,
-    },
-  ]);
+interface Props {
+  employeeId: string;
+}
+ 
+export default function PelanggaranTab({ employeeId }: Props) {
+  
+  const {
+    violations,
+    isLoading,
+    isSubmitting,
+    createViolation,
+    updateViolation,
+    deleteViolation,
+    getDetail,
+    getDisciplinaryOptions,
+    refresh,
+    page,
+    total,
+    limit,
+    handleSearchChange,
+    handleSortChange,
+    handlePageChange,
+    handleRowsPerPageChange,
+    handleDateRangeFilterChange,
+    dateRangeFilters,
+    handleColumnFilterChange,
+    columnFilters,
+  } = useFraudContract({ employeeId, autoFetch: true, initialPage: 1, initialLimit: 10 });
+  const [list, setList] = useState<PelanggaranEntry[]>([]);
 
   const [isOpen, setIsOpen] = useState(false);
   const [editing, setEditing] = useState<PelanggaranEntry | null>(null);
+  const [disciplinaryOptions, setDisciplinaryOptions] = useState<{ label: string; value: string }[]>([]);
+  const skFile = useFileStore((s) => s.skFile);
+
+  useEffect(() => {
+    const mapped: PelanggaranEntry[] = (violations || []).map((v: ViolationItem) => ({
+      id: v.id,
+      jenisPelanggaran: v.violation,
+      tanggalKejadian: v.violation_date,
+      jenisTindakan: v.disciplinary_name || '',
+      masaBerlaku: '',
+      tanggalMulaiTindakan: v.start_date || '',
+      tanggalBerakhirTindakan: v.end_date || '',
+      deskripsi: v.description || '',
+      fileName: v.file || undefined,
+    }));
+    setList(mapped);
+  }, [violations]);
 
   const columns: DataTableColumn<PelanggaranEntry>[] = useMemo(
     () => [
-      { id: 'no', label: 'No.', align: 'center', format: (v, row) => { void v; return list.findIndex((r) => r.id === row.id) + 1; } },
+      { id: 'no', label: 'No.', align: 'center', format: (v, row) => { void v; return list.findIndex((r) => r.id === row.id) + 1 + (page - 1) * limit; } },
       { id: 'jenisPelanggaran', label: 'Jenis Pelanggaran' },
-      { id: 'tanggalKejadian', label: 'Tanggal Kejadian', format: (v) => formatDateToIndonesian(v) },
+      { id: 'tanggalKejadian', label: 'Tanggal Kejadian', dateRangeFilter: true, format: (v) => formatDateToIndonesian(v) },
       
       { id: 'deskripsi', label: 'deskripsi Pelanggaran' },
       { id: 'jenisTindakan', label: 'Jenis Tindakan' },
-      { id: 'dokumen', label: 'Dokumen', format: (v) => (v ? 'Terunggah' : '-') },
       
-      { id: 'tanggalMulaiTindakan', label: 'Tanggal Mulai Tindakan', format: (v) => (v === '-' ? '-' : formatDateToIndonesian(v)) },
-      { id: 'tanggalBerakhirTindakan', label: 'Tanggal Berakhir Tindakan', format: (v) => (v === '-' ? '-' : formatDateToIndonesian(v)) },
+      
+      { id: 'tanggalMulaiTindakan', label: 'Tanggal Mulai Tindakan', dateRangeFilter: true, format: (v) => (v === '-' ? '-' : formatDateToIndonesian(v)) },
+      { id: 'tanggalBerakhirTindakan', label: 'Tanggal Berakhir Tindakan', dateRangeFilter: true, format: (v) => (v === '-' ? '-' : formatDateToIndonesian(v)) },{ 
+        id: 'fileName', 
+        label: 'Dokumen Terkait', 
+        align: 'center',
+        format: (v) => (v 
+          ? <a href={formatUrlFile(String(v))} target="_blank" rel="noopener noreferrer" className="flex justify-center items-center"><FileText size={16} /></a> 
+          : '—') 
+      },
     ],
-    [list]
+    [list, page, limit]
   );
 
   const actions: DataTableAction<PelanggaranEntry>[] = [
     {
       variant: 'outline',
       icon: <IconPencil/>,
-      onClick: (row) => {
-        setEditing(row);
-        setIsOpen(true);
+      onClick: async (row) => {
+        if (!row.id) return;
+        const detail = await getDetail(String(row.id));
+        if (detail) {
+          const mappedDetail: PelanggaranEntry = {
+            id: detail.id,
+            jenisPelanggaran: detail.violation,
+            tanggalKejadian: detail.violation_date,
+            jenisTindakan: detail.disciplinary_id || '',
+            masaBerlaku: '',
+            tanggalMulaiTindakan: detail.start_date || '',
+            tanggalBerakhirTindakan: detail.end_date || '',
+            deskripsi: detail.description || '',
+            fileName: detail.file || undefined,
+          };
+          setEditing(mappedDetail);
+          setIsOpen(true);
+          void loadDisciplinaryOptions();
+        }
+      },
+    },
+    {
+      variant: 'outline',
+      icon: <IconHapus />,
+      onClick: async (row) => {
+        if (!row.id) return;
+        const ok = await deleteViolation(String(row.id));
+        if (ok) {
+          await refresh();
+        }
       },
     }
-    // {
-    //   label: 'Delete',
-    //   variant: 'primary',
-    //   onClick: (row) => {
-    //     setList((prev) => prev.filter((r) => r.id !== row.id));
-    //   },
-    // },
   ];
-
+ 
   const handleAdd = () => {
     setEditing(null);
     setIsOpen(true);
+    void loadDisciplinaryOptions();
   };
-
-  const handleSave = (entry: PelanggaranEntry) => {
-    setList((prev) => {
-      if (entry.id) {
-        return prev.map((r) => (r.id === entry.id ? { ...r, ...entry } : r));
+ 
+  const loadDisciplinaryOptions = async () => {
+    const opts = await getDisciplinaryOptions();
+    setDisciplinaryOptions(opts);
+  };
+ 
+  const handleSave = async (entry: PelanggaranEntry) => {
+    const file = skFile?.file || null;
+    if (editing && editing.id) {
+      const payload: UpdateViolationPayload = {
+        violation: entry.jenisPelanggaran,
+        violation_date: entry.tanggalKejadian,
+        disciplinary_id: entry.jenisTindakan || undefined,
+        start_date: entry.tanggalMulaiTindakan || undefined,
+        end_date: entry.tanggalBerakhirTindakan || undefined,
+        description: entry.deskripsi || undefined,
+        file,
+      };
+      const ok = await updateViolation(String(editing.id), payload);
+      if (ok) {
+        await refresh();
       }
-      const nextId = ((prev[prev.length - 1]?.id) ?? 0) + 1;
-      return [...prev, { ...entry, id: nextId }];
-    });
+    } else {
+      const payload: CreateViolationPayload = {
+        violation: entry.jenisPelanggaran,
+        violation_date: entry.tanggalKejadian,
+        disciplinary_id: entry.jenisTindakan,
+        start_date: entry.tanggalMulaiTindakan || undefined,
+        end_date: entry.tanggalBerakhirTindakan || undefined,
+        description: entry.deskripsi || undefined,
+        file,
+      };
+      const ok = await createViolation(payload);
+      if (ok) {
+        await refresh();
+      }
+    }
+    clearSkFile();
     setIsOpen(false);
     setEditing(null);
   };
-
+ 
   return (
     <>
      {/* <ExpandCard title="Pelanggaran" withHeaderDivider> */}
@@ -107,11 +177,27 @@ export default function PelanggaranTab() {
         columns={columns}
         actions={actions}
         filterable
+        loading={isLoading}
         emptyMessage="Tidak ada catatan pelanggaran."
         addButtonLabel="Tambah Pelanggaran"
         onAdd={handleAdd}
+        
+        useExternalPagination={true}
+        externalPage={page}
+        externalTotal={total}
+        pageSize={limit}
+        
+        onSearchChange={handleSearchChange}
+        onSortChange={handleSortChange}
+        onPageChangeExternal={handlePageChange}
+        onRowsPerPageChangeExternal={handleRowsPerPageChange}
+        
+        onDateRangeFilterChange={handleDateRangeFilterChange}
+        dateRangeFilters={dateRangeFilters}
+        onColumnFilterChange={handleColumnFilterChange}
+        columnFilters={columnFilters}
       />
-
+ 
       <PelanggaranModal
         isOpen={isOpen}
         mode={editing ? 'edit' : 'add'}
@@ -119,8 +205,12 @@ export default function PelanggaranTab() {
         onClose={() => {
           setIsOpen(false);
           setEditing(null);
+          clearSkFile();
         }}
         onSubmit={handleSave}
+        submitting={isLoading || isSubmitting}
+        disciplinaryOptions={disciplinaryOptions}
+        onFileChange={() => {}}
       />
       {/*  </ExpandCard> */}
     </>

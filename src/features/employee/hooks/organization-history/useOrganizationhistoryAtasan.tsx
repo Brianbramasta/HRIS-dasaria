@@ -1,279 +1,114 @@
-import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import organizationHistoryService, {
-  OrganizationHistoryItem,
-  OrganizationHistoryFilterParams,
-} from '../../services/OrganizationHistoryService';
-import useFilterStore from '../../../../stores/filterStore';
+import {
+  useOrganizationChange,
+  type UseOrganizationHistoryOptions as UseOrganizationChangeOptions,
+} from './useOrganizationChange';
 
-type OrgHistoryListRow = OrganizationHistoryItem & { statusPerubahan: 'Rekomendasi' | 'Selesai' };
+import {
+  type OrganizationChangeItem,
+  type CreateOrganizationChangePayload,
+  type UpdateOrganizationChangePayload,} from '../../services/OrganizationChangeService';
 
-// Dummy data for Atasan view
-const DUMMY_DATA_ATASAN: OrganizationHistoryItem[] = [
-  {
-    id: '1',
-    idKaryawan: 'NIP101',
-    user: {
-      name: 'Andi Wijaya',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Andi',
-    },
-    jenisPerubahan: 'Promosi',
-    tanggalEfektif: '2024-06-15T00:00:00.000Z',
-    posisiLama: 'Junior Analyst',
-    posisiBaru: 'Analyst',
-    divisiLama: 'Business Intelligence',
-    divisiBaru: 'Business Intelligence',
-    direktoratLama: 'Strategy',
-    direktoratBaru: 'Strategy',
-    alasanPerubahan: 'Rekomendasi dari atasan langsung',
-  },
-  {
-    id: '2',
-    idKaryawan: 'NIP102',
-    user: {
-      name: 'Maya Sari',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Maya',
-    },
-    jenisPerubahan: 'Rotasi',
-    tanggalEfektif: '2024-07-01T00:00:00.000Z',
-    posisiLama: 'Designer',
-    posisiBaru: 'UI/UX Designer',
-    divisiLama: 'Creative',
-    divisiBaru: 'Product Design',
-    direktoratLama: 'Marketing',
-    direktoratBaru: 'Product',
-    alasanPerubahan: 'Pengembangan skill dan karir',
-  },
-  {
-    id: '3',
-    idKaryawan: 'NIP103',
-    user: {
-      name: 'Rudi Hermawan',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Rudi',
-    },
-    jenisPerubahan: 'Mutasi',
-    tanggalEfektif: '2024-08-10T00:00:00.000Z',
-    posisiLama: 'Customer Service',
-    posisiBaru: 'Customer Service',
-    divisiLama: 'CS Jakarta',
-    divisiBaru: 'CS Bandung',
-    direktoratLama: 'Operations',
-    direktoratBaru: 'Operations',
-    alasanPerubahan: 'Kebutuhan ekspansi regional',
-  },
-  {
-    id: '4',
-    idKaryawan: 'NIP104',
-    user: {
-      name: 'Linda Kusuma',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Linda',
-    },
-    jenisPerubahan: 'Promosi',
-    tanggalEfektif: '2024-09-20T00:00:00.000Z',
-    posisiLama: 'Staff Accounting',
-    posisiBaru: 'Supervisor Accounting',
-    divisiLama: 'Accounting',
-    divisiBaru: 'Accounting',
-    direktoratLama: 'Finance',
-    direktoratBaru: 'Finance',
-    alasanPerubahan: 'Prestasi kerja memuaskan',
-  },
-];
+// Re-export type for UI usage
+export type { OrganizationChangeItem };
 
-export interface UseOrganizationHistoryAtasanOptions {
-  initialPage?: number;
-  initialLimit?: number;
-  autoFetch?: boolean;
-}
+export interface UseOrganizationHistoryAtasanOptions extends UseOrganizationChangeOptions {}
 
 export function useOrganizationHistoryAtasan(options: UseOrganizationHistoryAtasanOptions = {}) {
-  const { initialPage = 1, initialLimit = 10, autoFetch = true } = options;
   const navigate = useNavigate();
+  
+  // Use the shared logic hook
+  const {
+    organizationChanges: data,
+    isLoading: loading,
+    error,
+    total,
+    page,
+    limit,
+    fetchOrganizationChanges,
+    createOrganizationChange: createOrgChange,
+    updateOrganizationChange: updateOrgChange,
+    handleSearchChange,
+    handleSortChange,
+    handlePageChange,
+    handleRowsPerPageChange,
+  } = useOrganizationChange(options);
 
-  const [data, setData] = useState<OrganizationHistoryItem[]>(DUMMY_DATA_ATASAN); // Using dummy data
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [total, setTotal] = useState(DUMMY_DATA_ATASAN.length);
-  const [page, setPage] = useState(initialPage);
-  const [limit, setLimit] = useState(initialLimit);
+  // UI States
   const [isEditOrgOpen, setIsEditOrgOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const filterValue = useFilterStore((s) => s.filters['Organization History Atasan'] ?? '');
+  const [selectedRow, setSelectedRow] = useState<OrganizationChangeItem | null>(null);
 
-  const fetchOrganizationHistory = useCallback(
-    async (params?: OrganizationHistoryFilterParams) => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        // Using dummy data for now - comment out API call
-        // const response = await organizationHistoryService.list({
-        //   page,
-        //   limit,
-        //   filter: params?.filter ?? filterValue,
-        //   ...params,
-        // });
-        // const payload = response.data as any;
-        // const items = Array.isArray(payload) ? payload : payload.items || payload.data || [];
-        
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        let items = [...DUMMY_DATA_ATASAN];
-        
-        // Apply search filter if exists
-        if (params?.search) {
-          const searchLower = params.search.toLowerCase();
-          items = items.filter(item => 
-            item.idKaryawan?.toLowerCase().includes(searchLower) ||
-            item.user?.name?.toLowerCase().includes(searchLower) ||
-            item.jenisPerubahan?.toLowerCase().includes(searchLower)
-          );
-        }
-        
-        setData(items);
-        setTotal(items.length);
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan saat memuat data';
-        setError(errorMessage);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [page, limit, filterValue]
-  );
-
-  useEffect(() => {
-    if (autoFetch) {
-      fetchOrganizationHistory();
-    }
-  }, [fetchOrganizationHistory, autoFetch, filterValue]);
+  // Wrappers
+  const fetchOrganizationHistory = fetchOrganizationChanges;
 
   const createOrganizationHistory = useCallback(
-    async (payload: Omit<OrganizationHistoryItem, 'id'>) => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await organizationHistoryService.create(payload);
+    async (employeeId: string, payload: CreateOrganizationChangePayload) => {
+      const success = await createOrgChange(employeeId, payload);
+      if (success) {
         await fetchOrganizationHistory();
-        return response.data;
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan saat membuat data';
-        setError(errorMessage);
-        throw err;
-      } finally {
-        setLoading(false);
       }
+      return success;
     },
-    [fetchOrganizationHistory]
+    [createOrgChange, fetchOrganizationHistory]
   );
 
   const updateOrganizationHistory = useCallback(
-    async (id: string, payload: Partial<OrganizationHistoryItem>) => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await organizationHistoryService.update(id, payload);
+    async (id: string, payload: UpdateOrganizationChangePayload) => {
+      const success = await updateOrgChange(id, payload);
+      if (success) {
         await fetchOrganizationHistory();
-        return response.data;
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan saat memperbarui data';
-        setError(errorMessage);
-        throw err;
-      } finally {
-        setLoading(false);
       }
+      return success;
     },
-    [fetchOrganizationHistory]
+    [updateOrgChange, fetchOrganizationHistory]
   );
 
   const deleteOrganizationHistory = useCallback(
     async (id: string) => {
-      try {
-        setLoading(true);
-        setError(null);
-        await organizationHistoryService.remove(id);
-        await fetchOrganizationHistory();
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan saat menghapus data';
-        setError(errorMessage);
-        throw err;
-      } finally {
-        setLoading(false);
-      }
-    },
-    [fetchOrganizationHistory]
-  );
-
-  const handleSearchChange = useCallback(
-    (search: string) => {
-      setPage(1);
-      fetchOrganizationHistory({ search });
-    },
-    [fetchOrganizationHistory]
-  );
-
-  const handleSortChange = useCallback(
-    (columnId: string, order: 'asc' | 'desc') => {
-      setPage(1);
-      fetchOrganizationHistory({ sortBy: columnId, order });
-    },
-    [fetchOrganizationHistory]
-  );
-
-  const handlePageChange = useCallback(
-    (newPage: number) => {
-      setPage(newPage);
+       // Placeholder for delete if needed
+       console.warn('Delete not implemented', id);
     },
     []
   );
 
-  const handleRowsPerPageChange = useCallback(
-    (newLimit: number) => {
-      setLimit(newLimit);
-      setPage(1);
-    },
-    []
-  );
-
-  // Add status to rows
-  const rowsWithStatus: OrgHistoryListRow[] = useMemo(
-    () => (data || []).map((r, idx) => ({ ...r, statusPerubahan: idx % 2 === 0 ? 'Rekomendasi' : 'Selesai' })),
+  // Compute rows with status
+  const rowsWithStatus = useMemo(
+    () => data.map((r) => ({ ...r, statusPerubahan: r.status || 'Draft' })),
     [data]
   );
 
-  // Handle modal open for add
+  // UI Handlers
   const handleAddOrganization = useCallback(() => {
+    setSelectedRow(null);
     setIsEditOrgOpen(true);
   }, []);
 
-  // Handle modal close
   const handleCloseModal = useCallback(() => {
     setIsEditOrgOpen(false);
+    setSelectedRow(null);
   }, []);
 
-  // Handle modal submit
   const handleSubmitModal = useCallback(() => {
     setIsEditOrgOpen(false);
-  }, []);
+    setSelectedRow(null);
+    fetchOrganizationHistory();
+  }, [fetchOrganizationHistory]);
 
-  // Handle dropdown toggle
   const handleDropdownToggle = useCallback(() => {
     setIsDropdownOpen(!isDropdownOpen);
   }, [isDropdownOpen]);
 
-  // Handle dropdown close
   const handleDropdownClose = useCallback(() => {
     setIsDropdownOpen(false);
   }, []);
 
-  // Handle navigation to HR page
   const handleNavigateToHR = useCallback(() => {
     setIsDropdownOpen(false);
     navigate('/organization-history');
   }, [navigate]);
 
-  // Handle navigation to Atasan page
   const handleNavigateToAtasan = useCallback(() => {
     setIsDropdownOpen(false);
     navigate('/organization-history/atasan');
@@ -283,15 +118,19 @@ export function useOrganizationHistoryAtasan(options: UseOrganizationHistoryAtas
     // Data states
     data,
     loading,
+    // isSubmitting,
     error,
     total,
     page,
     limit,
     rowsWithStatus,
+    selectedRow,
     
     // Modal states
     isEditOrgOpen,
     isDropdownOpen,
+    setSelectedRow,
+    setIsEditOrgOpen,
     
     // API operations
     fetchOrganizationHistory,

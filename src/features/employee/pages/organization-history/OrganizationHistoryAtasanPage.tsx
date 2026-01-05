@@ -1,5 +1,5 @@
 import { DataTable, DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
-import { useOrganizationHistoryAtasan } from '@/features/employee/hooks/organization-history/useOrganizationhistoryAtasan.tsx';
+import { useOrganizationHistoryAtasan, OrganizationChangeItem } from '@/features/employee/hooks/organization-history/useOrganizationhistoryAtasan.tsx';
 import Button from '@/components/ui/button/Button';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { ChevronDown } from 'react-feather';
@@ -7,9 +7,8 @@ import EditRiwayatOrganisasiModal from '@/features/employee/components/modals/or
 import { IconFileDetail } from '@/icons/components/icons';
 import { useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { OrganizationHistoryItem } from '@/features/employee/services/OrganizationHistoryService';
 
-type OrgHistoryListRow = OrganizationHistoryItem & { statusPerubahan: 'Rekomendasi' | 'Selesai' };
+type OrgHistoryListRow = OrganizationChangeItem & { statusPerubahan: string };
 
 export default function OrganizationHistoryAtasanPage() {
   const navigate = useNavigate();
@@ -43,39 +42,42 @@ export default function OrganizationHistoryAtasanPage() {
   const columns: DataTableColumn<OrgHistoryListRow>[] = useMemo(
     () => [
       { id: 'no', label: 'No.', align: 'center', format: (_v, row) => data.findIndex((r) => r.id === row.id) + 1 },
-      { id: 'idKaryawan', label: 'NIP' },
+      // { id: 'employee_id', label: 'NIP' },
       {
-        id: 'user',
-        label: 'User',
+        id: 'full_name',
+        label: 'Nama Karyawan',
         format: (_v, row) => (
           <div className="flex items-center gap-2">
             <img
-              src={(row.user?.avatar as string) || `https://api.dicebear.com/7.x/avataaars/svg?seed=${row.user?.name || 'User'}`}
-              alt={row.user?.name || 'User'}
+              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${row.full_name || 'User'}`}
+              alt={row.full_name || 'User'}
               className="h-6 w-6 rounded-full"
             />
-            <span>{row.user?.name || '-'}</span>
+            <span>{row.full_name || '-'}</span>
           </div>
         ),
       },
-      { id: 'jenisPerubahan', label: 'Jenis Perubahan' },
-      { id: 'tanggalEfektif', label: 'Tanggal Efektif', format: (v) => formatDate(v as string) },
-      { id: 'posisiLama', label: 'Posisi Lama' },
-      { id: 'posisiBaru', label: 'Posisi Baru' },
-      { id: 'divisiLama', label: 'Divisi Lama' },
-      { id: 'divisiBaru', label: 'Divisi Baru' },
-      { id: 'direktoratLama', label: 'Direktorat Lama' },
-      { id: 'direktoratBaru', label: 'Direktorat Baru' },
-      { id: 'alasanPerubahan', label: 'Alasan Perubahan' },
+      { id: 'change_type', label: 'Jenis Perubahan' },
+      { id: 'effective_date', label: 'Tanggal Efektif', format: (v) => formatDate(v as string) },
+      { id: 'old_position', label: 'Posisi Lama' },
+      { id: 'new_position', label: 'Posisi Baru' },
+      { id: 'old_division', label: 'Divisi Lama' },
+      { id: 'new_division', label: 'Divisi Baru' },
+      { id: 'old_directorate', label: 'Direktorat Lama' },
+      { id: 'new_directorate', label: 'Direktorat Baru' },
+      { id: 'reason', label: 'Alasan Perubahan' },
       {
         id: 'statusPerubahan',
         label: 'Status Perubahan',
         align: 'center',
         format: (v: string) => {
           const val = (v as string) || '-';
-          const isRekom = val === 'Rekomendasi';
-          const base = 'status-styling items-center rounded-full text-xs font-medium';
-          const cls = isRekom ? 'bg-orange-100 text-orange-600' : 'bg-green-100 text-green-600';
+          let cls = 'bg-gray-100 text-gray-600';
+          if (val.toLowerCase().includes('approv') || val.toLowerCase() === 'selesai') cls = 'bg-green-100 text-green-600';
+          else if (val.toLowerCase().includes('reject')) cls = 'bg-red-100 text-red-600';
+          else if (val.toLowerCase().includes('rekom') || val.toLowerCase().includes('pending')) cls = 'bg-orange-100 text-orange-600';
+          
+          const base = 'status-styling items-center rounded-full text-xs font-medium p-[10px] flex justify-center';
           return <span className={`${base} ${cls}`}>{val}</span>;
         },
       },
@@ -147,7 +149,7 @@ export default function OrganizationHistoryAtasanPage() {
         isOpen={isEditOrgOpen}
         onClose={handleCloseModal}
         onSubmit={handleSubmitModal}
-        submitting={false}
+        // submitting={isSubmitting}
         hideSkFileUpload
       />
     </div>
