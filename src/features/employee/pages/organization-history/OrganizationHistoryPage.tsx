@@ -97,6 +97,7 @@ export default function OrganizationHistoryPage() {
       {
         icon: <IconFileDetail />,
         className: 'text-gray-700',
+        condition: (row) => Boolean((row as any)?.decree_file),
         onClick: (row) => {
           // console.log(row);
           // return;
@@ -107,6 +108,7 @@ export default function OrganizationHistoryPage() {
       {
         icon: <IconPencil />,
         className: 'text-gray-700',
+        condition: (row) => !(row as any)?.decree_file,
         onClick: (row) => {
           handleEditOrganization(row);
         },

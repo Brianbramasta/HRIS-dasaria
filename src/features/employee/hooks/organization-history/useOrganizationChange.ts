@@ -115,7 +115,7 @@ export function useOrganizationChange({
 
         const leadId = employeeId ?? '';
         const resp = await organizationChangeService.getOrganizationChanges(leadId, finalParams);
-
+        console.log('resp', resp);
         // Handle response structure
         const responseData = resp?.data as any; // OrganizationChangeListResponseRaw
         const list = (responseData?.data as OrganizationChangeListItemRaw[]) ?? [];
@@ -144,6 +144,7 @@ export function useOrganizationChange({
           old_employee_category: item.kategori_karyawan_lama,
           new_employee_category: item.kategori_karyawan_baru,
           status: item.status,
+          decree_file: item.decree_file,
         }));
 
         setOrganizationChanges(mapped);

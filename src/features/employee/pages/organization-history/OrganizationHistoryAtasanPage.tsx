@@ -94,18 +94,13 @@ export default function OrganizationHistoryAtasanPage() {
       {
         icon: <IconFileDetail />,
         className: 'text-gray-700',
+        condition: (row) => Boolean((row as any)?.decree_file),
         onClick: (row) => {
           // navigate(`/organization-history/preview?id=${row.id}`);
-          navigate(`/employee-data/${row.employee_id}?mode=view&tab=organization-history`);
+          window.open(`${row.decree_file}`, '_blank');
+          // navigate(`/employee-data/${row.employee_id}?mode=view&tab=organization-history`);
         },
-      },
-      {
-        icon: <IconPencil />,
-        className: 'text-gray-700',
-        onClick: (row) => {
-          handleEditOrganization(row);
-        },
-      },
+      }
     ],
     [navigate, handleEditOrganization]
   );

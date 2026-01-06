@@ -25,6 +25,7 @@ export interface OrganizationChangeItem {
   new_employee_category?: string; // kategori_karyawan_baru
   status?: string;
   created_at?: string;
+  decree_file?: string | null;
 }
 
 export interface OrganizationChangeListParams {
@@ -60,6 +61,7 @@ export interface OrganizationChangeListItemRaw {
   kategori_karyawan_baru: string;
   reason: string;
   status: string;
+  decree_file?: string | null;
 }
 
 export interface OrganizationChangeListResponseRaw {
@@ -113,6 +115,7 @@ export interface OrganizationChangeDetailRaw {
   recommended_by?: string;
   created_at?: string;
   updated_at?: string;
+  
 }
 
 export interface DropdownItem {

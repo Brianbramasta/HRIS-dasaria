@@ -70,6 +70,7 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
   
   // Derived state
   const [selectedGrade, setSelectedGrade] = useState<string>('');
+  const isEditMode = !!initialData;
 
   // Initialize form with data
   useEffect(() => {
@@ -278,7 +279,7 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
                 defaultValue={form.nip || ''}
                 onChange={(v) => handleInput('nip', v)}
                 placeholder="Pilih NIP"
-                disabled={employeeOptions.length === 0}
+                disabled={isEditMode || employeeOptions.length === 0}
             />
           </div>
           <div>
@@ -288,16 +289,16 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
                 defaultValue={form.change_type_id || ''} 
                 onChange={(v) => handleInput('change_type_id', v)} 
                 placeholder="Select"
-                disabled={changeTypeOptions.length === 0}
+                disabled={isEditMode || changeTypeOptions.length === 0}
             />
           </div>
           <div>
             <Label>Perusahaan</Label>
-            <Select options={companyOptions} defaultValue={form.company_id || ''} onChange={(v) => handleInput('company_id', v)} placeholder="Select" />
+            <Select options={companyOptions} defaultValue={form.company_id || ''} onChange={(v) => handleInput('company_id', v)} placeholder="Select" disabled={isEditMode} />
           </div>
           <div>
             <Label>Direktorat</Label>
-            <Select options={directorateOptions} defaultValue={form.directorate_id || ''} onChange={(v) => handleInput('directorate_id', v)} placeholder="Select" />
+            <Select options={directorateOptions} defaultValue={form.directorate_id || ''} onChange={(v) => handleInput('directorate_id', v)} placeholder="Select" disabled={isEditMode} />
           </div>
           <div>
             <Label>Departemen</Label>
@@ -306,12 +307,12 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
                 defaultValue={form.department_id || ''} 
                 onChange={(v) => handleInput('department_id', v)} 
                 placeholder="Select"
-                disabled={departmentOptions.length === 0}
+                disabled={isEditMode || departmentOptions.length === 0}
             />
           </div>
           <div>
             <Label>Jabatan</Label>
-            <Select options={jobTitleOptions} defaultValue={form.job_title_id || ''} onChange={(v) => handleInput('job_title_id', v)} placeholder="Select" />
+            <Select options={jobTitleOptions} defaultValue={form.job_title_id || ''} onChange={(v) => handleInput('job_title_id', v)} placeholder="Select" disabled={isEditMode} />
           </div>
           <div>
             <Label>Golongan</Label>
@@ -319,7 +320,7 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
           </div>
           <div>
             <Label>Alasan Perubahan</Label>
-            <InputField placeholder="Masukkan alasan perubahan" value={form.reason || ''} onChange={(e) => handleInput('reason', e.target.value)} />
+            <InputField placeholder="Masukkan alasan perubahan" value={form.reason || ''} onChange={(e) => handleInput('reason', e.target.value)} disabled={isEditMode} />
           </div>
         </div>
         <div className="space-y-6">
@@ -334,6 +335,7 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
               defaultDate={form.efektif_date || undefined}
               placeholder="— (masih aktif)"
               onChange={(...args) => handleInput('efektif_date', args[1])}
+              disabled={isEditMode}
             />
           </div>
           <div>
@@ -343,7 +345,7 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
                 defaultValue={form.office_id || ''} 
                 onChange={(v) => handleInput('office_id', v)} 
                 placeholder="Select"
-                disabled={officeOptions.length === 0}
+                disabled={isEditMode || officeOptions.length === 0}
             />
           </div>
           <div>
@@ -353,20 +355,20 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
                 defaultValue={form.division_id || ''} 
                 onChange={(v) => handleInput('division_id', v)} 
                 placeholder="Select"
-                disabled={divisionOptions.length === 0}
+                disabled={isEditMode || divisionOptions.length === 0}
             />
           </div>
           <div>
             <Label>Position</Label>
-            <Select options={positionOptions} defaultValue={form.position_id || ''} onChange={(v) => handleInput('position_id', v)} placeholder="Select" />
+            <Select options={positionOptions} defaultValue={form.position_id || ''} onChange={(v) => handleInput('position_id', v)} placeholder="Select" disabled={isEditMode} />
           </div>
           <div>
             <Label>Jenjang Jabatan</Label>
-            <Select options={positionLevelOptions} defaultValue={form.position_level_id || ''} onChange={(v) => handleInput('position_level_id', v)} placeholder="Select" />
+            <Select options={positionLevelOptions} defaultValue={form.position_level_id || ''} onChange={(v) => handleInput('position_level_id', v)} placeholder="Select" disabled={isEditMode} />
           </div>
           <div>
             <Label>Kategori Karyawan</Label>
-            <Select options={kategoriKaryawanOptions} defaultValue={form.employee_category_id || ''} onChange={(v) => handleInput('employee_category_id', v)} placeholder="Select" />
+            <Select options={kategoriKaryawanOptions} defaultValue={form.employee_category_id || ''} onChange={(v) => handleInput('employee_category_id', v)} placeholder="Select" disabled={isEditMode} />
           </div>
           {!hideSkFileUpload && (
             <div>
