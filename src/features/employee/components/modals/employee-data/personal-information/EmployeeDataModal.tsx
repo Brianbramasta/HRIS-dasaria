@@ -118,15 +118,16 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
       'job_title_id',
       'position_level_id',
       'employee_category_id',
-      'payroll_status',
+      // 'payroll_status',
     ];
     const missingRequired = requiredKeys.some((k) => {
       const v = (base as any)?.[k];
       return v === undefined || v === null || v === '';
     });
-    return base?.employment_status === 'Aktif' || allEmpty || missingRequired;
+    console.log('isDisabledField 1', base?.employment_status, allEmpty, missingRequired);
+    return base?.employment_status === 'Aktif' || allEmpty || !missingRequired;
   }, [initialData]);
-  console.log('isDisabledField', initialData);
+  console.log('isDisabledField', isDisabledField);
 
 
   const content = (
@@ -139,12 +140,36 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="space-y-4">
           <div>
+            <Label>Kategori Karyawan</Label>
+            <Select
+              options={kategoriKaryawanOptions}
+              defaultValue={form.employee_category_id || ''}
+              onChange={(v) => {
+                handleInput('employee_category_id', v);
+                const selectedCategory = kategoriKaryawanOptions.find((opt: any) => opt.value === v);
+                if (selectedCategory) {
+                  const label = selectedCategory.label;
+                  if (['Staff', 'Mitra'].includes(label)) {
+                    const statusEvaluasi = employeeStatusOptions.find((opt: any) => opt.label === 'Evaluasi');
+                    if (statusEvaluasi) handleInput('employment_status_id', statusEvaluasi.value);
+                  } else if (label === 'Non-Staff') {
+                    const statusAktif = employeeStatusOptions.find((opt: any) => opt.label === 'Aktif');
+                    if (statusAktif) handleInput('employment_status_id', statusAktif.value);
+                  }
+                }
+              }}
+              placeholder="Select"
+              disabled={isDisabledField}
+            />
+          </div>
+          <div>
             <Label>Status Karyawan</Label>
             <Select
               options={employeeStatusOptions}
               defaultValue={form.employment_status_id || ''}
               onChange={(v) => handleInput('employment_status_id', v)}
               placeholder="Select"
+              disabled={true}
             />
           </div>
           <div>
@@ -197,6 +222,10 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               disabled={isDisabledField}
             />
           </div>
+          
+        </div>
+
+        <div className="space-y-4">
           <div>
             <Label>Divisi</Label>
             <Select
@@ -207,9 +236,6 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               placeholder="Select"
             />
           </div>
-        </div>
-
-        <div className="space-y-4">
           <div>
             <Label>Departemen</Label>
             <Select
@@ -270,16 +296,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               disabled={isDisabledField}
             />
           </div>
-          <div>
-            <Label>Kategori Karyawan</Label>
-            <Select
-              options={kategoriKaryawanOptions}
-              defaultValue={form.employee_category_id || ''}
-              onChange={(v) => handleInput('employee_category_id', v)}
-              placeholder="Select"
-              disabled={isDisabledField}
-            />
-          </div>
+          
         </div>
       </div>
     </div>
@@ -295,6 +312,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
         // return
         onSubmit(form);
       }}
+      isSubmit={!isDisabledField}
       submitting={!!submitting}
       maxWidth="max-w-5xl"
     />

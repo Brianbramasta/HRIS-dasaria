@@ -66,13 +66,13 @@ export default function DetailKaryawanPage() {
           case 'personal-information':
             return <PesonalInformationTab employeeId={id!} isEditable={isEditable} />;
           case 'contract':
-            return <ContractTab employeeId={id!} data={{} as any} />;
+            return <ContractTab employeeId={id!} />;
           case 'organization-history':
-            return <OrganizationHistoryTab data={{} as any} isEditable={isEditable} />;
+            return <OrganizationHistoryTab employeeId={id!} isEditable={isEditable} />;
           case 'pelanggaran':
             return <PelanggaranTab employeeId={id!}/>;
           case 'story-payroll':
-            return <StoryPayrollTab data={{} as any} isEditable={isEditable} />;
+            return <StoryPayrollTab employeeId={id!} isEditable={isEditable} />;
           default:
             return null;
         }

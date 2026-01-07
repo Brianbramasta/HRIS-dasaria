@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router";
+import { Routes, Route, useParams } from "react-router";
 // import Ecommerce from "../pages/Dashboard/Ecommerce";
 
 import AppLayout from "../layout/AppLayout";
@@ -79,6 +79,12 @@ import { LoginPage, ForgotPasswordPage } from "../features/auth/pages/Index";
 import ProtectedOutlet from "./ProtectedOutlet";
 import FormKasbonPage from "@/features/payroll/pages/cash-advance/form-cash-advance/FormCashAdvancePage";
 import NotFound from "@/pages/OtherPage/NotFound";
+
+function PelanggaranRoute() {
+  const { id } = useParams();
+  if (!id) return null;
+  return <DataKaryawanPelanggaran employeeId={id} />;
+}
 
 export default function AppRoutes() {
   return (
@@ -179,7 +185,7 @@ export default function AppRoutes() {
           <Route path="/employee-data" element={<DataKaryawanIndexPage />} />
           <Route path="/employee-data/:id" element={<DetailKaryawanPage />} />
           <Route path="/employee-data/contract-extension" element={<PerpanjanganKontrak />} />
-          <Route path="/employee-data/:id/pelanggaran" element={<DataKaryawanPelanggaran />} />
+          <Route path="/employee-data/:id/pelanggaran" element={<PelanggaranRoute />} />
           <Route path="/resignation" element={<PengunduranDiri />} />
           
           <Route path="/resignation/:id" element={<DetailPengunduranDiriPage />} />

@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
-import { FileText } from 'react-feather';
-import { IconPencil as Edit } from '@/icons/components/icons';
+// import { FileText } from 'react-feather';
+import { IconFileDetail as Edit } from '@/icons/components/icons';
 // import contractRenewalService from '../../services/ContractRenewalService';
 import { ContractRenewalListItem, ContractRenewalFilterParams } from '../../types/ContractRenewal';
 import { useNotificationStore } from '@/stores/notificationStore';
@@ -441,16 +441,16 @@ export function useContractRenewal(): UseContractRenewalReturn {
         { label: 'Ditolak', value: 'Ditolak' },
       ],
     },
-    {
-      id: 'contract_submission_detail',
-      label: 'Detail Kontrak Pengajuan',
-      minWidth: 180,
-      sortable: false,
-      align: 'center',
-      format: (value) => value === '-' ? value : (
-        <FileText size={16} className="inline text-gray-500" />
-      ),
-    },
+    // {
+    //   id: 'contract_submission_detail',
+    //   label: 'Detail Kontrak Pengajuan',
+    //   minWidth: 180,
+    //   sortable: false,
+    //   align: 'center',
+    //   format: (value) => value === '-' ? value : (
+    //     <FileText size={16} className="inline text-gray-500" />
+    //   ),
+    // },
     { id: 'negotiation_date', label: 'Tanggal Negoisasi', minWidth: 160, sortable: true, dateRangeFilter: true, format: (value) => (
       <div className="flex items-center gap-2">
         <div>{formatDateToIndonesian(value)}</div>

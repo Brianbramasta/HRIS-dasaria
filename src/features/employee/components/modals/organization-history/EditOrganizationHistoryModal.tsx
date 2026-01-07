@@ -45,12 +45,12 @@ interface Props {
   hideSkFileUpload?: boolean;
 }
 
-const JENIS_PERUBAHAN_OPTIONS = [
-  { label: 'Rotasi', value: 'Rotasi' },
-  { label: 'Mutasi', value: 'Mutasi' },
-  { label: 'Promosi', value: 'Promosi' },
-  { label: 'Demosi', value: 'Demosi' },
-];
+// const JENIS_PERUBAHAN_OPTIONS = [
+//   { label: 'Rotasi', value: 'Rotasi' },
+//   { label: 'Mutasi', value: 'Mutasi' },
+//   { label: 'Promosi', value: 'Promosi' },
+//   { label: 'Demosi', value: 'Demosi' },
+// ];
 
 const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSubmit, submitting = false, hideSkFileUpload = false }) => {
   const [form, setForm] = useState<OrganizationChangeForm>({});

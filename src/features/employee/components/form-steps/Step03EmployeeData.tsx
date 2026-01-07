@@ -19,13 +19,40 @@ export const Step03EmployeeData: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-4">
             <div>
+              <Label>Kategori Karyawan</Label>
+              <Select
+                options={kategoriKaryawanOptions}
+                defaultValue={step3.kategoriKaryawan}
+                onChange={(value) => {
+                  handleChange('kategoriKaryawan', value);
+                  const selectedCategory = kategoriKaryawanOptions.find((opt: any) => opt.value === value);
+                  console.log('kategoriKaryawan1',selectedCategory);
+                  if (selectedCategory) {
+                    const label = selectedCategory.label;
+                    console.log('kategoriKaryawan2',label);
+                    if (['Staff', 'Mitra'].includes(label)) {
+                      const statusEvaluasi = employeeStatusOptions.find((opt: any) => opt.label === 'Evaluasi');
+                      if (statusEvaluasi) handleChange('employmentStatus', statusEvaluasi.value);
+                    } else if (label === 'Non-Staff') {
+                      const statusAktif = employeeStatusOptions.find((opt: any) => opt.label === 'Aktif');
+                      if (statusAktif) handleChange('employmentStatus', statusAktif.value);
+                    }
+                  }
+                }}
+                placeholder="Select"
+              />
+            </div>
+            <div>
               <Label>Status Karyawan</Label>
               <Select
-                options={employeeStatusOptions}
+                options={employeeStatusOptions.filter((status: any) => 
+                  ['Aktif', 'Evaluasi'].includes(status.label)
+                )}
                 defaultValue={step3.employmentStatus}
                 onChange={(value) => handleChange('employmentStatus', value)}
                 placeholder="Select"
                 required
+                disabled
               />
             </div>
             <div>
@@ -77,7 +104,12 @@ export const Step03EmployeeData: React.FC = () => {
                 required
               />
             </div>
-            <div>
+           
+            
+          </div>
+
+          <div className="space-y-4">
+             <div>
               <Label>Divisi</Label>
               <Select
                 options={divisionOptions.length > 0 ? divisionOptions : [{ label: 'Pilih direktorat terlebih dahulu', value: '' }]}
@@ -87,10 +119,6 @@ export const Step03EmployeeData: React.FC = () => {
                 placeholder="Select"
               />
             </div>
-            
-          </div>
-
-          <div className="space-y-4">
             <div>
               <Label>Departemen</Label>
               <Select
@@ -158,15 +186,7 @@ export const Step03EmployeeData: React.FC = () => {
                 placeholder="Select"
               />
             </div>
-            <div>
-              <Label>Kategori Karyawan</Label>
-              <Select
-                options={kategoriKaryawanOptions}
-                defaultValue={step3.kategoriKaryawan}
-                onChange={(value) => handleChange('kategoriKaryawan', value)}
-                placeholder="Select"
-              />
-            </div>
+            
             
             {/* <div>
               <Label>Resignation Status</Label>
