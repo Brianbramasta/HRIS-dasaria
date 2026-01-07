@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { useFileStore } from '@/stores/fileStore';
+import React from 'react';
 import FileInput from '../../../../../components/shared/field/FileInput';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
-import { addNotification } from '@/stores/notificationStore';
-import { useDirectorates } from '../../../hooks/useDirectorates';
+import { useAddDirectorateModal } from '../../../hooks/modals/directorate/useAddDirectorateModal';
 
 interface AddDirectorateModalProps {
   isOpen: boolean;
@@ -14,57 +12,18 @@ interface AddDirectorateModalProps {
 }
 
 const AddDirectorateModal: React.FC<AddDirectorateModalProps> = ({ isOpen, onClose, onSuccess }) => {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [memoNumber, setMemoNumber] = useState('');
-  const skFile = useFileStore((s) => s.skFile);
-  const [submitting, setSubmitting] = useState(false);
-  const { createDirectorate } = useDirectorates();
-
-  useEffect(() => {
-    if (!isOpen) {
-      setName('');
-      setDescription('');
-      setMemoNumber('');
-      useFileStore.getState().clearSkFile();
-    }
-  }, [isOpen]);
-
-  const handleFileChange = (/*_e: React.ChangeEvent<HTMLInputElement>*/) => {};
-
-  const handleSubmit = async () => {
-    if (!skFile?.name) {
-      addNotification({
-        variant: 'error',
-        title: 'Surat Keputusan tidak ditambahkan',
-        description: 'File Wajib di isi',
-        hideDuration: 4000,
-      });
-      setSubmitting(false);
-      return;
-    }
-    setSubmitting(true);
-    try {
-      await createDirectorate({
-        name,
-        description: description || null,
-        memoNumber,
-        skFile: skFile?.file || undefined,
-      });
-      onSuccess?.();
-      onClose();
-    } catch (err) {
-      console.error('Failed to add directorate', err);
-      addNotification({
-        variant: 'error',
-        title: ' Direktorat tidak ditambahkan',
-        description: 'Gagal menambahkan direktorat. Silakan coba lagi.',
-        hideDuration: 4000,
-      });
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const {
+    name,
+    setName,
+    description,
+    setDescription,
+    memoNumber,
+    setMemoNumber,
+    skFile,
+    submitting,
+    handleSubmit,
+    handleFileChange,
+  } = useAddDirectorateModal(isOpen, onClose, onSuccess);
 
   return (
     <ModalAddEdit
