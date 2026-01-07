@@ -1,11 +1,9 @@
-import { useState, useEffect } from "react";
 import ModalAddEdit from "../../../../../components/shared/modal/ModalAddEdit";
 import type { PositionListItem } from "../../../types/OrganizationApiTypes";
-import { useFileStore } from '@/stores/fileStore';
 import FileInput from "../../../../../components/shared/field/FileInput";
 import Input from "@/components/form/input/InputField";
 import { addNotification } from "@/stores/notificationStore";
-import { usePositions } from "../../../hooks/useJobTitle";
+import { useEditPositionModal } from "../../../hooks/modals/job-title/useEditPositionModal";
 
 type Props = {
   isOpen: boolean;
@@ -15,107 +13,22 @@ type Props = {
 };
 
 export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Props) => {
-  const [formData, setFormData] = useState({
-    name: "",
-    grade: "",
-    directSubordinates: "",
-    memoNumber: "",
-    jobDescription: "",
-    skFile: null as File | null,
-  });
-  const [isLoading, setIsLoading] = useState(false);
-  const skFile = useFileStore((s) => s.skFile);
-  const { updatePosition, detail } = usePositions();
-  // Ubah: gradeOptions dihapus karena tidak lagi menggunakan Select
-  
-  // Dokumentasi: Saat modal dibuka, ambil detail jabatan by ID sesuai kontrak API
-  useEffect(() => {
-    if (!isOpen || !position?.id) return;
-    setIsLoading(true);
-    (async () => {
-      try {
-        const mappedPosition = await detail(position.id);
-        if (!mappedPosition) return;
-        setFormData({
-          name: mappedPosition.name || "",
-          grade: (mappedPosition.grade as string) || "",
-          directSubordinates: Array.isArray(mappedPosition.directSubordinates)
-            ? mappedPosition.directSubordinates.join(", ")
-            : "",
-          memoNumber: mappedPosition.memoNumber || "",
-          jobDescription: mappedPosition.jobDescription || "",
-          skFile: null,
-        });
-      } catch (error) {
-        console.error("Failed to fetch position detail:", error);
-        addNotification({
-          variant: 'error',
-          title: 'Gagal mengambil detail jabatan',
-          description: 'Terjadi kesalahan saat memuat data jabatan.',
-          hideDuration: 4000,
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    })();
-  }, [isOpen, position?.id, detail]);
-
-  useEffect(() => {
-    if (position) {
-      setFormData({
-        name: position.name || "",
-        grade: position.grade || "",
-        directSubordinates: Array.isArray(position.directSubordinates)
-          ? position.directSubordinates.join(", ")
-          : "",
-        memoNumber: position.memoNumber || "",
-        jobDescription: position.jobDescription || "",
-        skFile: null,
-      });
-    }
-  }, [position]);
-
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFormData((prev) => ({ ...prev, skFile: e.target.files![0] }));
-    }
-  };
-
-  const handleSubmit = async () => {
-    if (!position) return;
-    setIsLoading(true);
-    try {
-      const { directSubordinates, ...rest } = formData;
-      const payload = {
-          name: rest.name,
-          grade: rest.grade || null,
-          jobDescription: rest.jobDescription || null,
-          directSubordinates: directSubordinates.split(",").map((s) => s.trim()).filter(Boolean),
-          memoNumber: rest.memoNumber,
-          skFile: skFile?.file as File,
-        };
-      await updatePosition(position.id, payload);
-      onSuccess();
-      onClose();
-    } catch (error) {
-      console.error("Failed to update position:", error);
-      addNotification({
-        variant: 'error',
-        title: 'Jabatan tidak diupdate',
-        description: 'Gagal mengupdate jabatan. Silakan coba lagi.',
-        hideDuration: 4000,
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const {
+    name,
+    setName,
+    grade,
+    setGrade,
+    directSubordinates,
+    setDirectSubordinates,
+    memoNumber,
+    setMemoNumber,
+    jobDescription,
+    setJobDescription,
+    skFile,
+    submitting,
+    handleFileChange,
+    handleSubmit,
+  } = useEditPositionModal({ isOpen, onClose, onSuccess, position: position ?? null });
 
   const content = (
     <div className="space-y-6">
@@ -128,12 +41,11 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
         </label>
         <Input
           type="text"
-          name="name"
           id="name"
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
           placeholder="Direktur"
-          value={formData.name}
-          onChange={handleInputChange}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           required
         />
       </div>
@@ -147,12 +59,11 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
         <Input
           required
           type="text"
-          name="grade"
           id="grade"
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
           placeholder="Masukkan golongan (mis. D0)"
-          value={formData.grade}
-          onChange={handleInputChange}
+          value={grade}
+          onChange={(e) => setGrade(e.target.value)}
         />
       </div>
       <div>
@@ -165,12 +76,11 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
         <Input
           required
           type="text"
-          name="directSubordinates"
           id="directSubordinates"
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
           placeholder="Manager, dll"
-          value={formData.directSubordinates}
-          onChange={handleInputChange}
+          value={directSubordinates}
+          onChange={(e) => setDirectSubordinates(e.target.value)}
         />
       </div>
       <div>
@@ -183,12 +93,11 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
         <Input
           required
           type="text"
-          name="memoNumber"
           id="memoNumber"
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
           placeholder="SK-Dasaria/09/2025"
-          value={formData.memoNumber}
-          onChange={handleInputChange}
+          value={memoNumber}
+          onChange={(e) => setMemoNumber(e.target.value)}
         />
       </div>
       <div>
@@ -200,13 +109,12 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
         </label>
         <textarea
           required
-          name="jobDescription"
           id="jobDescription"
           rows={4}
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
           placeholder="Lorem ipsum dolor sit amet consectetur. Nunc et nec vel nec."
-          value={formData.jobDescription}
-          onChange={handleInputChange}
+          value={jobDescription}
+          onChange={(e) => setJobDescription(e.target.value)}
         ></textarea>
       </div>
       < FileInput
@@ -222,7 +130,7 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
       isOpen={isOpen}
       onClose={onClose}
       handleSubmit={handleSubmit}
-      submitting={isLoading}
+      submitting={submitting}
       maxWidth="max-w-2xl"
       confirmTitleButton="Save Changes"
       closeTitleButton="Close"
