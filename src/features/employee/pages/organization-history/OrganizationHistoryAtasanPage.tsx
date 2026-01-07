@@ -7,6 +7,8 @@ import EditRiwayatOrganisasiModal from '@/features/employee/components/modals/or
 import { IconFileDetail, IconPencil } from '@/icons/components/icons';
 import { useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { formatUrlFile } from '@/utils/formatUrlFile';
+import { formatDateToIndonesian } from '@/utils/formatDate';
 
 type OrgHistoryListRow = OrganizationChangeItem & { statusPerubahan: string };
 
@@ -61,7 +63,7 @@ export default function OrganizationHistoryAtasanPage() {
         ),
       },
       { id: 'change_type', label: 'Jenis Perubahan' },
-      { id: 'effective_date', label: 'Tanggal Efektif', format: (v) => formatDate(v as string) },
+      { id: 'effective_date', label: 'Tanggal Efektif', format: (v: string) => formatDateToIndonesian(v || '') },
       { id: 'old_position', label: 'Posisi Lama' },
       { id: 'new_position', label: 'Posisi Baru' },
       { id: 'old_division', label: 'Divisi Lama' },
@@ -97,7 +99,7 @@ export default function OrganizationHistoryAtasanPage() {
         condition: (row) => Boolean((row as any)?.decree_file),
         onClick: (row) => {
           // navigate(`/organization-history/preview?id=${row.id}`);
-          window.open(`${row.decree_file}`, '_blank');
+          window.open(formatUrlFile((row as any)?.decree_file), '_blank');
           // navigate(`/employee-data/${row.employee_id}?mode=view&tab=organization-history`);
         },
       }

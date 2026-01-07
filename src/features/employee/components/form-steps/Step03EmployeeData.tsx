@@ -21,7 +21,9 @@ export const Step03EmployeeData: React.FC = () => {
             <div>
               <Label>Status Karyawan</Label>
               <Select
-                options={employeeStatusOptions}
+                options={employeeStatusOptions.filter((status: any) => 
+          ['Aktif', 'Evaluasi'].includes(status.label)
+        )}
                 defaultValue={step3.employmentStatus}
                 onChange={(value) => handleChange('employmentStatus', value)}
                 placeholder="Select"

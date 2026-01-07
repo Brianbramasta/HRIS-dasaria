@@ -53,6 +53,32 @@ export default function EmployeeDataCard({ data }: Props) {
     );
   }, [data]);
 
+  const isEditHidden = useMemo(() => {
+    const base = initialForm || {};
+    const values = Object.values(base || {});
+    const allEmpty = values.length === 0 || values.every((v) => v === undefined || v === null || v === '');
+    const requiredKeys: Array<keyof EmployeeDataForm> = [
+      'employment_status_id',
+      'start_date',
+      'company_id',
+      'office_id',
+      'directorate_id',
+      'division_id',
+      'department_id',
+      'position_id',
+      'job_title_id',
+      'position_level_id',
+      'employee_category_id',
+      // 'payroll_status',
+    ];
+    const missingRequired = requiredKeys.some((k) => {
+      const v = (base as any)?.[k];
+      return v === undefined || v === null || v === '';
+    });
+
+    return base?.employment_status === 'Aktif' || allEmpty || !missingRequired;
+  }, [initialForm]);
+
   return (
     <ExpandCard title="Data Karyawan" leftIcon={isComplete ? <IconLengkap /> : <IconTidakLengkap />} withHeaderDivider>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -119,14 +145,13 @@ export default function EmployeeDataCard({ data }: Props) {
         </div>
       </div>
 
-    {/* tanyakan rafi rulenya */}
-      {/* {data?.employment_status !== 'Aktif' && ( */}
+      {!isEditHidden && (
         <div className="mt-4 flex justify-end">
           <Button variant="primary" size="sm" onClick={openModal}>
             <Edit2 size={16} className="mr-2" /> Edit
           </Button>
         </div>
-      {/* )} */}
+      )}
       <EmployeeDataModal
         isOpen={isOpen}
         initialData={initialForm}

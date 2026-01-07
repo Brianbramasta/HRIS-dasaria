@@ -224,9 +224,10 @@ export const useStep3Data = (isOpen?: boolean) => {
         setPositionLevelOptions(positionLevels);
 
         const employeeStatuses = await getEmployeeStatusDropdownOptions();
-        const filteredEmployeeStatuses = employeeStatuses.filter((status: any) => 
-          ['Aktif', 'Evaluasi'].includes(status.label)
-        );
+        // const filteredEmployeeStatuses = employeeStatuses.filter((status: any) => 
+        //   ['Aktif', 'Evaluasi'].includes(status.label)
+        // );
+        const filteredEmployeeStatuses = employeeStatuses
         setEmployeeStatusOptions(filteredEmployeeStatuses);
 
         const companies = await employeeMasterDataService.getCompanyDropdown();

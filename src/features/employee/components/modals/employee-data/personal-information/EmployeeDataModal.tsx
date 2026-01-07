@@ -118,15 +118,16 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
       'job_title_id',
       'position_level_id',
       'employee_category_id',
-      'payroll_status',
+      // 'payroll_status',
     ];
     const missingRequired = requiredKeys.some((k) => {
       const v = (base as any)?.[k];
       return v === undefined || v === null || v === '';
     });
-    return base?.employment_status === 'Aktif' || allEmpty || missingRequired;
+    console.log('isDisabledField 1', base?.employment_status, allEmpty, missingRequired);
+    return base?.employment_status === 'Aktif' || allEmpty || !missingRequired;
   }, [initialData]);
-  console.log('isDisabledField', initialData);
+  console.log('isDisabledField', isDisabledField);
 
 
   const content = (
@@ -145,6 +146,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               defaultValue={form.employment_status_id || ''}
               onChange={(v) => handleInput('employment_status_id', v)}
               placeholder="Select"
+              disabled={initialData?.employment_status === 'Aktif'}
             />
           </div>
           <div>
@@ -295,6 +297,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
         // return
         onSubmit(form);
       }}
+      isSubmit={!isDisabledField}
       submitting={!!submitting}
       maxWidth="max-w-5xl"
     />

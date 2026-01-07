@@ -1,22 +1,14 @@
-import  { useState } from 'react';
+import  { useMemo } from 'react';
  
 import { DataTable, type DataTableColumn, type DataTableAction } from '@/components/shared/datatable/DataTable';
 import { IconFileDetail } from '@/icons/components/icons';
+import { useOrganizationHistory, type OrgHistoryRow } from '@/features/employee/hooks/employee-data/detail/contract/useOrganizationHistory';
+import { formatUrlFile } from '@/utils/formatUrlFile';
+import { formatDateToIndonesian } from '@/utils/formatDate';
 
  
 
-type OrgHistoryRow = {
-  id: number;
-  jenisPerubahan: string;
-  tanggalEfektif: string; // yyyy-MM-dd
-  posisiLama: string;
-  posisiBaru: string;
-  divisiLama: string;
-  divisiBaru: string;
-  direktoratLama: string;
-  direktoratBaru: string;
-  alasanPerubahan: string;
-};
+ 
 
 const formatDate = (iso: string) => {
   if (!iso) return '-';
@@ -25,20 +17,22 @@ const formatDate = (iso: string) => {
   return fmt.format(d);
 };
 
-interface Props { data: import('../../../types/Employee').Karyawan; isEditable: boolean }
-export default function OrganizationHistoryTab({ isEditable }: Props) {
-  console.log(isEditable);
-  const [rows] = useState<OrgHistoryRow[]>([
-    { id: 1, jenisPerubahan: 'Promosi', tanggalEfektif: '2025-03-01', posisiLama: 'Staf/HR', posisiBaru: 'HR Supervisor', divisiLama: 'HRD', divisiBaru: 'HRD', direktoratLama: 'Direktorat Lama', direktoratBaru: 'Direktorat Baru', alasanPerubahan: 'Kinerja Sangat Baik' },
-    { id: 2, jenisPerubahan: 'Mutasi', tanggalEfektif: '2025-03-01', posisiLama: 'HR Supervisor', posisiBaru: 'HR Supervisor', divisiLama: 'HRD', divisiBaru: 'Finance', direktoratLama: 'Direktorat Lama', direktoratBaru: 'Direktorat Baru', alasanPerubahan: 'Kinerja Sangat Baik' },
-    { id: 3, jenisPerubahan: 'Demosi', tanggalEfektif: '2025-03-01', posisiLama: 'HR Supervisor', posisiBaru: 'HR', divisiLama: 'HRD', divisiBaru: 'HRD', direktoratLama: 'Direktorat Lama', direktoratBaru: 'Direktorat Baru', alasanPerubahan: 'Kinerja Sangat Baik' },
-    { id: 4, jenisPerubahan: 'Rotasi', tanggalEfektif: '2025-03-01', posisiLama: 'HR Supervisor', posisiBaru: 'HR', divisiLama: 'HRD', divisiBaru: 'Finance', direktoratLama: 'Direktorat Lama', direktoratBaru: 'Direktorat Baru', alasanPerubahan: 'Kinerja Sangat Baik' },
-  ]);
+interface Props { 
+  employeeId?: string;
+  isEditable: boolean }
+
+export default function OrganizationHistoryTab({employeeId,  isEditable }: Props) {
+  void isEditable;
+  // const employeeId = useMemo(() => {
+  //   return data?.employee_id || data?.idKaryawan || data?.id;
+  // }, [data]);
+
+  const { rows } = useOrganizationHistory(employeeId);
 
   const columns: DataTableColumn<OrgHistoryRow>[] = [
     { id: 'no', label: 'No.', align: 'center', format: (v, row) => { void v; return rows.findIndex((r) => r.id === row.id) + 1; }, sortable: false },
     { id: 'jenisPerubahan', label: 'Jenis Perubahan' },
-    { id: 'tanggalEfektif', label: 'Tanggal Efektif', format: (v) => formatDate(v) },
+    { id: 'tanggalEfektif', label: 'Tanggal Efektif', format: (v) => formatDateToIndonesian(v) },
     { id: 'posisiLama', label: 'Posisi Lama' },
     { id: 'posisiBaru', label: 'Posisi Baru' },
     { id: 'divisiLama', label: 'Divisi Lama' },
@@ -52,13 +46,14 @@ export default function OrganizationHistoryTab({ isEditable }: Props) {
     {
       variant: 'outline',
       icon: <IconFileDetail />,
-      onClick: (row) => console.log('Edit Org History', row),
+      condition: (row) => Boolean((row as any)?.decree_file),
+      onClick: (row) => {window.open(formatUrlFile((row as any)?.decree_file) || '', '_blank');},
     },
   ];
 
   return (
       <DataTable<OrgHistoryRow>
-        title="Organization History"
+        title="Riwayat Organisasi"
         data={rows}
         columns={columns}
         actions={actions ? actions : []}

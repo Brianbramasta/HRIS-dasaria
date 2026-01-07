@@ -7,6 +7,7 @@ import EditRiwayatOrganisasiModal from '@/features/employee/components/modals/or
 import { IconPencil, IconFileDetail } from '@/icons/components/icons';
 import { useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { formatDateToIndonesian } from '@/utils/formatDate';
 
 type OrgHistoryListRow = OrganizationChangeItem & { statusPerubahan: string };
 
@@ -63,7 +64,7 @@ export default function OrganizationHistoryPage() {
         ),
       },
       { id: 'change_type', label: 'Jenis Perubahan' },
-      { id: 'effective_date', label: 'Tanggal Efektif', format: (v) => formatDate(v as string) },
+      { id: 'effective_date', label: 'Tanggal Efektif', format: (v: string) => formatDateToIndonesian(v || '') },
       { id: 'old_position', label: 'Posisi Lama' },
       { id: 'new_position', label: 'Posisi Baru' },
       { id: 'old_division', label: 'Divisi Lama' },

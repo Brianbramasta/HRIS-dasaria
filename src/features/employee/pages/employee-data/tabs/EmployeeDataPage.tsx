@@ -355,8 +355,8 @@ export default function DataKaryawanPage() {
       minWidth: 120,
       sortable: true,
       filterOptions: [
-        { label: 'Aktif', value: 'aktif' },
-        { label: 'Tidak Aktif', value: 'tidak aktif' },
+        { label: 'Aktif', value: 'Aktif' },
+        { label: 'Tidak Aktif', value: 'Tidak Aktif' },
       ],
       format: (value) => renderPayrollStatusBadge(value),
     },

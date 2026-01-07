@@ -86,7 +86,7 @@ const PelanggaranModal: React.FC<PelanggaranModalProps> = ({ isOpen, mode, initi
         <Label>Jenis Tindakan</Label>
         <Select options={disciplinaryOptions} placeholder="Select" defaultValue={form.jenisTindakan} onChange={(v) => handleInput('jenisTindakan', v)} required />
       </div>
-      <div>
+      <div className='col-span-2 md:col-span-1'>
         <Label>Tanggal Mulai Tindakan</Label>
         <DatePicker
           id="tanggalMulaiTindakan"
@@ -95,7 +95,7 @@ const PelanggaranModal: React.FC<PelanggaranModalProps> = ({ isOpen, mode, initi
           onChange={(_, dateStr) => handleInput('tanggalMulaiTindakan', dateStr)}
         />
       </div>
-      <div>
+      <div className='col-span-2 md:col-span-1'>
         <Label>Tanggal Berakhir Tindakan</Label>
         <DatePicker
           id="tanggalBerakhirTindakan"
