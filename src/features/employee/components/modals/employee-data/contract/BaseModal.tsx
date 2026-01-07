@@ -9,6 +9,7 @@ import DatePicker from '@/components/form/date-picker';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 import LinkPreview from '@/components/shared/form/LinkPreview';
 import { formatUrlFile } from '@/utils/formatUrlFile';
+import { useContractModalConfig } from '@/features/employee/hooks/modals/contract/useContractModalConfig';
 
 export type ContractEntry = {
   id?: string;
@@ -50,11 +51,6 @@ interface BaseContractModalProps {
   isEditStatusBerakhir?: boolean;
 }
 
-const defaultJenisKontrakOptions = [
-  { value: 'PKWT', label: 'PKWT' },
-  { value: 'PKWTT', label: 'PKWTT' },
-];
-
 const BaseContractModal: React.FC<BaseContractModalProps> = ({
   isOpen,
   title,
@@ -65,7 +61,7 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
   isReadonly = false,
   optionsContractStatus,
   optionsContractEndStatus = [],
-  optionsJenisKontrak = defaultJenisKontrakOptions,
+  optionsJenisKontrak,
   onInputChange,
   onDateChange,
   onFileChange,
@@ -74,6 +70,8 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
   maxWidth = 'max-w-3xl',
   isEditStatusBerakhir = false,
 }) => {
+  const { optionsJenisKontrak: defaultJenisKontrakOptions } = useContractModalConfig();
+  const jenisKontrakOptions = optionsJenisKontrak ?? defaultJenisKontrakOptions;
   const content = (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
       {/* Nama Lengkap */}
@@ -130,7 +128,7 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
       <div>
         <Label>Jenis Kontrak</Label>
         <Select
-          options={optionsJenisKontrak}
+          options={jenisKontrakOptions}
           placeholder="Select"
           defaultValue={form.contract_type}
           onChange={(v) => onInputChange('contract_type', v)}
