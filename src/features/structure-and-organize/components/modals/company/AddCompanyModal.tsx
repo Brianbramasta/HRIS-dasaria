@@ -1,15 +1,13 @@
-import React, { useState } from 'react';
-import { companyService } from '../../../services/OrganizationService';
-import { useBusinessLines } from '../../../hooks/business-lines/useBusinessLines';
-import type { CompanyListItem, BusinessLineListItem } from '../../../types/OrganizationApiTypes';
+import React from 'react';
+import type { CompanyListItem } from '../../../types/OrganizationApiTypes';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 import Select from '@/components/form/Select';
 import FileInput from '@/components/form/input/FileInput';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
-import { addNotification } from '@/stores/notificationStore';
 import {  TrashBinIcon } from '@/icons';
 import { IconPlus } from '@/icons/components/icons';
+import { useAddCompanyModal } from '../../../hooks/modals/company/useAddCompanyModal';
 
 
 
@@ -20,95 +18,23 @@ interface AddCompanyModalProps {
 }
 
 const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSuccess }) => {
-  const [name, setName] = useState('');
-  const [businessLineId, setBusinessLineId] = useState('');
-  const [businessLines, setBusinessLines] = useState<BusinessLineListItem[]>([]);
-  const [description, setDescription] = useState('');
-  // Dokumen dinamis: minimal satu baris wajib dengan file
-  const [documents, setDocuments] = useState<{ name: string; number: string; file: File | null }[]>([
-    { name: '', number: '', file: null },
-  ]);
-
-  const [submitting, setSubmitting] = useState(false);
-  const { getDropdown } = useBusinessLines({ autoFetch: false });
-
-  React.useEffect(() => {
-    if (!isOpen) return;
-    (async () => {
-      try {
-        const items = await getDropdown();
-        setBusinessLines(items);
-      } catch (e) {
-        console.error('Failed to load business lines', e);
-      }
-    })();
-  }, [isOpen, getDropdown]);
-  const handleDocChange = (index: number, key: 'name' | 'number', value: string) => {
-    setDocuments((prev) => {
-      const next = [...prev];
-      next[index] = { ...next[index], [key]: value };
-      return next;
-    });
-  };
-
-  const handleDocFileChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setDocuments((prev) => {
-      const next = [...prev];
-      next[index] = { ...next[index], file };
-      return next;
-    });
-  };
-
-  const addDocumentRow = () => {
-    setDocuments((prev) => [...prev, { name: '', number: '', file: null }]);
-  };
-
-  const removeDocumentRow = (index: number) => {
-    setDocuments((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const handleSubmit = async () => {
-    if (!name.trim()) return;
-    if (!documents[0]?.file) {
-      addNotification({
-        variant: 'error',
-        title: 'Dokumen tidak ditambahkan',
-        description: 'File SK Wajib di isi pada baris pertama',
-      });
-      return;
-    }
-    setSubmitting(true);
-    try {
-      const validDocs = documents
-        .filter((d) => d.file && d.name.trim())
-        .map((d) => ({ name: d.name.trim(), number: d.number.trim(), file: d.file as File }));
-
-      const created = await companyService.create({
-        name: name.trim(),
-        businessLineId: businessLineId || '',
-        description: description.trim(),
-        documents: validDocs,
-      } as any);
-      onSuccess?.(created);
-      // reset and close
-      setName('');
-      setBusinessLineId('');
-      setDescription('');
-      setDocuments([{ name: '', number: '', file: null }]);
-      onClose();
-    } catch (err) {
-      console.error('Failed to create company', err);
-        addNotification({
-          variant: 'error',
-          title: 'Perusahaan tidak ditambahkan',
-          description: 'Gagal menambahkan perusahaan. Silakan coba lagi.',
-          hideDuration: 4000,
-        });
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const {
+    name,
+    setName,
+    businessLineId,
+    setBusinessLineId,
+    businessLines,
+    description,
+    setDescription,
+    documents,
+    handleDocChange,
+    handleDocFileChange,
+    addDocumentRow,
+    removeDocumentRow,
+    searchBusinessLines,
+    submitting,
+    handleSubmit,
+  } = useAddCompanyModal({ isOpen, onClose, onSuccess });
 
   return (
     <ModalAddEdit
@@ -133,19 +59,14 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
 
           <div className="space-y-2">
             <label className="text-sm font-medium">Lini Bisnis</label>
-            <Select
-              required
+              <Select
+                required
               options={businessLines.map((bl) => ({ label: bl.name, value: bl.id }))}
               placeholder="Pilih Lini Bisnis"
               defaultValue={businessLineId}
               onChange={(value) => setBusinessLineId(value)}
               onSearch={async (q) => {
-                try {
-                  const items = await getDropdown(q);
-                  setBusinessLines(items);
-                } catch (e) {
-                  console.error('Failed to search business lines', e);
-                }
+                await searchBusinessLines(q);
               }}
             />
           </div>
