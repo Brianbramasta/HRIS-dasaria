@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 // import { Modal } from '../../../../../components/ui/modal/index';
-import { businessLinesService } from '../../../services/request/BusinessLinesService';
 import { BusinessLineListItem } from '../../../types/OrganizationApiTypes';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
 import FileInput from '../../../../../components/shared/field/FileInput';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
-import { useFileStore } from '@/stores/fileStore';
-import { addNotification } from '@/stores/notificationStore';
+import { useAddBusinessLineModal } from '../../../hooks/modals/business-lines/useAddBusinessLineModal';
 
 interface AddBusinessLineModalProps {
   isOpen: boolean;
@@ -16,57 +14,18 @@ interface AddBusinessLineModalProps {
 }
 
 const AddBusinessLineModal: React.FC<AddBusinessLineModalProps> = ({ isOpen, onClose, onSuccess }) => {
-  const [name, setName] = useState('');
-  const [memoNumber, setMemoNumber] = useState('');
-  const [description, setDescription] = useState('');
-  const skFile = useFileStore((s) => s.skFile);
-  const [submitting, setSubmitting] = useState(false);
-
-  const handleFileChange = (_e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(_e)
-    // metadata file dikelola oleh FileInput melalui store
-  };
-
-  const handleSubmit = async () => {
-    if (!name.trim()) return;
-    // Jika file wajib diunggah, blokir submit bila belum ada
-    if (!skFile?.file) {
-        console.log('skFile2', skFile)
-        addNotification({
-          variant: 'error',
-          title: 'Lini Bisnis tidak ditambahkan',
-          description: 'File Wajib di isi',
-          hideDuration: 4000,
-        });
-      return 
-      }
-    setSubmitting(true);
-    try {
-      const created = await businessLinesService.create({
-        name: name.trim(),
-        description: description.trim() || null,
-        memoNumber: memoNumber.trim(),
-        skFile: skFile.file,
-      });
-      onSuccess?.(created);
-      onClose();
-      // reset form
-      setName('');
-      setMemoNumber('');
-      setDescription('');
-      useFileStore.getState().clearSkFile();
-    } catch (err) {
-      console.error('Failed to create business line', err);
-      addNotification({
-        variant: 'error',
-        title: 'Lini Bisnis tidak ditambahkan',
-        description: 'Gagal menambahkan lini bisnis. Silakan coba lagi.',
-        hideDuration: 4000,
-      });
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const {
+    name,
+    setName,
+    memoNumber,
+    setMemoNumber,
+    description,
+    setDescription,
+    skFile,
+    submitting,
+    handleFileChange,
+    handleSubmit,
+  } = useAddBusinessLineModal({ onClose, onSuccess });
 
   return (
     <ModalAddEdit
