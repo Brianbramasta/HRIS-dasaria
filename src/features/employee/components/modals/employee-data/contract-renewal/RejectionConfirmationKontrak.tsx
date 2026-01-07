@@ -2,7 +2,7 @@ import React from 'react';
 import ModalDelete from '@/components/shared/modal/ModalDelete';
 import InputField from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
-import useRejectionConfirmationKontrakModal from '@/features/employee/hooks/modals/contract-renewal/useRejectionConfirmationKontrakModal';
+import useRejectionConfirmationKontrakModal from '@/features/employee/hooks/modals/employee-data/contract-renewal/useRejectionConfirmationKontrakModal';
 
 interface KonfirmasiPenolakanKontrakProps {
   isOpen: boolean;

@@ -2,7 +2,7 @@ import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 import Select from '@/components/form/Select';
-import useEditContractRenewalStatusModal from '@/features/employee/hooks/modals/contract-renewal/useEditContractRenewalStatusModal';
+import useEditContractRenewalStatusModal from '@/features/employee/hooks/modals/employee-data/contract-renewal/useEditContractRenewalStatusModal';
 
 interface EditStatusPerpanjanganModalProps {
   isOpen: boolean;

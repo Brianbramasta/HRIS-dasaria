@@ -6,7 +6,7 @@ import TextArea from '@/components/form/input/TextArea';
 import Select from '@/components/form/Select';
 import FileInput from '@/components/shared/field/FileInput';
 import DatePicker from '@/components/form/date-picker';
-import { useFraudModal, PelanggaranEntry } from '@/features/employee/hooks/modals/fraud/useFraudModal';
+import { useFraudModal, PelanggaranEntry } from '@/features/employee/hooks/modals/employee-data/fraud/useFraudModal';
 
 export type { PelanggaranEntry };
 

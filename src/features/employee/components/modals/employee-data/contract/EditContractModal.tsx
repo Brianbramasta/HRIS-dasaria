@@ -1,6 +1,6 @@
 import React from 'react';
 import BaseContractModal, { type ContractEntry } from './BaseModal';
-import { useEditContractModal } from '@/features/employee/hooks/modals/contract/useEditContractModal';
+import { useEditContractModal } from '@/features/employee/hooks/modals/employee-data/contract/useEditContractModal';
 
 interface EditContractModalProps {
   isOpen: boolean;

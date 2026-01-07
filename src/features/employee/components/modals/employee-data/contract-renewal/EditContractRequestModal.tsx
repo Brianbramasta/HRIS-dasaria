@@ -1,7 +1,7 @@
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Input from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
-import useEditContractRequestModal from '@/features/employee/hooks/modals/contract-renewal/useEditContractRequestModal';
+import useEditContractRequestModal from '@/features/employee/hooks/modals/employee-data/contract-renewal/useEditContractRequestModal';
 
 interface EditPengajuanKontrakModalProps {
   isOpen: boolean;

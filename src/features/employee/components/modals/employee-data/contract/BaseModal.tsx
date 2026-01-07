@@ -9,7 +9,7 @@ import DatePicker from '@/components/form/date-picker';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 import LinkPreview from '@/components/shared/form/LinkPreview';
 import { formatUrlFile } from '@/utils/formatUrlFile';
-import { useContractModalConfig } from '@/features/employee/hooks/modals/contract/useContractModalConfig';
+import { useContractModalConfig } from '@/features/employee/hooks/modals/employee-data/contract/useContractModalConfig';
 
 export type ContractEntry = {
   id?: string;

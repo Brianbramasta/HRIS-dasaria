@@ -6,7 +6,7 @@ import Select from '@/components/form/Select';
 import DatePicker from '@/components/form/date-picker';
 import { STATUS_PAYROLL_OPTIONS } from '@/features/employee/utils/EmployeeMappings';
 import { formatDateToIndonesian } from '@/utils/formatDate';
-import { useEmployeeDataModal, EmployeeDataForm } from '@/features/employee/hooks/modals/personal-information/useEmployeeDataModal';
+import { useEmployeeDataModal, EmployeeDataForm } from '@/features/employee/hooks/modals/employee-data/personal-information/useEmployeeDataModal';
 export type { EmployeeDataForm };
 
 // Dokumentasi: Menyesuaikan penamaan field form dengan payload API update-employment-position

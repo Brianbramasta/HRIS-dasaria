@@ -8,8 +8,8 @@ import FileInput from '@/components/shared/field/FileInput';
 import DatePicker from '@/components/form/date-picker';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 import LinkPreview from '@/components/shared/form/LinkPreview';
-import { useContractModal, type ContractEntry } from '@/features/employee/hooks/modals/contract/useContractModal';
-import { useContractModalConfig } from '@/features/employee/hooks/modals/contract/useContractModalConfig';
+import { useContractModal, type ContractEntry } from '@/features/employee/hooks/modals/employee-data/contract/useContractModal';
+import { useContractModalConfig } from '@/features/employee/hooks/modals/employee-data/contract/useContractModalConfig';
 
 export type { ContractEntry };
 

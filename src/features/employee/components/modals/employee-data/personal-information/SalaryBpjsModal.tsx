@@ -4,7 +4,7 @@ import Label from '@/components/form/Label';
 import InputField from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
 import { BPJS_STATUS_OPTIONS, BPJS_TK_STATUS_OPTIONS } from '../../../../utils/EmployeeMappings';
-import { useSalaryBpjsModal, SalaryBpjsForm } from '@/features/employee/hooks/modals/personal-information/useSalaryBpjsModal';
+import { useSalaryBpjsModal, SalaryBpjsForm } from '@/features/employee/hooks/modals/employee-data/personal-information/useSalaryBpjsModal';
 import { UpdateSalaryDataPayload, UpdateBpjsDataPayload } from '@/features/employee/types/detail/PersonalInformation';
 export type { SalaryBpjsForm };
 interface Props {

@@ -3,7 +3,7 @@ import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import InputField from '@/components/form/input/InputField';
-import { useMediaSosialModal, MediaSosialForm } from '@/features/employee/hooks/modals/personal-information/useMediaSosialModal';
+import { useMediaSosialModal, MediaSosialForm } from '@/features/employee/hooks/modals/employee-data/personal-information/useMediaSosialModal';
 
 interface Props {
   isOpen: boolean;

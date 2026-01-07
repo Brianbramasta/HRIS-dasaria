@@ -10,7 +10,7 @@ import { Trash2 } from 'react-feather';
 import { JENIS_PENDIDIKAN_OPTIONS } from '@/features/employee/utils/EmployeeMappings';
 import Button from '@/components/ui/button/Button';
 import { IconPlus } from '@/icons/components/icons';
-import { useEducationalBackgroundModal, EducationModalForm } from '@/features/employee/hooks/modals/personal-information/useEducationalBackgroundModal';
+import { useEducationalBackgroundModal, EducationModalForm } from '@/features/employee/hooks/modals/employee-data/personal-information/useEducationalBackgroundModal';
 export type { EducationModalForm };
 
 interface Props {

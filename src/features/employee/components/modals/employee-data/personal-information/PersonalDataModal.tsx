@@ -7,7 +7,7 @@ import TextArea from '@/components/form/input/TextArea';
 import DatePicker from '@/components/form/date-picker';
 import FileInput from '@/components/form/input/FileInput';
 import {  JENIS_KELAMIN_OPTIONS, STATUS_MENIKAH_OPTIONS, GOLONGAN_DARAH_OPTIONS, TANGGUNGAN_OPTIONS } from '@/features/employee/utils/EmployeeMappings';
-import { usePersonalDataModal, PersonalDataForm } from '@/features/employee/hooks/modals/personal-information/usePersonalDataModal';
+import { usePersonalDataModal, PersonalDataForm } from '@/features/employee/hooks/modals/employee-data/personal-information/usePersonalDataModal';
 
 interface PersonalDataModalProps {
   isOpen: boolean;

@@ -2,7 +2,7 @@ import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import FileInput from '@/components/form/input/FileInput';
-import { usePersonalDocumentsModal, DocumentRow, PersonalDocumentsForm } from '@/features/employee/hooks/modals/personal-information/usePersonalDocumentsModal';
+import { usePersonalDocumentsModal, DocumentRow, PersonalDocumentsForm } from '@/features/employee/hooks/modals/employee-data/personal-information/usePersonalDocumentsModal';
 
 interface Props {
   isOpen: boolean;
