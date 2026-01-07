@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal } from '../../../../../components/ui/modal';
 import Button from '../../../../../components/ui/button/Button';
 import { Copy, Mail, MessageSquare, Send } from 'react-feather';
+import { useShareLinkModal } from '../../../hooks/modals/sharelink/useShareLinkModal';
 
 interface ShareLinkModalProps {
   isOpen: boolean;
@@ -14,34 +15,9 @@ export const ShareLinkModal: React.FC<ShareLinkModalProps> = ({
   isOpen,
   onClose,
   link,
-  message = 'Silakan isi data karyawan melalui tautan berikut',
+  message,
 }) => {
-  const copyLink = async () => {
-    try {
-      await navigator.clipboard.writeText(link);
-      alert('Tautan disalin');
-    } catch (e) {
-      window.prompt('Salin tautan secara manual:', e as string);
-    }
-  };
-
-  const openWhatsApp = () => {
-    const text = `${message} ${link}`;
-    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
-    window.open(url, '_blank');
-  };
-
-  const openEmail = () => {
-    const subject = 'Bagikan Tautan';
-    const body = `${message}\n${link}`;
-    const url = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.location.href = url;
-  };
-
-  const openTelegram = () => {
-    const url = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(message)}`;
-    window.open(url, '_blank');
-  };
+  const { copyLink, openWhatsApp, openEmail, openTelegram } = useShareLinkModal(link, message);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="max-w-md">
