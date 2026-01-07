@@ -50,7 +50,7 @@ export function useAddDocumentModal(params: {
       onSuccess?.();
       setEntries([{ name: '', docNumber: '', file: null }]);
       onClose();
-    } catch (err) {
+    } catch {
       addNotification({
         variant: 'error',
         title: 'Gagal menyimpan dokumen',

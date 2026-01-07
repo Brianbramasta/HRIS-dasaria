@@ -45,7 +45,8 @@ export function useEditDetailCompanyModal(params: {
       try {
         const items = await getDropdown();
         setBusinessLines(items);
-      } catch {
+      } catch (e) {
+        void e;
       }
     })();
   }, [isOpen, getDropdown]);
@@ -128,7 +129,7 @@ export function useEditDetailCompanyModal(params: {
       await companyService.updateDetailByUuid(company.id, payload);
       onSuccess?.();
       onClose();
-    } catch (err) {
+    } catch {
       addNotification({
         variant: 'error',
         title: 'Gagal menyimpan detail perusahaan',

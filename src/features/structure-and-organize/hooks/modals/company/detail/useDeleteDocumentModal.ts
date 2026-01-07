@@ -53,7 +53,7 @@ export function useDeleteDocumentModal(params: {
       await companiesService.deleteDocuments(document?.id, { memoNumber, skFile });
       onSuccess?.();
       onClose();
-    } catch (err) {
+    } catch {
       addNotification({
         variant: 'error',
         title: 'Dokumen tidak dihapus',

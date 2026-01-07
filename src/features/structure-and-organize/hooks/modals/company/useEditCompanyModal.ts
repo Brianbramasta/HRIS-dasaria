@@ -1,7 +1,7 @@
 import React from 'react';
-import { companyService } from '../../services/OrganizationService';
+import { companyService } from '../../../services/OrganizationService';
 import { useBusinessLines } from '../../business-lines/useBusinessLines';
-import type { BusinessLineListItem, CompanyListItem } from '../../types/OrganizationApiTypes';
+import type { BusinessLineListItem, CompanyListItem } from '../../../types/OrganizationApiTypes';
 import { addNotification } from '@/stores/notificationStore';
 
 export function useEditCompanyModal(params: {
@@ -26,7 +26,8 @@ export function useEditCompanyModal(params: {
       try {
         const items = await getDropdown();
         setBusinessLines(items);
-      } catch {
+      } catch (e) {
+        void e;
       }
     })();
   }, [isOpen, getDropdown]);
@@ -50,7 +51,8 @@ export function useEditCompanyModal(params: {
     try {
       const items = await getDropdown(q);
       setBusinessLines(items);
-    } catch {
+    } catch (e) {
+      void e;
     }
   };
 
@@ -68,7 +70,7 @@ export function useEditCompanyModal(params: {
       });
       onSuccess?.(updated);
       onClose();
-    } catch (err) {
+    } catch {
       addNotification({
         variant: 'error',
         title: 'Perusahaan tidak diupdate',

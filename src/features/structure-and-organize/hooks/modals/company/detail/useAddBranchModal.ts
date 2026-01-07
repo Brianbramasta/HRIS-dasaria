@@ -35,7 +35,7 @@ export function useAddBranchModal(params: {
       setAddress('');
       setEmployeeCount('');
       onClose();
-    } catch (err) {
+    } catch {
       addNotification({
         variant: 'error',
         title: 'Gagal membuat cabang',
@@ -61,7 +61,6 @@ export function useAddBranchModal(params: {
         setBranchOptions(source.map((o: any) => ({ value: o.id, label: o.name, meta: o })));
       } catch (e) {
         void e;
-      }
       }
     })();
   }, [isOpen, companyId, getCompanyDetail]);

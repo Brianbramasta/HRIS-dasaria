@@ -1,6 +1,6 @@
 import React from 'react';
-import { companyService } from '../../services/OrganizationService';
-import type { CompanyListItem } from '../../types/OrganizationApiTypes';
+import { companyService } from '../../../services/OrganizationService';
+import type { CompanyListItem } from '../../../types/OrganizationApiTypes';
 import { addNotification } from '@/stores/notificationStore';
 import { useFileStore } from '@/stores/fileStore';
 
@@ -19,7 +19,7 @@ export function useDeleteCompanyModal(params: {
     setMemoNumber(company?.memoNumber || '');
   }, [company, params.isOpen]);
 
-  const handleFileChange = (_e?: React.ChangeEvent<HTMLInputElement>) => {};
+  const handleFileChange = () => {};
 
   const handleDelete = async () => {
     if (!company) return;
@@ -46,7 +46,7 @@ export function useDeleteCompanyModal(params: {
       await companyService.delete(company.id, { memoNumber, skFile: skFile.file as File });
       onSuccess?.();
       onClose();
-    } catch (err) {
+    } catch {
       addNotification({
         variant: 'error',
         title: 'Perusahaan tidak dihapus',

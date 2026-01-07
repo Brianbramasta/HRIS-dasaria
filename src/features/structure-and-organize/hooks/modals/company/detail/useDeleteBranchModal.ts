@@ -35,7 +35,7 @@ export function useDeleteBranchModal(params: {
       await officeService.delete(branch.id, { memoNumber: branch.memoNumber || '', skFile: skFile.file as File });
       onSuccess?.();
       onClose();
-    } catch (err) {
+    } catch {
       addNotification({
         variant: 'error',
         title: 'Gagal menghapus cabang',

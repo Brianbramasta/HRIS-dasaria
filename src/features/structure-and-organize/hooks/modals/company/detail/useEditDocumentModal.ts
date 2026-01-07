@@ -57,7 +57,7 @@ export function useEditDocumentModal(params: {
       }
       onSuccess?.();
       onClose();
-    } catch (err) {
+    } catch {
       addNotification({
         variant: 'error',
         title: 'Gagal menyimpan dokumen',
