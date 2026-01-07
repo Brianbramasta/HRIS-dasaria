@@ -6,7 +6,7 @@ import EmployeeDataCard from '@/features/employee/components/employee-data/card/
 import SalaryCard from '@/features/employee/components/employee-data/card/SalaryCard';
 import BPJSCard from '@/features/employee/components/employee-data/card/BPJSCard';
 import PersonalDocumentsCard from '@/features/employee/components/employee-data/card/PersonalDocumentsCard';
-import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
+import { usePersonalInformationTab } from '@/features/employee/hooks/tab/usePersonalInformationTab';
 
 interface Props {
   employeeId: string;
@@ -14,12 +14,7 @@ interface Props {
 }
 
 export default function PesonalInformationTab({ employeeId }: Props) {
-  const { detail, loading, error, fetchDetail } = useDetailDataKaryawanPersonalInfo();
-
-  React.useEffect(() => {
-    fetchDetail(employeeId);
-    console.log('Fetching detail for employeeId:', employeeId);
-  }, [employeeId, fetchDetail]);
+  const { detail, loading, error } = usePersonalInformationTab(employeeId);
 
   if (loading) {
     return <div className="p-4">Memuat detail…</div>;
