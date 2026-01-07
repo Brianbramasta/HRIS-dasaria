@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import InputField from '@/components/form/input/InputField';
@@ -6,20 +6,11 @@ import TextArea from '@/components/form/input/TextArea';
 import Select from '@/components/form/Select';
 import FileInput from '@/components/shared/field/FileInput';
 import DatePicker from '@/components/form/date-picker';
-import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
+import { useFraudModal, PelanggaranEntry } from '@/features/employee/hooks/modals/fraud/useFraudModal';
 
-export type PelanggaranEntry = {
-  id?: string;
-  namaLengkap?: string;
-  jenisPelanggaran: string;
-  tanggalKejadian: string; // yyyy-MM-dd
-  jenisTindakan: string; // disciplinary_id
-  masaBerlaku: string;
-  tanggalMulaiTindakan?: string;
-  tanggalBerakhirTindakan?: string;
-  deskripsi: string;
-  fileName?: string;
-};
+export type { PelanggaranEntry };
+
+ 
 
 interface PelanggaranModalProps {
   isOpen: boolean;
@@ -36,30 +27,10 @@ interface PelanggaranModalProps {
 
 // removed masa berlaku select options in favor of date input
 
-const emptyForm: PelanggaranEntry = {
-  namaLengkap: '',
-  jenisPelanggaran: '',
-  tanggalKejadian: '',
-  jenisTindakan: '',
-  masaBerlaku: '',
-  tanggalMulaiTindakan: '',
-  tanggalBerakhirTindakan: '',
-  deskripsi: '',
-};
+ 
 
 const PelanggaranModal: React.FC<PelanggaranModalProps> = ({ isOpen, mode, initialData, onClose, onSubmit, submitting = false, disciplinaryOptions = [], onFileChange }) => {
-  const [form, setForm] = useState<PelanggaranEntry>(emptyForm);
-  const title = useMemo(() => (mode === 'add' ? 'Tambah Pelanggaran' : 'Edit Pelanggaran'), [mode]);
-  const {detail} = useDetailDataKaryawanPersonalInfo();
-  const full_name = detail?.Personal_Data?.full_name || '';
- 
-  useEffect(() => {
-    setForm(initialData && mode === 'edit' ? { ...emptyForm, ...initialData } : emptyForm);
-  }, [initialData, isOpen, mode]);
- 
-  const handleInput = (key: keyof PelanggaranEntry, value: any) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
-  };
+  const { form, title, full_name, handleInput, handleFileChange } = useFraudModal({ isOpen, mode, initialData, onFileChange });
  
   const content = (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -112,9 +83,8 @@ const PelanggaranModal: React.FC<PelanggaranModalProps> = ({ isOpen, mode, initi
  
       <div className="col-span-2">
         <FileInput skFileName={form.fileName || ''} onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file) handleInput('fileName', file.name);
-          onFileChange?.(file ?? null);
+          const file = e.target.files?.[0] ?? null;
+          handleFileChange(file);
         }} />
       </div>
     </div>

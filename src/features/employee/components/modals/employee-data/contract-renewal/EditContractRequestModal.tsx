@@ -1,53 +1,7 @@
-import { useState, useEffect } from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Input from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
-
-const jenisPerubahanOptions = [
-  { value: 'Tidak ada', label: 'Tidak ada' },
-  { value: 'Rotasi', label: 'Rotasi' },
-  { value: 'Demosi', label: 'Demosi' },
-  { value: 'Mutasi', label: 'Mutasi' },
-  { value: 'Promosi', label: 'Promosi' },
-];
-
-const perusahaanOptions = [
-  { value: 'Dasaria', label: 'Dasaria' },
-];
-
-const kantorOptions = [
-  { value: 'Head Kantor', label: 'Head Kantor' },
-];
-
-const direktoratOptions = [
-  { value: 'SDM', label: 'SDM' },
-];
-
-const divisiOptions = [
-  { value: 'HR', label: 'HR' },
-];
-
-const departemenOptions = [
-  { value: 'HR', label: 'HR' },
-];
-
-const positionOptions = [
-  { value: 'HR', label: 'HR' },
-];
-
-const jabatanOptions = [
-  { value: 'EntryLevel', label: 'EntryLevel' },
-];
-
-const jenjangJabatanOptions = [
-  { value: 'Senior', label: 'Senior' },
-  { value: 'Junior', label: 'Junior' },
-];
-
-const kategoriKaryawanOptions = [
-  { value: 'Staff', label: 'Staff' },
-  { value: 'Manager', label: 'Manager' },
-];
+import useEditContractRequestModal from '@/features/employee/hooks/modals/contract-renewal/useEditContractRequestModal';
 
 interface EditPengajuanKontrakModalProps {
   isOpen: boolean;
@@ -77,50 +31,38 @@ export default function EditPengajuanKontrakModal({
   kontrakData,
   onSuccess,
 }: EditPengajuanKontrakModalProps) {
-  const [jenisPerubahan, setJenisPerubahan] = useState(kontrakData?.jenisPerubahan);
-  const [perusahaan, setPerusahaan] = useState(kontrakData?.perusahaan);
-  const [kantor, setKantor] = useState(kontrakData?.kantor);
-  const [direktorat, setDirektorat] = useState(kontrakData?.direktorat);
-  const [divisi, setDivisi] = useState(kontrakData?.divisi);
-  const [position, setPosition] = useState(kontrakData?.position);
-  const [jabatan, setJabatan] = useState(kontrakData?.jabatan);
-  const [jenjangJabatan, setJenjangJabatan] = useState(kontrakData?.jenjangJabatan);
-  const [kategoriKaryawan, setKategoriKaryawan] = useState(kontrakData?.kategoriKaryawan);
-  const [submitting, setSubmitting] = useState(false);
-
-  // Sync with prop changes
-  useEffect(() => {
-    setJenisPerubahan(kontrakData?.jenisPerubahan);
-    setPerusahaan(kontrakData?.perusahaan);
-    setKantor(kontrakData?.kantor);
-    setDirektorat(kontrakData?.direktorat);
-    setDivisi(kontrakData?.divisi);
-    setPosition(kontrakData?.position);
-    setJabatan(kontrakData?.jabatan);
-    setJenjangJabatan(kontrakData?.jenjangJabatan);
-    setKategoriKaryawan(kontrakData?.kategoriKaryawan);
-  }, [kontrakData]);
-
-  const handleSubmit = () => {
-    setSubmitting(true);
-    // TODO: API call to update pengajuan kontrak
-    setTimeout(() => {
-      setSubmitting(false);
-      onClose();
-      onSuccess?.();
-      console.log('Pengajuan updated:', {
-        jenisPerubahan,
-        perusahaan,
-        kantor,
-        direktorat,
-        divisi,
-        position,
-        jabatan,
-        jenjangJabatan,
-        kategoriKaryawan,
-      });
-    }, 1000);
-  };
+  const {
+    jenisPerubahanOptions,
+    perusahaanOptions,
+    kantorOptions,
+    direktoratOptions,
+    divisiOptions,
+    departemenOptions,
+    positionOptions,
+    jabatanOptions,
+    jenjangJabatanOptions,
+    kategoriKaryawanOptions,
+    jenisPerubahan,
+    setJenisPerubahan,
+    perusahaan,
+    setPerusahaan,
+    kantor,
+    setKantor,
+    direktorat,
+    setDirektorat,
+    divisi,
+    setDivisi,
+    position,
+    setPosition,
+    jabatan,
+    setJabatan,
+    jenjangJabatan,
+    setJenjangJabatan,
+    kategoriKaryawan,
+    setKategoriKaryawan,
+    submitting,
+    handleSubmit,
+  } = useEditContractRequestModal({ kontrakData, onClose, onSuccess });
 
   return (
     <ModalAddEdit
