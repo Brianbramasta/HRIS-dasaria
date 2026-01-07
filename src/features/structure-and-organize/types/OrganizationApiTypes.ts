@@ -1,6 +1,6 @@
 // Types yang mengikuti kontrak API Structure & Organize
 
-export * from './dto/SharedType';
+export * from '../../../types/SharedType';
 export * from './dto/BusinessLineType';
 export * from './dto/CompanyType';
 export * from './dto/OfficeType';

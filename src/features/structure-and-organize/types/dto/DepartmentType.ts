@@ -1,4 +1,4 @@
-import { FileSummary } from './SharedType';
+import { FileSummary } from '../../../../types/SharedType';
 
 export interface DepartmentListItem {
   id: string;
