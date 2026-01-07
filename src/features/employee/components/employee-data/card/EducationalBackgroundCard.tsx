@@ -3,13 +3,10 @@ import Label from '@/components/form/Label';
 import InputField from '@/components/form/input/InputField';
 import Button from '@/components/ui/button/Button';
 import { Edit2 } from 'react-feather';
-import { useModal } from '@/hooks/useModal';
-import EducationalBackgroundModal, { type EducationModalForm } from '@/features/employee/components/modals/employee-data/personal-information/EducationalBackgroundModal';
+import EducationalBackgroundModal from '@/features/employee/components/modals/employee-data/personal-information/EducationalBackgroundModal';
 import { IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
 import LinkPreview from '@/components/shared/form/LinkPreview';
-import { useMemo } from 'react';
-import { usePersonalInformation } from '@/features/employee/hooks/employee-data/detail/contract/usePersonalInformation';
-import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
+import useEducationalBackgroundCard from '@/features/employee/hooks/card/useEducationalBackgroundCard';
 
 interface Props {
   education: any; // API response from employee-master-data
@@ -17,94 +14,17 @@ interface Props {
 }
 
 export default function EducationalBackgroundCard({ education }: Props) {
-  const { isOpen, openModal, closeModal } = useModal(false);
-  const {detail} = useDetailDataKaryawanPersonalInfo();
-  const { updateEducationData, loading: submitting } = usePersonalInformation(detail?.Personal_Data?.id);
-  const employeeId = detail?.Personal_Data?.id;
-  const formalEducation = useMemo(() => education?.formal_educations || [], [education]);
-  const nonFormalEducation = useMemo(() => education?.non_formal_educations || [], [education]);
-
-  // Transform API data ke format modal
-  const initialData: EducationModalForm = useMemo(() => {
-    const educationItems: any[] = [];
-
-    // Transform formal educations
-    formalEducation.forEach((formal: any) => {
-      educationItems.push({
-        id: formal.id,
-        jenisPendidikan: 'formal',
-        jenjang: formal.education_level_id || '',
-        namaLembaga: formal.institution_name || '',
-        gelar: formal.degree || '',
-        nilaiPendidikan: formal.final_grade || '',
-        jurusanKeahlian: formal.major || '',
-        tahunLulus: formal.graduation_year || '',
-        // Non-formal defaults
-        namaSertifikat: '',
-        organisasiPenerbit: '',
-        tanggalPenerbitan: '',
-        tanggalKedaluwarsa: '',
-        idKredensial: '',
-      });
-    });
-
-    // Transform non-formal educations
-    nonFormalEducation.forEach((nonFormal: any) => {
-      educationItems.push({
-        id: nonFormal.id,
-        jenisPendidikan: 'non-formal',
-        jenjang: '',
-        namaLembaga: '',
-        gelar: '',
-        nilaiPendidikan: '',
-        jurusanKeahlian: '',
-        tahunLulus: '',
-        // Non-formal
-        namaSertifikat: nonFormal.certificate_name || '',
-        organisasiPenerbit: nonFormal.institution_name || '',
-        tanggalPenerbitan: nonFormal.start_date || '',
-        tanggalKedaluwarsa: nonFormal.end_date || '',
-        idKredensial: nonFormal.certificate_id || '',
-        fileSertifikat: null,
-      });
-    });
-
-    return {
-      education: educationItems.length > 0 ? educationItems : [
-        {
-          jenisPendidikan: 'formal',
-          jenjang: '',
-          namaLembaga: '',
-          gelar: '',
-          nilaiPendidikan: '',
-          jurusanKeahlian: '',
-          tahunLulus: '',
-          namaSertifikat: '',
-          organisasiPenerbit: '',
-          tanggalPenerbitan: '',
-          tanggalKedaluwarsa: '',
-          idKredensial: '',
-        },
-      ],
-    };
-  }, [formalEducation, nonFormalEducation]);
-
-  const isComplete = Array.isArray(formalEducation) && formalEducation.length > 0 && formalEducation.every((e: any) =>
-    !!e?.education_level && !!e?.institution_name && !!e?.final_grade && !!e?.major && !!e?.graduation_year
-  );
-
-  const handleSubmit = async (payload: EducationModalForm) => {
-    if (!employeeId) {
-      console.error('Employee ID is required');
-      return;
-    }
-    try {
-      await updateEducationData(employeeId, payload as any);
-      closeModal();
-    } catch (error) {
-      console.error('Failed to update education data:', error);
-    }
-  };
+  const {
+    isOpen,
+    openModal,
+    closeModal,
+    initialData,
+    isComplete,
+    formalEducation,
+    nonFormalEducation,
+    submitting,
+    handleSubmit,
+  } = useEducationalBackgroundCard(education);
 
   return (
     <ExpandCard title="Riwayat Pendidikan" leftIcon={isComplete ? <IconLengkap /> : <IconTidakLengkap />} withHeaderDivider>
