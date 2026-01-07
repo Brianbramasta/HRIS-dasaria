@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 import type { Karyawan } from '@/features/employee/types/Employee';
 import Button from '@/components/ui/button/Button';
-import { DataTable, type DataTableColumn, type DataTableAction } from '@/components/shared/datatable/DataTable';
+import { DataTable } from '@/components/shared/datatable/DataTable';
 import AddContractModal from '@/features/employee/components/modals/employee-data/contract/AddContractModal';
 import EditContractModal from '@/features/employee/components/modals/employee-data/contract/EditContractModal';
 import DetailContractModal from '@/features/employee/components/modals/employee-data/contract/DetailContractModal';

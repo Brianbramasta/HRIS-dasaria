@@ -1,4 +1,4 @@
-import { DataTable, type DataTableColumn, type DataTableAction } from '@/components/shared/datatable/DataTable';
+import { DataTable } from '@/components/shared/datatable/DataTable';
 import { type OrgHistoryRow } from '@/features/employee/hooks/employee-data/detail/contract/useOrganizationHistory';
 import { useOrganizationHistoryTab } from '@/features/employee/hooks/tab/useOrganizationHistoryTab';
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import PersonalDataCard from '@/features/employee/components/employee-data/card/PersonalDataCard';
 import EducationalBackgroundCard from '@/features/employee/components/employee-data/card/EducationalBackgroundCard';
 import SocialEmergencyCard from '@/features/employee/components/employee-data/card/SocialEmergencyCard';

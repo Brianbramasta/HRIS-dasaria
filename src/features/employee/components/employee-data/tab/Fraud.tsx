@@ -1,4 +1,4 @@
-import { DataTable, type DataTableColumn, type DataTableAction } from '@/components/shared/datatable/DataTable';
+import { DataTable } from '@/components/shared/datatable/DataTable';
 import PelanggaranModal, { type PelanggaranEntry } from '@/features/employee/components/modals/employee-data/fraud/FraudModal';
 import { useFraudTab } from '@/features/employee/hooks/tab/useFraudTab';
  
