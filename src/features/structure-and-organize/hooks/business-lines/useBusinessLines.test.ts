@@ -2,6 +2,7 @@ import { renderHook, act, waitFor } from '@testing-library/react';
 import { useBusinessLines } from './useBusinessLines';
 import { businessLinesService } from '../../services/request/BusinessLinesService';
 import useFilterStore from '../../../../stores/filterStore';
+import type { BusinessLineListItem, BusinessLineDetailResponse } from '../../types/OrganizationApiTypes';
 
 // Mock dependencies
 jest.mock('../../../../services/api', () => ({
@@ -127,7 +128,7 @@ describe('useBusinessLines Hook', () => {
 
     const { result } = renderHook(() => useBusinessLines({ autoFetch: false }));
 
-    let createdItem;
+    let createdItem: BusinessLineListItem | null = null;
     await act(async () => {
        createdItem = await result.current.createBusinessLine(newLine);
     });
@@ -135,7 +136,8 @@ describe('useBusinessLines Hook', () => {
     expect(mockBusinessLinesService.create).toHaveBeenCalledWith(newLine);
     expect(createdItem).not.toBeNull();
     if (createdItem) {
-        expect(createdItem.name).toBe(newLine.name);
+        const ci = createdItem as BusinessLineListItem;
+        expect(ci.name).toBe(newLine.name);
     }
     expect(mockBusinessLinesService.getList).toHaveBeenCalled();
   });
@@ -166,13 +168,16 @@ describe('useBusinessLines Hook', () => {
 
     const { result } = renderHook(() => useBusinessLines({ autoFetch: false }));
 
-    let updatedItem;
+    let updatedItem: BusinessLineListItem | null = null;
     await act(async () => {
       updatedItem = await result.current.updateBusinessLine('1', updatePayload);
     });
 
     expect(mockBusinessLinesService.update).toHaveBeenCalledWith('1', updatePayload);
-    expect(updatedItem?.name).toBe('Updated');
+    {
+      const ui = updatedItem as BusinessLineListItem | null;
+      expect(ui?.name).toBe('Updated');
+    }
     expect(mockBusinessLinesService.getList).toHaveBeenCalled();
   });
 
@@ -207,14 +212,17 @@ describe('useBusinessLines Hook', () => {
 
     const { result } = renderHook(() => useBusinessLines({ autoFetch: false }));
 
-    let detail;
+    let detail: BusinessLineDetailResponse | null = null;
     await act(async () => {
       detail = await result.current.getDetail('1');
     });
 
     expect(mockBusinessLinesService.getDetail).toHaveBeenCalledWith('1');
     expect(detail).not.toBeNull();
-    expect(detail?.businessLine.name).toBe('Detail Name');
+    {
+      const d = detail as BusinessLineDetailResponse | null;
+      expect(d?.businessLine.name).toBe('Detail Name');
+    }
   });
 
   it('harus mendapatkan dropdown business line', async () => {
@@ -228,7 +236,7 @@ describe('useBusinessLines Hook', () => {
 
     const { result } = renderHook(() => useBusinessLines({ autoFetch: false }));
 
-    let dropdownItems;
+    let dropdownItems: BusinessLineListItem[] = [];
     await act(async () => {
       dropdownItems = await result.current.getDropdown();
     });
@@ -249,12 +257,15 @@ describe('useBusinessLines Hook', () => {
 
     const { result } = renderHook(() => useBusinessLines({ autoFetch: false }));
 
-    let item;
+    let item: BusinessLineListItem | null = null;
     await act(async () => {
       item = await result.current.getById('1');
     });
 
     expect(mockBusinessLinesService.getById).toHaveBeenCalledWith('1');
-    expect(item?.name).toBe('Single Item');
+    {
+      const it = item as BusinessLineListItem | null;
+      expect(it?.name).toBe('Single Item');
+    }
   });
 });
