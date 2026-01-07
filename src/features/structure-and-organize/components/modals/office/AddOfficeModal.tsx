@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { useFileStore } from '@/stores/fileStore';
+import React from 'react';
 import FileInput from '../../../../../components/shared/field/FileInput';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
-import { addNotification } from '@/stores/notificationStore';
 import MultiSelect from '@/components/form/MultiSelect';
-import { useOffices } from '../../../hooks/useOffices';
-import { useCompanies } from '../../../hooks/useCompanies';
+import { useAddOfficeModal } from '../../../hooks/modals/office/useAddOfficeModal';
 
 
 
@@ -18,83 +15,21 @@ interface AddOfficeModalProps {
 }
 
 const AddOfficeModal: React.FC<AddOfficeModalProps> = ({ isOpen, onClose, onSuccess }) => {
-  const [name, setName] = useState('');
-  // DOK: gunakan companyIds sebagai multi-select perusahaan sesuai api.contract.kantor.md
-  const [companyIds, setCompanyIds] = useState<string[]>([]);
-  const [companyOptions, setCompanyOptions] = useState<{ value: string; text: string }[]>([]);
-  const [memoNumber, setMemoNumber] = useState('');
-  const [description, setDescription] = useState('');
-  const skFile = useFileStore((s) => s.skFile);
-  const [submitting, setSubmitting] = useState(false);
-  const { createOffice } = useOffices();
-  const { getDropdown: getCompanyDropdown } = useCompanies();
-
-  useEffect(() => {
-    if (!isOpen) return;
-    (async () => {
-      try {
-        const res = await getCompanyDropdown();
-        console.log('companies', res);
-        setCompanyOptions(res.map((c: any) => ({ value: c.id, text: c.company_name })));
-      } catch (e) {
-        console.error('Failed to fetch companies', e);
-      }
-    })();
-  }, [isOpen, getCompanyDropdown]);
-
-  const handleFileChange = (/*_e: React.ChangeEvent<HTMLInputElement>*/) => {
-    // metadata file dikelola oleh FileInput melalui store
-  };
-
-  // DOK: submit create mengirim company[n][id_company] melalui officesService.create
-  const handleSubmit = async () => {
-    if (!name.trim()) return;
-    if (!skFile?.name){
-      addNotification({
-        variant: 'error',
-        title: 'Office tidak ditambahkan',
-        description: 'File Wajib di isi',
-        hideDuration: 4000,
-      });
-      return;
-    }
-    if (!companyIds.length) {
-      addNotification({
-        variant: 'error',
-        title: 'Office tidak ditambahkan',
-        description: 'Perusahaan wajib diisi',
-        hideDuration: 4000,
-      });
-      return;
-    }
-    setSubmitting(true);
-    try {
-      await createOffice({
-        companyIds: companyIds,
-        name: name.trim(),
-        description: description.trim() || null,
-        memoNumber: memoNumber.trim(),
-        skFile: skFile?.file || undefined,
-      });
-      onSuccess?.();
-      setName('');
-      setCompanyIds([]);
-      setMemoNumber('');
-      setDescription('');
-      useFileStore.getState().clearSkFile();
-      onClose();
-    } catch (err) {
-      console.error('Failed to create office', err);
-      addNotification({
-        variant: 'error',
-        title: 'Office tidak ditambahkan',
-        description: 'Gagal menambahkan office. Silakan coba lagi.',
-        hideDuration: 4000,
-      });
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const {
+    name,
+    setName,
+    companyIds,
+    setCompanyIds,
+    companyOptions,
+    memoNumber,
+    setMemoNumber,
+    description,
+    setDescription,
+    skFile,
+    submitting,
+    handleSubmit,
+    handleFileChange,
+  } = useAddOfficeModal(isOpen, onClose, onSuccess);
 
   return (
     
@@ -142,7 +77,7 @@ const AddOfficeModal: React.FC<AddOfficeModalProps> = ({ isOpen, onClose, onSucc
             className="w-full rounded-xl border border-gray-300 px-4 py-3 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
-
+        
         <FileInput skFileName={skFile?.name || ''} onChange={handleFileChange} />
 
         </>

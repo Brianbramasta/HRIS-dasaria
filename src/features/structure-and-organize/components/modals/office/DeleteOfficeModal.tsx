@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import type { OfficeListItem } from '../../../types/OrganizationApiTypes';
 import ModalDelete from '../../../../../components/shared/modal/ModalDelete';
 import ModalDeleteContent from '../../../../../components/shared/modal/ModalDeleteContent';
-import { addNotification } from '@/stores/notificationStore';
-import { useFileStore } from '@/stores/fileStore';
-import { useOffices } from '../../../hooks/useOffices';
+import { useDeleteOfficeModal } from '../../../hooks/modals/office/useDeleteOfficeModal';
 
 
 interface DeleteOfficeModalProps {
@@ -15,48 +13,8 @@ interface DeleteOfficeModalProps {
 }
 
 const DeleteOfficeModal: React.FC<DeleteOfficeModalProps> = ({ isOpen, onClose, office, onSuccess }) => {
-  const [memoNumber, setMemoNumber] = useState('');
-  const [skFileName, setSkFileName] = useState('');
-  const skFile = useFileStore((s) => s.skFile);
-  const [submitting, setSubmitting] = useState(false);
-  const { deleteOffice } = useOffices();
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setSkFileName(file?.name || '');
-  };
-
-  const handleDelete = async () => {
-    if (!office) return;
-    if (!skFile?.file){
-          addNotification({
-            variant: 'error',
-            title: 'Office tidak ditambahkan',
-            description: 'File Wajib di isi',
-            hideDuration: 4000,
-          });
-          return;
-        }
-    setSubmitting(true);
-    try {
-      await deleteOffice(office.id, {
-        memoNumber: memoNumber.trim(),
-        skFile: skFile.file as File,
-      });
-      onSuccess?.();
-      onClose();
-    } catch (err) {
-      console.error('Failed to delete office', err);
-      addNotification({
-        variant: 'error',
-        title: 'Office tidak dihapus',
-        description: 'Gagal menghapus office. Silakan coba lagi.',
-        hideDuration: 4000,
-      });
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const { memoNumber, setMemoNumber, skFileName, handleFileChange, submitting, handleDelete } =
+    useDeleteOfficeModal(onClose, office, onSuccess);
 
   return (
     <ModalDelete
