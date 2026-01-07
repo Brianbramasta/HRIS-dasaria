@@ -31,8 +31,8 @@ export default function OrganizationHistoryPage() {
     handleDropdownClose,
     handleNavigateToHR,
     handleNavigateToAtasan,
-    setSelectedRow,
-    setIsEditOrgOpen,
+    // setSelectedRow,
+    // setIsEditOrgOpen,
     detail,
   } = useOrganizationHistory();
 

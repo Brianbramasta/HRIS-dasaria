@@ -84,6 +84,10 @@ export default function EmployeeDataCard({ data }: Props) {
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="space-y-4">
           <div>
+            <Label>Kategori Karyawan</Label>
+            <InputField value={data?.employee_category || ''} readonly={true} />
+          </div>
+          <div>
             <Label>Status Karyawan</Label>
             <InputField value={data?.employment_status || ''} readonly={true} />
           </div>
@@ -107,13 +111,13 @@ export default function EmployeeDataCard({ data }: Props) {
             <Label>Direktorat</Label>
             <InputField value={data?.directorate_name || ''} readonly={true} />
           </div>
-          <div>
+         
+        </div>
+        <div className="space-y-4">
+           <div>
             <Label>Divisi</Label>
             <InputField value={data?.division_name || ''} readonly={true} />
           </div>
-        </div>
-
-        <div className="space-y-4">
           <div>
             <Label>Departemen</Label>
             <InputField value={data?.department_name || ''} readonly={true} />
@@ -138,10 +142,7 @@ export default function EmployeeDataCard({ data }: Props) {
             <Label>Status PayRoll</Label>
             <InputField value={data?.payroll_status || ''} readonly={true} />
           </div>
-          <div>
-            <Label>Kategori Karyawan</Label>
-            <InputField value={data?.employee_category || ''} readonly={true} />
-          </div>
+          
         </div>
       </div>
 

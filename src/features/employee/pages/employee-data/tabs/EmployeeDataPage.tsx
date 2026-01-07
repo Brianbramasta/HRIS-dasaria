@@ -9,6 +9,8 @@ import DeleteKaryawanModal from '../../../components/modals/employee-data/Delete
 import ShareLinkModal from '../../../components/modals/sharelink/ShareLinkModal';
 import { IconFileDetail, IconHapus } from '@/icons/components/icons';
 import { formatDateToIndonesian } from '@/utils/formatDate';
+import { useEffect, useState } from 'react';
+import { getEmployeeStatusDropdownOptions, DropdownOption } from '../../../hooks/employee-data/form/useFormulirKaryawan';
 
 
 // Helper function for rendering remaining contract badge
@@ -177,6 +179,17 @@ export default function DataKaryawanPage() {
     autoFetch: true,
   });
 
+  const [employmentStatusFilterOptions, setEmploymentStatusFilterOptions] = useState<DropdownOption[]>([]);
+
+  useEffect(() => {
+    const loadStatusOptions = async () => {
+      const opts = await getEmployeeStatusDropdownOptions();
+      const mapped = (opts || []).map((o) => ({ label: o.label, value: o.value }));
+      setEmploymentStatusFilterOptions(mapped);
+    };
+    loadStatusOptions();
+  }, []);
+
   // Define columns and actions for DataTable
   const columns: DataTableColumn<Karyawan>[] = [
     {
@@ -337,17 +350,12 @@ export default function DataKaryawanPage() {
       format: (value) => value || '-',
     },
     {
-      id: 'employment_status',
+      id: 'employment_status_id',
       label: 'Status Karyawan',
       minWidth: 130,
       sortable: true,
-      filterOptions: [
-        { label: 'Aktif', value: 'aktif' },
-        { label: 'Tidak Aktif', value: 'tidak aktif' },
-        { label: 'Pengunduran Diri', value: 'pengunduran diri' },
-        { label: 'Evaluasi', value: 'evaluasi' },
-      ],
-      format: (value) => renderEmploymentStatusBadge(value),
+      filterOptions: employmentStatusFilterOptions,
+      format: (_, row) => renderEmploymentStatusBadge(row.employment_status as string),
     },
     {
       id: 'payroll_status',
@@ -366,8 +374,8 @@ export default function DataKaryawanPage() {
       minWidth: 150,
       sortable: true,
       filterOptions: [
-        { label: 'Lengkap', value: 'lengkap' },
-        { label: 'Belum Lengkap', value: 'belum lengkap' },
+        { label: 'Lengkap', value: 'Lengkap' },
+        { label: 'Belum Lengkap', value: 'Belum Lengkap' },
       ],
       format: (value) => renderEmployeeDataStatusBadge(value),
     },

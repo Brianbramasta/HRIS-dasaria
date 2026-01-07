@@ -1,4 +1,4 @@
-import  { useMemo } from 'react';
+// import  { useMemo } from 'react';
  
 import { DataTable, type DataTableColumn, type DataTableAction } from '@/components/shared/datatable/DataTable';
 import { IconFileDetail } from '@/icons/components/icons';
@@ -10,12 +10,12 @@ import { formatDateToIndonesian } from '@/utils/formatDate';
 
  
 
-const formatDate = (iso: string) => {
-  if (!iso) return '-';
-  const d = new Date(iso);
-  const fmt = new Intl.DateTimeFormat('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-  return fmt.format(d);
-};
+// const formatDate = (iso: string) => {
+//   if (!iso) return '-';
+//   const d = new Date(iso);
+//   const fmt = new Intl.DateTimeFormat('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+//   return fmt.format(d);
+// };
 
 interface Props { 
   employeeId?: string;

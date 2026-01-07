@@ -121,6 +121,7 @@ const saveToStorage = (data: any) => {
   try {
     // Convert File objects to serializable format
     const serializedData = JSON.stringify(data, (key, value) => {
+      // console.log('key, value', key, value);
       console.log('key, value', key, value);
       if (value instanceof File) {
         return {

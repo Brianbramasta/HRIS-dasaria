@@ -4,7 +4,7 @@ import Button from '@/components/ui/button/Button';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { ChevronDown } from 'react-feather';
 import EditRiwayatOrganisasiModal from '@/features/employee/components/modals/organization-history/EditOrganizationHistoryModal';
-import { IconFileDetail, IconPencil } from '@/icons/components/icons';
+import { IconFileDetail } from '@/icons/components/icons';
 import { useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatUrlFile } from '@/utils/formatUrlFile';

@@ -46,7 +46,7 @@ const PayrollCard: React.FC<PayrollCardProps> = ({
         )}
       >
         <div>
-          <h3 className="text-base font-medium">{title}</h3>
+          <h5 className="text-base font-medium">{title}</h5>
           {desc && (
             <p className="mt-0.5 text-xs opacity-80">{desc}</p>
           )}
