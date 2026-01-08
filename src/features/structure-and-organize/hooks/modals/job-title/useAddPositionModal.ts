@@ -9,7 +9,7 @@ interface UseAddPositionModalParams {
   onSuccess?: () => void;
 }
 
-export function useAddPositionModal({ isOpen, onClose, onSuccess }: UseAddPositionModalParams) {
+export function useAddPositionModal({ onClose, onSuccess }: UseAddPositionModalParams) {
   const [name, setName] = useState('');
   const [grade, setGrade] = useState('');
   const [directSubordinates, setDirectSubordinates] = useState('');

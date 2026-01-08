@@ -2,7 +2,6 @@ import ExpandCard from '@/features/structure-and-organize/components/card/Expand
 import DocumentsTable from '@/features/structure-and-organize/components/table/TableGlobal';
 import Button from '@/components/ui/button/Button';
 import {  Edit2 } from 'react-feather';
-import React from 'react';
 import PersonalDocumentsModal from '@/features/employee/components/modals/employee-data/personal-information/PersonalDocumentsModal';
 import { IconFileDetail, IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
 import { formatUrlFile } from '@/utils/formatUrlFile';

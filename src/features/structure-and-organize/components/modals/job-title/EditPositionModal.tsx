@@ -2,7 +2,6 @@ import ModalAddEdit from "../../../../../components/shared/modal/ModalAddEdit";
 import type { PositionListItem } from "../../../types/OrganizationApiTypes";
 import FileInput from "../../../../../components/shared/field/FileInput";
 import Input from "@/components/form/input/InputField";
-import { addNotification } from "@/stores/notificationStore";
 import { useEditPositionModal } from "../../../hooks/modals/job-title/useEditPositionModal";
 
 type Props = {

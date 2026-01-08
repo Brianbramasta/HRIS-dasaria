@@ -12,7 +12,6 @@ interface UseDeleteEmployeePositionModalParams {
 }
 
 export function useDeleteEmployeePositionModal({
-  isOpen,
   onClose,
   onSuccess,
   employeePosition,

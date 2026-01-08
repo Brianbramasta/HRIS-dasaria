@@ -12,7 +12,6 @@ interface UseDeletePositionModalParams {
 }
 
 export function useDeletePositionModal({
-  isOpen,
   onClose,
   onSuccess,
   position,

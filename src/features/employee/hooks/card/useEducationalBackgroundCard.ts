@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useModal } from '@/hooks/useModal';
 import { usePersonalInformation } from '@/features/employee/hooks/employee-data/detail/contract/usePersonalInformation';
 import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
-import EducationalBackgroundModal, { type EducationModalForm } from '@/features/employee/components/modals/employee-data/personal-information/EducationalBackgroundModal';
+import { type EducationModalForm } from '@/features/employee/components/modals/employee-data/personal-information/EducationalBackgroundModal';
 
 export default function useEducationalBackgroundCard(education: any) {
   const { isOpen, openModal, closeModal } = useModal(false);

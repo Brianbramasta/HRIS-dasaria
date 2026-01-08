@@ -40,7 +40,6 @@ const ContractModal: React.FC<ContractModalProps> = ({
     title,
     optionsContractStatus: optionsConntractStatus,
     optionsContractEndStatus,
-    isLoadingDropdowns,
     handleInput,
     handleDateChange,
     handleFileChange,

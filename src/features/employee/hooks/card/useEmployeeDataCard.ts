@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useModal } from '@/hooks/useModal';
 import { useParams } from 'react-router-dom';
-import EmployeeDataModal, { type EmployeeDataForm } from '@/features/employee/components/modals/employee-data/personal-information/EmployeeDataModal';
+import { type EmployeeDataForm } from '@/features/employee/components/modals/employee-data/personal-information/EmployeeDataModal';
 import usePersonalInformation from '@/features/employee/hooks/employee-data/detail/contract/usePersonalInformation';
 
 export default function useEmployeeDataCard(data: any) {
