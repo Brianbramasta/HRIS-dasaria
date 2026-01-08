@@ -3,6 +3,7 @@ import { useModal } from '@/hooks/useModal';
 import { useParams } from 'react-router-dom';
 import { type EmployeeDataForm } from '@/features/employee/components/modals/employee-data/personal-information/EmployeeDataModal';
 import usePersonalInformation from '@/features/employee/hooks/employee-data/detail/contract/usePersonalInformation';
+import { addNotification } from '@/stores/notificationStore';
 
 export default function useEmployeeDataCard(data: any) {
   const { isOpen, openModal, closeModal } = useModal(false);
@@ -68,6 +69,31 @@ export default function useEmployeeDataCard(data: any) {
 
   const handleSubmit = async (payload: EmployeeDataForm) => {
     if (!id) return;
+    
+    const requiredFields = [
+      { value: payload.employee_category_id, label: 'Kategori Karyawan' },
+      { value: payload.employment_status_id, label: 'Status Karyawan' },
+      { value: payload.start_date, label: 'Tanggal Masuk' },
+      { value: payload.company_id, label: 'Perusahaan' },
+      { value: payload.office_id, label: 'Kantor' },
+      { value: payload.directorate_id, label: 'Direktorat' },
+      { value: payload.division_id, label: 'Divisi' },
+      { value: payload.department_id, label: 'Departemen' },
+      { value: payload.position_id, label: 'Position' },
+      { value: payload.job_title_id, label: 'Jabatan' },
+      { value: payload.position_level_id, label: 'Jenjang Jabatan' },
+      { value: payload.payroll_status, label: 'Status PayRoll' },
+    ];
+    const emptyFields = requiredFields.filter((field) => !field.value);
+
+    if (emptyFields.length > 0) {
+      addNotification({
+        variant: 'error',
+        title: 'Gagal Menyimpan!',
+        description: `Mohon lengkapi data berikut: ${emptyFields.map((f) => f.label).join(', ')}`,
+      });
+      return;
+    }
     await updateEmploymentPosition(id || '', payload);
     closeModal();
   };
