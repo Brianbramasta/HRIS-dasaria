@@ -1,11 +1,12 @@
 // Dokumentasi: Modal Edit Kompensasi
 // Tujuan: Menyediakan form edit dengan field Level Jabatan (Select), Kategori (Select),
 // Nominal General, Nominal Junior, Nominal Middle, Nominal Senior. Menggunakan wrapper ModalAddEdit.
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import Select from '@/components/form/Select';
 import Input from '@/components/form/input/InputField';
+import { useEditCompensationModal } from '@/features/payroll/hooks/modals/payroll-configuration/compensation/useEditCompensationModal';
 
 export type EditKompensasiForm = {
   levelJabatan?: string;
@@ -24,45 +25,15 @@ interface Props {
   submitting?: boolean;
 }
 
-// Dokumentasi: Utility format angka ribuan Indonesia (titik). Membersihkan input ke angka terlebih dahulu.
-const formatRupiah = (val: string) => {
-  const cleaned = (val || '').replace(/[^0-9]/g, '');
-  if (!cleaned) return '';
-  return cleaned.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-};
-
-const LEVEL_JABATAN_OPTIONS = [
-  { value: 'Direktur', label: 'Direktur' },
-  { value: 'Manager', label: 'Manager' },
-  { value: 'Supervisor', label: 'Supervisor' },
-  { value: 'Senior Officer', label: 'Senior Officer' },
-  { value: 'Officer', label: 'Officer' },
-  { value: 'Entry Level', label: 'Entry Level' },
-  { value: 'Under Staff - Internship', label: 'Under Staff - Internship' },
-  { value: 'Under Staff - PKL', label: 'Under Staff - PKL' },
-];
-
-const KATEGORI_OPTIONS = [
-  { value: 'Gaji Pokok', label: 'Gaji Pokok' },
-  { value: 'Uang Saku', label: 'Uang Saku' },
-];
-
-// Dokumentasi: Komponen utama modal edit kompensasi
 const EditKompensasiModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSubmit, submitting = false }) => {
-  const [form, setForm] = useState<EditKompensasiForm>({});
+  const { title, form, handleInput, setNominal, LEVEL_JABATAN_OPTIONS, KATEGORI_OPTIONS, handleSubmit } =
+    useEditCompensationModal({
+      isOpen,
+      initialData,
+      onClose,
+      onSubmit,
+    });
   const title = useMemo(() => 'Edit Kompensasi', []);
-
-  useEffect(() => {
-    setForm(initialData || {});
-  }, [initialData, isOpen]);
-
-  const handleInput = (key: keyof EditKompensasiForm, value: any) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
-  };
-
-  const setNominal = (key: keyof EditKompensasiForm, rawValue: string) => {
-    setForm((prev) => ({ ...prev, [key]: formatRupiah(rawValue) }));
-  };
 
   const content = (
     <div className="space-y-8">
@@ -106,7 +77,7 @@ const EditKompensasiModal: React.FC<Props> = ({ isOpen, initialData, onClose, on
       isOpen={isOpen}
       onClose={onClose}
       content={content}
-      handleSubmit={() => onSubmit(form)}
+      handleSubmit={handleSubmit}
       submitting={!!submitting}
       maxWidth="max-w-3xl"
       confirmTitleButton="Simpan Perubahan"
@@ -116,4 +87,3 @@ const EditKompensasiModal: React.FC<Props> = ({ isOpen, initialData, onClose, on
 };
 
 export default EditKompensasiModal;
-
