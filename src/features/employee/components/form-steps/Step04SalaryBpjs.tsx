@@ -1,8 +1,7 @@
 import React from 'react';
 import { useFormulirKaryawanStore } from '../../stores/useFormulirKaryawanStore';
-import Input from '../../../../components/form/input/InputField';
-import Select from '../../../../components/form/Select';
-import Label from '../../../../components/form/Label';
+import InputField from '../../../../components/shared/field/InputField';
+import SelectField from '../../../../components/shared/field/SelectField';
 import { useAuthStore } from '../../../auth/stores/AuthStore';
 import { usePTKPDropdown } from '../../hooks/employee-data/form/useFromStep';
 import {  BPJS_STATUS_OPTIONS, BPJS_TK_STATUS_OPTIONS } from '../../utils/EmployeeMappings';
@@ -32,8 +31,8 @@ export const Step04SalaryBpjs: React.FC = () => {
           {/* Bank */}
         {isAuthenticated &&  
         (<div className="grid grid-cols-1 mb-4">
-            <Label>Bank</Label>
-            <Select
+            <SelectField
+              label="Bank"
               options={bankOptions}
               defaultValue={step3.bank}
               onChange={(value) => handleChange('bank', value)}
@@ -46,8 +45,8 @@ export const Step04SalaryBpjs: React.FC = () => {
           {/* No. Rekening */}
           {!isAuthenticated && (
           <div>
-            <Label>Bank</Label>
-            <Select
+            <SelectField
+              label="Bank"
               options={bankOptions}
               defaultValue={step3.bank}
               onChange={(value) => handleChange('bank', value)}
@@ -58,10 +57,10 @@ export const Step04SalaryBpjs: React.FC = () => {
 
           {/* No. Rekening */}
           <div>
-            <Label htmlFor="noRekening">No. Rekening</Label>
-            <Input
-              type='number'
+            <InputField
+              type="number"
               id="noRekening"
+              label="No. Rekening"
               placeholder="Masukkan nomor rekening"
               value={step3.noRekening}
               onChange={(e) => handleChange('noRekening', e.target.value)}
@@ -71,9 +70,9 @@ export const Step04SalaryBpjs: React.FC = () => {
 
           {/* Nama Akun Bank */}
           <div>
-            <Label htmlFor="namaAkunBank">Nama Akun Bank</Label>
-            <Input
+            <InputField
               id="namaAkunBank"
+              label="Nama Akun Bank"
               placeholder="Masukkan nama akun"
               value={step3.namaAkunBank}
               onChange={(e) => handleChange('namaAkunBank', e.target.value)}
@@ -83,10 +82,10 @@ export const Step04SalaryBpjs: React.FC = () => {
 
           {/* NPWP */}
           <div>
-            <Label htmlFor="npwp">NPWP</Label>
-            <Input
+            <InputField
               id="npwp"
-              type='number'
+              label="NPWP"
+              type="number"
               placeholder="Masukkan NPWP"
               value={step3.npwp}
               onChange={(e) => handleChange('npwp', e.target.value)}
@@ -97,8 +96,9 @@ export const Step04SalaryBpjs: React.FC = () => {
           {/* PTKP Status */}
           {isAuthenticated && (
             <div>
-              <Label htmlFor="ptkpStatus">PTKP Status</Label>
-              <Select
+              <SelectField
+                htmlFor="ptkpStatus"
+                label="PTKP Status"
                 options={ptkpOptions}
                 defaultValue={step3.ptkpStatus as any}
                 onChange={(value) => handleChange('ptkpStatus', value)}
@@ -120,10 +120,10 @@ export const Step04SalaryBpjs: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* No. BPJS Ketenagakerjaan */}
           <div>
-            <Label htmlFor="noBpjsKetenagakerjaan">No. BPJS Ketenagakerjaan</Label>
-            <Input
-              type='number'
+            <InputField
+              type="number"
               id="noBpjsKetenagakerjaan"
+              label="No. BPJS Ketenagakerjaan"
               placeholder="Masukkan nomor"
               value={step3.noBpjsKetenagakerjaan}
               onChange={(e) => handleChange('noBpjsKetenagakerjaan', e.target.value)}
@@ -133,8 +133,8 @@ export const Step04SalaryBpjs: React.FC = () => {
 
           {/* Status BPJS Ketenagakerjaan */}
           <div>
-            <Label>Status BPJS Ketenagakerjaan</Label>
-            <Select
+            <SelectField
+              label="Status BPJS Ketenagakerjaan"
               options={BPJS_TK_STATUS_OPTIONS}
               defaultValue={step3.statusBpjsKetenagakerjaan}
               onChange={(value) => handleChange('statusBpjsKetenagakerjaan', value)}
@@ -145,10 +145,10 @@ export const Step04SalaryBpjs: React.FC = () => {
 
           {/* No. BPJS Kesehatan */}
           <div>
-            <Label htmlFor="noBpjsKesehatan">No. BPJS Kesehatan</Label>
-            <Input
-            type='number'
+            <InputField
+              type="number"
               id="noBpjsKesehatan"
+              label="No. BPJS Kesehatan"
               placeholder="Masukkan nomor"
               value={step3.noBpjsKesehatan}
               onChange={(e) => handleChange('noBpjsKesehatan', e.target.value)}
@@ -158,8 +158,8 @@ export const Step04SalaryBpjs: React.FC = () => {
 
           {/* Status BPJS Kesehatan */}
           <div>
-            <Label>Status BPJS Kesehatan</Label>
-            <Select
+            <SelectField
+              label="Status BPJS Kesehatan"
               options={BPJS_STATUS_OPTIONS}
               defaultValue={step3.statusBpjsKesehatan}
               onChange={(value) => handleChange('statusBpjsKesehatan', value)}

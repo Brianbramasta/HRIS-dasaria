@@ -1,15 +1,15 @@
 // Refactor Step 2: Tambahkan pilihan jenis pendidikan (Formal/Non-Formal)
 // dan tampilkan field secara kondisional termasuk DatePicker & FileInput.
 import React from 'react';
-import Input from '../../../../components/form/input/InputField';
-import Select from '../../../../components/form/Select';
+import InputField from '../../../../components/shared/field/InputField';
+import SelectField from '../../../../components/shared/field/SelectField';
 import Label from '../../../../components/form/Label';
 import Button from '../../../../components/ui/button/Button';
 import { Trash2 } from 'react-feather';
 import { IconPlus as Plus } from '@/icons/components/icons';
 import { EducationItem } from '../../types/FormEmployee';
-import DatePicker from '../../../../components/form/date-picker';
-import FileInput from '../../../../components/form/input/FileInput';
+import DateField from '../../../../components/shared/field/DateField';
+import FIleField from '../../../../components/shared/field/FIleField';
 import { JENIS_PENDIDIKAN_OPTIONS } from '../../utils/EmployeeMappings';
 import { useStep2Data } from '../../hooks/employee-data/form/useFromStep';
 
@@ -38,8 +38,8 @@ export const Step02EducationalBackground: React.FC = () => {
                 {/* Jenis Pendidikan */}
                 <div className="md:col-span-6 flex w-full gap-5">
                     <div className="w-full">
-                        <Label>Jenis Pendidikan</Label>
-                        <Select
+                        <SelectField
+                          label="Jenis Pendidikan"
                           options={JENIS_PENDIDIKAN_OPTIONS}
                           defaultValue={edu.jenisPendidikan ?? 'formal'}
                           onChange={(value) => updateEducationField(index, 'jenisPendidikan', value)}
@@ -78,8 +78,8 @@ export const Step02EducationalBackground: React.FC = () => {
                 ) === 'formal' && (
                   <>
                     <div className="md:col-span-2">
-                      <Label>Jenjang</Label>
-                      <Select
+                      <SelectField
+                        label="Jenjang"
                         options={pendidikanTerakhir}
                         defaultValue={edu.jenjang}
                         onChange={(value) => updateEducationField(index, 'jenjang', value)}
@@ -87,47 +87,47 @@ export const Step02EducationalBackground: React.FC = () => {
                       />
                     </div>
                     <div className="md:col-span-2">
-                      <Label htmlFor={`namaLembaga-${index}`}>Nama Lembaga</Label>
-                      <Input
+                      <InputField
                         id={`namaLembaga-${index}`}
+                        label="Nama Lembaga"
                         placeholder="Masukkan nama lembaga"
                         value={edu.namaLembaga}
                         onChange={(e) => updateEducationField(index, 'namaLembaga', e.target.value)}
                       />
                     </div>
                     <div className="md:col-span-2">
-                      <Label htmlFor={`gelar-${index}`}>Gelar</Label>
-                      <Input
+                      <InputField
                         id={`gelar-${index}`}
+                        label="Gelar"
                         placeholder="Masukkan gelar"
                         value={edu.gelar}
                         onChange={(e) => updateEducationField(index, 'gelar', e.target.value)}
                       />
                     </div>
                     <div className="md:col-span-2">
-                      <Label htmlFor={`nilaiPendidikan-${index}`}>Nilai Pendidikan Terakhir</Label>
-                      <Input
+                      <InputField
                         id={`nilaiPendidikan-${index}`}
-                        type='number'
+                        label="Nilai Pendidikan Terakhir"
+                        type="number"
                         placeholder="Masukkan nilai"
                         value={edu.nilaiPendidikan}
                         onChange={(e) => updateEducationField(index, 'nilaiPendidikan', e.target.value)}
                       />
                     </div>
                     <div className="md:col-span-2">
-                      <Label htmlFor={`jurusanKeahlian-${index}`}>Jurusan / Keahlian</Label>
-                      <Input
+                      <InputField
                         id={`jurusanKeahlian-${index}`}
+                        label="Jurusan / Keahlian"
                         placeholder="Masukkan jurusan/keahlian"
                         value={edu.jurusanKeahlian}
                         onChange={(e) => updateEducationField(index, 'jurusanKeahlian', e.target.value)}
                       />
                     </div>
                     <div className="md:col-span-2">
-                      <Label htmlFor={`tahunLulus-${index}`}>Tahun Lulus</Label>
-                      <Input
-                        type='number'
+                      <InputField
+                        type="number"
                         id={`tahunLulus-${index}`}
+                        label="Tahun Lulus"
                         placeholder="Masukkan tahun lulus"
                         value={edu.tahunLulus}
                         onChange={(e) => updateEducationField(index, 'tahunLulus', e.target.value)}
@@ -140,25 +140,25 @@ export const Step02EducationalBackground: React.FC = () => {
                 {edu.jenisPendidikan === 'non-formal' && (
                   <>
                     <div className="md:col-span-2">
-                      <Label htmlFor={`namaSertifikat-${index}`}>Nama Sertifikat</Label>
-                      <Input
+                      <InputField
                         id={`namaSertifikat-${index}`}
+                        label="Nama Sertifikat"
                         placeholder="Masukkan nama sertifikat"
                         value={edu.namaSertifikat || ''}
                         onChange={(e) => updateEducationField(index, 'namaSertifikat', e.target.value)}
                       />
                     </div>
                     <div className="md:col-span-2">
-                      <Label htmlFor={`organisasiPenerbit-${index}`}>Organisasi penerbit</Label>
-                      <Input
+                      <InputField
                         id={`organisasiPenerbit-${index}`}
+                        label="Organisasi penerbit"
                         placeholder="Masukkan organisasi penerbit"
                         value={edu.organisasiPenerbit || ''}
                         onChange={(e) => updateEducationField(index, 'organisasiPenerbit', e.target.value)}
                       />
                     </div>
                     <div className="md:col-span-2">
-                      <DatePicker
+                      <DateField
                         id={`tanggalPenerbitan-${index}`}
                         label="Tanggal penerbitan"
                         placeholder="Pilih tanggal"
@@ -167,7 +167,7 @@ export const Step02EducationalBackground: React.FC = () => {
                       />
                     </div>
                     <div className="md:col-span-2">
-                      <DatePicker
+                      <DateField
                         id={`tanggalKedaluwarsa-${index}`}
                         label="Tanggal Kedaluwarsa"
                         placeholder="Pilih tanggal"
@@ -176,17 +176,17 @@ export const Step02EducationalBackground: React.FC = () => {
                       />
                     </div>
                     <div className="md:col-span-2">
-                      <Label htmlFor={`idKredensial-${index}`}>ID Kredensial</Label>
-                      <Input
+                      <InputField
                         id={`idKredensial-${index}`}
+                        label="ID Kredensial"
                         placeholder="Masukkan ID kredensial"
                         value={edu.idKredensial || ''}
                         onChange={(e) => updateEducationField(index, 'idKredensial', e.target.value)}
                       />
                     </div>
                     <div className="md:col-span-2">
-                      <Label>Upload file</Label>
-                      <FileInput
+                      <FIleField
+                        label="Upload file"
                         onChange={(e) => updateEducationField(index, 'fileSertifikat', e.target.files?.[0])}
                       />
                     </div>
@@ -204,9 +204,9 @@ export const Step02EducationalBackground: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="facebook">Facebook</Label>
-            <Input
+            <InputField
               id="facebook"
+              label="Facebook"
               placeholder="https://www.facebook.com/"
               value={step2.facebook}
               onChange={(e) => handleChange('facebook', e.target.value)}
@@ -214,9 +214,9 @@ export const Step02EducationalBackground: React.FC = () => {
           </div>
 
           <div>
-            <Label htmlFor="xCom">X.com</Label>
-            <Input
+            <InputField
               id="xCom"
+              label="X.com"
               placeholder="https://x.com/"
               value={step2.xCom}
               onChange={(e) => handleChange('xCom', e.target.value)}
@@ -224,9 +224,9 @@ export const Step02EducationalBackground: React.FC = () => {
           </div>
 
           <div>
-            <Label htmlFor="linkedin">LinkedIn</Label>
-            <Input
+            <InputField
               id="linkedin"
+              label="LinkedIn"
               placeholder="https://www.linkedin.com/"
               value={step2.linkedin}
               onChange={(e) => handleChange('linkedin', e.target.value)}
@@ -234,9 +234,9 @@ export const Step02EducationalBackground: React.FC = () => {
           </div>
 
           <div>
-            <Label htmlFor="instagram">Instagram</Label>
-            <Input
+            <InputField
               id="instagram"
+              label="Instagram"
               placeholder="https://instagram.com/"
               value={step2.instagram}
               onChange={(e) => handleChange('instagram', e.target.value)}
@@ -244,9 +244,9 @@ export const Step02EducationalBackground: React.FC = () => {
           </div>
 
           <div>
-            <Label htmlFor="akunSosialMediaTerdekat">Akun Sosial Media Orang Terdekat</Label>
-            <Input
+            <InputField
               id="akunSosialMediaTerdekat"
+              label="Akun Sosial Media Orang Terdekat"
               placeholder="https://www.linkedin.com/"
               value={step2.akunSosialMediaTerdekat}
               onChange={(e) => handleChange('akunSosialMediaTerdekat', e.target.value)}
@@ -254,10 +254,10 @@ export const Step02EducationalBackground: React.FC = () => {
           </div>
 
           <div>
-            <Label htmlFor="noKontakDarurat">No. Kontak Darurat</Label>
-            <Input
+            <InputField
               id="noKontakDarurat"
-              type='number'
+              label="No. Kontak Darurat"
+              type="number"
               placeholder="+62"
               value={step2.noKontakDarurat}
               onChange={(e) => handleChange('noKontakDarurat', e.target.value)}
@@ -266,9 +266,9 @@ export const Step02EducationalBackground: React.FC = () => {
           </div>
 
           <div>
-            <Label htmlFor="namaNoKontakDarurat">Nama No. Kontak Darurat</Label>
-            <Input
+            <InputField
               id="namaNoKontakDarurat"
+              label="Nama No. Kontak Darurat"
               placeholder="Masukkan nama"
               value={step2.namaNoKontakDarurat}
               onChange={(e) => handleChange('namaNoKontakDarurat', e.target.value)}
@@ -277,9 +277,9 @@ export const Step02EducationalBackground: React.FC = () => {
           </div>
 
           <div>
-            <Label htmlFor="hubunganKontakDarurat">Hubungan dengan Kontak Darurat</Label>
-            <Input
+            <InputField
               id="hubunganKontakDarurat"
+              label="Hubungan dengan Kontak Darurat"
               placeholder="Masukkan hubungan"
               value={step2.hubunganKontakDarurat}
               onChange={(e) => handleChange('hubunganKontakDarurat', e.target.value)}

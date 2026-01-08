@@ -1,10 +1,9 @@
 import React from 'react';
-import Input from '../../../../components/form/input/InputField';
-import Select from '../../../../components/form/Select';
-import TextArea from '../../../../components/form/input/TextArea';
-import Label from '../../../../components/form/Label';
-import DatePicker from '../../../../components/form/date-picker';
-import FileInput from '../../../../components/form/input/FileInput';
+import InputField from '../../../../components/shared/field/InputField';
+import SelectField from '../../../../components/shared/field/SelectField';
+import TextAreaField from '../../../../components/shared/field/TextAreaField';
+import DateField from '../../../../components/shared/field/DateField';
+import FIleField from '../../../../components/shared/field/FIleField';
 import {  JENIS_KELAMIN_OPTIONS, STATUS_MENIKAH_OPTIONS, GOLONGAN_DARAH_OPTIONS, 
 TANGGUNGAN_OPTIONS } from '../../utils/EmployeeMappings';
 import { useStep1Data } from '../../hooks/employee-data/form/useFromStep';
@@ -28,9 +27,9 @@ export const Step01PersonalData: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Nama Lengkap */}
           <div>
-            <Label htmlFor="namaLengkap">Nama Lengkap</Label>
-            <Input
+            <InputField
               id="namaLengkap"
+              label="Nama Lengkap"
               placeholder="Masukkan nama lengkap"
               value={step1.namaLengkap}
               onChange={(e) => handleChange('namaLengkap', e.target.value)}
@@ -40,9 +39,9 @@ export const Step01PersonalData: React.FC = () => {
 
           {/* Email */}
           <div>
-            <Label htmlFor="email">Email</Label>
-            <Input
+            <InputField
               id="email"
+              label="Email"
               type="email"
               placeholder="Email@example.com"
               value={step1.email}
@@ -53,10 +52,10 @@ export const Step01PersonalData: React.FC = () => {
 
           {/* NIK */}
           <div>
-            <Label htmlFor="nik">NIK</Label>
-            <Input
+            <InputField
               id="nik"
-              type='number'
+              label="NIK"
+              type="number"
               placeholder="Masukkan NIK"
               value={step1.nik}
               onChange={(e) => handleChange('nik', e.target.value)}
@@ -66,8 +65,8 @@ export const Step01PersonalData: React.FC = () => {
 
           {/* Agama */}
           <div>
-            <Label>Agama</Label>
-            <Select
+            <SelectField
+              label="Agama"
               options={agamaOptions}
               defaultValue={step1.agama}
               onChange={(value) => handleChange('agama', value)}
@@ -78,9 +77,9 @@ export const Step01PersonalData: React.FC = () => {
 
           {/* Tempat Lahir */}
           <div>
-            <Label htmlFor="tempatLahir">Tempat Lahir</Label>
-            <Input
+            <InputField
               id="tempatLahir"
+              label="Tempat Lahir"
               placeholder="Masukkan tempat lahir"
               value={step1.tempatLahir}
               onChange={(e) => handleChange('tempatLahir', e.target.value)}
@@ -90,8 +89,8 @@ export const Step01PersonalData: React.FC = () => {
 
           {/* Gol. Darah */}
           <div>
-            <Label>Gol. Darah</Label>
-            <Select
+            <SelectField
+              label="Gol. Darah"
               options={GOLONGAN_DARAH_OPTIONS}
               defaultValue={step1.golDarah}
               onChange={(value) => handleChange('golDarah', value)}
@@ -102,7 +101,7 @@ export const Step01PersonalData: React.FC = () => {
 
           {/* Tanggal Lahir */}
           <div>
-            <DatePicker
+            <DateField
               id="tanggalLahir"
               label="Tanggal Lahir"
               defaultDate={step1.tanggalLahir}
@@ -112,8 +111,8 @@ export const Step01PersonalData: React.FC = () => {
 
           {/* Pendidikan Terakhir */}
           <div>
-            <Label>Pendidikan Terakhir</Label>
-            <Select
+            <SelectField
+              label="Pendidikan Terakhir"
               options={pendidikanOptions}
               defaultValue={step1.pendidikanTerakhir}
               onChange={(value) => handleChange('pendidikanTerakhir', value)}
@@ -124,8 +123,8 @@ export const Step01PersonalData: React.FC = () => {
 
           {/* Jenis Kelamin */}
           <div>
-            <Label>Jenis Kelamin</Label>
-            <Select
+            <SelectField
+              label="Jenis Kelamin"
               options={JENIS_KELAMIN_OPTIONS}
               defaultValue={step1.jenisKelamin}
               onChange={(value) => handleChange('jenisKelamin', value)}
@@ -136,8 +135,8 @@ export const Step01PersonalData: React.FC = () => {
 
           {/* Status Menikah */}
           <div>
-            <Label>Status Menikah</Label>
-            <Select
+            <SelectField
+              label="Status Menikah"
               options={STATUS_MENIKAH_OPTIONS}
               defaultValue={step1.statusMenikah}
               onChange={(value) => handleChange('statusMenikah', value)}
@@ -148,10 +147,10 @@ export const Step01PersonalData: React.FC = () => {
 
           {/* Nomor Telepon */}
           <div>
-            <Label htmlFor="nomorTelepon">Nomor Telepon</Label>
-            <Input
+            <InputField
               id="nomorTelepon"
-              type='number'
+              label="Nomor Telepon"
+              type="number"
               placeholder="+62"
               value={step1.nomorTelepon}
               onChange={(e) => handleChange('nomorTelepon', e.target.value)}
@@ -161,8 +160,8 @@ export const Step01PersonalData: React.FC = () => {
 
           {/* Jumlah Tanggungan sesuai KK */}
           <div>
-            <Label>Jumlah Tanggungan sesuai KK</Label>
-            <Select
+            <SelectField
+              label="Jumlah Tanggungan sesuai KK"
               options={TANGGUNGAN_OPTIONS}
               defaultValue={step1.jumlahTanggungan}
               onChange={(value) => handleChange('jumlahTanggungan', value)}
@@ -172,18 +171,12 @@ export const Step01PersonalData: React.FC = () => {
           </div>
           {/* Upload Foto Profil */}
         <div className="">
-          <Label>Upload Foto Profil</Label>
-          <FileInput onChange={handleFileChange} />
-          {/* {step1.fotoProfil && (
-            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-              File dipilih: {step1.fotoProfil.name}
-            </p>
-          )} */}
+          <FIleField label="Upload Foto Profil" onChange={handleFileChange} />
         </div>
         {/* Alamat KTP */}
           <div>
-            <Label>Alamat KTP</Label>
-            <TextArea
+            <TextAreaField
+              label="Alamat KTP"
               placeholder="Enter as description ..."
               value={step1.alamatKtp}
               onChange={(value) => handleChange('alamatKtp', value)}
@@ -198,8 +191,8 @@ export const Step01PersonalData: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Alamat Domisili */}
           <div>
-            <Label>Alamat Domisili</Label>
-            <TextArea
+            <TextAreaField
+              label="Alamat Domisili"
               placeholder="Enter as description ..."
               value={step1.alamatDomisili}
               onChange={(value) => handleChange('alamatDomisili', value)}
