@@ -1,18 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import Input from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
 import { EyeCloseIcon, EyeIcon } from '@/icons/index';
-
-interface FormValues {
-  idKaryawan: string;
-  nama: string;
-  role: string;
-  departemen: string;
-  email: string;
-  password: string;
-}
+import { useAddRoleModal, FormValues } from '@/features/role-management-access/hooks/modals/useAddRoleModal';
 
 interface TambahRoleModalProps {
   isOpen: boolean;
@@ -27,71 +19,14 @@ const TambahRoleModal: React.FC<TambahRoleModalProps> = ({
   onSubmit,
   employeeOptions = [],
 }) => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [form, setForm] = useState<FormValues>({
-    idKaryawan: '',
-    nama: '',
-    role: '',
-    departemen: '',
-    email: '',
-    password: '',
-  });
-
-  // Mock data untuk demo - dalam implementasi nyata akan diambil dari API berdasarkan idKaryawan
-  const handleEmployeeChange = (value: string) => {
-    setForm((prev) => ({ ...prev, idKaryawan: value }));
-    
-    // Simulasi auto-fill data karyawan
-    // Dalam implementasi nyata, panggil API untuk mendapatkan detail karyawan
-    if (value) {
-      setForm((prev) => ({
-        ...prev,
-        idKaryawan: value,
-        nama: 'Nama dari ID ' + value,
-        role: 'Staff',
-        departemen: 'IT Department',
-        email: 'user@example.com',
-      }));
-    } else {
-      setForm({
-        idKaryawan: '',
-        nama: '',
-        role: '',
-        departemen: '',
-        email: '',
-        password: '',
-      });
-    }
-  };
-
-  const handleSubmit = () => {
-    onSubmit(form);
-    onClose();
-    // Reset form
-    setForm({
-      idKaryawan: '',
-      nama: '',
-      role: '',
-      departemen: '',
-      email: '',
-      password: '',
-    });
-    setShowPassword(false);
-  };
-
-  useEffect(() => {
-    if (!isOpen) {
-      setForm({
-        idKaryawan: '',
-        nama: '',
-        role: '',
-        departemen: '',
-        email: '',
-        password: '',
-      });
-      setShowPassword(false);
-    }
-  }, [isOpen]);
+  const {
+    showPassword,
+    setShowPassword,
+    form,
+    setForm,
+    handleEmployeeChange,
+    handleSubmit,
+  } = useAddRoleModal(isOpen, onClose, onSubmit);
 
   const content = (
     <div className="space-y-5 grid grid-cols-1 md:grid-cols-2 gap-2">
