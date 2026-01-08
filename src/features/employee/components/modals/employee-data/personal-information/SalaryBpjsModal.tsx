@@ -32,7 +32,11 @@ const SalaryBpjsModal: React.FC<Props> = ({
   const content = (
     <div className="space-y-8">
       <div>
-        <h3 className="text-xl font-semibold">Salary</h3>
+        <h2 className="text-3xl font-bold text-start">{title}</h2>
+        <p className="text-sm text-grey-200 font-semibold">Update your details to keep your profile up-to-date.</p>
+      </div>
+      <div>
+        <h3 className="text-xl text-[grey] font-semibold">Gaji</h3>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div className="md:col-span-2">
             <Label>Bank</Label>
@@ -80,7 +84,7 @@ const SalaryBpjsModal: React.FC<Props> = ({
       </div>
 
       <div>
-        <h3 className="text-xl font-semibold">BPJS</h3>
+        <h3 className="text-xl text-[grey] font-semibold">BPJS</h3>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
             <Label>No. BPJS Ketenagakerjaan</Label>
@@ -123,7 +127,7 @@ const SalaryBpjsModal: React.FC<Props> = ({
 
   return (
     <ModalAddEdit
-      title={title}
+      // title={title}
       isOpen={isOpen}
       onClose={onClose}
       content={content}

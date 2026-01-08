@@ -29,11 +29,11 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
     <div className="space-y-8">
       <div>
         <h2 className="text-3xl font-bold text-start">{title}</h2>
-        <h4 className="text-sm text-grey-200 font-semibold">Update your details to keep your profile up-to-date.</h4>
+        <p className="text-sm text-grey-200 font-semibold">Update your details to keep your profile up-to-date.</p>
       </div>
 
       <div>
-        <h3 className="text-2xl text-grey-200 font-semibold">Riwayat Pendidikan</h3>
+        <h3 className="text-2xl text-[grey] font-semibold">Riwayat Pendidikan</h3>
         <div className="space-y-6">
           {form.education.map((edu, idx) => (
             <div className="flex gap-4" key={idx}>

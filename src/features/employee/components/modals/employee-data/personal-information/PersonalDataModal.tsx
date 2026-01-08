@@ -25,7 +25,7 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
     <div>
       <div className='mb-4'>
         <h2 className="text-3xl font-bold text-start mb-2">{title}</h2>
-        <h4 className="text-sm text-grey-200 font-semibold">Update your details to keep your profile up-to-date.</h4>
+        <p className="text-sm text-grey-200 font-semibold">Update your details to keep your profile up-to-date.</p>
       </div>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div>

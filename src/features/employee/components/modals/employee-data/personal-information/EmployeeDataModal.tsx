@@ -44,7 +44,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
     <div className="space-y-8">
       <div>
         <h2 className="text-3xl font-bold text-start">{title}</h2>
-        <h4 className="text-sm text-grey-200 font-semibold">Update your details to keep your profile up-to-date.</h4>
+        <p className="text-sm text-grey-200 font-semibold">Update your details to keep your profile up-to-date.</p>
       </div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">

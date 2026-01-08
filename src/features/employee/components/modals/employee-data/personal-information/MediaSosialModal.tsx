@@ -1,8 +1,7 @@
 // Modal baru: memisahkan input Media Sosial & Kontak Darurat dari modal pendidikan
 import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
-import Label from '@/components/form/Label';
-import InputField from '@/components/form/input/InputField';
+import InputField from '@/components/shared/field/InputField';
 import { useMediaSosialModal, MediaSosialForm } from '@/features/employee/hooks/modals/employee-data/personal-information/useMediaSosialModal';
 
 interface Props {
@@ -20,43 +19,84 @@ const MediaSosialModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSub
     <div className="space-y-8">
       <div>
         <h2 className="text-3xl font-bold text-start">{title}</h2>
-        <h4 className="text-sm text-grey-200 font-semibold">Update your details to keep your profile up-to-date.</h4>
+        <p className="text-sm text-grey-200 font-semibold">Update your details to keep your profile up-to-date.</p>
       </div>
 
       <div>
-        <h3 className="text-2xl text-grey-200 font-semibold">Sosial Media & Kontak darurat</h3>
+        <h3 className="text-2xl text-[grey] font-semibold">Sosial Media & Kontak darurat</h3>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
-            <Label>Facebook</Label>
-            <InputField value={form.facebook || ''} onChange={(e) => setForm((p) => ({ ...p, facebook: e.target.value }))} placeholder="https://www.facebook.com/username" />
+            <InputField
+              label="Facebook"
+              id="facebook"
+              value={form.facebook || ''}
+              onChange={(e) => setForm((p) => ({ ...p, facebook: e.target.value }))}
+              placeholder="https://www.facebook.com/username"
+            />
           </div>
           <div>
-            <Label>X.com</Label>
-            <InputField value={form.xCom || ''} onChange={(e) => setForm((p) => ({ ...p, xCom: e.target.value }))} placeholder="https://x.com/username" />
+            <InputField
+              label="X.com"
+              id="xCom"
+              value={form.xCom || ''}
+              onChange={(e) => setForm((p) => ({ ...p, xCom: e.target.value }))}
+              placeholder="https://x.com/username"
+            />
           </div>
           <div>
-            <Label>Linkedin</Label>
-            <InputField value={form.linkedin || ''} onChange={(e) => setForm((p) => ({ ...p, linkedin: e.target.value }))} placeholder="https://www.linkedin.com/in/username" />
+            <InputField
+              label="Linkedin"
+              id="linkedin"
+              value={form.linkedin || ''}
+              onChange={(e) => setForm((p) => ({ ...p, linkedin: e.target.value }))}
+              placeholder="https://www.linkedin.com/in/username"
+            />
           </div>
           <div>
-            <Label>Instagram</Label>
-            <InputField value={form.instagram || ''} onChange={(e) => setForm((p) => ({ ...p, instagram: e.target.value }))} placeholder="https://instagram.com/username" />
+            <InputField
+              label="Instagram"
+              id="instagram"
+              value={form.instagram || ''}
+              onChange={(e) => setForm((p) => ({ ...p, instagram: e.target.value }))}
+              placeholder="https://instagram.com/username"
+            />
           </div>
           <div>
-            <Label>Akun Sosial Media Orang Terdekat</Label>
-            <InputField value={form.akunSosialMediaTerdekat || ''} onChange={(e) => setForm((p) => ({ ...p, akunSosialMediaTerdekat: e.target.value }))} placeholder="https://..." />
+            <InputField
+              label="Akun Sosial Media Orang Terdekat"
+              id="akunSosialMediaTerdekat"
+              value={form.akunSosialMediaTerdekat || ''}
+              onChange={(e) => setForm((p) => ({ ...p, akunSosialMediaTerdekat: e.target.value }))}
+              placeholder="https://..."
+              required
+            />
           </div>
           <div>
-            <Label>No. Kontak Darurat</Label>
-            <InputField value={form.noKontakDarurat || ''} onChange={(e) => setForm((p) => ({ ...p, noKontakDarurat: e.target.value }))} />
+            <InputField
+              label="No. Kontak Darurat"
+              id="noKontakDarurat"
+              value={form.noKontakDarurat || ''}
+              onChange={(e) => setForm((p) => ({ ...p, noKontakDarurat: e.target.value }))}
+              required
+            />
           </div>
           <div>
-            <Label>Nama No. Kontak Darurat</Label>
-            <InputField value={form.namaNoKontakDarurat || ''} onChange={(e) => setForm((p) => ({ ...p, namaNoKontakDarurat: e.target.value }))} />
+            <InputField
+              label="Nama No. Kontak Darurat"
+              id="namaNoKontakDarurat"
+              value={form.namaNoKontakDarurat || ''}
+              onChange={(e) => setForm((p) => ({ ...p, namaNoKontakDarurat: e.target.value }))}
+              required
+            />
           </div>
           <div>
-            <Label>Hubungan dengan Kontak Darurat</Label>
-            <InputField value={form.hubunganKontakDarurat || ''} onChange={(e) => setForm((p) => ({ ...p, hubunganKontakDarurat: e.target.value }))} />
+            <InputField
+              label="Hubungan dengan Kontak Darurat"
+              id="hubunganKontakDarurat"
+              value={form.hubunganKontakDarurat || ''}
+              onChange={(e) => setForm((p) => ({ ...p, hubunganKontakDarurat: e.target.value }))}
+              required
+            />
           </div>
         </div>
       </div>
