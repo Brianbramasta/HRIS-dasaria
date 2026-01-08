@@ -24,7 +24,7 @@ export default function DetailKaryawanPage() {
   useEffect(() => { fetchDetail(id!); }, [id, fetchDetail]);
 
   const tabs = [
-    { id: 'personal-information', label: 'Personal Information' },
+    { id: 'personal-information', label: 'Infomasi Pribadi' },
     { id: 'contract', label: 'Kontrak' },
     { id: 'organization-history', label: 'Riwayat Organisasi' },
     { id: 'pelanggaran', label: 'Pelanggaran' },

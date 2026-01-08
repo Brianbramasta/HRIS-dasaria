@@ -604,6 +604,12 @@ const mapSocialMediaModalToPayload = useCallback(
         //     ...data,
         //     socialMedia: updatedSocialMedia,
         //   });
+        addNotification({ 
+            variant: 'success',
+            title: 'Berhasil',
+            description: 'Data sosial media berhasil diperbarui.',
+            hideDuration: 3000 });
+            fetchDetail(id);
         } else {
           setError(response.message || 'Failed to update social media data');
         }
