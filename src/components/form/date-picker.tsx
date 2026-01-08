@@ -141,7 +141,18 @@ export default function DatePicker({
 
   // Inisialisasi dari defaultDate
   useEffect(() => {
-    if (!defaultDate) return;
+    if (!defaultDate) {
+      setSingleDate("");
+      setMultipleDates(new Set());
+      setRangeStart("");
+      setRangeEnd("");
+      setCommittedSingle("");
+      setCommittedMultiple(new Set());
+      setCommittedRangeStart("");
+      setCommittedRangeEnd("");
+      // Reset time if needed, though usually not critical for date picker
+      return;
+    }
 
     // Logika parsing defaultDate tetap menggunakan struktur data untuk menebak/mengisi state
     // Kita gunakan 'mode' prop asli atau deteksi bentuk data untuk inisialisasi awal
