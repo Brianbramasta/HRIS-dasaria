@@ -65,8 +65,8 @@ export default function SlipPayrollModal({
   takeHomePayLabel = 'Take Home Pay',
 }: SlipPayrollModalProps) {
   const {
-    totalPenerimaan,
-    totalPotongan,
+    // totalPenerimaan,
+    // totalPotongan,
     takeHomePay,
     resolvedTitle,
     resolvedTakeHomePayLabel,

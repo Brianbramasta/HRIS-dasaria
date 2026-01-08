@@ -18,7 +18,8 @@ export type ContractEntry = {
   contract_status_name?: string;
   last_contract_signed_date: string; // yyyy-MM-dd
   end_date: string; // yyyy-MM-dd
-  contract_type: string; // PKWT / PKWTT / dll
+  contract_type_id: string; // PKWT / PKWTT / dll
+  contract_type_name?: string; // PKWT / PKWTT / dll
   contract_number: number;
   contract_end_status_id?: string;
   contract_end_status_name?: string;
@@ -100,7 +101,7 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
       </div>
 
       {/* TTD Kontrak Terakhir */}
-      <div className={form.contract_type === 'PKWTT' ? 'md:col-span-2' : ''}>
+      <div className={form.contract_type_name === 'PKWTT' ? 'md:col-span-2' : ''}>
         <DatePicker
           id="last_contract_signed_date"
           label="TTD Kontrak Terakhir"
@@ -112,7 +113,7 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
       </div>
 
       {/* Berakhir Kontrak */}
-     {form.contract_type !== 'PKWTT' && <div>
+     {form.contract_type_name !== 'PKWTT' && <div>
         <DatePicker
           id="end_date"
           label="Berakhir Kontrak"
@@ -130,8 +131,8 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
         <Select
           options={jenisKontrakOptions}
           placeholder="Select"
-          defaultValue={form.contract_type}
-          onChange={(v) => onInputChange('contract_type', v)}
+          defaultValue={form.contract_type_id}
+          onChange={(v) => onInputChange('contract_type_id', v)}
           disabled={isReadonly}
           required
         />

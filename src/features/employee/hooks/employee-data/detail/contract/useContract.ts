@@ -12,7 +12,8 @@ export type ContractEntry = {
   contract_status_name?: string;
   last_contract_signed_date: string;
   end_date: string;
-  contract_type: string;
+  contract_type_id: string;
+  contract_type_name?: string;
   contract_number: number;
   contract_end_status_id?: string;
   contract_end_status_name?: string;
@@ -103,7 +104,8 @@ export interface UpdateContractPayload extends FormData {
 export async function updateContract(
   employeeId: string,
   contractId: string,
-  payload: UpdateContractPayload
+  payload: UpdateContractPayload,
+  fetchContractData?: () => Promise<void>
 ) {
   try {
     console.log('Updating contract with payload:', payload);
@@ -114,6 +116,9 @@ export async function updateContract(
       variant: 'success',
       hideDuration: 5000,
     });
+    if (fetchContractData) {
+      await fetchContractData();
+    }
     return response;
   } catch (err: any) {
     const errorMessage = err?.message || 'Failed to update contract';
@@ -140,7 +145,8 @@ export function useAdd() {
       contract_status_id: '',
       last_contract_signed_date: '',
       end_date: '',
-      contract_type: '',
+      contract_type_id: '',
+      contract_type_name: '',
       contract_number: (summary.contract_number ?? 0) + 1,
       contract_end_status_id: '',
       deskripsi: '',
@@ -170,11 +176,11 @@ export function useAddSubmit(createContract: (payload: CreateContractPayload) =>
     const payload: CreateContractPayload = {
       contract_status_id: entry.contract_status_id,
       last_contract_signed_date: entry.last_contract_signed_date,
-      contract_type_id: entry.contract_type,
+      contract_type_id: entry.contract_type_id,
       contract_number: String(entry.contract_number),
       file_contract: selectedFile || new File([], ''),
     };
-    if (entry.contract_type !== 'PKWTT') {
+    if (entry.contract_type_name !== 'PKWTT') {
       payload.end_date = entry.end_date;
     }
 
@@ -190,7 +196,7 @@ export function useAddSubmit(createContract: (payload: CreateContractPayload) =>
 /**
  * Hook untuk handle edit contract logic
  */
-export function useEdit() {
+export function useEdit(fetchContractData?: () => Promise<void>) {
   const handleEditRow = async (row: ContractHistoryItem, detail: any) => {
     const response = await getContractForEdit(row.id as unknown as string);
     const data = response.data as any;
@@ -202,7 +208,8 @@ export function useEdit() {
       contract_status_name: data.contract_status_name,
       last_contract_signed_date: data.last_contract_signed_date,
       end_date: data.end_date,
-      contract_type: data.contract_type,
+      contract_type_id: data.contract_type_id,
+      contract_type_name: data.contract_type_name,
       contract_number: data.contract_number,
       contract_end_status_id: data.contract_end_status_id,
       contract_end_status_name: data.contract_end_status_name,
@@ -232,7 +239,7 @@ export function useEdit() {
     }
 
     try {
-      await updateContract(employeeId, entry.id, formData as any);
+      await updateContract(employeeId, entry.id, formData as any, fetchContractData);
       onSuccess();
     } catch (err: any) {
       console.error('Update contract error:', err);
@@ -257,7 +264,8 @@ export function useDetail() {
       contract_status_name: data.contract_status_name,
       last_contract_signed_date: data.last_contract_signed_date,
       end_date: data.end_date,
-      contract_type: data.contract_type,
+      contract_type_id: data.contract_type_id,
+      contract_type_name: data.contract_type_name,
       contract_number: data.contract_number,
       contract_end_status_id: data.contract_end_status_id,
       contract_end_status_name: data.contract_end_status_name,
@@ -406,7 +414,7 @@ export function useContractTab({ employeeIdProp, data }: UseContractTabProps): U
   const employeeId = employeeIdProp || memoizedEmployeeId;
 
   // Use contract hook
-  const { contractData, isSubmitting, createContract } = useContract({
+  const { contractData, isSubmitting, createContract, fetchContractData } = useContract({
     employeeId,
     autoFetch: !!employeeId,
   });
@@ -414,7 +422,7 @@ export function useContractTab({ employeeIdProp, data }: UseContractTabProps): U
   // Use sub-hooks
   const { handleAdd: handleAddLogic } = useAdd();
   const { handleAddSubmit: onAddSubmit } = useAddSubmit(createContract);
-  const { handleEditRow: handleEditRowLogic, handleEditSubmit: onEditSubmit } = useEdit();
+  const { handleEditRow: handleEditRowLogic, handleEditSubmit: onEditSubmit } = useEdit(fetchContractData);
   const { handleViewDetail: handleViewDetailLogic } = useDetail();
 
   // State management
@@ -423,7 +431,8 @@ export function useContractTab({ employeeIdProp, data }: UseContractTabProps): U
     contract_status_id: '',
     last_contract_signed_date: '',
     end_date: '',
-    contract_type: '',
+    contract_type_id: '',
+    contract_type_name: '',
     contract_number: 0,
     contract_end_status_id: '',
     deskripsi: '',
@@ -450,7 +459,8 @@ export function useContractTab({ employeeIdProp, data }: UseContractTabProps): U
         last_contract_signed_date: contractData.summary?.ttd_kontrak_terakhir,
         lamaBekerja: contractData.summary?.lama_bekerja,
         end_date: contractData.summary?.berakhir_kontrak,
-        contract_type: contractData.summary?.jenis_kontrak,
+        contract_type_id: contractData.summary?.jenis_kontrak || '',
+        contract_type_name: contractData.summary?.jenis_kontrak || '',
         contract_number: contractData.summary?.kontrak_ke,
         contract_end_status_id: contractData.summary?.contract_end_status_id || '',
         deskripsi: '',
