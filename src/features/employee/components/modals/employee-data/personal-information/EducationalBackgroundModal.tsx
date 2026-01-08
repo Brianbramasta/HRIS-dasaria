@@ -84,6 +84,7 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
                         defaultValue={edu.jenjang}
                         onChange={(value) => updateEducationField(idx, 'jenjang', value)}
                         placeholder="Select"
+                        required
                       />
                     </div>
                     <div className="md:col-span-2">
@@ -92,6 +93,7 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
                         placeholder="Masukkan nama lembaga"
                         value={edu.namaLembaga}
                         onChange={(e) => updateEducationField(idx, 'namaLembaga', e.target.value)}
+                        required
                       />
                     </div>
                     <div className="md:col-span-2">
@@ -109,6 +111,7 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
                         placeholder="Masukkan nilai"
                         value={edu.nilaiPendidikan}
                         onChange={(e) => updateEducationField(idx, 'nilaiPendidikan', e.target.value)}
+                        required
                       />
                     </div>
                     <div className="md:col-span-2">
@@ -126,6 +129,7 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
                         placeholder="Masukkan tahun lulus"
                         value={edu.tahunLulus}
                         onChange={(e) => updateEducationField(idx, 'tahunLulus', e.target.value)}
+                        required
                       />
                     </div>
                   </>
@@ -140,6 +144,7 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
                         placeholder="Masukkan nama sertifikat"
                         value={edu.namaSertifikat || ''}
                         onChange={(e) => updateEducationField(idx, 'namaSertifikat', e.target.value)}
+                        required
                       />
                     </div>
                     <div className="md:col-span-2">
@@ -148,6 +153,7 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
                         placeholder="Masukkan organisasi penerbit"
                         value={edu.organisasiPenerbit || ''}
                         onChange={(e) => updateEducationField(idx, 'organisasiPenerbit', e.target.value)}
+                        required
                       />
                     </div>
                     <div className="md:col-span-2">
@@ -157,6 +163,8 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
                         placeholder="Pilih tanggal"
                         defaultDate={edu.tanggalPenerbitan || ''}
                         onChange={(_d, dateStr) => updateEducationField(idx, 'tanggalPenerbitan', dateStr)}
+                        required
+                        
                       />
                     </div>
                     <div className="md:col-span-2">
@@ -166,6 +174,7 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
                         placeholder="Pilih tanggal"
                         defaultDate={edu.tanggalKedaluwarsa || ''}
                         onChange={(_d, dateStr) => updateEducationField(idx, 'tanggalKedaluwarsa', dateStr)}
+                        required
                       />
                     </div>
                     <div className="md:col-span-2">
@@ -174,6 +183,7 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
                         placeholder="Masukkan ID kredensial"
                         value={edu.idKredensial || ''}
                         onChange={(e) => updateEducationField(idx, 'idKredensial', e.target.value)}
+                        required
                       />
                     </div>
                     <div className="md:col-span-2">

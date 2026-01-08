@@ -219,6 +219,29 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
       onClose={onClose}
       content={content}
       handleSubmit={() => {
+        // const requiredKeys: Array<keyof EmployeeDataForm> = [
+        //   'employment_status_id',
+        //   'start_date',
+        //   'company_id',
+        //   'office_id',
+        //   'directorate_id',
+        //   'division_id',
+        //   'department_id',
+        //   'position_id',
+        //   'job_title_id',
+        //   'position_level_id',
+        //   'employee_category_id',
+        //   'payroll_status',
+        // ];
+        // const isValid = requiredKeys.every((k) => {
+        //   const v = (form as any)?.[k];
+        //   if (typeof v === 'string') return v.trim() !== '';
+        //   return v !== null && v !== undefined;
+        // });
+        // if (!isValid) {
+        //   alert('Semua form wajib diisi.');
+        //   return;
+        // }
         onSubmit(form);
       }}
       isSubmit={!isDisabledField}

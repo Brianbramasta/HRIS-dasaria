@@ -31,7 +31,7 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div>
           <Label>Nama Lengkap</Label>
-          <InputField value={form.namaLengkap} onChange={(e) => handleInput('namaLengkap', e.target.value)} required />
+          <InputField value={form.namaLengkap} onChange={(e) => handleInput('namaLengkap', e.target.value)} required  />
         </div>
         <div>
           <Label>Email</Label>
