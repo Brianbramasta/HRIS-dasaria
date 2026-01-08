@@ -1,44 +1,19 @@
-// Dokumentasi: Modal edit Tunjangan Tidak Tetap
-// Menggunakan ModalAddEdit sebagai wrapper dan InputField untuk form.
-import React, { useState, useMemo } from 'react';
+import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import Input from '@/components/form/input/InputField';
 import type { ModalProps } from '@/features/payroll/components/layouts/LayoutDetail';
-
-interface FormValues {
-  pph21: string;
-  pendidikan: string;
-  performa: string;
-}
+import { useAddNonRecurringAllowanceModal } from '@/features/payroll/hooks/modals/detail-payroll/non-ae/useAddNonRecurringAllowanceModal';
 
 type Props = ModalProps;
 
-// Dokumentasi: Utility format angka ke format ribuan Indonesia (titik)
-const formatRupiah = (val: string) => {
-  const cleaned = (val || '').replace(/[^0-9]/g, '');
-  if (!cleaned) return '';
-  return cleaned.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-};
-
-// Dokumentasi: Modal utama untuk mengedit nilai tunjangan tidak tetap
 const TambahTunjanganTidakTetapModal: React.FC<Props> = ({
   isOpen,
   onClose,
   defaultValues,
   onSave,
 }) => {
-  const initial: FormValues = useMemo(() => ({
-    pph21: formatRupiah(defaultValues?.pph21 ?? ''),
-    pendidikan: formatRupiah(defaultValues?.pendidikan ?? ''),
-    performa: formatRupiah(defaultValues?.performa ?? ''),
-  }), [defaultValues]);
-
-  const [form, setForm] = useState<FormValues>(initial);
-
-  const setField = (key: keyof FormValues, value: string) => {
-    setForm((prev) => ({ ...prev, [key]: formatRupiah(value) }));
-  };
+  const { form, setField, handleSubmit } = useAddNonRecurringAllowanceModal(defaultValues as any);
 
   const content = (
     <div className="space-y-5">
@@ -57,18 +32,13 @@ const TambahTunjanganTidakTetapModal: React.FC<Props> = ({
     </div>
   );
 
-  const handleSubmit = () => {
-    onSave(form as unknown as Record<string, string>);
-    onClose();
-  };
-
   return (
     <ModalAddEdit
       title={'Tunjangan Tidak Tetap'}
       isOpen={isOpen}
       onClose={onClose}
       content={content}
-      handleSubmit={handleSubmit}
+      handleSubmit={() => handleSubmit(onSave, onClose)}
       submitting={false}
       maxWidth="max-w-lg"
       confirmTitleButton="Simpan Perubahan"
