@@ -1,27 +1,11 @@
-// Dokumentasi: Modal edit Tunjangan Tidak Tetap (AE)
-// Field: Komisi Sales, Komisi Survey Sales, Growth Reward, Insentif, Fee Mitra Subnet
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import Input from '@/components/form/input/InputField';
 import type { ModalProps } from '@/features/payroll/components/layouts/LayoutDetail';
-
-interface FormValues {
-  komisiSales: string;
-  komisiSurveySales: string;
-  growthReward: string;
-  insentif: string;
-  feeMitraSubnet: string;
-}
+import { useAddNonRecurringAllowanceAEModal } from '@/features/payroll/hooks/modals/detail-payroll/ae/useAddNonRecurringAllowanceAEModal';
 
 type Props = ModalProps;
-
-// Dokumentasi: Format angka ribuan dengan titik pemisah
-const formatRupiah = (val: string) => {
-  const cleaned = (val || '').replace(/[^0-9]/g, '');
-  if (!cleaned) return '';
-  return cleaned.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-};
 
 const TambahTunjanganTidakTetapModalAE: React.FC<Props> = ({
   isOpen,
@@ -29,19 +13,7 @@ const TambahTunjanganTidakTetapModalAE: React.FC<Props> = ({
   defaultValues,
   onSave,
 }) => {
-  const initial: FormValues = useMemo(() => ({
-    komisiSales: formatRupiah(defaultValues?.komisiSales ?? ''),
-    komisiSurveySales: formatRupiah(defaultValues?.komisiSurveySales ?? ''),
-    growthReward: formatRupiah(defaultValues?.growthReward ?? ''),
-    insentif: formatRupiah(defaultValues?.insentif ?? ''),
-    feeMitraSubnet: formatRupiah(defaultValues?.feeMitraSubnet ?? ''),
-  }), [defaultValues]);
-
-  const [form, setForm] = useState<FormValues>(initial);
-
-  const setField = (key: keyof FormValues, value: string) => {
-    setForm((prev) => ({ ...prev, [key]: formatRupiah(value) }));
-  };
+  const { form, setField, handleSubmit } = useAddNonRecurringAllowanceAEModal(defaultValues as any);
 
   const content = (
     <div className="space-y-5">
@@ -68,18 +40,13 @@ const TambahTunjanganTidakTetapModalAE: React.FC<Props> = ({
     </div>
   );
 
-  const handleSubmit = () => {
-    onSave(form as unknown as Record<string, string>);
-    onClose();
-  };
-
   return (
     <ModalAddEdit
       title={'Tunjangan Tidak Tetap'}
       isOpen={isOpen}
       onClose={onClose}
       content={content}
-      handleSubmit={handleSubmit}
+      handleSubmit={() => handleSubmit(onSave, onClose)}
       submitting={false}
       maxWidth="max-w-lg"
       confirmTitleButton="Simpan Perubahan"

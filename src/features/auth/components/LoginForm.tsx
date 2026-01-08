@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { EyeCloseIcon, EyeIcon } from '../../../icons';
 import Label from '../../../components/form/Label';
@@ -11,32 +10,16 @@ interface LoginFormProps {
   onSubmit: (data: LoginRequest) => Promise<void>;
   isLoading?: boolean;
   error?: string | null;
+  formData: LoginRequest;
+  showPassword: boolean;
+  keepMeLoggedIn: boolean;
+  onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onKeepMeLoggedInChange: (checked: boolean) => void;
+  onToggleShowPassword: () => void;
 }
 
-export default function LoginForm({ onSubmit, isLoading = false, error = null }: LoginFormProps) {
-  const [showPassword, setShowPassword] = useState(false);
-  const [keepMeLoggedIn, setKeepMeLoggedIn] = useState(false);
-  const [formData, setFormData] = useState<LoginRequest>({
-    email: '',
-    password: '',
-    rememberMe: false,
-  });
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleKeepMeLoggedInChange = (checked: boolean) => {
-    setKeepMeLoggedIn(checked);
-    setFormData(prev => ({
-      ...prev,
-      rememberMe: checked,
-    }));
-  };
+export default function LoginForm({ onSubmit, isLoading = false, error = null, formData, showPassword, keepMeLoggedIn, onInputChange, onKeepMeLoggedInChange, onToggleShowPassword }: LoginFormProps) {
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,7 +55,7 @@ export default function LoginForm({ onSubmit, isLoading = false, error = null }:
             type="email"
             placeholder="Enter your email"
             value={formData.email}
-            onChange={handleInputChange}
+            onChange={onInputChange}
             required
             disabled={isLoading}
             className="w-full"
@@ -88,14 +71,14 @@ export default function LoginForm({ onSubmit, isLoading = false, error = null }:
               type={showPassword ? 'text' : 'password'}
               placeholder="Enter your password"
               value={formData.password}
-              onChange={handleInputChange}
+              onChange={onInputChange}
               required
               disabled={isLoading}
               className="w-full pr-12"
             />
             <button
               type="button"
-              onClick={() => setShowPassword(!showPassword)}
+              onClick={onToggleShowPassword}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
               disabled={isLoading}
             >
@@ -113,7 +96,7 @@ export default function LoginForm({ onSubmit, isLoading = false, error = null }:
             <Checkbox
               id="keep-me-logged-in"
               checked={keepMeLoggedIn}
-              onChange={handleKeepMeLoggedInChange}
+              onChange={onKeepMeLoggedInChange}
               disabled={isLoading}
             />
             <Label htmlFor="keep-me-logged-in" className="text-sm font-normal text-gray-700 dark:text-gray-300">

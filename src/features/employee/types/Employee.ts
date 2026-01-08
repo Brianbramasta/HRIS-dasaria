@@ -1,3 +1,5 @@
+
+
 export interface Karyawan {
   // Core Identity
   id: string;
@@ -169,18 +171,6 @@ export interface KaryawanListResponse {
   limit?: number;
 }
 
-export interface KaryawanFilterParams {
-  search?: string;
-  company?: string;
-  department?: string;
-  status?: string;
-  page?: number;
-  limit?: number;
-  sortBy?: string;
-  order?: 'asc' | 'desc';
-  filter?: string;
-}
-
 // ========================================
 // API Service Related Types
 // ========================================
@@ -196,20 +186,7 @@ export interface EmployeeListParams {
 }
 
 // Interface untuk pagination response
-export interface PaginatedResponse<T> {
-  current_page: number;
-  data: T[];
-  first_page_url: string;
-  from: number;
-  last_page: number;
-  last_page_url: string;
-  next_page_url: string | null;
-  path: string;
-  per_page: number;
-  prev_page_url: string | null;
-  to: number;
-  total: number;
-}
+// Removed in favor of ApiPaginatedResponse from SharedType
 
 // Interface untuk Employee List Item (API Response)
 export interface EmployeeListItem {

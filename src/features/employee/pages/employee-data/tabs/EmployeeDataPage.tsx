@@ -442,7 +442,7 @@ export default function DataKaryawanPage() {
         searchable={true}
         searchPlaceholder="Cari berdasarkan kata kunci"
         pageSize={limit}
-        pageSizeOptions={[5, 10, 25, 50]}
+        // pageSizeOptions={[5, 10, 25, 50]}
         onAdd={handleAddKaryawan}
         addButtonLabel="Tambah Karyawan"
         onExport={handleExportKaryawan}

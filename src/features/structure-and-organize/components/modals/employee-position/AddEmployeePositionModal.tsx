@@ -1,16 +1,10 @@
 // Dokumentasi: Modal tambah Posisi Pegawai dengan dropdown dinamis menggunakan hooks
-import React, { useEffect, useMemo, useState } from 'react';
+import React from 'react';
 import type { EmployeePositionListItem } from '../../../types/OrganizationApiTypes';
-import { useFileStore } from '@/stores/fileStore';
 import FileInput from '../../../../../components/shared/field/FileInput';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
-import { addNotification } from '@/stores/notificationStore';
 import Select from '@/components/form/Select';
-import { useEmployeePositions } from '../../../hooks/useEmployeePositions';
-import { usePositions } from '../../../hooks/useJobTitle';
-import { useDirectorates } from '../../../hooks/useDirectorates';
-import { useDivisions } from '../../../hooks/useDivisions';
-import { useDepartments } from '../../../hooks/useDepartments';
+import { useAddEmployeePositionModal } from '../../../hooks/modals/employee-position/useAddEmployeePositionModal';
 
 interface AddEmployeePositionModalProps {
   isOpen: boolean;
@@ -19,106 +13,34 @@ interface AddEmployeePositionModalProps {
 }
 
 const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isOpen, onClose, onSuccess }) => {
-  const [name, setName] = useState('');
-  const [jabatan, setJabatan] = useState('');
-  const [direktorat, setDirektorat] = useState('');
-  const [divisi, setDivisi] = useState('');
-  const [departemen, setDepartemen] = useState('');
-  const [memoNumber, setMemoNumber] = useState('');
-  const [description, setDescription] = useState('');
-  const skFile = useFileStore((s) => s.skFile);
-  const [submitting, setSubmitting] = useState(false);
-  const { createEmployeePosition } = useEmployeePositions();
-  const { getDropdown: getPositionDropdown } = usePositions();
-  const { getDropdown: getDirectorateDropdown } = useDirectorates();
-  const { getDropdown: getDivisionDropdown } = useDivisions();
-  const { getDropdown: getDepartmentDropdown } = useDepartments();
-  // Dokumentasi: state opsi dropdown (posisi/jabatan, direktorat, divisi, departemen)
-  const [positionOptions, setPositionOptions] = useState<{ value: string; label: string }[]>([]);
-  const [directorateOptions, setDirectorateOptions] = useState<{ value: string; label: string }[]>([]);
-  const [divisionOptions, setDivisionOptions] = useState<{ value: string; label: string }[]>([]);
-  const [departmentOptionsAll, setDepartmentOptionsAll] = useState<{ value: string; label: string }[]>([]);
-  const departmentOptions = useMemo(() => {
-    // Dokumentasi: gunakan dropdown departemen tanpa filter divisi (endpoint tidak mengembalikan id_division)
-    return departmentOptionsAll;
-  }, [departmentOptionsAll]);
-
-  // Dokumentasi: handler perubahan file SK (metadata disimpan di store)
-  const handleFileChange = (/*_e: React.ChangeEvent<HTMLInputElement>*/) => {};
-
-  // Dokumentasi: muat dropdown dinamis saat modal dibuka
-  useEffect(() => {
-    if (!isOpen) return;
-    (async () => {
-      try {
-        // Dokumentasi: posisi/jabatan - gunakan endpoint dropdown dari hook
-        const posItems = await getPositionDropdown('');
-        setPositionOptions((posItems || []).map((p:any) => ({ value: p.id, label: p.job_title_name })));
-
-        // direktorat: endpoint dropdown
-        const dirItems = await getDirectorateDropdown('');
-        setDirectorateOptions((dirItems || []).map((d:any) => ({ value: d.id, label: d.directorate_name })));
-
-        // divisi: endpoint dropdown
-        const divItems = await getDivisionDropdown('');
-        setDivisionOptions((divItems || []).map((d:any) => ({ value: d.id, label: d.division_name })));
-
-        // Dokumentasi: departemen - gunakan endpoint dropdown dari hook
-        const depItems = await getDepartmentDropdown('');
-        setDepartmentOptionsAll((depItems || []).map((d:any) => ({ value: d.id, label: d.department_name })));
-      } catch (e) {
-        console.error('Gagal memuat dropdown', e);
-      }
-    })();
-  }, [isOpen, getPositionDropdown, getDirectorateDropdown, getDivisionDropdown, getDepartmentDropdown]);
-
-  // Dokumentasi: submit pembuatan Posisi Pegawai - kirim File asli untuk position_decree_file
-  const handleSubmit = async () => {
-    console.log('submit', name, jabatan, direktorat, divisi, departemen, memoNumber, description, skFile);
-    
-    if (!skFile?.file) {
-      addNotification({
-        variant: 'error',
-        title: 'Posisi Pegawai tidak ditambahkan',
-        description: 'File Wajib di isi',
-        hideDuration: 4000,
-      });
-      return;
-    }
-    setSubmitting(true);
-    try {
-      await createEmployeePosition({
-        name: name.trim(),
-        positionId: jabatan.trim(),
-        directorateId: direktorat.trim() || null,
-        divisionId: divisi.trim() || null,
-        departmentId: departemen.trim() || null,
-        startDate: null,
-        endDate: null,
-        memoNumber: memoNumber.trim(),
-        skFile: skFile?.file || null,
-      });
-      onSuccess?.(null as any);
-      setName('');
-      setJabatan('');
-      setDirektorat('');
-      setDivisi('');
-      setDepartemen('');
-      setMemoNumber('');
-      setDescription('');
-      onClose();
-    } catch (err) {
-      console.error('Failed to create employee position', err);
-      addNotification({
-        variant: 'error',
-        title: 'Posisi Pegawai tidak ditambahkan',
-        description: 'Gagal menambahkan posisi pegawai. Silakan coba lagi.',
-        hideDuration: 4000,
-      });
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const {
+    name,
+    setName,
+    jabatan,
+    setJabatan,
+    direktorat,
+    setDirektorat,
+    divisi,
+    setDivisi,
+    departemen,
+    setDepartemen,
+    memoNumber,
+    setMemoNumber,
+    description,
+    setDescription,
+    skFile,
+    submitting,
+    positionOptions,
+    directorateOptions,
+    divisionOptions,
+    departmentOptions,
+    handleFileChange,
+    handleSubmit,
+    searchPositions,
+    searchDirectorates,
+    searchDivisions,
+    searchDepartments,
+  } = useAddEmployeePositionModal({ isOpen, onClose, onSuccess });
 
   return (
     <ModalAddEdit
@@ -146,11 +68,7 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
               defaultValue={jabatan}
               onChange={(v) => setJabatan(v)}
               onSearch={async (q) => {
-                try {
-                  // Dokumentasi: cari dropdown jabatan via hook.getDropdown
-                  const items = await getPositionDropdown(q);
-                  setPositionOptions((items || []).map((p:any) => ({ value: p.id, label: p.job_title_name })));
-                } catch (e) { console.error(e); }
+                await searchPositions(q);
               }}
             />
           </div>
@@ -163,10 +81,7 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
               defaultValue={direktorat}
               onChange={(v) => setDirektorat(v)}
               onSearch={async (q) => {
-                try {
-                  const items = await getDirectorateDropdown(q);
-                  setDirectorateOptions((items || []).map((d:any) => ({ value: d.id, label: d.directorate_name })));
-                } catch (e) { console.error(e); }
+                await searchDirectorates(q);
               }}
             />
           </div>
@@ -179,10 +94,7 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
               defaultValue={divisi}
               onChange={(v) => { setDivisi(v); /* reset departemen jika divisi berubah */ setDepartemen(''); }}
               onSearch={async (q) => {
-                try {
-                  const items = await getDivisionDropdown(q);
-                  setDivisionOptions((items || []).map((d:any) => ({ value: d.id, label: d.division_name })));
-                } catch (e) { console.error(e); }
+                await searchDivisions(q);
               }}
             />
           </div>
@@ -195,11 +107,7 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
               defaultValue={departemen}
               onChange={(v) => setDepartemen(v)}
               onSearch={async (q) => {
-                try {
-                  // Dokumentasi: cari dropdown departemen via hook.getDropdown
-                  const items = await getDepartmentDropdown(q);
-                  setDepartmentOptionsAll((items || []).map((d:any) => ({ value: d.id, label: d.department_name })));
-                } catch (e) { console.error(e); }
+                await searchDepartments(q);
               }}
             />
           </div>

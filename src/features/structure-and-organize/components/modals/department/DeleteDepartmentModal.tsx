@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import type { DepartmentListItem } from '../../../types/OrganizationApiTypes';
 import ModalDelete from '../../../../../components/shared/modal/ModalDelete';
 import ModalDeleteContent from '../../../../../components/shared/modal/ModalDeleteContent';
-import { addNotification } from '@/stores/notificationStore';
-import { useDepartments } from '../../../hooks/useDepartments';
+import { useDeleteDepartmentModal } from '../../../hooks/modals/department/useDeleteDepartmentModal';
 
 interface DeleteDepartmentModalProps {
   isOpen: boolean;
@@ -13,47 +12,8 @@ interface DeleteDepartmentModalProps {
 }
 
 const DeleteDepartmentModal: React.FC<DeleteDepartmentModalProps> = ({ isOpen, onClose, department, onSuccess }) => {
-  const [memoNumber, setMemoNumber] = useState('');
-  const [skFileName, setSkFileName] = useState('');
-  const [skFile, setSkFile] = useState<File | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-  const { deleteDepartment } = useDepartments();
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setSkFileName(file?.name || '');
-    setSkFile(file);
-  };
-
-  const handleDelete = async () => {
-    if (!department) return;
-    if (!skFile) {
-      addNotification({
-        variant: 'error',
-        title: 'Surat Keputusan tidak ditambahkan',
-        description: 'File Wajib di isi',
-        hideDuration: 4000,
-      });
-      setSubmitting(false);
-      return;
-    }
-    setSubmitting(true);
-    try {
-      await deleteDepartment(department.id, { memoNumber: memoNumber.trim(), skFile });
-      onSuccess?.();
-      onClose();
-    } catch (err) {
-      console.error('Failed to delete department', err);
-      addNotification({
-        variant: 'error',
-        title: 'Departemen tidak dihapus',
-        description: 'Gagal menghapus departemen. Silakan coba lagi.',
-        hideDuration: 4000,
-      });
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const { memoNumber, setMemoNumber, skFileName, submitting, handleFileChange, handleDelete } =
+    useDeleteDepartmentModal({ isOpen, onClose, department, onSuccess });
 
   return (
     <ModalDelete

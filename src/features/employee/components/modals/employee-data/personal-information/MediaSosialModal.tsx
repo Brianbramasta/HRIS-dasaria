@@ -1,20 +1,9 @@
 // Modal baru: memisahkan input Media Sosial & Kontak Darurat dari modal pendidikan
-import React, { useEffect, useMemo, useState } from 'react';
+import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import InputField from '@/components/form/input/InputField';
-
-// Tipe form untuk media sosial & kontak darurat
-export type MediaSosialForm = {
-  facebook?: string;
-  linkedin?: string;
-  xCom?: string;
-  instagram?: string;
-  akunSosialMediaTerdekat?: string;
-  namaNoKontakDarurat?: string;
-  noKontakDarurat?: string;
-  hubunganKontakDarurat?: string;
-};
+import { useMediaSosialModal, MediaSosialForm } from '@/features/employee/hooks/modals/employee-data/personal-information/useMediaSosialModal';
 
 interface Props {
   isOpen: boolean;
@@ -24,30 +13,9 @@ interface Props {
   submitting?: boolean;
 }
 
-const emptyForm: MediaSosialForm = {
-  facebook: '',
-  linkedin: '',
-  xCom: '',
-  instagram: '',
-  akunSosialMediaTerdekat: '',
-  namaNoKontakDarurat: '',
-  noKontakDarurat: '',
-  hubunganKontakDarurat: '',
-};
-
-// Komponen utama modal media sosial
 const MediaSosialModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSubmit, submitting = false }) => {
-  // State form media sosial
-  const [form, setForm] = useState<MediaSosialForm>(emptyForm);
-  const title = useMemo(() => 'Edit Sosial Media & Kontak Darurat', []);
+  const { title, form, setForm } = useMediaSosialModal({ isOpen, initialData });
 
-  // Inisialisasi data ketika modal dibuka/initialData berubah
-  useEffect(() => {
-    const base = initialData ? { ...emptyForm, ...initialData } : emptyForm;
-    setForm(base);
-  }, [initialData, isOpen]);
-
-  // Konten modal untuk input media sosial & kontak darurat
   const content = (
     <div className="space-y-8">
       <div>

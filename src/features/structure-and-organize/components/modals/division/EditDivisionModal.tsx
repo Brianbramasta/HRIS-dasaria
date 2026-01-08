@@ -1,14 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import type { DivisionListItem,DirectorateDropdown } from '../../../types/OrganizationApiTypes';
-import { useFileStore } from '@/stores/fileStore';
+import React from 'react';
+import type { DivisionListItem } from '../../../types/OrganizationApiTypes';
 import FileInput from '../../../../../components/shared/field/FileInput';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 import Select from '@/components/form/Select';
-import { addNotification } from '@/stores/notificationStore';
-import { useDivisions } from '../../../hooks/useDivisions';
-import { useDirectorates } from '../../../hooks/useDirectorates';
+import { useEditDivisionModal } from '../../../hooks/modals/division/useEditDivisionModal';
 
 interface EditDivisionModalProps {
   isOpen: boolean;
@@ -18,67 +15,21 @@ interface EditDivisionModalProps {
 }
 
 const EditDivisionModal: React.FC<EditDivisionModalProps> = ({ isOpen, onClose, division, onSuccess }) => {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [directorateId, setDirectorateId] = useState('');
-  const [memoNumber, setMemoNumber] = useState('');
-  const skFile = useFileStore((s) => s.skFile);
-  const [directorates, setDirectorates] = useState<DirectorateDropdown[]>([]);
-  const [submitting, setSubmitting] = useState(false);
-  const { updateDivision } = useDivisions();
-  const { getDropdown: getDirectorateDropdown } = useDirectorates();
-
-  useEffect(() => {
-    const loadDirectorates = async () => {
-      try {
-        // Menggunakan endpoint dropdown direktorat untuk mengambil opsi lebih ringan
-        const res = await getDirectorateDropdown('');
-        setDirectorates(res || []);
-      } catch (err) {
-        console.error('Failed to load directorates', err);
-      }
-    };
-    if (isOpen) loadDirectorates();
-  }, [isOpen, getDirectorateDropdown]);
-
-  useEffect(() => {
-    console.log('Division', division);
-    if (isOpen && division) {
-      setName(division.name || '');
-      setDescription(division.description || '');
-      setDirectorateId(division.directorateId || '');
-      setMemoNumber((division as any).memoNumber || '');
-    }
-  }, [isOpen, division]);
-
-  const handleFileChange = (/*_e: React.ChangeEvent<HTMLInputElement>*/) => {};
-
-  const handleSubmit = async () => {
-    if (!division) return;
-    setSubmitting(true);
-    try {
-      await updateDivision(division.id, {
-        name,
-        directorateId,
-        description: description || null,
-        memoNumber,
-        // Kirim file SK jika ada perubahan
-        skFile: (skFile?.file ? skFile.file as File : null) as any,
-      });
-      onSuccess?.();
-      onClose();
-    } catch (err) {
-      console.error('Failed to update division', err);
-      addNotification({
-        variant: 'error',
-        title: 'Divisi tidak diupdate',
-        description: 'Gagal mengupdate divisi. Silakan coba lagi.',
-        hideDuration: 4000,
-      });
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const {
+    name,
+    setName,
+    description,
+    setDescription,
+    directorateId,
+    setDirectorateId,
+    memoNumber,
+    setMemoNumber,
+    directorates,
+    submitting,
+    handleSubmit,
+    handleFileChange,
+    skFileName,
+  } = useEditDivisionModal({ isOpen, onClose, division, onSuccess });
 
   return (
     <ModalAddEdit
@@ -138,7 +89,7 @@ const EditDivisionModal: React.FC<EditDivisionModalProps> = ({ isOpen, onClose, 
 
       
 
-        <FileInput skFileName={skFile?.name || division?.skFile?.fileName || ''} onChange={handleFileChange} />
+        <FileInput skFileName={skFileName} onChange={handleFileChange} />
 
         </>}
         />

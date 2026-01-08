@@ -3,11 +3,9 @@ import Label from '@/components/form/Label';
 import InputField from '@/components/form/input/InputField';
 import Button from '@/components/ui/button/Button';
 import { Edit2 } from 'react-feather';
-import { useModal } from '@/hooks/useModal';
-import MediaSosialModal, { type MediaSosialForm } from '@/features/employee/components/modals/employee-data/personal-information/MediaSosialModal';
+import MediaSosialModal from '@/features/employee/components/modals/employee-data/personal-information/MediaSosialModal';
 import { IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
-import { usePersonalInformation } from '@/features/employee/hooks/employee-data/detail/contract/usePersonalInformation';
-import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
+import useSocialEmergencyCard from '@/features/employee/hooks/card/useSocialEmergencyCard';
 
 interface Props {
   personalInformation: any; // API response from Data_Sosial_media.social_media array
@@ -15,35 +13,16 @@ interface Props {
 }
 
 export default function SocialEmergencyCard({ personalInformation }: Props) {
-  const { isOpen, openModal, closeModal } = useModal(false);
-  
-  const {detail} = useDetailDataKaryawanPersonalInfo();
-  const employeeId = detail?.Personal_Data?.id;
-  const { updateSocialMediaData, loading: submitting } = usePersonalInformation(employeeId);
-
-  
-  // Extract social media and emergency contact data from social_media array
-  const socialEmergencyData = personalInformation[0] || {};
-  console.log('socialEmergencyData', socialEmergencyData);
-  
-  const initialData: MediaSosialForm = {
-    facebook: socialEmergencyData.facebook_name || '',
-    linkedin: socialEmergencyData.linkedin_name || '',
-    xCom: socialEmergencyData.twitter_name || '',
-    instagram: socialEmergencyData.instagram_name || '',
-    akunSosialMediaTerdekat: socialEmergencyData.relative_social_media || '',
-    namaNoKontakDarurat: socialEmergencyData.emergency_contact_name || '',
-    noKontakDarurat: socialEmergencyData.emergency_contact_number || '',
-    hubunganKontakDarurat: socialEmergencyData.emergency_contact_relationship || '',
-  };
-  
-  const isComplete = Boolean(
-    socialEmergencyData.facebook_name ||
-    socialEmergencyData.instagram_name ||
-    socialEmergencyData.linkedin_name ||
-    socialEmergencyData.twitter_name ||
-    socialEmergencyData.emergency_contact_name
-  );
+  const {
+    isOpen,
+    openModal,
+    closeModal,
+    initialData,
+    isComplete,
+    socialEmergencyData,
+    submitting,
+    handleSubmit,
+  } = useSocialEmergencyCard(personalInformation);
   return (
     <ExpandCard title="Media Sosial & Kontak Darurat" leftIcon={isComplete ? <IconLengkap /> : <IconTidakLengkap />} withHeaderDivider>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -90,20 +69,7 @@ export default function SocialEmergencyCard({ personalInformation }: Props) {
         isOpen={isOpen}
         initialData={initialData}
         onClose={closeModal}
-        onSubmit={async (payload) => {
-          // Panggil updateSocialMediaData dengan payload dari modal
-          if (!employeeId) {
-            console.error('Employee ID is required');
-            return;
-          }
-          
-          try {
-            await updateSocialMediaData(employeeId, payload as any);
-            closeModal();
-          } catch (error) {
-            console.error('Failed to update social media data:', error);
-          }
-        }}
+        onSubmit={handleSubmit}
         submitting={submitting}
       />
     </ExpandCard>

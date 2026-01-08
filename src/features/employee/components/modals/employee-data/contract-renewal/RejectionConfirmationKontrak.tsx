@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ModalDelete from '@/components/shared/modal/ModalDelete';
 import InputField from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
+import useRejectionConfirmationKontrakModal from '@/features/employee/hooks/modals/employee-data/contract-renewal/useRejectionConfirmationKontrakModal';
 
 interface KonfirmasiPenolakanKontrakProps {
   isOpen: boolean;
@@ -18,32 +19,8 @@ const KonfirmasiPenolakanKontrak: React.FC<KonfirmasiPenolakanKontrakProps> = ({
   nama,
   onSubmit,
 }) => {
-  const [alasanPenolakan, setAlasanPenolakan] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-
-  const handleSubmit = async () => {
-    if (!alasanPenolakan.trim()) {
-      return;
-    }
-
-    setSubmitting(true);
-    try {
-      if (onSubmit) {
-        await onSubmit(alasanPenolakan);
-      }
-      setAlasanPenolakan('');
-      onClose();
-    } catch (error) {
-      console.error('Error submitting rejection:', error);
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handleClose = () => {
-    setAlasanPenolakan('');
-    onClose();
-  };
+  const { alasanPenolakan, setAlasanPenolakan, submitting, handleSubmit, handleClose } =
+    useRejectionConfirmationKontrakModal({ onClose, onSubmit });
 
   const modalContent = (
     <div className="space-y-4 ">

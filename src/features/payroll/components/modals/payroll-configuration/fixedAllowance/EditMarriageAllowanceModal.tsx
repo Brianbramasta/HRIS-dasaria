@@ -1,9 +1,10 @@
 // Dokumentasi: Modal Edit Tunjangan Pernikahan dengan field Status Pernikahan, Status, Tanggungan, Nominal
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import Input from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
+import { useEditMarriageAllowanceModal } from '@/features/payroll/hooks/modals/payroll-configuration/fixedAllowance/useEditMarriageAllowanceModal';
 
 type FormValues = {
   statusPernikahan: string;
@@ -21,23 +22,11 @@ interface Props {
 
 // Dokumentasi: komponen modal utama untuk edit Tunjangan Pernikahan
 const EditTunjanganPernikahanModal: React.FC<Props> = ({ isOpen, onClose, defaultValues, onSave }) => {
-  const initial: FormValues = useMemo(() => ({
-    statusPernikahan: defaultValues?.statusPernikahan ?? '',
-    status: defaultValues?.status ?? '',
-    tanggungan: String(defaultValues?.tanggungan ?? ''),
-    nominal: defaultValues?.nominal ?? '',
-  }), [defaultValues]);
-
-  const [form, setForm] = useState<FormValues>(initial);
-
-  const setField = (key: keyof FormValues, value: string) => {
-    setForm((prev) => ({ ...prev, [key]: key === 'nominal' ? formatRupiah(value) : value }));
-  };
-
-  const statusOptions = [
-    { value: 'Tidak Menikah', label: 'Tidak Menikah' },
-    { value: 'Menikah', label: 'Menikah' },
-  ];
+  const { form, setField, statusOptions, handleSubmit } = useEditMarriageAllowanceModal({
+    defaultValues,
+    onSave,
+    onClose,
+  });
 
   const content = (
     <div className="space-y-5">
@@ -60,11 +49,6 @@ const EditTunjanganPernikahanModal: React.FC<Props> = ({ isOpen, onClose, defaul
     </div>
   );
 
-  const handleSubmit = () => {
-    onSave({ ...form, tanggungan: form.tanggungan });
-    onClose();
-  };
-
   return (
     <ModalAddEdit
       title={'Edit Tunjangan Pernikahan'}
@@ -78,13 +62,6 @@ const EditTunjanganPernikahanModal: React.FC<Props> = ({ isOpen, onClose, defaul
       closeTitleButton="Tutup"
     />
   );
-};
-
-// Dokumentasi: helper untuk format angka ke ribuan Indonesia
-const formatRupiah = (val: string) => {
-  const cleaned = (val || '').replace(/[^0-9]/g, '');
-  if (!cleaned) return '';
-  return cleaned.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 };
 
 export default EditTunjanganPernikahanModal;

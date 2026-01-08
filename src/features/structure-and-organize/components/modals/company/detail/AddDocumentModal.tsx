@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
-// Dokumentasi: Integrasi service companiesService untuk tambah dokumen perusahaan
-import { companiesService } from '../../../../services/request/CompaniesService';
+import React from 'react';
 import ModalAddEdit from '../../../../../../components/shared/modal/ModalAddEdit';
 import FileInput from '../../../../../../components/form/input/FileInput';
-import { addNotification } from '@/stores/notificationStore';
 import { TrashBinIcon } from '@/icons';
+import { useAddDocumentModal } from '../../../../hooks/modals/company/detail/useAddDocumentModal';
 
 interface AddDocumentModalProps {
   isOpen: boolean;
@@ -14,60 +12,8 @@ interface AddDocumentModalProps {
 }
 
 const AddDocumentModal: React.FC<AddDocumentModalProps> = ({ isOpen, onClose, companyId, onSuccess }) => {
-  type DocEntry = { name: string; docNumber: string; file: File | null };
-  const [entries, setEntries] = useState<DocEntry[]>([{ name: '', docNumber: '', file: null }]);
-  const [submitting, setSubmitting] = useState(false);
-  // default type to active to preserve filtering in listing
-  // const defaultType: 'active' | 'archive' = 'active';
-
-  const updateEntry = (index: number, patch: Partial<DocEntry>) => {
-    setEntries((prev) => prev.map((e, i) => (i === index ? { ...e, ...patch } : e)));
-  };
-
-  const addEntry = () => {
-    setEntries((prev) => [...prev, { name: '', docNumber: '', file: null }]);
-  };
-
-  const removeEntry = (index: number) => {
-    setEntries((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const handleFileChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
-    const f = e.target.files?.[0] || null;
-    updateEntry(index, { file: f });
-  };
-
-  const handleSubmit = async () => {
-    if (!companyId) return;
-    const valid = entries.filter((e) => e.name.trim() && e.file);
-    if (!valid.length) {
-      addNotification({
-        variant: 'error',
-        title: 'Dokumen tidak ditambahkan',
-        description: 'Isi minimal satu dokumen dan unggah file.',
-      });
-      return;
-    }
-    setSubmitting(true);
-    try {
-      await companiesService.addDocuments(
-        companyId,
-        valid.map((e) => ({ name: e.name.trim(), number: e.docNumber.trim(), file: e.file as File }))
-      );
-      onSuccess?.();
-      setEntries([{ name: '', docNumber: '', file: null }]);
-      onClose();
-    } catch (err) {
-      console.error('Failed to create documents', err);
-      addNotification({
-        variant: 'error',
-        title: 'Gagal menyimpan dokumen',
-        description: 'Terjadi kesalahan saat menyimpan dokumen.',
-      });
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const { entries, updateEntry, addEntry, removeEntry, handleFileChange, submitting, handleSubmit } =
+    useAddDocumentModal({ companyId, onClose, onSuccess });
 
   return (
     

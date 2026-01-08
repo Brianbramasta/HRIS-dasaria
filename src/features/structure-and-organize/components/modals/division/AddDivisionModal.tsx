@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { useFileStore } from '@/stores/fileStore';
+import React from 'react';
 import FileInput from '../../../../../components/shared/field/FileInput';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 import Select from '@/components/form/Select';
-import { addNotification } from '@/stores/notificationStore';
-import { useDivisions } from '../../../hooks/useDivisions';
-import { useDirectorates } from '../../../hooks/useDirectorates';
+import { useAddDivisionModal } from '../../../hooks/modals/division/useAddDivisionModal';
 
 
 interface AddDivisionModalProps {
@@ -15,81 +12,22 @@ interface AddDivisionModalProps {
   onClose: () => void;
   onSuccess?: () => void;
 }
-interface DirectorateDropwdown {
-  id: string;
-  directorate_name: string;
-}
 const AddDivisionModal: React.FC<AddDivisionModalProps> = ({ isOpen, onClose, onSuccess }) => {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [directorateId, setDirectorateId] = useState('');
-  const [memoNumber, setMemoNumber] = useState('');
-  const skFile = useFileStore((s) => s.skFile);
-  const [directorates, setDirectorates] = useState<DirectorateDropwdown[]>([]);
-  const [submitting, setSubmitting] = useState(false);
-  const { createDivision } = useDivisions();
-  const { getDropdown: getDirectorateDropdown } = useDirectorates();
-
-  useEffect(() => {
-    const loadDirectorates = async () => {
-      try {
-        // Menggunakan endpoint dropdown direktorat untuk mengambil opsi lebih ringan
-        const res = await getDirectorateDropdown('');
-        setDirectorates(res || []);
-      } catch (err) {
-        console.error('Failed to load directorates', err);
-      }
-    };
-    if (isOpen) loadDirectorates();
-  }, [isOpen, getDirectorateDropdown]);
-
-  useEffect(() => {
-    if (!isOpen) {
-      setName('');
-      setDescription('');
-      setDirectorateId('');
-      setMemoNumber('');
-      useFileStore.getState().clearSkFile();
-    }
-  }, [isOpen]);
-
-  const handleFileChange = (/*_e: React.ChangeEvent<HTMLInputElement>*/) => {};
-
-  const handleSubmit = async () => {
-    // Validasi: kirim File SK sesuai kontrak API terbaru
-    if (!skFile?.file) {
-      addNotification({
-        variant: 'error',
-        title: 'Divisi tidak ditambahkan',
-        description: 'File Wajib di isi',
-        hideDuration: 4000,
-      });
-      return;
-    }
-    setSubmitting(true);
-    try {
-      await createDivision({
-        name,
-        directorateId,
-        description: description || null,
-        memoNumber,
-        // Kirim file SK sebagai File
-        skFile: skFile.file as File,
-      });
-      onSuccess?.();
-      onClose();
-    } catch (err) {
-      console.error('Failed to add division', err);
-      addNotification({
-        variant: 'error',
-        title: 'Divisi tidak ditambahkan',
-        description: 'Gagal menambahkan divisi. Silakan coba lagi.',
-        hideDuration: 4000,
-      });
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const {
+    name,
+    setName,
+    description,
+    setDescription,
+    directorateId,
+    setDirectorateId,
+    memoNumber,
+    setMemoNumber,
+    directorates,
+    submitting,
+    handleSubmit,
+    handleFileChange,
+    skFileName,
+  } = useAddDivisionModal({ isOpen, onClose, onSuccess });
 
   return (
     <ModalAddEdit
@@ -113,16 +51,6 @@ const AddDivisionModal: React.FC<AddDivisionModalProps> = ({ isOpen, onClose, on
 
         <div className="space-y-2">
           <label className="text-sm font-medium">Direktorat</label>
-          {/* <select
-            value={directorateId}
-            onChange={(e) => setDirectorateId(e.target.value)}
-            className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-          >
-            <option value="">Pilih Direktorat</option>
-            {directorates.map((d) => (
-              <option key={d.id} value={d.id}>{d.name}</option>
-            ))}
-          </select> */}
           <Select
             required
             options={directorates.map(d => ({ value: d.id, label: d.directorate_name }))}
@@ -146,11 +74,6 @@ const AddDivisionModal: React.FC<AddDivisionModalProps> = ({ isOpen, onClose, on
 
         <div className="space-y-2">
           <label className="text-sm font-medium">Deskripsi Umum</label>
-          {/* <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="w-full rounded-xl border border-gray-300 px-4 py-3 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary"
-          /> */}
           <TextArea
             required
             value={description}
@@ -162,7 +85,7 @@ const AddDivisionModal: React.FC<AddDivisionModalProps> = ({ isOpen, onClose, on
         
 
         
-        <FileInput skFileName={skFile?.name || ''} onChange={handleFileChange} />
+        <FileInput skFileName={skFileName} onChange={handleFileChange} />
 
         </>
 

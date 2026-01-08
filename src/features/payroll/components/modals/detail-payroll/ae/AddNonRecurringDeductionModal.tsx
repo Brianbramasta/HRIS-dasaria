@@ -1,23 +1,11 @@
-// Dokumentasi: Modal edit Potongan Tidak Tetap (AE)
-// Field: Kasbon
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import Input from '@/components/form/input/InputField';
 import type { ModalProps } from '@/features/payroll/components/layouts/LayoutDetail';
-
-interface FormValues {
-  kasbon: string;
-}
+import { useAddNonRecurringDeductionAEModal } from '@/features/payroll/hooks/modals/detail-payroll/ae/useAddNonRecurringDeductionAEModal';
 
 type Props = ModalProps;
-
-// Dokumentasi: Utility format angka ribuan Indonesia
-const formatRupiah = (val: string) => {
-  const cleaned = (val || '').replace(/[^0-9]/g, '');
-  if (!cleaned) return '';
-  return cleaned.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-};
 
 const TambahPotonganTidakTetapModalAE: React.FC<Props> = ({
   isOpen,
@@ -25,15 +13,7 @@ const TambahPotonganTidakTetapModalAE: React.FC<Props> = ({
   defaultValues,
   onSave,
 }) => {
-  const initial: FormValues = useMemo(() => ({
-    kasbon: formatRupiah(defaultValues?.kasbon ?? ''),
-  }), [defaultValues]);
-
-  const [form, setForm] = useState<FormValues>(initial);
-
-  const setField = (key: keyof FormValues, value: string) => {
-    setForm((prev) => ({ ...prev, [key]: formatRupiah(value) }));
-  };
+  const { form, setField, handleSubmit } = useAddNonRecurringDeductionAEModal(defaultValues as any);
 
   const content = (
     <div className="space-y-5">
@@ -44,18 +24,13 @@ const TambahPotonganTidakTetapModalAE: React.FC<Props> = ({
     </div>
   );
 
-  const handleSubmit = () => {
-    onSave(form as unknown as Record<string, string>);
-    onClose();
-  };
-
   return (
     <ModalAddEdit
       title={'Potongan Tidak Tetap'}
       isOpen={isOpen}
       onClose={onClose}
       content={content}
-      handleSubmit={handleSubmit}
+      handleSubmit={() => handleSubmit(onSave, onClose)}
       submitting={false}
       maxWidth="max-w-lg"
       confirmTitleButton="Simpan Perubahan"

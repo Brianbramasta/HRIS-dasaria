@@ -10,6 +10,33 @@ export const useLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const setAuth = useAuthStore((s) => s.setAuth);
+  const [showPassword, setShowPassword] = useState(false);
+  const [keepMeLoggedIn, setKeepMeLoggedIn] = useState(false);
+  const [formData, setFormData] = useState<LoginRequest>({
+    email: '',
+    password: '',
+    rememberMe: false,
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleKeepMeLoggedInChange = (checked: boolean) => {
+    setKeepMeLoggedIn(checked);
+    setFormData(prev => ({
+      ...prev,
+      rememberMe: checked,
+    }));
+  };
+
+  const toggleShowPassword = () => {
+    setShowPassword(prev => !prev);
+  };
 
   const handleLogin = async (data: LoginRequest) => {
     try {
@@ -49,6 +76,12 @@ export const useLogin = () => {
   return {
     isLoading,
     error,
+    formData,
+    showPassword,
+    keepMeLoggedIn,
+    handleInputChange,
+    handleKeepMeLoggedInChange,
+    toggleShowPassword,
     handleLogin,
   };
 };

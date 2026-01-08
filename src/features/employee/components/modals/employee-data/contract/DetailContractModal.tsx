@@ -1,6 +1,6 @@
 import React from 'react';
 import BaseContractModal, { type ContractEntry } from './BaseModal';
-import { useModalContract } from '@/features/employee/hooks/employee-data/detail/contract/useModalContract';
+import { useDetailContractModal } from '@/features/employee/hooks/modals/employee-data/contract/useDetailContractModal';
 
 interface DetailContractModalProps {
   isOpen: boolean;
@@ -18,23 +18,13 @@ const DetailContractModal: React.FC<DetailContractModalProps> = ({
     optionsContractStatus,
     optionsContractEndStatus,
     isLoadingDropdowns,
-  } = useModalContract({
+    handleInput,
+    handleDateChange,
+    handleSubmit,
+  } = useDetailContractModal({
     isOpen,
     initialData,
-    isEditable: false,
   });
-
-  const handleInput = () => {
-    // Read-only mode, do nothing
-  };
-
-  const handleDateChange = () => () => {
-    // Read-only mode, do nothing
-  };
-
-  const handleSubmit = () => {
-    // Read-only mode, do nothing
-  };
 
   return (
     <BaseContractModal

@@ -4,7 +4,7 @@
 //   Jenis Kasbon (Select), Nominal Kasbon (maks 25% dari gaji pokok), Periode Cicilan (Select),
 //   Nominal Cicilan (otomatis), Surat Persetujuan Atasan (FileInput), Dokumen Pendukung (FileInput multiple), Keterangan (TextArea)
 // - Validasi: Nominal Kasbon dibatasi 25% dari Gaji Pokok; Nominal Cicilan dihitung otomatis dari periode
-import React, { useMemo, useState, useEffect } from 'react';
+import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import Input from '@/components/form/input/InputField';
@@ -14,22 +14,7 @@ import FileInput from '@/components/form/input/FileInput';
 import TextArea from '@/components/form/input/TextArea';
 import PopupBerhasil from '../../shared/modals/SuccessModal';
 import Alert from '@/components/ui/alert/Alert';
-
-export type PengajuanKasbonForm = {
-  idKaryawan: string;
-  namaLengkap: string;
-  departemen: string;
-  posisi: string;
-  gajiPokok: number;
-  tanggalPengajuan: string; // format d/m/Y dari flatpickr
-  jenisKasbon: string;
-  nominalKasbon: number;
-  periodeCicilan: string; // menyimpan angka bulan sebagai string, misal '3', '6', '12'
-  nominalCicilan: number;
-  suratPersetujuanAtasan?: File | null;
-  dokumenPendukung?: File[];
-  keterangan: string;
-};
+import { useAddCashAdvanceSubmission, PengajuanKasbonForm } from '@/features/submission-type/hooks/cash-advance-submission/useAddCashAdvanceSubmission';
 
 interface Props {
   isOpen: boolean;
@@ -40,71 +25,18 @@ interface Props {
 
 // Dokumentasi: Komponen utama modal pengajuan kasbon dengan state lokal dan perhitungan otomatis
 const AddPengajuanKasbonModal: React.FC<Props> = ({ isOpen, onClose, defaultValues, onSave }) => {
-  const jenisKasbonOptions = useMemo(() => [
-    { value: 'Darurat', label: 'Darurat' },
-    { value: 'Keperluan Pribadi', label: 'Keperluan Pribadi' },
-    { value: 'Medis/Kesehatan', label: 'Medis/Kesehatan' },
-    { value: 'Lainnya', label: 'Lainnya' },
-  ], []);
-
-  const periodeOptions = useMemo(() => [
-    { value: '3', label: '3 Bulan' },
-    { value: '6', label: '6 Bulan' },
-    { value: '12', label: '12 Bulan' },
-  ], []);
-
-  const initial: PengajuanKasbonForm = useMemo(() => ({
-    idKaryawan: defaultValues?.idKaryawan ?? '',
-    namaLengkap: defaultValues?.namaLengkap ?? '',
-    departemen: defaultValues?.departemen ?? '',
-    posisi: defaultValues?.posisi ?? '',
-    gajiPokok: defaultValues?.gajiPokok ?? 0,
-    tanggalPengajuan: defaultValues?.tanggalPengajuan ?? '',
-    jenisKasbon: defaultValues?.jenisKasbon ?? '',
-    nominalKasbon: defaultValues?.nominalKasbon ?? 0,
-    periodeCicilan: defaultValues?.periodeCicilan ?? '',
-    nominalCicilan: defaultValues?.nominalCicilan ?? 0,
-    suratPersetujuanAtasan: defaultValues?.suratPersetujuanAtasan ?? null,
-    dokumenPendukung: defaultValues?.dokumenPendukung ?? [],
-    keterangan: defaultValues?.keterangan ?? '',
-  }), [defaultValues]);
-
-  const [form, setForm] = useState<PengajuanKasbonForm>(initial);
-  const [submitting, setSubmitting] = useState(false);
-  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
-
-  useEffect(() => {
-    setForm(initial);
-  }, [isOpen, initial]);
-
-  const setField = (key: keyof PengajuanKasbonForm, value: any) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
-  };
-
-  // Dokumentasi: Menjamin nominal kasbon <= 25% dari gaji pokok dan menghitung cicilan otomatis
-  useEffect(() => {
-    const maxKasbon = (form.gajiPokok || 0) * 0.25;
-    let nominalKasbon = form.nominalKasbon || 0;
-    if (nominalKasbon > maxKasbon) {
-      nominalKasbon = Math.floor(maxKasbon);
-    }
-    const periode = parseInt(form.periodeCicilan || '0', 10);
-    const nominalCicilan = periode > 0 ? Math.ceil(nominalKasbon / periode) : 0;
-    setForm((prev) => ({ ...prev, nominalKasbon, nominalCicilan }));
-  }, [form.gajiPokok, form.nominalKasbon, form.periodeCicilan]);
-
-  // Dokumentasi: Validasi untuk memeriksa apakah form memenuhi syarat dan ketentuan
-  const isFormValid = useMemo(() => {
-    return (
-      form.tanggalPengajuan &&
-      form.jenisKasbon &&
-      form.nominalKasbon > 0 &&
-      form.periodeCicilan &&
-      form.suratPersetujuanAtasan &&
-      form.keterangan.trim() !== ''
-    );
-  }, [form]);
-
+  const {
+    jenisKasbonOptions,
+    periodeOptions,
+    form,
+    submitting,
+    showSuccessPopup,
+    setField,
+    isFormValid,
+    handleSubmit,
+    handleCloseSuccessPopup,
+  } = useAddCashAdvanceSubmission({ isOpen, onClose, defaultValues, onSave });
+ 
   const content = (
     <div className="space-y-6">
     <h2 className="text-3xl font-bold text-start mb-4">Pengajuan Kasbon</h2>
@@ -186,22 +118,6 @@ const AddPengajuanKasbonModal: React.FC<Props> = ({ isOpen, onClose, defaultValu
      
     </div>
   );
-
-  const handleSubmit = async () => {
-    setSubmitting(true);
-    try {
-      if (onSave) onSave(form);
-      onClose();
-      // Show success popup after closing the main modal
-      setTimeout(() => setShowSuccessPopup(true), 300);
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handleCloseSuccessPopup = () => {
-    setShowSuccessPopup(false);
-  };
 
   return (
     <>

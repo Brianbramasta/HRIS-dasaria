@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
 import Label from '../../../../../components/form/Label';
 import InputField from '../../../../../components/form/input/InputField';
 import DatePicker from '../../../../../components/form/date-picker';
 import TextArea from '../../../../../components/form/input/TextArea';
+import { useEffectiveResignationDateModal } from '../../../hooks/modals/resignation/useEffectiveResignationDateModal';
 
 interface EffectiveResignationDateModalProps {
   isOpen: boolean;
@@ -26,34 +27,8 @@ const EffectiveResignationDateModal: React.FC<EffectiveResignationDateModalProps
   posisi,
   tanggalPengajuan,
 }) => {
-  const [tanggalEfektif, setTanggalEfektif] = useState('');
-  const [deskripsi, setDeskripsi] = useState('');
-
-  useEffect(() => {
-    if (!isOpen) {
-      setTanggalEfektif('');
-      setDeskripsi('');
-    }
-  }, [isOpen]);
-
-  const handleSubmit = () => {
-    if (!tanggalEfektif.trim()) {
-      return;
-    }
-    onSubmit(tanggalEfektif, deskripsi);
-  };
-
-  const handleDateChange = (selectedDates: Date[]) => {
-    if (selectedDates.length > 0) {
-      const date = selectedDates[0];
-      const formatted = date.toLocaleDateString('id-ID', {
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric',
-      });
-      setTanggalEfektif(formatted);
-    }
-  };
+  const { deskripsi, setDeskripsi, handleDateChange, handleSubmit } =
+    useEffectiveResignationDateModal({ isOpen, onSubmit });
 
   const content = (
     <div className="space-y-4">

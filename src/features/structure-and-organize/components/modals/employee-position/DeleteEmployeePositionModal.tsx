@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import type { EmployeePositionListItem } from '../../../types/OrganizationApiTypes';
-import { useFileStore } from '@/stores/fileStore';
 import ModalDelete from '../../../../../components/shared/modal/ModalDelete';
-import { addNotification } from '@/stores/notificationStore';
 import ModalDeleteContent from '../../../../../components/shared/modal/ModalDeleteContent';
-import { useEmployeePositions } from '../../../hooks/useEmployeePositions';
+import { useDeleteEmployeePositionModal } from '../../../hooks/modals/employee-position/useDeleteEmployeePositionModal';
 
 interface DeleteEmployeePositionModalProps {
   isOpen: boolean;
@@ -14,49 +12,15 @@ interface DeleteEmployeePositionModalProps {
 }
 
 const DeleteEmployeePositionModal: React.FC<DeleteEmployeePositionModalProps> = ({ isOpen, onClose, onSuccess, employeePosition }) => {
-  const [memoNumber, setMemoNumber] = useState('');
-  const skFile = useFileStore((s) => s.skFile);
-  const [submitting, setSubmitting] = useState(false);
-  const { deleteEmployeePosition } = useEmployeePositions();
-
-  const handleFileChange = (/*_e: React.ChangeEvent<HTMLInputElement>*/) => {};
-
-  const handleSubmit = async () => {
-    if (!employeePosition) return;
-    if (!skFile?.name) {
-      addNotification({
-        variant: 'error',
-        title: 'Posisi Pegawai tidak dihapus',
-        description: 'File Wajib di isi',
-        hideDuration: 4000,
-      });
-      setSubmitting(false);
-      return;
-    }
-    setSubmitting(true);
-    try {
-      await deleteEmployeePosition(employeePosition.id, { memoNumber: memoNumber.trim(), skFileId: skFile?.path || skFile?.name });
-      onSuccess?.(employeePosition.id);
-      onClose();
-    } catch (err) {
-      console.error('Failed to delete employee position', err);
-      addNotification({
-        variant: 'error',
-        title: 'Posisi Pegawai tidak dihapus',
-        description: 'Gagal menghapus posisi pegawai. Silakan coba lagi.',
-        hideDuration: 4000,
-      });
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const { memoNumber, setMemoNumber, skFile, submitting, handleFileChange, handleDelete } =
+    useDeleteEmployeePositionModal({ isOpen, onClose, onSuccess, employeePosition });
 
   return (
     <ModalDelete
       isOpen={isOpen}
       onClose={onClose}
       content={<ModalDeleteContent memoNumber={memoNumber} onMemoNumberChange={(e) => setMemoNumber(e.target.value)} skFileName={skFile?.name || ''} onFileChange={handleFileChange} note={"*Data tidak benar-benar dihapus akan tetapi diarsipkan"} />}
-      handleDelete={handleSubmit}
+      handleDelete={handleDelete}
       submitting={submitting}
       title="Hapus Data Posisi Pegawai"
     />

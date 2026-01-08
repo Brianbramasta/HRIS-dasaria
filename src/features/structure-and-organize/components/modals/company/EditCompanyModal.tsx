@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { companyService } from '../../../services/OrganizationService';
-import { useBusinessLines } from '../../../hooks/business-lines/useBusinessLines';
-import type { CompanyListItem, BusinessLineListItem } from '../../../types/OrganizationApiTypes';
+import React from 'react';
+import type { CompanyListItem } from '../../../types/OrganizationApiTypes';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 import FileInput from '../../../../../components/shared/field/FileInput';
 import Select from '@/components/form/Select';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
-import { addNotification } from '@/stores/notificationStore';
+import { useEditCompanyModal } from '../../../hooks/modals/company/useEditCompanyModal';
 
 
 interface EditCompanyModalProps {
@@ -18,73 +16,22 @@ interface EditCompanyModalProps {
 }
 
 const EditCompanyModal: React.FC<EditCompanyModalProps> = ({ isOpen, onClose, company, onSuccess }) => {
-  const [name, setName] = useState('');
-  const [businessLineId, setBusinessLineId] = useState('');
-  const [businessLines, setBusinessLines] = useState<BusinessLineListItem[]>([]);
-  const [description, setDescription] = useState('');
-
-  // Document fields
-  const [docNumber, setDocNumber] = useState('');
-  const [skFile, setSkFile] = useState<File | null>(null);
-
-  const [submitting, setSubmitting] = useState(false);
-  const { getDropdown } = useBusinessLines({ autoFetch: false });
-
-  useEffect(() => {
-    if (!isOpen) return;
-    (async () => {
-      try {
-        const items = await getDropdown();
-        setBusinessLines(items);
-      } catch (e) {
-        console.error('Failed to load business lines', e);
-      }
-    })();
-  }, [isOpen, getDropdown]);
-
-  useEffect(() => {
-    if (company) {
-      setName(company.name || '');
-      setBusinessLineId(company.businessLineId || '');
-      setDescription(company.description || '');
-      // Initialize doc fields from API fields
-      setDocNumber(company.memoNumber || '');
-      // keep skFile null until new upload
-      setSkFile(null);
-    }
-  }, [company]);
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setSkFile(file);
-  };
-
-  const handleSubmit = async () => {
-    if (!company) return;
-    setSubmitting(true);
-    try {
-      const skFilePayload = skFile || null;
-      const updated = await companyService.update(company.id, {
-        name: name.trim(),
-        description: description.trim(),
-        businessLineId: businessLineId || company.businessLineId || undefined,
-        memoNumber: docNumber.trim(),
-        skFile: skFilePayload,
-      });
-      onSuccess?.(updated);
-      onClose();
-    } catch (err) {
-      console.error('Failed to update company', err);
-        addNotification({
-          variant: 'error',
-          title: 'Perusahaan tidak diupdate',
-          description: 'Gagal mengupdate perusahaan. Silakan coba lagi.',
-          hideDuration: 4000,
-        });
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const {
+    name,
+    setName,
+    businessLineId,
+    setBusinessLineId,
+    businessLines,
+    description,
+    setDescription,
+    docNumber,
+    setDocNumber,
+    skFile,
+    handleFileChange,
+    searchBusinessLines,
+    submitting,
+    handleSubmit,
+  } = useEditCompanyModal({ isOpen, onClose, company, onSuccess });
 
   return (
    
@@ -116,12 +63,7 @@ const EditCompanyModal: React.FC<EditCompanyModalProps> = ({ isOpen, onClose, co
             defaultValue={businessLineId}
             onChange={(value) => setBusinessLineId(value)}
             onSearch={async (q) => {
-              try {
-                const items = await getDropdown(q);
-                setBusinessLines(items);
-              } catch (e) {
-                console.error('Failed to search business lines', e);
-              }
+              await searchBusinessLines(q);
             }}
           />
         </div>

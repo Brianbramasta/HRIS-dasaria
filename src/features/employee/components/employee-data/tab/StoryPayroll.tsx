@@ -1,10 +1,11 @@
 import ExpandCard from '@/features/structure-and-organize/components/card/ExpandCard';
+import { useStoryPayrollTab } from '@/features/employee/hooks/tab/useStoryPayrollTab';
 interface Props { employeeId?: string; isEditable: boolean }
-export default function StoryPayrollTab({employeeId, isEditable }: Props) {
-  console.log(employeeId);
+export default function StoryPayrollTab({ isEditable }: Props) {
+  const { title, message } = useStoryPayrollTab(isEditable);
   return (
-    <ExpandCard title={isEditable ? 'Story Payroll (Edit)' : 'Story Payroll'} withHeaderDivider>
-      <div className="text-sm text-gray-500">Belum ada histori payroll.</div>
+    <ExpandCard title={title} withHeaderDivider>
+      <div className="text-sm text-gray-500">{message}</div>
     </ExpandCard>
   );
 }

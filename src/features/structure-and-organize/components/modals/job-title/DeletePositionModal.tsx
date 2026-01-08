@@ -1,10 +1,7 @@
-import { useState } from "react";
 import type { PositionListItem } from "../../../types/OrganizationApiTypes";
-import { useFileStore } from '@/stores/fileStore';
-import { addNotification } from "@/stores/notificationStore";
 import ModalDelete from "../../../../../components/shared/modal/ModalDelete";
 import ModalDeleteContent from "../../../../../components/shared/modal/ModalDeleteContent";
-import { usePositions } from '../../../hooks/useJobTitle';
+import { useDeletePositionModal } from '../../../hooks/modals/job-title/useDeletePositionModal';
 
 
 type Props = {
@@ -20,47 +17,14 @@ export const DeletePositionModal = ({
   onSuccess,
   position,
 }: Props) => {
-  const [memoNumber, setMemoNumber] = useState('');
-  const skFile = useFileStore((s) => s.skFile);
-  const [isLoading, setIsLoading] = useState(false);
-  const { deletePosition } = usePositions();
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      // setSkFile(e.target.files[0]);
-      console.log(skFile)
-    }
-  };
-
-  const handleDelete = async () => {
-    if (!position) return;
-    if (!skFile?.file) {
-      addNotification({
-        variant: 'error',
-        title: 'Jabatan tidak dihapus',
-        description: 'File Wajib di isi',
-        hideDuration: 4000,
-      });
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      await deletePosition(position.id, { memoNumber: memoNumber.trim(), skFile: skFile?.file });
-      onSuccess();
-      onClose();
-    } catch (error) {
-      console.error("Failed to delete position:", error);
-      addNotification({
-        variant: 'error',
-        title: 'Jabatan tidak dihapus',
-        description: 'Gagal menghapus jabatan. Silakan coba lagi.',
-        hideDuration: 4000,
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const {
+    memoNumber,
+    setMemoNumber,
+    skFile,
+    submitting,
+    handleFileChange,
+    handleDelete,
+  } = useDeletePositionModal({ isOpen, onClose, onSuccess, position });
 
   return (
     
@@ -68,7 +32,7 @@ export const DeletePositionModal = ({
       isOpen={isOpen}
       onClose={onClose}
       handleDelete={handleDelete}
-      submitting={isLoading}
+      submitting={submitting}
       content={
         <ModalDeleteContent
           memoNumber={memoNumber}

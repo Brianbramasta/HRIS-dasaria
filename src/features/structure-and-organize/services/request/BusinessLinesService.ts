@@ -76,7 +76,7 @@ class BusinessLinesService {
     if (payload.skFile) {
       formData.append('bl_decree_file', payload.skFile as File);
     }
-    return apiService.post<any>(`${this.basePath}business-lines${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return apiService.post<any>(`${this.basePath}business-lines/${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
   }
 
   /**

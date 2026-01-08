@@ -1,25 +1,11 @@
-// Dokumentasi: Modal edit Potongan Tidak Tetap (Non-AE)
-// Field: BPJS Kesehatan JKN (1%), BPJS Ketenagakerjaan JHT (2%), Kasbon
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import Input from '@/components/form/input/InputField';
 import type { ModalProps } from '@/features/payroll/components/layouts/LayoutDetail';
-
-interface FormValues {
-  jkn1: string;
-  jht2: string;
-  kasbon: string;
-}
+import { useAddNonRecurringDeductionModal } from '@/features/payroll/hooks/modals/detail-payroll/non-ae/useAddNonRecurringDeductionModal';
 
 type Props = ModalProps;
-
-// Dokumentasi: Utility format angka ribuan Indonesia
-const formatRupiah = (val: string) => {
-  const cleaned = (val || '').replace(/[^0-9]/g, '');
-  if (!cleaned) return '';
-  return cleaned.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-};
 
 const TambahPotonganTidakTetapModal: React.FC<Props> = ({
   isOpen,
@@ -27,17 +13,7 @@ const TambahPotonganTidakTetapModal: React.FC<Props> = ({
   defaultValues,
   onSave,
 }) => {
-  const initial: FormValues = useMemo(() => ({
-    jkn1: formatRupiah(defaultValues?.jkn1 ?? ''),
-    jht2: formatRupiah(defaultValues?.jht2 ?? ''),
-    kasbon: formatRupiah(defaultValues?.kasbon ?? ''),
-  }), [defaultValues]);
-
-  const [form, setForm] = useState<FormValues>(initial);
-
-  const setField = (key: keyof FormValues, value: string) => {
-    setForm((prev) => ({ ...prev, [key]: formatRupiah(value) }));
-  };
+  const { form, setField, handleSubmit } = useAddNonRecurringDeductionModal(defaultValues as any);
 
   const content = (
     <div className="space-y-5">
@@ -56,18 +32,13 @@ const TambahPotonganTidakTetapModal: React.FC<Props> = ({
     </div>
   );
 
-  const handleSubmit = () => {
-    onSave(form as unknown as Record<string, string>);
-    onClose();
-  };
-
   return (
     <ModalAddEdit
       title={'Potongan Tidak Tetap'}
       isOpen={isOpen}
       onClose={onClose}
       content={content}
-      handleSubmit={handleSubmit}
+      handleSubmit={() => handleSubmit(onSave, onClose)}
       submitting={false}
       maxWidth="max-w-lg"
       confirmTitleButton="Simpan Perubahan"

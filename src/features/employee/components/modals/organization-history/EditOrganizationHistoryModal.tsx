@@ -1,40 +1,14 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import Select from '@/components/form/Select';
 import DatePicker from '@/components/form/date-picker';
 import InputField from '@/components/form/input/InputField';
 import FileInput from '@/components/form/input/FileInput';
-import { employeeMasterDataService } from '@/features/employee/services/EmployeeMasterData.service';
 import {
-  getEmployeeCategoryDropdownOptions,
-  getPositionLevelDropdownOptions,
-} from '@/features/employee/hooks/employee-data/form/useFormulirKaryawan';
-import { useOrganizationChange } from '@/features/employee/hooks/organization-history/useOrganizationChange';
-
-export type OrganizationChangeForm = {
-  id?: string;
-  employee_id?: string;
-  nama?: string;
-  change_type_id?: string;
-  efektif_date?: string;
-  company_id?: string;
-  job_title_id?: string;
-  office_id?: string;
-  directorate_id?: string;
-  employee_category_id?: string;
-  division_id?: string;
-  reason?: string;
-  department_id?: string;
-  position_id?: string;
-  position_level_id?: string;
-  skFile?: File | null;
-  decree_file?: string;
-  
-  // Helper fields for display
-  golongan?: string;
-  nip?: string;
-};
+  useEditOrganizationHistoryModal,
+  OrganizationChangeForm,
+} from '@/features/employee/hooks/modals/organization-history/useEditOrganizationHistoryModal';
 
 interface Props {
   isOpen: boolean;
@@ -45,227 +19,26 @@ interface Props {
   hideSkFileUpload?: boolean;
 }
 
-// const JENIS_PERUBAHAN_OPTIONS = [
-//   { label: 'Rotasi', value: 'Rotasi' },
-//   { label: 'Mutasi', value: 'Mutasi' },
-//   { label: 'Promosi', value: 'Promosi' },
-//   { label: 'Demosi', value: 'Demosi' },
-// ];
-
 const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSubmit, submitting = false, hideSkFileUpload = false }) => {
-  const [form, setForm] = useState<OrganizationChangeForm>({});
-  const title = useMemo(() => 'Perubahan Organisasi', []);
-  const { changeTypeOptions, fetchChangeTypeOptions, employeeOptions, fetchEmployeeOptions } = useOrganizationChange({ autoFetch: false });
-
-  // Dropdown States
-  const [companyOptions, setCompanyOptions] = useState<any[]>([]);
-  const [officeOptions, setOfficeOptions] = useState<any[]>([]);
-  const [directorateOptions, setDirectorateOptions] = useState<any[]>([]);
-  const [divisionOptions, setDivisionOptions] = useState<any[]>([]);
-  const [departmentOptions, setDepartmentOptions] = useState<any[]>([]);
-  const [jobTitleOptions, setJobTitleOptions] = useState<any[]>([]);
-  const [positionOptions, setPositionOptions] = useState<any[]>([]);
-  const [kategoriKaryawanOptions, setKategoriKaryawanOptions] = useState<any[]>([]);
-  const [positionLevelOptions, setPositionLevelOptions] = useState<any[]>([]);
-  
-  // Derived state
-  const [selectedGrade, setSelectedGrade] = useState<string>('');
-  const isEditMode = !!initialData;
-
-  // Initialize form with data
-  useEffect(() => {
-    if (initialData && isOpen) {
-      // Map API response to form
-      const mappedData: OrganizationChangeForm = {
-        id: initialData.id,
-        employee_id: initialData.employee_id || initialData.idKaryawan, // Handle variations
-        nama: initialData.name || initialData.nama,
-        nip: initialData.nip || initialData.idKaryawan,
-        change_type_id: initialData.change_type_id, // Ensure API sends ID or map name to ID if needed. For now assuming ID is used or name matches if select uses string. 
-        // Note: JENIS_PERUBAHAN_OPTIONS uses values like 'Rotasi'. If API returns UUID for change_type, we need to handle that. 
-        // The user example shows "change_type_id": "...", "change_type_name": "Promosi". 
-        // If we want to use the ID for the dropdown, we need to fetch change types from API or use the name if the dropdown is static.
-        // For now, I'll assume we might need to use the name or ID. The user provided static options for Change Type in previous code.
-        // But in the prompt, user shows "change_type_id". 
-        // Let's assume for now we use the ID if we have dynamic options, or map name if static.
-        // Since I don't have a "getChangeTypes" API, I will stick to static options for now OR check if I should use ID.
-        // Wait, the user prompt showed "change_type_id": "5d2ce8a2...". This implies it's a dynamic list from DB.
-        // However, I don't see a `getChangeTypeDropdown` in the services I read. 
-        // I will stick to the static list for "Jenis Perubahan" but map the value carefully.
-        // Actually, let's just put `change_type_id` in the form. If the dropdown expects specific values, we might have a mismatch.
-        // Given the instructions focused on "Perusahaan, Direktorat, Divisi, Departemen, Position, Jabatan, Jenjang Jabatan, Golongan, Kategori Karyawan", I will focus on making THOSE dynamic.
-        // "Jenis Perubahan" was not in the list of dropdowns to "sesuaikan rulenya".
-        
-        efektif_date: initialData.efektif_date || initialData.tanggalEfektif,
-        company_id: initialData.company_id,
-        office_id: initialData.office_id,
-        directorate_id: initialData.directorate_id,
-        division_id: initialData.division_id,
-        department_id: initialData.department_id,
-        position_id: initialData.position_id,
-        job_title_id: initialData.job_title_id,
-        position_level_id: initialData.position_level_id,
-        employee_category_id: initialData.employee_category_id,
-        reason: initialData.reason || initialData.alasanPerubahan,
-        decree_file: initialData.decree_file,
-      };
-      setForm(mappedData);
-    } else if (isOpen) {
-        setForm({});
-    }
-  }, [initialData, isOpen]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    fetchChangeTypeOptions();
-    fetchEmployeeOptions();
-  }, [isOpen, fetchChangeTypeOptions, fetchEmployeeOptions]);
-
-  const handleInput = (key: keyof OrganizationChangeForm, value: any) => {
-    setForm((prev) => {
-        const next = { ...prev, [key]: value };
-        
-        // Handle reset logic for dependent fields
-        if (key === 'company_id') {
-             next.office_id = '';
-        }
-        if (key === 'directorate_id') {
-            next.division_id = '';
-            next.department_id = '';
-        }
-        if (key === 'division_id') {
-            next.department_id = '';
-        }
-        if (key === 'nip') {
-            const selectedEmp = employeeOptions.find((e: any) => e.value === value);
-            if (selectedEmp) {
-                next.employee_id = selectedEmp.value;
-                next.nama = selectedEmp.name;
-            } else {
-                next.employee_id = '';
-                next.nama = '';
-            }
-        }
-        if (key === 'job_title_id') {
-            const selectedJob = jobTitleOptions.find((j: any) => j.value === value);
-            if (selectedJob?.grade) {
-                setSelectedGrade(selectedJob.grade);
-                next.golongan = selectedJob.grade;
-            } else {
-                setSelectedGrade('');
-                next.golongan = '';
-            }
-        }
-
-        return next;
-    });
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setForm((prev) => ({ ...prev, skFile: file }));
-  };
-
-  // Fetch Initial Options
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const fetchInitialData = async () => {
-      try {
-        const [
-            kategori,
-            positionLevels,
-            companies,
-            directorates,
-            positions,
-            jobTitles
-        ] = await Promise.all([
-            getEmployeeCategoryDropdownOptions(),
-            getPositionLevelDropdownOptions(),
-            employeeMasterDataService.getCompanyDropdown(),
-            employeeMasterDataService.getDirectorateDropdown(),
-            employeeMasterDataService.getPositionDropdown(),
-            employeeMasterDataService.getJobTitleDropdown()
-        ]);
-
-        setKategoriKaryawanOptions(kategori);
-        setPositionLevelOptions(positionLevels);
-        setCompanyOptions((companies || []).map((i: any) => ({ label: i.company_name, value: i.id })));
-        setDirectorateOptions((directorates || []).map((i: any) => ({ label: i.directorate_name, value: i.id })));
-        setPositionOptions((positions || []).map((i: any) => ({ label: i.position_name, value: i.id })));
-        setJobTitleOptions((jobTitles || []).map((i: any) => ({ label: i.job_title_name, value: i.id, grade: i.grade })));
-
-      } catch (error) {
-        console.error('Error fetching initial data:', error);
-      }
-    };
-
-    fetchInitialData();
-  }, [isOpen]);
-
-  // Fetch Dependent Options: Office
-  useEffect(() => {
-    const fetchOffices = async () => {
-        if (!form.company_id) {
-            setOfficeOptions([]);
-            return;
-        }
-        try {
-            const items = await employeeMasterDataService.getOfficeDropdown(undefined, form.company_id);
-            setOfficeOptions((items || []).map((i: any) => ({ label: i.office_name, value: i.id })));
-        } catch (error) {
-            console.error('Error fetching offices:', error);
-            setOfficeOptions([]);
-        }
-    };
-    fetchOffices();
-  }, [form.company_id]);
-
-  // Fetch Dependent Options: Division
-  useEffect(() => {
-    const fetchDivisions = async () => {
-        if (!form.directorate_id) {
-            setDivisionOptions([]);
-            return;
-        }
-        try {
-            const items = await employeeMasterDataService.getDivisionsByDirectorate(form.directorate_id);
-            setDivisionOptions((items || []).map((i: any) => ({ label: i.division_name, value: i.id })));
-        } catch (error) {
-            console.error('Error fetching divisions:', error);
-            setDivisionOptions([]);
-        }
-    };
-    fetchDivisions();
-  }, [form.directorate_id]);
-
-  // Fetch Dependent Options: Department
-  useEffect(() => {
-    const fetchDepartments = async () => {
-        if (!form.division_id) {
-            setDepartmentOptions([]);
-            return;
-        }
-        try {
-            const items = await employeeMasterDataService.getDepartmentsByDivision(form.division_id);
-            setDepartmentOptions((items || []).map((i: any) => ({ label: i.department_name, value: i.id })));
-        } catch (error) {
-            console.error('Error fetching departments:', error);
-            setDepartmentOptions([]);
-        }
-    };
-    fetchDepartments();
-  }, [form.division_id]);
-  
-  // Set Grade if Job Title is already selected (e.g. from initial data)
-  useEffect(() => {
-      if (form.job_title_id && jobTitleOptions.length > 0) {
-          const selectedJob = jobTitleOptions.find((j: any) => j.value === form.job_title_id);
-          if (selectedJob?.grade) {
-              setSelectedGrade(selectedJob.grade);
-          }
-      }
-  }, [form.job_title_id, jobTitleOptions]);
+  const {
+    title,
+    form,
+    isEditMode,
+    changeTypeOptions,
+    employeeOptions,
+    companyOptions,
+    officeOptions,
+    directorateOptions,
+    divisionOptions,
+    departmentOptions,
+    jobTitleOptions,
+    positionOptions,
+    kategoriKaryawanOptions,
+    positionLevelOptions,
+    selectedGrade,
+    handleInput,
+    handleFileChange,
+  } = useEditOrganizationHistoryModal({ isOpen, initialData });
 
 
   const content = (

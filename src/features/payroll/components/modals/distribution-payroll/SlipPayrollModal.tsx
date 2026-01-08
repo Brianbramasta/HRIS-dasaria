@@ -1,6 +1,6 @@
-import { useMemo } from 'react';
 import type { ReactNode } from 'react';
 import { Modal } from '@/components/ui/modal';
+import { useSlipPayrollModal } from '@/features/payroll/hooks/modals/distribution-payroll/useSlipPayrollModal';
 
 export interface SlipPayrollModalProps {
   isOpen: boolean;
@@ -56,13 +56,6 @@ export interface SlipPayrollModalProps {
   takeHomePayLabel?: string;
 }
 
-const formatCurrency = (value: number) =>
-  new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-    minimumFractionDigits: 0,
-  }).format(value);
-
 export default function SlipPayrollModal({
   isOpen,
   onClose,
@@ -71,15 +64,14 @@ export default function SlipPayrollModal({
   title,
   takeHomePayLabel = 'Take Home Pay',
 }: SlipPayrollModalProps) {
-  const totalPenerimaan = useMemo(() => {
-    if (!data?.penerimaan) return 0;
-    return Object.values(data.penerimaan).reduce((sum, val) => sum + (val || 0), 0);
-  }, [data?.penerimaan]);
-
-  const totalPotongan = useMemo(() => {
-    if (!data?.potongan) return 0;
-    return Object.values(data.potongan).reduce((sum, val) => sum + (val || 0), 0);
-  }, [data?.potongan]);
+  const {
+    totalPenerimaan,
+    totalPotongan,
+    takeHomePay,
+    resolvedTitle,
+    resolvedTakeHomePayLabel,
+    formatCurrency,
+  } = useSlipPayrollModal({ data, title, takeHomePayLabel });
 
   if (!data) return null;
 
@@ -95,7 +87,7 @@ export default function SlipPayrollModal({
         <div className="mb-6 ">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1 border-b-3 border-[#000] pb-2">PT Garuda Lintas Cakrawala</h2>
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-            {title || `Slip Gaji ${new Date().toLocaleString('id-ID', { month: 'long', year: 'numeric' })}`}
+            {resolvedTitle}
           </p>
 
           {/* Header Information - 2 columns layout */}
@@ -137,10 +129,10 @@ export default function SlipPayrollModal({
         {/* Take Home Pay */}
         <div className="grid grid-cols-2 gap-4 mb-6">
           <div className="bg-[#525252] text-white px-4 py-3 font-bold text-base">
-            {takeHomePayLabel}
+            {resolvedTakeHomePayLabel}
           </div>
           <div className="bg-[#525252] text-white px-4 py-3 font-bold text-lg flex items-center justify-end">
-            {formatCurrency(data.takeHomePay || totalPenerimaan - totalPotongan)}
+            {formatCurrency(takeHomePay)}
           </div>
         </div>
 

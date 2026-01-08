@@ -1,95 +1,28 @@
-import { useCallback } from 'react';
 import ExpandCard from '@/features/structure-and-organize/components/card/ExpandCard';
 import Label from '@/components/form/Label';
 import InputField from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 import Button from '@/components/ui/button/Button';
 import { Edit2 } from 'react-feather';
-import { useModal } from '@/hooks/useModal';
-import PersonalDataModal, { type PersonalDataForm } from '@/features/employee/components/modals/employee-data/personal-information/PersonalDataModal';
+import PersonalDataModal from '@/features/employee/components/modals/employee-data/personal-information/PersonalDataModal';
 import { IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
-import { usePersonalInformation } from '@/features/employee/hooks/employee-data/detail/contract/usePersonalInformation';
-import { UpdatePersonalDataPayload } from '@/features/employee/types/detail/PersonalInformation';
-import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
-import { addNotification } from '@/stores/notificationStore';
+import usePersonalDataCard from '@/features/employee/hooks/card/usePersonalDataCard';
 interface Props {
   data: any; // API response from employee-master-data
   employeeId: string; // ID karyawan untuk API call
 }
 
 export default function PersonalDataCard({ data, employeeId }: Props) {
-  const { isOpen, openModal, closeModal } = useModal(false);
-  const { loading, error, updatePersonalData, resetError } = usePersonalInformation(employeeId);
-  const { fetchDetail } = useDetailDataKaryawanPersonalInfo()
-
-  const initialForm: PersonalDataForm = {
-    idKaryawan: data?.id || '',
-    namaLengkap: data?.full_name || '',
-    email: data?.email || '',
-    nik: data?.national_id ? String(data.national_id) : '',
-    tempatLahir: data?.birth_place || '',
-    tanggalLahir: data?.birth_date || '',
-    jenisKelamin: data?.gender || '',
-    golDarah: data?.blood_type || '',
-    pendidikanTerakhir: data?.last_education_id || '',
-    statusMenikah: data?.marital_status || '',
-    nomorTelepon: data?.phone_number || '',
-    jumlahTanggungan: data?.household_dependents ? String(data.household_dependents) : '0',
-    alamatDomisili: data?.current_address || '',
-    alamatKtp: data?.ktp_address || '',
-    agama: data?.religion_id || '',
-    fotoProfil:  null,
-    avatarUrl: data?.avatar || '',
-  };
-
-  /**
-   * Handle submit dari modal - panggil hook untuk API request
-   */
-  const handleSubmitPersonalData = useCallback(
-    async (payload: UpdatePersonalDataPayload) => {
-      try {
-        // Call hook untuk update data ke API
-        console.log('Submitting personal data payload:', payload);
-        console.log('Employee ID:', employeeId);
-        await updatePersonalData(employeeId, payload);
-        closeModal();
-        fetchDetail(employeeId);
-        addNotification({ 
-          variant: 'success',
-          title: 'Berhasil',
-          description: 'Data pribadi berhasil diperbarui.',
-          hideDuration: 3000 });
-
-        // Optional: Show success notification
-        console.log('Personal data updated successfully');
-      } catch (err) {
-        console.error('Failed to update personal data:', err);
-        // Error sudah di-set di hook state, dapat ditampilkan
-      }
-    },
-    [employeeId, updatePersonalData, closeModal, fetchDetail]
-  );
-
-  /**
-   * Handle close modal dengan reset error
-   */
-  const handleCloseModal = useCallback(() => {
-    resetError();
-    closeModal();
-  }, [closeModal, resetError]);
-
-  const isComplete = !!data?.id &&
-    !!data?.full_name &&
-    !!data?.email &&
-    !!data?.national_id &&
-    !!data?.birth_place &&
-    !!data?.birth_date &&
-    !!data?.gender &&
-    !!data?.phone_number &&
-    !!data?.current_address &&
-    !!data?.religion &&
-    !!data?.marital_status &&
-    !!data?.ktp_address;
+  const {
+    isOpen,
+    openModal,
+    handleCloseModal,
+    loading,
+    error,
+    initialForm,
+    isComplete,
+    handleSubmitPersonalData,
+  } = usePersonalDataCard(data, employeeId);
 
   return (
     <ExpandCard title="Data Pribadi" leftIcon={isComplete ? <IconLengkap /> : <IconTidakLengkap />} withHeaderDivider>

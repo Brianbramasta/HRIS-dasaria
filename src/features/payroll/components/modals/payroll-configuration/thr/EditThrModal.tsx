@@ -1,9 +1,10 @@
 // Dokumentasi: Modal Edit THR (Lama Kerja, Deksripsi Umum)
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
+import { useEditThrModal } from '@/features/payroll/hooks/modals/payroll-configuration/thr/useEditThrModal';
 
 type FormValues = {
   lamaKerja: string;
@@ -17,18 +18,13 @@ interface Props {
   onSave: (values: FormValues) => void;
 }
 
-// Dokumentasi: Komponen utama modal THR menggunakan ModalAddEdit
 const EditThrModal: React.FC<Props> = ({ isOpen, onClose, defaultValues, onSave }) => {
-  const initial: FormValues = useMemo(() => ({
-    lamaKerja: defaultValues?.lamaKerja ?? '',
-    deskripsiUmum: defaultValues?.deskripsiUmum ?? '',
-  }), [defaultValues]);
-
-  const [form, setForm] = useState<FormValues>(initial);
-
-  const setField = (key: keyof FormValues, value: string) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
-  };
+  const { form, setField, handleSubmit } = useEditThrModal({
+    isOpen,
+    defaultValues,
+    onSave,
+    onClose,
+  });
 
   const content = (
     <div className="space-y-5">
@@ -42,11 +38,6 @@ const EditThrModal: React.FC<Props> = ({ isOpen, onClose, defaultValues, onSave 
       </div>
     </div>
   );
-
-  const handleSubmit = () => {
-    onSave(form);
-    onClose();
-  };
 
   return (
     <ModalAddEdit

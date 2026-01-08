@@ -1,6 +1,6 @@
 import React from 'react';
 import BaseContractModal, { type ContractEntry } from './BaseModal';
-import { useModalContract } from '@/features/employee/hooks/employee-data/detail/contract/useModalContract';
+import { useEditContractModal } from '@/features/employee/hooks/modals/employee-data/contract/useEditContractModal';
 
 interface EditContractModalProps {
   isOpen: boolean;
@@ -26,22 +26,14 @@ const EditContractModal: React.FC<EditContractModalProps> = ({
     isLoadingDropdowns,
     handleInput,
     handleDateChange,
-    handleFileChange,
-  } = useModalContract({
+    handleFileChangeWrapper,
+    handleSubmit,
+  } = useEditContractModal({
     isOpen,
     initialData,
-    isEditable: true,
-    isEditStatusBerakhir: true,
+    onSubmit,
+    onFileChange,
   });
-
-  const handleFileChangeWrapper = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = handleFileChange(e, 'dokumenBerakhir');
-    onFileChange?.(file);
-  };
-
-  const handleSubmit = () => {
-    onSubmit(form);
-  };
 
   return (
     <BaseContractModal

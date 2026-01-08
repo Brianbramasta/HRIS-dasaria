@@ -1,18 +1,18 @@
 import { type ReactNode } from 'react';
 import type { Karyawan } from '@/features/employee/types/Employee';
 import Button from '@/components/ui/button/Button';
-import { DataTable, type DataTableColumn, type DataTableAction } from '@/components/shared/datatable/DataTable';
+import { DataTable } from '@/components/shared/datatable/DataTable';
 import AddContractModal from '@/features/employee/components/modals/employee-data/contract/AddContractModal';
 import EditContractModal from '@/features/employee/components/modals/employee-data/contract/EditContractModal';
 import DetailContractModal from '@/features/employee/components/modals/employee-data/contract/DetailContractModal';
 import { useContractTab } from '@/features/employee/hooks/employee-data/detail/contract/useContract';
-import { IconPencil, IconFileDetail } from '@/icons/components/icons';
 import ComponentCard from '@/components/common/ComponentCard';
 import type { ContractHistoryItem } from '@/features/employee/services/detail/ContractService';
 import { formatUrlFile } from '@/utils/formatUrlFile';
 import PdfPreviewEmbed from '@/components/shared/modal/PdfPreviewEmbed';
 import { clearSkFile } from '@/stores/fileStore';
 import { formatDateToIndonesian } from '@/utils/formatDate';
+import { useContractTabConfig } from '@/features/employee/hooks/tab/useContractTabConfig';
 
 interface Props {
   employeeId?: string;
@@ -51,31 +51,7 @@ export default function ContractTab({ employeeId: employeeIdProp, data }: Props)
     isSubmitting,
   } = useContractTab({ employeeIdProp, data });
 
-  const columns: DataTableColumn<ContractHistoryItem>[] = [
-    { id: 'no', label: 'No.', align: 'center', format: (_v, row) => rows.findIndex((r) => r.id === row.id) + 1, sortable: false },
-    { id: 'contract_type', label: 'Jenis Kontrak' },
-    { id: 'last_contract_signed_date', label: 'Tanggal Tanda Tangan Kontrak', format: (v) => formatDateToIndonesian(v) },
-    { id: 'end_date', label: 'Tanggal Berakhir Kontrak', format: (v) => (v ? formatDateToIndonesian(v) : '-') },
-    { id: 'note', label: 'Catatan', format: (v) => (v) },
-  ];
-
-  const actions: DataTableAction<ContractHistoryItem>[] = [
-    {
-      variant: 'outline',
-      color: 'error',
-      icon: <IconFileDetail />,
-      condition: (row) => row.contract_status === 'Tidak Aktif',
-      onClick: (row) => {
-        handleViewDetail(row);
-      },
-    },
-    {
-      variant: 'outline',
-      icon: <IconPencil />,
-      condition: (row) => row.contract_status === 'Aktif',
-      onClick: (row) => handleEditRow(row),
-    },
-  ];
+  const { columns, actions } = useContractTabConfig({ rows, handleViewDetail, handleEditRow });
 
   return (
     <>

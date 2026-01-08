@@ -1,5 +1,5 @@
 // Refactor modal: mendukung Pendidikan Formal & Non-Formal, memindahkan input sosial ke modal terpisah
-import React, { useEffect, useMemo, useState } from 'react';
+import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import InputField from '@/components/form/input/InputField';
@@ -7,17 +7,11 @@ import Select from '@/components/form/Select';
 import DatePicker from '@/components/form/date-picker';
 import FileInput from '@/components/form/input/FileInput';
 import { Trash2 } from 'react-feather';
-import type { EducationItem as EducationItemType } from '@/features/employee/types/FormEmployee';
 import { JENIS_PENDIDIKAN_OPTIONS } from '@/features/employee/utils/EmployeeMappings';
-import { getEducationDropdownOptions } from '@/features/employee/hooks/employee-data/form/useFormulirKaryawan';
 import Button from '@/components/ui/button/Button';
 import { IconPlus } from '@/icons/components/icons';
-import { formatIndonesianToISO } from '@/utils/formatDate';
-
-// Tipe form lokal untuk modal pendidikan (tanpa media sosial)
-export type EducationModalForm = {
-  education: EducationItemType[];
-};
+import { useEducationalBackgroundModal, EducationModalForm } from '@/features/employee/hooks/modals/employee-data/personal-information/useEducationalBackgroundModal';
+export type { EducationModalForm };
 
 interface Props {
   isOpen: boolean;
@@ -27,89 +21,10 @@ interface Props {
   submitting?: boolean;
 }
 
-// Default satu baris data pendidikan
-const defaultEduRow: EducationItemType = {
-  jenisPendidikan: 'formal',
-  jenjang: '',
-  namaLembaga: '',
-  gelar: '',
-  nilaiPendidikan: '',
-  jurusanKeahlian: '',
-  tahunLulus: '',
-  // Non-formal
-  namaSertifikat: '',
-  organisasiPenerbit: '',
-  tanggalPenerbitan: '',
-  tanggalKedaluwarsa: '',
-  idKredensial: '',
-};
-
-const emptyForm: EducationModalForm = {
-  education: [defaultEduRow],
-};
-
-// Komponen utama modal pendidikan
 const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSubmit, submitting = false }) => {
-  // State form pendidikan
-  const [form, setForm] = useState<EducationModalForm>(emptyForm);
-  const [pendidikanOptions, setPendidikanOptions] = useState<any[]>([]);
-  const title = useMemo(() => 'Edit Riwayat Pendidikan', []);
+  const { title, form, pendidikanOptions, updateEducationField, addEducationRow, removeEducationRow } =
+    useEducationalBackgroundModal({ isOpen, initialData });
 
-  // Inisialisasi data ketika modal dibuka/initialData berubah
-  useEffect(() => {
-    const base = initialData ? { ...emptyForm, ...initialData } : emptyForm;
-    const ensuredEducation = Array.isArray(base.education) && base.education.length > 0 ? base.education : [defaultEduRow];
-    setForm({ ...base, education: ensuredEducation });
-  }, [initialData, isOpen]);
-
-  // Fetch pendidikan options dari API hanya saat modal dibuka
-  useEffect(() => {
-    if (!isOpen) return;
-    
-    let mounted = true;
-    getEducationDropdownOptions()
-      .then((opts: any) => {
-        if (mounted) setPendidikanOptions(opts);
-      })
-      .catch(() => {});
-    return () => {
-      mounted = false;
-    };
-  }, [isOpen]);
-
-  // Handler update field pendidikan per baris
-  const updateEducationField = (index: number, field: keyof EducationItemType, value: any) => {
-
-    
-    if (field === 'tanggalPenerbitan' || field === 'tanggalKedaluwarsa') {
-      // Jika perlu format khusus, lakukan di sini
-      value = formatIndonesianToISO(value);
-    }
-    console.log('Updating education field:', { index, field, value });
-    setForm((prev) => {
-      const next = [...prev.education];
-      next[index] = { ...next[index], [field]: value } as EducationItemType;
-      return { ...prev, education: next };
-    });
-  };
-
-  // Tambah baris pendidikan
-  const addEducationRow = () => {
-    setForm((prev) => ({
-      ...prev,
-      education: [...prev.education, { ...defaultEduRow }],
-    }));
-  };
-
-  // Hapus baris pendidikan
-  const removeEducationRow = (idx: number) => {
-    setForm((prev) => ({
-      ...prev,
-      education: prev.education.filter((_, i) => i !== idx),
-    }));
-  };
-
-  // Konten modal: pilihan jenis + field kondisional
   const content = (
     <div className="space-y-8">
       <div>
@@ -275,7 +190,6 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
     </div>
   );
 
-  // Render modal
   return (
     <ModalAddEdit
       isOpen={isOpen}

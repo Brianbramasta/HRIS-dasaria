@@ -1,9 +1,10 @@
 // Dokumentasi: Modal Tambah/Edit Potongan Tidak Tetap (Nama Potongan, Deksripsi Umum)
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
+import { useNonRecurringDeductionModal } from '@/features/payroll/hooks/modals/payroll-configuration/non-recurring-deduction/useNonRecurringDeductionModal';
 
 type FormValues = {
   namaPotongan: string;
@@ -19,18 +20,13 @@ interface Props {
   confirmTitleButton?: string;
 }
 
-// Dokumentasi: Komponen utama modal Potongan Tidak Tetap menggunakan ModalAddEdit sebagai wrapper
 const PotonganTidakTetapModal: React.FC<Props> = ({ isOpen, onClose, defaultValues, onSave, title, confirmTitleButton }) => {
-  const initial: FormValues = useMemo(() => ({
-    namaPotongan: defaultValues?.namaPotongan ?? '',
-    deskripsiUmum: defaultValues?.deskripsiUmum ?? '',
-  }), [defaultValues]);
-
-  const [form, setForm] = useState<FormValues>(initial);
-
-  const setField = (key: keyof FormValues, value: string) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
-  };
+  const { form, setField, handleSubmit } = useNonRecurringDeductionModal({
+    isOpen,
+    defaultValues,
+    onSave,
+    onClose,
+  });
 
   const content = (
     <div className="space-y-5">
@@ -44,11 +40,6 @@ const PotonganTidakTetapModal: React.FC<Props> = ({ isOpen, onClose, defaultValu
       </div>
     </div>
   );
-
-  const handleSubmit = () => {
-    onSave(form);
-    onClose();
-  };
 
   return (
     <ModalAddEdit

@@ -1,30 +1,8 @@
-import { useState, useEffect } from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
 import Select from '@/components/form/Select';
-
-const statusPerpanjanganOptions = [
-  { value: 'Diperpanjang', label: 'Diperpanjang' },
-  { value: 'Ditolak', label: 'Ditolak' },
-  { value: 'Pending', label: 'Pending' },
-  { value: 'Negoisasi', label: 'Negoisasi' },
-  { value: 'Menunggu Jadwal Negoisasi', label: 'Menunggu Jadwal Negoisasi' },
-];
-
-const statusAtasanOptions = [
-  { value: 'Disetujui', label: 'Disetujui' },
-  { value: 'Ditolak', label: 'Ditolak' },
-  { value: 'Pending', label: 'Pending' },
-];
-
-const statusKaryawanOptions = [
-  { value: 'Disetujui', label: 'Disetujui' },
-  { value: 'Ditolak', label: 'Ditolak' },
-  { value: 'Pending', label: 'Pending' },
-  { value: 'Negoisasi', label: 'Negoisasi' },
-  { value: 'Info', label: 'Info' },
-];
+import useEditContractRenewalStatusModal from '@/features/employee/hooks/modals/employee-data/contract-renewal/useEditContractRenewalStatusModal';
 
 interface EditStatusPerpanjanganModalProps {
   isOpen: boolean;
@@ -51,30 +29,21 @@ export default function EditStatusPerpanjanganModal({
   kontrakData,
   onSuccess,
 }: EditStatusPerpanjanganModalProps) {
-  const [statusPerpanjangan, setStatusPerpanjangan] = useState(kontrakData?.statusPerpanjangan);
-  const [statusAtasan, setStatusAtasan] = useState(kontrakData?.statusAtasan);
-  const [statusKaryawan, setStatusKaryawan] = useState(kontrakData?.statusKaryawan);
-  const [catatan, setCatatan] = useState(kontrakData?.catatan);
-  const [submitting, setSubmitting] = useState(false);
-
-  // Sync with prop changes
-  useEffect(() => {
-    setStatusPerpanjangan(kontrakData?.statusPerpanjangan);
-    setStatusAtasan(kontrakData?.statusAtasan);
-    setStatusKaryawan(kontrakData?.statusKaryawan);
-    setCatatan(kontrakData?.catatan);
-  }, [kontrakData]);
-
-  const handleSubmit = () => {
-    setSubmitting(true);
-    // TODO: API call to update status
-    setTimeout(() => {
-      setSubmitting(false);
-      onClose();
-      onSuccess?.();
-      console.log('Status updated:', { statusPerpanjangan, statusAtasan, statusKaryawan, catatan });
-    }, 1000);
-  };
+  const {
+    statusPerpanjanganOptions,
+    statusAtasanOptions,
+    statusKaryawanOptions,
+    statusPerpanjangan,
+    setStatusPerpanjangan,
+    statusAtasan,
+    setStatusAtasan,
+    statusKaryawan,
+    setStatusKaryawan,
+    catatan,
+    setCatatan,
+    submitting,
+    handleSubmit,
+  } = useEditContractRenewalStatusModal({ kontrakData, onClose, onSuccess });
 
   return (
     <ModalAddEdit

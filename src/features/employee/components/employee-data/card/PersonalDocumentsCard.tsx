@@ -2,47 +2,25 @@ import ExpandCard from '@/features/structure-and-organize/components/card/Expand
 import DocumentsTable from '@/features/structure-and-organize/components/table/TableGlobal';
 import Button from '@/components/ui/button/Button';
 import {  Edit2 } from 'react-feather';
-import React from 'react';
-import { useModal } from '@/hooks/useModal';
 import PersonalDocumentsModal from '@/features/employee/components/modals/employee-data/personal-information/PersonalDocumentsModal';
 import { IconFileDetail, IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
 import { formatUrlFile } from '@/utils/formatUrlFile';
-import { useParams } from 'react-router-dom';
-import usePersonalInformation from '@/features/employee/hooks/employee-data/detail/contract/usePersonalInformation';
+import usePersonalDocumentsCard from '@/features/employee/hooks/card/usePersonalDocumentsCard';
 
 interface Props {
   documents: any; // API response from employee-master-data
 }
 
 export default function PersonalDocumentsCard({ documents }: Props) {
-  const [personalFiles, setPersonalFiles] = React.useState<Array<{ id: number | string; no: number; namaFile: string; dokumen: string }>>([]);
-  const { isOpen, openModal, closeModal } = useModal(false);
-  const { id } = useParams<{ id: string }>();
-  const { updateEmployeeDocument } = usePersonalInformation(id);
-
-  React.useEffect(() => {
-    // Note: API response doesn't have documents field in the current contract
-    // This is a placeholder implementation
-    const docs = documents?.documents || [];
-    const mapped = docs.map((d: any, idx: number) => ({
-      id: d.id || idx + 1,
-      no: idx + 1,
-      namaFile: d.name_file || '',
-      jenis_file: d?.jenis_file || '',
-      fileType: d.file_type || '',
-      fileUrl: d.file || '',
-    }));
-    console.log('Mapped documents', mapped);
-    setPersonalFiles(mapped);
-  }, [documents]);
-
-  const optionalType = 'Surat Keterangan Pengalaman Kerja';
-  const existingTypes = new Set((documents?.documents || []).map((d: any) => d.file_type));
-  console.log('Existing types', existingTypes);
-  console.log('Has optional', existingTypes.has(optionalType));
-  console.log('Documents length', documents?.documents.length === 12 && !existingTypes.has(optionalType));
-
-  const isComplete = documents?.documents.length > 12 ? true : documents?.documents.length === 12 && !existingTypes.has(optionalType);
+  const {
+    personalFiles,
+    isOpen,
+    openModal,
+    closeModal,
+    isComplete,
+    initialData,
+    handleSubmit,
+  } = usePersonalDocumentsCard(documents);
 
   return (
     <ExpandCard title="Berkas/Dokumen Pribadi" leftIcon={isComplete ? <IconLengkap /> : <IconTidakLengkap />} withHeaderDivider>
@@ -65,8 +43,6 @@ export default function PersonalDocumentsCard({ documents }: Props) {
               icon: <IconFileDetail />,
               className: ' border-gray-300 text-sm hover:bg-gray-50',
               onClick: (row: any) => {
-                console.log('View clicked', row);
-                console.log('View clicked dokuments', documents);
                 window.open(formatUrlFile(row.fileUrl), '_blank'); 
               },
             },
@@ -86,26 +62,9 @@ export default function PersonalDocumentsCard({ documents }: Props) {
 
       <PersonalDocumentsModal
         isOpen={isOpen}
-        // Dokumentasi: Inisialisasi data modal dokumen dari response Document_Data.documents
-        initialData={{
-          rows: (documents?.documents || []).map((d: any, idx: number) => ({
-            id: idx + 1,
-            document_id: d?.id || '',
-            tipeFile: d?.file_type || '',
-            jenis_file: d?.jenis_file || '',
-            type_id: d?.file_type_id || '',
-            namaFile: d?.name_file || '',
-            filePath: d?.file || '',
-          })),
-        }}
+        initialData={initialData}
         onClose={closeModal}
-        onSubmit={async (payload) => {
-          console.log('Submit payload', payload);
-          // return;
-          // Payload from modal is already formatted as { documents: [...] }
-          await updateEmployeeDocument(id as string, payload);
-          closeModal();
-        }}
+        onSubmit={handleSubmit}
         submitting={false}
       />
     </ExpandCard>

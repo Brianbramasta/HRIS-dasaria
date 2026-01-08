@@ -1,16 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 // import { Modal } from '../../../../../components/ui/modal/index';
-import { businessLinesService } from '../../../services/request/BusinessLinesService';
 import { BusinessLineListItem } from '../../../types/OrganizationApiTypes';
 import FileInput from '../../../../../components/shared/field/FileInput';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
-// import { error } from 'console';
-import { useFileStore } from '@/stores/fileStore';
-import { addNotification } from '@/stores/notificationStore';
-// import { fileService } from '@/services/file.service';
-// import { addNotification } from '@/stores/notificationStore';
+import { useEditBusinessLineModal } from '../../../hooks/modals/business-lines/useEditBusinessLineModal';
 
 
 
@@ -22,66 +17,18 @@ interface EditBusinessLineModalProps {
 }
 
 const EditBusinessLineModal: React.FC<EditBusinessLineModalProps> = ({ isOpen, onClose, businessLine, onSuccess }) => {
-  const [name, setName] = useState('');
-  const [memoNumber, setMemoNumber] = useState('');
-  const [description, setDescription] = useState('');
-  // const [skFile, setSkFile] = useState<File | null>(null);
-  const skFile = useFileStore((s) => s.skFile);
-  const [submitting, setSubmitting] = useState(false);
-
-  useEffect(() => {
-    if (businessLine) {
-      setName(businessLine.name || '');
-      setMemoNumber(businessLine.memoNumber || '');
-      setDescription(businessLine.description || '');
-    }
-  }, [businessLine]);
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e)
-    // const file = e.target.files?.[0] || null;
-    // setSkFile(file);
-  };
-
-  const handleSubmit = async () => {
-    
-    if (!businessLine) return;
-  
-    // Jika file wajib diunggah, blokir submit bila belum ada
-    console.log('skFile', skFile)
-    // if (!skFile?.file) {
-    // console.log('skFile2', skFile)
-    // addNotification({
-    //   variant: 'error',
-    //   title: 'Lini Bisnis tidak ditambahkan',
-    //   description: 'File Wajib di isi',
-    //   hideDuration: 4000,
-    // });
-      // optional: bisa menambahkan notifikasi di sini
-    //   return;
-    // }
-    setSubmitting(true);
-    try {
-      const updated = await businessLinesService.update(businessLine.id, {
-        name: name.trim(),
-        description: description.trim() || null,
-        memoNumber: memoNumber.trim(),
-        skFile: skFile?.file || null,
-      });
-      onSuccess?.(updated);
-      onClose();
-    } catch (err) {
-      console.error('Failed to update business line', err);
-      addNotification({
-        variant: 'error',
-        title: 'Lini Bisnis tidak diupdate',
-        description: 'Gagal mengupdate lini bisnis. Silakan coba lagi.',
-        hideDuration: 4000,
-      });
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const {
+    name,
+    setName,
+    memoNumber,
+    setMemoNumber,
+    description,
+    setDescription,
+    skFile,
+    submitting,
+    handleFileChange,
+    handleSubmit,
+  } = useEditBusinessLineModal({ businessLine, onClose, onSuccess });
 
   return (
     
