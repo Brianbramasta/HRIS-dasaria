@@ -9,6 +9,17 @@ export const useForgotPassword = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [formData, setFormData] = useState<ForgotPasswordRequest>({
+    email: '',
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   const handleForgotPassword = async (data: ForgotPasswordRequest) => {
     try {
@@ -43,6 +54,8 @@ export const useForgotPassword = () => {
     isLoading,
     error,
     successMessage,
+    formData,
+    handleInputChange,
     handleForgotPassword,
   };
 };

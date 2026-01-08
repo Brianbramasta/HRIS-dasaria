@@ -4,7 +4,7 @@ import { ForgotPasswordForm } from '../components/Index';
 import { useForgotPassword } from '../hooks/Index';
 
 export default function ForgotPasswordPage() {
-  const { isLoading, error, successMessage, handleForgotPassword } =
+  const { isLoading, error, successMessage, handleForgotPassword, formData, handleInputChange } =
     useForgotPassword();
 
   return (
@@ -19,6 +19,8 @@ export default function ForgotPasswordPage() {
           isLoading={isLoading}
           error={error}
           successMessage={successMessage}
+          formData={formData}
+          onInputChange={handleInputChange}
         />
       </AuthLayout>
     </>

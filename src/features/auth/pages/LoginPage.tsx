@@ -4,7 +4,7 @@ import { LoginForm } from '../components/Index';
 import { useLogin } from '../hooks/Index';
 
 export default function LoginPage() {
-  const { isLoading, error, handleLogin } = useLogin();
+  const { isLoading, error, handleLogin, formData, showPassword, keepMeLoggedIn, handleInputChange, handleKeepMeLoggedInChange, toggleShowPassword } = useLogin();
 
   return (
     <>
@@ -17,6 +17,12 @@ export default function LoginPage() {
           onSubmit={handleLogin}
           isLoading={isLoading}
           error={error}
+          formData={formData}
+          showPassword={showPassword}
+          keepMeLoggedIn={keepMeLoggedIn}
+          onInputChange={handleInputChange}
+          onKeepMeLoggedInChange={handleKeepMeLoggedInChange}
+          onToggleShowPassword={toggleShowPassword}
         />
       </AuthLayout>
     </>

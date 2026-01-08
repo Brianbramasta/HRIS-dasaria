@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Label from '../../../components/form/Label';
 import Input from '../../../components/form/input/InputField';
@@ -11,25 +10,19 @@ interface ForgotPasswordFormProps {
   isLoading?: boolean;
   error?: string | null;
   successMessage?: string | null;
+  formData: ForgotPasswordRequest;
+  onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function ForgotPasswordForm({ 
   onSubmit, 
   isLoading = false, 
   error = null,
-  successMessage = null 
+  successMessage = null,
+  formData,
+  onInputChange
 }: ForgotPasswordFormProps) {
-  const [formData, setFormData] = useState<ForgotPasswordRequest>({
-    email: '',
-  });
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,7 +64,7 @@ export default function ForgotPasswordForm({
             type="email"
             placeholder="Enter your email"
             value={formData.email}
-            onChange={handleInputChange}
+            onChange={onInputChange}
             required
             disabled={isLoading || !!successMessage}
             className="w-full"
