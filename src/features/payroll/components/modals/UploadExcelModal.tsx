@@ -1,6 +1,6 @@
-import React, { useCallback, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
+import React from 'react';
 import { Modal } from '@/components/ui/modal/index';
+import { useUploadExcelModal } from '@/features/payroll/hooks/modals/useUploadExcelModal';
 
 // Dokumentasi: Modal upload CSV untuk impor data penggajian, memakai Modal UI & react-dropzone
 type Props = {
@@ -10,39 +10,11 @@ type Props = {
   submitting?: boolean;
 };
 
-const MAX_SIZE = 10 * 1024 * 1024; // 10MB
-
 const UploadExcelModal: React.FC<Props> = ({ isOpen, onClose, onImport, submitting = false }) => {
-  const [file, setFile] = useState<File | null>(null);
-  const [error, setError] = useState<string>('');
-
-  // Dokumentasi: konfigurasi dropzone untuk menerima satu file CSV hingga 10MB
-  const onDrop = useCallback((acceptedFiles: File[], fileRejections: any[]) => {
-    setError('');
-    if (fileRejections?.length) {
-      const first = fileRejections[0];
-      const msg = first?.errors?.[0]?.message || 'File tidak valid';
-      setError(msg);
-      setFile(null);
-      return;
-    }
-    const f = acceptedFiles[0];
-    if (!f) return;
-    setFile(f);
-  }, []);
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    multiple: false,
-    maxSize: MAX_SIZE,
-    accept: { 'text/csv': ['.csv'] },
+  const { file, setFile, error, getRootProps, getInputProps, isDragActive, handleSubmit } = useUploadExcelModal({
+    onImport,
+    submitting,
   });
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!file || submitting) return;
-    await onImport?.(file);
-  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="max-w-xl p-6 zoom-90 dark:text-white" showCloseButton>
