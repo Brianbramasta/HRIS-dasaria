@@ -1,9 +1,10 @@
 // Dokumentasi: Modal Edit Tunjangan Transportasi dengan field TransPortasi, Kategori, Nomianal
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import Input from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
+import { useEditTransportationAllowanceModal } from '@/features/payroll/hooks/modals/payroll-configuration/fixedAllowance/useEditTransportationAllowanceModal';
 
 type FormValues = {
   transportasi: string;
@@ -20,22 +21,11 @@ interface Props {
 
 // Dokumentasi: komponen modal utama untuk edit Tunjangan Transportasi
 const EditTunjanganTransportasiModal: React.FC<Props> = ({ isOpen, onClose, defaultValues, onSave }) => {
-  const initial: FormValues = useMemo(() => ({
-    transportasi: defaultValues?.transportasi ?? '',
-    kategori: defaultValues?.kategori ?? '',
-    nominal: defaultValues?.nominal ?? '',
-  }), [defaultValues]);
-
-  const [form, setForm] = useState<FormValues>(initial);
-
-  const setField = (key: keyof FormValues, value: string) => {
-    setForm((prev) => ({ ...prev, [key]: key === 'nominal' ? formatRupiah(value) : value }));
-  };
-
-  const kategoriOptions = [
-    { value: 'Staff', label: 'Staff' },
-    { value: 'Kemitraan', label: 'Kemitraan' },
-  ];
+  const { form, setField, kategoriOptions, handleSubmit } = useEditTransportationAllowanceModal({
+    defaultValues,
+    onSave,
+    onClose,
+  });
 
   const content = (
     <div className="space-y-5">
@@ -54,11 +44,6 @@ const EditTunjanganTransportasiModal: React.FC<Props> = ({ isOpen, onClose, defa
     </div>
   );
 
-  const handleSubmit = () => {
-    onSave(form);
-    onClose();
-  };
-
   return (
     <ModalAddEdit
       title={'Edit Tunjangan Transportasi'}
@@ -72,13 +57,6 @@ const EditTunjanganTransportasiModal: React.FC<Props> = ({ isOpen, onClose, defa
       closeTitleButton="Tutup"
     />
   );
-};
-
-// Dokumentasi: helper format angka ke ribuan
-const formatRupiah = (val: string) => {
-  const cleaned = (val || '').replace(/[^0-9]/g, '');
-  if (!cleaned) return '';
-  return cleaned.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 };
 
 export default EditTunjanganTransportasiModal;

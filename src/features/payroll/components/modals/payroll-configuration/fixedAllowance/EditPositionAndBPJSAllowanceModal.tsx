@@ -1,5 +1,5 @@
 // Dokumentasi: Modal Edit/Detail Tunjangan Jabatan & BPJS
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import Input from '@/components/form/input/InputField';
@@ -7,6 +7,7 @@ import Select from '@/components/form/Select';
 import ExpandCard from '@/features/structure-and-organize/components/card/ExpandCard';
 import DocumentsTable from '@/features/structure-and-organize/components/table/TableGlobal';
 import Checkbox from '@/components/form/input/Checkbox';
+import { useEditPositionAndBPJSAllowanceModal } from '@/features/payroll/hooks/modals/payroll-configuration/fixedAllowance/useEditPositionAndBPJSAllowanceModal';
 
 type BpjsRow = { id: string; jenisBpjs: string; selected?: boolean; tt?: boolean; pt?: boolean };
 
@@ -28,52 +29,11 @@ interface Props {
 
 // Dokumentasi: Komponen utama modal. Judul menyesuaikan mode (detail/edit)
 const EditDetailTunjanganJabatanDanBpjsModal: React.FC<Props> = ({ isOpen, onClose, mode, defaultValues, onSave }) => {
-  const jabatanOptions = useMemo(() => [
-    { value: 'Entry Level', label: 'Entry Level' },
-    { value: 'Officer', label: 'Officer' },
-    { value: 'Senior Officer', label: 'Senior Officer' },
-    { value: 'Supervisor', label: 'Supervisor' },
-    { value: 'Manager', label: 'Manager' },
-    { value: 'Direktur', label: 'Direktur' },
-  ], []);
-
-  const initial: FormValues = useMemo(() => ({
-    jabatan: defaultValues?.jabatan ?? '',
-    percent: defaultValues?.percent ?? '',
-    nominal: defaultValues?.nominal ?? '',
-    ketenagakerjaan: defaultValues?.ketenagakerjaan ?? [
-      { id: 'JKK', jenisBpjs: 'JKK', selected: false, tt: false, pt: false },
-      { id: 'JKM', jenisBpjs: 'JKM', selected: false, tt: false, pt: false },
-      { id: 'JHT', jenisBpjs: 'JHT', selected: false, tt: false, pt: false },
-      { id: 'JP', jenisBpjs: 'JP', selected: false, tt: false, pt: false },
-    ],
-    kesehatan: defaultValues?.kesehatan ?? [
-      { id: 'JKN', jenisBpjs: 'JKN', selected: false, tt: false, pt: false },
-    ],
-  }), [defaultValues]);
-
-  const [form, setForm] = useState<FormValues>(initial);
-
-  // Dokumentasi: helper format angka ke ribuan
-  const formatRupiah = (val: string) => {
-    const cleaned = (val || '').replace(/[^0-9]/g, '');
-    if (!cleaned) return '';
-    return cleaned.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-  };
-
-  const setField = (key: keyof FormValues, value: any) => {
-    setForm((prev) => ({
-      ...prev,
-      [key]: key === 'nominal' ? formatRupiah(String(value)) : value,
-    }));
-  };
-
-  const updateBpjs = (group: 'ketenagakerjaan' | 'kesehatan', id: string, field: keyof BpjsRow, value: boolean) => {
-    setForm((prev) => ({
-      ...prev,
-      [group]: prev[group].map((r) => (r.id === id ? { ...r, [field]: value } : r)),
-    }));
-  };
+  const { form, setField, updateBpjs, jabatanOptions, handleSubmit } = useEditPositionAndBPJSAllowanceModal({
+    defaultValues,
+    onSave,
+    onClose,
+  });
 
   const content = (
     <div className="space-y-6">
@@ -134,11 +94,6 @@ const EditDetailTunjanganJabatanDanBpjsModal: React.FC<Props> = ({ isOpen, onClo
     </div>
   );
 
-  const handleSubmit = () => {
-    if (onSave) onSave(form);
-    onClose();
-  };
-
   return (
     <ModalAddEdit
       title={mode === 'detail' ? 'Detail Tunjangan Jabatan' : 'Edit Tunjangan Jabatan'}
@@ -155,4 +110,3 @@ const EditDetailTunjanganJabatanDanBpjsModal: React.FC<Props> = ({ isOpen, onClo
 };
 
 export default EditDetailTunjanganJabatanDanBpjsModal;
-

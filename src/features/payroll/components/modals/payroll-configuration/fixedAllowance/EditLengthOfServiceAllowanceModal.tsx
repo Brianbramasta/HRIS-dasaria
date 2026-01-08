@@ -1,8 +1,9 @@
 // Dokumentasi: Modal Edit Tunjangan Lama Kerja dengan field Lama Kerja & Nomianal
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import Input from '@/components/form/input/InputField';
+import { useEditLengthOfServiceAllowanceModal } from '@/features/payroll/hooks/modals/payroll-configuration/fixedAllowance/useEditLengthOfServiceAllowanceModal';
 
 type FormValues = {
   lamaKerja: string;
@@ -18,16 +19,11 @@ interface Props {
 
 // Dokumentasi: komponen modal utama untuk edit Tunjangan Lama Kerja
 const EditTunjanganLamaKerjaModal: React.FC<Props> = ({ isOpen, onClose, defaultValues, onSave }) => {
-  const initial: FormValues = useMemo(() => ({
-    lamaKerja: defaultValues?.lamaKerja ?? '',
-    nominal: defaultValues?.nominal ?? '',
-  }), [defaultValues]);
-
-  const [form, setForm] = useState<FormValues>(initial);
-
-  const setField = (key: keyof FormValues, value: string) => {
-    setForm((prev) => ({ ...prev, [key]: key === 'nominal' ? formatRupiah(value) : value }));
-  };
+  const { form, setField, handleSubmit } = useEditLengthOfServiceAllowanceModal({
+    defaultValues,
+    onSave,
+    onClose,
+  });
 
   const content = (
     <div className="space-y-5">
@@ -42,11 +38,6 @@ const EditTunjanganLamaKerjaModal: React.FC<Props> = ({ isOpen, onClose, default
     </div>
   );
 
-  const handleSubmit = () => {
-    onSave(form);
-    onClose();
-  };
-
   return (
     <ModalAddEdit
       title={'Edit Tunjangan Lama Kerja'}
@@ -60,13 +51,6 @@ const EditTunjanganLamaKerjaModal: React.FC<Props> = ({ isOpen, onClose, default
       closeTitleButton="Tutup"
     />
   );
-};
-
-// Dokumentasi: helper format angka ke ribuan
-const formatRupiah = (val: string) => {
-  const cleaned = (val || '').replace(/[^0-9]/g, '');
-  if (!cleaned) return '';
-  return cleaned.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 };
 
 export default EditTunjanganLamaKerjaModal;
