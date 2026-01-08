@@ -101,7 +101,7 @@ export function DataTable<T = any>({
   // searchable = true,
   searchPlaceholder = 'Cari berdasarkan kata kunci',
   pageSize = 10,
-  pageSizeOptions = [2, 5, 10, 25, 50],
+  pageSizeOptions = [10, 25, 50],
   onAdd,
   addButtonLabel,
   addButtonIcon,

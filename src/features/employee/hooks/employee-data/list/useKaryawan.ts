@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Karyawan, KaryawanFilterParams, EmployeeListItem } from '../../../types/Employee';
+import { Karyawan, EmployeeListItem } from '../../../types/Employee';
+import { TableFilter } from '../../../../../types/SharedType';
 import employeeMasterDataService from '../../../services/EmployeeMasterData.service';
 import useFilterStore from '../../../../../stores/filterStore';
 import { addNotification } from '../../../../../stores/notificationStore';
@@ -84,7 +85,7 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
   };
 
   const fetchKaryawan = useCallback(
-    async (params?: KaryawanFilterParams) => {
+    async (params?: Partial<TableFilter>) => {
       try {
         setLoading(true);
         setError(null);
@@ -97,7 +98,7 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
 
         if (params?.search) queryParams.search = params.search;
         if (params?.sortBy) queryParams.column = params.sortBy;
-        if (params?.order) queryParams.sort = params.order;
+        if (params?.sortOrder) queryParams.sort = params.sortOrder;
         
         // Handle filter - convert to array if needed
         const filterParam = params?.filter ?? filterValue;
@@ -134,11 +135,8 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
 
         const response = await employeeMasterDataService.getEmployees(queryParams);
         
-        // API returns { meta: { status, message }, data: {...} } not the standard ApiResponse
-        const apiResult = response as any;
-        
-        if (apiResult && apiResult.meta?.status === 200 && apiResult.data) {
-          const apiResponse = apiResult.data;
+        if (response && response.meta?.status === 200 && response.data) {
+          const apiResponse = response.data;
           
           // Transform API data to Karyawan interface
           const transformedData = apiResponse.data.map(transformApiDataToKaryawan);
@@ -324,7 +322,7 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
 
   const handleSortChange = useCallback(
     (columnId: string, order: 'asc' | 'desc') => {
-      fetchKaryawan({ sortBy: columnId, order });
+      fetchKaryawan({ sortBy: columnId, sortOrder: order });
     },
     [fetchKaryawan]
   );

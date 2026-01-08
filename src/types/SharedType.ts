@@ -30,3 +30,12 @@ export interface ApiPagination {
   from: number;
   to: number;
 }
+
+export interface ApiPaginatedResponse<T> extends ApiPagination {
+  data: T[];
+  first_page_url: string;
+  last_page_url: string;
+  next_page_url: string | null;
+  prev_page_url: string | null;
+  path: string;
+}
