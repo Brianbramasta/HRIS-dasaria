@@ -85,6 +85,12 @@ export const getContractStatusDropdownOptions = async (search?: string): Promise
   return (data || []).map((s: any) => ({ label: s.name, value: s.id }));
 }
 
+export const getContractTypeDropdownOptions = async (search?: string): Promise<DropdownOption[]> => {
+  const data = await contractService.getContractTypeDropdown(search);
+  console.log('Contract Type dropdown data:', data);
+  return (data || []).map((s: any) => ({ label: s.name, value: s.id }));
+}
+
 
 // edit
 // /api/employee-master-data/employees/{id}/update-contract/{contractId}
@@ -164,11 +170,11 @@ export function useAddSubmit(createContract: (payload: CreateContractPayload) =>
     const payload: CreateContractPayload = {
       contract_status_id: entry.contract_status_id,
       last_contract_signed_date: entry.last_contract_signed_date,
-      contract_type: entry.contract_type,
+      contract_type_id: entry.contract_type,
       contract_number: String(entry.contract_number),
       file_contract: selectedFile || new File([], ''),
     };
-    if (entry.contract_type === 'PKWT') {
+    if (entry.contract_type !== 'PKWTT') {
       payload.end_date = entry.end_date;
     }
 

@@ -33,7 +33,6 @@ const EditKompensasiModal: React.FC<Props> = ({ isOpen, initialData, onClose, on
       onClose,
       onSubmit,
     });
-  const title = useMemo(() => 'Edit Kompensasi', []);
 
   const content = (
     <div className="space-y-8">

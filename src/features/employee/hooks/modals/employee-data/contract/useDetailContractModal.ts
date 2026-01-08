@@ -14,6 +14,7 @@ export function useDetailContractModal({
     form,
     optionsContractStatus,
     optionsContractEndStatus,
+    optionsJenisKontrak,
     isLoadingDropdowns,
   } = useModalContract({
     isOpen,
@@ -30,6 +31,7 @@ export function useDetailContractModal({
     form,
     optionsContractStatus,
     optionsContractEndStatus,
+    optionsJenisKontrak,
     isLoadingDropdowns,
     handleInput,
     handleDateChange,

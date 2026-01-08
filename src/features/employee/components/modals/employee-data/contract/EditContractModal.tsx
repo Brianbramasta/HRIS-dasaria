@@ -23,6 +23,7 @@ const EditContractModal: React.FC<EditContractModalProps> = ({
     form,
     optionsContractStatus,
     optionsContractEndStatus,
+    optionsJenisKontrak,
     isLoadingDropdowns,
     handleInput,
     handleDateChange,
@@ -46,6 +47,7 @@ const EditContractModal: React.FC<EditContractModalProps> = ({
       isReadonly={true}
       optionsContractStatus={optionsContractStatus}
       optionsContractEndStatus={optionsContractEndStatus}
+      optionsJenisKontrak={optionsJenisKontrak}
       onInputChange={handleInput}
       onDateChange={handleDateChange}
       onFileChange={handleFileChangeWrapper}

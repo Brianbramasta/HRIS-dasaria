@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getContractStatusDropdownOptions, getContractEndStatusDropdownOptions } from './useContract';
+import { getContractStatusDropdownOptions, getContractEndStatusDropdownOptions, getContractTypeDropdownOptions } from './useContract';
 import type { ContractEntry } from './useContract';
 
 export interface ModalContractOptions {
@@ -14,6 +14,7 @@ export interface UseModalContractReturn {
   setForm: (form: ContractEntry) => void;
   optionsContractStatus: { label: string; value: string }[];
   optionsContractEndStatus: { label: string; value: string }[];
+  optionsJenisKontrak: { label: string; value: string }[];
   isLoadingDropdowns: boolean;
   handleInput: (key: keyof ContractEntry, value: any) => void;
   handleDateChange: (key: keyof ContractEntry) => (selectedDates: Date[]) => void;
@@ -42,6 +43,7 @@ export function useModalContract({ isOpen, initialData, isEditable = true }: Mod
   const [form, setForm] = useState<ContractEntry>(emptyForm);
   const [optionsContractStatus, setContractStatus] = useState<{ label: string; value: string }[]>([]);
   const [optionsContractEndStatus, setOptionsContractEndStatus] = useState<{ label: string; value: string }[]>([]);
+  const [optionsJenisKontrak, setOptionsJenisKontrak] = useState<{ label: string; value: string }[]>([]);
   const [isLoadingDropdowns, setIsLoadingDropdowns] = useState(false);
 
   // Load dropdowns when modal opens
@@ -53,14 +55,16 @@ export function useModalContract({ isOpen, initialData, isEditable = true }: Mod
 
     const loadDropdowns = async () => {
       try {
-        const [statusOptions, endStatusOptions] = await Promise.all([
+        const [statusOptions, endStatusOptions, jenisKontrakOptions] = await Promise.all([
           getContractStatusDropdownOptions(),
           getContractEndStatusDropdownOptions(),
+          getContractTypeDropdownOptions(),
         ]);
 
         if (mounted) {
           setContractStatus(statusOptions);
           setOptionsContractEndStatus(endStatusOptions);
+          setOptionsJenisKontrak(jenisKontrakOptions);
         }
       } catch (error) {
         console.error('Error loading dropdowns:', error);
@@ -157,6 +161,7 @@ export function useModalContract({ isOpen, initialData, isEditable = true }: Mod
     setForm,
     optionsContractStatus,
     optionsContractEndStatus,
+    optionsJenisKontrak,
     isLoadingDropdowns,
     handleInput,
     handleDateChange,
