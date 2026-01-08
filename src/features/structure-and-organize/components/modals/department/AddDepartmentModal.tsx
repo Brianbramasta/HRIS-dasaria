@@ -1,5 +1,5 @@
 import React from 'react';
-import FileInput from '../../../../../components/shared/field/FileInput';
+import FileInput from '../../../../../components/shared/form/FileInput';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
 import Input from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';

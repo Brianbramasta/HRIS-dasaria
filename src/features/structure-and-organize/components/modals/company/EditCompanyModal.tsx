@@ -2,7 +2,7 @@ import React from 'react';
 import type { CompanyListItem } from '../../../types/OrganizationApiTypes';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';
-import FileInput from '../../../../../components/shared/field/FileInput';
+import FileInput from '../../../../../components/shared/form/FileInput';
 import Select from '@/components/form/Select';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
 import { useEditCompanyModal } from '../../../hooks/modals/company/useEditCompanyModal';

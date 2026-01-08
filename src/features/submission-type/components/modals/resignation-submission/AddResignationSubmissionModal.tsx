@@ -9,7 +9,7 @@ import Label from '@/components/form/Label';
 import Input from '@/components/form/input/InputField';
 import DatePicker from '@/components/form/date-picker';
 import TextArea from '@/components/form/input/TextArea';
-import FileInput from '@/components/shared/field/FileInput';
+import FileInput from '@/components/shared/form/FileInput';
 import PopupBerhasil from '../../shared/modals/SuccessModal';
 import { useAddResignationSubmission, PengunduranDiriForm } from '@/features/submission-type/hooks/resignation-submission/useAddResignationSubmission';
 

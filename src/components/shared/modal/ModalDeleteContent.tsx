@@ -1,6 +1,6 @@
 import React from 'react';
 import Input from '@/components/form/input/InputField';
-import FileInput from '../field/FileInput';
+import FileInput from '../form/FileInput';
 
 type Props = {
   memoNumber: string;

@@ -1,9 +1,8 @@
 import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
-import Label from '@/components/form/Label';
-import InputField from '@/components/form/input/InputField';
-import Select from '@/components/form/Select';
-import DatePicker from '@/components/form/date-picker';
+import SelectField from '@/components/shared/field/SelectField';
+import InputField from '@/components/shared/field/InputField';
+import DateField from '@/components/shared/field/DateField';
 import { STATUS_PAYROLL_OPTIONS } from '@/features/employee/utils/EmployeeMappings';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 import { useEmployeeDataModal, EmployeeDataForm } from '@/features/employee/hooks/modals/employee-data/personal-information/useEmployeeDataModal';
@@ -51,8 +50,9 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="space-y-4">
           <div>
-            <Label>Kategori Karyawan</Label>
-            <Select
+            <SelectField
+              label="Kategori Karyawan"
+              htmlFor="employeeCategorySelect"
               options={kategoriKaryawanOptions}
               defaultValue={form.employee_category_id || ''}
               onChange={(v) => {
@@ -74,8 +74,9 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             />
           </div>
           <div>
-            <Label>Status Karyawan</Label>
-            <Select
+            <SelectField
+              label="Status Karyawan"
+              htmlFor="employmentStatusSelect"
               options={employeeStatusOptions}
               defaultValue={form.employment_status_id || ''}
               onChange={(v) => handleInput('employment_status_id', v)}
@@ -84,7 +85,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             />
           </div>
           <div>
-            <DatePicker
+            <DateField
               id="joinDatePicker"
               label="Tanggal Masuk"
               defaultDate={formatDateToIndonesian(form.start_date as string) || undefined}
@@ -94,7 +95,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             />
           </div>
           <div>
-            <DatePicker
+            <DateField
               id="endDatePicker"
               label="Tanggal Akhir"
               defaultDate={formatDateToIndonesian(form.end_date as string) || undefined}
@@ -104,8 +105,9 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             />
           </div>
           <div>
-            <Label>Perusahaan</Label>
-            <Select
+            <SelectField
+              label="Perusahaan"
+              htmlFor="companySelect"
               options={companyOptions}
               defaultValue={form.company_id || ''}
               onChange={(v) => handleInput('company_id', v)}
@@ -114,8 +116,9 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             />
           </div>
           <div>
-            <Label>Kantor</Label>
-            <Select
+            <SelectField
+              label="Kantor"
+              htmlFor="officeSelect"
               options={officeDropdown.length > 0 ? officeDropdown : officeOptions.length > 0 ? officeOptions : [{ label: 'Pilih perusahaan terlebih dahulu', value: '' }]}
               defaultValue={form.office_id || ''}
               onChange={(v) => handleInput('office_id', v)}
@@ -124,8 +127,9 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             />
           </div>
           <div>
-            <Label>Direktorat</Label>
-            <Select
+            <SelectField
+              label="Direktorat"
+              htmlFor="directorateSelect"
               options={directorateOptions}
               defaultValue={form.directorate_id || ''}
               onChange={(v) => handleInput('directorate_id', v)}
@@ -138,8 +142,9 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
 
         <div className="space-y-4">
           <div>
-            <Label>Divisi</Label>
-            <Select
+            <SelectField
+              label="Divisi"
+              htmlFor="divisionSelect"
               options={divisionDropdown.length > 0 ? divisionDropdown : divisionOptions.length > 0 ? divisionOptions : [{ label: 'Pilih direktorat terlebih dahulu', value: '' }]}
               defaultValue={form.division_id || ''}
               onChange={(v) => handleInput('division_id', v)}
@@ -148,8 +153,9 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             />
           </div>
           <div>
-            <Label>Departemen</Label>
-            <Select
+            <SelectField
+              label="Departemen"
+              htmlFor="departmentSelect"
               options={departmentDropdown.length > 0 ? departmentDropdown : departmentOptions.length > 0 ? departmentOptions : [{ label: 'Pilih divisi terlebih dahulu', value: '' }]}
               defaultValue={form.department_id || ''}
               onChange={(v) => handleInput('department_id', v)}
@@ -158,8 +164,9 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             />
           </div>
           <div>
-            <Label>Position</Label>
-            <Select
+            <SelectField
+              label="Position"
+              htmlFor="positionSelect"
               options={positionOptions}
               defaultValue={form.position_id || ''}
               onChange={(v) => handleInput('position_id', v)}
@@ -168,8 +175,9 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             />
           </div>
           <div>
-            <Label>Jabatan</Label>
-            <Select
+            <SelectField
+              label="Jabatan"
+              htmlFor="jobTitleSelect"
               options={jobTitleOptions}
               defaultValue={form.job_title_id || ''}
               onChange={(v) => handleInput('job_title_id', v)}
@@ -178,8 +186,9 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             />
           </div>
           <div>
-            <Label>Jenjang Jabatan</Label>
-            <Select
+            <SelectField
+              label="Jenjang Jabatan"
+              htmlFor="positionLevelSelect"
               options={positionLevelOptions}
               defaultValue={form.position_level_id || ''}
               onChange={(v) => handleInput('position_level_id', v)}
@@ -188,8 +197,9 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             />
           </div>
           <div>
-            <Label>Golongan</Label>
             <InputField
+              label="Golongan"
+              id="golonganInput"
               type="text"
               value={selectedGrade || form.golongan || ''}
               placeholder="Otomatis dari Jabatan"
@@ -198,8 +208,9 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             />
           </div>
           <div>
-            <Label>Status PayRoll</Label>
-            <Select
+            <SelectField
+              label="Status PayRoll"
+              htmlFor="payrollStatusSelect"
               options={STATUS_PAYROLL_OPTIONS}
               defaultValue={form.payroll_status || ''}
               onChange={(v) => handleInput('payroll_status', v)}

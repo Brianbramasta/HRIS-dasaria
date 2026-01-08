@@ -1,6 +1,6 @@
 import React from 'react';
 import type { DirectorateListItem } from '../../../types/OrganizationApiTypes';
-import FileInput from '../../../../../components/shared/field/FileInput';
+import FileInput from '../../../../../components/shared/form/FileInput';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
 import Input from '@/components/form/input/InputField';
 import TextArea from '@/components/form/input/TextArea';

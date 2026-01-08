@@ -1,11 +1,10 @@
 import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
-import Label from '@/components/form/Label';
-import InputField from '@/components/form/input/InputField';
-import Select from '@/components/form/Select';
-import TextArea from '@/components/form/input/TextArea';
-import DatePicker from '@/components/form/date-picker';
-import FileInput from '@/components/form/input/FileInput';
+import FIleField from '@/components/shared/field/FIleField';
+import InputField from '@/components/shared/field/InputField';
+import SelectField from '@/components/shared/field/SelectField';
+import TextAreaField from '@/components/shared/field/TextAreaField';
+import DateField from '@/components/shared/field/DateField';
 import {  JENIS_KELAMIN_OPTIONS, STATUS_MENIKAH_OPTIONS, GOLONGAN_DARAH_OPTIONS, TANGGUNGAN_OPTIONS } from '@/features/employee/utils/EmployeeMappings';
 import { usePersonalDataModal, PersonalDataForm } from '@/features/employee/hooks/modals/employee-data/personal-information/usePersonalDataModal';
 
@@ -30,67 +29,140 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
       </div>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div>
-          <Label>Nama Lengkap</Label>
-          <InputField value={form.namaLengkap} onChange={(e) => handleInput('namaLengkap', e.target.value)} required  />
+          <InputField
+            label="Nama Lengkap"
+            id="namaLengkap"
+            value={form.namaLengkap}
+            onChange={(e) => handleInput('namaLengkap', e.target.value)}
+            required
+          />
         </div>
         <div>
-          <Label>Email</Label>
-          <InputField type="email" value={form.email} onChange={(e) => handleInput('email', e.target.value)} required />
-        </div>
-
-        <div>
-          <Label>NIK</Label>
-          <InputField value={form.nik || ''} onChange={(e) => handleInput('nik', e.target.value)} />
-        </div>
-        <div>
-          <Label>Agama</Label>
-          <Select options={agamaOptions} defaultValue={form.agama || ''} onChange={(v) => handleInput('agama', v)} placeholder="Select" />
-        </div>
-
-        <div>
-          <Label>Tempat Lahir</Label>
-          <InputField value={form.tempatLahir || ''} onChange={(e) => handleInput('tempatLahir', e.target.value)} />
-        </div>
-        <div>
-          <Label>Gol. Darah</Label>
-          <Select options={GOLONGAN_DARAH_OPTIONS} defaultValue={form.golDarah || ''} onChange={(v) => handleInput('golDarah', v)} placeholder="Select" />
+          <InputField
+            label="Email"
+            id="email"
+            type="email"
+            value={form.email}
+            onChange={(e) => handleInput('email', e.target.value)}
+            required
+          />
         </div>
 
         <div>
-          <DatePicker
+          <InputField
+            label="NIK"
+            id="nik"
+            value={form.nik || ''}
+            onChange={(e) => handleInput('nik', e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <SelectField
+            label="Agama"
+            htmlFor="agamaSelect"
+            options={agamaOptions}
+            defaultValue={form.agama || ''}
+            onChange={(v) => handleInput('agama', v)}
+            placeholder="Select"
+            required
+          />
+        </div>
+
+        <div>
+          <InputField
+            label="Tempat Lahir"
+            id="tempatLahir"
+            value={form.tempatLahir || ''}
+            onChange={(e) => handleInput('tempatLahir', e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <SelectField
+            label="Gol. Darah"
+            htmlFor="golDarahSelect"
+            options={GOLONGAN_DARAH_OPTIONS}
+            defaultValue={form.golDarah || ''}
+            onChange={(v) => handleInput('golDarah', v)}
+            placeholder="Select"
+            required
+          />
+        </div>
+
+        <div>
+          <DateField
             id="tanggalLahir"
             label="Tanggal Lahir"
             placeholder="Pilih tanggal"
             defaultDate={form.tanggalLahir || undefined}
             onChange={(_, dateStr) => handleInput('tanggalLahir', dateStr)}
+            required
           />
         </div>
         <div>
-          <Label>Pendidikan Terakhir</Label>
-          <Select options={pendidikanOptions} defaultValue={form.pendidikanTerakhir || ''} onChange={(v) => handleInput('pendidikanTerakhir', v)} placeholder="Select" />
+          <SelectField
+            label="Pendidikan Terakhir"
+            htmlFor="pendidikanTerakhirSelect"
+            options={pendidikanOptions}
+            defaultValue={form.pendidikanTerakhir || ''}
+            onChange={(v) => handleInput('pendidikanTerakhir', v)}
+            placeholder="Select"
+            required
+          />
         </div>
 
         <div>
-          <Label>Jenis Kelamin</Label>
-          <Select options={JENIS_KELAMIN_OPTIONS} defaultValue={form.jenisKelamin || ''} onChange={(v) => handleInput('jenisKelamin', v)} placeholder="Select" />
+          <SelectField
+            label="Jenis Kelamin"
+            htmlFor="jenisKelaminSelect"
+            options={JENIS_KELAMIN_OPTIONS}
+            defaultValue={form.jenisKelamin || ''}
+            onChange={(v) => handleInput('jenisKelamin', v)}
+            placeholder="Select"
+            required
+          />
         </div>
         <div>
-          <Label>Status Menikah</Label>
-          <Select options={STATUS_MENIKAH_OPTIONS} defaultValue={form.statusMenikah || ''} onChange={(v) => handleInput('statusMenikah', v)} placeholder="Select" />
+          <SelectField
+            label="Status Menikah"
+            htmlFor="statusMenikahSelect"
+            options={STATUS_MENIKAH_OPTIONS}
+            defaultValue={form.statusMenikah || ''}
+            onChange={(v) => handleInput('statusMenikah', v)}
+            placeholder="Select"
+            required
+          />
         </div>
 
         <div>
-          <Label>Nomor Telepon</Label>
-          <InputField value={form.nomorTelepon || ''} onChange={(e) => handleInput('nomorTelepon', e.target.value)} />
+          <InputField
+            label="Nomor Telepon"
+            id="nomorTelepon"
+            value={form.nomorTelepon || ''}
+            onChange={(e) => handleInput('nomorTelepon', e.target.value)}
+            required
+          />
         </div>
         <div>
-          <Label>Jumlah Tanggungan sesuai KK</Label>
-          <Select options={TANGGUNGAN_OPTIONS} defaultValue={form.jumlahTanggungan || ''} onChange={(v) => handleInput('jumlahTanggungan', v)} placeholder="Select" />
+          <SelectField
+            label="Jumlah Tanggungan sesuai KK"
+            htmlFor="jumlahTanggunganSelect"
+            options={TANGGUNGAN_OPTIONS}
+            defaultValue={form.jumlahTanggungan || ''}
+            onChange={(v) => handleInput('jumlahTanggungan', v)}
+            placeholder="Select"
+            required
+          />
         </div>
 
         <div className="md:col-span-2">
-          <Label>Upload Foto Profil</Label>
-          <FileInput onChange={handleFileChange} />
+          <FIleField
+            label="Upload Foto Profil"
+            htmlFor="avatarFile"
+            onChange={handleFileChange}
+            required
+          />
           {/* {form.avatarUrl && (
            <div className='mt-2'>
             <LinkPreview url={form.avatarUrl as string} label='Lihat Avatar'/>
@@ -100,12 +172,24 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
         </div>
 
         <div>
-          <Label>Alamat Domisili</Label>
-          <TextArea rows={3} value={form.alamatDomisili || ''} onChange={(v) => handleInput('alamatDomisili', v)} />
+          <TextAreaField
+            label="Alamat Domisili"
+            htmlFor="alamatDomisili"
+            rows={3}
+            value={form.alamatDomisili || ''}
+            onChange={(v) => handleInput('alamatDomisili', v)}
+            required
+          />
         </div>
         <div>
-          <Label>Alamat KTP</Label>
-          <TextArea rows={3} value={form.alamatKtp || ''} onChange={(v) => handleInput('alamatKtp', v)} />
+          <TextAreaField
+            label="Alamat KTP"
+            htmlFor="alamatKtp"
+            rows={3}
+            value={form.alamatKtp || ''}
+            onChange={(v) => handleInput('alamatKtp', v)}
+            required
+          />
         </div>
       </div>
     </div>

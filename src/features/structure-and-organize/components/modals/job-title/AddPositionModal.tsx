@@ -1,5 +1,5 @@
 import ModalAddEdit from "../../../../../components/shared/modal/ModalAddEdit";
-import FileInput from "../../../../../components/shared/field/FileInput";
+import FileInput from "../../../../../components/shared/form/FileInput";
 import Input from "@/components/form/input/InputField";
 import { useAddPositionModal } from '../../../hooks/modals/job-title/useAddPositionModal';
 

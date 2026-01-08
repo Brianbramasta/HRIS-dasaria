@@ -1,7 +1,7 @@
 // Dokumentasi: Modal edit Posisi Pegawai, ambil detail dulu lalu dropdown dinamis menggunakan hooks
 import React from 'react';
 import type { EmployeePositionListItem } from '../../../types/OrganizationApiTypes';
-import FileInput from '../../../../../components/shared/field/FileInput';
+import FileInput from '../../../../../components/shared/form/FileInput';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
 import Select from '@/components/form/Select';
 import { useEditEmployeePositionModal } from '../../../hooks/modals/employee-position/useEditEmployeePositionModal';
