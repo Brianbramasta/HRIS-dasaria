@@ -116,7 +116,7 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
                   <div className="flex-1">
                     <FileInput onChange={(e) => handleDocFileChange(idx, e)} />
                   </div>
-                  {idx === 0 ? (
+                  {idx === documents.length - 1 ? (
                     <button
                       type="button"
                       onClick={addDocumentRow}

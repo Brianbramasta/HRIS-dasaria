@@ -25,7 +25,7 @@ const FIleField: FC<FileFieldProps> = ({
         <Label htmlFor={htmlFor} className={labelClassName}>
           <>
             {label}
-            {required && <span className="mr-1 text-error-500">*</span>}
+            {required && <span className="mr-1 text-error-500"> *</span>}
           </>
         </Label>
       )}

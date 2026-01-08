@@ -47,7 +47,7 @@ export const Step02EducationalBackground: React.FC = () => {
                         />
                       </div>
                       <div className="md:col-span-1 flex md:justify-end items-end">
-                      {index === 0 ? (
+                      {index === ((step2.education?.length ?? 0) - 1) ? (
                         <Button
                           onClick={addEducationRow}
                           variant="custom"

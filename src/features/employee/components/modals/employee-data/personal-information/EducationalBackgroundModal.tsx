@@ -1,11 +1,10 @@
 // Refactor modal: mendukung Pendidikan Formal & Non-Formal, memindahkan input sosial ke modal terpisah
 import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
-import Label from '@/components/form/Label';
-import InputField from '@/components/form/input/InputField';
-import Select from '@/components/form/Select';
-import DatePicker from '@/components/form/date-picker';
-import FileInput from '@/components/form/input/FileInput';
+import InputField from '@/components/shared/field/InputField';
+import SelectField from '@/components/shared/field/SelectField';
+import DateField from '@/components/shared/field/DateField';
+import FIleField from '@/components/shared/field/FIleField';
 import { Trash2 } from 'react-feather';
 import { JENIS_PENDIDIKAN_OPTIONS } from '@/features/employee/utils/EmployeeMappings';
 import Button from '@/components/ui/button/Button';
@@ -38,11 +37,10 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
           {form.education.map((edu, idx) => (
             <div className="flex gap-4" key={idx}>
               <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end flex-1">
-                {/* Jenis Pendidikan */}
                 <div className="md:col-span-6 flex w-full gap-5">
                   <div className="w-full">
-                    <Label>Jenis Pendidikan</Label>
-                    <Select
+                    <SelectField
+                      label="Jenis Pendidikan"
                       options={JENIS_PENDIDIKAN_OPTIONS}
                       defaultValue={edu.jenisPendidikan ?? 'formal'}
                       onChange={(value) => updateEducationField(idx, 'jenisPendidikan', value)}
@@ -50,7 +48,7 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
                     />
                   </div>
                   <div className="md:col-span-1 flex md:justify-end items-end">
-                    {idx === 0 ? (
+                    {idx === form.education.length - 1 ? (
                       <Button
                         onClick={addEducationRow}
                         variant="custom"
@@ -74,12 +72,11 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
                   </div>
                 </div>
 
-                {/* Field Formal */}
                 {(edu.jenisPendidikan ?? 'formal') === 'formal' && (
                   <>
                     <div className="md:col-span-2">
-                      <Label>Jenjang</Label>
-                      <Select
+                      <SelectField
+                        label="Jenjang"
                         options={pendidikanOptions}
                         defaultValue={edu.jenjang}
                         onChange={(value) => updateEducationField(idx, 'jenjang', value)}
@@ -88,8 +85,8 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
                       />
                     </div>
                     <div className="md:col-span-2">
-                      <Label>Nama Lembaga</Label>
                       <InputField
+                        label="Nama Lembaga"
                         placeholder="Masukkan nama lembaga"
                         value={edu.namaLembaga}
                         onChange={(e) => updateEducationField(idx, 'namaLembaga', e.target.value)}
@@ -97,16 +94,16 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
                       />
                     </div>
                     <div className="md:col-span-2">
-                      <Label>Gelar</Label>
                       <InputField
+                        label="Gelar"
                         placeholder="Masukkan gelar"
                         value={edu.gelar}
                         onChange={(e) => updateEducationField(idx, 'gelar', e.target.value)}
                       />
                     </div>
                     <div className="md:col-span-2">
-                      <Label>Nilai Pendidikan Terakhir</Label>
                       <InputField
+                        label="Nilai Pendidikan Terakhir"
                         type="number"
                         placeholder="Masukkan nilai"
                         value={edu.nilaiPendidikan}
@@ -115,16 +112,16 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
                       />
                     </div>
                     <div className="md:col-span-2">
-                      <Label>Jurusan / Keahlian</Label>
                       <InputField
+                        label="Jurusan / Keahlian"
                         placeholder="Masukkan jurusan/keahlian"
                         value={edu.jurusanKeahlian}
                         onChange={(e) => updateEducationField(idx, 'jurusanKeahlian', e.target.value)}
                       />
                     </div>
                     <div className="md:col-span-2">
-                      <Label>Tahun Lulus</Label>
                       <InputField
+                        label="Tahun Lulus"
                         type="number"
                         placeholder="Masukkan tahun lulus"
                         value={edu.tahunLulus}
@@ -135,12 +132,11 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
                   </>
                 )}
 
-                {/* Field Non-Formal */}
                 {edu.jenisPendidikan === 'non-formal' && (
                   <>
                     <div className="md:col-span-2">
-                      <Label>Nama Sertifikat</Label>
                       <InputField
+                        label="Nama Sertifikat"
                         placeholder="Masukkan nama sertifikat"
                         value={edu.namaSertifikat || ''}
                         onChange={(e) => updateEducationField(idx, 'namaSertifikat', e.target.value)}
@@ -148,8 +144,8 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
                       />
                     </div>
                     <div className="md:col-span-2">
-                      <Label>Organisasi penerbit</Label>
                       <InputField
+                        label="Organisasi penerbit"
                         placeholder="Masukkan organisasi penerbit"
                         value={edu.organisasiPenerbit || ''}
                         onChange={(e) => updateEducationField(idx, 'organisasiPenerbit', e.target.value)}
@@ -157,29 +153,28 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
                       />
                     </div>
                     <div className="md:col-span-2">
-                      <DatePicker
+                      <DateField
                         id={`tanggalPenerbitan-${idx}`}
                         label="Tanggal penerbitan"
                         placeholder="Pilih tanggal"
-                        defaultDate={edu.tanggalPenerbitan || ''}
+                        defaultDate={edu.tanggalPenerbitan || undefined}
                         onChange={(_d, dateStr) => updateEducationField(idx, 'tanggalPenerbitan', dateStr)}
                         required
-                        
                       />
                     </div>
                     <div className="md:col-span-2">
-                      <DatePicker
+                      <DateField
                         id={`tanggalKedaluwarsa-${idx}`}
                         label="Tanggal Kedaluwarsa"
                         placeholder="Pilih tanggal"
-                        defaultDate={edu.tanggalKedaluwarsa || ''}
+                        defaultDate={edu.tanggalKedaluwarsa || undefined}
                         onChange={(_d, dateStr) => updateEducationField(idx, 'tanggalKedaluwarsa', dateStr)}
                         required
                       />
                     </div>
                     <div className="md:col-span-2">
-                      <Label>ID Kredensial</Label>
                       <InputField
+                        label="ID Kredensial"
                         placeholder="Masukkan ID kredensial"
                         value={edu.idKredensial || ''}
                         onChange={(e) => updateEducationField(idx, 'idKredensial', e.target.value)}
@@ -187,8 +182,10 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
                       />
                     </div>
                     <div className="md:col-span-2">
-                      <Label>Upload file</Label>
-                      <FileInput onChange={(e) => updateEducationField(idx, 'fileSertifikat', e.target.files?.[0])} />
+                      <FIleField
+                        label="Upload file"
+                        onChange={(e) => updateEducationField(idx, 'fileSertifikat', e.target.files?.[0])}
+                      />
                     </div>
                   </>
                 )}

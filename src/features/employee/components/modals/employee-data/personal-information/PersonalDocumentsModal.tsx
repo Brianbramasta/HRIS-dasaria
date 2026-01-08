@@ -1,7 +1,6 @@
 import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
-import Label from '@/components/form/Label';
-import FileInput from '@/components/form/input/FileInput';
+import FIleField from '@/components/shared/field/FIleField';
 import { usePersonalDocumentsModal, DocumentRow, PersonalDocumentsForm } from '@/features/employee/hooks/modals/employee-data/personal-information/usePersonalDocumentsModal';
 
 interface Props {
@@ -20,16 +19,21 @@ const PersonalDocumentsModal: React.FC<Props> = ({ isOpen, initialData, onClose,
     const currentFile = fileMap[doc.id];
     return (
       <div key={doc.id} className="w-full">
-        <Label className="mb-2 block">
-          Upload {doc.document_name}
-          {doc.is_mandatory === 1 ? null : (
-            <span className="text-gray-400 ml-1 font-normal text-sm">(opsional)</span>
-          )}
-        </Label>
         <div className="relative">
-          <FileInput 
-            multiple={false} 
-            onChange={(e) => handleFileChange(doc.id, e)} 
+          <FIleField
+            htmlFor={`doc-${doc.id}`}
+            label={
+              <>
+                Upload {doc.document_name}
+                {doc.is_mandatory === 1 ? null : (
+                  <span className="text-gray-400 ml-1 font-normal text-sm">(opsional)</span>
+                )}
+              </>
+            }
+            required={doc.is_mandatory === 1}
+            multiple={false}
+            // id={`doc-${doc.id}`}
+            onChange={(e) => handleFileChange(doc.id, e)}
           />
           {currentFile?.fileName && (
             <p className="text-xs text-green-600 mt-1 truncate">
