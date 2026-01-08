@@ -3,7 +3,7 @@
 // - Field disabled: Nomor/Id Karyawan, Nama Lengkap, Perusahaan, Direktorat, Divisi, Departement, Posisi
 // - Field aktif: Tanggal Pengajuan (DatePicker), Alasan Pengunduran Diri (TextArea), Surat Pengunduran Diri (FileInput)
 // - Submit akan mengirim seluruh nilai form melalui `onSave` lalu menutup modal
-import React, { useMemo, useState, useEffect } from 'react';
+import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import Input from '@/components/form/input/InputField';
@@ -11,19 +11,7 @@ import DatePicker from '@/components/form/date-picker';
 import TextArea from '@/components/form/input/TextArea';
 import FileInput from '@/components/shared/field/FileInput';
 import PopupBerhasil from '../../shared/modals/SuccessModal';
-
-export type PengunduranDiriForm = {
-  idKaryawan: string;
-  namaLengkap: string;
-  perusahaan: string;
-  direktorat: string;
-  divisi: string;
-  departement: string;
-  posisi: string;
-  tanggalPengajuan: string; // format d/m/Y dari flatpickr
-  alasan: string;
-  suratPengunduranDiri?: File | null;
-};
+import { useAddResignationSubmission, PengunduranDiriForm } from '@/features/submission-type/hooks/resignation-submission/useAddResignationSubmission';
 
 interface Props {
   isOpen: boolean;
@@ -31,33 +19,11 @@ interface Props {
   defaultValues?: Partial<PengunduranDiriForm> | null;
   onSave?: (values: PengunduranDiriForm) => void;
 }
-
+ 
 // Dokumentasi: Komponen utama modal pengajuan pengunduran diri dengan state lokal
 const AddPengajuanPengunduranDiriModal: React.FC<Props> = ({ isOpen, onClose, defaultValues, onSave }) => {
-  const initial: PengunduranDiriForm = useMemo(() => ({
-    idKaryawan: defaultValues?.idKaryawan ?? '',
-    namaLengkap: defaultValues?.namaLengkap ?? '',
-    perusahaan: defaultValues?.perusahaan ?? '',
-    direktorat: defaultValues?.direktorat ?? '',
-    divisi: defaultValues?.divisi ?? '',
-    departement: defaultValues?.departement ?? '',
-    posisi: defaultValues?.posisi ?? '',
-    tanggalPengajuan: defaultValues?.tanggalPengajuan ?? '',
-    alasan: defaultValues?.alasan ?? '',
-    suratPengunduranDiri: defaultValues?.suratPengunduranDiri ?? null,
-  }), [defaultValues]);
-
-  const [form, setForm] = useState<PengunduranDiriForm>(initial);
-  const [submitting, setSubmitting] = useState(false);
-  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
-
-  useEffect(() => {
-    setForm(initial);
-  }, [isOpen, initial]);
-
-  const setField = (key: keyof PengunduranDiriForm, value: any) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
-  };
+  const { form, submitting, showSuccessPopup, setField, handleSubmit, handleCloseSuccessPopup } =
+    useAddResignationSubmission({ isOpen, onClose, defaultValues, onSave });
 
   const content = (
     <div className="space-y-6">
@@ -119,23 +85,6 @@ const AddPengajuanPengunduranDiriModal: React.FC<Props> = ({ isOpen, onClose, de
     </div>
   );
 
-  // Dokumentasi: Handler submit modal pengunduran diri
-  const handleSubmit = async () => {
-    setSubmitting(true);
-    try {
-      if (onSave) onSave(form);
-      onClose();
-      // Show success popup after closing the main modal
-      setTimeout(() => setShowSuccessPopup(true), 300);
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handleCloseSuccessPopup = () => {
-    setShowSuccessPopup(false);
-  };
-
   return (
     <>
       <ModalAddEdit
@@ -157,6 +106,6 @@ const AddPengajuanPengunduranDiriModal: React.FC<Props> = ({ isOpen, onClose, de
     </>
   );
 };
-
+ 
 export default AddPengajuanPengunduranDiriModal;
 
