@@ -705,6 +705,7 @@ export default function DatePicker({
         <input
           id={id}
           ref={inputRef}
+          autoComplete="off"
           placeholder={placeholder}
           disabled={disabled}
           required={required}
