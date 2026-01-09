@@ -1,16 +1,13 @@
 import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
-import Label from '@/components/form/Label';
-import InputField from '@/components/form/input/InputField';
-import TextArea from '@/components/form/input/TextArea';
-import Select from '@/components/form/Select';
+import InputField from '@/components/shared/field/InputField';
+import TextAreaField from '@/components/shared/field/TextAreaField';
+import SelectField from '@/components/shared/field/SelectField';
+import DateField from '@/components/shared/field/DateField';
 import FileInput from '@/components/shared/form/FileInput';
-import DatePicker from '@/components/form/date-picker';
 import { useFraudModal, PelanggaranEntry } from '@/features/employee/hooks/modals/employee-data/fraud/useFraudModal';
 
 export type { PelanggaranEntry };
-
- 
 
 interface PelanggaranModalProps {
   isOpen: boolean;
@@ -23,73 +20,96 @@ interface PelanggaranModalProps {
   onFileChange?: (file: File | null) => void;
 }
 
-// static options removed; use free text for pelanggaran and dynamic dropdown for tindakan
-
-// removed masa berlaku select options in favor of date input
-
- 
-
 const PelanggaranModal: React.FC<PelanggaranModalProps> = ({ isOpen, mode, initialData, onClose, onSubmit, submitting = false, disciplinaryOptions = [], onFileChange }) => {
   const { form, title, full_name, handleInput, handleFileChange } = useFraudModal({ isOpen, mode, initialData, onFileChange });
- 
+
   const content = (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
       <div className="col-span-2">
-        <Label>Nama Lengkap</Label>
-        <InputField placeholder="Nama Lengkap" value={full_name} onChange={(e) => handleInput('namaLengkap', e.target.value)} required />
+        <InputField
+          label="Nama Lengkap"
+          placeholder="Nama Lengkap"
+          value={full_name}
+          onChange={(e) => handleInput('namaLengkap', e.target.value)}
+          required
+        />
       </div>
- 
+
       <div className='col-span-2'>
-        <Label>Jenis Pelanggaran</Label>
-        <InputField placeholder="Masukkan jenis pelanggaran" value={form.jenisPelanggaran} onChange={(e) => handleInput('jenisPelanggaran', e.target.value)} required />
+        <InputField
+          label="Jenis Pelanggaran"
+          placeholder="Masukkan jenis pelanggaran"
+          value={form.jenisPelanggaran}
+          onChange={(e) => handleInput('jenisPelanggaran', e.target.value)}
+          required
+        />
       </div>
       <div className='col-span-2'>
-        <Label>Tanggal Kejadian</Label>
-        <DatePicker
+        <DateField
+          label="Tanggal Kejadian"
           id="tanggalKejadian"
           placeholder="hh/bb/tttt"
           defaultDate={form.tanggalKejadian}
           onChange={(_, dateStr) => handleInput('tanggalKejadian', dateStr)}
+          required
         />
       </div>
- 
+
       <div className='col-span-2'>
-        <Label>Jenis Tindakan</Label>
-        <Select options={disciplinaryOptions} placeholder="Select" defaultValue={form.jenisTindakan} onChange={(v) => handleInput('jenisTindakan', v)} required />
+        <SelectField
+          label="Jenis Tindakan"
+          options={disciplinaryOptions}
+          placeholder="Select"
+          defaultValue={form.jenisTindakan}
+          onChange={(v) => handleInput('jenisTindakan', v)}
+          required
+        />
       </div>
       <div className='col-span-2 md:col-span-1'>
-        <Label>Tanggal Mulai Tindakan</Label>
-        <DatePicker
+        <DateField
+          label="Tanggal Mulai Tindakan"
           id="tanggalMulaiTindakan"
           placeholder="hh/bb/tttt"
           defaultDate={form.tanggalMulaiTindakan}
           onChange={(_, dateStr) => handleInput('tanggalMulaiTindakan', dateStr)}
+          required
         />
       </div>
       <div className='col-span-2 md:col-span-1'>
-        <Label>Tanggal Berakhir Tindakan</Label>
-        <DatePicker
+        <DateField
+          label="Tanggal Berakhir Tindakan"
           id="tanggalBerakhirTindakan"
           placeholder="hh/bb/tttt"
           defaultDate={form.tanggalBerakhirTindakan}
           onChange={(_, dateStr) => handleInput('tanggalBerakhirTindakan', dateStr)}
+          required
         />
       </div>
- 
+
       <div className="col-span-2">
-        <Label>Description Pelanggaran</Label>
-        <TextArea placeholder="Ketik deskripsi …" rows={4} value={form.deskripsi} onChange={(v) => handleInput('deskripsi', v)} required />
+        <TextAreaField
+          label="Description Pelanggaran"
+          placeholder="Ketik deskripsi …"
+          rows={4}
+          value={form.deskripsi}
+          onChange={(v) => handleInput('deskripsi', v)}
+          required
+        />
       </div>
- 
+
       <div className="col-span-2">
-        <FileInput skFileName={form.fileName || ''} onChange={(e) => {
-          const file = e.target.files?.[0] ?? null;
-          handleFileChange(file);
-        }} />
+        <FileInput
+          skFileName={form.fileName || ''}
+          onChange={(e) => {
+            const file = e.target.files?.[0] ?? null;
+            handleFileChange(file);
+          }}
+          required
+        />
       </div>
     </div>
   );
- 
+
   return (
     <ModalAddEdit
       title={title}

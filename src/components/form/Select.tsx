@@ -128,7 +128,8 @@ const Select: React.FC<SelectProps> = ({
         value={selectedValue}
         onChange={() => {}}
         required={required}
-        className="hidden"
+        tabIndex={-1}
+        className="absolute inset-0 -z-10 h-full w-full opacity-0 pointer-events-none"
       >
         <option value="" disabled>{placeholder}</option>
         {options.map((o) => (
