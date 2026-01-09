@@ -77,7 +77,7 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
   const content = (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
       {/* Nama Lengkap */}
-      <div className="col-span-2">
+      <div className="col-span-1 md:col-span-2">
         <InputField
           label="Nama Lengkap"
           readonly
@@ -115,7 +115,8 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
       </div>
 
       {/* Berakhir Kontrak */}
-     {form.contract_type_name !== 'PKWTT' && <div>
+     {form.contract_type_name !== 'PKWTT' && 
+     <div>
         <DateField
           id="end_date"
           label="Berakhir Kontrak"
