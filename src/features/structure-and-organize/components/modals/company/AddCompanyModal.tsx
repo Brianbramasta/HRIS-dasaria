@@ -117,24 +117,29 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
                   </div>
                   {idx === documents.length - 1 ? (
                     <div className="flex flex-col gap-2 w-full md:flex-row md:w-auto">
-                      {documents.length <= 1 ? null : (
-                        <button
-                          type="button"
-                          onClick={() => removeDocumentRow(idx)}
-                          className="ml-0 h-11 w-full rounded-lg bg-rose-500 px-4 text-sm font-medium text-white hover:bg-rose-600 md:ml-1 md:h-9 md:w-9 md:px-0"
-                          aria-label="Hapus baris dokumen"
-                        >
-                          <span className="inline md:hidden">Hapus</span>
-                          <TrashBinIcon className="hidden md:inline h-5 w-5" />
-                        </button>
-                      )}
+                      <button
+                        type="button"
+                        onClick={() => removeDocumentRow(idx)}
+                        disabled={documents.length <= 1}
+                        className="ml-0 h-11 w-full rounded-lg bg-rose-500 px-4 text-sm font-medium text-white hover:bg-rose-600 md:ml-1 md:h-9 md:w-9 md:px-0 disabled:opacity-50 disabled:cursor-not-allowed"
+                        aria-label="Hapus baris dokumen"
+                      >
+                        <span className="inline-flex items-center justify-center md:hidden">
+                          <TrashBinIcon className="h-5 w-5" />
+                          <span className="ml-2">Delete</span>
+                        </span>
+                        <TrashBinIcon className="hidden md:inline h-5 w-5" />
+                      </button>
                       <button
                         type="button"
                         onClick={addDocumentRow}
                         className="ml-0 h-11 w-full rounded-lg bg-emerald-500 px-4 text-sm font-medium text-white hover:bg-emerald-600 md:ml-1 md:h-9 md:w-9 md:px-0"
                         aria-label="Tambah dokumen"
                       >
-                        <span className="inline md:hidden">Tambah</span>
+                        <span className="inline-flex items-center justify-center md:hidden">
+                          <IconPlus size={20} />
+                          <span className="ml-2">Tambah</span>
+                        </span>
                         <span className="hidden  md:flex md:items-center md:justify-center">
                           <IconPlus size={24} />
                         </span>
@@ -147,7 +152,10 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
                       className="ml-0 h-11 w-full rounded-lg bg-rose-500 px-4 text-sm font-medium text-white hover:bg-rose-600 md:ml-1 md:h-9 md:w-9 md:px-0"
                       aria-label="Hapus baris dokumen"
                     >
-                      <span className="inline md:hidden">Hapus</span>
+                      <span className="inline-flex items-center justify-center md:hidden">
+                        <TrashBinIcon className="h-5 w-5" />
+                        <span className="ml-2">Delete</span>
+                      </span>
                       <TrashBinIcon className="hidden md:inline h-5 w-5" />
                     </button>
                   )}

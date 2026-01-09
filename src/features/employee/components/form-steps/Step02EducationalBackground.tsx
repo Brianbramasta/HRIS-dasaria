@@ -33,7 +33,8 @@ export const Step02EducationalBackground: React.FC = () => {
         <div className="space-y-4">
           {(step2.education || []).map((edu: EducationItem, index: number) => (
             <div className="flex gap-4" key={index}>
-              <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end flex-1">
+              <div className="flex-1">
+                <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
                 {/* Jenis Pendidikan */}
                 <div className="md:col-span-6 flex w-full gap-5">
                     <div className="w-full">
@@ -46,41 +47,43 @@ export const Step02EducationalBackground: React.FC = () => {
                           required
                         />
                       </div>
-                      <div className="md:col-span-1 flex md:justify-end items-end">
-                      {index === ((step2.education?.length ?? 0) - 1) ? (
-                        <div className="flex gap-2">
-                         {(step2.education?.length ?? 0) <= 1?null: <Button
+                      <div className="hidden md:flex md:justify-end items-end">
+                        {index === ((step2.education?.length ?? 0) - 1) ? (
+                          <div className="flex gap-2">
+                            {(step2.education?.length ?? 0) <= 1 ? null : (
+                              <Button
+                                onClick={() => removeEducationRow(index)}
+                                variant="custom"
+                                size="custom"
+                                disabled={(step2.education?.length ?? 0) <= 1}
+                                className="bg-red-500 text-white ring-1 ring-inset ring-red-500 hover:bg-red-600 h-10 w-10 p-0 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                                aria-label="Hapus Pendidikan"
+                              >
+                                <Trash2 size={18} />
+                              </Button>
+                            )}
+                            <Button
+                              onClick={addEducationRow}
+                              variant="custom"
+                              size="custom"
+                              className="bg-emerald-500 text-white ring-1 ring-inset ring-emerald-500 hover:bg-emerald-600 h-10 w-10 p-0 flex items-center justify-center"
+                              aria-label="Tambah Pendidikan"
+                            >
+                              <Plus size={24} />
+                            </Button>
+                          </div>
+                        ) : (
+                          <Button
                             onClick={() => removeEducationRow(index)}
                             variant="custom"
                             size="custom"
-                            disabled={(step2.education?.length ?? 0) <= 1}
-                            className="bg-red-500 text-white ring-1 ring-inset ring-red-500 hover:bg-red-600 h-10 w-10 p-0 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="bg-red-500 text-white ring-1 ring-inset ring-red-500 hover:bg-red-600 h-10 w-10 p-0 flex items-center justify-center"
                             aria-label="Hapus Pendidikan"
                           >
                             <Trash2 size={18} />
-                          </Button>}
-                           <Button
-                            onClick={addEducationRow}
-                            variant="custom"
-                            size="custom"
-                            className="bg-emerald-500 text-white ring-1 ring-inset ring-emerald-500 hover:bg-emerald-600 h-10 w-10 p-0 flex items-center justify-center"
-                            aria-label="Tambah Pendidikan"
-                          >
-                            <Plus size={24} />
                           </Button>
-                        </div>
-                      ) : (
-                        <Button
-                          onClick={() => removeEducationRow(index)}
-                          variant="custom"
-                          size="custom"
-                          className="bg-red-500 text-white ring-1 ring-inset ring-red-500 hover:bg-red-600 h-10 w-10 p-0 flex items-center justify-center"
-                          aria-label="Hapus Pendidikan"
-                        >
-                          <Trash2 size={18} />
-                        </Button>
-                      )}
-                    </div>
+                        )}
+                      </div>
                 </div>
                 
 
@@ -213,6 +216,34 @@ export const Step02EducationalBackground: React.FC = () => {
                     </div>
                   </>
                 )}
+                </div>
+
+                <div className="mt-4 grid grid-cols-1 gap-3 md:hidden">
+                  <Button
+                    onClick={() => removeEducationRow(index)}
+                    variant="custom"
+                    size="custom"
+                    disabled={(step2.education?.length ?? 0) <= 1}
+                    className="w-full bg-red-500 text-white ring-1 ring-inset ring-red-500 hover:bg-red-600 h-10 px-4 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                    aria-label="Hapus Pendidikan"
+                  >
+                    <Trash2 size={18} />
+                    <span className="ml-2">Delete</span>
+                  </Button>
+
+                  {index === ((step2.education?.length ?? 0) - 1) && (
+                    <Button
+                      onClick={addEducationRow}
+                      variant="custom"
+                      size="custom"
+                      className="w-full bg-emerald-500 text-white ring-1 ring-inset ring-emerald-500 hover:bg-emerald-600 h-10 px-4 flex items-center justify-center"
+                      aria-label="Tambah Pendidikan"
+                    >
+                      <Plus size={20} />
+                      <span className="ml-2">Tambah</span>
+                    </Button>
+                  )}
+                </div>
               </div>
               
             </div>

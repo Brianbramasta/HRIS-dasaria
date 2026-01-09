@@ -36,172 +36,201 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
         <div className="space-y-6">
           {form.education.map((edu, idx) => (
             <div className="flex gap-4" key={idx}>
-              <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end flex-1">
-                <div className="md:col-span-6 flex w-full gap-5">
-                  <div className="w-full">
-                    <SelectField
-                      label="Jenis Pendidikan"
-                      options={JENIS_PENDIDIKAN_OPTIONS}
-                      defaultValue={edu.jenisPendidikan ?? 'formal'}
-                      onChange={(value) => updateEducationField(idx, 'jenisPendidikan', value)}
-                      placeholder="Pilih jenis"
-                    />
-                  </div>
-                  <div className="md:col-span-1 flex md:justify-end items-end">
-                    {idx === form.education.length - 1 ? (
-                      <div className="flex gap-2">
-                        {form.education.length <= 1 ? null : (
+              <div className="flex-1">
+                <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
+                  <div className="md:col-span-6 flex w-full gap-5">
+                    <div className="w-full">
+                      <SelectField
+                        label="Jenis Pendidikan"
+                        options={JENIS_PENDIDIKAN_OPTIONS}
+                        defaultValue={edu.jenisPendidikan ?? 'formal'}
+                        onChange={(value) => updateEducationField(idx, 'jenisPendidikan', value)}
+                        placeholder="Pilih jenis"
+                      />
+                    </div>
+                    <div className="hidden md:flex md:justify-end items-end">
+                      {idx === form.education.length - 1 ? (
+                        <div className="flex gap-2">
+                          {form.education.length <= 1 ? null : (
+                            <Button
+                              onClick={() => removeEducationRow(idx)}
+                              variant="custom"
+                              size="custom"
+                              className="bg-red-500 text-white ring-1 ring-inset ring-red-500 hover:bg-red-600 h-10 w-10 p-0 flex items-center justify-center"
+                              aria-label="Hapus Pendidikan"
+                            >
+                              <Trash2 size={18} />
+                            </Button>
+                          )}
                           <Button
-                            onClick={() => removeEducationRow(idx)}
+                            onClick={addEducationRow}
                             variant="custom"
                             size="custom"
-                            className="bg-red-500 text-white ring-1 ring-inset ring-red-500 hover:bg-red-600 h-10 w-10 p-0 flex items-center justify-center"
-                            aria-label="Hapus Pendidikan"
+                            className="bg-emerald-500 text-white ring-1 ring-inset ring-emerald-500 hover:bg-emerald-600 h-10 w-10 p-0 flex items-center justify-center"
+                            aria-label="Tambah Pendidikan"
                           >
-                            <Trash2 size={18} />
+                            <IconPlus size={24} />
                           </Button>
-                        )}
+                        </div>
+                      ) : (
                         <Button
-                          onClick={addEducationRow}
+                          onClick={() => removeEducationRow(idx)}
                           variant="custom"
                           size="custom"
-                          className="bg-emerald-500 text-white ring-1 ring-inset ring-emerald-500 hover:bg-emerald-600 h-10 w-10 p-0 flex items-center justify-center"
-                          aria-label="Tambah Pendidikan"
+                          className="bg-red-500 text-white ring-1 ring-inset ring-red-500 hover:bg-red-600 h-10 w-10 p-0 flex items-center justify-center"
+                          aria-label="Hapus Pendidikan"
                         >
-                          <IconPlus size={24} />
+                          <Trash2 size={18} />
                         </Button>
-                      </div>
-                    ) : (
-                      <Button
-                        onClick={() => removeEducationRow(idx)}
-                        variant="custom"
-                        size="custom"
-                        className="bg-red-500 text-white ring-1 ring-inset ring-red-500 hover:bg-red-600 h-10 w-10 p-0 flex items-center justify-center"
-                        aria-label="Hapus Pendidikan"
-                      >
-                        <Trash2 size={18} />
-                      </Button>
-                    )}
+                      )}
+                    </div>
                   </div>
+
+                  {(edu.jenisPendidikan ?? 'formal') === 'formal' && (
+                    <>
+                      <div className="md:col-span-2">
+                        <SelectField
+                          label="Jenjang"
+                          options={pendidikanOptions}
+                          defaultValue={edu.jenjang}
+                          onChange={(value) => updateEducationField(idx, 'jenjang', value)}
+                          placeholder="Select"
+                          required
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <InputField
+                          label="Nama Lembaga"
+                          placeholder="Masukkan nama lembaga"
+                          value={edu.namaLembaga}
+                          onChange={(e) => updateEducationField(idx, 'namaLembaga', e.target.value)}
+                          required
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <InputField
+                          label="Gelar"
+                          placeholder="Masukkan gelar"
+                          value={edu.gelar}
+                          onChange={(e) => updateEducationField(idx, 'gelar', e.target.value)}
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <InputField
+                          label="Nilai Pendidikan Terakhir"
+                          type="number"
+                          placeholder="Masukkan nilai"
+                          value={edu.nilaiPendidikan}
+                          onChange={(e) => updateEducationField(idx, 'nilaiPendidikan', e.target.value)}
+                          required
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <InputField
+                          label="Jurusan / Keahlian"
+                          placeholder="Masukkan jurusan/keahlian"
+                          value={edu.jurusanKeahlian}
+                          onChange={(e) => updateEducationField(idx, 'jurusanKeahlian', e.target.value)}
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <InputField
+                          label="Tahun Lulus"
+                          type="number"
+                          placeholder="Masukkan tahun lulus"
+                          value={edu.tahunLulus}
+                          onChange={(e) => updateEducationField(idx, 'tahunLulus', e.target.value)}
+                          required
+                        />
+                      </div>
+                    </>
+                  )}
+
+                  {edu.jenisPendidikan === 'non-formal' && (
+                    <>
+                      <div className="md:col-span-2">
+                        <InputField
+                          label="Nama Sertifikat"
+                          placeholder="Masukkan nama sertifikat"
+                          value={edu.namaSertifikat || ''}
+                          onChange={(e) => updateEducationField(idx, 'namaSertifikat', e.target.value)}
+                          required
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <InputField
+                          label="Organisasi penerbit"
+                          placeholder="Masukkan organisasi penerbit"
+                          value={edu.organisasiPenerbit || ''}
+                          onChange={(e) => updateEducationField(idx, 'organisasiPenerbit', e.target.value)}
+                          required
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <DateField
+                          id={`tanggalPenerbitan-${idx}`}
+                          label="Tanggal penerbitan"
+                          placeholder="Pilih tanggal"
+                          defaultDate={edu.tanggalPenerbitan || undefined}
+                          onChange={(_d, dateStr) => updateEducationField(idx, 'tanggalPenerbitan', dateStr)}
+                          required
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <DateField
+                          id={`tanggalKedaluwarsa-${idx}`}
+                          label="Tanggal Kedaluwarsa"
+                          placeholder="Pilih tanggal"
+                          defaultDate={edu.tanggalKedaluwarsa || undefined}
+                          onChange={(_d, dateStr) => updateEducationField(idx, 'tanggalKedaluwarsa', dateStr)}
+                          required
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <InputField
+                          label="ID Kredensial"
+                          placeholder="Masukkan ID kredensial"
+                          value={edu.idKredensial || ''}
+                          onChange={(e) => updateEducationField(idx, 'idKredensial', e.target.value)}
+                          required
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <FIleField
+                          label="Upload file"
+                          onChange={(e) => updateEducationField(idx, 'fileSertifikat', e.target.files?.[0])}
+                        />
+                      </div>
+                    </>
+                  )}
                 </div>
 
-                {(edu.jenisPendidikan ?? 'formal') === 'formal' && (
-                  <>
-                    <div className="md:col-span-2">
-                      <SelectField
-                        label="Jenjang"
-                        options={pendidikanOptions}
-                        defaultValue={edu.jenjang}
-                        onChange={(value) => updateEducationField(idx, 'jenjang', value)}
-                        placeholder="Select"
-                        required
-                      />
-                    </div>
-                    <div className="md:col-span-2">
-                      <InputField
-                        label="Nama Lembaga"
-                        placeholder="Masukkan nama lembaga"
-                        value={edu.namaLembaga}
-                        onChange={(e) => updateEducationField(idx, 'namaLembaga', e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="md:col-span-2">
-                      <InputField
-                        label="Gelar"
-                        placeholder="Masukkan gelar"
-                        value={edu.gelar}
-                        onChange={(e) => updateEducationField(idx, 'gelar', e.target.value)}
-                      />
-                    </div>
-                    <div className="md:col-span-2">
-                      <InputField
-                        label="Nilai Pendidikan Terakhir"
-                        type="number"
-                        placeholder="Masukkan nilai"
-                        value={edu.nilaiPendidikan}
-                        onChange={(e) => updateEducationField(idx, 'nilaiPendidikan', e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="md:col-span-2">
-                      <InputField
-                        label="Jurusan / Keahlian"
-                        placeholder="Masukkan jurusan/keahlian"
-                        value={edu.jurusanKeahlian}
-                        onChange={(e) => updateEducationField(idx, 'jurusanKeahlian', e.target.value)}
-                      />
-                    </div>
-                    <div className="md:col-span-2">
-                      <InputField
-                        label="Tahun Lulus"
-                        type="number"
-                        placeholder="Masukkan tahun lulus"
-                        value={edu.tahunLulus}
-                        onChange={(e) => updateEducationField(idx, 'tahunLulus', e.target.value)}
-                        required
-                      />
-                    </div>
-                  </>
-                )}
+                <div className="mt-4 grid grid-cols-1 gap-3 md:hidden">
+                  <Button
+                    onClick={() => removeEducationRow(idx)}
+                    variant="custom"
+                    size="custom"
+                    disabled={form.education.length <= 1}
+                    className="w-full bg-red-500 text-white ring-1 ring-inset ring-red-500 hover:bg-red-600 h-10 px-4 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                    aria-label="Hapus Pendidikan"
+                  >
+                    <Trash2 size={18} />
+                    <span className="ml-2">Delete</span>
+                  </Button>
 
-                {edu.jenisPendidikan === 'non-formal' && (
-                  <>
-                    <div className="md:col-span-2">
-                      <InputField
-                        label="Nama Sertifikat"
-                        placeholder="Masukkan nama sertifikat"
-                        value={edu.namaSertifikat || ''}
-                        onChange={(e) => updateEducationField(idx, 'namaSertifikat', e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="md:col-span-2">
-                      <InputField
-                        label="Organisasi penerbit"
-                        placeholder="Masukkan organisasi penerbit"
-                        value={edu.organisasiPenerbit || ''}
-                        onChange={(e) => updateEducationField(idx, 'organisasiPenerbit', e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="md:col-span-2">
-                      <DateField
-                        id={`tanggalPenerbitan-${idx}`}
-                        label="Tanggal penerbitan"
-                        placeholder="Pilih tanggal"
-                        defaultDate={edu.tanggalPenerbitan || undefined}
-                        onChange={(_d, dateStr) => updateEducationField(idx, 'tanggalPenerbitan', dateStr)}
-                        required
-                      />
-                    </div>
-                    <div className="md:col-span-2">
-                      <DateField
-                        id={`tanggalKedaluwarsa-${idx}`}
-                        label="Tanggal Kedaluwarsa"
-                        placeholder="Pilih tanggal"
-                        defaultDate={edu.tanggalKedaluwarsa || undefined}
-                        onChange={(_d, dateStr) => updateEducationField(idx, 'tanggalKedaluwarsa', dateStr)}
-                        required
-                      />
-                    </div>
-                    <div className="md:col-span-2">
-                      <InputField
-                        label="ID Kredensial"
-                        placeholder="Masukkan ID kredensial"
-                        value={edu.idKredensial || ''}
-                        onChange={(e) => updateEducationField(idx, 'idKredensial', e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="md:col-span-2">
-                      <FIleField
-                        label="Upload file"
-                        onChange={(e) => updateEducationField(idx, 'fileSertifikat', e.target.files?.[0])}
-                      />
-                    </div>
-                  </>
-                )}
+                  {idx === form.education.length - 1 && (
+                    <Button
+                      onClick={addEducationRow}
+                      variant="custom"
+                      size="custom"
+                      className="w-full bg-emerald-500 text-white ring-1 ring-inset ring-emerald-500 hover:bg-emerald-600 h-10 px-4 flex items-center justify-center"
+                      aria-label="Tambah Pendidikan"
+                    >
+                      <IconPlus size={20} />
+                      <span className="ml-2">Tambah</span>
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
           ))}
