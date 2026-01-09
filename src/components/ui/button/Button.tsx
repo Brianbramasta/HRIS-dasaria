@@ -9,6 +9,7 @@ interface ButtonProps {
   onClick?: () => void; // Click handler
   disabled?: boolean; // Disabled state
   className?: string; // Disabled state
+  defaultClasses?: string;
   type?: "button" | "submit" | "reset";
 }
 
@@ -20,6 +21,7 @@ const Button: React.FC<ButtonProps> = ({
   endIcon,
   onClick,
   className = "",
+  defaultClasses = "inline-flex items-center justify-center gap-2",
   disabled = false,
   type = "button",
   ...rest
@@ -42,7 +44,7 @@ const Button: React.FC<ButtonProps> = ({
 
   return (
     <button
-      className={`inline-flex items-center justify-center gap-2 rounded-lg transition ${className} ${
+      className={`${defaultClasses} flex items-center justify-center gap-2 rounded-lg transition ${className}  ${
         sizeClasses[size]
       } ${variantClasses[variant]} ${
         disabled ? "cursor-not-allowed opacity-50" : ""

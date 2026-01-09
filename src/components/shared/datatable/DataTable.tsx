@@ -7,6 +7,7 @@ import { Table, TableHeader, TableBody, TableRow, TableCell } from '../../ui/tab
 import PaginationWithIcon from '../../tables/DataTables/TableOne/PaginationWithIcon';
 import Button from '../../ui/button/Button';
 import { Plus } from 'react-feather';
+import { IconPlus } from '@/icons/components/icons';
 import { FilterLineIcon } from '../../../icons/index';
 import { IconExport, IconColumnFilter, IconCalendarFilter } from '@/icons/components/icons';
 import { useFilterModal } from '../../../hooks/datatable/useFilterModal';
@@ -208,7 +209,7 @@ export function DataTable<T = any>({
           <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-0">{title}</h4>
         )}
         {/* Dokumentasi: Bar atas dengan layout kiri (input/Select) dan kanan (tombol) */}
-        <div className="flex flex-col items-start gap-1 md:items-center md:justify-between md:gap-3 md:flex-row mb-4 ">
+        <div className="flex flex-row items-start gap-1 md:items-center md:justify-between md:gap-3 md:flex-row mb-4 ">
           {!isNewLine && title && (
             <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-0">{title}</h4>
           )}
@@ -225,10 +226,20 @@ export function DataTable<T = any>({
                   </Button>
                 )}
                 {onAdd && (
-                  <Button onClick={onAdd} variant="primary" size="sm" className="w-max">
-                    {addButtonIcon ? <span className="mr-2">{addButtonIcon}</span> : <Plus size={16} className="mr-2" />}
-                    {addButtonLabel || ('Tambah ' + (title ?? ''))}
-                  </Button>
+                  <>
+                    <Button
+                      onClick={onAdd}
+                      variant="primary"
+                      size="custom"
+                      className="md:hidden h-11 w-11 p-0"
+                    >
+                      {addButtonIcon ? addButtonIcon : <IconPlus size={18} />}
+                    </Button>
+                    <Button onClick={onAdd} variant="primary" size="sm" className=" md:inline-flex w-max" defaultClasses='hidden'>
+                      {addButtonIcon ? <span className="mr-2">{addButtonIcon}</span> : <Plus size={16} className="mr-2" />}
+                      {addButtonLabel || ('Tambah ' + (title ?? ''))}
+                    </Button>
+                  </>
                 )}
               </>
             )}
@@ -243,10 +254,20 @@ export function DataTable<T = any>({
                       </Button>
                     )}
                     {onAdd && (
-                      <Button onClick={onAdd} variant="primary" size="sm" className="w-max">
-                        {addButtonIcon ? <span className="mr-2">{addButtonIcon}</span> : <Plus size={16} className="mr-2" />}
-                        {addButtonLabel || ('Tambah ' + (title ?? ''))}
-                      </Button>
+                      <>
+                        <Button
+                          onClick={onAdd}
+                          variant="primary"
+                          size="custom"
+                          className="md:hidden h-11 w-11 p-0"
+                        >
+                          {addButtonIcon ? addButtonIcon : <IconPlus size={18} />}
+                        </Button>
+                        <Button onClick={onAdd} variant="primary" size="sm" className=" md:inline-flex w-max" defaultClasses='hidden'>
+                          {addButtonIcon ? <span className="mr-2">{addButtonIcon}</span> : <Plus size={16} className="mr-2" />}
+                          {addButtonLabel || ('Tambah ' + (title ?? ''))}
+                        </Button>
+                      </>
                     )}
                   </>
                 )}
