@@ -89,7 +89,6 @@ export const Step04SalaryBpjs: React.FC = () => {
               placeholder="Masukkan NPWP"
               value={step3.npwp}
               onChange={(e) => handleChange('npwp', e.target.value)}
-              required
             />
           </div>
 
@@ -127,7 +126,7 @@ export const Step04SalaryBpjs: React.FC = () => {
               placeholder="Masukkan nomor"
               value={step3.noBpjsKetenagakerjaan}
               onChange={(e) => handleChange('noBpjsKetenagakerjaan', e.target.value)}
-              required
+              
             />
           </div>
 
@@ -139,7 +138,7 @@ export const Step04SalaryBpjs: React.FC = () => {
               defaultValue={step3.statusBpjsKetenagakerjaan}
               onChange={(value) => handleChange('statusBpjsKetenagakerjaan', value)}
               placeholder="Select"
-              required
+              
             />
           </div>
 
@@ -152,7 +151,7 @@ export const Step04SalaryBpjs: React.FC = () => {
               placeholder="Masukkan nomor"
               value={step3.noBpjsKesehatan}
               onChange={(e) => handleChange('noBpjsKesehatan', e.target.value)}
-              required
+              
             />
           </div>
 
@@ -164,7 +163,7 @@ export const Step04SalaryBpjs: React.FC = () => {
               defaultValue={step3.statusBpjsKesehatan}
               onChange={(value) => handleChange('statusBpjsKesehatan', value)}
               placeholder="Select"
-              required
+              
             />
           </div>
         </div>

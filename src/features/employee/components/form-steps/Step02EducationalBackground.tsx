@@ -3,7 +3,6 @@
 import React from 'react';
 import InputField from '../../../../components/shared/field/InputField';
 import SelectField from '../../../../components/shared/field/SelectField';
-import Label from '../../../../components/form/Label';
 import Button from '../../../../components/ui/button/Button';
 import { Trash2 } from 'react-feather';
 import { IconPlus as Plus } from '@/icons/components/icons';
@@ -44,6 +43,7 @@ export const Step02EducationalBackground: React.FC = () => {
                           defaultValue={edu.jenisPendidikan ?? 'formal'}
                           onChange={(value) => updateEducationField(index, 'jenisPendidikan', value)}
                           placeholder="Pilih jenis"
+                          required
                         />
                       </div>
                       <div className="md:col-span-1 flex md:justify-end items-end">
@@ -84,6 +84,7 @@ export const Step02EducationalBackground: React.FC = () => {
                         defaultValue={edu.jenjang}
                         onChange={(value) => updateEducationField(index, 'jenjang', value)}
                         placeholder="Select"
+                        required
                       />
                     </div>
                     <div className="md:col-span-2">
@@ -93,6 +94,7 @@ export const Step02EducationalBackground: React.FC = () => {
                         placeholder="Masukkan nama lembaga"
                         value={edu.namaLembaga}
                         onChange={(e) => updateEducationField(index, 'namaLembaga', e.target.value)}
+                        required
                       />
                     </div>
                     <div className="md:col-span-2">
@@ -112,6 +114,7 @@ export const Step02EducationalBackground: React.FC = () => {
                         placeholder="Masukkan nilai"
                         value={edu.nilaiPendidikan}
                         onChange={(e) => updateEducationField(index, 'nilaiPendidikan', e.target.value)}
+                        required
                       />
                     </div>
                     <div className="md:col-span-2">
@@ -131,6 +134,7 @@ export const Step02EducationalBackground: React.FC = () => {
                         placeholder="Masukkan tahun lulus"
                         value={edu.tahunLulus}
                         onChange={(e) => updateEducationField(index, 'tahunLulus', e.target.value)}
+                        required
                       />
                     </div>
                   </>
@@ -146,6 +150,7 @@ export const Step02EducationalBackground: React.FC = () => {
                         placeholder="Masukkan nama sertifikat"
                         value={edu.namaSertifikat || ''}
                         onChange={(e) => updateEducationField(index, 'namaSertifikat', e.target.value)}
+                        required
                       />
                     </div>
                     <div className="md:col-span-2">
@@ -155,6 +160,7 @@ export const Step02EducationalBackground: React.FC = () => {
                         placeholder="Masukkan organisasi penerbit"
                         value={edu.organisasiPenerbit || ''}
                         onChange={(e) => updateEducationField(index, 'organisasiPenerbit', e.target.value)}
+                        required
                       />
                     </div>
                     <div className="md:col-span-2">
@@ -164,6 +170,7 @@ export const Step02EducationalBackground: React.FC = () => {
                         placeholder="Pilih tanggal"
                         defaultDate={edu.tanggalPenerbitan || ''}
                         onChange={(_dates, dateStr) => updateEducationField(index, 'tanggalPenerbitan', dateStr)}
+                        required
                       />
                     </div>
                     <div className="md:col-span-2">
@@ -182,12 +189,14 @@ export const Step02EducationalBackground: React.FC = () => {
                         placeholder="Masukkan ID kredensial"
                         value={edu.idKredensial || ''}
                         onChange={(e) => updateEducationField(index, 'idKredensial', e.target.value)}
+                        required
                       />
                     </div>
                     <div className="md:col-span-2">
                       <FIleField
                         label="Upload file"
                         onChange={(e) => updateEducationField(index, 'fileSertifikat', e.target.files?.[0])}
+                        required
                       />
                     </div>
                   </>
@@ -250,6 +259,7 @@ export const Step02EducationalBackground: React.FC = () => {
               placeholder="https://www.linkedin.com/"
               value={step2.akunSosialMediaTerdekat}
               onChange={(e) => handleChange('akunSosialMediaTerdekat', e.target.value)}
+              required
             />
           </div>
 
@@ -283,6 +293,7 @@ export const Step02EducationalBackground: React.FC = () => {
               placeholder="Masukkan hubungan"
               value={step2.hubunganKontakDarurat}
               onChange={(e) => handleChange('hubunganKontakDarurat', e.target.value)}
+              required
             />
           </div>
         </div>

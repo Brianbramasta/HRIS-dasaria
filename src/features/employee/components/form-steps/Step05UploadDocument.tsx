@@ -19,13 +19,13 @@ export const Step05UploadDocument: React.FC = () => {
             label={
               <>
                 Upload {doc.document_name}
-                {doc.is_mandatory === 1 ? null : (
+                {/* {doc.is_mandatory === 1 ? null : (
                   <span className="text-gray-400 ml-1 font-normal text-sm">(opsional)</span>
-                )}
+                )} */}
               </>
             }
             multiple={false}
-            required={doc.is_mandatory === 1}
+            // required={doc.is_mandatory === 1}
             onChange={(e) => handleFileChange(doc.id, e)}
           />
           {existingFile && (

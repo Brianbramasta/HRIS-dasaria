@@ -39,6 +39,7 @@ export const Step03EmployeeData: React.FC = () => {
                   }
                 }}
                 placeholder="Select"
+                required
               />
             </div>
             <div>
@@ -61,6 +62,7 @@ export const Step03EmployeeData: React.FC = () => {
                 placeholder="hh/bb/tttt"
                 defaultDate={step3.tanggalMasuk as any}
                 onChange={(...args) => handleChange('tanggalMasuk', args[1] as string)}
+                required
               />
             </div>
             <div>
@@ -70,6 +72,7 @@ export const Step03EmployeeData: React.FC = () => {
                 placeholder="hh/bb/tttt"
                 defaultDate={step3.tanggalAkhir as any}
                 onChange={(...args) => handleChange('tanggalAkhir', args[1] as string)}
+                required
               />
             </div>
             <div>
@@ -90,6 +93,7 @@ export const Step03EmployeeData: React.FC = () => {
                 onChange={(value) => handleChange('kantor', value)}
                 placeholder="Select"
                 disabled={officeOptions.length === 0}
+                required
               />
             </div>
             <div>
@@ -116,6 +120,7 @@ export const Step03EmployeeData: React.FC = () => {
                 onChange={(value) => handleChange('divisi', value)}
                 disabled={divisionOptions.length === 0}
                 placeholder="Select"
+                required
               />
             </div>
             <div>
@@ -126,6 +131,7 @@ export const Step03EmployeeData: React.FC = () => {
                 onChange={(value) => handleChange('departemen', value)}
                 disabled={departmentOptions.length === 0}
                 placeholder="Select"
+                required
               />
             </div>
             <div>
@@ -135,6 +141,7 @@ export const Step03EmployeeData: React.FC = () => {
                 defaultValue={step3.position}
                 onChange={(value) => handleChange('position', value)}
                 placeholder="Select"
+                required  
               />
             </div>
             <div>
@@ -165,6 +172,7 @@ export const Step03EmployeeData: React.FC = () => {
                 placeholder="Otomatis dari Jabatan"
                 disabled
                 onChange={() => {}}
+                required
               />
             </div>
             {/* <div>
@@ -183,6 +191,7 @@ export const Step03EmployeeData: React.FC = () => {
                 defaultValue={step3.statusPayroll}
                 onChange={(value) => handleChange('statusPayroll', value)}
                 placeholder="Select"
+                required
               />
             </div>
             
