@@ -1,15 +1,16 @@
 import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
-import InputField from '@/components/form/input/InputField';
-import TextArea from '@/components/form/input/TextArea';
-import Select from '@/components/form/Select';
-import FileInput from '@/components/shared/form/FileInput';
-import DatePicker from '@/components/form/date-picker';
+
 import { formatDateToIndonesian } from '@/utils/formatDate';
 import LinkPreview from '@/components/shared/form/LinkPreview';
 import { formatUrlFile } from '@/utils/formatUrlFile';
 import { useContractModalConfig } from '@/features/employee/hooks/modals/employee-data/contract/useContractModalConfig';
+import SelectField from '@/components/shared/field/SelectField';
+import DateField from '@/components/shared/field/DateField';
+import FileInput from '@/components/shared/form/FileInput';
+import TextAreaField from '@/components/shared/field/TextAreaField';
+import InputField from '@/components/shared/field/InputField';
 
 export type ContractEntry = {
   id?: string;
@@ -77,71 +78,72 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
       {/* Nama Lengkap */}
       <div className="col-span-2">
-        <Label>Nama Lengkap</Label>
         <InputField
+          label="Nama Lengkap"
           readonly
           placeholder="Nama Lengkap"
           value={form.full_name}
           onChange={(e) => onInputChange('full_name', e.target.value)}
-          required
+          required={!isReadonly}
         />
       </div>
 
       {/* Status Kontrak */}
       <div className="md:col-span-2">
-        <Label>Status Kontrak</Label>
-        <Select
+        <SelectField
+          label="Status Kontrak"
           options={optionsContractStatus}
           placeholder="Select"
           defaultValue={form.contract_status_id}
           onChange={(v) => onInputChange('contract_status_id', v)}
           disabled={isReadonly}
-          required
+          required={!isReadonly}
         />
       </div>
 
       {/* TTD Kontrak Terakhir */}
       <div className={form.contract_type_name === 'PKWTT' ? 'md:col-span-2' : ''}>
-        <DatePicker
+        <DateField
           id="last_contract_signed_date"
           label="TTD Kontrak Terakhir"
           placeholder="Pilih Tanggal"
           defaultDate={formatDateToIndonesian(form.last_contract_signed_date) || undefined}
           onChange={isReadonly ? () => {} : onDateChange('last_contract_signed_date')}
           disabled={isReadonly}
+          required={!isReadonly}
         />
       </div>
 
       {/* Berakhir Kontrak */}
      {form.contract_type_name !== 'PKWTT' && <div>
-        <DatePicker
+        <DateField
           id="end_date"
           label="Berakhir Kontrak"
           placeholder="Pilih Tanggal"
           defaultDate={formatDateToIndonesian(form.end_date) || undefined}
           onChange={isReadonly ? () => {} : onDateChange('end_date')}
           disabled={isReadonly}
-          
+          required={!isReadonly}
         />
       </div>}
 
       {/* Jenis Kontrak */}
       <div>
-        <Label>Jenis Kontrak</Label>
-        <Select
+        <SelectField
+          label="Jenis Kontrak"
           options={jenisKontrakOptions}
           placeholder="Select"
           defaultValue={form.contract_type_id}
           onChange={(v) => onInputChange('contract_type_id', v)}
           disabled={isReadonly}
-          required
+          required={!isReadonly}
         />
       </div>
 
       {/* Kontrak ke */}
       <div>
-        <Label>Kontrak ke</Label>
         <InputField
+          label="Kontrak ke"
           type="number"
           min="0"
           value={form.contract_number}
@@ -153,8 +155,8 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
       {/* Status Berakhir - hanya tampil untuk edit dan jika showStatusBerakhir true */}
       {showStatusBerakhir && (
         <div className="md:col-span-2">
-          <Label>Status Berakhir</Label>
-          <Select
+          <SelectField
+            label="Status Berakhir"
             options={optionsContractEndStatus}
             placeholder="Select"
             defaultValue={form.contract_end_status_id}
@@ -177,6 +179,7 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
             skFileName={form.fileName || ''}
             onChange={onFileChange || (() => {})}
             isLabel={false}
+            required={!isReadonly}
           />
         )}
       </div>
@@ -184,8 +187,8 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
       {/* Catatan - hanya tampil saat edit mode dan Status Berakhir diisi */}
       {showStatusBerakhir && form.contract_end_status_id && form.contract_end_status_id !== '' && (
         <div className="col-span-2">
-          <Label>Catatan</Label>
-          <TextArea
+          <TextAreaField
+            label="Catatan"
             placeholder="Enter as description ..."
             rows={4}
             value={form.note || ''}
