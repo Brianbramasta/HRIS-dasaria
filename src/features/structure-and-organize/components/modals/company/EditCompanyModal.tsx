@@ -1,9 +1,9 @@
 import React from 'react';
 import type { CompanyListItem } from '../../../types/OrganizationApiTypes';
-import Input from '@/components/form/input/InputField';
-import TextArea from '@/components/form/input/TextArea';
+import InputField from '@/components/shared/field/InputField';
+import TextAreaField from '@/components/shared/field/TextAreaField';
 import FileInput from '../../../../../components/shared/form/FileInput';
-import Select from '@/components/form/Select';
+import SelectField from '@/components/shared/field/SelectField';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
 import { useEditCompanyModal } from '../../../hooks/modals/company/useEditCompanyModal';
 
@@ -43,20 +43,18 @@ const EditCompanyModal: React.FC<EditCompanyModalProps> = ({ isOpen, onClose, co
       submitting={submitting}
       content={
        <>
-       <div className="space-y-2">
-          <label className="text-sm font-medium">Nama Perusahaan</label>
-          <Input
+       <InputField
+            label="Nama Perusahaan"
             required
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-        </div>
+            containerClassName="space-y-2"
+        />
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Lini Bisnis</label>
-          <Select
+        <SelectField
+            label="Lini Bisnis"
             required
             options={businessLines.map((bl) => ({ label: bl.name, value: bl.id }))}
             placeholder="Pilih Lini Bisnis"
@@ -65,35 +63,32 @@ const EditCompanyModal: React.FC<EditCompanyModalProps> = ({ isOpen, onClose, co
             onSearch={async (q) => {
               await searchBusinessLines(q);
             }}
-          />
-        </div>
+            containerClassName="space-y-2"
+        />
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
-          <Input
+        <InputField
+            label="No. Surat Keputusan / Memo Internal"
             required
             type="text"
             value={docNumber}
             onChange={(e) => setDocNumber(e.target.value)}
             className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
             placeholder="SK-Dasaria/03/2025"
-          />
-        </div>
+            containerClassName="space-y-2"
+        />
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Deksripsi Umum</label>
-          
-          <TextArea
+        <TextAreaField
+            label="Deksripsi Umum"
             required
             value={description}
             onChange={(e) => setDescription(e)}
             className="w-full min-h-28 rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
             placeholder="Enter as description ..."
-          />
-        </div>
-
+            containerClassName="space-y-2"
+        />
         
         <FileInput
+          required
           onChange={handleFileChange}
           skFileName={skFile?.name || ''}
         />

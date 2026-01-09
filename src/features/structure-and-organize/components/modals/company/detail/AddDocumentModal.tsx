@@ -1,6 +1,7 @@
 import React from 'react';
 import ModalAddEdit from '../../../../../../components/shared/modal/ModalAddEdit';
-import FileInput from '../../../../../../components/form/input/FileInput';
+import InputField from '@/components/shared/field/InputField';
+import FIleField from '@/components/shared/field/FIleField';
 import { TrashBinIcon } from '@/icons';
 import { useAddDocumentModal } from '../../../../hooks/modals/company/detail/useAddDocumentModal';
 
@@ -28,28 +29,24 @@ const AddDocumentModal: React.FC<AddDocumentModalProps> = ({ isOpen, onClose, co
         <>
           {entries.map((entry, idx) => (
             <div key={`entry-${idx}`} className="space-y-4 mt-2">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Nama Dokumen</label>
-                <input
-                  required
-                  value={entry.name}
-                  onChange={(e) => updateEntry(idx, { name: e.target.value })}
-                  className="w-full rounded-xl border px-4 py-3"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">No. Dokumen</label>
-                <input
-                  required
-                  value={entry.docNumber}
-                  onChange={(e) => updateEntry(idx, { docNumber: e.target.value })}
-                  className="w-full rounded-xl border px-4 py-3"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Upload file</label>
-                <FileInput onChange={(e) => handleFileChange(idx, e)} />
-              </div>
+              <InputField
+                label="Nama Dokumen"
+                required
+                value={entry.name}
+                onChange={(e) => updateEntry(idx, { name: e.target.value })}
+              />
+              <InputField
+                label="No. Dokumen"
+                required
+                value={entry.docNumber}
+                onChange={(e) => updateEntry(idx, { docNumber: e.target.value })}
+              />
+              <FIleField
+                label="Upload file"
+                required
+                onChange={(e) => handleFileChange(idx, e)}
+                // isLabel={false}
+              />
               {entries.length > 1 && idx !== 0 && (
                 <div className="pt-2">
                   <button

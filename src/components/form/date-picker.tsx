@@ -83,7 +83,7 @@ export default function DatePicker({
   onChange,
   label,
   defaultDate,
-  placeholder,
+  placeholder = "Pilih Tanggal",
   disabled,
   showActions = false,
   showEndDateToggle = false,

@@ -1,8 +1,8 @@
 import React from 'react';
 import type { CompanyListItem } from '../../../types/OrganizationApiTypes';
-import Input from '@/components/form/input/InputField';
-import TextArea from '@/components/form/input/TextArea';
-import Select from '@/components/form/Select';
+import InputField from '@/components/shared/field/InputField';
+import TextAreaField from '@/components/shared/field/TextAreaField';
+import SelectField from '@/components/shared/field/SelectField';
 import FileInput from '@/components/form/input/FileInput';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
 import {  TrashBinIcon } from '@/icons';
@@ -46,20 +46,18 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
       maxWidth="max-w-3xl"
       content={
         <>
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Nama Perusahaan</label>
-            <Input
+          <InputField
+              label="Nama Perusahaan"
               required
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-          </div>
+              containerClassName="space-y-2"
+          />
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Lini Bisnis</label>
-              <Select
+          <SelectField
+                label="Lini Bisnis"
                 required
               options={businessLines.map((bl) => ({ label: bl.name, value: bl.id }))}
               placeholder="Pilih Lini Bisnis"
@@ -68,31 +66,31 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
               onSearch={async (q) => {
                 await searchBusinessLines(q);
               }}
+              containerClassName="space-y-2"
             />
-          </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Deskripsi Umum</label>
-            <TextArea
+          <TextAreaField
+              label="Deskripsi Umum"
               required
               value={description}
               onChange={(e) => setDescription(e)}
               className="w-full min-h-28 rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
               placeholder="Enter as Deskripsi ..."
+              containerClassName="space-y-2"
             />
-          </div>
 
           <div className="mt-4 hidden md:grid md:grid-cols-12 gap-3 text-sm font-medium">
-            <div className="md:col-span-4">Nama Dokumen</div>
-            <div className="md:col-span-4">No. Dokumen</div>
-            <div className="md:col-span-4">Unggah file</div>
+            <div className="md:col-span-4">Nama Dokumen <span className="ml-1 text-error-500">*</span></div>
+            <div className="md:col-span-4">No. Dokumen <span className="ml-1 text-error-500">*</span></div>
+            <div className="md:col-span-4">Unggah file <span className="ml-1 text-error-500">*</span></div>
           </div>
 
           {documents.map((doc, idx) => (
             <div key={idx} className="grid grid-cols-12 items-start gap-3 mb-3">
               <div className="col-span-12 md:col-span-4">
-                <label className="text-sm font-medium md:hidden">Nama Dokumen</label>
-                <Input
+                <InputField
+                  label="Nama Dokumen"
+                  labelClassName="text-sm font-medium md:hidden"
                   required
                   type="text"
                   value={doc.name}
@@ -101,8 +99,9 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
                 />
               </div>
               <div className="col-span-12 md:col-span-4">
-                <label className="text-sm font-medium md:hidden">No. Dokumen</label>
-                <Input
+                <InputField
+                  label="No. Dokumen"
+                  labelClassName="text-sm font-medium md:hidden"
                   required
                   type="text"
                   value={doc.number}
@@ -111,10 +110,10 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
                 />
               </div>
               <div className="col-span-12 md:col-span-4">
-                <label className="text-sm font-medium md:hidden">Unggah file</label>
+                <label className="text-sm font-medium md:hidden mb-2 block">Unggah file</label>
                 <div className="flex flex-col gap-2 md:flex-row md:items-center">
                   <div className="flex-1">
-                    <FileInput onChange={(e) => handleDocFileChange(idx, e)} />
+                    <FileInput onChange={(e) => handleDocFileChange(idx, e)} required />
                   </div>
                   {idx === documents.length - 1 ? (
                     <div className="flex flex-col gap-2 w-full md:flex-row md:w-auto">

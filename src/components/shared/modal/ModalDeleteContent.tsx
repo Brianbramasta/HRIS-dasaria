@@ -1,5 +1,5 @@
 import React from 'react';
-import Input from '@/components/form/input/InputField';
+import InputField from '@/components/shared/field/InputField';
 import FileInput from '../form/FileInput';
 
 type Props = {
@@ -22,18 +22,17 @@ const ModalDeleteContent: React.FC<Props> = ({
   const inputClass = `w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary${memoNumberReadOnly ? ' bg-gray-100' : ''}`;
   return (
     <>
-      <div className="space-y-2 mb-2">
-        <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
-        <Input
-          required
-          type="text"
-          value={memoNumber}
-          onChange={onMemoNumberChange}
-          className={inputClass}
-          readonly={memoNumberReadOnly}
-        />
-      </div>
-      <FileInput skFileName={skFileName} onChange={onFileChange} />
+      <InputField
+        required
+        label="No. Surat Keputusan / Memo Internal"
+        type="text"
+        value={memoNumber}
+        onChange={onMemoNumberChange}
+        className={inputClass}
+        readonly={memoNumberReadOnly}
+        containerClassName="mb-2"
+      />
+      <FileInput skFileName={skFileName} onChange={onFileChange} required />
       {note ? <p className="text-xs text-gray-500">{note}</p> : null}
     </>
   );
