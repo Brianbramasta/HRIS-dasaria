@@ -48,15 +48,27 @@ export const Step02EducationalBackground: React.FC = () => {
                       </div>
                       <div className="md:col-span-1 flex md:justify-end items-end">
                       {index === ((step2.education?.length ?? 0) - 1) ? (
-                        <Button
-                          onClick={addEducationRow}
-                          variant="custom"
-                          size="custom"
-                          className="bg-emerald-500 text-white ring-1 ring-inset ring-emerald-500 hover:bg-emerald-600 h-10 w-10 p-0 flex items-center justify-center"
-                          aria-label="Tambah Pendidikan"
-                        >
-                          <Plus size={24} />
-                        </Button>
+                        <div className="flex gap-2">
+                         {(step2.education?.length ?? 0) <= 1?null: <Button
+                            onClick={() => removeEducationRow(index)}
+                            variant="custom"
+                            size="custom"
+                            disabled={(step2.education?.length ?? 0) <= 1}
+                            className="bg-red-500 text-white ring-1 ring-inset ring-red-500 hover:bg-red-600 h-10 w-10 p-0 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                            aria-label="Hapus Pendidikan"
+                          >
+                            <Trash2 size={18} />
+                          </Button>}
+                           <Button
+                            onClick={addEducationRow}
+                            variant="custom"
+                            size="custom"
+                            className="bg-emerald-500 text-white ring-1 ring-inset ring-emerald-500 hover:bg-emerald-600 h-10 w-10 p-0 flex items-center justify-center"
+                            aria-label="Tambah Pendidikan"
+                          >
+                            <Plus size={24} />
+                          </Button>
+                        </div>
                       ) : (
                         <Button
                           onClick={() => removeEducationRow(index)}
