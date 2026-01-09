@@ -32,6 +32,7 @@ export default function FormulirKaryawanPage() {
     isAuthenticated,
     showSuccessModal,
     setShowSuccessModal,
+    formRef,
     handleNextStep,
     handlePreviousStep,
     handleSubmit,
@@ -88,49 +89,51 @@ export default function FormulirKaryawanPage() {
             </div>
           )}
 
-          {/* Form Content */}
-          <div className="mt-8">{renderStep()}</div>
+          <form ref={formRef} onSubmit={(e) => e.preventDefault()}>
+            {/* Form Content */}
+            <div className="mt-8">{renderStep()}</div>
 
-          {/* Navigation Buttons */}
-          <div className="mt-8 flex items-center justify-end gap-4">
-            {currentStep === 1 ? (
-              <Button
-                onClick={handleBackToDataPage}
-                variant="custom"
-                className="flex items-center gap-2 border border-[#007BFF] text-[#007BFF]"
-              >
-                Back to Home Page
-              </Button>
-            ) : (
-              <Button
-                onClick={handlePreviousStep}
-                variant="outline"
-                className="flex items-center gap-2"
-              >
-                <ChevronLeft size={18} />
-                Sebelumnya
-              </Button>
-            )}
+            {/* Navigation Buttons */}
+            <div className="mt-8 flex items-center justify-end gap-4">
+              {currentStep === 1 ? (
+                <Button
+                  onClick={handleBackToDataPage}
+                  variant="custom"
+                  className="flex items-center gap-2 border border-[#007BFF] text-[#007BFF]"
+                >
+                  Back to Home Page
+                </Button>
+              ) : (
+                <Button
+                  onClick={handlePreviousStep}
+                  variant="outline"
+                  className="flex items-center gap-2"
+                >
+                  <ChevronLeft size={18} />
+                  Sebelumnya
+                </Button>
+              )}
 
-            {currentStep === totalSteps ? (
-              <Button
-                onClick={handleSubmit}
-                disabled={isLoading}
-                variant="primary"
-              >
-                {isLoading ? 'Menyimpan...' : 'Submit'}
-              </Button>
-            ) : (
-              <Button
-                onClick={handleNextStep}
-                disabled={isLoading}
-                variant="primary"
-                className="flex items-center gap-2"
-              >
-                Next <span>→</span>
-              </Button>
-            )}
-          </div>
+              {currentStep === totalSteps ? (
+                <Button
+                  onClick={handleSubmit}
+                  disabled={isLoading}
+                  variant="primary"
+                >
+                  {isLoading ? 'Menyimpan...' : 'Submit'}
+                </Button>
+              ) : (
+                <Button
+                  onClick={handleNextStep}
+                  disabled={isLoading}
+                  variant="primary"
+                  className="flex items-center gap-2"
+                >
+                  Next <span>→</span>
+                </Button>
+              )}
+            </div>
+          </form>
         </div>
       </div>
 

@@ -1,6 +1,5 @@
 import React from 'react';
-import Label from '../../../../components/form/Label';
-import FileInput from '../../../../components/form/input/FileInput';
+import FIleField from '../../../../components/shared/field/FIleField';
 import { useStep5Data } from '../../hooks/employee-data/form/useFromStep';
 
 export const Step05UploadDocument: React.FC = () => {
@@ -15,18 +14,19 @@ export const Step05UploadDocument: React.FC = () => {
     const existingFile = getFileForField(doc.id);
     return (
       <div key={doc.id} className="w-full">
-        <Label className="mb-2 block">
-          Upload {doc.document_name}
-          {doc.is_mandatory === 1 ? (
-             null
-          ) : (
-            <span className="text-gray-400 ml-1 font-normal text-sm">(opsional)</span>
-          )}
-        </Label>
         <div className="relative">
-          <FileInput 
-            multiple={false} 
-            onChange={(e) => handleFileChange(doc.id, e)} 
+          <FIleField
+            label={
+              <>
+                Upload {doc.document_name}
+                {/* {doc.is_mandatory === 1 ? null : (
+                  <span className="text-gray-400 ml-1 font-normal text-sm">(opsional)</span>
+                )} */}
+              </>
+            }
+            multiple={false}
+            // required={doc.is_mandatory === 1}
+            onChange={(e) => handleFileChange(doc.id, e)}
           />
           {existingFile && (
             <p className="text-xs text-green-600 mt-1 truncate">

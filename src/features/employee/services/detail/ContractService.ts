@@ -44,7 +44,7 @@ export interface CreateContractPayload {
   contract_status_id: string; // 1=active, 2=inactive, 3=probation, 4=resigned
   last_contract_signed_date: string; // YYYY-MM-DD
   end_date?: string; // YYYY-MM-DD
-  contract_type: string; // 1=PKWT, 2=PKWTT
+  contract_type_id: string; // 1=PKWT, 2=PKWTT
   contract_number: string;
   file_contract: File;
 }
@@ -146,6 +146,18 @@ class ContractService {
         headers: { 'Content-Type': 'multipart/form-data' },
       }
     );
+  }
+
+  // /api/employee-master-data/employees/contract-type-dropdown
+  /**
+   * Dropdown: Jenis Kontrak
+   * @param search - Optional search query untuk filter jenis kontrak
+   * @returns Promise dengan array jenis kontrak
+   */
+  async getContractTypeDropdown(search?: string): Promise<any[]> {
+    const qs = search ? `?search=${encodeURIComponent(search)}` : '';
+    const resp = await apiService.get<any[]>(`${this.basePath}/contract-type-dropdown${qs}`);
+    return (resp as any)?.data ?? [];
   }
 }
 

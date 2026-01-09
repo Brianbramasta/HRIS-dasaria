@@ -35,6 +35,7 @@ export type DatePickerProps = {
   // Dokumentasi: Sembunyikan input field (untuk penggunaan custom trigger atau popup-only)
   hideInput?: boolean;
   className?: string;
+  required?: boolean;
 };
 
 // Util: konversi ke string ISO yyyy-mm-dd
@@ -82,7 +83,7 @@ export default function DatePicker({
   onChange,
   label,
   defaultDate,
-  placeholder,
+  placeholder = "Pilih Tanggal",
   disabled,
   showActions = false,
   showEndDateToggle = false,
@@ -91,6 +92,7 @@ export default function DatePicker({
   anchorEl,
   hideInput = false,
   className,
+  required = false,
 }: DatePickerProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
@@ -141,7 +143,18 @@ export default function DatePicker({
 
   // Inisialisasi dari defaultDate
   useEffect(() => {
-    if (!defaultDate) return;
+    if (!defaultDate) {
+      setSingleDate("");
+      setMultipleDates(new Set());
+      setRangeStart("");
+      setRangeEnd("");
+      setCommittedSingle("");
+      setCommittedMultiple(new Set());
+      setCommittedRangeStart("");
+      setCommittedRangeEnd("");
+      // Reset time if needed, though usually not critical for date picker
+      return;
+    }
 
     // Logika parsing defaultDate tetap menggunakan struktur data untuk menebak/mengisi state
     // Kita gunakan 'mode' prop asli atau deteksi bentuk data untuk inisialisasi awal
@@ -509,6 +522,7 @@ export default function DatePicker({
                     }}
                     className="w-20 text-sm px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white text-center"
                     autoFocus
+                    required={required}
                   />
                 ) : (
                   <button
@@ -691,10 +705,18 @@ export default function DatePicker({
         <input
           id={id}
           ref={inputRef}
+          autoComplete="off"
           placeholder={placeholder}
           disabled={disabled}
-          readOnly
+          required={required}
           value={inputValue}
+          onChange={() => {}}
+          onKeyDown={(e) => {
+            if (e.key !== "Tab") e.preventDefault();
+          }}
+          onPaste={(e) => e.preventDefault()}
+          onDrop={(e) => e.preventDefault()}
+          inputMode="none"
           onClick={() => {
             if (!disabled) setIsOpen(true);
           }}
@@ -726,6 +748,7 @@ export default function DatePicker({
                       placeholder="Feb 22, 2025"
                       className="flex-1 text-sm px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white cursor-pointer w-full text-center"
                       onClick={() => activeMode === "range" && setSelectingStartDate(true)}
+                      required={required}
                     />
                   )}
                   {activeMode === "range" && (
@@ -736,6 +759,7 @@ export default function DatePicker({
                       placeholder="Feb 27, 2025"
                       className="flex-1 text-sm px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white cursor-pointer w-full text-center"
                       onClick={() => setSelectingStartDate(false)}
+                      required={required}
                     />
                   )}
                   {activeMode === "multiple" && (
@@ -745,6 +769,7 @@ export default function DatePicker({
                       readOnly
                       placeholder="Pilih tanggal"
                       className="flex-1 text-sm px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white cursor-default w-full text-center"
+                      required={required}
                     />
                   )}
                 </div>

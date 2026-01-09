@@ -1,7 +1,7 @@
 // Dokumentasi: Modal Edit Kompensasi
 // Tujuan: Menyediakan form edit dengan field Level Jabatan (Select), Kategori (Select),
 // Nominal General, Nominal Junior, Nominal Middle, Nominal Senior. Menggunakan wrapper ModalAddEdit.
-import React, { useMemo } from 'react';
+import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import Select from '@/components/form/Select';
@@ -33,7 +33,6 @@ const EditKompensasiModal: React.FC<Props> = ({ isOpen, initialData, onClose, on
       onClose,
       onSubmit,
     });
-  const title = useMemo(() => 'Edit Kompensasi', []);
 
   const content = (
     <div className="space-y-8">

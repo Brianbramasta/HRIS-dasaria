@@ -7,7 +7,7 @@ import Form from '../../../../../components/form/Form';
 import Input from '../../../../../components/form/input/InputField';
 import DatePicker from '../../../../../components/form/date-picker';
 import Select from '../../../../../components/form/Select';
-import FileInput from '../../../../../components/shared/field/FileInput';
+import FileInput from '../../../../../components/shared/form/FileInput';
 import { useCompanies } from '../../../../structure-and-organize/hooks/useCompanies';
 import { useDirectorates } from '../../../../structure-and-organize/hooks/useDirectorates';
 import { useDivisions } from '../../../../structure-and-organize/hooks/useDivisions';

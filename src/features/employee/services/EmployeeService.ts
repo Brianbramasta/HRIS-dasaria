@@ -1,5 +1,5 @@
 import apiService, { ApiResponse } from '../../../services/api';
-import { Karyawan, CreateKaryawanDto, UpdateKaryawanDto, KaryawanListResponse, KaryawanFilterParams } from '../types/Employee';
+import { Karyawan, CreateKaryawanDto, UpdateKaryawanDto, KaryawanListResponse } from '../types/Employee';
 
 // Detail response mengikuti shape dari endpoint /api/staff/:id/detail
 export interface KaryawanDetailResponse {
@@ -48,7 +48,7 @@ class KaryawanService {
   /**
    * Fetch semua data karyawan dengan optional filter dan pagination
    */
-  async getKaryawan(params?: KaryawanFilterParams): Promise<ApiResponse<KaryawanListResponse>> {
+  async getKaryawan(params?: any): Promise<ApiResponse<KaryawanListResponse>> {
     const queryParams = new URLSearchParams();
 
     if (params?.search) queryParams.append('search', params.search);

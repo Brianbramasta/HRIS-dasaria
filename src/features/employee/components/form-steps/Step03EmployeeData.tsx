@@ -1,8 +1,7 @@
 import React from 'react';
-import DatePicker from '../../../../components/form/date-picker';
-import Select from '../../../../components/form/Select';
-import Label from '../../../../components/form/Label';
-import InputField from '../../../../components/form/input/InputField';
+import DateField from '../../../../components/shared/field/DateField';
+import SelectField from '../../../../components/shared/field/SelectField';
+import InputField from '../../../../components/shared/field/InputField';
 import {  STATUS_PAYROLL_OPTIONS } from '../../utils/EmployeeMappings';
 import { useStep3Data } from '../../hooks/employee-data/form/useFromStep';
 
@@ -19,8 +18,8 @@ export const Step03EmployeeData: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-4">
             <div>
-              <Label>Kategori Karyawan</Label>
-              <Select
+              <SelectField
+                label="Kategori Karyawan"
                 options={kategoriKaryawanOptions}
                 defaultValue={step3.kategoriKaryawan}
                 onChange={(value) => {
@@ -40,11 +39,12 @@ export const Step03EmployeeData: React.FC = () => {
                   }
                 }}
                 placeholder="Select"
+                required
               />
             </div>
             <div>
-              <Label>Status Karyawan</Label>
-              <Select
+              <SelectField
+                label="Status Karyawan"
                 options={employeeStatusOptions.filter((status: any) => 
                   ['Aktif', 'Evaluasi'].includes(status.label)
                 )}
@@ -56,26 +56,28 @@ export const Step03EmployeeData: React.FC = () => {
               />
             </div>
             <div>
-              <Label htmlFor="tanggalMasuk">Tanggal Masuk</Label>
-              <DatePicker
+              <DateField
                 id="tanggalMasuk"
+                label="Tanggal Masuk"
                 placeholder="hh/bb/tttt"
                 defaultDate={step3.tanggalMasuk as any}
                 onChange={(...args) => handleChange('tanggalMasuk', args[1] as string)}
+                required
               />
             </div>
             <div>
-              <Label htmlFor="tanggalAkhir">Tanggal Akhir</Label>
-              <DatePicker
+              <DateField
                 id="tanggalAkhir"
+                label="Tanggal Akhir"
                 placeholder="hh/bb/tttt"
                 defaultDate={step3.tanggalAkhir as any}
                 onChange={(...args) => handleChange('tanggalAkhir', args[1] as string)}
+                required
               />
             </div>
             <div>
-              <Label>Perusahaan</Label>
-              <Select
+              <SelectField
+                label="Perusahaan"
                 options={companyOptions}
                 defaultValue={step3.company}
                 onChange={(value) => handleChange('company', value)}
@@ -84,18 +86,19 @@ export const Step03EmployeeData: React.FC = () => {
               />
             </div>
             <div>
-              <Label>Kantor</Label>
-              <Select
+              <SelectField
+                label="Kantor"
                 options={officeOptions.length > 0 ? officeOptions : [{ label: 'Pilih perusahaan terlebih dahulu', value: '' }]}
                 defaultValue={step3.kantor}
                 onChange={(value) => handleChange('kantor', value)}
                 placeholder="Select"
                 disabled={officeOptions.length === 0}
+                required
               />
             </div>
             <div>
-              <Label>Direktorat</Label>
-              <Select
+              <SelectField
+                label="Direktorat"
                 options={directorateOptions}
                 defaultValue={step3.direktorat}
                 onChange={(value) => handleChange('direktorat', value)}
@@ -105,42 +108,45 @@ export const Step03EmployeeData: React.FC = () => {
               />
             </div>
            
-            
+           
           </div>
 
           <div className="space-y-4">
              <div>
-              <Label>Divisi</Label>
-              <Select
+              <SelectField
+                label="Divisi"
                 options={divisionOptions.length > 0 ? divisionOptions : [{ label: 'Pilih direktorat terlebih dahulu', value: '' }]}
                 defaultValue={step3.divisi}
                 onChange={(value) => handleChange('divisi', value)}
                 disabled={divisionOptions.length === 0}
                 placeholder="Select"
+                required
               />
             </div>
             <div>
-              <Label>Departemen</Label>
-              <Select
+              <SelectField
+                label="Departemen"
                 options={departmentOptions.length > 0 ? departmentOptions : [{ label: 'Pilih divisi terlebih dahulu', value: '' }]}
                 defaultValue={step3.departemen}
                 onChange={(value) => handleChange('departemen', value)}
                 disabled={departmentOptions.length === 0}
                 placeholder="Select"
+                required
               />
             </div>
             <div>
-              <Label>Position</Label>
-              <Select
+              <SelectField
+                label="Position"
                 options={positionOptions}
                 defaultValue={step3.position}
                 onChange={(value) => handleChange('position', value)}
                 placeholder="Select"
+                required  
               />
             </div>
             <div>
-              <Label>Jabatan</Label>
-              <Select
+              <SelectField
+                label="Jabatan"
                 options={jobTitleOptions}
                 defaultValue={step3.jabatan}
                 onChange={(value) => handleChange('jabatan', value)}
@@ -149,8 +155,8 @@ export const Step03EmployeeData: React.FC = () => {
               />
             </div>
             <div>
-              <Label>Jenjang Jabatan</Label>
-              <Select
+              <SelectField
+                label="Jenjang Jabatan"
                 options={positionLevelOptions}
                 defaultValue={step3.jenjangJabatan}
                 onChange={(value) => handleChange('jenjangJabatan', value)}
@@ -159,13 +165,14 @@ export const Step03EmployeeData: React.FC = () => {
               />
             </div>
             <div>
-              <Label>Golongan</Label>
               <InputField
+                label="Golongan"
                 type="text"
                 value={selectedGrade || step3.golongan}
                 placeholder="Otomatis dari Jabatan"
                 disabled
                 onChange={() => {}}
+                required
               />
             </div>
             {/* <div>
@@ -178,12 +185,13 @@ export const Step03EmployeeData: React.FC = () => {
               />
             </div> */}
             <div>
-              <Label>Status PayRoll</Label>
-              <Select
+              <SelectField
+                label="Status PayRoll"
                 options={STATUS_PAYROLL_OPTIONS}
                 defaultValue={step3.statusPayroll}
                 onChange={(value) => handleChange('statusPayroll', value)}
                 placeholder="Select"
+                required
               />
             </div>
             

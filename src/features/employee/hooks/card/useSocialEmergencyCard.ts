@@ -31,6 +31,7 @@ export default function useSocialEmergencyCard(personalInformation: any[]) {
 
   const handleSubmit = async (payload: any) => {
     if (!employeeId) return;
+
     await updateSocialMediaData(employeeId, payload as any);
     closeModal();
   };

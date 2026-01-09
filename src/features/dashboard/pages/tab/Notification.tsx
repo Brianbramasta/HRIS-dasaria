@@ -77,9 +77,9 @@ export default function Notification() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-start md:items-center justify-between flex-col md:flex-row ">
         <h3 className="text-gray-900 dark:text-white text-theme-xl font-semibold">Notifikasi</h3>
-        <div className="w-56 relative z-50">
+        <div className="w-full md:w-56 relative z-50 mt-4 md:mt-0">
           {/* DatePicker range dengan tombol aksi; defaultDate diisi dari state agar nilai tampil di input */}
           <DatePicker
             id="filter-date"

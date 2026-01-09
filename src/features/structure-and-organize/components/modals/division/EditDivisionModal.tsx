@@ -1,10 +1,10 @@
 import React from 'react';
 import type { DivisionListItem } from '../../../types/OrganizationApiTypes';
-import FileInput from '../../../../../components/shared/field/FileInput';
+import FileInput from '../../../../../components/shared/form/FileInput';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
-import Input from '@/components/form/input/InputField';
-import TextArea from '@/components/form/input/TextArea';
-import Select from '@/components/form/Select';
+import InputField from '@/components/shared/field/InputField';
+import TextAreaField from '@/components/shared/field/TextAreaField';
+import SelectField from '@/components/shared/field/SelectField';
 import { useEditDivisionModal } from '../../../hooks/modals/division/useEditDivisionModal';
 
 interface EditDivisionModalProps {
@@ -40,60 +40,49 @@ const EditDivisionModal: React.FC<EditDivisionModalProps> = ({ isOpen, onClose, 
       title="Update Divisi"
       content={
         <>
-          <div className="space-y-2">
-          <label className="text-sm font-medium">Nama Divisi</label>
-          <Input
+          <InputField
             required
+            label="Nama Divisi"
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+            containerClassName="mb-2"
           />
-        </div>
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Direktorat</label>
-       
-          <Select
+          <SelectField
             required
+            label="Direktorat"
             options={directorates.map((d) => ({ value: d.id, label: d.directorate_name }))}
             placeholder="Pilih Direktorat"
             onChange={(v) => setDirectorateId(v)}
             defaultValue={directorateId}
-            className=""
+            containerClassName="mb-2"
           />
-        </div>
 
-          <div className="space-y-2">
-          <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
-          <Input
+          <InputField
             required
+            label="No. Surat Keputusan / Memo Internal"
             type="text"
             value={memoNumber}
             onChange={(e) => setMemoNumber(e.target.value)}
-            className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+            containerClassName="mb-2"
           />
-        </div>
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Deskripsi Umum</label>
-          
-          <TextArea
+          <TextAreaField
             required
+            label="Deskripsi Umum"
             value={description}
             onChange={(value) => setDescription(value)}
-            className="w-full rounded-xl border border-gray-300 px-4 py-3 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary"
+            className="min-h-[100px]"
+            containerClassName="mb-2"
           />
-          
-        </div>
 
-      
+          <FileInput skFileName={skFileName} onChange={handleFileChange} required />
 
-        <FileInput skFileName={skFileName} onChange={handleFileChange} />
+        </>
+      }
+    />
 
-        </>}
-        />
-    
   );
 };
 

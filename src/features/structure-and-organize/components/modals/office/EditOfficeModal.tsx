@@ -1,13 +1,11 @@
 import React from 'react';
 import type { OfficeListItem } from '../../../types/OrganizationApiTypes';
-import FileInput from '../../../../../components/shared/field/FileInput';
+import FileInput from '../../../../../components/shared/form/FileInput';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
-import Input from '@/components/form/input/InputField';
-import TextArea from '@/components/form/input/TextArea';
-import MultiSelect from '@/components/form/MultiSelect';
+import InputField from '@/components/shared/field/InputField';
+import TextAreaField from '@/components/shared/field/TextAreaField';
+import MultiSelectField from '@/components/shared/field/MultiSelectField';
 import { useEditOfficeModal } from '../../../hooks/modals/office/useEditOfficeModal';
-
-
 
 interface EditOfficeModalProps {
   isOpen: boolean;
@@ -40,48 +38,49 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
       onClose={onClose}
       content={
         <>
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Nama Office</label>
-          <Input
+          <InputField
+            label="Nama Office"
             required
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+            containerClassName="space-y-2"
           />
-        </div>
 
-        <MultiSelect
-          label="Perusahaan"
-          options={companyOptions}
-          defaultSelected={companyIds}
-          onChange={setCompanyIds}
-        />
+          <MultiSelectField
+            label="Perusahaan"
+            options={companyOptions}
+            defaultSelected={companyIds}
+            onChange={setCompanyIds}
+            required
+            containerClassName="space-y-2"
+          />
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
-          <Input
+          <InputField
+            label="No. Surat Keputusan / Memo Internal"
             required
             type="text"
             value={memoNumber}
             onChange={(e) => setMemoNumber(e.target.value)}
             className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+            containerClassName="space-y-2"
           />
-        </div>
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Deskripsi Umum</label>
-         
-          <TextArea
+          <TextAreaField
+            label="Deskripsi Umum"
             required
             value={description}
             onChange={(e) => setDescription(e)}
             className="w-full rounded-xl border border-gray-300 px-4 py-3 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary"
+            containerClassName="space-y-2"
           />
-        </div>
         
-        <FileInput skFileName={skFile?.name || office?.skFile?.fileName || ''} onChange={handleFileChange} />
-
+          <FileInput 
+            skFileName={skFile?.name || office?.skFile?.fileName || ''} 
+            onChange={handleFileChange} 
+            required
+          />
         </>
       }
       handleSubmit={handleSubmit}

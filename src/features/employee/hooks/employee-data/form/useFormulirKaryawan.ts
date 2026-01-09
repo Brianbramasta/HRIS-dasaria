@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFormulirKaryawanStore } from '../../../stores/useFormulirKaryawanStore';
 import useCreateEmployee from './useCreateEmployee';
@@ -67,6 +67,7 @@ export interface UseFormulirKaryawanReturn {
   error: string | null;
   totalSteps: number;
   isAuthenticated: boolean;
+  formRef: React.RefObject<HTMLFormElement | null>;
   
   // Modal states
   showSuccessModal: boolean;
@@ -85,6 +86,7 @@ export interface UseFormulirKaryawanReturn {
 
 export const useFormulirKaryawan = (): UseFormulirKaryawanReturn => {
   const navigate = useNavigate();
+  const formRef = useRef<HTMLFormElement | null>(null);
   const {
     currentStep,
     formData,
@@ -104,11 +106,18 @@ export const useFormulirKaryawan = (): UseFormulirKaryawanReturn => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const { submit } = useCreateEmployee();
 
+  const validateRequiredFields = useCallback(() => {
+    const form = formRef.current;
+    if (!form) return true;
+    return form.reportValidity();
+  }, []);
+
   const handleNextStep = useCallback(() => {
+    if (!validateRequiredFields()) return;
     if (goToNextStep()) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [goToNextStep]);
+  }, [goToNextStep, validateRequiredFields]);
 
   const handlePreviousStep = useCallback(() => {
     goToPreviousStep();
@@ -117,6 +126,7 @@ export const useFormulirKaryawan = (): UseFormulirKaryawanReturn => {
 
   // handleSubmit: bangun FormData via hook dan submit ke API employees
   const handleSubmit = useCallback(async () => {
+    if (!validateRequiredFields()) return;
     try {
       setLoading(true);
       setError(null);
@@ -177,7 +187,7 @@ export const useFormulirKaryawan = (): UseFormulirKaryawanReturn => {
     } finally {
       setLoading(false);
     }
-  }, [setLoading, setError, submit, clearLocalStorage, isAuthenticated, navigate]);
+  }, [setLoading, setError, submit, clearLocalStorage, isAuthenticated, navigate, validateRequiredFields]);
 
   const handleBackToHome = useCallback(() => {
     resetForm();
@@ -209,6 +219,7 @@ export const useFormulirKaryawan = (): UseFormulirKaryawanReturn => {
     error,
     totalSteps,
     isAuthenticated,
+    formRef,
     
     // Modal states
     showSuccessModal,

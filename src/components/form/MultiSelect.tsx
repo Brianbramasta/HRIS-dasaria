@@ -1,5 +1,5 @@
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 interface Option {
   value: string;
@@ -7,12 +7,13 @@ interface Option {
 }
 
 interface MultiSelectProps {
-  label: string;
+  label?: string;
   options: Option[];
   defaultSelected?: string[];
   onChange?: (selected: string[]) => void;
   disabled?: boolean;
   onSearch?: (query: string) => void;
+  required?: boolean;
 }
 
 const MultiSelect: React.FC<MultiSelectProps> = ({
@@ -22,12 +23,27 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   onChange,
   disabled = false,
   onSearch,
+  required = false,
 }) => {
   const [selectedOptions, setSelectedOptions] =
     useState<string[]>(defaultSelected);
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [labelMap, setLabelMap] = useState<Record<string, string>>({});
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     setSelectedOptions(defaultSelected);
@@ -87,11 +103,13 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
 
   return (
     <div className="w-full">
-      <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-        {label}
-      </label>
+      {label && (
+        <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+          {label}
+        </label>
+      )}
 
-      <div className="relative z-20 inline-block w-full">
+      <div ref={dropdownRef} className="relative z-20 inline-block w-full">
         <div className="relative flex flex-col items-center">
           <div onClick={toggleDropdown} className="w-full">
             <div className="mb-2 flex h-auto min-h-11 rounded-lg border border-gray-300 py-1.5 pl-3 pr-3 shadow-theme-xs outline-hidden transition focus:border-brand-300 focus:shadow-focus-ring dark:border-gray-700 dark:bg-gray-900 dark:focus:border-brand-300">
@@ -132,9 +150,11 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
                 ) : (
                   <input
                     placeholder="Select option"
-                    className="w-full h-full p-1 pr-2 text-sm bg-transparent border-0 outline-hidden appearance-none placeholder:text-gray-800 focus:border-0 focus:outline-hidden focus:ring-0 dark:placeholder:text-white/90"
-                    readOnly
-                    value="Select option"
+                    className="w-full h-full p-1 pr-2 text-sm bg-transparent border-0 outline-hidden appearance-none placeholder:text-gray-800 focus:border-0 focus:outline-hidden focus:ring-0 dark:placeholder:text-white/90 cursor-pointer"
+                    value=""
+                    required={required}
+                    onKeyDown={(e) => e.preventDefault()}
+                    onChange={() => {}}
                   />
                 )}
               </div>

@@ -17,6 +17,7 @@ const DetailContractModal: React.FC<DetailContractModalProps> = ({
     form,
     optionsContractStatus,
     optionsContractEndStatus,
+    optionsJenisKontrak,
     isLoadingDropdowns,
     handleInput,
     handleDateChange,
@@ -37,6 +38,7 @@ const DetailContractModal: React.FC<DetailContractModalProps> = ({
       isReadonly={true}
       optionsContractStatus={optionsContractStatus}
       optionsContractEndStatus={optionsContractEndStatus}
+      optionsJenisKontrak={optionsJenisKontrak}
       onInputChange={handleInput}
       onDateChange={handleDateChange}
       showStatusBerakhir={true}

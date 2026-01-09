@@ -43,7 +43,7 @@ export default function DirectoratesTab({ resetKey }: Props) {
   return (
     <>
     <DataTable
-      title="Direktorat2"
+      title="Direktorat"
       data={rows}
       columns={directorateColumns}
       actions={actionsIconOnly}

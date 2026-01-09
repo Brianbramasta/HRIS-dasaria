@@ -56,12 +56,12 @@ export default function ContractTab({ employeeId: employeeIdProp, data }: Props)
   return (
     <>
       <ComponentCard title="Kontrak">
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-5">
+        <div className="grid grid-cols-1 gap-0 md:gap-6 md:grid-cols-5">
           {/* Left PDF Preview */}
-          <div className="col-span-1 flex flex-col">
+          <div className="col-span-1 flex flex-col mb-6 md:mb-0">
             <PdfPreviewEmbed 
               fileUrl={summary?.file_contract ? formatUrlFile(summary?.file_contract as string) : undefined}
-              className="w-full h-full"
+              className="w-full md:h-full min-h-[300px] md:min-h-max"
             />
             <div className="mt-3 w-full flex justify-center">
               <Button variant="primary" onClick={() => window.open(formatUrlFile(summary?.file_contract as string), '_blank')} disabled={summary?.file_contract === null || summary?.file_contract === undefined}>Pratinjau PDF</Button>
@@ -75,7 +75,7 @@ export default function ContractTab({ employeeId: employeeIdProp, data }: Props)
             <SummaryItem label="Tanggal Berakhir Kontrak">{formatDateToIndonesian(summary?.end_date)}</SummaryItem>
             <SummaryItem label="Lama Bekerja">{summary?.lamaBekerja}</SummaryItem>
             <SummaryItem label="Sisa Kontrak">{contractData?.summary?.sisa_kontrak || '-'}</SummaryItem>
-            <SummaryItem label="Jenis Kontrak">{summary?.contract_type}</SummaryItem>
+            <SummaryItem label="Jenis Kontrak">{summary?.contract_type_name}</SummaryItem>
             <SummaryItem label="Kontrak ke">{summary?.contract_number}</SummaryItem>
             <SummaryItem label="Status Berakhir">{summary?.contract_end_status_name || '-'}</SummaryItem>
           </div>

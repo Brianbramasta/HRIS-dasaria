@@ -103,6 +103,33 @@ export function usePersonalDataModal({ isOpen, initialData, onSubmit }: Params) 
   };
 
   const handleSubmit = () => {
+    const requiredKeys: Array<keyof PersonalDataForm> = [
+      'namaLengkap',
+      'email',
+      'nik',
+      'tempatLahir',
+      'tanggalLahir',
+      'jenisKelamin',
+      'golDarah',
+      'pendidikanTerakhir',
+      'statusMenikah',
+      'nomorTelepon',
+      'jumlahTanggungan',
+      'alamatDomisili',
+      'alamatKtp',
+      'agama',
+      'fotoProfil',
+    ];
+    const isValid = requiredKeys.every((k) => {
+      const v = form[k] as any;
+      if (k === 'fotoProfil') return v !== null && v !== undefined;
+      if (typeof v === 'string') return v.trim() !== '';
+      return v !== null && v !== undefined;
+    });
+    if (!isValid) {
+      alert('Semua form wajib diisi.');
+      return;
+    }
     const payload = mapFormToPayload();
     onSubmit(payload as any);
   };
