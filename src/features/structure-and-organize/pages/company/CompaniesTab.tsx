@@ -9,7 +9,7 @@ import type { CompanyListItem } from '../../types/OrganizationApiTypes';
 import AddCompanyModal from '../../components/modals/company/AddCompanyModal';
 import EditCompanyModal from '../../components/modals/company/EditCompanyModal';
 import DeleteCompanyModal from '../../components/modals/company/DeleteCompanyModal';
-import { addNotification } from '@/stores/notificationStore';
+// import { addNotification } from '@/stores/notificationStore';
 import { FileText } from '@/icons/components/icons';
 import { useFileStore } from '@/stores/fileStore';
 
@@ -110,12 +110,12 @@ export default function CompaniesTab({ resetKey }: Props) {
       isOpen={isAddOpen}
       onClose={() => { setAddOpen(false); fileStore.clearSkFile(); }} 
       onSuccess={() => {fetchCompanies();
-        addNotification({
-          description: 'Perusahaan berhasil ditambahkan',
-          variant: 'success',
-          hideDuration: 4000,
-          title: 'Perusahaan ditambahkan',
-        });
+        // addNotification({
+        //   description: 'Perusahaan berhasil ditambahkan',
+        //   variant: 'success',
+        //   hideDuration: 4000,
+        //   title: 'Perusahaan ditambahkan',
+        // });
       }}
     />
     <EditCompanyModal
@@ -123,12 +123,12 @@ export default function CompaniesTab({ resetKey }: Props) {
       onClose={() => { setEditOpen(false); setSelectedCompany(null); fileStore.clearSkFile(); }}
       company={selectedCompany}
       onSuccess={() => {fetchCompanies();
-        addNotification({
-          description: 'Perusahaan berhasil diubah',
-          variant: 'success',
-          hideDuration: 4000,
-          title: 'Perusahaan diubah',
-        });
+        // addNotification({
+        //   description: 'Perusahaan berhasil diubah',
+        //   variant: 'success',
+        //   hideDuration: 4000,
+        //   title: 'Perusahaan diubah',
+        // });
       }}
     />
     <DeleteCompanyModal
@@ -136,12 +136,12 @@ export default function CompaniesTab({ resetKey }: Props) {
       onClose={() => { setDeleteOpen(false); setSelectedCompany(null); }}
       company={selectedCompany || undefined}
       onSuccess={() => {fetchCompanies();
-        addNotification({
-          description: 'Perusahaan berhasil dihapus',
-          variant: 'success',
-          hideDuration: 4000,
-          title: 'Perusahaan dihapus',
-        });
+        // addNotification({
+        //   description: 'Perusahaan berhasil dihapus',
+        //   variant: 'success',
+        //   hideDuration: 4000,
+        //   title: 'Perusahaan dihapus',
+        // });
       }}
     />
     </div>

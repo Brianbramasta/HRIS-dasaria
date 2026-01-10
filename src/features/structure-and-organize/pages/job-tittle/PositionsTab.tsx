@@ -118,12 +118,12 @@ export default function PositionsTab({ resetKey }: Props) {
         onSuccess={() => {
           fetchPositions();
           addModal.closeModal();
-          addNotification({
-            description: 'Jabatan berhasil ditambahkan',
-            variant: 'success',
-            hideDuration: 4000,
-            title: 'Jabatan ditambahkan',
-          });
+          // addNotification({
+          //   description: 'Jabatan berhasil ditambahkan',
+          //   variant: 'success',
+          //   hideDuration: 4000,
+          //   title: 'Jabatan ditambahkan',
+          // });
         }}
       />
       <EditPositionModal
@@ -132,12 +132,12 @@ export default function PositionsTab({ resetKey }: Props) {
         onSuccess={() => {
           fetchPositions();
           editModal.closeModal();
-          addNotification({
-            description: 'Jabatan berhasil diupdate',
-            variant: 'success',
-            hideDuration: 4000,
-            title: 'Jabatan diupdate',
-          });
+          // addNotification({
+          //   description: 'Jabatan berhasil diupdate',
+          //   variant: 'success',
+          //   hideDuration: 4000,
+          //   title: 'Jabatan diupdate',
+          // });
         }}
         position={selected}
       />
@@ -147,12 +147,12 @@ export default function PositionsTab({ resetKey }: Props) {
         onSuccess={() => {
           fetchPositions();
           deleteModal.closeModal();
-          addNotification({
-            description: 'Jabatan berhasil dihapus',
-            variant: 'success',
-            hideDuration: 4000,
-            title: 'Jabatan dihapus',
-          });
+          // addNotification({
+          //   description: 'Jabatan berhasil dihapus',
+          //   variant: 'success',
+          //   hideDuration: 4000,
+          //   title: 'Jabatan dihapus',
+          // });
         }}
         position={selected}
       />

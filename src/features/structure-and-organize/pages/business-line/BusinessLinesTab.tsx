@@ -9,7 +9,7 @@ import {
 import AddBusinessLineModal from '../../components/modals/business-line/AddBusinessLineModal';
 import EditBusinessLineModal from '../../components/modals/business-line/EditBusinessLineModal';
 import DeleteBusinessLineModal from '../../components/modals/business-line/DeleteBusinessLineModal';
-import { addNotification } from '../../../../stores/notificationStore';
+// import { addNotification } from '../../../../stores/notificationStore';
 
 import type { BLRow } from '../../types/OrganizationTableTypes';
 import type { BusinessLineListItem } from '../../types/OrganizationApiTypes';
@@ -117,12 +117,12 @@ export default function BusinessLinesTab({ resetKey }: Props) {
         onClose={() => { setIsAddOpen(false); fileStore.clearSkFile(); }}
         onSuccess={() => {
           fetchBusinessLines();
-          addNotification({
-            variant: 'success',
-            title: 'Lini Bisnis ditambahkan',
-            description: 'Berhasil menambahkan lini bisnis',
-            hideDuration: 4000,
-          });
+          // addNotification({
+          //   variant: 'success',
+          //   title: 'Lini Bisnis ditambahkan',
+          //   description: 'Berhasil menambahkan lini bisnis',
+          //   hideDuration: 4000,
+          // });
         }}
       />
       <EditBusinessLineModal
@@ -134,12 +134,12 @@ export default function BusinessLinesTab({ resetKey }: Props) {
         businessLine={selectedBusinessLine}
         onSuccess={() => {
           fetchBusinessLines();
-          addNotification({
-            variant: 'success',
-            title: 'Lini Bisnis diubah',
-            description: 'Berhasil mengubah lini bisnis',
-            hideDuration: 4000,
-          });
+          // addNotification({
+          //   variant: 'success',
+          //   title: 'Lini Bisnis diubah',
+          //   description: 'Berhasil mengubah lini bisnis',
+          //   hideDuration: 4000,
+          // });
         }}
       />
       <DeleteBusinessLineModal
@@ -148,12 +148,12 @@ export default function BusinessLinesTab({ resetKey }: Props) {
         businessLine={selectedIndex !== null ? (businessLines?.[selectedIndex] as any) : null}
         onSuccess={() => {
           fetchBusinessLines();
-          addNotification({
-            variant: 'success',
-            title: 'Lini Bisnis dihapus',
-            description: 'Berhasil menghapus lini bisnis',
-            hideDuration: 4000,
-          });
+          // addNotification({
+          //   variant: 'success',
+          //   title: 'Lini Bisnis dihapus',
+          //   description: 'Berhasil menghapus lini bisnis',
+          //   hideDuration: 4000,
+          // });
         }}
       />
 

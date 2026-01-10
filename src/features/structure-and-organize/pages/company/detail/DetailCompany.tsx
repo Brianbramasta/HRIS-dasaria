@@ -12,7 +12,7 @@ import Button from '@/components/ui/button/Button';
 // import { TrashBinIcon } from '@/icons/index';
 // DOK: Hapus import ikon tidak terpakai 'TrashBinIcon'
 // Alasan: ikon ini tidak digunakan (baris pemakaian sedang dikomentari)
-import { addNotification } from '@/stores/notificationStore';
+// import { addNotification } from '@/stores/notificationStore';
 import { IconPencil, IconHapus, IconPlus, IconFileDetail } from '@/icons/components/icons';
 // import { TrashBinIcon as TrashIcon, PencilIcon as EditIcon, EyeIcon } from '@/icons/index';
 import DocumentsTable from '../../../components/table/TableGlobal';
@@ -259,53 +259,53 @@ const DetailPerusahaan: React.FC = () => {
       </div>
 
       <AddBranchModal isOpen={isAddBranchOpen} onClose={() => setAddBranchOpen(false)} companyId={id || ''} onSuccess={() => {fetch();
-        addNotification({
-          description: 'Branch berhasil ditambahkan',
-          variant: 'success',
-          hideDuration: 4000,
-          title: 'Branch ditambahkan',
-        });
+        // addNotification({
+        //   description: 'Branch berhasil ditambahkan',
+        //   variant: 'success',
+        //   hideDuration: 4000,
+        //   title: 'Branch ditambahkan',
+        // });
       }} />
 
       <DeleteBranchModal isOpen={isDeleteBranchOpen} onClose={() => setDeleteBranchOpen(false)} branch={selectedBranch} onSuccess={() => {fetch();
-        addNotification({
-          description: 'Branch berhasil dihapus',
-          variant: 'success',
-          hideDuration: 4000,
-          title: 'Branch dihapus',
-        });
+        // addNotification({
+        //   description: 'Branch berhasil dihapus',
+        //   variant: 'success',
+        //   hideDuration: 4000,
+        //   title: 'Branch dihapus',
+        // });
       }} />
       <AddDocumentModal isOpen={isAddDocOpen} onClose={() => {setAddDocOpen(false); file.clearSkFile()}} companyId={id || ''} onSuccess={() => {fetch();
-        addNotification({
-          description: 'Dokumen berhasil ditambahkan',
-          variant: 'success',
-          hideDuration: 4000,
-          title: 'Dokumen ditambahkan',
-        });
+        // addNotification({
+        //   description: 'Dokumen berhasil ditambahkan',
+        //   variant: 'success',
+        //   hideDuration: 4000,
+        //   title: 'Dokumen ditambahkan',
+        // });
       }} />
       <DeleteDocumentModal companyId={id || ''} isOpen={isDeleteDocOpen} onClose={() => {setDeleteDocOpen(false); file.clearSkFile()}} document={selectedDoc} onSuccess={() => {fetch();
-        addNotification({
-          description: 'Dokumen berhasil dihapus',
-          variant: 'success',
-          hideDuration: 4000,
-          title: 'Dokumen dihapus',
-        });
+        // addNotification({
+        //   description: 'Dokumen berhasil dihapus',
+        //   variant: 'success',
+        //   hideDuration: 4000,
+        //   title: 'Dokumen dihapus',
+        // });
       }} />
       <EditDocumentModal isOpen={isEditDocOpen} onClose={() => setEditDocOpen(false)} companyId={id || ''} companyName={company?.name || ''} document={selectedDoc} onSuccess={() => {fetch();
-        addNotification({
-          description: 'Dokumen berhasil diupdate',
-          variant: 'success',
-          hideDuration: 4000,
-          title: 'Dokumen diupdate',
-        });
+        // addNotification({
+        //   description: 'Dokumen berhasil diupdate',
+        //   variant: 'success',
+        //   hideDuration: 4000,
+        //   title: 'Dokumen diupdate',
+        // });
       }} />
       <EditDetailCompany isOpen={isEditOpen} onClose={() => setEditOpen(false)} company={company} onSuccess={() => {fetch();
-        addNotification({
-          description: 'Perusahaan berhasil diupdate',
-          variant: 'success',
-          hideDuration: 4000,
-          title: 'Perusahaan diupdate',
-        });
+        // addNotification({
+        //   description: 'Perusahaan berhasil diupdate',
+        //   variant: 'success',
+        //   hideDuration: 4000,
+        //   title: 'Perusahaan diupdate',
+        // });
       }} />
     </div>
   );
