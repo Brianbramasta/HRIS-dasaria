@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { addNotification } from '@/stores/notificationStore';
-import { fraudService, type ViolationItem, type CreateViolationPayload, type UpdateViolationPayload, type ViolationListItemRaw, type ViolationDetailRaw, type ViolationListParams } from '../../../../services/detail/FraudService';
+import fraudService from '../../../../services/detail/FraudService';
+import {  type ViolationItem, type CreateViolationPayload, type UpdateViolationPayload, type ViolationListItemRaw, type ViolationDetailRaw, type ViolationListParams } from '@/features/employee/types/dto/FraudType';
 
 export interface UseFraudContractOptions {
   employeeId: string;
