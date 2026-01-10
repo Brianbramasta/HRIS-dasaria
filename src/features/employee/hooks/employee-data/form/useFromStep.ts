@@ -250,6 +250,7 @@ export const useStep3Data = (isOpen?: boolean) => {
 
   // divisions when directorate changes
   useEffect(() => {
+    if (isOpen === false) return;
     const fetchDivisions = async () => {
       if (!step3?.direktorat) {
         setDivisionOptions([]);
@@ -264,10 +265,11 @@ export const useStep3Data = (isOpen?: boolean) => {
       }
     };
     fetchDivisions();
-  }, [step3?.direktorat]);
+  }, [step3?.direktorat, isOpen]);
 
   // departments when division changes
   useEffect(() => {
+    if (isOpen === false) return;
     const fetchDepartments = async () => {
       if (!step3?.divisi) { setDepartmentOptions([]); return; }
       try {
@@ -276,10 +278,11 @@ export const useStep3Data = (isOpen?: boolean) => {
       } catch (error) { console.error('Error fetching departments:', error); setDepartmentOptions([]); }
     };
     fetchDepartments();
-  }, [step3?.divisi]);
+  }, [step3?.divisi, isOpen]);
 
   // offices when company changes
   useEffect(() => {
+    if (isOpen === false) return;
     const fetchOffices = async () => {
       if (!step3?.company) { setOfficeOptions([]); return; }
       try {
@@ -288,7 +291,7 @@ export const useStep3Data = (isOpen?: boolean) => {
       } catch (error) { console.error('Error fetching offices:', error); setOfficeOptions([]); }
     };
     fetchOffices();
-  }, [step3?.company]);
+  }, [step3?.company, isOpen]);
 
   return {
     step3,
