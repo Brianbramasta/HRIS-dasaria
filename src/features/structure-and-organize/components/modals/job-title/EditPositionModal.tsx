@@ -49,7 +49,6 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
         onChange={(e) => setGrade(e.target.value)}
       />
       <InputField
-        required
         label="Bawahan Langsung"
         id="directSubordinates"
         placeholder="Manager, dll"

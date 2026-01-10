@@ -57,7 +57,6 @@ export const AddPositionModal = ({ isOpen, onClose, onSuccess }: Props) => {
             onChange={(e) => setGrade(e.target.value)}
           />
           <InputField
-            required
             label="Bawahan Langsung"
             id="directSubordinates"
             placeholder="Manager, dll"
