@@ -36,6 +36,19 @@ export const handleApiError = (err: unknown /*, opts?: HandleApiErrorOptions*/):
       }
     }
 
+    // Handle ApiError structure directly (rejected from interceptor)
+    if (anyErr.meta?.message) {
+      messages.push(String(anyErr.meta.message));
+    }
+
+    if (anyErr.errors && typeof anyErr.errors === 'object') {
+      for (const key of Object.keys(anyErr.errors)) {
+        const v = anyErr.errors[key];
+        if (Array.isArray(v)) messages.push(...v.map(String));
+        else if (typeof v === 'string') messages.push(v);
+      }
+    }
+
     // Some APIs return { message: '...' }
     if (anyErr.message && typeof anyErr.message === 'string') messages.push(anyErr.message);
 

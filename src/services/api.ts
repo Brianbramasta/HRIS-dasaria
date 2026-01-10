@@ -2,23 +2,21 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { startLoading, stopLoading } from '../stores/loadingStore';
 import handleApiError from '../utils/errorHandle';
 
+export interface Meta {
+  status: number;
+  message: string;
+}
+
 // Interface untuk response API
 export interface ApiResponse<T = any> {
-  success: boolean;
-  message: string;
+  meta: Meta;
   data: T;
-  meta: {
-    status: number;
-    message: string;
-  };
-  statusCode?: number;
 }
 
 // Interface untuk error response
 export interface ApiError {
-  success: false;
-  message: string;
-  statusCode?: number;
+  meta: Meta;
+  data: null;
   errors?: Record<string, string[]>;
 }
 
@@ -108,14 +106,21 @@ class ApiService {
         }
 
         // Format error response (kept for upstream handling)
-        const formattedError: ApiError = {
-          success: false,
-          message: error.response?.data?.message || 'Terjadi kesalahan',
-          statusCode: error.response?.status,
-          errors: error.response?.data?.errors,
+        const errorData = error.response?.data as ApiError | undefined;
+
+        if (errorData && errorData.meta) {
+          return Promise.reject(errorData);
+        }
+
+        const fallbackError: ApiError = {
+          meta: {
+            status: error.response?.status || 500,
+            message: error.message || 'Terjadi kesalahan',
+          },
+          data: null,
         };
 
-        return Promise.reject(formattedError);
+        return Promise.reject(fallbackError);
       }
     );
   }

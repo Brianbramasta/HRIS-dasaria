@@ -29,7 +29,7 @@ export const useForgotPassword = () => {
 
       const response = await authService.forgotPassword(data);
 
-      setSuccessMessage(response.message || 'Password reset instructions have been sent to your email address.');
+      setSuccessMessage(response.meta?.message || 'Password reset instructions have been sent to your email address.');
 
       setTimeout(() => {
         navigate('/signin');
@@ -38,10 +38,10 @@ export const useForgotPassword = () => {
       const apiError = err as ApiError;
       console.error('Forgot password error:', apiError);
 
-      if (apiError.statusCode === 404) {
+      if (apiError.meta?.status === 404) {
         setError('Email address not found. Please check your email and try again.');
-      } else if (apiError.message) {
-        setError(apiError.message);
+      } else if (apiError.meta?.message) {
+        setError(apiError.meta.message);
       } else {
         setError('An error occurred while sending reset instructions. Please try again.');
       }

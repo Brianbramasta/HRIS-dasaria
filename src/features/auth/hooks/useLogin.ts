@@ -57,14 +57,14 @@ export const useLogin = () => {
       const apiError = err as ApiError;
       console.error('Login error:', apiError);
 
-      if (apiError.statusCode === 401) {
+      if (apiError.meta?.status === 401) {
         setError('Invalid email or password. Please try again.');
-      } else if (apiError.statusCode === 403) {
+      } else if (apiError.meta?.status === 403) {
         setError('Your account is not verified. Please check your email.');
-      } else if (apiError.statusCode === 404) {
+      } else if (apiError.meta?.status === 404) {
         setError('User not found. Please check your email.');
-      } else if (apiError.message) {
-        setError(apiError.message);
+      } else if (apiError.meta?.message) {
+        setError(apiError.meta.message);
       } else {
         setError('An error occurred during login. Please try again.');
       }

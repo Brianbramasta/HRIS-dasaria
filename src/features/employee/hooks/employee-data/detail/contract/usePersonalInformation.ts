@@ -445,7 +445,7 @@ export const usePersonalInformation = (employeeId?: string): UsePersonalInformat
           const mappedData = mapPersonalInformation(response.data);
           setData(mappedData);
         } else {
-          setError(response.message || 'Failed to fetch personal information');
+          setError(response.meta?.message || 'Failed to fetch personal information');
         }
       } catch (err: any) {
         const errorMessage = err?.message || 'An error occurred while fetching personal information';
@@ -482,7 +482,7 @@ export const usePersonalInformation = (employeeId?: string): UsePersonalInformat
         //     personal: updatedPersonal,
         //   });
         } else {
-          setError(response.message || 'Failed to update personal data');
+          setError(response.meta?.message || 'Failed to update personal data');
         }
       } catch (err: any) {
         const errorMessage = err?.message || 'An error occurred while updating personal data';
@@ -533,7 +533,7 @@ export const usePersonalInformation = (employeeId?: string): UsePersonalInformat
         //     educationNonFormal,
         //   });
         } else {
-          setError(response.message || 'Failed to update education data');
+          setError(response.meta?.message || 'Failed to update education data');
         }
       } catch (err: any) {
         const errorMessage = err?.message || 'An error occurred while updating education data';
@@ -611,7 +611,7 @@ const mapSocialMediaModalToPayload = useCallback(
             hideDuration: 3000 });
             fetchDetail(id);
         } else {
-          setError(response.message || 'Failed to update social media data');
+          setError(response.meta?.message || 'Failed to update social media data');
         }
       } catch (err: any) {
         const errorMessage = err?.message || 'An error occurred while updating social media data';
@@ -653,7 +653,7 @@ const mapSocialMediaModalToPayload = useCallback(
             hideDuration: 3000 });
             fetchDetail(id);
         } else {
-          setError(response.message || 'Failed to update salary data');
+          setError(response.meta?.message || 'Failed to update salary data');
         }
       } catch (err: any) {
         const errorMessage = err?.message || 'An error occurred while updating salary data';
@@ -695,7 +695,7 @@ const mapSocialMediaModalToPayload = useCallback(
         //     bpjs: updatedBpjs,
         //   });
         } else {
-          setError(response.message || 'Failed to update BPJS data');
+          setError(response.meta?.message || 'Failed to update BPJS data');
         }
       } catch (err: any) {
         const errorMessage = err?.message || 'An error occurred while updating BPJS data';
@@ -785,7 +785,7 @@ const mapSocialMediaModalToPayload = useCallback(
             hideDuration: 3000 });
             fetchDetail(id);
         } else {
-          setError(response.message || 'Failed to update employment position');
+          setError(response.meta?.message || 'Failed to update employment position');
         }
       } catch (err: any) {
         const errorMessage = err?.message || 'An error occurred while updating employment position';
@@ -823,7 +823,7 @@ const mapSocialMediaModalToPayload = useCallback(
             hideDuration: 3000 });
             fetchDetail(id);
         } else {
-          setError(response.message || 'Failed to update employee document');
+          setError(response.meta?.message || 'Failed to update employee document');
         }
       } catch (err: any) {
         const errorMessage = err?.message || 'An error occurred while updating employee document';

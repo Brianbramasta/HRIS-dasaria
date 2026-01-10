@@ -82,9 +82,18 @@ export async function updateContract(
   try {
     console.log('Updating contract with payload:', payload);
     const response = await contractService.updateContract(employeeId, contractId, payload);
+    if (response.meta?.status !== 200) {
+      addNotification({
+        title: 'Error',
+        description: response.meta?.message,
+        variant: 'error',
+        hideDuration: 5000,
+      });
+      return false;
+    }
     addNotification({
       title: 'Success',
-      description: 'Contract updated successfully',
+      description: response.meta?.message,
       variant: 'success',
       hideDuration: 5000,
     });
@@ -297,10 +306,19 @@ export function useContract({ employeeId, autoFetch = true }: UseContractOptions
 
       setIsSubmitting(true);
       try {
-        await contractService.createContract(employeeId, payload);
+        const response = await contractService.createContract(employeeId, payload);
+        if (response.meta?.status !== 201) {
+          addNotification({
+            title: 'Error',
+            description: response.meta?.message,
+            variant: 'error',
+            hideDuration: 5000,
+          });
+          return false;
+        }
         addNotification({
           title: 'Success',
-          description: 'Contract created successfully',
+          description: response.meta?.message,
           variant: 'success',
           hideDuration: 5000,
         });

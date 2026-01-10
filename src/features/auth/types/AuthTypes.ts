@@ -16,7 +16,10 @@ export interface ForgotPasswordRequest {
 }
 
 export interface ForgotPasswordResponse {
-  message: string;
+  meta: {
+    message: string;
+    status: number;
+  };
   resetToken?: string;
 }
 
