@@ -71,6 +71,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               }}
               placeholder="Select"
               disabled={isDisabledField}
+              required
             />
           </div>
           <div>
@@ -82,6 +83,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               onChange={(v) => handleInput('employment_status_id', v)}
               placeholder="Select"
               disabled={true}
+              required
             />
           </div>
           <div>
@@ -92,6 +94,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               placeholder="Pilih tanggal"
               onChange={(...args) => handleInput('start_date', args[1])}
               disabled={isDisabledField}
+              required
             />
           </div>
           <div>
@@ -99,9 +102,10 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               id="endDatePicker"
               label="Tanggal Akhir"
               defaultDate={formatDateToIndonesian(form.end_date as string) || undefined}
-              placeholder="— (masih aktif)"
+              placeholder="(masih aktif)"
               onChange={(...args) => handleInput('end_date', args[1])}
               disabled={isDisabledField}
+              required
             />
           </div>
           <div>
@@ -113,6 +117,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               onChange={(v) => handleInput('company_id', v)}
               placeholder="Select"
               disabled={isDisabledField}
+              required
             />
           </div>
           <div>
@@ -124,6 +129,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               onChange={(v) => handleInput('office_id', v)}
               disabled={officeDropdown.length === 0 && officeOptions.length === 0 || isDisabledField}
               placeholder="Select"
+              required
             />
           </div>
           <div>
@@ -135,6 +141,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               onChange={(v) => handleInput('directorate_id', v)}
               placeholder="Select"
               disabled={isDisabledField}
+              required
             />
           </div>
           
@@ -150,6 +157,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               onChange={(v) => handleInput('division_id', v)}
               disabled={divisionDropdown.length === 0 && divisionOptions.length === 0 || isDisabledField}
               placeholder="Select"
+              required
             />
           </div>
           <div>
@@ -161,6 +169,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               onChange={(v) => handleInput('department_id', v)}
               disabled={departmentDropdown.length === 0 && departmentOptions.length === 0 || isDisabledField}
               placeholder="Select"
+              required
             />
           </div>
           <div>
@@ -172,6 +181,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               onChange={(v) => handleInput('position_id', v)}
               placeholder="Select"
               disabled={isDisabledField}
+              required
             />
           </div>
           <div>
@@ -183,6 +193,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               onChange={(v) => handleInput('job_title_id', v)}
               placeholder="Select"
               disabled={isDisabledField}
+              required
             />
           </div>
           <div>
@@ -194,6 +205,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               onChange={(v) => handleInput('position_level_id', v)}
               placeholder="Select"
               disabled={isDisabledField}
+              required
             />
           </div>
           <div>
@@ -205,6 +217,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               placeholder="Otomatis dari Jabatan"
               disabled={isDisabledField}
               onChange={() => {}}
+              required
             />
           </div>
           <div>
@@ -216,6 +229,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               onChange={(v) => handleInput('payroll_status', v)}
               placeholder="Select"
               disabled={isDisabledField}
+              required
             />
           </div>
           
