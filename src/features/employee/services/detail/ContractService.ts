@@ -41,7 +41,7 @@ export interface ContractData {
 // Request Types
 export interface CreateContractPayload {
   contract_status?: string; // 1=active, 2=inactive, 3=probation, 4=resigned
-  contract_status_id: string; // 1=active, 2=inactive, 3=probation, 4=resigned
+  contract_status_id?: string; // 1=active, 2=inactive, 3=probation, 4=resigned
   last_contract_signed_date: string; // YYYY-MM-DD
   end_date?: string; // YYYY-MM-DD
   contract_type_id: string; // 1=PKWT, 2=PKWTT

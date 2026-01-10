@@ -15,8 +15,8 @@ import InputField from '@/components/shared/field/InputField';
 export type ContractEntry = {
   id?: string;
   full_name: string;
-  contract_status_id: string;
-  contract_status_name?: string;
+  contract_status: string;
+  // contract_status_name?: string;
   last_contract_signed_date: string; // yyyy-MM-dd
   end_date: string; // yyyy-MM-dd
   contract_type_id: string; // PKWT / PKWTT / dll
@@ -30,7 +30,7 @@ export type ContractEntry = {
   note?: string;
   file_for_resign?: string;
   dokumenBerakhir?: string;
-  lamaBekerja?: string;
+  lama_bekerja?: string;
 };
 
 interface BaseContractModalProps {
@@ -94,8 +94,8 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
           label="Status Kontrak"
           options={optionsContractStatus}
           placeholder="Select"
-          defaultValue={form.contract_status_id}
-          onChange={(v) => onInputChange('contract_status_id', v)}
+          defaultValue={form.contract_status}
+          onChange={(v) => onInputChange('contract_status', v)}
           disabled={isReadonly}
           required={!isReadonly}
         />
