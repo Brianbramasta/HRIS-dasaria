@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { startLoading, stopLoading } from '../stores/loadingStore';
 import handleApiError from '../utils/errorHandle';
+import { handleApiSuccess } from '../utils/successHandle';
 
 export interface Meta {
   status: number;
@@ -46,7 +47,6 @@ class ApiService {
   }
 
   private setupInterceptors() {
-    // Request interceptor untuk menambahkan token
     this.instance.interceptors.request.use(
       (config) => {
         // aktifkan loading saat request dimulai
@@ -161,22 +161,26 @@ class ApiService {
 
   public async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
     const response = await this.instance.post(url, data, config);
+    handleApiSuccess(response.data);
     return response.data;
   }
 
   public async put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
     const response = await this.instance.put(url, data, config);
+    handleApiSuccess(response.data);
     return response.data;
   }
 
   public async patch<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
     const response = await this.instance.patch(url, data, config);
     // const response = {data:{}}
+    handleApiSuccess(response.data);
     return response.data;
   }
 
   public async delete<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
     const response = await this.instance.delete(url, config);
+    handleApiSuccess(response.data);
     return response.data;
   }
 
