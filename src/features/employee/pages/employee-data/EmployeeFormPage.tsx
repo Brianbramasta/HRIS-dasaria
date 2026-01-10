@@ -6,7 +6,7 @@ import Step04SalaryBpjs from '../../components/form-steps/Step04SalaryBpjs';
 import Step05UploadDocument from '../../components/form-steps/Step05UploadDocument';
 import SuccessModal from '../../components/SuccessModal';
 import Button from '../../../../components/ui/button/Button';
-import { ChevronLeft } from 'react-feather';
+// import { ChevronLeft } from 'react-feather';
 import useFormulirKaryawan from '../../hooks/employee-data/form/useFormulirKaryawan';
 
 const TITLES_WITH_LOGIN = [

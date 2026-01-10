@@ -47,7 +47,7 @@ export default function ContractTab({ employeeId: employeeIdProp, data }: Props)
     handleAddSubmit,
     handleEditRow,
     handleEditSubmit,
-    contractData,
+    // contractData,
     isSubmitting,
   } = useContractTab({ employeeIdProp, data });
 

@@ -40,7 +40,7 @@ export function useEditContractRenewal(): UseEditContractRenewalReturn {
     setIsLoading(true);
     try {
       const response = await contractRenewalService.getContractRenewalDetail(id);
-      if (response.success && response.data) {
+      if (response.meta.status === 200 && response.data) {
         setKontrakData(response.data);
       }
     } catch (error: any) {

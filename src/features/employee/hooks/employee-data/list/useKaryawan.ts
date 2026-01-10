@@ -182,15 +182,15 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
 
         const response = await employeeMasterDataService.createEmployee(formData);
 
-        if (response && response.success) {
+        if (response && response.meta?.status === 200) {
           addNotification({
             variant: 'success',
-            title: response.message || 'Karyawan berhasil ditambahkan',
+            title: response?.meta?.message || 'Karyawan berhasil ditambahkan',
           });
           await fetchKaryawan();
           return response.data;
         } else {
-          const errorMsg = response?.message || 'Gagal membuat karyawan';
+          const errorMsg = response?.meta?.message || 'Gagal membuat karyawan';
           setError(errorMsg);
           addNotification({
             variant: 'error',
@@ -221,15 +221,15 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
 
         const response = await employeeMasterDataService.updateEmployee(id, formData);
 
-        if (response && response.success) {
-          addNotification({
-            variant: 'success',
-            title: response.message || 'Karyawan berhasil diperbarui',
-          });
+        if (response && response.meta?.status === 200) {
+          // addNotification({
+          //   variant: 'success',
+          //   title: response?.meta?.message || 'Karyawan berhasil diperbarui',
+          // });
           await fetchKaryawan();
           return response.data;
         } else {
-          const errorMsg = response?.message || 'Gagal memperbarui karyawan';
+          const errorMsg = response?.meta?.message || 'Gagal memperbarui karyawan';
           setError(errorMsg);
           addNotification({
             variant: 'error',
@@ -261,13 +261,13 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
         const response = await employeeMasterDataService.deleteEmployee(id);
 
         if (response && response.meta.status === 200) {
-          addNotification({
-            variant: 'success',
-            title: response.message || 'Karyawan berhasil dihapus',
-          });
+          // addNotification({
+          //   variant: 'success',
+          //   title: response?.meta?.message || 'Karyawan berhasil dihapus',
+          // });
           await fetchKaryawan();
         } else {
-          const errorMsg = response?.message || 'Gagal menghapus karyawan';
+          const errorMsg = response?.meta?.message || 'Gagal menghapus karyawan';
           setError(errorMsg);
           addNotification({
             variant: 'error',
