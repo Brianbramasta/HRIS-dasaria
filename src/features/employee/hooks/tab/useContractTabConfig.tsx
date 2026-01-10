@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 import type { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
 import { IconPencil, IconFileDetail } from '@/icons/components/icons';
-import type { ContractHistoryItem } from '@/features/employee/services/detail/ContractService';
+import type { ContractHistoryItem } from '@/features/employee/types/dto/ContractType';
 
 interface Params {
   rows: ContractHistoryItem[];

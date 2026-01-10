@@ -1,10 +1,16 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { contractService, type ContractData, type CreateContractPayload } from '../../../../services/detail/ContractService';
-import type { ContractHistoryItem } from '../../../../services/detail/ContractService';
+import { contractService } from '../../../../services/detail/ContractService';
 import { addNotification } from '@/stores/notificationStore';
 import type { Karyawan } from '@/features/employee/types/dto/EmployeeType';
 import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
-import type { ContractEntry, DropdownOption, UpdateContractPayload } from '@/features/employee/types/dto/ContractType';
+import type { 
+  ContractEntry, 
+  DropdownOption, 
+  UpdateContractPayload,
+  ContractData,
+  CreateContractPayload,
+  ContractHistoryItem
+} from '@/features/employee/types/dto/ContractType';
 
 export type { ContractEntry, DropdownOption, UpdateContractPayload };
 

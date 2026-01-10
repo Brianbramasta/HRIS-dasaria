@@ -7,7 +7,7 @@ import EditContractModal from '@/features/employee/components/modals/employee-da
 import DetailContractModal from '@/features/employee/components/modals/employee-data/contract/DetailContractModal';
 import { useContractTab } from '@/features/employee/hooks/employee-data/detail/contract/useContract';
 import ComponentCard from '@/components/common/ComponentCard';
-import type { ContractHistoryItem } from '@/features/employee/services/detail/ContractService';
+import type { ContractHistoryItem } from '@/features/employee/types/dto/ContractType';
 import { formatUrlFile } from '@/utils/formatUrlFile';
 import PdfPreviewEmbed from '@/components/shared/modal/PdfPreviewEmbed';
 import { clearSkFile } from '@/stores/fileStore';
