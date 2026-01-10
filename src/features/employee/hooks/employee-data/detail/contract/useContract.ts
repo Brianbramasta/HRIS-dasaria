@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { contractService, type ContractData, type CreateContractPayload } from '../../../../services/detail/ContractService';
 import type { ContractHistoryItem } from '../../../../services/detail/ContractService';
 import { addNotification } from '@/stores/notificationStore';
-import type { Karyawan } from '@/features/employee/types/Employee';
+import type { Karyawan } from '@/features/employee/types/dto/EmployeeType';
 import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
 import type { ContractEntry, DropdownOption, UpdateContractPayload } from '@/features/employee/types/dto/ContractType';
 

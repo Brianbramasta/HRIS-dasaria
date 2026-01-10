@@ -1,5 +1,5 @@
 import { DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
-import { Karyawan } from '../../types/Employee';
+import { Karyawan } from '../../types/dto/EmployeeType';
 import { IconFileDetail, IconHapus } from '@/icons/components/icons';
 import { renderSisaKontrakBadge } from './DateHelpers';
 import { formatDateToIndonesian } from '@/utils/formatDate';

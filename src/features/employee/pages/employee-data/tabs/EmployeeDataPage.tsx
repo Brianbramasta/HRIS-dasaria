@@ -1,7 +1,7 @@
 
 
 import { DataTable, DataTableColumn, DataTableAction } from '../../../../../components/shared/datatable/DataTable';
-import {  Karyawan } from '../../../types/Employee';
+import {  Karyawan } from '../../../types/dto/EmployeeType';
 import useKaryawan from '../../../hooks/employee-data/list/useKaryawan';
 // import Button from '../../../../../components/ui/button/Button';
 import AddKaryawanModal from '../../../components/modals/AddEmployeeModal';

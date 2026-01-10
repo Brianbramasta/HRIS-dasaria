@@ -1,5 +1,5 @@
 import apiService, { ApiResponse } from '../../../services/api';
-import { Karyawan, CreateKaryawanDto, UpdateKaryawanDto, KaryawanListResponse } from '../types/Employee';
+import { Karyawan, CreateKaryawanDto, UpdateKaryawanDto, KaryawanListResponse } from '../types/dto/EmployeeType';
 
 // Detail response mengikuti shape dari endpoint /api/staff/:id/detail
 export interface KaryawanDetailResponse {

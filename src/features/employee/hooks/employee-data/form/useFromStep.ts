@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { employeeMasterDataService } from '../../../services/EmployeeMasterData.service';
-import { PTKPDropdownItem } from '../../../types/Employee';
+import { PTKPDropdownItem } from '../../../types/dto/EmployeeType';
 import { getReligionDropdownOptions, getEducationDropdownOptions, getBankDropdownOptions, getEmployeeCategoryDropdownOptions, getPositionLevelDropdownOptions, getEmployeeStatusDropdownOptions, getFieldDocument } from './useFormulirKaryawan';
 import { useFormulirKaryawanStore } from '@/features/employee/stores/useFormulirKaryawanStore';
 import { DocumentItem, EducationItem } from '../../../types/FormEmployee';

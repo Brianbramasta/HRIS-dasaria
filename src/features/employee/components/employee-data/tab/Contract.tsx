@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import type { Karyawan } from '@/features/employee/types/Employee';
+import type { Karyawan } from '@/features/employee/types/dto/EmployeeType';
 import Button from '@/components/ui/button/Button';
 import { DataTable } from '@/components/shared/datatable/DataTable';
 import AddContractModal from '@/features/employee/components/modals/employee-data/contract/AddContractModal';

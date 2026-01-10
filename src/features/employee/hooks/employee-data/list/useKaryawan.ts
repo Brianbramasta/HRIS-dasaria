@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Karyawan, EmployeeListItem } from '../../../types/Employee';
+import { Karyawan, EmployeeListItem } from '../../../types/dto/EmployeeType';
 import { TableFilter } from '../../../../../types/SharedType';
 import employeeMasterDataService from '../../../services/EmployeeMasterData.service';
 import useFilterStore from '../../../../../stores/filterStore';
