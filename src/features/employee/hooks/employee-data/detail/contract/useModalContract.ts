@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getContractEndStatusDropdownOptions, getContractTypeDropdownOptions } from './useContract';
-import type { ContractEntry } from './useContract';
+import type { ContractEntry } from '@/features/employee/types/dto/ContractType';
 
 export interface ModalContractOptions {
   isOpen: boolean;

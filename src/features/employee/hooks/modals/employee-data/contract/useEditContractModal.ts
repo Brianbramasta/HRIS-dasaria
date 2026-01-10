@@ -1,5 +1,5 @@
 import { useModalContract } from '@/features/employee/hooks/employee-data/detail/contract/useModalContract';
-import type { ContractEntry } from '@/features/employee/hooks/employee-data/detail/contract/useContract';
+import type { ContractEntry } from '@/features/employee/types/dto/ContractType';
 
 interface UseEditContractModalProps {
   isOpen: boolean;

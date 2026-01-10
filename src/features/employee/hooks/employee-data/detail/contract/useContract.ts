@@ -4,36 +4,13 @@ import type { ContractHistoryItem } from '../../../../services/detail/ContractSe
 import { addNotification } from '@/stores/notificationStore';
 import type { Karyawan } from '@/features/employee/types/Employee';
 import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
+import type { ContractEntry, DropdownOption, UpdateContractPayload } from '@/features/employee/types/dto/ContractType';
 
-export type ContractEntry = {
-  id?: string;
-  full_name: string;
-  contract_status: string;
-  // contract_status_name?: string;
-  last_contract_signed_date: string;
-  end_date: string;
-  contract_type_id: string;
-  contract_type_name?: string;
-  contract_number: number;
-  contract_end_status_id?: string;
-  contract_end_status_name?: string;
-  deskripsi?: string;
-  fileName?: string;
-  file_contract?: string;
-  note?: string;
-  file_for_resign?: string;
-  dokumenBerakhir?: string;
-  lama_bekerja?: string;
-  sisa_kontrak?: string;
-};
+export type { ContractEntry, DropdownOption, UpdateContractPayload };
 
 export interface UseContractOptions {
   employeeId: string;
   autoFetch?: boolean;
-}
-export interface DropdownOption {
-  label: string;
-  value: string;
 }
 
 export interface UseContractReturn {
@@ -96,12 +73,6 @@ export const getContractTypeDropdownOptions = async (search?: string): Promise<D
 
 // edit
 // /api/employee-master-data/employees/{id}/update-contract/{contractId}
-export interface UpdateContractPayload extends FormData {
-  contract_status_id?: string;
-  contract_end_status_id?: string;
-  note_for_resign?: string;
-  file_for_resign?: File;
-}
 export async function updateContract(
   employeeId: string,
   contractId: string,
