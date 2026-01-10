@@ -67,7 +67,7 @@ class BusinessLinesService {
    */
   async update(id: string, payload: { name?: string; description?: string | null; memoNumber: string; skFile?: File | null; }): Promise<any> {
     const formData = new FormData();
-    formData.append('_method', 'PUT');
+    formData.append('_method', 'PATCH');
     if (payload.name !== undefined) formData.append('bl_name', payload.name);
     formData.append('bl_decree_number', payload.memoNumber);
     if (payload.description !== undefined && payload.description !== null) {
@@ -76,7 +76,7 @@ class BusinessLinesService {
     if (payload.skFile) {
       formData.append('bl_decree_file', payload.skFile as File);
     }
-    return apiService.post<any>(`${this.basePath}business-lines/${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return apiService.post<any>(`${this.basePath}business-lines/${id}/update`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
   }
 
   /**
