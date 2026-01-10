@@ -10,7 +10,7 @@ import AddDepartmentModal from '../../components/modals/department/AddDepartment
 import EditDepartmentModal from '../../components/modals/department/EditDepartmentModal';
 import DeleteDepartmentModal from '../../components/modals/department/DeleteDepartmentModal';
 import { FileText } from '@/icons/components/icons';
-import { addNotification } from '@/stores/notificationStore';
+// import { addNotification } from '@/stores/notificationStore';
 import { useFileStore } from '@/stores/fileStore';
 import { formatUrlFile } from '@/utils/formatUrlFile';
 
@@ -104,12 +104,12 @@ export default function DepartmentsTab({ resetKey }: Props) {
       onSuccess={() => {
         fetchDepartments();
         addModal.closeModal();
-        addNotification({
-          description: 'Departemen berhasil ditambahkan',
-          variant: 'success',
-          hideDuration: 4000,
-          title: 'Departemen ditambahkan',
-        });
+        // addNotification({
+        //   description: 'Departemen berhasil ditambahkan',
+        //   variant: 'success',
+        //   hideDuration: 4000,
+        //   title: 'Departemen ditambahkan',
+        // });
       }}
     />
     <EditDepartmentModal
@@ -119,12 +119,12 @@ export default function DepartmentsTab({ resetKey }: Props) {
       onSuccess={() => {
         fetchDepartments();
         editModal.closeModal();
-        addNotification({
-          description: 'Departemen berhasil diupdate',
-          variant: 'success',
-          hideDuration: 4000,
-          title: 'Departemen diupdate',
-        });
+        // addNotification({
+        //   description: 'Departemen berhasil diupdate',
+        //   variant: 'success',
+        //   hideDuration: 4000,
+        //   title: 'Departemen diupdate',
+        // });
       }}
     />
     <DeleteDepartmentModal
@@ -134,12 +134,12 @@ export default function DepartmentsTab({ resetKey }: Props) {
       onSuccess={() => {
         fetchDepartments();
         deleteModal.closeModal();
-        addNotification({
-          description: 'Departemen berhasil dihapus',
-          variant: 'success',
-          hideDuration: 4000,
-          title: 'Departemen dihapus',
-        });
+        // addNotification({
+        //   description: 'Departemen berhasil dihapus',
+        //   variant: 'success',
+        //   hideDuration: 4000,
+        //   title: 'Departemen dihapus',
+        // });
       }}
     />
     </>

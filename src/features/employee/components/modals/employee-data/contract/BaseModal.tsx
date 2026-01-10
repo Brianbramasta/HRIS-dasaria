@@ -11,27 +11,9 @@ import DateField from '@/components/shared/field/DateField';
 import FileInput from '@/components/shared/form/FileInput';
 import TextAreaField from '@/components/shared/field/TextAreaField';
 import InputField from '@/components/shared/field/InputField';
+import type { ContractEntry } from '@/features/employee/types/dto/ContractType';
 
-export type ContractEntry = {
-  id?: string;
-  full_name: string;
-  contract_status_id: string;
-  contract_status_name?: string;
-  last_contract_signed_date: string; // yyyy-MM-dd
-  end_date: string; // yyyy-MM-dd
-  contract_type_id: string; // PKWT / PKWTT / dll
-  contract_type_name?: string; // PKWT / PKWTT / dll
-  contract_number: number;
-  contract_end_status_id?: string;
-  contract_end_status_name?: string;
-  deskripsi?: string;
-  fileName?: string;
-  file_contract?: string;
-  note?: string;
-  file_for_resign?: string;
-  dokumenBerakhir?: string;
-  lamaBekerja?: string;
-};
+export type { ContractEntry };
 
 interface BaseContractModalProps {
   isOpen: boolean;
@@ -94,8 +76,8 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
           label="Status Kontrak"
           options={optionsContractStatus}
           placeholder="Select"
-          defaultValue={form.contract_status_id}
-          onChange={(v) => onInputChange('contract_status_id', v)}
+          defaultValue={form.contract_status}
+          onChange={(v) => onInputChange('contract_status', v)}
           disabled={isReadonly}
           required={!isReadonly}
         />

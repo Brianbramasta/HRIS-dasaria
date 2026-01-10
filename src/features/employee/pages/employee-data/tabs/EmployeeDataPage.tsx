@@ -359,7 +359,7 @@ export default function DataKaryawanPage() {
     },
     {
       id: 'payroll_status',
-      label: 'Status Payroll',
+      label: 'Status Penggajian',
       minWidth: 120,
       sortable: true,
       filterOptions: [
@@ -395,7 +395,7 @@ export default function DataKaryawanPage() {
     },
     {
       id: 'detail',
-      label: 'Detail Profile',
+      label: 'Detail Profil',
       minWidth: 100,
       align: 'center',
       sortable: false,

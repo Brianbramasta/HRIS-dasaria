@@ -149,12 +149,12 @@ export default function EmployeePositionsTab({ resetKey }: Props) {
         onSuccess={() => {
           handleAddSuccess();
           addModal.closeModal();
-          addNotification({
-            description: 'Posisi pegawai berhasil ditambahkan',
-            variant: 'success',
-            hideDuration: 4000,
-            title: 'Posisi pegawai ditambahkan',
-          });
+          // addNotification({
+          //   description: 'Posisi pegawai berhasil ditambahkan',
+          //   variant: 'success',
+          //   hideDuration: 4000,
+          //   title: 'Posisi pegawai ditambahkan',
+          // });
         }}
       />
       <EditEmployeePositionModal
@@ -163,12 +163,12 @@ export default function EmployeePositionsTab({ resetKey }: Props) {
         onSuccess={() => {
           handleUpdateSuccess();
           editModal.closeModal();
-          addNotification({
-            description: 'Posisi pegawai berhasil diupdate',
-            variant: 'success',
-            hideDuration: 4000,
-            title: 'Posisi pegawai diupdate',
-          });
+          // addNotification({
+          //   description: 'Posisi pegawai berhasil diupdate',
+          //   variant: 'success',
+          //   hideDuration: 4000,
+          //   title: 'Posisi pegawai diupdate',
+          // });
         }}
         employeePosition={selectedEmployeePosition}
       />
@@ -178,12 +178,12 @@ export default function EmployeePositionsTab({ resetKey }: Props) {
         onSuccess={() => {
           handleDeleteSuccess();
           deleteModal.closeModal();
-          addNotification({
-            description: 'Posisi pegawai berhasil dihapus',
-            variant: 'success',
-            hideDuration: 4000,
-            title: 'Posisi pegawai dihapus',
-          });
+          // addNotification({
+          //   description: 'Posisi pegawai berhasil dihapus',
+          //   variant: 'success',
+          //   hideDuration: 4000,
+          //   title: 'Posisi pegawai dihapus',
+          // });
         }}
         employeePosition={selectedEmployeePosition}
       />

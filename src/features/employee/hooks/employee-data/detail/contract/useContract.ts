@@ -4,35 +4,13 @@ import type { ContractHistoryItem } from '../../../../services/detail/ContractSe
 import { addNotification } from '@/stores/notificationStore';
 import type { Karyawan } from '@/features/employee/types/Employee';
 import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
+import type { ContractEntry, DropdownOption, UpdateContractPayload } from '@/features/employee/types/dto/ContractType';
 
-export type ContractEntry = {
-  id?: string;
-  full_name: string;
-  contract_status_id: string;
-  contract_status_name?: string;
-  last_contract_signed_date: string;
-  end_date: string;
-  contract_type_id: string;
-  contract_type_name?: string;
-  contract_number: number;
-  contract_end_status_id?: string;
-  contract_end_status_name?: string;
-  deskripsi?: string;
-  fileName?: string;
-  file_contract?: string;
-  note?: string;
-  file_for_resign?: string;
-  dokumenBerakhir?: string;
-  lamaBekerja?: string;
-};
+export type { ContractEntry, DropdownOption, UpdateContractPayload };
 
 export interface UseContractOptions {
   employeeId: string;
   autoFetch?: boolean;
-}
-export interface DropdownOption {
-  label: string;
-  value: string;
 }
 
 export interface UseContractReturn {
@@ -95,12 +73,6 @@ export const getContractTypeDropdownOptions = async (search?: string): Promise<D
 
 // edit
 // /api/employee-master-data/employees/{id}/update-contract/{contractId}
-export interface UpdateContractPayload extends FormData {
-  contract_status_id?: string;
-  contract_end_status_id?: string;
-  note_for_resign?: string;
-  file_for_resign?: File;
-}
 export async function updateContract(
   employeeId: string,
   contractId: string,
@@ -110,9 +82,18 @@ export async function updateContract(
   try {
     console.log('Updating contract with payload:', payload);
     const response = await contractService.updateContract(employeeId, contractId, payload);
+    if (response.meta?.status !== 200) {
+      addNotification({
+        title: 'Error',
+        description: response.meta?.message,
+        variant: 'error',
+        hideDuration: 5000,
+      });
+      return false;
+    }
     addNotification({
       title: 'Success',
-      description: 'Contract updated successfully',
+      description: response.meta?.message,
       variant: 'success',
       hideDuration: 5000,
     });
@@ -142,7 +123,7 @@ export function useAdd() {
   const handleAdd = (summary: ContractEntry) => {
     const editingData: ContractEntry = {
       full_name: summary.full_name,
-      contract_status_id: '',
+      contract_status: '',
       last_contract_signed_date: '',
       end_date: '',
       contract_type_id: '',
@@ -174,7 +155,7 @@ export function useAddSubmit(createContract: (payload: CreateContractPayload) =>
     }
 
     const payload: CreateContractPayload = {
-      contract_status_id: entry.contract_status_id,
+      contract_status: entry.contract_status,
       last_contract_signed_date: entry.last_contract_signed_date,
       contract_type_id: entry.contract_type_id,
       contract_number: String(entry.contract_number),
@@ -204,8 +185,7 @@ export function useEdit(fetchContractData?: () => Promise<void>) {
     const editingData: ContractEntry = {
       id: row.id,
       full_name: data.full_name || detail?.Data_Pribadi.full_name,
-      contract_status_id: data.contract_status_id,
-      contract_status_name: data.contract_status_name,
+      contract_status: data.contract_status,
       last_contract_signed_date: data.last_contract_signed_date,
       end_date: data.end_date,
       contract_type_id: data.contract_type_id,
@@ -230,7 +210,7 @@ export function useEdit(fetchContractData?: () => Promise<void>) {
     if (!entry.id) return;
 
     const formData = new FormData();
-    formData.append('contract_status_id', entry.contract_status_id);
+    formData.append('contract_status', entry.contract_status);
     formData.append('contract_end_status_id', entry.contract_end_status_id || '');
     formData.append('note_for_resign', entry.note || '');
 
@@ -260,8 +240,7 @@ export function useDetail() {
     const detailData: ContractEntry = {
       id: row.id,
       full_name: data.full_name || detail?.Data_Pribadi.full_name,
-      contract_status_id: data.contract_status_id,
-      contract_status_name: data.contract_status_name,
+      contract_status: data.contract_status,
       last_contract_signed_date: data.last_contract_signed_date,
       end_date: data.end_date,
       contract_type_id: data.contract_type_id,
@@ -327,10 +306,19 @@ export function useContract({ employeeId, autoFetch = true }: UseContractOptions
 
       setIsSubmitting(true);
       try {
-        await contractService.createContract(employeeId, payload);
+        const response = await contractService.createContract(employeeId, payload);
+        if (response.meta?.status !== 201) {
+          addNotification({
+            title: 'Error',
+            description: response.meta?.message,
+            variant: 'error',
+            hideDuration: 5000,
+          });
+          return false;
+        }
         addNotification({
           title: 'Success',
-          description: 'Contract created successfully',
+          description: response.meta?.message,
           variant: 'success',
           hideDuration: 5000,
         });
@@ -428,7 +416,7 @@ export function useContractTab({ employeeIdProp, data }: UseContractTabProps): U
   // State management
   const [summary, setSummary] = useState<ContractEntry>({
     full_name: defaultName || 'Megawati',
-    contract_status_id: '',
+    contract_status: '',
     last_contract_signed_date: '',
     end_date: '',
     contract_type_id: '',
@@ -437,7 +425,8 @@ export function useContractTab({ employeeIdProp, data }: UseContractTabProps): U
     contract_end_status_id: '',
     deskripsi: '',
     file_contract: '',
-    lamaBekerja: '',
+    lama_bekerja: '',
+    sisa_kontrak: '',
   });
 
   const [rows, setRows] = useState<ContractHistoryItem[]>([]);
@@ -454,15 +443,16 @@ export function useContractTab({ employeeIdProp, data }: UseContractTabProps): U
       console.log('Contract Data Loaded:', contractData);
       setSummary({
         full_name: detail?.Personal_Data?.full_name || '',
-        contract_status_id: contractData.summary?.contract_status_id || '',
-        contract_status_name: contractData.summary?.status_kontrak,
+        // contract_status_id: contractData.summary?.contract_status_id || '',
+        contract_status: contractData.summary?.status_kontrak,
         last_contract_signed_date: contractData.summary?.ttd_kontrak_terakhir,
-        lamaBekerja: contractData.summary?.lama_bekerja,
+        lama_bekerja: contractData.summary?.lama_bekerja,
         end_date: contractData.summary?.berakhir_kontrak,
         contract_type_id: contractData.summary?.jenis_kontrak || '',
         contract_type_name: contractData.summary?.jenis_kontrak || '',
         contract_number: contractData.summary?.kontrak_ke,
         contract_end_status_id: contractData.summary?.contract_end_status_id || '',
+        sisa_kontrak: contractData.summary?.sisa_kontrak || '',
         deskripsi: '',
         file_contract: contractData.summary?.kontrak_aktif,
       });

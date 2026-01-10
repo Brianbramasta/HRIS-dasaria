@@ -70,11 +70,11 @@ export default function ContractTab({ employeeId: employeeIdProp, data }: Props)
 
           {/* Summary Fields */}
           <div className="col-span-4 grid grid-cols-1 gap-4 sm:grid-cols-2 h-fit">
-            <SummaryItem label="Status Kontrak">{summary?.contract_status_name}</SummaryItem>
+            <SummaryItem label="Status Kontrak">{summary?.contract_status}</SummaryItem>
             <SummaryItem label="Tanggal Tanda Tangan Kontrak">{formatDateToIndonesian(summary?.last_contract_signed_date)}</SummaryItem>
             <SummaryItem label="Tanggal Berakhir Kontrak">{formatDateToIndonesian(summary?.end_date)}</SummaryItem>
-            <SummaryItem label="Lama Bekerja">{summary?.lamaBekerja}</SummaryItem>
-            <SummaryItem label="Sisa Kontrak">{contractData?.summary?.sisa_kontrak || '-'}</SummaryItem>
+            <SummaryItem label="Lama Bekerja">{summary?.lama_bekerja}</SummaryItem>
+            <SummaryItem label="Sisa Kontrak">{summary?.sisa_kontrak || '-'}</SummaryItem>
             <SummaryItem label="Jenis Kontrak">{summary?.contract_type_name}</SummaryItem>
             <SummaryItem label="Kontrak ke">{summary?.contract_number}</SummaryItem>
             <SummaryItem label="Status Berakhir">{summary?.contract_end_status_name || '-'}</SummaryItem>

@@ -2,7 +2,6 @@ import { useState, useCallback } from 'react';
 import { directoratesService } from '../services/request/DirectoratesService';
 import { DirectorateListItem, TableFilter } from '../types/OrganizationApiTypes';
 import useFilterStore from '../../../stores/filterStore';
-import { addNotification } from '../../../stores/notificationStore';
 // import { formatUrlFile } from '../../../utils/formatUrlFile';
 import type { DirectorateRow } from '../types/OrganizationTableTypes';
 import { toFileSummary } from '../utils/shared/toFileSummary';
@@ -129,12 +128,6 @@ export const useDirectorates = (): UseDirectoratesReturn => {
       const newDirectorate = mapToDirectorate(item);
       setDirectorates(prev => [...prev, newDirectorate]);
       await fetchDirectorates();
-      addNotification({
-        description: 'Direktorat berhasil ditambahkan',
-        variant: 'success',
-        hideDuration: 4000,
-        title: 'Direktorat ditambahkan',
-      });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create directorate');
       throw err;
@@ -154,12 +147,6 @@ export const useDirectorates = (): UseDirectoratesReturn => {
       setDirectorates(prev => prev.map(directorate => 
         directorate.id === id ? updatedDirectorate : directorate
       ));
-      addNotification({
-        description: 'Direktorat berhasil diupdate',
-        variant: 'success',
-        hideDuration: 4000,
-        title: 'Direktorat diupdate',
-      });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update directorate');
       throw err;
@@ -176,12 +163,6 @@ export const useDirectorates = (): UseDirectoratesReturn => {
       await directoratesService.delete(id, payload);
       setDirectorates(prev => prev.filter(directorate => directorate.id !== id));
       await fetchDirectorates();
-      addNotification({
-        description: 'Direktorat berhasil dihapus',
-        variant: 'success',
-        hideDuration: 4000,
-        title: 'Direktorat dihapus',
-      });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete directorate');
       throw err;

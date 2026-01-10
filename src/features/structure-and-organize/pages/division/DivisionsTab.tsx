@@ -126,12 +126,12 @@ export default function DivisionsTab({ resetKey }: Props) {
       onSuccess={() => {
         fetchDivisions();
         addModal.closeModal();
-        addNotification({
-          description: 'Divisi berhasil ditambahkan',
-          variant: 'success',
-          hideDuration: 4000,
-          title: 'Divisi ditambahkan',
-        });
+        // addNotification({
+        //   description: 'Divisi berhasil ditambahkan',
+        //   variant: 'success',
+        //   hideDuration: 4000,
+        //   title: 'Divisi ditambahkan',
+        // });
       }}
     />
     <EditDivisionModal
@@ -141,12 +141,12 @@ export default function DivisionsTab({ resetKey }: Props) {
       onSuccess={() => {
         fetchDivisions();
         editModal.closeModal();
-        addNotification({
-          description: 'Divisi berhasil diupdate',
-          variant: 'success',
-          hideDuration: 4000,
-          title: 'Divisi diupdate',
-        });
+        // addNotification({
+        //   description: 'Divisi berhasil diupdate',
+        //   variant: 'success',
+        //   hideDuration: 4000,
+        //   title: 'Divisi diupdate',
+        // });
       }}
     />
     <DeleteDivisionModal
@@ -156,12 +156,12 @@ export default function DivisionsTab({ resetKey }: Props) {
       onSuccess={() => {
         fetchDivisions();
         deleteModal.closeModal();
-        addNotification({
-          description: 'Divisi berhasil dihapus',
-          variant: 'success',
-          hideDuration: 4000,
-          title: 'Divisi dihapus',
-        });
+        // addNotification({
+        //   description: 'Divisi berhasil dihapus',
+        //   variant: 'success',
+        //   hideDuration: 4000,
+        //   title: 'Divisi dihapus',
+        // });
       }}
     />
     </>

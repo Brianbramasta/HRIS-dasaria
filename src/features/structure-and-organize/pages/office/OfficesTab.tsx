@@ -99,12 +99,12 @@ export default function OfficesTab({ resetKey }: Props) {
       isOpen={addModal.isOpen}
       onClose={() => { addModal.closeModal(); fileStore.clearSkFile(); }} 
       onSuccess={() => {fetchOffices();
-        addNotification({
-          description: 'Kantor berhasil ditambahkan',
-          variant: 'success',
-          hideDuration: 4000,
-          title: 'Kantor ditambahkan',
-        });
+        // addNotification({
+        //   description: 'Kantor berhasil ditambahkan',
+        //   variant: 'success',
+        //   hideDuration: 4000,
+        //   title: 'Kantor ditambahkan',
+        // });
       }}
     />
     <EditOfficeModal
@@ -112,12 +112,12 @@ export default function OfficesTab({ resetKey }: Props) {
       onClose={() => { editModal.closeModal(); setSelected(null); fileStore.clearSkFile(); }}
       office={selected}
       onSuccess={() => {fetchOffices();
-        addNotification({
-          description: 'Kantor berhasil diupdate',
-          variant: 'success',
-          hideDuration: 4000,
-          title: 'Kantor diupdate',
-        });
+        // addNotification({
+        //   description: 'Kantor berhasil diupdate',
+        //   variant: 'success',
+        //   hideDuration: 4000,
+        //   title: 'Kantor diupdate',
+        // });
       }}
     />
     <DeleteOfficeModal
@@ -125,12 +125,12 @@ export default function OfficesTab({ resetKey }: Props) {
       onClose={() => { deleteModal.closeModal(); setSelected(null); }}
       office={selected}
       onSuccess={() => {fetchOffices();
-        addNotification({
-          description: 'Kantor berhasil dihapus',
-          variant: 'success',
-          hideDuration: 4000,
-          title: 'Kantor dihapus',
-        });
+        // addNotification({
+        //   description: 'Kantor berhasil dihapus',
+        //   variant: 'success',
+        //   hideDuration: 4000,
+        //   title: 'Kantor dihapus',
+        // });
       }}
     />
     </>

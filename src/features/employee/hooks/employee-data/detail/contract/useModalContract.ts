@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { getContractStatusDropdownOptions, getContractEndStatusDropdownOptions, getContractTypeDropdownOptions } from './useContract';
-import type { ContractEntry } from './useContract';
+import { getContractEndStatusDropdownOptions, getContractTypeDropdownOptions } from './useContract';
+import type { ContractEntry } from '@/features/employee/types/dto/ContractType';
 
 export interface ModalContractOptions {
   isOpen: boolean;
@@ -24,7 +24,7 @@ export interface UseModalContractReturn {
 
 const emptyForm: ContractEntry = {
   full_name: '',
-  contract_status_id: '',
+  contract_status: '',
   last_contract_signed_date: '',
   end_date: '',
   contract_type_id: '',
@@ -56,14 +56,16 @@ export function useModalContract({ isOpen, initialData, isEditable = true }: Mod
 
     const loadDropdowns = async () => {
       try {
-        const [statusOptions, endStatusOptions, jenisKontrakOptions] = await Promise.all([
-          getContractStatusDropdownOptions(),
+        const [endStatusOptions, jenisKontrakOptions] = await Promise.all([
           getContractEndStatusDropdownOptions(),
           getContractTypeDropdownOptions(),
         ]);
 
         if (mounted) {
-          setContractStatus(statusOptions);
+          setContractStatus([
+            { label: 'Aktif', value: 'Aktif' },
+            { label: 'Tidak Aktif', value: 'Tidak Aktif' },
+          ]);
           setOptionsContractEndStatus(endStatusOptions);
           setOptionsJenisKontrak(jenisKontrakOptions);
         }
