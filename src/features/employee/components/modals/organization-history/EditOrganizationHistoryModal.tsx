@@ -3,12 +3,16 @@ import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import Select from '@/components/form/Select';
 import DatePicker from '@/components/form/date-picker';
-import InputField from '@/components/form/input/InputField';
 import FileInput from '@/components/form/input/FileInput';
 import {
   useEditOrganizationHistoryModal,
   OrganizationChangeForm,
 } from '@/features/employee/hooks/modals/organization-history/useEditOrganizationHistoryModal';
+import SelectField from '@/components/shared/field/SelectField';
+import InputField from '@/components/shared/field/InputField';
+import TextAreaField from '@/components/shared/field/TextAreaField';
+import DateField from '@/components/shared/field/DateField';
+import FIleField from '@/components/shared/field/FIleField';
 
 interface Props {
   isOpen: boolean;
@@ -46,8 +50,9 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="space-y-6">
           <div>
-            <Label>NIP</Label>
-            <Select
+            <SelectField
+                label="NIP"
+                required
                 options={employeeOptions.length > 0 ? employeeOptions : [{ label: 'Memuat opsi...', value: '' }]}
                 defaultValue={form.nip || ''}
                 onChange={(v) => handleInput('nip', v)}
@@ -56,8 +61,9 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
             />
           </div>
           <div>
-            <Label>Jenis Perubahan</Label>
-            <Select 
+            <SelectField 
+                label="Jenis Perubahan"
+                required
                 options={changeTypeOptions.length > 0 ? changeTypeOptions : [{ label: 'Memuat opsi...', value: '' }]} 
                 defaultValue={form.change_type_id || ''} 
                 onChange={(v) => handleInput('change_type_id', v)} 
@@ -66,16 +72,31 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
             />
           </div>
           <div>
-            <Label>Perusahaan</Label>
-            <Select options={companyOptions} defaultValue={form.company_id || ''} onChange={(v) => handleInput('company_id', v)} placeholder="Select" disabled={isEditMode} />
+            <SelectField 
+                label="Perusahaan"
+                required
+                options={companyOptions} 
+                defaultValue={form.company_id || ''} 
+                onChange={(v) => handleInput('company_id', v)} 
+                placeholder="Select" 
+                disabled={isEditMode} 
+            />
           </div>
           <div>
-            <Label>Direktorat</Label>
-            <Select options={directorateOptions} defaultValue={form.directorate_id || ''} onChange={(v) => handleInput('directorate_id', v)} placeholder="Select" disabled={isEditMode} />
+            <SelectField 
+                label="Direktorat"
+                required
+                options={directorateOptions} 
+                defaultValue={form.directorate_id || ''} 
+                onChange={(v) => handleInput('directorate_id', v)} 
+                placeholder="Select" 
+                disabled={isEditMode} 
+            />
           </div>
           <div>
-            <Label>Departemen</Label>
-            <Select 
+            <SelectField 
+                label="Departemen"
+                required
                 options={departmentOptions.length > 0 ? departmentOptions : [{ label: 'Pilih divisi terlebih dahulu', value: '' }]} 
                 defaultValue={form.department_id || ''} 
                 onChange={(v) => handleInput('department_id', v)} 
@@ -84,27 +105,53 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
             />
           </div>
           <div>
-            <Label>Jabatan</Label>
-            <Select options={jobTitleOptions} defaultValue={form.job_title_id || ''} onChange={(v) => handleInput('job_title_id', v)} placeholder="Select" disabled={isEditMode} />
+            <SelectField 
+                label="Jabatan"
+                required
+                options={jobTitleOptions} 
+                defaultValue={form.job_title_id || ''} 
+                onChange={(v) => handleInput('job_title_id', v)} 
+                placeholder="Select" 
+                disabled={isEditMode} 
+            />
           </div>
           <div>
-            <Label>Golongan</Label>
-            <InputField value={selectedGrade || form.golongan || ''} disabled placeholder="Otomatis dari Jabatan" onChange={() => {}} />
+            <InputField 
+                label="Golongan"
+                required
+                value={selectedGrade || form.golongan || ''} 
+                disabled 
+                placeholder="Otomatis dari Jabatan" 
+                onChange={() => {}} 
+            />
           </div>
           <div>
-            <Label>Alasan Perubahan</Label>
-            <InputField placeholder="Masukkan alasan perubahan" value={form.reason || ''} onChange={(e) => handleInput('reason', e.target.value)} disabled={isEditMode} />
+            <TextAreaField 
+                label="Alasan Perubahan"
+                required
+                placeholder="Masukkan alasan perubahan" 
+                value={form.reason || ''} 
+                onChange={(e) => handleInput('reason', e)} 
+                disabled={isEditMode} 
+            />
           </div>
         </div>
         <div className="space-y-6">
           <div>
-            <Label>Nama</Label>
-            <InputField placeholder="Masukkan nama" value={form.nama || ''} disabled onChange={(e) => handleInput('nama', e.target.value)} />
+            <InputField 
+                label="Nama"
+                required
+                placeholder="Masukkan nama" 
+                value={form.nama || ''} 
+                disabled 
+                onChange={(e) => handleInput('nama', e.target.value)} 
+            />
           </div>
           <div>
-            <DatePicker
+            <DateField
               id="effectiveDatePicker"
               label="Tanggal Efektif"
+              required
               defaultDate={form.efektif_date || undefined}
               placeholder="— (masih aktif)"
               onChange={(...args) => handleInput('efektif_date', args[1])}
@@ -112,8 +159,9 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
             />
           </div>
           <div>
-            <Label>Kantor</Label>
-            <Select 
+            <SelectField 
+                label="Kantor"
+                required
                 options={officeOptions.length > 0 ? officeOptions : [{ label: 'Pilih perusahaan terlebih dahulu', value: '' }]} 
                 defaultValue={form.office_id || ''} 
                 onChange={(v) => handleInput('office_id', v)} 
@@ -122,8 +170,9 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
             />
           </div>
           <div>
-            <Label>Divisi</Label>
-            <Select 
+            <SelectField 
+                label="Divisi"
+                required
                 options={divisionOptions.length > 0 ? divisionOptions : [{ label: 'Pilih direktorat terlebih dahulu', value: '' }]} 
                 defaultValue={form.division_id || ''} 
                 onChange={(v) => handleInput('division_id', v)} 
@@ -132,21 +181,46 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
             />
           </div>
           <div>
-            <Label>Position</Label>
-            <Select options={positionOptions} defaultValue={form.position_id || ''} onChange={(v) => handleInput('position_id', v)} placeholder="Select" disabled={isEditMode} />
+            <SelectField 
+                label="Position"
+                required
+                options={positionOptions} 
+                defaultValue={form.position_id || ''} 
+                onChange={(v) => handleInput('position_id', v)} 
+                placeholder="Select" 
+                disabled={isEditMode} 
+            />
           </div>
           <div>
-            <Label>Jenjang Jabatan</Label>
-            <Select options={positionLevelOptions} defaultValue={form.position_level_id || ''} onChange={(v) => handleInput('position_level_id', v)} placeholder="Select" disabled={isEditMode} />
+            <SelectField 
+                label="Jenjang Jabatan"
+                required
+                options={positionLevelOptions} 
+                defaultValue={form.position_level_id || ''} 
+                onChange={(v) => handleInput('position_level_id', v)} 
+                placeholder="Select" 
+                disabled={isEditMode} 
+            />
           </div>
           <div>
-            <Label>Kategori Karyawan</Label>
-            <Select options={kategoriKaryawanOptions} defaultValue={form.employee_category_id || ''} onChange={(v) => handleInput('employee_category_id', v)} placeholder="Select" disabled={isEditMode} />
+            <SelectField 
+                label="Kategori Karyawan"
+                required
+                options={kategoriKaryawanOptions} 
+                defaultValue={form.employee_category_id || ''} 
+                onChange={(v) => handleInput('employee_category_id', v)} 
+                placeholder="Select" 
+                disabled={isEditMode} 
+            />
           </div>
           {!hideSkFileUpload && (
             <div>
-              <Label>Unggah file Sk</Label>
-              <FileInput onChange={handleFileChange} />
+              <FIleField 
+                label="Unggah file Sk"
+                required
+                onChange={handleFileChange}
+                // isLabel={false}
+              />
               {form.decree_file && <p className="text-xs text-gray-500 mt-1">File saat ini: {form.decree_file}</p>}
             </div>
           )}
