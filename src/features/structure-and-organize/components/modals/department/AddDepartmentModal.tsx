@@ -1,9 +1,9 @@
 import React from 'react';
 import FileInput from '../../../../../components/shared/form/FileInput';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
-import Input from '@/components/form/input/InputField';
-import Select from '@/components/form/Select';
-import TextArea from '@/components/form/input/TextArea';
+import InputField from '@/components/shared/field/InputField';
+import SelectField from '@/components/shared/field/SelectField';
+import TextAreaField from '@/components/shared/field/TextAreaField';
 import { useAddDepartmentModal } from '../../../hooks/modals/department/useAddDepartmentModal';
 
 interface AddDepartmentModalProps {
@@ -37,53 +37,52 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ isOpen, onClose
       handleSubmit={handleSubmit}
       submitting={submitting}
       content={<>
-      <div className="space-y-2">
-          <label className="text-sm font-medium">Nama Departemen</label>
-          <Input
-            type="text"
-            required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Divisi</label>
-          
-          <Select
+        <InputField
           required
-            options={divisions.map((d) => ({ value: d.id, label: d.division_name }))}
-            onChange={(e) => setDivisionId(e)}
-            defaultValue={divisionId}
-            className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-        </div>
+          type="text"
+          label="Nama Departemen"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          containerClassName="space-y-2"
+          labelClassName="text-sm font-medium"
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+        />
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium">No. Surat Keputusan / Memo Internal</label>
-          <Input
+        <SelectField
           required
-            type="text"
-            value={memoNumber}
-            onChange={(e) => setMemoNumber(e.target.value)}
-            className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-        </div>
+          label="Divisi"
+          options={divisions.map((d) => ({ value: d.id, label: d.division_name }))}
+          onChange={(e) => setDivisionId(e)}
+          defaultValue={divisionId}
+          containerClassName="space-y-2"
+          labelClassName="text-sm font-medium"
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+        />
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Deskripsi Umum</label>
-          <TextArea
-            required
-            value={description}
-            onChange={(value) => setDescription(value)}
-            className="w-full rounded-xl border border-gray-300 px-4 py-3 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary"
-            placeholder="Enter as Deskripsi ..."
-          />
-        </div>
+        <InputField
+          required
+          type="text"
+          label="No. Surat Keputusan / Memo Internal"
+          value={memoNumber}
+          onChange={(e) => setMemoNumber(e.target.value)}
+          containerClassName="space-y-2"
+          labelClassName="text-sm font-medium"
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+        />
+
+        <TextAreaField
+          required
+          label="Deskripsi Umum"
+          value={description}
+          onChange={(value) => setDescription(value)}
+          containerClassName="space-y-2"
+          labelClassName="text-sm font-medium"
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary"
+          placeholder="Enter as Deskripsi ..."
+        />
 
 
-        <FileInput skFileName={skFileName} onChange={handleFileChange} />
+        <FileInput required skFileName={skFileName} onChange={handleFileChange} />
 
       </>}
     />
