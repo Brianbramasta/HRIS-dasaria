@@ -20,6 +20,8 @@ export default function SalaryByDirectorateDonut() {
           height={320}
           width="100%"
           donutSize="68%"
+          valueFormat="percent"
+          tooltipValueFormat="percent"
           showLegend
           className="w-full"
         />

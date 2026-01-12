@@ -127,9 +127,9 @@ export default function MonthlySalaryPanel() {
         <BarChartTwo series={series} categories={categories} height={320} />
       </div>
 
-      <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
+      {/* <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
         Selected year: {year}
-      </div>
+      </div> */}
     </div>
   );
 }
