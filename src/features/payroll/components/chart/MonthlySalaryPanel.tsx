@@ -1,41 +1,36 @@
-import { useMemo, useState } from "react";
 import Button from "@/components/ui/button/Button";
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
-import { Calendar, ChevronDown, ChevronLeft, ChevronRight } from "react-feather";
-import BarChartTwo, { BarSeries } from "@/components/charts/bar/BarChartTwo";
-
-type Mode = "combined" | "basic";
+import {
+  Calendar,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+} from "react-feather";
+import BarChartTwo from "@/components/charts/bar/BarChartTwo";
+import useMonthlySalaryPanel from "@/features/payroll/hooks/chart/useMonthlySalaryPanel";
 
 export default function MonthlySalaryPanel() {
-  const [mode, setMode] = useState<Mode>("combined");
-  const [year, setYear] = useState<number>(2026);
-  const [isModeOpen, setIsModeOpen] = useState(false);
-  const [isYearOpen, setIsYearOpen] = useState(false);
-  const [yearRangeStart, setYearRangeStart] = useState(2020);
-
-  const categories = useMemo(
-    () => ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Agt", "Sept", "Okt", "Nov", "Des"],
-    []
-  );
-
-  const series = useMemo<BarSeries[]>(() => {
-    if (mode === "basic") {
-      return [
-        { name: "Base Salary", data: [28, 32, 22, 30, 18, 24, 28, 26, 14, 20, 26, 30] },
-      ];
-    }
-    return [
-      { name: "Base Salary", data: [28, 30, 22, 28, 18, 24, 28, 26, 14, 20, 26, 30] },
-      { name: "Allowance", data: [8, 6, 5, 10, 4, 7, 12, 9, 6, 8, 9, 10] },
-      { name: "Overtime", data: [6, 5, 4, 8, 3, 4, 10, 7, 4, 6, 7, 8] },
-      { name: "Incentive", data: [5, 6, 7, 6, 6, 8, 5, 6, 3, 5, 4, 6] },
-    ];
-  }, [mode]);
+  const {
+    mode,
+    setMode,
+    year,
+    setYear,
+    isModeOpen,
+    setIsModeOpen,
+    isYearOpen,
+    setIsYearOpen,
+    yearRangeStart,
+    setYearRangeStart,
+    categories,
+    series,
+  } = useMonthlySalaryPanel();
 
   return (
     <div className="rounded-2xl border border-gray-200 bg-white px-5 pb-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h4 className="text-lg font-semibold text-gray-800 dark:text-white/90">Gaji Bulanan</h4>
+        <h4 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+          Gaji Bulanan
+        </h4>
 
         <div className="flex flex-wrap items-center gap-2 sm:justify-end">
           <div className="relative">
@@ -132,8 +127,9 @@ export default function MonthlySalaryPanel() {
         <BarChartTwo series={series} categories={categories} height={320} />
       </div>
 
-      <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">Selected year: {year}</div>
+      <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
+        Selected year: {year}
+      </div>
     </div>
   );
 }
-
