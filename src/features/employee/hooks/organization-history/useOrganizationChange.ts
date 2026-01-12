@@ -224,12 +224,12 @@ export function useOrganizationChange({
         if (payload?.decree_file) fd.append('decree_file', payload?.decree_file);
 
         await organizationChangeService.storeOrganizationChange(leadEmployeeId ?? null, fd);
-        addNotification({
-          title: 'Success',
-          description: 'Organization change has been created',
-          variant: 'success',
-          hideDuration: 4000,
-        });
+        // addNotification({
+        //   title: 'Success',
+        //   description: 'Organization change has been created',
+        //   variant: 'success',
+        //   hideDuration: 4000,
+        // });
         return true;
       } catch (err: any) {
         const message = err?.message || 'Failed to create organization change';
@@ -268,15 +268,17 @@ export function useOrganizationChange({
         
         if (detail?.id === id) setDetail(updated);
         
-        addNotification({
-          title: 'Success',
-          description: 'Organization change has been updated',
-          variant: 'success',
-          hideDuration: 4000,
-        });
+        // addNotification({
+        //   title: 'Success',
+        //   description: 'Organization change has been updated',
+        //   variant: 'success',
+        //   hideDuration: 4000,
+        // });
         return true;
       } catch (err: any) {
         const message = err?.message || 'Failed to update organization change';
+
+        console.log('error', err);
         addNotification({ title: 'Error', description: message, variant: 'error', hideDuration: 5000 });
         return false;
       } finally {

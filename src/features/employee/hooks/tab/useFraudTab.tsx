@@ -4,7 +4,7 @@ import { formatUrlFile } from '@/utils/formatUrlFile';
 import type { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
 import { IconPencil, IconHapus, FileText } from '@/icons/components/icons';
 import { useFraudContract } from '@/features/employee/hooks/employee-data/detail/contract/useFraudContract';
-import type { ViolationItem, CreateViolationPayload, UpdateViolationPayload } from '@/features/employee/services/detail/FraudService';
+import type { ViolationItem, CreateViolationPayload, UpdateViolationPayload } from '@/features/employee/types/dto/FraudType';
 import { clearSkFile, useFileStore } from '@/stores/fileStore';
 import type { PelanggaranEntry } from '@/features/employee/components/modals/employee-data/fraud/FraudModal';
 

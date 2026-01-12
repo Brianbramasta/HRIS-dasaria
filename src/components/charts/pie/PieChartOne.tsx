@@ -10,6 +10,8 @@ type PieChartOneProps = {
   donutSize?: string;
   showLegend?: boolean;
   totalValue?: number;
+  valueFormat?: "value" | "percent";
+  tooltipValueFormat?: "value" | "percent";
   className?: string;
 };
 
@@ -22,8 +24,13 @@ export default function PieChartOne({
   donutSize = "65%",
   showLegend = false,
   totalValue,
+  valueFormat = "value",
+  tooltipValueFormat,
   className,
 }: PieChartOneProps) {
+  const resolvedTooltipValueFormat = tooltipValueFormat ?? valueFormat;
+  const sum = series.reduce((a, b) => a + b, 0);
+
   const options: ApexOptions = {
     colors,
     labels,
@@ -40,16 +47,28 @@ export default function PieChartOne({
           background: "transparent",
           labels: {
             show: true,
+            name: {
+              show: true,
+              offsetY: -10,
+              formatter: (val) => `${val ?? ""}`,
+            },
             value: {
               show: true,
-              offsetY: 0,
+              offsetY: 10,
+              formatter: (val) => {
+                if (valueFormat === "percent") {
+                  if (!sum) return "0%";
+                  const percent = (Number(val) / sum) * 100;
+                  return `${percent.toFixed(0)}%`;
+                }
+                return `${val}`;
+              },
             },
             total: {
               show: true,
               label: "",
               formatter: () => {
                 if (typeof totalValue === "number") return `${totalValue}`;
-                const sum = series.reduce((a, b) => a + b, 0);
                 return `${sum}`;
               },
             },
@@ -75,9 +94,17 @@ export default function PieChartOne({
     },
     tooltip: {
       enabled: true,
-      fillSeriesColor: true,
+      theme: "light",
+      fillSeriesColor: false,
       y: {
-        formatter: (val: number) => val.toFixed(2),
+        formatter: (val: number) => {
+          if (resolvedTooltipValueFormat === "percent") {
+            if (!sum) return "0%";
+            const percent = (val / sum) * 100;
+            return `${percent.toFixed(0)}%`;
+          }
+          return val.toFixed(2);
+        },
       },
     },
     stroke: {

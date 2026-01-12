@@ -50,8 +50,8 @@ export default function BarChartTwo({
     },
     legend: {
       show: true,
-      position: "top",
-      horizontalAlign: "left",
+      position: "bottom",
+      horizontalAlign: "center",
       fontFamily: "Outfit",
       fontSize: "14px",
       fontWeight: 400,

@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import type { Karyawan } from '@/features/employee/types/Employee';
+import type { Karyawan } from '@/features/employee/types/dto/EmployeeType';
 import Button from '@/components/ui/button/Button';
 import { DataTable } from '@/components/shared/datatable/DataTable';
 import AddContractModal from '@/features/employee/components/modals/employee-data/contract/AddContractModal';
@@ -7,7 +7,7 @@ import EditContractModal from '@/features/employee/components/modals/employee-da
 import DetailContractModal from '@/features/employee/components/modals/employee-data/contract/DetailContractModal';
 import { useContractTab } from '@/features/employee/hooks/employee-data/detail/contract/useContract';
 import ComponentCard from '@/components/common/ComponentCard';
-import type { ContractHistoryItem } from '@/features/employee/services/detail/ContractService';
+import type { ContractHistoryItem } from '@/features/employee/types/dto/ContractType';
 import { formatUrlFile } from '@/utils/formatUrlFile';
 import PdfPreviewEmbed from '@/components/shared/modal/PdfPreviewEmbed';
 import { clearSkFile } from '@/stores/fileStore';
@@ -47,7 +47,7 @@ export default function ContractTab({ employeeId: employeeIdProp, data }: Props)
     handleAddSubmit,
     handleEditRow,
     handleEditSubmit,
-    contractData,
+    // contractData,
     isSubmitting,
   } = useContractTab({ employeeIdProp, data });
 

@@ -106,6 +106,7 @@ export const Step01PersonalData: React.FC = () => {
               label="Tanggal Lahir"
               defaultDate={step1.tanggalLahir}
               onChange={(_, dateStr) => handleChange('tanggalLahir', dateStr || '')}
+              required
             />
           </div>
 

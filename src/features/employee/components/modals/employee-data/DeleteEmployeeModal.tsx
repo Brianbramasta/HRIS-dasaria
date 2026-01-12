@@ -1,6 +1,6 @@
 import React from 'react';
 import ModalDelete from '../../../../../components/shared/modal/ModalDelete';
-import type { Karyawan } from '../../../types/Employee';
+import type { Karyawan } from '../../../types/dto/EmployeeType';
 
 type Props = {
   isOpen: boolean;

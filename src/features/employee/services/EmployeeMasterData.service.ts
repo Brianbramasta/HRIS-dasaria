@@ -13,7 +13,7 @@ import {
   JobTitleDropdownItem,
   PositionDropdownItem,
   PTKPDropdownItem,
-} from '../types/Employee';
+} from '../types/dto/EmployeeType';
 
 interface ReligionDropdownItem {
     id: string;
