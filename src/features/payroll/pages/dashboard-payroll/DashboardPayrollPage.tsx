@@ -1,10 +1,16 @@
 
 
-export default function DashboardPenggajianPage() {
-  
+import EmployeeFluctuationPanel from "../../components/chart/EmployeeFluctuationPanel";
+import MonthlySalaryPanel from "../../components/chart/MonthlySalaryPanel";
+import ReportPeriodPanel from "../../components/chart/ReportPeriodPanel";
+
+export default function DashboardPayrollPage() {
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Dashboard Penggajian</h1>
+    <div className="space-y-6">
+      <h3>Dashboard Penggajian</h3>
+      <ReportPeriodPanel />
+      <MonthlySalaryPanel />
+      <EmployeeFluctuationPanel />
     </div>
   );
 }
