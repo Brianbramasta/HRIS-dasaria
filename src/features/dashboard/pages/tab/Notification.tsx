@@ -9,6 +9,7 @@ IconNotifNegosiasi,
 IconNotifDisetujui} from "@/icons/components/icons"
 import { ContractRenewalDetailModal } from "../../components/modals/ContractRenewalDetailModal";
 import RejectConfirmationModal from "../../components/modals/RejectConfirmationModal";
+import ActionConfirmationModal, { ActionType } from "../../components/modals/ActionConfirmationModal";
 
 type Action =
   | { key: "detail"; label: string; color: "blue-old" }
@@ -63,6 +64,10 @@ export default function Notification() {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   // State untuk modal konfirmasi penolakan
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+  
+  // State untuk modal aksi (Approve / Negotiate)
+  const [isActionModalOpen, setIsActionModalOpen] = useState(false);
+  const [actionType, setActionType] = useState<ActionType>('approve');
 
   // Handler onChange dari DatePicker: menerima Date[] dan dateStr (ISO)
   // Perubahan: jika dateStr kosong (reset), bersihkan state agar input kosong
@@ -148,6 +153,12 @@ export default function Notification() {
                           setIsDetailModalOpen(true);
                         } else if (a.key === "reject") {
                           setIsRejectModalOpen(true);
+                        } else if (a.key === "approve") {
+                          setActionType('approve');
+                          setIsActionModalOpen(true);
+                        } else if (a.key === "negotiate") {
+                          setActionType('negotiate');
+                          setIsActionModalOpen(true);
                         }
                       }}
                     >
@@ -174,6 +185,16 @@ export default function Notification() {
           console.log("Rejected with reason:", reason);
           setIsRejectModalOpen(false);
         }}
+      />
+
+      <ActionConfirmationModal
+        isOpen={isActionModalOpen}
+        onClose={() => setIsActionModalOpen(false)}
+        onConfirm={() => {
+          console.log(`Confirmed action: ${actionType}`);
+          setIsActionModalOpen(false);
+        }}
+        type={actionType}
       />
     </div>
   );
