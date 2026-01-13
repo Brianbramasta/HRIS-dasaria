@@ -19,7 +19,7 @@ export function useEditPositionModal({
 }: UseEditPositionModalParams) {
   const [name, setName] = useState('');
   const [grade, setGrade] = useState('');
-  const [directSubordinates, setDirectSubordinates] = useState('');
+  const [structuralPositions, setStructuralPositions] = useState<string[]>(['']);
   const [memoNumber, setMemoNumber] = useState('');
   const [jobDescription, setJobDescription] = useState('');
   const skFile = useFileStore((s) => s.skFile);
@@ -36,10 +36,11 @@ export function useEditPositionModal({
         if (!mappedPosition) return;
         setName(mappedPosition.name || '');
         setGrade((mappedPosition.grade as string) || '');
-        setDirectSubordinates(
-          Array.isArray(mappedPosition.directSubordinates)
-            ? mappedPosition.directSubordinates.join(', ')
-            : ''
+        setStructuralPositions(
+          Array.isArray(mappedPosition.directSubordinates) &&
+          mappedPosition.directSubordinates.length > 0
+            ? mappedPosition.directSubordinates.map((s: string) => s || '')
+            : ['']
         );
         setMemoNumber(mappedPosition.memoNumber || '');
         setJobDescription(mappedPosition.jobDescription || '');
@@ -59,10 +60,10 @@ export function useEditPositionModal({
     if (position) {
       setName(position.name || '');
       setGrade(position.grade || '');
-      setDirectSubordinates(
-        Array.isArray(position.directSubordinates)
-          ? position.directSubordinates.join(', ')
-          : ''
+      setStructuralPositions(
+        Array.isArray(position.directSubordinates) && position.directSubordinates.length > 0
+          ? position.directSubordinates.map((s) => s || '')
+          : ['']
       );
       setMemoNumber(position.memoNumber || '');
       setJobDescription(position.jobDescription || '');
@@ -71,16 +72,23 @@ export function useEditPositionModal({
 
   const handleSubmit = async () => {
     if (!position) return;
+    const cleanedStructural = structuralPositions.map((s) => s.trim()).filter(Boolean);
+    if (cleanedStructural.length === 0) {
+      addNotification({
+        variant: 'error',
+        title: 'Jabatan tidak diupdate',
+        description: 'Jabatan Struktural wajib diisi minimal satu baris',
+        hideDuration: 4000,
+      });
+      return;
+    }
     setSubmitting(true);
     try {
       const payload = {
         name: name.trim(),
         grade: grade.trim() || null,
         jobDescription: jobDescription.trim() || null,
-        directSubordinates: directSubordinates
-          .split(',')
-          .map((s) => s.trim())
-          .filter(Boolean),
+        directSubordinates: cleanedStructural,
         memoNumber: memoNumber.trim(),
         skFile: skFile?.file as File,
       };
@@ -105,8 +113,13 @@ export function useEditPositionModal({
     setName,
     grade,
     setGrade,
-    directSubordinates,
-    setDirectSubordinates,
+    structuralPositions,
+    setStructuralPositions,
+    addStructuralRow: () => setStructuralPositions((prev) => [...prev, '']),
+    removeStructuralRow: (index: number) =>
+      setStructuralPositions((prev) => prev.filter((_, i) => i !== index)),
+    updateStructuralAt: (index: number, value: string) =>
+      setStructuralPositions((prev) => prev.map((v, i) => (i === index ? value : v))),
     memoNumber,
     setMemoNumber,
     jobDescription,
