@@ -1,4 +1,5 @@
-import create from 'zustand';
+import { useState, useMemo } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { personalInformationService } from '@/features/employee/services/detail/PersonalInformationService';
 
 interface PersonalInfoDetail {
@@ -19,24 +20,47 @@ interface DetailDataKaryawanPersonalInfoState {
   clearDetail: () => void;
 }
 
-export const useDetailDataKaryawanPersonalInfo = create<DetailDataKaryawanPersonalInfoState>(
-  (set) => ({
-    detail: null,
-    loading: false,
-    error: null,
+export const useDetailDataKaryawanPersonalInfo = (): DetailDataKaryawanPersonalInfoState => {
+  const queryClient = useQueryClient();
+  const [employeeId, setEmployeeId] = useState<string | null>(null);
 
-    fetchDetail: async (employeeId: string) => {
-      try {
-        set({ loading: true, error: null });
-        const res = await personalInformationService.getPersonalInformationData(employeeId);
-        // console.log('res.data', res.data.Data_Social_Media[0]);
-        set({ detail: res.data, loading: false });
-      } catch (err) {
-        const msg = err instanceof Error ? err.message : 'Gagal memuat detail karyawan';
-        set({ error: msg, loading: false });
-      }
+  const {
+    data,
+    isLoading,
+    isFetching,
+    error,
+  } = useQuery({
+    queryKey: ['employee-personal-info', employeeId],
+    queryFn: async () => {
+      if (!employeeId) throw new Error('employeeId tidak tersedia');
+      const res = await personalInformationService.getPersonalInformationData(employeeId);
+      return res.data as PersonalInfoDetail;
     },
+    enabled: !!employeeId,
+    staleTime: 5 * 60 * 1000,
+  });
 
-    clearDetail: () => set({ detail: null, loading: false, error: null }),
-  })
-);
+  const fetchDetail = async (id: string) => {
+    setEmployeeId(id);
+  };
+
+  const clearDetail = () => {
+    if (employeeId) {
+      queryClient.removeQueries({ queryKey: ['employee-personal-info', employeeId] });
+    }
+    setEmployeeId(null);
+  };
+
+  const state: DetailDataKaryawanPersonalInfoState = useMemo(
+    () => ({
+      detail: data ?? null,
+      loading: isLoading || isFetching,
+      error: error ? (error instanceof Error ? error.message : 'Gagal memuat detail karyawan') : null,
+      fetchDetail,
+      clearDetail,
+    }),
+    [data, isLoading, isFetching, error, fetchDetail, clearDetail]
+  );
+
+  return state;
+};

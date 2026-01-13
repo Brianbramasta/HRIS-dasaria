@@ -423,7 +423,7 @@ export const usePersonalInformation = (employeeId?: string): UsePersonalInformat
   const [data, setData] = useState<MappedPersonalInformation | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { fetchDetail } = useDetailDataKaryawanPersonalInfo()
+  const { fetchDetail, clearDetail } = useDetailDataKaryawanPersonalInfo()
 
   /**
    * Get Personal Information Data
@@ -481,6 +481,9 @@ export const usePersonalInformation = (employeeId?: string): UsePersonalInformat
         //     ...data,
         //     personal: updatedPersonal,
         //   });
+        console.log('updatePersonalData response:', response);
+        clearDetail();
+        fetchDetail(id);
         } else {
           setError(response.meta?.message || 'Failed to update personal data');
         }
@@ -517,11 +520,8 @@ export const usePersonalInformation = (employeeId?: string): UsePersonalInformat
         const response = await personalInformationService.updateEducationData(id, mappedPayload);
         console.log('updateEducationData response:', response);
         if (response.meta.status === 200  ) {
-            addNotification({ 
-            variant: 'success',
-            title: 'Berhasil',
-            description: 'Data pendidikan berhasil diperbarui.',
-            hideDuration: 3000 });
+    
+            clearDetail();
             fetchDetail(id);
 
         //   const educationFormal = (response.data.education_formal || []).map(mapEducationFormal);
@@ -604,11 +604,7 @@ const mapSocialMediaModalToPayload = useCallback(
         //     ...data,
         //     socialMedia: updatedSocialMedia,
         //   });
-        addNotification({ 
-            variant: 'success',
-            title: 'Berhasil',
-            description: 'Data sosial media berhasil diperbarui.',
-            hideDuration: 3000 });
+            clearDetail();
             fetchDetail(id);
         } else {
           setError(response.meta?.message || 'Failed to update social media data');
@@ -646,11 +642,7 @@ const mapSocialMediaModalToPayload = useCallback(
         //     ...data,
         //     salary: updatedSalary,
         //   });
-        addNotification({ 
-            variant: 'success',
-            title: 'Berhasil',
-            description: 'Data gaji berhasil diperbarui.',
-            hideDuration: 3000 });
+            clearDetail();
             fetchDetail(id);
         } else {
           setError(response.meta?.message || 'Failed to update salary data');
@@ -683,11 +675,8 @@ const mapSocialMediaModalToPayload = useCallback(
         const response = await personalInformationService.updateBpjsData(id, payload);
 
         if (response.meta.status == 200) {
-            addNotification({ 
-            variant: 'success',
-            title: 'Berhasil',
-            description: 'Data BPJS berhasil diperbarui.',
-            hideDuration: 3000 });
+  
+            clearDetail();
             fetchDetail(id);
         //   const updatedBpjs = mapBpjs(response.data);
         //   setData({
@@ -778,12 +767,9 @@ const mapSocialMediaModalToPayload = useCallback(
         const response = await personalInformationService.updateEmploymentPosition(id, mappedPayload);
 
         if (response.meta.status == 200) {
-           addNotification({
-            variant: 'success',
-            title: 'Berhasil',
-            description: 'Data posisi berhasil diperbarui.',
-            hideDuration: 3000 });
-            fetchDetail(id);
+
+          clearDetail();
+          fetchDetail(id);
         } else {
           setError(response.meta?.message || 'Failed to update employment position');
         }
@@ -816,12 +802,9 @@ const mapSocialMediaModalToPayload = useCallback(
         const response = await personalInformationService.updateEmployeeDocument(id, payload);
 
         if (response.meta.status == 200) {
-           addNotification({
-            variant: 'success',
-            title: 'Berhasil',
-            description: 'Dokumen karyawan berhasil diperbarui.',
-            hideDuration: 3000 });
-            fetchDetail(id);
+    
+          clearDetail();
+          fetchDetail(id);
         } else {
           setError(response.meta?.message || 'Failed to update employee document');
         }
