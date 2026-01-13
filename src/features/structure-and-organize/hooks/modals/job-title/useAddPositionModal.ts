@@ -47,7 +47,7 @@ export function useAddPositionModal({ onClose, onSuccess }: UseAddPositionModalP
         name: name.trim(),
         grade: grade.trim() || null,
         jobDescription: jobDescription.trim() || null,
-        directSubordinates: cleanedStructural,
+        directSubordinates: cleanedStructural, //note-update:ubah parameter directSubordinates menjadi structuralPositions ketika api sudah di update
         memoNumber: memoNumber.trim(),
         skFile: skFile?.file as File,
       };

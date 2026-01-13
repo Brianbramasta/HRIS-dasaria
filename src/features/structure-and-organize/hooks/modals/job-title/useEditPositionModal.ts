@@ -36,6 +36,7 @@ export function useEditPositionModal({
         if (!mappedPosition) return;
         setName(mappedPosition.name || '');
         setGrade((mappedPosition.grade as string) || '');
+        //note-update:ubah parameter directSubordinates menjadi structuralPositions ketika api sudah di update
         setStructuralPositions(
           Array.isArray(mappedPosition.directSubordinates) &&
           mappedPosition.directSubordinates.length > 0
@@ -60,6 +61,7 @@ export function useEditPositionModal({
     if (position) {
       setName(position.name || '');
       setGrade(position.grade || '');
+       //note-update:ubah parameter directSubordinates menjadi structuralPositions ketika api sudah di update
       setStructuralPositions(
         Array.isArray(position.directSubordinates) && position.directSubordinates.length > 0
           ? position.directSubordinates.map((s) => s || '')
@@ -88,7 +90,7 @@ export function useEditPositionModal({
         name: name.trim(),
         grade: grade.trim() || null,
         jobDescription: jobDescription.trim() || null,
-        directSubordinates: cleanedStructural,
+        directSubordinates: cleanedStructural, //note-update:ubah parameter directSubordinates menjadi structuralPositions ketika api sudah di update
         memoNumber: memoNumber.trim(),
         skFile: skFile?.file as File,
       };
