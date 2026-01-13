@@ -7,6 +7,7 @@ import {IconNotifDetail,
 IconNotifDiTolak,
 IconNotifNegosiasi,
 IconNotifDisetujui} from "@/icons/components/icons"
+import { ContractRenewalDetailModal } from "../../components/modals/ContractRenewalDetailModal";
 
 type Action =
   | { key: "detail"; label: string; color: "blue-old" }
@@ -56,6 +57,10 @@ export default function Notification() {
   // State filter tanggal (ISO) agar ditampilkan kembali di input setelah Simpan
   const [rangeStart, setRangeStart] = useState<string>("");
   const [rangeEnd, setRangeEnd] = useState<string>("");
+
+  // State untuk modal detail pembaruan kontrak
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+
   // Handler onChange dari DatePicker: menerima Date[] dan dateStr (ISO)
   // Perubahan: jika dateStr kosong (reset), bersihkan state agar input kosong
   const handleRangeChange = (_dates: Date[], dateStr?: string) => {
@@ -131,7 +136,16 @@ export default function Notification() {
                       ? <IconNotifNegosiasi />
                       : <IconNotifDisetujui />;
                   return (
-                    <button key={a.key} type="button" className={`${base} ${styles}`}>
+                    <button 
+                      key={a.key} 
+                      type="button" 
+                      className={`${base} ${styles}`}
+                      onClick={() => {
+                        if (a.key === "detail") {
+                          setIsDetailModalOpen(true);
+                        }
+                      }}
+                    >
                       {icon}
                       {a.label}
                     </button>
@@ -142,6 +156,11 @@ export default function Notification() {
           </Card>
         ))}
       </div>
+
+      <ContractRenewalDetailModal 
+        isOpen={isDetailModalOpen} 
+        onClose={() => setIsDetailModalOpen(false)} 
+      />
     </div>
   );
 }
