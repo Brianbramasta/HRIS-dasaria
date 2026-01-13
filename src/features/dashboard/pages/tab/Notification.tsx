@@ -8,6 +8,7 @@ IconNotifDiTolak,
 IconNotifNegosiasi,
 IconNotifDisetujui} from "@/icons/components/icons"
 import { ContractRenewalDetailModal } from "../../components/modals/ContractRenewalDetailModal";
+import RejectConfirmationModal from "../../components/modals/RejectConfirmationModal";
 
 type Action =
   | { key: "detail"; label: string; color: "blue-old" }
@@ -60,6 +61,8 @@ export default function Notification() {
 
   // State untuk modal detail pembaruan kontrak
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  // State untuk modal konfirmasi penolakan
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
 
   // Handler onChange dari DatePicker: menerima Date[] dan dateStr (ISO)
   // Perubahan: jika dateStr kosong (reset), bersihkan state agar input kosong
@@ -143,6 +146,8 @@ export default function Notification() {
                       onClick={() => {
                         if (a.key === "detail") {
                           setIsDetailModalOpen(true);
+                        } else if (a.key === "reject") {
+                          setIsRejectModalOpen(true);
                         }
                       }}
                     >
@@ -160,6 +165,15 @@ export default function Notification() {
       <ContractRenewalDetailModal 
         isOpen={isDetailModalOpen} 
         onClose={() => setIsDetailModalOpen(false)} 
+      />
+
+      <RejectConfirmationModal
+        isOpen={isRejectModalOpen}
+        onClose={() => setIsRejectModalOpen(false)}
+        onConfirm={(reason) => {
+          console.log("Rejected with reason:", reason);
+          setIsRejectModalOpen(false);
+        }}
       />
     </div>
   );
