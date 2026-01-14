@@ -38,9 +38,9 @@ export function useEditPositionModal({
         setGrade((mappedPosition.grade as string) || '');
         //note-update:ubah parameter directSubordinates menjadi structuralPositions ketika api sudah di update
         setStructuralPositions(
-          Array.isArray(mappedPosition.directSubordinates) &&
-          mappedPosition.directSubordinates.length > 0
-            ? mappedPosition.directSubordinates.map((s: string) => s || '')
+          Array.isArray(mappedPosition.structuralJobs) &&
+          mappedPosition.structuralJobs.length > 0
+            ? mappedPosition.structuralJobs.map((s: string) => s || '')
             : ['']
         );
         setMemoNumber(mappedPosition.memoNumber || '');
@@ -63,8 +63,8 @@ export function useEditPositionModal({
       setGrade(position.grade || '');
        //note-update:ubah parameter directSubordinates menjadi structuralPositions ketika api sudah di update
       setStructuralPositions(
-        Array.isArray(position.directSubordinates) && position.directSubordinates.length > 0
-          ? position.directSubordinates.map((s) => s || '')
+        Array.isArray(position.structuralJobs) && position.structuralJobs.length > 0
+          ? position.structuralJobs.map((s: string) => s || '')
           : ['']
       );
       setMemoNumber(position.memoNumber || '');

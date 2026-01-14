@@ -7,13 +7,22 @@ import { toFileSummary } from '../utils/shared/index';
 
 
 export const mapToPosition = (item: any): PositionListItem => ({
-  id: item.id ?? item.id ?? '',
+  id: item.id ?? '',
   name: item.job_title_name ?? item.name ?? '',
   grade: item.grade ?? null,
   jobDescription: item.job_title_description ?? item.description ?? null,
-  directSubordinates: typeof item.direct_subordinate === 'string'
-    ? item.direct_subordinate.split(',').map((s: string) => s.trim()).filter(Boolean)
-    : Array.isArray(item.direct_subordinate) ? item.direct_subordinate : [],
+  structuralJobs: Array.isArray(item.structural_jobs)
+    ? item.structural_jobs
+        .map((s: any) => (s && typeof s.structural_job_name === 'string' ? s.structural_job_name.trim() : ''))
+        .filter((s: string) => !!s)
+    : typeof item.direct_subordinate === 'string'
+    ? item.direct_subordinate
+        .split(',')
+        .map((s: string) => s.trim())
+        .filter(Boolean)
+    : Array.isArray(item.direct_subordinate)
+    ? item.direct_subordinate
+    : [],
   memoNumber: item.job_title_decree_number ?? null,
   skFile: toFileSummary(item.job_title_decree_file_url ?? item.job_title_decree_file ?? null),
 });
