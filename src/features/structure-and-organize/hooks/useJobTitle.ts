@@ -10,7 +10,14 @@ export const mapToPosition = (item: any): PositionListItem => {
   const structuralJobs: string[] = [];
   const structuralJobIds: (string | null)[] = [];
 
-  if (Array.isArray(item.structural_jobs)) {
+  if (typeof item.structural_job_list === 'string' && item.structural_job_list.trim() !== '') {
+    const parts = item.structural_job_list
+      .split(',')
+      .map((s: string) => s.trim())
+      .filter(Boolean);
+    structuralJobs.push(...parts);
+    structuralJobIds.push(...parts.map(() => null));
+  } else if (Array.isArray(item.structural_jobs)) {
     item.structural_jobs.forEach((s: any) => {
       const name =
         s && typeof s.structural_job_name === 'string'
