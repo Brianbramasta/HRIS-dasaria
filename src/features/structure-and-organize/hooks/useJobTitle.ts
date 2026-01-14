@@ -6,26 +6,44 @@ import useFilterStore from '../../../stores/filterStore';
 import { toFileSummary } from '../utils/shared/index';
 
 
-export const mapToPosition = (item: any): PositionListItem => ({
-  id: item.id ?? '',
-  name: item.job_title_name ?? item.name ?? '',
-  grade: item.grade ?? null,
-  jobDescription: item.job_title_description ?? item.description ?? null,
-  structuralJobs: Array.isArray(item.structural_jobs)
-    ? item.structural_jobs
-        .map((s: any) => (s && typeof s.structural_job_name === 'string' ? s.structural_job_name.trim() : ''))
-        .filter((s: string) => !!s)
-    : typeof item.direct_subordinate === 'string'
-    ? item.direct_subordinate
-        .split(',')
-        .map((s: string) => s.trim())
-        .filter(Boolean)
-    : Array.isArray(item.direct_subordinate)
-    ? item.direct_subordinate
-    : [],
-  memoNumber: item.job_title_decree_number ?? null,
-  skFile: toFileSummary(item.job_title_decree_file_url ?? item.job_title_decree_file ?? null),
-});
+export const mapToPosition = (item: any): PositionListItem => {
+  const structuralJobs: string[] = [];
+  const structuralJobIds: (string | null)[] = [];
+
+  if (Array.isArray(item.structural_jobs)) {
+    item.structural_jobs.forEach((s: any) => {
+      const name =
+        s && typeof s.structural_job_name === 'string'
+          ? s.structural_job_name.trim()
+          : '';
+      if (name) {
+        structuralJobs.push(name);
+        structuralJobIds.push(typeof s.id === 'string' ? s.id : s.id?.toString?.() ?? null);
+      }
+    });
+  } else if (typeof item.direct_subordinate === 'string') {
+    const parts = item.direct_subordinate
+      .split(',')
+      .map((s: string) => s.trim())
+      .filter(Boolean);
+    structuralJobs.push(...parts);
+    structuralJobIds.push(...parts.map(() => null));
+  } else if (Array.isArray(item.direct_subordinate)) {
+    structuralJobs.push(...item.direct_subordinate);
+    structuralJobIds.push(...item.direct_subordinate.map(() => null));
+  }
+
+  return {
+    id: item.id ?? '',
+    name: item.job_title_name ?? item.name ?? '',
+    grade: item.grade ?? null,
+    jobDescription: item.job_title_description ?? item.description ?? null,
+    structuralJobs,
+    structuralJobIds,
+    memoNumber: item.job_title_decree_number ?? null,
+    skFile: toFileSummary(item.job_title_decree_file_url ?? item.job_title_decree_file ?? null),
+  };
+};
 
 // Map UI sort field to API column
 const toSortField = (field?: string): string => {
@@ -58,8 +76,8 @@ interface UsePositionsReturn {
 
   // Actions
   fetchPositions: (filter?: TableFilter) => Promise<void>;
-  createPosition: (payload: { name: string; grade?: string | null; jobDescription?: string | null; directSubordinates?: string[]; memoNumber: string; skFile: File; }) => Promise<void>;
-  updatePosition: (id: string, payload: { name?: string; grade?: string | null; jobDescription?: string | null; directSubordinates?: string[]; memoNumber: string; skFile?: File | null; }) => Promise<void>;
+  createPosition: (payload: { name: string; grade?: string | null; jobDescription?: string | null; structuralJobs?: string[]; memoNumber: string; skFile: File; }) => Promise<void>;
+  updatePosition: (id: string, payload: { name?: string; grade?: string | null; jobDescription?: string | null; structuralJobs?: string[]; structuralJobIds?: (string | null)[]; memoNumber: string; skFile?: File | null; }) => Promise<void>;
   deletePosition: (id: string, payload: { memoNumber: string; skFile?: File; }) => Promise<void>;
   detail: (id: string) => Promise<PositionListItem | null>;
   getDropdown: (search?: string) => Promise<{ id: string; job_title_name: string }[]>;
@@ -120,7 +138,7 @@ export const usePositions = (): UsePositionsReturn => {
   }, [page, pageSize, search, sortBy, sortOrder, filterValue]);
 
   // Create Jabatan menggunakan multipart sesuai kontrak API
-  const createPosition = useCallback(async (positionData: { name: string; grade?: string | null; jobDescription?: string | null; directSubordinates?: string[]; memoNumber: string; skFile: File; }) => {
+  const createPosition = useCallback(async (positionData: { name: string; grade?: string | null; jobDescription?: string | null; structuralJobs?: string[]; memoNumber: string; skFile: File; }) => {
     setLoading(true);
     setError(null);
     
@@ -139,7 +157,7 @@ export const usePositions = (): UsePositionsReturn => {
   }, [fetchPositions]);
 
   // Update Jabatan menggunakan POST + _method=PATCH multipart
-  const updatePosition = useCallback(async (id: string, positionData: { name?: string; grade?: string | null; jobDescription?: string | null; directSubordinates?: string[]; memoNumber: string; skFile?: File | null; }) => {
+  const updatePosition = useCallback(async (id: string, positionData: { name?: string; grade?: string | null; jobDescription?: string | null; structuralJobs?: string[]; structuralJobIds?: (string | null)[]; memoNumber: string; skFile?: File | null; }) => {
     setLoading(true);
     setError(null);
     

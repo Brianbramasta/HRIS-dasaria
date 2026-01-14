@@ -45,7 +45,7 @@ class PositionsService {
     name: string;
     grade?: string | null;
     jobDescription?: string | null;
-    directSubordinates?: string[];
+    structuralJobs?: string[];
     memoNumber: string;
     skFile: File;
   }): Promise<any> {
@@ -53,7 +53,15 @@ class PositionsService {
     form.append('job_title_name', payload.name);
     if (payload.grade !== undefined && payload.grade !== null) form.append('grade', payload.grade);
     if (payload.jobDescription !== undefined && payload.jobDescription !== null) form.append('job_title_description', payload.jobDescription);
-    if (payload.directSubordinates && payload.directSubordinates.length > 0) form.append('direct_subordinate', payload.directSubordinates.join(', '));
+    if (payload.structuralJobs && payload.structuralJobs.length > 0) {
+      // form.append('direct_subordinate', payload.structuralJobs.join(', '));
+      payload.structuralJobs.forEach((jobName, index) => {
+        const value = jobName?.trim();
+        if (value) {
+          form.append(`mt_structural_job[${index}][mt_structural_job_name]`, value);
+        }
+      });
+    }
     form.append('job_title_decree_number', payload.memoNumber);
     form.append('job_title_decree_file', payload.skFile);
     return apiService.post<any>(`${this.basePath}job-title`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
@@ -70,7 +78,8 @@ class PositionsService {
     name?: string;
     grade?: string | null;
     jobDescription?: string | null;
-    directSubordinates?: string[];
+    structuralJobs?: string[];
+    structuralJobIds?: (string | null)[];
     memoNumber: string;
     skFile?: File | null;
   }): Promise<any> {
@@ -79,7 +88,18 @@ class PositionsService {
     if (payload.name !== undefined) form.append('job_title_name', payload.name);
     if (payload.grade !== undefined && payload.grade !== null) form.append('grade', payload.grade);
     if (payload.jobDescription !== undefined && payload.jobDescription !== null) form.append('job_title_description', payload.jobDescription);
-    if (payload.directSubordinates && payload.directSubordinates.length > 0) form.append('direct_subordinate', payload.directSubordinates.join(', '));
+    if (payload.structuralJobs && payload.structuralJobs.length > 0) {
+      payload.structuralJobs.forEach((jobName, index) => {
+        const value = jobName?.trim();
+        const idValue = payload.structuralJobIds?.[index] ?? null;
+        if (idValue) {
+          form.append(`mt_structural_job[${index}][id]`, idValue);
+        }
+        if (value) {
+          form.append(`mt_structural_job[${index}][mt_structural_job_name]`, value);
+        }
+      });
+    }
     form.append('job_title_decree_number', payload.memoNumber);
     if (payload.skFile) form.append('job_title_decree_file', payload.skFile);
     return apiService.post<any>(`${this.basePath}job-title/${id}/update`, form, { headers: { 'Content-Type': 'multipart/form-data' } });

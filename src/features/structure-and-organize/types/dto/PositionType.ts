@@ -6,6 +6,7 @@ export interface PositionListItem {
   grade: string | null;
   jobDescription: string | null;
   structuralJobs: string[];
+  structuralJobIds?: (string | null)[];
   memoNumber: string | null;
   skFile: FileSummary | null;
 }
