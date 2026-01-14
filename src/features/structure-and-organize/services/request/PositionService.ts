@@ -35,88 +35,15 @@ class PositionsService {
     return apiService.get<any>(`${this.basePath}job-title/${id}/show`);
   }
 
-  /**
-   * Create Job Title
-   * Menyimpan data jabatan (multipart/form-data)
-   * @param payload - Data untuk membuat jabatan
-   * @returns Promise dengan response API
-   */
-  async create(payload: {
-    name: string;
-    grade?: string | null;
-    jobDescription?: string | null;
-    structuralJobs?: string[];
-    memoNumber: string;
-    skFile: File;
-  }): Promise<any> {
-    const form = new FormData();
-    form.append('job_title_name', payload.name);
-    if (payload.grade !== undefined && payload.grade !== null) form.append('grade', payload.grade);
-    if (payload.jobDescription !== undefined && payload.jobDescription !== null) form.append('job_title_description', payload.jobDescription);
-    if (payload.structuralJobs && payload.structuralJobs.length > 0) {
-      // form.append('direct_subordinate', payload.structuralJobs.join(', '));
-      payload.structuralJobs.forEach((jobName, index) => {
-        const value = jobName?.trim();
-        if (value) {
-          form.append(`mt_structural_job[${index}][mt_structural_job_name]`, value);
-        }
-      });
-    }
-    form.append('job_title_decree_number', payload.memoNumber);
-    form.append('job_title_decree_file', payload.skFile);
+  async create(form: FormData): Promise<any> {
     return apiService.post<any>(`${this.basePath}job-title`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
   }
 
-  /**
-   * Update Job Title
-   * Update data jabatan (POST + _method=PATCH)
-   * @param id - Job title ID
-   * @param payload - Data untuk update jabatan
-   * @returns Promise dengan response API
-   */
-  async update(id: string, payload: {
-    name?: string;
-    grade?: string | null;
-    jobDescription?: string | null;
-    structuralJobs?: string[];
-    structuralJobIds?: (string | null)[];
-    memoNumber: string;
-    skFile?: File | null;
-  }): Promise<any> {
-    const form = new FormData();
-    form.append('_method', 'PATCH');
-    if (payload.name !== undefined) form.append('job_title_name', payload.name);
-    if (payload.grade !== undefined && payload.grade !== null) form.append('grade', payload.grade);
-    if (payload.jobDescription !== undefined && payload.jobDescription !== null) form.append('job_title_description', payload.jobDescription);
-    if (payload.structuralJobs && payload.structuralJobs.length > 0) {
-      payload.structuralJobs.forEach((jobName, index) => {
-        const value = jobName?.trim();
-        const idValue = payload.structuralJobIds?.[index] ?? null;
-        if (idValue) {
-          form.append(`mt_structural_job[${index}][id]`, idValue);
-        }
-        if (value) {
-          form.append(`mt_structural_job[${index}][mt_structural_job_name]`, value);
-        }
-      });
-    }
-    form.append('job_title_decree_number', payload.memoNumber);
-    if (payload.skFile) form.append('job_title_decree_file', payload.skFile);
+  async update(id: string, form: FormData): Promise<any> {
     return apiService.post<any>(`${this.basePath}job-title/${id}/update`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
   }
 
-  /**
-   * Delete Job Title
-   * Hapus data jabatan (POST + _method=DELETE)
-   * @param id - Job title ID
-   * @param payload - Memo number dan file untuk delete
-   * @returns Promise dengan response API
-   */
-  async delete(id: string, payload: { memoNumber: string; skFile?: File; }): Promise<any> {
-    const form = new FormData();
-    form.append('_method', 'DELETE');
-    if (payload.memoNumber) form.append('job_title_deleted_decree_number', payload.memoNumber);
-    if (payload.skFile) form.append('job_title_deleted_decree_file', payload.skFile);
+  async delete(id: string, form: FormData): Promise<any> {
     return apiService.post<any>(`${this.basePath}job-title/${id}/delete`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
   }
 }

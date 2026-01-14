@@ -143,7 +143,22 @@ export const usePositions = (): UsePositionsReturn => {
     setError(null);
     
     try {
-      const created = await positionsService.create(positionData);
+      const form = new FormData();
+      form.append('job_title_name', positionData.name);
+      if (positionData.grade !== undefined && positionData.grade !== null) form.append('grade', positionData.grade);
+      if (positionData.jobDescription !== undefined && positionData.jobDescription !== null) form.append('job_title_description', positionData.jobDescription);
+      if (positionData.structuralJobs && positionData.structuralJobs.length > 0) {
+        positionData.structuralJobs.forEach((jobName, index) => {
+          const value = jobName?.trim();
+          if (value) {
+            form.append(`mt_structural_job[${index}][mt_structural_job_name]`, value);
+          }
+        });
+      }
+      form.append('job_title_decree_number', positionData.memoNumber);
+      form.append('job_title_decree_file', positionData.skFile);
+
+      const created = await positionsService.create(form);
       const item = (created as any).data as any;
       const newPosition = mapToPosition(item);
       setPositions(prev => [...prev, newPosition]);
@@ -162,7 +177,27 @@ export const usePositions = (): UsePositionsReturn => {
     setError(null);
     
     try {
-      const updated = await positionsService.update(id, positionData);
+      const form = new FormData();
+      form.append('_method', 'PATCH');
+      if (positionData.name !== undefined) form.append('job_title_name', positionData.name);
+      if (positionData.grade !== undefined && positionData.grade !== null) form.append('grade', positionData.grade);
+      if (positionData.jobDescription !== undefined && positionData.jobDescription !== null) form.append('job_title_description', positionData.jobDescription);
+      if (positionData.structuralJobs && positionData.structuralJobs.length > 0) {
+        positionData.structuralJobs.forEach((jobName, index) => {
+          const value = jobName?.trim();
+          const idValue = positionData.structuralJobIds?.[index] ?? null;
+          if (idValue) {
+            form.append(`mt_structural_job[${index}][id]`, idValue);
+          }
+          if (value) {
+            form.append(`mt_structural_job[${index}][mt_structural_job_name]`, value);
+          }
+        });
+      }
+      form.append('job_title_decree_number', positionData.memoNumber);
+      if (positionData.skFile) form.append('job_title_decree_file', positionData.skFile);
+
+      const updated = await positionsService.update(id, form);
       const item = (updated as any).data as any;
       const updatedPosition = mapToPosition(item);
       setPositions(prev => prev.map(position => 
@@ -182,7 +217,12 @@ export const usePositions = (): UsePositionsReturn => {
     setError(null);
     
     try {
-      await positionsService.delete(id, payload);
+      const form = new FormData();
+      form.append('_method', 'DELETE');
+      if (payload.memoNumber) form.append('job_title_deleted_decree_number', payload.memoNumber);
+      if (payload.skFile) form.append('job_title_deleted_decree_file', payload.skFile);
+
+      await positionsService.delete(id, form);
       setPositions(prev => prev.filter(position => position.id !== id));
       await fetchPositions();
     } catch (err) {
