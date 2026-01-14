@@ -145,12 +145,12 @@ export const useFormulirKaryawan = (): UseFormulirKaryawanReturn => {
 
       if (isAuthenticated) {
         // Jika user login, redirect ke /data-karyawan dan tampilkan notification
-        addNotification({
-          variant: 'success',
-          title: 'Data Karyawan ditambahkan !',
-          description: 'Penambahan Data Karyawan Berhasil Dikonfirmasi',
-          hideDuration: 5000,
-        });
+        // addNotification({
+        //   variant: 'success',
+        //   title: 'Data Karyawan ditambahkan !',
+        //   description: 'Penambahan Data Karyawan Berhasil Dikonfirmasi',
+        //   hideDuration: 5000,
+        // });
         navigate('/employee-data');
       } else {
         // Jika user tidak login, tampilkan success modal
