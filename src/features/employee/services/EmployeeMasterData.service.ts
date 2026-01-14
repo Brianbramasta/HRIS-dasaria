@@ -306,6 +306,12 @@ class EmployeeMasterDataService {
     return (resp as any)?.data ?? [];
   }
 
+  // {{base_url}}/api/employee-master-data/employees/structural-job-dropdown/019bbab5-1a01-7012-9739-43a9cd3b4659
+  async getStructuralJobDropdown(IdJabatanKepangkatan?:string): Promise<any[]> {
+    const resp = await apiService.get<any[]>(`${this.basePath}/employees/structural-job-dropdown/${IdJabatanKepangkatan}`);
+    return (resp as any)?.data ?? [];
+  }
+
   /**
    * Helper: Convert FormulirKaryawanData to FormData for API
    * @param formData - Data formulir karyawan

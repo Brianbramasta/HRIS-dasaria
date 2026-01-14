@@ -53,6 +53,14 @@ export const getEmployeeStatusDropdownOptions = async (search?: string): Promise
   console.log('Employee Status dropdown data:', data);
   return (data || []).map((s: any) => ({ label: s.name, value: s.id }));
 }
+
+export const getStructuralJobDropdownOptions = async (IdJabatanKepangkatan?: string): Promise<DropdownOption[]> => {
+  const data = await employeeMasterDataService.getStructuralJobDropdown(IdJabatanKepangkatan);
+  console.log('Structural Job dropdown data:', data);
+  return (data || []).map((j: any) => ({ label: j.name, value: j.id }));
+}
+
+
 export const getFieldDocument = async (id?: string): Promise<any[]> => {
   const data = await employeeMasterDataService.getFieldDocument(id);
   return data;

@@ -23,6 +23,7 @@ export const Step03EmployeeData: React.FC = () => {
     kategoriKaryawanOptions,
     positionLevelOptions,
     employeeStatusOptions,
+    jabatanStrukturalOptions,
     handleChange,
     selectedGrade,
     step3,
@@ -193,7 +194,7 @@ export const Step03EmployeeData: React.FC = () => {
               {/*note-update: diganti dengan jabatan struktural */}
               <SelectField
                 label="Jabatan Struktural"
-                options={JENJANG_STRUKTURAL_DUMMY_OPTIONS}
+                options={jabatanStrukturalOptions}
                 defaultValue={step3.jabatanStruktural}
                 onChange={(value) => handleChange('jabatanStruktural', value)}
                 placeholder="Select"
