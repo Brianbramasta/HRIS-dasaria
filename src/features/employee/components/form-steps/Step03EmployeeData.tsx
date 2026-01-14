@@ -5,11 +5,6 @@ import InputField from '../../../../components/shared/field/InputField';
 import { STATUS_PAYROLL_OPTIONS } from '../../utils/EmployeeMappings';
 import { useStep3Data } from '../../hooks/employee-data/form/useFromStep';
 
-const JENJANG_STRUKTURAL_DUMMY_OPTIONS = [
-  { label: 'Struktural 1', value: 'STRUKTURAL_1' },
-  { label: 'Struktural 2', value: 'STRUKTURAL_2' },
-  { label: 'Struktural 3', value: 'STRUKTURAL_3' },
-];
 
 export const Step03EmployeeData: React.FC = () => {
   const {
