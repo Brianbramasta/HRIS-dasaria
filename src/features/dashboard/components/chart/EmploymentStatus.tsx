@@ -1,9 +1,8 @@
 import PieChartOne from "../../../../components/charts/pie/PieChartOne";
+import { useEmploymentStatus } from "../../hooks/chart/useEmploymentStatus";
 
 export default function StatusKepegawaian() {
-  const labels = ["PKWT", "PKWTT", "MITRA"];
-  const series = [197.27, 184.69, 94.47];
-  const colors = ["#1f6af7", "#0c3a87", "#cfe0ff"];
+  const { labels, series, colors, totalValue } = useEmploymentStatus();
   return (
     <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6 h-full flex flex-col items-start justify-center">
       <div className="mb-4">
@@ -14,7 +13,7 @@ export default function StatusKepegawaian() {
             labels={labels}
             series={series}
             colors={colors}
-            totalValue={674.71}
+            totalValue={totalValue}
             height={340}
             width="100%"
             showLegend
