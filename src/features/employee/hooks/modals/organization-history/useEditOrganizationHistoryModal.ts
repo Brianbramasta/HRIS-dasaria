@@ -3,6 +3,7 @@ import { employeeMasterDataService } from '@/features/employee/services/Employee
 import {
   getEmployeeCategoryDropdownOptions,
   getPositionLevelDropdownOptions,
+  getStructuralJobDropdownOptions,
 } from '@/features/employee/hooks/employee-data/form/useFormulirKaryawan';
 import { useOrganizationChange } from '@/features/employee/hooks/organization-history/useOrganizationChange';
 
@@ -14,6 +15,7 @@ export type OrganizationChangeForm = {
   efektif_date?: string;
   company_id?: string;
   job_title_id?: string;
+  structural_job_id?: string;
   office_id?: string;
   directorate_id?: string;
   employee_category_id?: string;
@@ -45,6 +47,7 @@ export function useEditOrganizationHistoryModal({ isOpen, initialData }: Params)
   const [departmentOptions, setDepartmentOptions] = useState<any[]>([]);
   const [jobTitleOptions, setJobTitleOptions] = useState<any[]>([]);
   const [positionOptions, setPositionOptions] = useState<any[]>([]);
+  const [structuralJobOptions, setStructuralJobOptions] = useState<any[]>([]);
   const [kategoriKaryawanOptions, setKategoriKaryawanOptions] = useState<any[]>([]);
   const [positionLevelOptions, setPositionLevelOptions] = useState<any[]>([]);
   const [selectedGrade, setSelectedGrade] = useState<string>('');
@@ -59,15 +62,16 @@ export function useEditOrganizationHistoryModal({ isOpen, initialData }: Params)
         nip: initialData.nip || initialData.idKaryawan,
         change_type_id: initialData.change_type_id,
         efektif_date: initialData.efektif_date || initialData.tanggalEfektif,
-        company_id: initialData.company_id,
-        office_id: initialData.office_id,
-        directorate_id: initialData.directorate_id,
-        division_id: initialData.division_id,
-        department_id: initialData.department_id,
-        position_id: initialData.position_id,
-        job_title_id: initialData.job_title_id,
-        position_level_id: initialData.position_level_id,
-        employee_category_id: initialData.employee_category_id,
+        company_id: initialData.new_company_id || initialData.company_id,
+        office_id: initialData.new_office_id || initialData.office_id,
+        directorate_id: initialData.new_directorate_id || initialData.directorate_id,
+        division_id: initialData.new_division_id || initialData.division_id,
+        department_id: initialData.new_department_id || initialData.department_id,
+        position_id: initialData.new_position_id || initialData.position_id,
+        job_title_id: initialData.new_job_title_id || initialData.job_title_id,
+        structural_job_id: initialData.new_structural_job_id || initialData.structural_job_id,
+        position_level_id: initialData.new_position_level_id || initialData.position_level_id,
+        employee_category_id: initialData.new_employee_category_id || initialData.employee_category_id,
         reason: initialData.reason || initialData.alasanPerubahan,
         decree_file: initialData.decree_file,
       };
@@ -115,6 +119,7 @@ export function useEditOrganizationHistoryModal({ isOpen, initialData }: Params)
           setSelectedGrade('');
           next.golongan = '';
         }
+        next.structural_job_id = '';
       }
       return next;
     });
@@ -206,6 +211,22 @@ export function useEditOrganizationHistoryModal({ isOpen, initialData }: Params)
     }
   }, [form.job_title_id, jobTitleOptions]);
 
+  useEffect(() => {
+    const fetchStructuralJobs = async () => {
+      if (!form.job_title_id) {
+        setStructuralJobOptions([]);
+        return;
+      }
+      try {
+        const items = await getStructuralJobDropdownOptions(form.job_title_id);
+        setStructuralJobOptions(items);
+      } catch {
+        setStructuralJobOptions([]);
+      }
+    };
+    fetchStructuralJobs();
+  }, [form.job_title_id]);
+
   return {
     title,
     form,
@@ -219,6 +240,7 @@ export function useEditOrganizationHistoryModal({ isOpen, initialData }: Params)
     departmentOptions,
     jobTitleOptions,
     positionOptions,
+    structuralJobOptions,
     kategoriKaryawanOptions,
     positionLevelOptions,
     selectedGrade,

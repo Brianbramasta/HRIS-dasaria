@@ -7,6 +7,9 @@ import {IconNotifDetail,
 IconNotifDiTolak,
 IconNotifNegosiasi,
 IconNotifDisetujui} from "@/icons/components/icons"
+import { ContractRenewalDetailModal } from "../../components/modals/ContractRenewalDetailModal";
+import RejectConfirmationModal from "../../components/modals/RejectConfirmationModal";
+import ActionConfirmationModal, { ActionType } from "../../components/modals/ActionConfirmationModal";
 
 type Action =
   | { key: "detail"; label: string; color: "blue-old" }
@@ -56,6 +59,16 @@ export default function Notification() {
   // State filter tanggal (ISO) agar ditampilkan kembali di input setelah Simpan
   const [rangeStart, setRangeStart] = useState<string>("");
   const [rangeEnd, setRangeEnd] = useState<string>("");
+
+  // State untuk modal detail pembaruan kontrak
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  // State untuk modal konfirmasi penolakan
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+  
+  // State untuk modal aksi (Approve / Negotiate)
+  const [isActionModalOpen, setIsActionModalOpen] = useState(false);
+  const [actionType, setActionType] = useState<ActionType>('approve');
+
   // Handler onChange dari DatePicker: menerima Date[] dan dateStr (ISO)
   // Perubahan: jika dateStr kosong (reset), bersihkan state agar input kosong
   const handleRangeChange = (_dates: Date[], dateStr?: string) => {
@@ -131,7 +144,24 @@ export default function Notification() {
                       ? <IconNotifNegosiasi />
                       : <IconNotifDisetujui />;
                   return (
-                    <button key={a.key} type="button" className={`${base} ${styles}`}>
+                    <button 
+                      key={a.key} 
+                      type="button" 
+                      className={`${base} ${styles}`}
+                      onClick={() => {
+                        if (a.key === "detail") {
+                          setIsDetailModalOpen(true);
+                        } else if (a.key === "reject") {
+                          setIsRejectModalOpen(true);
+                        } else if (a.key === "approve") {
+                          setActionType('approve');
+                          setIsActionModalOpen(true);
+                        } else if (a.key === "negotiate") {
+                          setActionType('negotiate');
+                          setIsActionModalOpen(true);
+                        }
+                      }}
+                    >
                       {icon}
                       {a.label}
                     </button>
@@ -142,6 +172,30 @@ export default function Notification() {
           </Card>
         ))}
       </div>
+
+      <ContractRenewalDetailModal 
+        isOpen={isDetailModalOpen} 
+        onClose={() => setIsDetailModalOpen(false)} 
+      />
+
+      <RejectConfirmationModal
+        isOpen={isRejectModalOpen}
+        onClose={() => setIsRejectModalOpen(false)}
+        onConfirm={(reason) => {
+          console.log("Rejected with reason:", reason);
+          setIsRejectModalOpen(false);
+        }}
+      />
+
+      <ActionConfirmationModal
+        isOpen={isActionModalOpen}
+        onClose={() => setIsActionModalOpen(false)}
+        onConfirm={() => {
+          console.log(`Confirmed action: ${actionType}`);
+          setIsActionModalOpen(false);
+        }}
+        type={actionType}
+      />
     </div>
   );
 }

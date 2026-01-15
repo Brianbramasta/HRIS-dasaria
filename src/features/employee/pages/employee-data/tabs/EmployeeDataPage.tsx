@@ -309,7 +309,13 @@ export default function DataKaryawanPage() {
     },
     {
       id: 'position_level',
-      label: 'Jenjang Jabatan',
+      label: 'Jenjang Kepangkatan',
+      minWidth: 140,
+      sortable: true,
+      format: (value) => value || '-',
+    },{
+      id: 'structural_job',//ubah ketika sudah ada 
+      label: 'Jenjang Struktural',
       minWidth: 140,
       sortable: true,
       format: (value) => value || '-',

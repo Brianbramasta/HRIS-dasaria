@@ -28,6 +28,7 @@ export interface Karyawan {
   position: string;
   position_name?: string; // API field
   jabatan: string;
+  structural_job?: string;
   job_title_name?: string; // API field
   job_title?: string;
   jenjangJabatan?: string | number;
@@ -207,6 +208,7 @@ export interface EmployeeListItem {
   grade?: string;
   id: string;
   job_title?: string;
+  structural_job?: string;
   office?: string;
   payroll_status?: string;
   position?: string;
@@ -259,4 +261,40 @@ export interface PTKPDropdownItem {
   id: string;
   code: string;
   category: string;
+}
+
+export interface ReligionDropdownItem {
+  id: string;
+  religion_name: string;
+}
+
+export interface EducationDropdownItem {
+  id_education: string;
+  education_name: string;
+}
+
+export interface PositionLevelDropdownItem {
+  id_level: string;
+  level_name: string;
+}
+
+export interface EmployeeCategoryDropdownItem {
+  id_category: string;
+  category_name: string;
+}
+
+export interface DocumentTypeDropdownItem {
+  id_doc_type: string;
+  doc_type_name: string;
+}
+
+export interface ResignationStatusDropdownItem {
+  id_resign_status: string;
+  resign_status_name: string;
+}
+
+export interface BankDropdownItem {
+  id_bank: string;
+  bank_code: string;
+  bank_name: string;
 }

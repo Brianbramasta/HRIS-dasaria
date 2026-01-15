@@ -17,10 +17,10 @@ type Props = { resetKey: string };
 
 const positionColumns: DataTableColumn<PositionRow>[] = [
   { id: 'no', label: 'No', sortable: false },
-  { id: 'nama-jabatan', label: 'Nama Jabatan', sortable: true },
+  { id: 'nama-jabatan', label: 'Jabatan Kepangkatan', sortable: true },
+  { id: 'jabatan-struktural', label: 'Jabatan Struktural', sortable: true },//note-update:ubah id ketika api sudah di update
   { id: 'grade', label: 'Golongan', sortable: true },
   { id: 'deskripsi-tugas', label: 'Deskripsi Tugas', sortable: true },
-  { id: 'bawahan-langsung', label: 'Bawahan Langsung', sortable: true },
   { id: 'file-sk-dan-mou', label: 'File SK & MoU', sortable: false, isAction: true, format: (row: PositionRow) => (row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer" className='flex items-center justify-center'><FileText size={16} /></a> : '—' )},
 ];
 
@@ -39,7 +39,7 @@ export default function PositionsTab({ resetKey }: Props) {
       'nama-jabatan': (p as any).name ?? '—',
       'grade': (p as any).grade ?? (p as any).level ?? '—',
       'deskripsi-tugas': (p as any).jobDescription ?? (p as any).description ?? '—',
-      'bawahan-langsung': Array.isArray((p as any).directSubordinates) ? (p as any).directSubordinates.join(', ') : '—',
+      'jabatan-struktural': Array.isArray((p as any).structuralJobs) ? (p as any).structuralJobs.join(', ') : '—',
       'file-sk-dan-mou': (p as any).skFile ?? '—',
       raw: p,
     }));

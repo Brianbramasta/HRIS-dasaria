@@ -98,6 +98,7 @@ export function useCreateEmployee() {
       appendIfValue(fd, 'department_id', formData.step3Employee.departemen);
       appendIfValue(fd, 'position_id', formData.step3Employee.position);
       appendIfValue(fd, 'job_title_id', formData.step3Employee.jabatan);
+      appendIfValue(fd, 'structural_job_id', formData.step3Employee.jabatanStruktural);
       appendIfValue(fd, 'start_date', formData.step3Employee.tanggalMasuk);
       appendIfValue(fd, 'end_date', formData.step3Employee.tanggalAkhir);
       appendIfValue(fd, 'position_level_id', formData.step3Employee.jenjangJabatan);

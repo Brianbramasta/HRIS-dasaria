@@ -4,6 +4,8 @@ import FileInput from "../../../../../components/shared/form/FileInput";
 import InputField from "@/components/shared/field/InputField";
 import TextAreaField from "@/components/shared/field/TextAreaField";
 import { useEditPositionModal } from "../../../hooks/modals/job-title/useEditPositionModal";
+import { IconPlus } from "@/icons/components/icons";
+import { TrashBinIcon } from "@/icons";
 
 type Props = {
   isOpen: boolean;
@@ -18,8 +20,10 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
     setName,
     grade,
     setGrade,
-    directSubordinates,
-    setDirectSubordinates,
+    structuralPositions,
+    addStructuralRow,
+    removeStructuralRow,
+    updateStructuralAt,
     memoNumber,
     setMemoNumber,
     jobDescription,
@@ -48,13 +52,48 @@ export const EditPositionModal = ({ isOpen, onClose, onSuccess, position }: Prop
         value={grade}
         onChange={(e) => setGrade(e.target.value)}
       />
-      <InputField
-        label="Bawahan Langsung"
-        id="directSubordinates"
-        placeholder="Manager, dll"
-        value={directSubordinates}
-        onChange={(e) => setDirectSubordinates(e.target.value)}
-      />
+
+      <div className="space-y-3">
+        {structuralPositions.map((value, idx) => (
+          <div key={idx} className="grid grid-cols-12 gap-2 items-end">
+            <div className="col-span-12 md:col-span-11">
+              <InputField
+                id={`structural-${idx}`}
+                label={idx===0?'Jabatan Struktural':''}
+                placeholder={'Masukan Jabatan Struktural'}
+                required
+                value={value}
+                onChange={(e) => updateStructuralAt(idx, e.target.value)}
+              />
+            </div>
+            <div className="col-span-12 md:col-span-1 flex gap-2 mb-1">
+              {idx === 0 ? (
+                <button
+                  type="button"
+                  onClick={addStructuralRow}
+                  className="ml-0 h-11 w-full rounded-lg bg-emerald-500 px-4 text-sm font-medium text-white hover:bg-emerald-600 md:w-9 md:h-9 md:px-0"
+                  aria-label="Tambah jabatan struktural"
+                >
+                  <span className="inline-flex items-center justify-center w-full">
+                    <IconPlus size={20} />
+                  </span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => removeStructuralRow(idx)}
+                  className="ml-0 h-11 w-full rounded-lg bg-rose-500 px-4 text-sm font-medium text-white hover:bg-rose-600 md:w-9 md:h-9 md:px-0"
+                  aria-label="Hapus baris jabatan struktural"
+                >
+                  <span className="inline-flex items-center justify-center w-full">
+                    <TrashBinIcon className="h-5 w-5" />
+                  </span>
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
       <InputField
         required
         label="No. Surat Keputusan / Memo Internal"

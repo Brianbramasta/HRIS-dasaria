@@ -31,61 +31,64 @@ export default function EmployeeDataCard({ data }: Props) {
             <InputField value={data?.employee_category || ''} readonly={true} />
           </div>
           <div>
-            <Label>Status Karyawan</Label>
-            <InputField value={data?.employment_status || ''} readonly={true} />
-          </div>
-          <div>
             <Label>Tanggal Masuk</Label>
             <InputField type="date" value={data?.start_date || ''} readonly={true} />
-          </div>
-          <div>
-            <Label>Tanggal Akhir</Label>
-            <InputField type="date" value={data?.end_date || ''} readonly={true} />
           </div>
           <div>
             <Label>Perusahaan</Label>
             <InputField value={data?.company_name || ''} readonly={true} />
           </div>
           <div>
-            <Label>Kantor</Label>
-            <InputField value={data?.office_name || ''} readonly={true} />
-          </div>
-          <div>
             <Label>Direktorat</Label>
             <InputField value={data?.directorate_name || ''} readonly={true} />
-          </div>
-         
-        </div>
-        <div className="space-y-4">
-           <div>
-            <Label>Divisi</Label>
-            <InputField value={data?.division_name || ''} readonly={true} />
           </div>
           <div>
             <Label>Departemen</Label>
             <InputField value={data?.department_name || ''} readonly={true} />
           </div>
           <div>
-            <Label>Position</Label>
-            <InputField value={data?.position_name || ''} readonly={true} />
-          </div>
-          <div>
-            <Label>Jabatan</Label>
+            <Label>Jabatan Kepangkatan</Label>
             <InputField value={data?.job_title_name || ''} readonly={true} />
-          </div>
-          <div>
-            <Label>Jenjang Jabatan</Label>
-            <InputField value={data?.position_level || ''} readonly={true} />
           </div>
           <div>
             <Label>Golongan</Label>
             <InputField value={data?.grade || ''} readonly={true} />
           </div>
+        </div>
+        <div className="space-y-4">
           <div>
-            <Label>Status PayRoll</Label>
-            <InputField value={data?.payroll_status || ''} readonly={true} />
+            <Label>Status Karyawan</Label>
+            <InputField value={data?.employment_status || ''} readonly={true} />
+          </div>
+          <div>
+            <Label>Tanggal Akhir</Label>
+            <InputField type="date" value={data?.end_date || ''} readonly={true} />
+          </div>
+          <div>
+            <Label>Kantor</Label>
+            <InputField value={data?.office_name || ''} readonly={true} />
+          </div>
+          <div>
+            <Label>Divisi</Label>
+            <InputField value={data?.division_name || ''} readonly={true} />
+          </div>
+          <div>
+            <Label>Position</Label>
+            <InputField value={data?.position_name || ''} readonly={true} />
+          </div>
+          <div>
+            <Label>Jabatan Struktural</Label>
+            <InputField value={data?.employee_structural_job_name || ''} readonly={true} />
           </div>
           
+          <div>
+            <Label>Jenjang Jabatan</Label>
+            <InputField value={data?.position_level || ''} readonly={true} />
+          </div>
+          <div>
+            <Label>Status Penggajian</Label>
+            <InputField value={data?.payroll_status || ''} readonly={true} />
+          </div>
         </div>
       </div>
 
@@ -95,7 +98,7 @@ export default function EmployeeDataCard({ data }: Props) {
             <Edit2 size={16} className="mr-2" /> Edit
           </Button>
         </div>
-      )}
+      )} 
       <EmployeeDataModal
         isOpen={isOpen}
         initialData={initialForm}

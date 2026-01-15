@@ -121,6 +121,7 @@ export function useOrganizationHistory(options: UseOrganizationHistoryOptions = 
         division_id: formData?.division_id || '',
         department_id: formData?.department_id || '',
         job_title_id: formData?.job_title_id || '',
+        structural_job_id: formData?.structural_job_id || '',
         position_id: formData?.position_id || '',
         position_level_id: formData?.position_level_id || '',
         employee_category_id: formData?.employee_category_id || '',

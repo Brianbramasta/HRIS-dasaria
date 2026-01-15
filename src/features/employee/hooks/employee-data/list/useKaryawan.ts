@@ -59,15 +59,17 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
       position: apiData.position || '',
       job_title: apiData.job_title || '',
       jabatan: apiData.job_title || '',
-      position_level: apiData.position_level ,
-      grade: apiData.grade,
+
+      structural_job: apiData.structural_job || '',
+      position_level: apiData.position_level || '',
+      grade: apiData.grade || '',
       
       // Company & Structure
       company: apiData.company || '',
-      office: apiData.office,
-      department: apiData.department,
-      division: apiData.division,
-      directorate: apiData.directorate,
+      office: apiData.office || '',
+      department: apiData.department || '',
+      division: apiData.division || '',
+      directorate: apiData.directorate || '',
       
       // Employment Details
       start_date: apiData.start_date,

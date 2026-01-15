@@ -34,6 +34,7 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
     departmentOptions,
     jobTitleOptions,
     positionOptions,
+    structuralJobOptions,
     kategoriKaryawanOptions,
     positionLevelOptions,
     selectedGrade,
@@ -103,11 +104,33 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
           </div>
           <div>
             <SelectField 
-                label="Jabatan"
+                label="Position"
                 required
-                options={jobTitleOptions} 
-                defaultValue={form.job_title_id || ''} 
-                onChange={(v) => handleInput('job_title_id', v)} 
+                options={positionOptions} 
+                defaultValue={form.position_id || ''} 
+                onChange={(v) => handleInput('position_id', v)} 
+                placeholder="Select" 
+                disabled={isEditMode} 
+            />
+          </div>
+          <div>
+            <SelectField 
+                label="Jabatan Struktural"
+                required
+                options={structuralJobOptions.length > 0 ? structuralJobOptions : [{ label: 'Pilih jabatan kepangkatan terlebih dahulu', value: '' }]} 
+                defaultValue={form.structural_job_id || ''} 
+                onChange={(v) => handleInput('structural_job_id', v)} 
+                placeholder="Select" 
+                disabled={isEditMode || structuralJobOptions.length === 0} 
+            />
+          </div>
+          <div>
+            <SelectField 
+                label="Kategori Karyawan"
+                required
+                options={kategoriKaryawanOptions} 
+                defaultValue={form.employee_category_id || ''} 
+                onChange={(v) => handleInput('employee_category_id', v)} 
                 placeholder="Select" 
                 disabled={isEditMode} 
             />
@@ -179,11 +202,11 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
           </div>
           <div>
             <SelectField 
-                label="Position"
+                label="Jabatan Kepangkatan"
                 required
-                options={positionOptions} 
-                defaultValue={form.position_id || ''} 
-                onChange={(v) => handleInput('position_id', v)} 
+                options={jobTitleOptions} 
+                defaultValue={form.job_title_id || ''} 
+                onChange={(v) => handleInput('job_title_id', v)} 
                 placeholder="Select" 
                 disabled={isEditMode} 
             />
@@ -195,17 +218,6 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
                 options={positionLevelOptions} 
                 defaultValue={form.position_level_id || ''} 
                 onChange={(v) => handleInput('position_level_id', v)} 
-                placeholder="Select" 
-                disabled={isEditMode} 
-            />
-          </div>
-          <div>
-            <SelectField 
-                label="Kategori Karyawan"
-                required
-                options={kategoriKaryawanOptions} 
-                defaultValue={form.employee_category_id || ''} 
-                onChange={(v) => handleInput('employee_category_id', v)} 
                 placeholder="Select" 
                 disabled={isEditMode} 
             />

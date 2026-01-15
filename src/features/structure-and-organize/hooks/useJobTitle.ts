@@ -6,17 +6,51 @@ import useFilterStore from '../../../stores/filterStore';
 import { toFileSummary } from '../utils/shared/index';
 
 
-export const mapToPosition = (item: any): PositionListItem => ({
-  id: item.id ?? item.id ?? '',
-  name: item.job_title_name ?? item.name ?? '',
-  grade: item.grade ?? null,
-  jobDescription: item.job_title_description ?? item.description ?? null,
-  directSubordinates: typeof item.direct_subordinate === 'string'
-    ? item.direct_subordinate.split(',').map((s: string) => s.trim()).filter(Boolean)
-    : Array.isArray(item.direct_subordinate) ? item.direct_subordinate : [],
-  memoNumber: item.job_title_decree_number ?? null,
-  skFile: toFileSummary(item.job_title_decree_file_url ?? item.job_title_decree_file ?? null),
-});
+export const mapToPosition = (item: any): PositionListItem => {
+  const structuralJobs: string[] = [];
+  const structuralJobIds: (string | null)[] = [];
+
+  if (typeof item.structural_job_list === 'string' && item.structural_job_list.trim() !== '') {
+    const parts = item.structural_job_list
+      .split(',')
+      .map((s: string) => s.trim())
+      .filter(Boolean);
+    structuralJobs.push(...parts);
+    structuralJobIds.push(...parts.map(() => null));
+  } else if (Array.isArray(item.structural_jobs)) {
+    item.structural_jobs.forEach((s: any) => {
+      const name =
+        s && typeof s.structural_job_name === 'string'
+          ? s.structural_job_name.trim()
+          : '';
+      if (name) {
+        structuralJobs.push(name);
+        structuralJobIds.push(typeof s.id === 'string' ? s.id : s.id?.toString?.() ?? null);
+      }
+    });
+  } else if (typeof item.direct_subordinate === 'string') {
+    const parts = item.direct_subordinate
+      .split(',')
+      .map((s: string) => s.trim())
+      .filter(Boolean);
+    structuralJobs.push(...parts);
+    structuralJobIds.push(...parts.map(() => null));
+  } else if (Array.isArray(item.direct_subordinate)) {
+    structuralJobs.push(...item.direct_subordinate);
+    structuralJobIds.push(...item.direct_subordinate.map(() => null));
+  }
+
+  return {
+    id: item.id ?? '',
+    name: item.job_title_name ?? item.name ?? '',
+    grade: item.grade ?? null,
+    jobDescription: item.job_title_description ?? item.description ?? null,
+    structuralJobs,
+    structuralJobIds,
+    memoNumber: item.job_title_decree_number ?? null,
+    skFile: toFileSummary(item.job_title_decree_file_url ?? item.job_title_decree_file ?? null),
+  };
+};
 
 // Map UI sort field to API column
 const toSortField = (field?: string): string => {
@@ -49,8 +83,8 @@ interface UsePositionsReturn {
 
   // Actions
   fetchPositions: (filter?: TableFilter) => Promise<void>;
-  createPosition: (payload: { name: string; grade?: string | null; jobDescription?: string | null; directSubordinates?: string[]; memoNumber: string; skFile: File; }) => Promise<void>;
-  updatePosition: (id: string, payload: { name?: string; grade?: string | null; jobDescription?: string | null; directSubordinates?: string[]; memoNumber: string; skFile?: File | null; }) => Promise<void>;
+  createPosition: (payload: { name: string; grade?: string | null; jobDescription?: string | null; structuralJobs?: string[]; memoNumber: string; skFile: File; }) => Promise<void>;
+  updatePosition: (id: string, payload: { name?: string; grade?: string | null; jobDescription?: string | null; structuralJobs?: string[]; structuralJobIds?: (string | null)[]; memoNumber: string; skFile?: File | null; }) => Promise<void>;
   deletePosition: (id: string, payload: { memoNumber: string; skFile?: File; }) => Promise<void>;
   detail: (id: string) => Promise<PositionListItem | null>;
   getDropdown: (search?: string) => Promise<{ id: string; job_title_name: string }[]>;
@@ -111,12 +145,27 @@ export const usePositions = (): UsePositionsReturn => {
   }, [page, pageSize, search, sortBy, sortOrder, filterValue]);
 
   // Create Jabatan menggunakan multipart sesuai kontrak API
-  const createPosition = useCallback(async (positionData: { name: string; grade?: string | null; jobDescription?: string | null; directSubordinates?: string[]; memoNumber: string; skFile: File; }) => {
+  const createPosition = useCallback(async (positionData: { name: string; grade?: string | null; jobDescription?: string | null; structuralJobs?: string[]; memoNumber: string; skFile: File; }) => {
     setLoading(true);
     setError(null);
     
     try {
-      const created = await positionsService.create(positionData);
+      const form = new FormData();
+      form.append('job_title_name', positionData.name);
+      if (positionData.grade !== undefined && positionData.grade !== null) form.append('grade', positionData.grade);
+      if (positionData.jobDescription !== undefined && positionData.jobDescription !== null) form.append('job_title_description', positionData.jobDescription);
+      if (positionData.structuralJobs && positionData.structuralJobs.length > 0) {
+        positionData.structuralJobs.forEach((jobName, index) => {
+          const value = jobName?.trim();
+          if (value) {
+            form.append(`mt_structural_job[${index}][mt_structural_job_name]`, value);
+          }
+        });
+      }
+      form.append('job_title_decree_number', positionData.memoNumber);
+      form.append('job_title_decree_file', positionData.skFile);
+
+      const created = await positionsService.create(form);
       const item = (created as any).data as any;
       const newPosition = mapToPosition(item);
       setPositions(prev => [...prev, newPosition]);
@@ -130,12 +179,32 @@ export const usePositions = (): UsePositionsReturn => {
   }, [fetchPositions]);
 
   // Update Jabatan menggunakan POST + _method=PATCH multipart
-  const updatePosition = useCallback(async (id: string, positionData: { name?: string; grade?: string | null; jobDescription?: string | null; directSubordinates?: string[]; memoNumber: string; skFile?: File | null; }) => {
+  const updatePosition = useCallback(async (id: string, positionData: { name?: string; grade?: string | null; jobDescription?: string | null; structuralJobs?: string[]; structuralJobIds?: (string | null)[]; memoNumber: string; skFile?: File | null; }) => {
     setLoading(true);
     setError(null);
     
     try {
-      const updated = await positionsService.update(id, positionData);
+      const form = new FormData();
+      form.append('_method', 'PATCH');
+      if (positionData.name !== undefined) form.append('job_title_name', positionData.name);
+      if (positionData.grade !== undefined && positionData.grade !== null) form.append('grade', positionData.grade);
+      if (positionData.jobDescription !== undefined && positionData.jobDescription !== null) form.append('job_title_description', positionData.jobDescription);
+      if (positionData.structuralJobs && positionData.structuralJobs.length > 0) {
+        positionData.structuralJobs.forEach((jobName, index) => {
+          const value = jobName?.trim();
+          const idValue = positionData.structuralJobIds?.[index] ?? null;
+          if (idValue) {
+            form.append(`mt_structural_job[${index}][id]`, idValue);
+          }
+          if (value) {
+            form.append(`mt_structural_job[${index}][mt_structural_job_name]`, value);
+          }
+        });
+      }
+      form.append('job_title_decree_number', positionData.memoNumber);
+      if (positionData.skFile) form.append('job_title_decree_file', positionData.skFile);
+
+      const updated = await positionsService.update(id, form);
       const item = (updated as any).data as any;
       const updatedPosition = mapToPosition(item);
       setPositions(prev => prev.map(position => 
@@ -155,7 +224,12 @@ export const usePositions = (): UsePositionsReturn => {
     setError(null);
     
     try {
-      await positionsService.delete(id, payload);
+      const form = new FormData();
+      form.append('_method', 'DELETE');
+      if (payload.memoNumber) form.append('job_title_deleted_decree_number', payload.memoNumber);
+      if (payload.skFile) form.append('job_title_deleted_decree_file', payload.skFile);
+
+      await positionsService.delete(id, form);
       setPositions(prev => prev.filter(position => position.id !== id));
       await fetchPositions();
     } catch (err) {

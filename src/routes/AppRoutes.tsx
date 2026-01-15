@@ -10,6 +10,7 @@ import OfficesTab from "../features/structure-and-organize/pages/office/OfficesT
 import DirectoratesTab from "../features/structure-and-organize/pages/directorate/DirectoratesTab";
 import DivisionsTab from "../features/structure-and-organize/pages/division/DivisionsTab";
 import DepartmentsTab from "../features/structure-and-organize/pages/departement/DepartmentsTab";
+import UnitTab from "../features/structure-and-organize/pages/unit/UnitTab";
 import PositionsTab from "../features/structure-and-organize/pages/job-tittle/PositionsTab";
 import EmployeePositionsTab from "../features/structure-and-organize/pages/employee-positions/EmployeePositionsTab";
 import DetailLiniBisnis from "../features/structure-and-organize/pages/business-line/DetailLiniBisnis";
@@ -111,10 +112,11 @@ export default function AppRoutes() {
             <Route path="business-lines/:id" element={<DetailLiniBisnis />} />
             <Route path="companies" element={<CompaniesTab resetKey="companies" />} />
             <Route path="companies/:id" element={<DetailPerusahaan />} />
-            <Route path="offices" element={<OfficesTab resetKey="offices" />} />
+          <Route path="offices" element={<OfficesTab resetKey="offices" />} />
             <Route path="directorates" element={<DirectoratesTab resetKey="directorates" />} />
             <Route path="divisions" element={<DivisionsTab resetKey="divisions" />} />
           <Route path="departments" element={<DepartmentsTab resetKey="departments" />} />
+          <Route path="units" element={<UnitTab resetKey="units" />} />
           <Route path="positions" element={<PositionsTab resetKey="positions" />} />
           <Route path="employee-positions" element={<EmployeePositionsTab resetKey="employee-positions" />} />
           </Route>

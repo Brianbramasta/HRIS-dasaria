@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { employeeMasterDataService } from '../../../services/EmployeeMasterData.service';
 import { PTKPDropdownItem } from '../../../types/dto/EmployeeType';
-import { getReligionDropdownOptions, getEducationDropdownOptions, getBankDropdownOptions, getEmployeeCategoryDropdownOptions, getPositionLevelDropdownOptions, getEmployeeStatusDropdownOptions, getFieldDocument } from './useFormulirKaryawan';
+import { getReligionDropdownOptions, getEducationDropdownOptions, getBankDropdownOptions, getEmployeeCategoryDropdownOptions, getPositionLevelDropdownOptions, getEmployeeStatusDropdownOptions, getFieldDocument, getStructuralJobDropdownOptions } from './useFormulirKaryawan';
 import { useFormulirKaryawanStore } from '@/features/employee/stores/useFormulirKaryawanStore';
 import { DocumentItem, EducationItem } from '../../../types/FormEmployee';
 
@@ -172,6 +172,7 @@ export const useStep3Data = (isOpen?: boolean) => {
   const [selectedGrade, setSelectedGrade] = useState<string>('');
   const [positionLevelOptions, setPositionLevelOptions] = useState<any[]>([]);
   const [employeeStatusOptions, setEmployeeStatusOptions] = useState<any[]>([]);
+  const [jabatanStrukturalOptions, setJabatanStrukturalOptions] = useState<any[]>([]);
   
   const { formData,updateStep3Employee } = useFormulirKaryawanStore();
   const step3 = formData.step3Employee;
@@ -241,6 +242,7 @@ export const useStep3Data = (isOpen?: boolean) => {
 
         const jobTitles = await employeeMasterDataService.getJobTitleDropdown();
         setJobTitleOptions((jobTitles || []).map((i: any) => ({ label: i.job_title_name, value: i.id, grade: i.grade })));
+
       } catch (error) {
         console.error('Error fetching initial data (step3):', error);
       }
@@ -266,6 +268,18 @@ export const useStep3Data = (isOpen?: boolean) => {
     };
     fetchDivisions();
   }, [step3?.direktorat, isOpen]);
+
+  useEffect(() => {
+    if (isOpen === false) return;
+    const fetchStructuralJobs = async () => {
+      if (!step3?.jabatan) { setJabatanStrukturalOptions([]); return; }
+      try {
+        const items = await getStructuralJobDropdownOptions(step3.jabatan);
+        setJabatanStrukturalOptions(items);
+      } catch (error) { console.error('Error fetching structural jobs:', error); setJabatanStrukturalOptions([]); }
+    };
+    fetchStructuralJobs();
+  }, [step3?.jabatan, isOpen]);
 
   // departments when division changes
   useEffect(() => {
@@ -307,7 +321,8 @@ export const useStep3Data = (isOpen?: boolean) => {
     positionLevelOptions,
     employeeStatusOptions,
     setSelectedGrade,
-    handleChange
+    handleChange,
+    jabatanStrukturalOptions,
   };
 };
 

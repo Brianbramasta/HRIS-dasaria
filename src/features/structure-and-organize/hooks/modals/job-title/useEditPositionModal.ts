@@ -19,7 +19,8 @@ export function useEditPositionModal({
 }: UseEditPositionModalParams) {
   const [name, setName] = useState('');
   const [grade, setGrade] = useState('');
-  const [directSubordinates, setDirectSubordinates] = useState('');
+  const [structuralPositions, setStructuralPositions] = useState<string[]>(['']);
+  const [structuralPositionIds, setStructuralPositionIds] = useState<(string | null)[]>([null]);
   const [memoNumber, setMemoNumber] = useState('');
   const [jobDescription, setJobDescription] = useState('');
   const skFile = useFileStore((s) => s.skFile);
@@ -36,11 +37,17 @@ export function useEditPositionModal({
         if (!mappedPosition) return;
         setName(mappedPosition.name || '');
         setGrade((mappedPosition.grade as string) || '');
-        setDirectSubordinates(
-          Array.isArray(mappedPosition.directSubordinates)
-            ? mappedPosition.directSubordinates.join(', ')
-            : ''
-        );
+        if (Array.isArray(mappedPosition.structuralJobs) && mappedPosition.structuralJobs.length > 0) {
+          setStructuralPositions(mappedPosition.structuralJobs.map((s: string) => s || ''));
+          setStructuralPositionIds(
+            Array.isArray(mappedPosition.structuralJobIds) && mappedPosition.structuralJobIds.length > 0
+              ? mappedPosition.structuralJobIds.map((id) => id || null)
+              : mappedPosition.structuralJobs.map(() => null)
+          );
+        } else {
+          setStructuralPositions(['']);
+          setStructuralPositionIds([null]);
+        }
         setMemoNumber(mappedPosition.memoNumber || '');
         setJobDescription(mappedPosition.jobDescription || '');
       } catch (error) {
@@ -59,11 +66,17 @@ export function useEditPositionModal({
     if (position) {
       setName(position.name || '');
       setGrade(position.grade || '');
-      setDirectSubordinates(
-        Array.isArray(position.directSubordinates)
-          ? position.directSubordinates.join(', ')
-          : ''
-      );
+      if (Array.isArray(position.structuralJobs) && position.structuralJobs.length > 0) {
+        setStructuralPositions(position.structuralJobs.map((s: string) => s || ''));
+        setStructuralPositionIds(
+          Array.isArray(position.structuralJobIds) && position.structuralJobIds.length > 0
+            ? position.structuralJobIds.map((id) => id || null)
+            : position.structuralJobs.map(() => null)
+        );
+      } else {
+        setStructuralPositions(['']);
+        setStructuralPositionIds([null]);
+      }
       setMemoNumber(position.memoNumber || '');
       setJobDescription(position.jobDescription || '');
     }
@@ -71,16 +84,25 @@ export function useEditPositionModal({
 
   const handleSubmit = async () => {
     if (!position) return;
+    const cleanedStructural = structuralPositions.map((s) => s.trim()).filter(Boolean);
+    const alignedIds = structuralPositionIds.slice(0, structuralPositions.length);
+    if (cleanedStructural.length === 0) {
+      addNotification({
+        variant: 'error',
+        title: 'Jabatan tidak diupdate',
+        description: 'Jabatan Struktural wajib diisi minimal satu baris',
+        hideDuration: 4000,
+      });
+      return;
+    }
     setSubmitting(true);
     try {
       const payload = {
         name: name.trim(),
         grade: grade.trim() || null,
         jobDescription: jobDescription.trim() || null,
-        directSubordinates: directSubordinates
-          .split(',')
-          .map((s) => s.trim())
-          .filter(Boolean),
+        structuralJobs: cleanedStructural,
+        structuralJobIds: alignedIds,
         memoNumber: memoNumber.trim(),
         skFile: skFile?.file as File,
       };
@@ -105,8 +127,19 @@ export function useEditPositionModal({
     setName,
     grade,
     setGrade,
-    directSubordinates,
-    setDirectSubordinates,
+    structuralPositions,
+    setStructuralPositions,
+    addStructuralRow: () => {
+      setStructuralPositions((prev) => [...prev, '']);
+      setStructuralPositionIds((prev) => [...prev, null]);
+    },
+    removeStructuralRow: (index: number) => {
+      setStructuralPositions((prev) => prev.filter((_, i) => i !== index));
+      setStructuralPositionIds((prev) => prev.filter((_, i) => i !== index));
+    },
+    updateStructuralAt: (index: number, value: string) => {
+      setStructuralPositions((prev) => prev.map((v, i) => (i === index ? value : v)));
+    },
     memoNumber,
     setMemoNumber,
     jobDescription,
