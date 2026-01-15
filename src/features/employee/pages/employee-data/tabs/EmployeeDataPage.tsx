@@ -314,7 +314,7 @@ export default function DataKaryawanPage() {
       sortable: true,
       format: (value) => value || '-',
     },{
-      id: 'position_level',//ubah ketika sudah ada 
+      id: 'structural_job',//ubah ketika sudah ada 
       label: 'Jenjang Struktural',
       minWidth: 140,
       sortable: true,

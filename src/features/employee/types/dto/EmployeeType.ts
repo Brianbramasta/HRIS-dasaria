@@ -28,6 +28,7 @@ export interface Karyawan {
   position: string;
   position_name?: string; // API field
   jabatan: string;
+  structural_job?: string;
   job_title_name?: string; // API field
   job_title?: string;
   jenjangJabatan?: string | number;
@@ -207,6 +208,7 @@ export interface EmployeeListItem {
   grade?: string;
   id: string;
   job_title?: string;
+  structural_job?: string;
   office?: string;
   payroll_status?: string;
   position?: string;
