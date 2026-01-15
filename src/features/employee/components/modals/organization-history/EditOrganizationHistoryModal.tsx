@@ -46,194 +46,189 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
   const content = (
     <div className="space-y-8">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <div className="space-y-6">
-          <div>
-            <SelectField
-                label="NIP"
-                required
-                options={employeeOptions.length > 0 ? employeeOptions : [{ label: 'Memuat opsi...', value: '' }]}
-                defaultValue={form.nip || ''}
-                onChange={(v) => handleInput('nip', v)}
-                placeholder="Pilih NIP"
-                disabled={isEditMode || employeeOptions.length === 0}
-            />
-          </div>
-          <div>
-            <SelectField 
-                label="Jenis Perubahan"
-                required
-                options={changeTypeOptions.length > 0 ? changeTypeOptions : [{ label: 'Memuat opsi...', value: '' }]} 
-                defaultValue={form.change_type_id || ''} 
-                onChange={(v) => handleInput('change_type_id', v)} 
-                placeholder="Select"
-                disabled={isEditMode || changeTypeOptions.length === 0}
-            />
-          </div>
-          <div>
-            <SelectField 
-                label="Perusahaan"
-                required
-                options={companyOptions} 
-                defaultValue={form.company_id || ''} 
-                onChange={(v) => handleInput('company_id', v)} 
-                placeholder="Select" 
-                disabled={isEditMode} 
-            />
-          </div>
-          <div>
-            <SelectField 
-                label="Direktorat"
-                required
-                options={directorateOptions} 
-                defaultValue={form.directorate_id || ''} 
-                onChange={(v) => handleInput('directorate_id', v)} 
-                placeholder="Select" 
-                disabled={isEditMode} 
-            />
-          </div>
-          <div>
-            <SelectField 
-                label="Departemen"
-                required
-                options={departmentOptions.length > 0 ? departmentOptions : [{ label: 'Pilih divisi terlebih dahulu', value: '' }]} 
-                defaultValue={form.department_id || ''} 
-                onChange={(v) => handleInput('department_id', v)} 
-                placeholder="Select"
-                disabled={isEditMode || departmentOptions.length === 0}
-            />
-          </div>
-          <div>
-            <SelectField 
-                label="Position"
-                required
-                options={positionOptions} 
-                defaultValue={form.position_id || ''} 
-                onChange={(v) => handleInput('position_id', v)} 
-                placeholder="Select" 
-                disabled={isEditMode} 
-            />
-          </div>
-          <div>
-            <SelectField 
-                label="Jabatan Struktural"
-                required
-                options={structuralJobOptions.length > 0 ? structuralJobOptions : [{ label: 'Pilih jabatan kepangkatan terlebih dahulu', value: '' }]} 
-                defaultValue={form.structural_job_id || ''} 
-                onChange={(v) => handleInput('structural_job_id', v)} 
-                placeholder="Select" 
-                disabled={isEditMode || structuralJobOptions.length === 0} 
-            />
-          </div>
-          <div>
-            <SelectField 
-                label="Kategori Karyawan"
-                required
-                options={kategoriKaryawanOptions} 
-                defaultValue={form.employee_category_id || ''} 
-                onChange={(v) => handleInput('employee_category_id', v)} 
-                placeholder="Select" 
-                disabled={isEditMode} 
-            />
-          </div>
-          <div>
-            <InputField 
-                label="Golongan"
-                required
-                value={selectedGrade || form.golongan || ''} 
-                disabled 
-                placeholder="Otomatis dari Jabatan" 
-                onChange={() => {}} 
-            />
-          </div>
-          <div>
-            <TextAreaField 
-                label="Alasan Perubahan"
-                required
-                placeholder="Masukkan alasan perubahan" 
-                value={form.reason || ''} 
-                onChange={(e) => handleInput('reason', e)} 
-                disabled={isEditMode} 
-            />
-          </div>
-        </div>
-        <div className="space-y-6">
-          <div>
-            <InputField 
-                label="Nama"
-                required
-                placeholder="Masukkan nama" 
-                value={form.nama || ''} 
-                disabled 
-                onChange={(e) => handleInput('nama', e.target.value)} 
-            />
-          </div>
-          <div>
-            <DateField
-              id="effectiveDatePicker"
-              label="Tanggal Efektif"
+        <div>
+          <SelectField
+              label="NIP"
               required
-              defaultDate={form.efektif_date || undefined}
-              placeholder="— (masih aktif)"
-              onChange={(...args) => handleInput('efektif_date', args[1])}
-              disabled={isEditMode}
-            />
-          </div>
-          <div>
-            <SelectField 
-                label="Kantor"
-                required
-                options={officeOptions.length > 0 ? officeOptions : [{ label: 'Pilih perusahaan terlebih dahulu', value: '' }]} 
-                defaultValue={form.office_id || ''} 
-                onChange={(v) => handleInput('office_id', v)} 
-                placeholder="Select"
-                disabled={isEditMode || officeOptions.length === 0}
-            />
-          </div>
-          <div>
-            <SelectField 
-                label="Divisi"
-                required
-                options={divisionOptions.length > 0 ? divisionOptions : [{ label: 'Pilih direktorat terlebih dahulu', value: '' }]} 
-                defaultValue={form.division_id || ''} 
-                onChange={(v) => handleInput('division_id', v)} 
-                placeholder="Select"
-                disabled={isEditMode || divisionOptions.length === 0}
-            />
-          </div>
-          <div>
-            <SelectField 
-                label="Jabatan Kepangkatan"
-                required
-                options={jobTitleOptions} 
-                defaultValue={form.job_title_id || ''} 
-                onChange={(v) => handleInput('job_title_id', v)} 
-                placeholder="Select" 
-                disabled={isEditMode} 
-            />
-          </div>
-          <div>
-            <SelectField 
-                label="Jenjang Jabatan"
-                required
-                options={positionLevelOptions} 
-                defaultValue={form.position_level_id || ''} 
-                onChange={(v) => handleInput('position_level_id', v)} 
-                placeholder="Select" 
-                disabled={isEditMode} 
-            />
-          </div>
-          {!hideSkFileUpload && (
-            <div>
-              <FIleField 
-                label="Unggah file Sk"
-                required
-                onChange={handleFileChange}
-                // isLabel={false}
-              />
-              {form.decree_file && <p className="text-xs text-gray-500 mt-1">File saat ini: {form.decree_file}</p>}
-            </div>
-          )}
+              options={employeeOptions.length > 0 ? employeeOptions : [{ label: 'Memuat opsi...', value: '' }]}
+              defaultValue={form.nip || ''}
+              onChange={(v) => handleInput('nip', v)}
+              placeholder="Pilih NIP"
+              disabled={isEditMode || employeeOptions.length === 0}
+          />
         </div>
+        <div>
+          <InputField 
+              label="Nama"
+              required
+              placeholder="Masukkan nama" 
+              value={form.nama || ''} 
+              disabled 
+              onChange={(e) => handleInput('nama', e.target.value)} 
+          />
+        </div>
+        <div>
+          <SelectField 
+              label="Jenis Perubahan"
+              required
+              options={changeTypeOptions.length > 0 ? changeTypeOptions : [{ label: 'Memuat opsi...', value: '' }]} 
+              defaultValue={form.change_type_id || ''} 
+              onChange={(v) => handleInput('change_type_id', v)} 
+              placeholder="Select"
+              disabled={isEditMode || changeTypeOptions.length === 0}
+          />
+        </div>
+        <div>
+          <DateField
+            id="effectiveDatePicker"
+            label="Tanggal Efektif"
+            required
+            defaultDate={form.efektif_date || undefined}
+            placeholder="— (masih aktif)"
+            onChange={(...args) => handleInput('efektif_date', args[1])}
+            disabled={isEditMode}
+          />
+        </div>
+        <div>
+          <SelectField 
+              label="Perusahaan"
+              required
+              options={companyOptions} 
+              defaultValue={form.company_id || ''} 
+              onChange={(v) => handleInput('company_id', v)} 
+              placeholder="Select" 
+              disabled={isEditMode} 
+          />
+        </div>
+        <div>
+          <SelectField 
+              label="Kantor"
+              required
+              options={officeOptions.length > 0 ? officeOptions : [{ label: 'Pilih perusahaan terlebih dahulu', value: '' }]} 
+              defaultValue={form.office_id || ''} 
+              onChange={(v) => handleInput('office_id', v)} 
+              placeholder="Select"
+              disabled={isEditMode || officeOptions.length === 0}
+          />
+        </div>
+        <div>
+          <SelectField 
+              label="Direktorat"
+              required
+              options={directorateOptions} 
+              defaultValue={form.directorate_id || ''} 
+              onChange={(v) => handleInput('directorate_id', v)} 
+              placeholder="Select" 
+              disabled={isEditMode} 
+          />
+        </div>
+        <div>
+          <SelectField 
+              label="Divisi"
+              required
+              options={divisionOptions.length > 0 ? divisionOptions : [{ label: 'Pilih direktorat terlebih dahulu', value: '' }]} 
+              defaultValue={form.division_id || ''} 
+              onChange={(v) => handleInput('division_id', v)} 
+              placeholder="Select"
+              disabled={isEditMode || divisionOptions.length === 0}
+          />
+        </div>
+        <div>
+          <SelectField 
+              label="Departemen"
+              required
+              options={departmentOptions.length > 0 ? departmentOptions : [{ label: 'Pilih divisi terlebih dahulu', value: '' }]} 
+              defaultValue={form.department_id || ''} 
+              onChange={(v) => handleInput('department_id', v)} 
+              placeholder="Select"
+              disabled={isEditMode || departmentOptions.length === 0}
+          />
+        </div>
+        <div>
+          <SelectField 
+              label="Jabatan Kepangkatan"
+              required
+              options={jobTitleOptions} 
+              defaultValue={form.job_title_id || ''} 
+              onChange={(v) => handleInput('job_title_id', v)} 
+              placeholder="Select" 
+              disabled={isEditMode} 
+          />
+        </div>
+        <div>
+          <SelectField 
+              label="Position"
+              required
+              options={positionOptions} 
+              defaultValue={form.position_id || ''} 
+              onChange={(v) => handleInput('position_id', v)} 
+              placeholder="Select" 
+              disabled={isEditMode} 
+          />
+        </div>
+        <div>
+          <SelectField 
+              label="Jenjang Jabatan"
+              required
+              options={positionLevelOptions} 
+              defaultValue={form.position_level_id || ''} 
+              onChange={(v) => handleInput('position_level_id', v)} 
+              placeholder="Select" 
+              disabled={isEditMode} 
+          />
+        </div>
+        <div>
+          <SelectField 
+              label="Jabatan Struktural"
+              required
+              options={structuralJobOptions.length > 0 ? structuralJobOptions : [{ label: 'Pilih jabatan kepangkatan terlebih dahulu', value: '' }]} 
+              defaultValue={form.structural_job_id || ''} 
+              onChange={(v) => handleInput('structural_job_id', v)} 
+              placeholder="Select" 
+              disabled={isEditMode || structuralJobOptions.length === 0} 
+          />
+        </div>
+        <div>
+          <SelectField 
+              label="Kategori Karyawan"
+              required
+              options={kategoriKaryawanOptions} 
+              defaultValue={form.employee_category_id || ''} 
+              onChange={(v) => handleInput('employee_category_id', v)} 
+              placeholder="Select" 
+              disabled={isEditMode} 
+          />
+        </div>
+        <div>
+          <InputField 
+              label="Golongan"
+              required
+              value={selectedGrade || form.golongan || ''} 
+              disabled 
+              placeholder="Otomatis dari Jabatan" 
+              onChange={() => {}} 
+          />
+        </div>
+        <div>
+          <TextAreaField 
+              label="Alasan Perubahan"
+              required
+              placeholder="Masukkan alasan perubahan" 
+              value={form.reason || ''} 
+              onChange={(e) => handleInput('reason', e)} 
+              disabled={isEditMode} 
+          />
+        </div>
+        {!hideSkFileUpload && (
+          <div>
+            <FIleField 
+              label="Unggah file Sk"
+              required
+              onChange={handleFileChange}
+            />
+            {form.decree_file && <p className="text-xs text-gray-500 mt-1">File saat ini: {form.decree_file}</p>}
+          </div>
+        )}
       </div>
     </div>
   );
