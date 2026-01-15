@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useStep3Data } from '@/features/employee/hooks/employee-data/form/useFromStep';
 import { employeeMasterDataService } from '@/features/employee/services/EmployeeMasterData.service';
+import { getStructuralJobDropdownOptions } from '@/features/employee/hooks/employee-data/form/useFormulirKaryawan';
 
 export type EmployeeDataForm = {
   employment_status?: string;
@@ -17,6 +18,7 @@ export type EmployeeDataForm = {
   employee_category_id?: string;
   start_date?: string;
   end_date?: string;
+  employee_structural_job_id?: string;
   golongan?: string;
 };
 
@@ -31,6 +33,7 @@ export function useEmployeeDataModal({ isOpen, initialData }: Params) {
   const [officeDropdown, setOfficeDropdown] = useState<any[]>([]);
   const [divisionDropdown, setDivisionDropdown] = useState<any[]>([]);
   const [departmentDropdown, setDepartmentDropdown] = useState<any[]>([]);
+  const [structuralJobOptions, setStructuralJobOptions] = useState<any[]>([]);
 
   const {
     companyOptions,
@@ -74,6 +77,24 @@ export function useEmployeeDataModal({ isOpen, initialData }: Params) {
     fetchDependentOptions();
   }, [isOpen, initialData, initialData?.company_id, initialData?.directorate_id, initialData?.division_id]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const jobTitleId = form.job_title_id || initialData?.job_title_id;
+    if (!jobTitleId) {
+      setStructuralJobOptions([]);
+      return;
+    }
+    const fetchStructuralJobs = async () => {
+      try {
+        const items = await getStructuralJobDropdownOptions(jobTitleId);
+        setStructuralJobOptions(items);
+      } catch (error) {
+        setStructuralJobOptions([]);
+      }
+    };
+    fetchStructuralJobs();
+  }, [isOpen, form.job_title_id, initialData?.job_title_id]);
+
   const handleInput = (key: keyof EmployeeDataForm, value: any) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
@@ -94,6 +115,7 @@ export function useEmployeeDataModal({ isOpen, initialData }: Params) {
       'job_title_id',
       'position_level_id',
       'employee_category_id',
+      'employee_structural_job_id',
     ];
     const missingRequired = requiredKeys.some((k) => {
       const v = (base as any)?.[k];
@@ -118,6 +140,7 @@ export function useEmployeeDataModal({ isOpen, initialData }: Params) {
     kategoriKaryawanOptions,
     positionLevelOptions,
     employeeStatusOptions,
+    structuralJobOptions,
     selectedGrade,
     handleInput,
     isDisabledField,

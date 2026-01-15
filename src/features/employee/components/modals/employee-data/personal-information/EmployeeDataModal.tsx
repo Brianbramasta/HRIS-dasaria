@@ -34,6 +34,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
     kategoriKaryawanOptions,
     positionLevelOptions,
     employeeStatusOptions,
+    structuralJobOptions,
     selectedGrade,
     handleInput,
     isDisabledField,
@@ -75,35 +76,12 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             />
           </div>
           <div>
-            <SelectField
-              label="Status Karyawan"
-              htmlFor="employmentStatusSelect"
-              options={employeeStatusOptions}
-              defaultValue={form.employment_status_id || ''}
-              onChange={(v) => handleInput('employment_status_id', v)}
-              placeholder="Select"
-              disabled={true}
-              required
-            />
-          </div>
-          <div>
             <DateField
               id="joinDatePicker"
               label="Tanggal Masuk"
               defaultDate={formatDateToIndonesian(form.start_date as string) || undefined}
               placeholder="Pilih tanggal"
               onChange={(...args) => handleInput('start_date', args[1])}
-              disabled={isDisabledField}
-              required
-            />
-          </div>
-          <div>
-            <DateField
-              id="endDatePicker"
-              label="Tanggal Akhir"
-              defaultDate={formatDateToIndonesian(form.end_date as string) || undefined}
-              placeholder="(masih aktif)"
-              onChange={(...args) => handleInput('end_date', args[1])}
               disabled={isDisabledField}
               required
             />
@@ -122,18 +100,6 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
           </div>
           <div>
             <SelectField
-              label="Kantor"
-              htmlFor="officeSelect"
-              options={officeDropdown.length > 0 ? officeDropdown : officeOptions.length > 0 ? officeOptions : [{ label: 'Pilih perusahaan terlebih dahulu', value: '' }]}
-              defaultValue={form.office_id || ''}
-              onChange={(v) => handleInput('office_id', v)}
-              disabled={officeDropdown.length === 0 && officeOptions.length === 0 || isDisabledField}
-              placeholder="Select"
-              required
-            />
-          </div>
-          <div>
-            <SelectField
               label="Direktorat"
               htmlFor="directorateSelect"
               options={directorateOptions}
@@ -144,10 +110,80 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               required
             />
           </div>
-          
+          <div>
+            <SelectField
+              label="Departemen"
+              htmlFor="departmentSelectLeft"
+              options={departmentDropdown.length > 0 ? departmentDropdown : departmentOptions.length > 0 ? departmentOptions : [{ label: 'Pilih divisi terlebih dahulu', value: '' }]}
+              defaultValue={form.department_id || ''}
+              onChange={(v) => handleInput('department_id', v)}
+              disabled={departmentDropdown.length === 0 && departmentOptions.length === 0 || isDisabledField}
+              placeholder="Select"
+              required
+            />
+          </div>
+          <div>
+            <SelectField
+              label="Jabatan Struktural"
+              htmlFor="structuralJobSelect"
+              options={structuralJobOptions.length > 0 ? structuralJobOptions : [{ label: 'Pilih Jabatan Kepangkatan terlebih dahulu', value: '' }]}
+              defaultValue={form.employee_structural_job_id || ''}
+              onChange={(v) => handleInput('employee_structural_job_id', v)}
+              placeholder="Select"
+              disabled={structuralJobOptions.length === 0 || isDisabledField}
+              required
+            />
+          </div>
+          <div>
+            <InputField
+              label="Golongan"
+              id="golonganInput"
+              type="text"
+              value={selectedGrade || form.golongan || ''}
+              placeholder="Otomatis dari Jabatan"
+              disabled={isDisabledField}
+              onChange={() => {}}
+              required
+            />
+          </div>
         </div>
 
         <div className="space-y-4">
+          <div>
+            <SelectField
+              label="Status Karyawan"
+              htmlFor="employmentStatusSelect"
+              options={employeeStatusOptions}
+              defaultValue={form.employment_status_id || ''}
+              onChange={(v) => handleInput('employment_status_id', v)}
+              placeholder="Select"
+              disabled={true}
+              required
+            />
+          </div>
+          <div>
+            <DateField
+              id="endDatePickerRight"
+              label="Tanggal Akhir"
+              defaultDate={formatDateToIndonesian(form.end_date as string) || undefined}
+              placeholder="(masih aktif)"
+              onChange={(...args) => handleInput('end_date', args[1])}
+              disabled={isDisabledField}
+              required
+            />
+          </div>
+          <div>
+            <SelectField
+              label="Kantor"
+              htmlFor="officeSelectRight"
+              options={officeDropdown.length > 0 ? officeDropdown : officeOptions.length > 0 ? officeOptions : [{ label: 'Pilih perusahaan terlebih dahulu', value: '' }]}
+              defaultValue={form.office_id || ''}
+              onChange={(v) => handleInput('office_id', v)}
+              disabled={officeDropdown.length === 0 && officeOptions.length === 0 || isDisabledField}
+              placeholder="Select"
+              required
+            />
+          </div>
           <div>
             <SelectField
               label="Divisi"
@@ -156,18 +192,6 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               defaultValue={form.division_id || ''}
               onChange={(v) => handleInput('division_id', v)}
               disabled={divisionDropdown.length === 0 && divisionOptions.length === 0 || isDisabledField}
-              placeholder="Select"
-              required
-            />
-          </div>
-          <div>
-            <SelectField
-              label="Departemen"
-              htmlFor="departmentSelect"
-              options={departmentDropdown.length > 0 ? departmentDropdown : departmentOptions.length > 0 ? departmentOptions : [{ label: 'Pilih divisi terlebih dahulu', value: '' }]}
-              defaultValue={form.department_id || ''}
-              onChange={(v) => handleInput('department_id', v)}
-              disabled={departmentDropdown.length === 0 && departmentOptions.length === 0 || isDisabledField}
               placeholder="Select"
               required
             />
@@ -186,7 +210,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
           </div>
           <div>
             <SelectField
-              label="Jabatan"
+              label="Jabatan Kepangkatan"
               htmlFor="jobTitleSelect"
               options={jobTitleOptions}
               defaultValue={form.job_title_id || ''}
@@ -205,18 +229,6 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               onChange={(v) => handleInput('position_level_id', v)}
               placeholder="Select"
               disabled={isDisabledField}
-              required
-            />
-          </div>
-          <div>
-            <InputField
-              label="Golongan"
-              id="golonganInput"
-              type="text"
-              value={selectedGrade || form.golongan || ''}
-              placeholder="Otomatis dari Jabatan"
-              disabled={isDisabledField}
-              onChange={() => {}}
               required
             />
           </div>
