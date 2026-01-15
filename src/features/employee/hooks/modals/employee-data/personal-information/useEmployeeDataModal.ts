@@ -18,7 +18,7 @@ export type EmployeeDataForm = {
   employee_category_id?: string;
   start_date?: string;
   end_date?: string;
-  employee_structural_job_id?: string;
+  structural_job_id?: string;
   golongan?: string;
 };
 
@@ -99,30 +99,31 @@ export function useEmployeeDataModal({ isOpen, initialData }: Params) {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
-  const isDisabledField = useMemo(() => {
-    const base = initialData || {};
-    const values = Object.values(base || {});
-    const allEmpty = values.length === 0 || values.every((v) => v === undefined || v === null || v === '');
-    const requiredKeys: Array<keyof EmployeeDataForm> = [
-      'employment_status_id',
-      'start_date',
-      'company_id',
-      'office_id',
-      'directorate_id',
-      'division_id',
-      'department_id',
-      'position_id',
-      'job_title_id',
-      'position_level_id',
-      'employee_category_id',
-      'employee_structural_job_id',
-    ];
-    const missingRequired = requiredKeys.some((k) => {
-      const v = (base as any)?.[k];
-      return v === undefined || v === null || v === '';
-    });
-    return base?.employment_status === 'Aktif' || allEmpty || !missingRequired;
-  }, [initialData]);
+  const isDisabledField = false;
+  // const isDisabledField = useMemo(() => {
+  //   const base = initialData || {};
+  //   const values = Object.values(base || {});
+  //   const allEmpty = values.length === 0 || values.every((v) => v === undefined || v === null || v === '');
+  //   const requiredKeys: Array<keyof EmployeeDataForm> = [
+  //     'employment_status_id',
+  //     'start_date',
+  //     'company_id',
+  //     'office_id',
+  //     'directorate_id',
+  //     'division_id',
+  //     'department_id',
+  //     'position_id',
+  //     'job_title_id',
+  //     'position_level_id',
+  //     'employee_category_id',
+  //     'employee_structural_job_id',
+  //   ];
+  //   const missingRequired = requiredKeys.some((k) => {
+  //     const v = (base as any)?.[k];
+  //     return v === undefined || v === null || v === '';
+  //   });
+  //   return base?.employment_status === 'Aktif' || allEmpty || !missingRequired;
+  // }, [initialData]);
 
   return {
     title,

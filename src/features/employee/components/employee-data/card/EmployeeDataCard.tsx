@@ -47,8 +47,8 @@ export default function EmployeeDataCard({ data }: Props) {
             <InputField value={data?.department_name || ''} readonly={true} />
           </div>
           <div>
-            <Label>Jabatan Struktural</Label>
-            <InputField value={data?.employee_structural_job_name || ''} readonly={true} />
+            <Label>Jabatan Kepangkatan</Label>
+            <InputField value={data?.job_title_name || ''} readonly={true} />
           </div>
           <div>
             <Label>Golongan</Label>
@@ -77,9 +77,10 @@ export default function EmployeeDataCard({ data }: Props) {
             <InputField value={data?.position_name || ''} readonly={true} />
           </div>
           <div>
-            <Label>Jabatan Kepangkatan</Label>
-            <InputField value={data?.job_title_name || ''} readonly={true} />
+            <Label>Jabatan Struktural</Label>
+            <InputField value={data?.employee_structural_job_name || ''} readonly={true} />
           </div>
+          
           <div>
             <Label>Jenjang Jabatan</Label>
             <InputField value={data?.position_level || ''} readonly={true} />
@@ -91,13 +92,13 @@ export default function EmployeeDataCard({ data }: Props) {
         </div>
       </div>
 
-      {!isEditHidden && (
+      {/* {!isEditHidden && ( */}
         <div className="mt-4 flex justify-end">
           <Button variant="primary" size="sm" onClick={openModal} className='w-full md:w-auto flex items-center justify-center'>
             <Edit2 size={16} className="mr-2" /> Edit
           </Button>
         </div>
-      )}
+      {/* )} */}
       <EmployeeDataModal
         isOpen={isOpen}
         initialData={initialForm}

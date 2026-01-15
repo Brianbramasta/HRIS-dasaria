@@ -124,16 +124,17 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
           </div>
           <div>
             <SelectField
-              label="Jabatan Struktural"
-              htmlFor="structuralJobSelect"
-              options={structuralJobOptions.length > 0 ? structuralJobOptions : [{ label: 'Pilih Jabatan Kepangkatan terlebih dahulu', value: '' }]}
-              defaultValue={form.employee_structural_job_id || ''}
-              onChange={(v) => handleInput('employee_structural_job_id', v)}
+              label="Jabatan Kepangkatan"
+              htmlFor="jobTitleSelect"
+              options={jobTitleOptions}
+              defaultValue={form.job_title_id || ''}
+              onChange={(v) => handleInput('job_title_id', v)}
               placeholder="Select"
-              disabled={structuralJobOptions.length === 0 || isDisabledField}
+              disabled={isDisabledField}
               required
             />
           </div>
+          
           <div>
             <InputField
               label="Golongan"
@@ -208,15 +209,16 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               required
             />
           </div>
+          
           <div>
             <SelectField
-              label="Jabatan Kepangkatan"
-              htmlFor="jobTitleSelect"
-              options={jobTitleOptions}
-              defaultValue={form.job_title_id || ''}
-              onChange={(v) => handleInput('job_title_id', v)}
+              label="Jabatan Struktural"
+              htmlFor="structuralJobSelect"
+              options={structuralJobOptions.length > 0 ? structuralJobOptions : [{ label: 'Pilih Jabatan Kepangkatan terlebih dahulu', value: '' }]}
+              defaultValue={form.structural_job_id || ''}
+              onChange={(v) => handleInput('structural_job_id', v)}
               placeholder="Select"
-              disabled={isDisabledField}
+              disabled={structuralJobOptions.length === 0 || isDisabledField}
               required
             />
           </div>

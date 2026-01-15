@@ -27,7 +27,7 @@ export default function useEmployeeDataCard(data: any) {
       payroll_status: data?.payroll_status || '',
       employee_category_id: data?.employee_category_id || '',
       position_level_id: data?.position_level_id || '',
-      employee_structural_job_id: data?.employee_structural_job_id || '',
+      structural_job_id: data?.employee_structural_job_id || '',
     };
   }, [data]);
 
@@ -60,7 +60,7 @@ export default function useEmployeeDataCard(data: any) {
       'job_title_id',
       'position_level_id',
       'employee_category_id',
-      'employee_structural_job_id',
+      'structural_job_id',
     ];
     const missingRequired = requiredKeys.some((k) => {
       const v = (base as any)?.[k];
@@ -85,7 +85,7 @@ export default function useEmployeeDataCard(data: any) {
       { value: payload.job_title_id, label: 'Jabatan' },
       { value: payload.position_level_id, label: 'Jenjang Jabatan' },
       { value: payload.payroll_status, label: 'Status PayRoll' },
-      { value: payload.employee_structural_job_id, label: 'Jabatan Struktural' },
+      { value: payload.structural_job_id, label: 'Jabatan Struktural' },
     ];
     const emptyFields = requiredFields.filter((field) => !field.value);
 

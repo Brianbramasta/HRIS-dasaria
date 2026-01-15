@@ -714,7 +714,7 @@ const mapSocialMediaModalToPayload = useCallback(
     employee_category_id?: string;
     start_date?: string;
     end_date?: string;
-    employee_structural_job_id?: string;
+    structural_job_id?: string;
   }
 
   const mapEmploymentPositionModalToPayload = useCallback(
@@ -733,7 +733,7 @@ const mapSocialMediaModalToPayload = useCallback(
       if (modalData.payroll_status) payload.payroll_status = modalData.payroll_status;
       if (modalData.division_id) payload.division_id = modalData.division_id;
       if (modalData.employee_category_id) payload.employee_category_id = modalData.employee_category_id;
-      if (modalData.employee_structural_job_id) payload.employee_structural_job_id = modalData.employee_structural_job_id;
+      if (modalData.structural_job_id) payload.structural_job_id = modalData.structural_job_id;
       return payload;
     },
     []
