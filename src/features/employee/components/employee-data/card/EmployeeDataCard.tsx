@@ -18,7 +18,7 @@ export default function EmployeeDataCard({ data }: Props) {
     closeModal,
     initialForm,
     isComplete,
-    isEditHidden,
+    // isEditHidden,
     handleSubmit,
   } = useEmployeeDataCard(data);
 

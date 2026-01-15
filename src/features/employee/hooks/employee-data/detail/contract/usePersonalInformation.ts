@@ -17,7 +17,6 @@ import {
   UpdateEmployeeDocumentPayload,
 } from '@/features/employee/types/detail/PersonalInformation';
 import {personalInformationService} from '@/features/employee/services/detail/PersonalInformationService';
-import { addNotification } from '@/stores/notificationStore';
 import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
 
 // ===================== Mapped Types =====================

@@ -19,7 +19,7 @@ const ActionConfirmationModal: React.FC<ActionConfirmationModalProps> = ({
   type,
   isLoading = false,
 }) => {
-  const isApprove = type === 'approve';
+  // const isApprove = type === 'approve';
 
   const config = {
     approve: {

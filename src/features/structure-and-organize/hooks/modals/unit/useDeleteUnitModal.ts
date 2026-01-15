@@ -10,7 +10,7 @@ type Args = {
   onSuccess?: () => void;
 };
 
-export const useDeleteUnitModal = ({ isOpen, onClose, unit, onSuccess }: Args) => {
+export const useDeleteUnitModal = ({ onClose, unit, onSuccess }: Args) => {
   const [submitting, setSubmitting] = useState(false);
   const skFile = useFileStore(s => s.skFile);
 
