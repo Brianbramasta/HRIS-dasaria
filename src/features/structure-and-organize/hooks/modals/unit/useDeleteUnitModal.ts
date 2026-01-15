@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { UnitRow } from '../../useUnits';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
+import { useDeleteUnit } from '../../api/useApiUnits';
 
 type Args = {
   isOpen: boolean;
@@ -10,45 +11,74 @@ type Args = {
   onSuccess?: () => void;
 };
 
-export const useDeleteUnitModal = ({ onClose, unit, onSuccess }: Args) => {
-  const [submitting, setSubmitting] = useState(false);
+export const useDeleteUnitModal = ({ isOpen, onClose, unit, onSuccess }: Args) => {
+  const [memoNumber, setMemoNumber] = useState('');
+  
+  const { execute: deleteUnit, loading: submitting } = useDeleteUnit();
+  
   const skFile = useFileStore(s => s.skFile);
+  const setSkFile = useFileStore(s => s.setSkFile);
+  const clearSkFile = useFileStore(s => s.clearSkFile);
 
-  const handleFileChange = (_e: React.ChangeEvent<HTMLInputElement>) => {};
+  useEffect(() => {
+    if (isOpen) {
+        clearSkFile();
+        setMemoNumber('');
+    }
+  }, [isOpen, clearSkFile]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSkFile({
+        name: file.name,
+        path: URL.createObjectURL(file),
+        size: file.size,
+        type: file.type,
+        file: file
+      });
+    }
+  };
 
   const handleDelete = async () => {
-    if (!unit) return;
-    if (!skFile?.file && !skFile?.name && !skFile?.path) {
+    if (!unit?.id) return;
+    
+    if (!memoNumber.trim() || !skFile?.file) {
       addNotification({
         variant: 'error',
         title: 'Unit tidak dihapus',
-        description: 'File Wajib di isi',
+        description: 'No. SK/Memo dan File Wajib di isi',
         hideDuration: 4000,
       });
       return;
     }
-    setSubmitting(true);
+    
     try {
+      await deleteUnit(unit.id, {
+          memoNumber,
+          skFile: skFile.file
+      });
+
+      addNotification({
+        variant: 'success',
+        title: 'Berhasil',
+        description: 'Unit berhasil dihapus',
+        hideDuration: 4000,
+      });
+      
       onSuccess?.();
       onClose();
     } catch (err) {
-      console.error('Failed to delete unit', err);
-      addNotification({
-        variant: 'error',
-        title: 'Unit tidak dihapus',
-        description: 'Gagal menghapus unit. Silakan coba lagi.',
-        hideDuration: 4000,
-      });
-    } finally {
-      setSubmitting(false);
+      // Error handled by hook
     }
   };
 
   return {
     submitting,
     skFile,
+    memoNumber,
+    setMemoNumber,
     handleFileChange,
     handleDelete,
   };
 };
-
