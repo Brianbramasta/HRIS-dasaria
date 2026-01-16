@@ -1,12 +1,9 @@
 import { useModal } from '@/hooks/useModal';
 import { type SalaryBpjsForm } from '@/features/employee/components/modals/employee-data/personal-information/SalaryBpjsModal';
 import { usePersonalInformation } from '@/features/employee/hooks/employee-data/detail/contract/usePersonalInformation';
-import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
 
-export default function useSalaryCard(salaryData?: any, bpjsData?: any) {
+export default function useSalaryCard(employeeId?: string, salaryData?: any, bpjsData?: any) {
   const { isOpen, openModal, closeModal } = useModal(false);
-  const { detail } = useDetailDataKaryawanPersonalInfo();
-  const employeeId = detail?.Personal_Data?.id;
   const { updateSalaryData, updateBpjsData, loading } = usePersonalInformation(employeeId);
 
   const initialData: SalaryBpjsForm = {

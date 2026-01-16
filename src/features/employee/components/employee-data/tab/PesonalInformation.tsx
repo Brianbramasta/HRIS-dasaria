@@ -27,13 +27,13 @@ export default function PesonalInformationTab({ employeeId }: Props) {
 
   return (
     <div className="space-y-6">
-      <PersonalDataCard data={detail.Personal_Data} employeeId={employeeId} />
-      <EducationalBackgroundCard education={detail.Education_Data} />
-      <SocialEmergencyCard personalInformation={detail.Social_Media_Data} employeeId={employeeId} />
-      <EmployeeDataCard data={detail.Employment_Position_Data} />
-      <SalaryCard salaryData={detail.Salary_Data} bpjsData={detail.BPJS_Data} />
-      <BPJSCard salaryData={detail.Salary_Data} bpjsData={detail.BPJS_Data} />
-      <PersonalDocumentsCard documents={detail.Document_Data} />
+      <PersonalDataCard data={detail.Personal_Data} employeeId={employeeId || detail?.Personal_Data?.id} />
+      <EducationalBackgroundCard education={detail.Education_Data} employeeId={employeeId || detail?.Personal_Data?.id} />
+      <SocialEmergencyCard personalInformation={detail.Social_Media_Data} employeeId={employeeId || detail?.Personal_Data?.id} />
+      <EmployeeDataCard data={detail.Employment_Position_Data} employeeId={employeeId || detail?.Personal_Data?.id} />
+      <SalaryCard employeeId={employeeId || detail?.Personal_Data?.id} salaryData={detail.Salary_Data} bpjsData={detail.BPJS_Data} />
+      <BPJSCard employeeId={employeeId || detail?.Personal_Data?.id} salaryData={detail.Salary_Data} bpjsData={detail.BPJS_Data} />
+      <PersonalDocumentsCard documents={detail.Document_Data} employeeId={employeeId || detail?.Personal_Data?.id} />
     </div>
   );
 }

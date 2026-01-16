@@ -11,7 +11,7 @@ interface Props {
   data: any; // API response from employee-master-data (Employment_Position_Data)
 }
 
-export default function EmployeeDataCard({ data }: Props) {
+export default function EmployeeDataCard({ data, employeeId }: Props & { employeeId: string }) {
   const {
     isOpen,
     openModal,
@@ -20,7 +20,7 @@ export default function EmployeeDataCard({ data }: Props) {
     isComplete,
     // isEditHidden,
     handleSubmit,
-  } = useEmployeeDataCard(data);
+  } = useEmployeeDataCard(data, employeeId);
 
   return (
     <ExpandCard title="Data Karyawan" leftIcon={isComplete ? <IconLengkap /> : <IconTidakLengkap />} withHeaderDivider>

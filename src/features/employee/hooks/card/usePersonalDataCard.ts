@@ -1,14 +1,12 @@
 import { useCallback } from 'react';
 import { useModal } from '@/hooks/useModal';
 import { usePersonalInformation } from '@/features/employee/hooks/employee-data/detail/contract/usePersonalInformation';
-import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
 import { UpdatePersonalDataPayload } from '@/features/employee/types/detail/PersonalInformation';
 import { addNotification } from '@/stores/notificationStore';
 
 export default function usePersonalDataCard(data: any, employeeId: string) {
   const { isOpen, openModal, closeModal } = useModal(false);
   const { loading, error, updatePersonalData, resetError } = usePersonalInformation(employeeId);
-  const { fetchDetail } = useDetailDataKaryawanPersonalInfo();
 
   const initialForm = {
     idKaryawan: data?.id || '',
@@ -34,7 +32,6 @@ export default function usePersonalDataCard(data: any, employeeId: string) {
     async (payload: UpdatePersonalDataPayload) => {
       await updatePersonalData(employeeId, payload);
       closeModal();
-      fetchDetail(employeeId);
       addNotification({
         variant: 'success',
         title: 'Berhasil',
@@ -42,7 +39,7 @@ export default function usePersonalDataCard(data: any, employeeId: string) {
         hideDuration: 3000,
       });
     },
-    [employeeId, updatePersonalData, closeModal, fetchDetail]
+    [employeeId, updatePersonalData, closeModal]
   );
 
   const handleCloseModal = useCallback(() => {

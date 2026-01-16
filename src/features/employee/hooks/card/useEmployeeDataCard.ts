@@ -1,14 +1,12 @@
 import { useMemo } from 'react';
 import { useModal } from '@/hooks/useModal';
-import { useParams } from 'react-router-dom';
 import { type EmployeeDataForm } from '@/features/employee/components/modals/employee-data/personal-information/EmployeeDataModal';
 import usePersonalInformation from '@/features/employee/hooks/employee-data/detail/contract/usePersonalInformation';
 import { addNotification } from '@/stores/notificationStore';
 
-export default function useEmployeeDataCard(data: any) {
+export default function useEmployeeDataCard(data: any, employeeId?: string) {
   const { isOpen, openModal, closeModal } = useModal(false);
-  const { id } = useParams<{ id: string }>();
-  const { updateEmploymentPosition } = usePersonalInformation(id);
+  const { updateEmploymentPosition } = usePersonalInformation(employeeId);
 
   const initialForm: EmployeeDataForm = useMemo(() => {
     return {
@@ -72,8 +70,8 @@ export default function useEmployeeDataCard(data: any) {
   }, [initialForm]);
 
   const handleSubmit = async (payload: EmployeeDataForm) => {
-    if (!id) return;
-    
+    if (!employeeId) return;
+
     const requiredFields = [
       { value: payload.employee_category_id, label: 'Kategori Karyawan' },
       { value: payload.employment_status_id, label: 'Status Karyawan' },
@@ -100,7 +98,7 @@ export default function useEmployeeDataCard(data: any) {
       });
       return;
     }
-    await updateEmploymentPosition(id || '', payload);
+    await updateEmploymentPosition(employeeId, payload);
     closeModal();
   };
 
