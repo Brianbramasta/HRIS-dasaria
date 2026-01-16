@@ -142,6 +142,7 @@ export function useOrganizationHistoryAtasan(options: UseOrganizationHistoryAtas
         position_id: formData?.position_id || '',
         position_level_id: formData?.position_level_id || '',
         employee_category_id: formData?.employee_category_id || '',
+        unit_id: formData?.unit_id || '',
         decree_file: formData?.skFile ?? null,
       };
       const ok = await createOrganizationHistory(employeeId, payload);

@@ -32,6 +32,7 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
     directorateOptions,
     divisionOptions,
     departmentOptions,
+    unitOptions,
     jobTitleOptions,
     positionOptions,
     structuralJobOptions,
@@ -142,6 +143,16 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
               onChange={(v) => handleInput('department_id', v)} 
               placeholder="Select"
               disabled={isEditMode || departmentOptions.length === 0}
+          />
+        </div>
+        <div>
+          <SelectField 
+              label="Unit"
+              options={unitOptions.length > 0 ? unitOptions : [{ label: 'Pilih departemen terlebih dahulu', value: '' }]} 
+              defaultValue={form.unit_id || ''} 
+              onChange={(v) => handleInput('unit_id', v)} 
+              placeholder="Select"
+              disabled={isEditMode || unitOptions.length === 0}
           />
         </div>
         <div>

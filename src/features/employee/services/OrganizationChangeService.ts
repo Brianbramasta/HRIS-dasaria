@@ -95,6 +95,7 @@ export interface CreateOrganizationChangePayload {
   employee_category_id: string;
   decree_file?: File | null;
   approved_by?: string;
+  unit_id?: string;
   recommended_by?: string;
 }
 

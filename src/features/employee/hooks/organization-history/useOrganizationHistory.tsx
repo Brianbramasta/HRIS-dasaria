@@ -52,6 +52,7 @@ export function useOrganizationHistory(options: UseOrganizationHistoryOptions = 
         approved_by: 'di approve manual tanpa login ',
         recommended_by: 'di approve manual tanpa login ',
       };
+      console.log('enrichedPayload', enrichedPayload);
       const success = await createOrgChange(null, enrichedPayload);
       if (success) {
         await fetchOrganizationHistory();
@@ -125,8 +126,11 @@ export function useOrganizationHistory(options: UseOrganizationHistoryOptions = 
         position_id: formData?.position_id || '',
         position_level_id: formData?.position_level_id || '',
         employee_category_id: formData?.employee_category_id || '',
+        unit_id: formData?.unit_id || '',
         decree_file: formData?.skFile ?? null,
       };
+      console.log('payload', payload);
+      // return;
       const ok = await createOrganizationHistory(payload);
       if (ok) {
         setIsEditOrgOpen(false);
