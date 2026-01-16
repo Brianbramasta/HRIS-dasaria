@@ -88,7 +88,7 @@ const EditUnitModal: React.FC<EditUnitModalProps> = ({ isOpen, onClose, unit, on
             labelClassName="text-sm font-medium"
           />
 
-          <FileInput onChange={handleFileChange} skFileName={skFile?.name || ''} required />
+          <FileInput onChange={handleFileChange} skFileName={skFile?.name || ''}  />
         </>
       }
     />

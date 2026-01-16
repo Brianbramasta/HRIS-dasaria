@@ -30,3 +30,8 @@ export interface UnitDeletePayload {
   memoNumber: string;
   skFile?: File | null;
 }
+
+export interface UnitDropdownItem {
+  id: string;
+  unit_name: string;
+}

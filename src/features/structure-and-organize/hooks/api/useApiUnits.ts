@@ -28,6 +28,27 @@ export const useGetUnits = () => {
   return { execute, loading, error };
 };
 
+export const useGetUnitDropdown = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const execute = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await unitsService.getDropdown();
+      return response;
+    } catch (err: any) {
+      setError(err.message || 'Failed to fetch unit dropdown');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  return { execute, loading, error };
+};
+
 export const useGetUnitById = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

@@ -8,6 +8,10 @@ class UnitsService {
     return apiService.get<any>(`${this.basePath}units${qs ? `?${qs}` : ''}`);
   }
 
+  async getDropdown(): Promise<any> {
+    return apiService.get<any>(`${this.basePath}units-dropdown`);
+  }
+
   async getById(id: string): Promise<any> {
     return apiService.get<any>(`${this.basePath}units/${id}/show`);
   }
