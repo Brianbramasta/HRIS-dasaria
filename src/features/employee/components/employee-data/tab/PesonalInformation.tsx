@@ -29,7 +29,7 @@ export default function PesonalInformationTab({ employeeId }: Props) {
     <div className="space-y-6">
       <PersonalDataCard data={detail.Personal_Data} employeeId={employeeId} />
       <EducationalBackgroundCard education={detail.Education_Data} />
-      <SocialEmergencyCard personalInformation={detail.Social_Media_Data} />
+      <SocialEmergencyCard personalInformation={detail.Social_Media_Data} employeeId={employeeId} />
       <EmployeeDataCard data={detail.Employment_Position_Data} />
       <SalaryCard salaryData={detail.Salary_Data} bpjsData={detail.BPJS_Data} />
       <BPJSCard salaryData={detail.Salary_Data} bpjsData={detail.BPJS_Data} />
