@@ -6,6 +6,7 @@ import AddUnitModal from '../../components/modals/unit/AddUnitModal';
 import EditUnitModal from '../../components/modals/unit/EditUnitModal';
 import DeleteUnitmodal from '../../components/modals/unit/DeleteUnitmodal';
 import { useFileStore } from '@/stores/fileStore';
+import { formatUrlFile } from '@/utils/formatUrlFile';
 
 type Props = { resetKey: string };
 
@@ -15,16 +16,24 @@ const unitColumns: DataTableColumn<UnitRow>[] = [
   { id: 'departemen', label: 'Departemen', sortable: true },
   { id: 'deskripsi-umum', label: 'Deksripsi Umum', sortable: true },
   {
-    id: 'file-sk-dan-memin',
-    label: 'File Sk & Memin',
+    id: 'file-sk-dan-memo',
+    label: 'File SK dan Memo',
     sortable: false,
     align: 'center',
     isAction: true,
-    format: () => (
-      <div className="flex justify-center items-center">
-        <FileText size={16} />
-      </div>
-    ),
+    format: (row: UnitRow) =>
+      row.fileUrl ? (
+        <a
+          href={formatUrlFile(row.fileUrl as string)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex justify-center items-center"
+        >
+          <FileText size={16} />
+        </a>
+      ) : (
+        '—'
+      ),
   },
 ];
 

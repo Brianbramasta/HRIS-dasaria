@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useGetUnits } from './api/useApiUnits';
-import { UnitListItem } from '../types/OrganizationApiTypes';
+import { FileSummary, UnitListItem } from '../types/OrganizationApiTypes';
 import { toFileSummary } from '../utils/shared/toFileSummary';
 
 export type UnitRow = {
@@ -9,7 +9,8 @@ export type UnitRow = {
   'nama-unit': string;
   departemen: string;
   'deskripsi-umum': string;
-  'file-sk-dan-memin': string;
+  'file-sk-dan-memo': string | FileSummary;
+  fileUrl?: string | null;
 };
 
 export const useUnits = () => {
@@ -67,7 +68,8 @@ export const useUnits = () => {
         'nama-unit': u.name,
         departemen: u.departmentName ?? '—',
         'deskripsi-umum': u.description ?? '—',
-        'file-sk-dan-memin': u.skFile ? 'Ada' : '—',
+        'file-sk-dan-memo': u.skFile ?? '—',
+        fileUrl: u.skFile?.fileUrl ?? null,
       })),
     [units, page, pageSize],
   );
