@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   useOrganizationChange,
@@ -20,6 +20,7 @@ export function useOrganizationHistory(options: UseOrganizationHistoryOptions = 
   // Use the shared logic hook
   const {
     organizationChanges: data,
+    rowsWithStatus,
     isLoading: loading,
     isSubmitting,
     error,
@@ -71,12 +72,6 @@ export function useOrganizationHistory(options: UseOrganizationHistoryOptions = 
       return success;
     },
     [updateOrgChange, fetchOrganizationHistory]
-  );
-
-  // Compute rows with status
-  const rowsWithStatus = useMemo(
-    () => data.map((r) => ({ ...r, statusPerubahan: r.status || 'Draft' })),
-    [data]
   );
 
   // UI Handlers

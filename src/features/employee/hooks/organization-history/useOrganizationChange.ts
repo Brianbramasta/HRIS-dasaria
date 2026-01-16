@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { addNotification } from '@/stores/notificationStore';
 import {
   organizationChangeService,
@@ -18,6 +18,7 @@ export interface UseOrganizationChangeOptions {
 
 export interface UseOrganizationChangeReturn {
   organizationChanges: OrganizationChangeItem[];
+  rowsWithStatus: (OrganizationChangeItem & { statusPerubahan: string })[];
   detail: OrganizationChangeDetailRaw | null;
   isLoading: boolean;
   error: string | null;
@@ -336,8 +337,14 @@ export function useOrganizationChange({
     }
   }, [autoFetch, fetchOrganizationChanges]);
 
+  const rowsWithStatus = useMemo(
+    () => organizationChanges.map((r) => ({ ...r, statusPerubahan: r.status || 'Draft' })),
+    [organizationChanges]
+  );
+
   return {
     organizationChanges,
+    rowsWithStatus,
     detail,
     isLoading,
     error,

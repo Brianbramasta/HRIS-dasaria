@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   useOrganizationChange,
@@ -21,6 +21,7 @@ export function useOrganizationHistoryAtasan(options: UseOrganizationHistoryAtas
   // Use the shared logic hook
   const {
     organizationChanges: data,
+    rowsWithStatus,
     isLoading: loading,
     error,
     total,
@@ -83,12 +84,6 @@ export function useOrganizationHistoryAtasan(options: UseOrganizationHistoryAtas
        console.warn('Delete not implemented', id);
     },
     []
-  );
-
-  // Compute rows with status
-  const rowsWithStatus = useMemo(
-    () => data.map((r) => ({ ...r, statusPerubahan: r.status || 'Draft' })),
-    [data]
   );
 
   useEffect(() => {
