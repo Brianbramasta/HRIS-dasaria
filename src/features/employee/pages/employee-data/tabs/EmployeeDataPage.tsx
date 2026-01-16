@@ -335,6 +335,13 @@ export default function DataKaryawanPage() {
       format: (value) => value || '-',
     },
     {
+      id: 'unit',
+      label: 'Unit',
+      minWidth: 130,
+      sortable: true,
+      format: (value) => value || '-',
+    },
+    {
       id: 'department',
       label: 'Departemen',
       minWidth: 130,
