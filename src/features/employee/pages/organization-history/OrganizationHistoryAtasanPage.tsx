@@ -19,11 +19,16 @@ export default function OrganizationHistoryAtasanPage() {
     data,
     rowsWithStatus,
     loading,
+    total,
+    page,
+    limit,
     isEditOrgOpen,
     isDropdownOpen,
     selectedRow,
     handleSearchChange,
     handleSortChange,
+    handlePageChange,
+    handleRowsPerPageChange,
     handleAddOrganization,
     handleEditOrganization,
     handleCloseModal,
@@ -144,8 +149,14 @@ export default function OrganizationHistoryAtasanPage() {
         data={rowsWithStatus}
         columns={columns}
         actions={actions}
+        pageSize={limit}
         loading={loading}
         filterable
+        useExternalPagination
+        externalPage={page}
+        externalTotal={total}
+        onPageChangeExternal={handlePageChange}
+        onRowsPerPageChangeExternal={handleRowsPerPageChange}
         emptyMessage="Belum ada perubahan organisasi"
         addButtonLabel="Tambah Organisasi"
         onAdd={handleAddOrganization}
