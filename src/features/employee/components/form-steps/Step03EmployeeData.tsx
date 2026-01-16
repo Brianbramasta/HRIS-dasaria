@@ -179,11 +179,12 @@ export const Step03EmployeeData: React.FC = () => {
             <div>
               <SelectField
                 label="Unit"
-                options={unitOptions}
+                options={unitOptions.length > 0 ? unitOptions : [{ label: 'Pilih departemen terlebih dahulu', value: '' }]}
                 defaultValue={step3.unit}
                 onChange={(value) => handleChange('unit', value)}
                 placeholder="Select"
-                required
+                disabled={unitOptions.length === 0}
+                // required
               />
             </div>
             <div>

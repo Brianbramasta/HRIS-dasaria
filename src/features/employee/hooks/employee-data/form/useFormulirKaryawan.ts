@@ -60,6 +60,13 @@ export const getStructuralJobDropdownOptions = async (IdJabatanKepangkatan?: str
   return (data || []).map((j: any) => ({ label: j.name, value: j.id }));
 }
 
+export const getUnitDropdownByDepartmentIdOptions = async (departmentId?: string): Promise<DropdownOption[]> => {
+  const data = await employeeMasterDataService.getUnitDropdownByDepartmentId(departmentId);
+  console.log('Unit dropdown data:', data);
+  return (data || []).map((u: any) => ({ label: u.name ?? u.name, value: u.id }));
+}
+
+
 
 export const getFieldDocument = async (id?: string): Promise<any[]> => {
   const data = await employeeMasterDataService.getFieldDocument(id);

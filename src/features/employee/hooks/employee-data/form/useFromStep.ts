@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { employeeMasterDataService } from '../../../services/EmployeeMasterData.service';
 import { PTKPDropdownItem } from '../../../types/dto/EmployeeType';
-import { getReligionDropdownOptions, getEducationDropdownOptions, getBankDropdownOptions, getEmployeeCategoryDropdownOptions, getPositionLevelDropdownOptions, getEmployeeStatusDropdownOptions, getFieldDocument, getStructuralJobDropdownOptions } from './useFormulirKaryawan';
+import { getReligionDropdownOptions, getEducationDropdownOptions, getBankDropdownOptions, getEmployeeCategoryDropdownOptions, getPositionLevelDropdownOptions, getEmployeeStatusDropdownOptions, getFieldDocument, getStructuralJobDropdownOptions, getUnitDropdownByDepartmentIdOptions } from './useFormulirKaryawan';
 import { useFormulirKaryawanStore } from '@/features/employee/stores/useFormulirKaryawanStore';
 import { DocumentItem, EducationItem } from '../../../types/FormEmployee';
-import { useGetUnitDropdown } from '@/features/structure-and-organize/hooks/api/useApiUnits';
+
 
 // NOTE: The hooks below centralize business logic used across form steps 1-5.
 // Each exported hook includes a comment indicating which form step(s) use it.
@@ -178,7 +178,6 @@ export const useStep3Data = (isOpen?: boolean) => {
   
   const { formData,updateStep3Employee } = useFormulirKaryawanStore();
   const step3 = formData.step3Employee;
-  const { execute: fetchUnitDropdown } = useGetUnitDropdown();
 
   const handleChange = (field: string, value: string) => {
     // handle dependent resets atomically so hook effects can update options
@@ -250,21 +249,12 @@ export const useStep3Data = (isOpen?: boolean) => {
         const jobTitles = await employeeMasterDataService.getJobTitleDropdown();
         setJobTitleOptions((jobTitles || []).map((i: any) => ({ label: i.job_title_name, value: i.id, grade: i.grade })));
 
-        try {
-          const unitResponse = await fetchUnitDropdown();
-          const unitItems = (unitResponse as any)?.data ?? unitResponse ?? [];
-          setUnitOptions((unitItems || []).map((u: any) => ({ label: u.unit_name ?? u.name, value: u.id })));
-        } catch (e) {
-          console.error('Error fetching unit dropdown:', e);
-          setUnitOptions([]);
-        }
-
       } catch (error) {
         console.error('Error fetching initial data (step3):', error);
       }
     };
     fetchInitialData();
-  }, [isOpen, fetchUnitDropdown]);
+  }, [isOpen]);
 
   // divisions when directorate changes
   useEffect(() => {
@@ -309,6 +299,19 @@ export const useStep3Data = (isOpen?: boolean) => {
     };
     fetchDepartments();
   }, [step3?.divisi, isOpen]);
+
+  // units when department changes
+  useEffect(() => {
+    if (isOpen === false) return;
+    const fetchUnits = async () => {
+      if (!step3?.departemen) { setUnitOptions([]); return; }
+      try {
+        const items = await getUnitDropdownByDepartmentIdOptions(step3.departemen);
+        setUnitOptions(items);
+      } catch (error) { console.error('Error fetching units:', error); setUnitOptions([]); }
+    };
+    fetchUnits();
+  }, [step3?.departemen, isOpen]);
 
   // offices when company changes
   useEffect(() => {
