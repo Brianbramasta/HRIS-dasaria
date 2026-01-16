@@ -19,7 +19,7 @@ export default function EmployeeMetricCard({
 }: Props) {
   const normalized = useEmployeeMetricCard({ badgeText, badgeColor });
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+    <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900 md:p-6">
       <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
         {icon}
       </div>

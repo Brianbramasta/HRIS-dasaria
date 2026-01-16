@@ -6,7 +6,7 @@ export default function EmployeeEngagement() {
   const { series, options } = useEmployeeEngagement();
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] h-full">
+    <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 h-full">
       <div className="px-5 pt-5 pb-6 sm:px-6 sm:pt-6">
         <h4 className="text-lg font-semibold text-gray-800 dark:text-white/90">Survei Kepuasan Karyawan</h4>
         <div className="relative mt-4">
