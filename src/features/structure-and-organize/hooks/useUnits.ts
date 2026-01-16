@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useGetUnits } from './api/useApiUnits';
 import { UnitListItem } from '../types/OrganizationApiTypes';
 import { toFileSummary } from '../utils/shared/toFileSummary';
-import { TableFilter } from '../../../types/SharedType';
 
 export type UnitRow = {
   id: string;

@@ -5,7 +5,6 @@ import {
   UnitDeletePayload,
   UnitUpdatePayload,
 } from '../../types/OrganizationApiTypes';
-import { TableFilter } from '../../../../types/SharedType';
 
 export const useGetUnits = () => {
   const [loading, setLoading] = useState(false);

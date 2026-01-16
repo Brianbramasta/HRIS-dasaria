@@ -411,6 +411,81 @@ const mapUpdatePersonalPayload = (data: UpdatePersonalDataPayload): UpdatePerson
   return mapped;
 };
 
+const buildFormData = (payload: any): FormData => {
+  const formData = new FormData();
+
+  Object.keys(payload).forEach((key) => {
+    const value = payload[key];
+    if (value !== undefined && value !== null && value !== '') {
+      if (value instanceof File) {
+        formData.append(key, value);
+      } else {
+        formData.append(key, value.toString());
+      }
+    }
+  });
+
+  return formData;
+};
+
+const buildEducationFormData = (payload: UpdateEducationDataPayload): FormData => {
+  const formData = new FormData();
+
+  if (payload.education_formal_detail && payload.education_formal_detail.length > 0) {
+    payload.education_formal_detail.forEach((edu, index) => {
+      if (edu.id) {
+        formData.append(`education_formal_detail[${index}][id]`, edu.id);
+      }
+      formData.append(`education_formal_detail[${index}][education_level_id]`, edu.education_level_id);
+      formData.append(`education_formal_detail[${index}][institution_name]`, edu.institution_name);
+      formData.append(`education_formal_detail[${index}][degree]`, edu.degree);
+      formData.append(`education_formal_detail[${index}][final_grade]`, edu.final_grade.toString());
+      formData.append(`education_formal_detail[${index}][major]`, edu.major);
+      formData.append(`education_formal_detail[${index}][graduation_year]`, edu.graduation_year.toString());
+    });
+  }
+
+  if (payload.non_formal_education && payload.non_formal_education.length > 0) {
+    payload.non_formal_education.forEach((edu, index) => {
+      if (edu.id) {
+        formData.append(`non_formal_education[${index}][id]`, edu.id);
+      }
+      formData.append(`non_formal_education[${index}][certificate_name]`, edu.certificate_name);
+      formData.append(`non_formal_education[${index}][institution_name]`, edu.institution_name);
+      formData.append(`non_formal_education[${index}][start_date]`, edu.start_date);
+      formData.append(`non_formal_education[${index}][end_date]`, edu.end_date);
+      formData.append(`non_formal_education[${index}][certificate_id]`, edu.certificate_id);
+      if (edu.certificate_file) {
+        formData.append(`non_formal_education[${index}][certificate_file]`, edu.certificate_file);
+      }
+    });
+  }
+
+  formData.append('_method', 'PATCH');
+
+  return formData;
+};
+
+const buildEmployeeDocumentFormData = (payload: UpdateEmployeeDocumentPayload): FormData => {
+  const formData = new FormData();
+
+  formData.append('_method', 'PATCH');
+
+  if (payload.documents && payload.documents.length > 0) {
+    payload.documents.forEach((doc, index) => {
+      if (doc.id) {
+        formData.append(`documents[${index}][id]`, doc.id);
+      }
+      formData.append(`documents[${index}][employee_document_id]`, doc.employee_document_id || '');
+      if (doc.file) {
+        formData.append(`documents[${index}][file]`, doc.file);
+      }
+    });
+  }
+
+  return formData;
+};
+
 // ===================== Hook Implementation =====================
 
 /**
@@ -472,7 +547,9 @@ export const usePersonalInformation = (employeeId?: string): UsePersonalInformat
 
       try {
         const mappedPayload = mapUpdatePersonalPayload(payload);
-        const response = await personalInformationService.updatePersonalData(id, mappedPayload);
+        const formData = buildFormData(mappedPayload);
+        formData.append('_method', 'PATCH');
+        const response = await personalInformationService.updatePersonalData(id, formData);
 
         if (response.meta.status == 200) {
         //   const updatedPersonal = mapPersonalData(response.data);
@@ -516,7 +593,8 @@ export const usePersonalInformation = (employeeId?: string): UsePersonalInformat
           ? mapEducationModalToPayload(payload as EducationModalForm)
           : payload as UpdateEducationDataPayload;
 
-        const response = await personalInformationService.updateEducationData(id, mappedPayload);
+        const formData = buildEducationFormData(mappedPayload);
+        const response = await personalInformationService.updateEducationData(id, formData);
         console.log('updateEducationData response:', response);
         if (response.meta.status === 200  ) {
     
@@ -595,7 +673,9 @@ const mapSocialMediaModalToPayload = useCallback(
           ? mapSocialMediaModalToPayload(payload as MediaSosialForm)
           : payload as UpdateSocialMediaDataPayload;
 
-        const response = await personalInformationService.updateSocialMediaData(id, mappedPayload);
+        const formData = buildFormData(mappedPayload);
+        formData.append('_method', 'PATCH');
+        const response = await personalInformationService.updateSocialMediaData(id, formData);
 
         if (response.meta.status == 200) {
         //   const updatedSocialMedia = mapSocialMedia(response.data);
@@ -633,7 +713,9 @@ const mapSocialMediaModalToPayload = useCallback(
       setError(null);
 
       try {
-        const response = await personalInformationService.updateSalaryData(id, payload);
+        const formData = buildFormData(payload);
+        formData.append('_method', 'PATCH');
+        const response = await personalInformationService.updateSalaryData(id, formData);
 
         if (response.meta.status == 200) {
         //   const updatedSalary = mapSalary(response.data);
@@ -671,7 +753,9 @@ const mapSocialMediaModalToPayload = useCallback(
       setError(null);
 
       try {
-        const response = await personalInformationService.updateBpjsData(id, payload);
+        const formData = buildFormData(payload);
+        formData.append('_method', 'PATCH');
+        const response = await personalInformationService.updateBpjsData(id, formData);
 
         if (response.meta.status == 200) {
   
@@ -767,7 +851,9 @@ const mapSocialMediaModalToPayload = useCallback(
              mappedPayload = payload as UpdateEmploymentPositionPayload;
         }
 
-        const response = await personalInformationService.updateEmploymentPosition(id, mappedPayload);
+        const formData = buildFormData(mappedPayload);
+        formData.append('_method', 'PATCH');
+        const response = await personalInformationService.updateEmploymentPosition(id, formData);
 
         if (response.meta.status == 200) {
 
@@ -802,7 +888,8 @@ const mapSocialMediaModalToPayload = useCallback(
       setError(null);
 
       try {
-        const response = await personalInformationService.updateEmployeeDocument(id, payload);
+        const formData = buildEmployeeDocumentFormData(payload);
+        const response = await personalInformationService.updateEmployeeDocument(id, formData);
 
         if (response.meta.status == 200) {
     
