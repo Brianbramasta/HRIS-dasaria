@@ -17,6 +17,7 @@ interface DetailDataKaryawanPersonalInfoState {
   loading: boolean;
   error: string | null;
   fetchDetail: (employeeId: string) => Promise<void>;
+  refetchDetail: (employeeId?: string) => Promise<void>;
   clearDetail: () => void;
 }
 
@@ -44,6 +45,13 @@ export const useDetailDataKaryawanPersonalInfo = (): DetailDataKaryawanPersonalI
     setEmployeeId(id);
   };
 
+  const refetchDetail = async (id?: string) => {
+    const targetId = id ?? employeeId;
+    if (!targetId) return;
+    await queryClient.invalidateQueries({ queryKey: ['employee-personal-info', targetId] });
+    await queryClient.refetchQueries({ queryKey: ['employee-personal-info', targetId] });
+  };
+
   const clearDetail = () => {
     if (employeeId) {
       queryClient.removeQueries({ queryKey: ['employee-personal-info', employeeId] });
@@ -57,9 +65,10 @@ export const useDetailDataKaryawanPersonalInfo = (): DetailDataKaryawanPersonalI
       loading: isLoading || isFetching,
       error: error ? (error instanceof Error ? error.message : 'Gagal memuat detail karyawan') : null,
       fetchDetail,
+      refetchDetail,
       clearDetail,
     }),
-    [data, isLoading, isFetching, error, fetchDetail, clearDetail]
+    [data, isLoading, isFetching, error, fetchDetail, refetchDetail, clearDetail]
   );
 
   return state;

@@ -1,5 +1,6 @@
 // Hook: Personal Information
 import { useState, useCallback } from 'react';
+import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
 import {
   PersonalInformationData,
   PersonalDataResponse,
@@ -17,7 +18,6 @@ import {
   UpdateEmployeeDocumentPayload,
 } from '@/features/employee/types/detail/PersonalInformation';
 import {personalInformationService} from '@/features/employee/services/detail/PersonalInformationService';
-import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
 
 // ===================== Mapped Types =====================
 
@@ -497,7 +497,7 @@ export const usePersonalInformation = (employeeId?: string): UsePersonalInformat
   const [data, setData] = useState<MappedPersonalInformation | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { fetchDetail, clearDetail } = useDetailDataKaryawanPersonalInfo()
+  const { refetchDetail } = useDetailDataKaryawanPersonalInfo();
 
   /**
    * Get Personal Information Data
@@ -558,8 +558,7 @@ export const usePersonalInformation = (employeeId?: string): UsePersonalInformat
         //     personal: updatedPersonal,
         //   });
         console.log('updatePersonalData response:', response);
-        clearDetail();
-        fetchDetail(id);
+        refetchDetail(id);
         } else {
           setError(response.meta?.message || 'Failed to update personal data');
         }
@@ -571,7 +570,7 @@ export const usePersonalInformation = (employeeId?: string): UsePersonalInformat
         setLoading(false);
       }
     },
-    [employeeId]
+    [employeeId, refetchDetail]
   );
 
   /**
@@ -598,8 +597,7 @@ export const usePersonalInformation = (employeeId?: string): UsePersonalInformat
         console.log('updateEducationData response:', response);
         if (response.meta.status === 200  ) {
     
-            clearDetail();
-            fetchDetail(id);
+            refetchDetail(id);
 
         //   const educationFormal = (response.data.education_formal || []).map(mapEducationFormal);
         //   const educationNonFormal = (response.data.education_non_formal || []).map(mapEducationNonFormal);
@@ -620,7 +618,7 @@ export const usePersonalInformation = (employeeId?: string): UsePersonalInformat
         setLoading(false);
       }
     },
-    [employeeId, fetchDetail]
+    [employeeId, refetchDetail]
   );
 
 /**
@@ -683,8 +681,7 @@ const mapSocialMediaModalToPayload = useCallback(
         //     ...data,
         //     socialMedia: updatedSocialMedia,
         //   });
-            clearDetail();
-            fetchDetail(id);
+            refetchDetail(id);
         } else {
           setError(response.meta?.message || 'Failed to update social media data');
         }
@@ -696,7 +693,7 @@ const mapSocialMediaModalToPayload = useCallback(
         setLoading(false);
       }
     },
-    [employeeId, mapSocialMediaModalToPayload]
+    [employeeId, mapSocialMediaModalToPayload, refetchDetail]
   );
 
   /**
@@ -723,8 +720,7 @@ const mapSocialMediaModalToPayload = useCallback(
         //     ...data,
         //     salary: updatedSalary,
         //   });
-            clearDetail();
-            fetchDetail(id);
+            refetchDetail(id);
         } else {
           setError(response.meta?.message || 'Failed to update salary data');
         }
@@ -736,7 +732,7 @@ const mapSocialMediaModalToPayload = useCallback(
         setLoading(false);
       }
     },
-    [employeeId, fetchDetail]
+    [employeeId, refetchDetail]
   );
 
   /**
@@ -759,8 +755,7 @@ const mapSocialMediaModalToPayload = useCallback(
 
         if (response.meta.status == 200) {
   
-            clearDetail();
-            fetchDetail(id);
+            refetchDetail(id);
         //   const updatedBpjs = mapBpjs(response.data);
         //   setData({
         //     ...data,
@@ -777,7 +772,7 @@ const mapSocialMediaModalToPayload = useCallback(
         setLoading(false);
       }
     },
-    [employeeId, fetchDetail]
+    [employeeId, refetchDetail]
   );
 
   /**
@@ -857,8 +852,7 @@ const mapSocialMediaModalToPayload = useCallback(
 
         if (response.meta.status == 200) {
 
-          clearDetail();
-          fetchDetail(id);
+          refetchDetail(id);
         } else {
           setError(response.meta?.message || 'Failed to update employment position');
         }
@@ -870,7 +864,7 @@ const mapSocialMediaModalToPayload = useCallback(
         setLoading(false);
       }
     },
-    [employeeId, fetchDetail, mapEmploymentPositionModalToPayload]
+    [employeeId, refetchDetail, mapEmploymentPositionModalToPayload]
   );
 
   /**
@@ -893,8 +887,7 @@ const mapSocialMediaModalToPayload = useCallback(
 
         if (response.meta.status == 200) {
     
-          clearDetail();
-          fetchDetail(id);
+          refetchDetail(id);
         } else {
           setError(response.meta?.message || 'Failed to update employee document');
         }
@@ -906,7 +899,7 @@ const mapSocialMediaModalToPayload = useCallback(
         setLoading(false);
       }
     },
-    [employeeId, fetchDetail]
+    [employeeId, refetchDetail]
   );
 
   return {
