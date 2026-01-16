@@ -88,6 +88,7 @@ const initialFormData: FormulirKaryawanData = {
     kantor: '',
     direktorat: '',
     departemen: '',
+    unit: '',
     employmentStatus: '',
     jabatanStruktural: '',
     // resignationStatus: '',
