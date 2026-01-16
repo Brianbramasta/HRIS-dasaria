@@ -714,6 +714,7 @@ const mapSocialMediaModalToPayload = useCallback(
     start_date?: string;
     end_date?: string;
     structural_job_id?: string;
+    unit_id?: string;
   }
 
   const mapEmploymentPositionModalToPayload = useCallback(
@@ -733,6 +734,7 @@ const mapSocialMediaModalToPayload = useCallback(
       if (modalData.division_id) payload.division_id = modalData.division_id;
       if (modalData.employee_category_id) payload.employee_category_id = modalData.employee_category_id;
       if (modalData.structural_job_id) payload.structural_job_id = modalData.structural_job_id;
+      if (modalData.unit_id) payload.unit_id = modalData.unit_id;
       return payload;
     },
     []

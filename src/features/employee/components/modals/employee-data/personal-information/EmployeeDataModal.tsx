@@ -35,6 +35,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
     positionLevelOptions,
     employeeStatusOptions,
     structuralJobOptions,
+    unitOptions,
     selectedGrade,
     handleInput,
     isDisabledField,
@@ -165,6 +166,18 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             onChange={(v) => handleInput('department_id', v)}
             disabled={departmentDropdown.length === 0 && departmentOptions.length === 0 || isDisabledField}
             placeholder="Select"
+            required
+          />
+        </div>
+        <div>
+          <SelectField
+            label="Unit"
+            htmlFor="unitSelect"
+            options={unitOptions}
+            defaultValue={form.unit_id || ''}
+            onChange={(v) => handleInput('unit_id', v)}
+            placeholder="Select"
+            disabled={isDisabledField}
             required
           />
         </div>

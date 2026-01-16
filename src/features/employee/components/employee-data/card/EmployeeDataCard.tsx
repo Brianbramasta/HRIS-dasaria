@@ -62,6 +62,10 @@ export default function EmployeeDataCard({ data }: Props) {
           <InputField value={data?.department_name || ''} readonly={true} />
         </div>
         <div>
+          <Label>Unit</Label>
+          <InputField value={data?.unit_name || ''} readonly={true} />
+        </div>
+        <div>
           <Label>Position</Label>
           <InputField value={data?.position_name || ''} readonly={true} />
         </div>
