@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { businessLinesService } from '../../../services/request/BusinessLinesService';
 import { BusinessLineListItem } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
+import { businessLinesService } from '../../../services/request/BusinessLinesService';
 
 type Args = {
   onClose: () => void;
@@ -31,13 +31,17 @@ export const useAddBusinessLineModal = ({ onClose, onSuccess }: Args) => {
     }
     setSubmitting(true);
     try {
-      const created = await businessLinesService.create({
-        name: name.trim(),
-        description: description.trim() || null,
-        memoNumber: memoNumber.trim(),
-        skFile: skFile.file,
-      });
-      onSuccess?.(created);
+      const formData = new FormData();
+      formData.append('bl_name', name.trim());
+      formData.append('bl_decree_number', memoNumber.trim());
+      if (description.trim()) {
+        formData.append('bl_description', description.trim());
+      }
+      formData.append('bl_decree_file', skFile.file);
+
+      const created = await businessLinesService.create(formData);
+      const item = (created as any)?.data ?? created;
+      onSuccess?.(item as BusinessLineListItem);
       onClose();
       setName('');
       setMemoNumber('');
