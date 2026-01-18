@@ -109,14 +109,12 @@ describe('useAddBusinessLineModal', () => {
     });
 
     expect(businessLinesService.create).toHaveBeenCalledTimes(1);
-    expect(businessLinesService.create).toHaveBeenCalledWith(
-      expect.objectContaining({
-        name: 'Lini Bisnis A',
-        memoNumber: 'MEMO-001',
-        description: 'Deskripsi',
-        skFile: expect.any(File),
-      })
-    );
+    const formDataArg = (businessLinesService.create as jest.Mock).mock.calls[0][0] as FormData;
+    expect(formDataArg).toBeInstanceOf(FormData);
+    expect(formDataArg.get('bl_name')).toBe('Lini Bisnis A');
+    expect(formDataArg.get('bl_decree_number')).toBe('MEMO-001');
+    expect(formDataArg.get('bl_description')).toBe('Deskripsi');
+    expect(formDataArg.get('bl_decree_file')).toBeInstanceOf(File);
 
     expect(onSuccess).toHaveBeenCalledWith(created);
     expect(onClose).toHaveBeenCalledTimes(1);

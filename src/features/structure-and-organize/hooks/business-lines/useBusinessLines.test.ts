@@ -130,10 +130,18 @@ describe('useBusinessLines Hook', () => {
 
     let createdItem: BusinessLineListItem | null = null;
     await act(async () => {
-       createdItem = await result.current.createBusinessLine(newLine);
+      createdItem = await result.current.createBusinessLine(newLine);
     });
 
-    expect(mockBusinessLinesService.create).toHaveBeenCalledWith(newLine);
+    expect(mockBusinessLinesService.create).toHaveBeenCalledTimes(1);
+    const [formDataArg] = mockBusinessLinesService.create.mock.calls[0];
+    expect(formDataArg instanceof FormData).toBe(true);
+    const fd = formDataArg as FormData;
+    expect(fd.get('bl_name')).toBe(newLine.name);
+    expect(fd.get('bl_decree_number')).toBe(newLine.memoNumber);
+    if (newLine.description) {
+      expect(fd.get('bl_description')).toBe(newLine.description);
+    }
     expect(createdItem).not.toBeNull();
     if (createdItem) {
         const ci = createdItem as BusinessLineListItem;
@@ -173,7 +181,14 @@ describe('useBusinessLines Hook', () => {
       updatedItem = await result.current.updateBusinessLine('1', updatePayload);
     });
 
-    expect(mockBusinessLinesService.update).toHaveBeenCalledWith('1', updatePayload);
+    expect(mockBusinessLinesService.update).toHaveBeenCalledTimes(1);
+    const [calledId, formDataArg] = mockBusinessLinesService.update.mock.calls[0];
+    expect(calledId).toBe('1');
+    expect(formDataArg instanceof FormData).toBe(true);
+    const fd = formDataArg as FormData;
+    expect(fd.get('_method')).toBe('PATCH');
+    expect(fd.get('bl_name')).toBe(updatePayload.name);
+    expect(fd.get('bl_decree_number')).toBe(updatePayload.memoNumber);
     {
       const ui = updatedItem as BusinessLineListItem | null;
       expect(ui?.name).toBe('Updated');
@@ -193,7 +208,13 @@ describe('useBusinessLines Hook', () => {
       success = await result.current.deleteBusinessLine('1', deletePayload);
     });
 
-    expect(mockBusinessLinesService.delete).toHaveBeenCalledWith('1', deletePayload);
+    expect(mockBusinessLinesService.delete).toHaveBeenCalledTimes(1);
+    const [calledId, formDataArg] = mockBusinessLinesService.delete.mock.calls[0];
+    expect(calledId).toBe('1');
+    expect(formDataArg instanceof FormData).toBe(true);
+    const fd = formDataArg as FormData;
+    expect(fd.get('_method')).toBe('DELETE');
+    expect(fd.get('bl_delete_decree_number')).toBe(deletePayload.memoNumber);
     expect(success).toBe(true);
     expect(mockBusinessLinesService.getList).toHaveBeenCalled();
   });
