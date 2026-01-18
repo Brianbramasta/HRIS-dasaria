@@ -90,82 +90,66 @@ describe('BusinessLinesService', () => {
     expect(result).toBe(mockResponse);
   });
 
-  it('membuat FormData yang benar saat create dipanggil', async () => {
+  it('meneruskan FormData ke apiService.post saat create dipanggil', async () => {
+    const formData = new FormData();
+    formData.append('bl_name', 'Lini Bisnis A');
+    formData.append('bl_decree_number', 'MEMO-01');
+    formData.append('bl_description', 'Deskripsi');
     const file = new File(['dummy'], 'memo.pdf');
-    const payload = {
-      name: 'Lini Bisnis A',
-      description: 'Deskripsi',
-      memoNumber: 'MEMO-01',
-      skFile: file,
-    };
+    formData.append('bl_decree_file', file);
     const mockResponse = { data: { id: '1' } };
     mockedApiService.post.mockResolvedValue(mockResponse as any);
 
-    const result = await businessLinesService.create(payload);
+    const result = await businessLinesService.create(formData);
 
     expect(mockedApiService.post).toHaveBeenCalledTimes(1);
-    const [url, formData, config] = mockedApiService.post.mock.calls[0];
+    const [url, body, config] = mockedApiService.post.mock.calls[0];
 
-    expect(url).toBe('/organizational-structure/business-master-data/');
+    expect(url).toBe('/organizational-structure/business-master-data/business-lines');
+    expect(body).toBe(formData);
     expect(config).toEqual({ headers: { 'Content-Type': 'multipart/form-data' } });
-    expect(formData instanceof FormData).toBe(true);
-    const fd = formData as FormData;
-    expect(fd.get('bl_name')).toBe('Lini Bisnis A');
-    expect(fd.get('bl_decree_number')).toBe('MEMO-01');
-    expect(fd.get('bl_description')).toBe('Deskripsi');
-    expect(fd.get('bl_decree_file')).toBe(file);
     expect(result).toBe(mockResponse);
   });
 
-  it('membuat FormData yang benar saat update dipanggil', async () => {
+  it('meneruskan FormData ke apiService.post saat update dipanggil', async () => {
+    const formData = new FormData();
+    formData.append('_method', 'PATCH');
+    formData.append('bl_name', 'Lini Bisnis B');
+    formData.append('bl_decree_number', 'MEMO-02');
+    formData.append('bl_description', 'Deskripsi Update');
     const file = new File(['dummy'], 'memo-update.pdf');
-    const payload = {
-      name: 'Lini Bisnis B',
-      description: 'Deskripsi Update',
-      memoNumber: 'MEMO-02',
-      skFile: file,
-    };
+    formData.append('bl_decree_file', file);
     const mockResponse = { data: { id: '2' } };
     mockedApiService.post.mockResolvedValue(mockResponse as any);
 
-    const result = await businessLinesService.update('2', payload);
+    const result = await businessLinesService.update('2', formData);
 
     expect(mockedApiService.post).toHaveBeenCalledTimes(1);
-    const [url, formData, config] = mockedApiService.post.mock.calls[0];
+    const [url, body, config] = mockedApiService.post.mock.calls[0];
 
     expect(url).toBe('/organizational-structure/business-master-data/business-lines/2/update');
+    expect(body).toBe(formData);
     expect(config).toEqual({ headers: { 'Content-Type': 'multipart/form-data' } });
-    expect(formData instanceof FormData).toBe(true);
-    const fd = formData as FormData;
-    expect(fd.get('_method')).toBe('PATCH');
-    expect(fd.get('bl_name')).toBe('Lini Bisnis B');
-    expect(fd.get('bl_decree_number')).toBe('MEMO-02');
-    expect(fd.get('bl_description')).toBe('Deskripsi Update');
-    expect(fd.get('bl_decree_file')).toBe(file);
     expect(result).toBe(mockResponse);
   });
 
-  it('membuat FormData yang benar saat delete dipanggil', async () => {
+  it('meneruskan FormData ke apiService.post saat delete dipanggil', async () => {
+    const formData = new FormData();
+    formData.append('_method', 'DELETE');
+    formData.append('bl_delete_decree_number', 'MEMO-03');
     const file = new File(['dummy'], 'memo-delete.pdf');
-    const payload = {
-      memoNumber: 'MEMO-03',
-      skFile: file,
-    };
+    formData.append('bl_delete_decree_file', file);
     const mockResponse = { data: { success: true } };
     mockedApiService.post.mockResolvedValue(mockResponse as any);
 
-    const result = await businessLinesService.delete('3', payload);
+    const result = await businessLinesService.delete('3', formData);
 
     expect(mockedApiService.post).toHaveBeenCalledTimes(1);
-    const [url, formData, config] = mockedApiService.post.mock.calls[0];
+    const [url, body, config] = mockedApiService.post.mock.calls[0];
 
     expect(url).toBe('/organizational-structure/business-master-data/business-lines3');
+    expect(body).toBe(formData);
     expect(config).toEqual({ headers: { 'Content-Type': 'multipart/form-data' } });
-    expect(formData instanceof FormData).toBe(true);
-    const fd = formData as FormData;
-    expect(fd.get('_method')).toBe('DELETE');
-    expect(fd.get('bl_delete_decree_number')).toBe('MEMO-03');
-    expect(fd.get('bl_delete_decree_file')).toBe(file);
     expect(result).toBe(mockResponse);
   });
 });
