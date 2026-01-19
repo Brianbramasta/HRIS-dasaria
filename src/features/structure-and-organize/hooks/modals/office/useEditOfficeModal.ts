@@ -18,6 +18,7 @@ export function useEditOfficeModal(
   const [submitting, setSubmitting] = useState(false);
   const [companyIds, setCompanyIds] = useState<string[]>([]);
   const [companyOptions, setCompanyOptions] = useState<{ value: string; text: string }[]>([]);
+  const [companySearch, setCompanySearch] = useState('');
   const { updateOffice, getById } = useOffices();
   const { getDropdown: getCompanyDropdown, getDetail: getCompanyDetail } = useCompanies();
 
@@ -37,7 +38,7 @@ export function useEditOfficeModal(
           Array.isArray(initialIds) && initialIds.length > 0 ? initialIds : fallbackId ? [fallbackId] : [];
         setCompanyIds(selectedIds);
         const res = await getCompanyDropdown();
-        const opts = res.map((c: any) => ({ value: c.id, text: c.name }));
+        const opts = (res || []).map((c: any) => ({ value: c.id, text: c.name ?? c.company_name ?? '' }));
         const missing = selectedIds.filter((id) => !opts.some((o: any) => o.value === id));
         for (const id of missing) {
           try {
@@ -52,7 +53,25 @@ export function useEditOfficeModal(
     })();
   }, [isOpen, office, getById, getCompanyDropdown, getCompanyDetail]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handler = setTimeout(async () => {
+      try {
+        const res = await getCompanyDropdown(companySearch || undefined);
+        const opts = (res || []).map((c: any) => ({ value: c.id, text: c.name ?? c.company_name ?? '' }));
+        setCompanyOptions(opts);
+      } catch {
+        setCompanyOptions([]);
+      }
+    }, 400);
+    return () => clearTimeout(handler);
+  }, [isOpen, companySearch, getCompanyDropdown]);
+
   const handleFileChange = () => {};
+
+  const handleCompanySearch = (value: string) => {
+    setCompanySearch(value);
+  };
 
   const handleSubmit = async () => {
     if (!office) return;
@@ -92,6 +111,7 @@ export function useEditOfficeModal(
     companyIds,
     setCompanyIds,
     companyOptions,
+    handleCompanySearch,
     handleFileChange,
     handleSubmit,
   };

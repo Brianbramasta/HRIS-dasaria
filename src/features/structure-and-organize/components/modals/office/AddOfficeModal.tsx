@@ -19,6 +19,7 @@ const AddOfficeModal: React.FC<AddOfficeModalProps> = ({ isOpen, onClose, onSucc
     companyIds,
     setCompanyIds,
     companyOptions,
+    handleCompanySearch,
     memoNumber,
     setMemoNumber,
     description,
@@ -51,6 +52,7 @@ const AddOfficeModal: React.FC<AddOfficeModalProps> = ({ isOpen, onClose, onSucc
             options={companyOptions}
             defaultSelected={companyIds}
             onChange={setCompanyIds}
+            onSearch={handleCompanySearch}
             required
             containerClassName="space-y-2"
           />

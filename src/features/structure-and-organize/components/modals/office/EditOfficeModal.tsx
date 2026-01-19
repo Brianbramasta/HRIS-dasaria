@@ -27,6 +27,7 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
     companyIds,
     setCompanyIds,
     companyOptions,
+    handleCompanySearch,
     handleFileChange,
     handleSubmit,
   } = useEditOfficeModal(isOpen, onClose, office, onSuccess);
@@ -53,6 +54,7 @@ const EditOfficeModal: React.FC<EditOfficeModalProps> = ({ isOpen, onClose, offi
             options={companyOptions}
             defaultSelected={companyIds}
             onChange={setCompanyIds}
+            onSearch={handleCompanySearch}
             required
             containerClassName="space-y-2"
           />
