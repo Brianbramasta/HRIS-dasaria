@@ -27,6 +27,7 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ isOpen, onClose
     handleSubmit,
     skFileName,
     handleFileChange,
+    handleDivisionSearch,
   } = useAddDepartmentModal({ isOpen, onClose, onSuccess });
 
   return (
@@ -53,6 +54,7 @@ const AddDepartmentModal: React.FC<AddDepartmentModalProps> = ({ isOpen, onClose
           label="Divisi"
           options={divisions.map((d) => ({ value: d.id, label: d.division_name }))}
           onChange={(e) => setDivisionId(e)}
+          onSearch={handleDivisionSearch}
           defaultValue={divisionId}
           containerClassName="space-y-2"
           labelClassName="text-sm font-medium"
