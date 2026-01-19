@@ -163,7 +163,7 @@ describe('useEmployeeDataModal', () => {
           department_id: 'dept1'
       };
       
-      const { result } = renderHook(() => useEmployeeDataModal({ isOpen: true, initialData }));
+      renderHook(() => useEmployeeDataModal({ isOpen: true, initialData }));
       
       (employeeMasterDataService.getDivisionsByDirectorate as jest.Mock).mockResolvedValue([{ id: 'div1', division_name: 'Division 1' }]);
       (employeeMasterDataService.getDepartmentsByDivision as jest.Mock).mockResolvedValue([{ id: 'dept1', department_name: 'Dept 1' }]);
@@ -178,5 +178,133 @@ describe('useEmployeeDataModal', () => {
           expect(employeeMasterDataService.getDepartmentsByDivision).toHaveBeenCalledWith('div1', undefined);
           expect(employeeMasterDataService.getUnitDropdownByDepartmentId).toHaveBeenCalledWith('dept1', undefined);
       });
+  });
+
+  it('mereset field turunan (Directorate -> Division -> Dept -> Unit) saat parent berubah', () => {
+    const { result } = renderHook(() => useEmployeeDataModal({ isOpen: true }));
+
+    // Setup initial state
+    act(() => {
+      result.current.handleInput('directorate_id', 'dir1');
+      result.current.handleInput('division_id', 'div1');
+      result.current.handleInput('department_id', 'dept1');
+      result.current.handleInput('unit_id', 'u1');
+    });
+
+    // Change Directorate
+    act(() => {
+      result.current.handleInput('directorate_id', 'dir2');
+    });
+
+    expect(result.current.form.division_id).toBe('');
+    expect(result.current.form.department_id).toBe('');
+    expect(result.current.form.unit_id).toBe('');
+  });
+
+  it('mengambil opsi structural job dan mengatur golongan saat job title dipilih', async () => {
+    const { result } = renderHook(() => useEmployeeDataModal({ isOpen: true }));
+    const mockStructuralJobs = [{ id: 'struct1', name: 'Struct Job 1' }];
+    const mockJobTitles = [{ id: 'j1', job_title_name: 'Manager', grade: 'GR-1' }];
+    
+    (employeeMasterDataService.getJobTitleDropdown as jest.Mock).mockResolvedValue(mockJobTitles);
+    const { getStructuralJobDropdownOptions } = require('@/features/employee/hooks/employee-data/form/useFormulirKaryawan');
+    getStructuralJobDropdownOptions.mockResolvedValue(mockStructuralJobs);
+
+    // Trigger load job titles
+    act(() => {
+      jest.advanceTimersByTime(400);
+    });
+    
+    await waitFor(() => {
+       expect(result.current.jobTitleOptions).toHaveLength(1);
+    });
+
+    // Select Job Title
+    await act(async () => {
+      result.current.handleInput('job_title_id', 'j1');
+    });
+
+    // Verify Grade is set
+    expect(result.current.selectedGrade).toBe('GR-1');
+    expect(result.current.form.golongan).toBe('GR-1');
+
+    // Verify Structural Jobs Fetch
+    await waitFor(() => {
+      expect(getStructuralJobDropdownOptions).toHaveBeenCalledWith('j1');
+      expect(result.current.structuralJobOptions).toEqual(mockStructuralJobs);
+    });
+
+    // Change Job Title (reset logic)
+    act(() => {
+      result.current.handleInput('job_title_id', 'j2'); // j2 doesn't exist in options
+    });
+
+    expect(result.current.form.structural_job_id).toBe('');
+    expect(result.current.form.golongan).toBe('');
+    expect(result.current.selectedGrade).toBe('');
+  });
+
+  it('menghitung properti isDisabledField dengan benar', () => {
+    // Case 1: Initial Data Kosong
+    const emptyData = {};
+    const { result: resEmpty } = renderHook(() => useEmployeeDataModal({ isOpen: true, initialData: emptyData }));
+    expect(resEmpty.current.isDisabledField).toBe(true);
+
+    // Case 2: Status Aktif
+    const activeData = { employment_status: 'Aktif', company_id: 'c1' };
+    const { result: resActive } = renderHook(() => useEmployeeDataModal({ 
+      isOpen: true, 
+      initialData: activeData 
+    }));
+    expect(resActive.current.isDisabledField).toBe(true);
+
+    // Case 3: Data Tidak Lengkap
+    const incompleteData = { employment_status: 'Probation', company_id: 'c1' };
+    const { result: resIncomplete } = renderHook(() => useEmployeeDataModal({ 
+      isOpen: true, 
+      initialData: incompleteData
+    }));
+    expect(resIncomplete.current.isDisabledField).toBe(false);
+
+    // Case 4: Data Lengkap
+    const completeData = {
+      employment_status: 'Probation',
+      employment_status_id: 'es1',
+      start_date: '2023-01-01',
+      company_id: 'c1',
+      office_id: 'o1',
+      directorate_id: 'd1',
+      division_id: 'div1',
+      department_id: 'dept1',
+      unit_id: 'u1',
+      position_id: 'p1',
+      job_title_id: 'j1',
+      position_level_id: 'pl1',
+      employee_category_id: 'ec1',
+      structural_job_id: 'sj1'
+    };
+    const { result: resComplete } = renderHook(() => useEmployeeDataModal({ 
+      isOpen: true, 
+      initialData: completeData
+    }));
+    expect(resComplete.current.isDisabledField).toBe(true);
+  });
+
+  it('menangani error saat fetch dropdown gagal', async () => {
+    const { result } = renderHook(() => useEmployeeDataModal({ isOpen: true }));
+    
+    (employeeMasterDataService.getCompanyDropdown as jest.Mock).mockRejectedValue(new Error('API Error'));
+
+    act(() => {
+      result.current.handleCompanySearch('ErrorComp');
+    });
+
+    act(() => {
+      jest.advanceTimersByTime(400);
+    });
+
+    await waitFor(() => {
+      expect(result.current.companyOptions).toEqual([]);
+    });
   });
 });
