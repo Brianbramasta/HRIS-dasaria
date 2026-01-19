@@ -164,7 +164,7 @@ describe('hook useCompanies - perusahaan', () => {
       created = await result.current.createCompany(payload);
     });
 
-    expect(mockCompaniesService.create).toHaveBeenCalledWith(payload);
+    expect(mockCompaniesService.create).toHaveBeenCalledWith(expect.any(FormData));
     expect(created).not.toBeNull();
     expect(created?.name).toBe('Perusahaan Baru');
     expect(mockCompaniesService.getList).toHaveBeenCalled();
@@ -217,7 +217,7 @@ describe('hook useCompanies - perusahaan', () => {
       updated = await result.current.updateCompany('3', updatePayload);
     });
 
-    expect(mockCompaniesService.update).toHaveBeenCalledWith('3', updatePayload);
+    expect(mockCompaniesService.update).toHaveBeenCalledWith('3', expect.any(FormData));
     expect(updated).not.toBeNull();
     expect(updated?.name).toBe('Perusahaan Update');
     expect(mockCompaniesService.getList).toHaveBeenCalled();
@@ -242,7 +242,7 @@ describe('hook useCompanies - perusahaan', () => {
       success = await result.current.deleteCompany('4', deletePayload);
     });
 
-    expect(mockCompaniesService.delete).toHaveBeenCalledWith('4', deletePayload);
+    expect(mockCompaniesService.delete).toHaveBeenCalledWith('4', expect.any(FormData));
     expect(success).toBe(true);
     expect(mockCompaniesService.getList).toHaveBeenCalled();
   });

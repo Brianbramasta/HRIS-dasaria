@@ -82,12 +82,18 @@ export function useAddCompanyModal(params: {
         .filter((d) => d.file && d.name.trim())
         .map((d) => ({ name: d.name.trim(), number: d.number.trim(), file: d.file as File }));
 
-      const created = await companyService.create({
-        name: name.trim(),
-        businessLineId: businessLineId || '',
-        description: description.trim(),
-        documents: validDocs,
-      } as any);
+      const formData = new FormData();
+      formData.append('company_name', name.trim());
+      formData.append('business_line_id', businessLineId || '');
+      formData.append('company_description', description.trim());
+      
+      validDocs.forEach((d, i) => {
+        formData.append(`documents[${i}][cd_name]`, d.name);
+        formData.append(`documents[${i}][cd_decree_number]`, d.number);
+        formData.append(`documents[${i}][cd_file]`, d.file);
+      });
+
+      const created = await companyService.create(formData);
       onSuccess?.(created);
       setName('');
       setBusinessLineId('');

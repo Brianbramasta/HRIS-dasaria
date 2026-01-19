@@ -43,7 +43,12 @@ export function useDeleteCompanyModal(params: {
     }
     setSubmitting(true);
     try {
-      await companyService.delete(company.id, { memoNumber, skFile: skFile.file as File });
+      const formData = new FormData();
+      formData.append('_method', 'DELETE');
+      if (memoNumber) formData.append('company_delete_decree_number', memoNumber);
+      if (skFile?.file) formData.append('company_delete_decree_file', skFile.file as File);
+
+      await companyService.delete(company.id, formData);
       onSuccess?.();
       onClose();
     } catch {
