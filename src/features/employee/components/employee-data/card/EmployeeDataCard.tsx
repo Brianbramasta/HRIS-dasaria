@@ -18,7 +18,7 @@ export default function EmployeeDataCard({ data, employeeId }: Props & { employe
     closeModal,
     initialForm,
     isComplete,
-    // isEditHidden,
+    isEditHidden,
     handleSubmit,
   } = useEmployeeDataCard(data, employeeId);
 
@@ -91,13 +91,13 @@ export default function EmployeeDataCard({ data, employeeId }: Props & { employe
         </div>
       </div>
 
-      {/* {!isEditHidden && ( */}
+      {!isEditHidden && (
         <div className="mt-4 flex justify-end">
           <Button variant="primary" size="sm" onClick={openModal} className='w-full md:w-auto flex items-center justify-center'>
             <Edit2 size={16} className="mr-2" /> Edit
           </Button>
         </div>
-      {/* )}  */}
+      )}  
       <EmployeeDataModal
         isOpen={isOpen}
         initialData={initialForm}
