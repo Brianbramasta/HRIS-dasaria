@@ -135,7 +135,7 @@ interface UseCompaniesReturn {
     skFileId: string;
   }) => Promise<CompanyListItem | null>;
   deleteCompany: (id: string, payload: { memoNumber: string; skFile: File; }) => Promise<boolean>;
-  getDropdown: () => Promise<any[]>;
+  getDropdown: (search?: string) => Promise<any[]>;
   getDetail: (id: string) => Promise<any>;
   
   // Pagination
@@ -341,9 +341,9 @@ export const useCompanies = (): UseCompaniesReturn => {
     }
   }, [fetchCompanies]);
 
-  const getDropdown = useCallback(async (): Promise<any[]> => {
+  const getDropdown = useCallback(async (search?: string): Promise<any[]> => {
     try {
-      const result = await companiesService.getDropdown();
+      const result = await companiesService.getDropdown(search);
       return result.data || [];
     } catch (err) {
       console.error('Error fetching company dropdown:', err);

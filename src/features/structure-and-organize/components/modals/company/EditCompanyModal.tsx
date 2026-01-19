@@ -60,8 +60,8 @@ const EditCompanyModal: React.FC<EditCompanyModalProps> = ({ isOpen, onClose, co
             placeholder="Pilih Lini Bisnis"
             defaultValue={businessLineId}
             onChange={(value) => setBusinessLineId(value)}
-            onSearch={async (q) => {
-              await searchBusinessLines(q);
+            onSearch={(q) => {
+              searchBusinessLines(q);
             }}
             containerClassName="space-y-2"
         />

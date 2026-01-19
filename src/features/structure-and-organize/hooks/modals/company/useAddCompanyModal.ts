@@ -13,6 +13,7 @@ export function useAddCompanyModal(params: {
   const [name, setName] = React.useState('');
   const [businessLineId, setBusinessLineId] = React.useState('');
   const [businessLines, setBusinessLines] = React.useState<BusinessLineListItem[]>([]);
+  const [businessLineSearch, setBusinessLineSearch] = React.useState('');
   const [description, setDescription] = React.useState('');
   const [documents, setDocuments] = React.useState<{ name: string; number: string; file: File | null }[]>([
     { name: '', number: '', file: null },
@@ -22,15 +23,16 @@ export function useAddCompanyModal(params: {
 
   React.useEffect(() => {
     if (!isOpen) return;
-    (async () => {
+    const handler = setTimeout(async () => {
       try {
-        const items = await getDropdown();
+        const items = await getDropdown(businessLineSearch || undefined);
         setBusinessLines(items);
       } catch (e) {
         void e;
       }
-    })();
-  }, [isOpen, getDropdown]);
+    }, 400);
+    return () => clearTimeout(handler);
+  }, [isOpen, getDropdown, businessLineSearch]);
 
   const handleDocChange = (index: number, key: 'name' | 'number', value: string) => {
     setDocuments((prev) => {
@@ -57,13 +59,8 @@ export function useAddCompanyModal(params: {
     setDocuments((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const searchBusinessLines = async (q?: string) => {
-    try {
-      const items = await getDropdown(q);
-      setBusinessLines(items);
-    } catch (e) {
-      void e;
-    }
+  const searchBusinessLines = (q?: string) => {
+    setBusinessLineSearch(q || '');
   };
 
   const handleSubmit = async () => {
