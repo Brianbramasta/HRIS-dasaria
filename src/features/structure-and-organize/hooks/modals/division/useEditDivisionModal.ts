@@ -22,15 +22,18 @@ export function useEditDivisionModal(params: {
   const { updateDivision } = useDivisions();
   const { getDropdown: getDirectorateDropdown } = useDirectorates();
 
+  const [directorateSearch, setDirectorateSearch] = useState('');
+
   useEffect(() => {
-    const loadDirectorates = async () => {
+    if (!isOpen) return;
+    const handler = setTimeout(async () => {
       try {
-        const res = await getDirectorateDropdown('');
+        const res = await getDirectorateDropdown(directorateSearch);
         setDirectorates(res || []);
       } catch {}
-    };
-    if (isOpen) loadDirectorates();
-  }, [isOpen, getDirectorateDropdown]);
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [isOpen, directorateSearch, getDirectorateDropdown]);
 
   useEffect(() => {
     if (isOpen && division) {
@@ -84,5 +87,6 @@ export function useEditDivisionModal(params: {
     handleSubmit,
     handleFileChange,
     skFileName,
+    handleDirectorateSearch: setDirectorateSearch,
   };
 }
