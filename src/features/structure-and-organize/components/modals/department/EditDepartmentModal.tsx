@@ -1,5 +1,5 @@
 import React from 'react';
-import type { DepartmentListItem } from '../../../types/OrganizationApiTypes';
+import type { DepartmentListItem, DivisionDropdown } from '../../../types/OrganizationApiTypes';
 import FileInput from '../../../../../components/shared/form/FileInput';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
 import InputField from '@/components/shared/field/InputField';
@@ -29,6 +29,7 @@ const EditDepartmentModal: React.FC<EditDepartmentModalProps> = ({ isOpen, onClo
     handleSubmit,
     handleFileChange,
     skFileName,
+    handleDivisionSearch,
   } = useEditDepartmentModal({ isOpen, onClose, department, onSuccess });
 
   return (
@@ -55,7 +56,8 @@ const EditDepartmentModal: React.FC<EditDepartmentModalProps> = ({ isOpen, onClo
           required
           label="Divisi"
           onChange={(e) => setDivisionId(e)}
-          options={divisions.map((d) => ({ value: d.id, label: d.division_name }))}
+          options={divisions.map((d: DivisionDropdown) => ({ value: d.id, label: d.division_name }))}
+          onSearch={handleDivisionSearch}
           defaultValue={divisionId}
           containerClassName="space-y-2"
           labelClassName="text-sm font-medium"

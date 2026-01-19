@@ -19,6 +19,7 @@ export const useEditUnitModal = ({ isOpen, onClose, unit, onSuccess }: UseEditUn
   const [memoNumber, setMemoNumber] = useState('');
   const [description, setDescription] = useState('');
   const [departments, setDepartments] = useState<{ value: string; label: string }[]>([]);
+  const [departmentSearch, setDepartmentSearch] = useState('');
   
   const { execute: getUnitById, loading: fetching } = useGetUnitById();
   const { execute: updateUnit, loading: submitting } = useUpdateUnit();
@@ -75,17 +76,24 @@ export const useEditUnitModal = ({ isOpen, onClose, unit, onSuccess }: UseEditUn
   }, [isOpen, unit?.id, getUnitById, setSkFile, clearSkFile]);
 
   useEffect(() => {
+    if (isOpen) {
+      setDepartmentSearch('');
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
     if (!isOpen) return;
-    (async () => {
+    const handler = setTimeout(async () => {
       try {
-        const res = await getDropdown('');
+        const res = await getDropdown(departmentSearch);
         const opts = (res || []).map(d => ({ value: d.id, label: d.department_name }));
         setDepartments(opts);
       } catch {
         setDepartments([]);
       }
-    })();
-  }, [isOpen, getDropdown]);
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [isOpen, departmentSearch, getDropdown]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -100,14 +108,8 @@ export const useEditUnitModal = ({ isOpen, onClose, unit, onSuccess }: UseEditUn
     }
   };
 
-  const handleSearchDepartments = async (q: string) => {
-    try {
-      const res = await getDropdown(q || '');
-      const opts = (res || []).map(d => ({ value: d.id, label: d.department_name }));
-      setDepartments(opts);
-    } catch {
-      setDepartments([]);
-    }
+  const handleSearchDepartments = (q: string) => {
+    setDepartmentSearch(q);
   };
 
   const handleSubmit = async () => {

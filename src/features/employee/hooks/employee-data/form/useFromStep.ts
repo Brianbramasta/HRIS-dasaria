@@ -175,6 +175,16 @@ export const useStep3Data = (isOpen?: boolean) => {
   const [employeeStatusOptions, setEmployeeStatusOptions] = useState<any[]>([]);
   const [jabatanStrukturalOptions, setJabatanStrukturalOptions] = useState<any[]>([]);
   const [unitOptions, setUnitOptions] = useState<any[]>([]);
+  const [companySearch, setCompanySearch] = useState('');
+  const [officeSearch, setOfficeSearch] = useState('');
+  const [directorateSearch, setDirectorateSearch] = useState('');
+  const [divisionSearch, setDivisionSearch] = useState('');
+  const [departmentSearch, setDepartmentSearch] = useState('');
+  const [unitSearch, setUnitSearch] = useState('');
+  const [jobTitleSearch, setJobTitleSearch] = useState('');
+  const [positionSearch, setPositionSearch] = useState('');
+  const [positionLevelSearch, setPositionLevelSearch] = useState('');
+  const [employeeCategorySearch, setEmployeeCategorySearch] = useState('');
   
   const { formData,updateStep3Employee } = useFormulirKaryawanStore();
   const step3 = formData.step3Employee;
@@ -231,24 +241,8 @@ export const useStep3Data = (isOpen?: boolean) => {
         setPositionLevelOptions(positionLevels);
 
         const employeeStatuses = await getEmployeeStatusDropdownOptions();
-        // const filteredEmployeeStatuses = employeeStatuses.filter((status: any) => 
-        //   ['Aktif', 'Evaluasi'].includes(status.label)
-        // );
-        const filteredEmployeeStatuses = employeeStatuses
+        const filteredEmployeeStatuses = employeeStatuses;
         setEmployeeStatusOptions(filteredEmployeeStatuses);
-
-        const companies = await employeeMasterDataService.getCompanyDropdown();
-        setCompanyOptions((companies || []).map((i: any) => ({ label: i.company_name, value: i.id })));
-
-        const directorates = await employeeMasterDataService.getDirectorateDropdown();
-        setDirectorateOptions((directorates || []).map((i: any) => ({ label: i.directorate_name, value: i.id })));
-
-        const positions = await employeeMasterDataService.getPositionDropdown();
-        setPositionOptions((positions || []).map((i: any) => ({ label: i.position_name, value: i.id })));
-
-        const jobTitles = await employeeMasterDataService.getJobTitleDropdown();
-        setJobTitleOptions((jobTitles || []).map((i: any) => ({ label: i.job_title_name, value: i.id, grade: i.grade })));
-
       } catch (error) {
         console.error('Error fetching initial data (step3):', error);
       }
@@ -256,7 +250,84 @@ export const useStep3Data = (isOpen?: boolean) => {
     fetchInitialData();
   }, [isOpen]);
 
-  // divisions when directorate changes
+  useEffect(() => {
+    if (isOpen === false) return;
+    const handler = setTimeout(async () => {
+      try {
+        const companies = await employeeMasterDataService.getCompanyDropdown(companySearch || undefined);
+        setCompanyOptions((companies || []).map((i: any) => ({ label: i.company_name, value: i.id })));
+      } catch {
+        setCompanyOptions([]);
+      }
+    }, 400);
+    return () => clearTimeout(handler);
+  }, [companySearch, isOpen]);
+
+  useEffect(() => {
+    if (isOpen === false) return;
+    const handler = setTimeout(async () => {
+      try {
+        const directorates = await employeeMasterDataService.getDirectorateDropdown(directorateSearch || undefined);
+        setDirectorateOptions((directorates || []).map((i: any) => ({ label: i.directorate_name, value: i.id })));
+      } catch {
+        setDirectorateOptions([]);
+      }
+    }, 400);
+    return () => clearTimeout(handler);
+  }, [directorateSearch, isOpen]);
+
+  useEffect(() => {
+    if (isOpen === false) return;
+    const handler = setTimeout(async () => {
+      try {
+        const positions = await employeeMasterDataService.getPositionDropdown(positionSearch || undefined);
+        setPositionOptions((positions || []).map((i: any) => ({ label: i.position_name, value: i.id })));
+      } catch {
+        setPositionOptions([]);
+      }
+    }, 400);
+    return () => clearTimeout(handler);
+  }, [positionSearch, isOpen]);
+
+  useEffect(() => {
+    if (isOpen === false) return;
+    const handler = setTimeout(async () => {
+      try {
+        const jobTitles = await employeeMasterDataService.getJobTitleDropdown(jobTitleSearch || undefined);
+        setJobTitleOptions((jobTitles || []).map((i: any) => ({ label: i.job_title_name, value: i.id, grade: i.grade })));
+      } catch {
+        setJobTitleOptions([]);
+      }
+    }, 400);
+    return () => clearTimeout(handler);
+  }, [jobTitleSearch, isOpen]);
+
+  useEffect(() => {
+    if (isOpen === false) return;
+    const handler = setTimeout(async () => {
+      try {
+        const kategori = await getEmployeeCategoryDropdownOptions(employeeCategorySearch || undefined);
+        setKategoriKaryawanOptions(kategori);
+      } catch {
+        setKategoriKaryawanOptions([]);
+      }
+    }, 400);
+    return () => clearTimeout(handler);
+  }, [employeeCategorySearch, isOpen]);
+
+  useEffect(() => {
+    if (isOpen === false) return;
+    const handler = setTimeout(async () => {
+      try {
+        const positionLevels = await getPositionLevelDropdownOptions(positionLevelSearch || undefined);
+        setPositionLevelOptions(positionLevels);
+      } catch {
+        setPositionLevelOptions([]);
+      }
+    }, 400);
+    return () => clearTimeout(handler);
+  }, [positionLevelSearch, isOpen]);
+
   useEffect(() => {
     if (isOpen === false) return;
     const fetchDivisions = async () => {
@@ -265,7 +336,7 @@ export const useStep3Data = (isOpen?: boolean) => {
         return;
       }
       try {
-        const items = await employeeMasterDataService.getDivisionsByDirectorate(step3.direktorat);
+        const items = await employeeMasterDataService.getDivisionsByDirectorate(step3.direktorat, divisionSearch || undefined);
         setDivisionOptions((items || []).map((i: any) => ({ label: i.division_name, value: i.id })));
       } catch (error) {
         console.error('Error fetching divisions:', error);
@@ -273,7 +344,7 @@ export const useStep3Data = (isOpen?: boolean) => {
       }
     };
     fetchDivisions();
-  }, [step3?.direktorat, isOpen]);
+  }, [step3?.direktorat, divisionSearch, isOpen]);
 
   useEffect(() => {
     if (isOpen === false) return;
@@ -293,12 +364,12 @@ export const useStep3Data = (isOpen?: boolean) => {
     const fetchDepartments = async () => {
       if (!step3?.divisi) { setDepartmentOptions([]); return; }
       try {
-        const items = await employeeMasterDataService.getDepartmentsByDivision(step3.divisi);
+        const items = await employeeMasterDataService.getDepartmentsByDivision(step3.divisi, departmentSearch || undefined);
         setDepartmentOptions((items || []).map((i: any) => ({ label: i.department_name, value: i.id })));
       } catch (error) { console.error('Error fetching departments:', error); setDepartmentOptions([]); }
     };
     fetchDepartments();
-  }, [step3?.divisi, isOpen]);
+  }, [step3?.divisi, departmentSearch, isOpen]);
 
   // units when department changes
   useEffect(() => {
@@ -306,12 +377,12 @@ export const useStep3Data = (isOpen?: boolean) => {
     const fetchUnits = async () => {
       if (!step3?.departemen) { setUnitOptions([]); return; }
       try {
-        const items = await getUnitDropdownByDepartmentIdOptions(step3.departemen);
+        const items = await getUnitDropdownByDepartmentIdOptions(step3.departemen, unitSearch || undefined);
         setUnitOptions(items);
       } catch (error) { console.error('Error fetching units:', error); setUnitOptions([]); }
     };
     fetchUnits();
-  }, [step3?.departemen, isOpen]);
+  }, [step3?.departemen, unitSearch, isOpen]);
 
   // offices when company changes
   useEffect(() => {
@@ -319,12 +390,23 @@ export const useStep3Data = (isOpen?: boolean) => {
     const fetchOffices = async () => {
       if (!step3?.company) { setOfficeOptions([]); return; }
       try {
-        const items = await employeeMasterDataService.getOfficeDropdown('', step3.company);
+        const items = await employeeMasterDataService.getOfficeDropdown(officeSearch || undefined, step3.company);
         setOfficeOptions((items || []).map((i: any) => ({ label: i.office_name, value: i.id })));
       } catch (error) { console.error('Error fetching offices:', error); setOfficeOptions([]); }
     };
     fetchOffices();
-  }, [step3?.company, isOpen]);
+  }, [step3?.company, officeSearch, isOpen]);
+
+  const handleCompanySearch = (value: string) => setCompanySearch(value);
+  const handleOfficeSearch = (value: string) => setOfficeSearch(value);
+  const handleDirectorateSearch = (value: string) => setDirectorateSearch(value);
+  const handleDivisionSearch = (value: string) => setDivisionSearch(value);
+  const handleDepartmentSearch = (value: string) => setDepartmentSearch(value);
+  const handleUnitSearch = (value: string) => setUnitSearch(value);
+  const handleJobTitleSearch = (value: string) => setJobTitleSearch(value);
+  const handlePositionSearch = (value: string) => setPositionSearch(value);
+  const handlePositionLevelSearch = (value: string) => setPositionLevelSearch(value);
+  const handleEmployeeCategorySearch = (value: string) => setEmployeeCategorySearch(value);
 
   return {
     step3,
@@ -343,6 +425,16 @@ export const useStep3Data = (isOpen?: boolean) => {
     handleChange,
     jabatanStrukturalOptions,
     unitOptions,
+    handleCompanySearch,
+    handleOfficeSearch,
+    handleDirectorateSearch,
+    handleDivisionSearch,
+    handleDepartmentSearch,
+    handleUnitSearch,
+    handleJobTitleSearch,
+    handlePositionSearch,
+    handlePositionLevelSearch,
+    handleEmployeeCategorySearch,
   };
 };
 

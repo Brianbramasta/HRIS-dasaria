@@ -16,6 +16,7 @@ export const useAddUnitModal = ({ isOpen, onClose, onSuccess }: UseAddUnitModalP
   const [memoNumber, setMemoNumber] = useState('');
   const [description, setDescription] = useState('');
   const [departments, setDepartments] = useState<{ value: string; label: string }[]>([]);
+  const [departmentSearch, setDepartmentSearch] = useState('');
   
   const { execute: createUnit, loading: submitting } = useCreateUnit();
   const {execute: fetchApi } = useGetUnits();
@@ -33,20 +34,23 @@ export const useAddUnitModal = ({ isOpen, onClose, onSuccess }: UseAddUnitModalP
         setDepartmentId('');
         setMemoNumber('');
         setDescription('');
+        setDepartmentSearch('');
     }
   }, [isOpen, clearSkFile]);
 
   useEffect(() => {
     if (!isOpen) return;
-    (async () => {
+    const handler = setTimeout(async () => {
       try {
-        const res = await getDropdown('');
+        const res = await getDropdown(departmentSearch);
         setDepartments((res || []).map(d => ({ value: d.id, label: d.department_name })));
       } catch {
         setDepartments([]);
       }
-    })();
-  }, [isOpen, getDropdown]);
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [isOpen, departmentSearch, getDropdown]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -61,13 +65,8 @@ export const useAddUnitModal = ({ isOpen, onClose, onSuccess }: UseAddUnitModalP
     }
   };
 
-  const handleSearchDepartments = async (q: string) => {
-    try {
-      const res = await getDropdown(q || '');
-      setDepartments((res || []).map(d => ({ value: d.id, label: d.department_name })));
-    } catch {
-      setDepartments([]);
-    }
+  const handleSearchDepartments = (q: string) => {
+    setDepartmentSearch(q);
   };
 
   const handleSubmit = async () => {

@@ -21,6 +21,8 @@ export function useEditDepartmentModal(params: {
   const [submitting, setSubmitting] = useState(false);
   const { updateDepartment, getById } = useDepartments();
   const { getDropdown: getDivisionDropdown } = useDivisions();
+  const [divisionSearch, setDivisionSearch] = useState('');
+  const [initialDivision, setInitialDivision] = useState<DivisionDropdown | null>(null);
 
   useEffect(() => {
     const initEdit = async () => {
@@ -32,6 +34,11 @@ export function useEditDepartmentModal(params: {
         setDivisionId(mappedDepartment.divisionId || '');
         setDescription(mappedDepartment.description || '');
         setMemoNumber(mappedDepartment.memoNumber || '');
+        
+        if (mappedDepartment.divisionId && mappedDepartment.divisionName) {
+          setInitialDivision({ id: mappedDepartment.divisionId, division_name: mappedDepartment.divisionName });
+        }
+
         const dd = await getDivisionDropdown('');
         setDivisions(dd || []);
       } catch {
@@ -45,6 +52,23 @@ export function useEditDepartmentModal(params: {
     };
     if (isOpen) initEdit();
   }, [isOpen, department?.id, getById, getDivisionDropdown]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handler = setTimeout(async () => {
+      try {
+        const res = await getDivisionDropdown(divisionSearch);
+        setDivisions(res || []);
+      } catch {}
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [isOpen, divisionSearch, getDivisionDropdown]);
+
+  const finalDivisions = [...divisions];
+  if (initialDivision && !finalDivisions.find((d) => d.id === initialDivision.id)) {
+    finalDivisions.push(initialDivision);
+  }
 
   const handleFileChange = () => {};
 
@@ -78,10 +102,11 @@ export function useEditDepartmentModal(params: {
     setDescription,
     memoNumber,
     setMemoNumber,
-    divisions,
+    divisions: finalDivisions,
     submitting,
     handleSubmit,
     handleFileChange,
     skFileName,
+    handleDivisionSearch: setDivisionSearch,
   };
 }

@@ -8,6 +8,7 @@ export function useAddOfficeModal(isOpen: boolean, onClose: () => void, onSucces
   const [name, setName] = useState('');
   const [companyIds, setCompanyIds] = useState<string[]>([]);
   const [companyOptions, setCompanyOptions] = useState<{ value: string; text: string }[]>([]);
+  const [companySearch, setCompanySearch] = useState('');
   const [memoNumber, setMemoNumber] = useState('');
   const [description, setDescription] = useState('');
   const skFile = useFileStore((s) => s.skFile);
@@ -17,16 +18,22 @@ export function useAddOfficeModal(isOpen: boolean, onClose: () => void, onSucces
 
   useEffect(() => {
     if (!isOpen) return;
-    (async () => {
+    const handler = setTimeout(async () => {
       try {
-        const res = await getCompanyDropdown();
-        setCompanyOptions(res.map((c: any) => ({ value: c.id, text: c.company_name })));
+        const res = await getCompanyDropdown(companySearch || undefined);
+        setCompanyOptions((res || []).map((c: any) => ({ value: c.id, text: c.company_name ?? c.name ?? '' })));
       } catch (e) {
+        setCompanyOptions([]);
       }
-    })();
-  }, [isOpen, getCompanyDropdown]);
+    }, 400);
+    return () => clearTimeout(handler);
+  }, [isOpen, companySearch, getCompanyDropdown]);
 
   const handleFileChange = () => {};
+
+  const handleCompanySearch = (value: string) => {
+    setCompanySearch(value);
+  };
 
   const handleSubmit = async () => {
     if (!name.trim()) return;
@@ -82,6 +89,7 @@ export function useAddOfficeModal(isOpen: boolean, onClose: () => void, onSucces
     companyIds,
     setCompanyIds,
     companyOptions,
+    handleCompanySearch,
     memoNumber,
     setMemoNumber,
     description,

@@ -123,6 +123,12 @@ describe('useEditUnitModal', () => {
     mockedUseDepartments.mockReturnValue({
       getDropdown: getDropdownMock,
     });
+
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   it('mengambil detail unit saat modal dibuka dan mengisi state awal', async () => {
@@ -301,11 +307,15 @@ describe('useEditUnitModal', () => {
     ]);
 
     const { result } = renderHook(() =>
-      useEditUnitModal({ isOpen: false, onClose, unit, onSuccess })
+      useEditUnitModal({ isOpen: true, onClose, unit, onSuccess })
     );
 
     await act(async () => {
-      await result.current.handleSearchDepartments('it');
+      result.current.handleSearchDepartments('it');
+    });
+
+    await act(async () => {
+      jest.advanceTimersByTime(500);
     });
 
     expect(getDropdownMock).toHaveBeenCalledWith('it');

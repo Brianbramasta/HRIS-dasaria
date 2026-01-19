@@ -14,6 +14,7 @@ export function useEditCompanyModal(params: {
   const [name, setName] = React.useState('');
   const [businessLineId, setBusinessLineId] = React.useState('');
   const [businessLines, setBusinessLines] = React.useState<BusinessLineListItem[]>([]);
+  const [businessLineSearch, setBusinessLineSearch] = React.useState('');
   const [description, setDescription] = React.useState('');
   const [docNumber, setDocNumber] = React.useState('');
   const [skFile, setSkFile] = React.useState<File | null>(null);
@@ -22,15 +23,16 @@ export function useEditCompanyModal(params: {
 
   React.useEffect(() => {
     if (!isOpen) return;
-    (async () => {
+    const handler = setTimeout(async () => {
       try {
-        const items = await getDropdown();
+        const items = await getDropdown(businessLineSearch || undefined);
         setBusinessLines(items);
       } catch (e) {
         void e;
       }
-    })();
-  }, [isOpen, getDropdown]);
+    }, 400);
+    return () => clearTimeout(handler);
+  }, [isOpen, getDropdown, businessLineSearch]);
 
   React.useEffect(() => {
     if (company) {
@@ -47,13 +49,8 @@ export function useEditCompanyModal(params: {
     setSkFile(file);
   };
 
-  const searchBusinessLines = async (q?: string) => {
-    try {
-      const items = await getDropdown(q);
-      setBusinessLines(items);
-    } catch (e) {
-      void e;
-    }
+  const searchBusinessLines = (q?: string) => {
+    setBusinessLineSearch(q || '');
   };
 
   const handleSubmit = async () => {

@@ -41,6 +41,15 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
     selectedGrade,
     handleInput,
     handleFileChange,
+    handleEmployeeSearch,
+    handleCompanySearch,
+    handleOfficeSearch,
+    handleDirectorateSearch,
+    handleDivisionSearch,
+    handleUnitSearch,
+    handleJobTitleSearch,
+    handlePositionSearch,
+    handlePositionLevelSearch,
   } = useEditOrganizationHistoryModal({ isOpen, initialData });
 
 
@@ -54,6 +63,7 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
               options={employeeOptions.length > 0 ? employeeOptions : [{ label: 'Memuat opsi...', value: '' }]}
               defaultValue={form.nip || ''}
               onChange={(v) => handleInput('nip', v)}
+              onSearch={handleEmployeeSearch}
               placeholder="Pilih NIP"
               disabled={isEditMode || employeeOptions.length === 0}
           />
@@ -97,6 +107,7 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
               options={companyOptions} 
               defaultValue={form.company_id || ''} 
               onChange={(v) => handleInput('company_id', v)} 
+              onSearch={handleCompanySearch}
               placeholder="Select" 
               disabled={isEditMode} 
           />
@@ -108,6 +119,7 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
               options={officeOptions.length > 0 ? officeOptions : [{ label: 'Pilih perusahaan terlebih dahulu', value: '' }]} 
               defaultValue={form.office_id || ''} 
               onChange={(v) => handleInput('office_id', v)} 
+              onSearch={handleOfficeSearch}
               placeholder="Select"
               disabled={isEditMode || officeOptions.length === 0}
           />
@@ -119,6 +131,7 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
               options={directorateOptions} 
               defaultValue={form.directorate_id || ''} 
               onChange={(v) => handleInput('directorate_id', v)} 
+              onSearch={handleDirectorateSearch}
               placeholder="Select" 
               disabled={isEditMode} 
           />
@@ -130,6 +143,7 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
               options={divisionOptions.length > 0 ? divisionOptions : [{ label: 'Pilih direktorat terlebih dahulu', value: '' }]} 
               defaultValue={form.division_id || ''} 
               onChange={(v) => handleInput('division_id', v)} 
+              onSearch={handleDivisionSearch}
               placeholder="Select"
               disabled={isEditMode || divisionOptions.length === 0}
           />
@@ -151,6 +165,7 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
               options={unitOptions.length > 0 ? unitOptions : [{ label: 'Pilih departemen terlebih dahulu', value: '' }]} 
               defaultValue={form.unit_id || ''} 
               onChange={(v) => handleInput('unit_id', v)} 
+              onSearch={handleUnitSearch}
               placeholder="Select"
               disabled={isEditMode || unitOptions.length === 0}
           />
@@ -162,6 +177,7 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
               options={jobTitleOptions} 
               defaultValue={form.job_title_id || ''} 
               onChange={(v) => handleInput('job_title_id', v)} 
+              onSearch={handleJobTitleSearch}
               placeholder="Select" 
               disabled={isEditMode} 
           />
@@ -173,6 +189,7 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
               options={positionOptions} 
               defaultValue={form.position_id || ''} 
               onChange={(v) => handleInput('position_id', v)} 
+              onSearch={handlePositionSearch}
               placeholder="Select" 
               disabled={isEditMode} 
           />
@@ -184,6 +201,7 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
               options={positionLevelOptions} 
               defaultValue={form.position_level_id || ''} 
               onChange={(v) => handleInput('position_level_id', v)} 
+              onSearch={handlePositionLevelSearch}
               placeholder="Select" 
               disabled={isEditMode} 
           />

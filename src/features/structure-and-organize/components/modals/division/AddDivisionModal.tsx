@@ -27,6 +27,7 @@ const AddDivisionModal: React.FC<AddDivisionModalProps> = ({ isOpen, onClose, on
     handleSubmit,
     handleFileChange,
     skFileName,
+    handleDirectorateSearch,
   } = useAddDivisionModal({ isOpen, onClose, onSuccess });
 
   return (
@@ -53,6 +54,7 @@ const AddDivisionModal: React.FC<AddDivisionModalProps> = ({ isOpen, onClose, on
             options={directorates.map(d => ({ value: d.id, label: d.directorate_name }))}
             placeholder="Select directorate"
             onChange={(v) => setDirectorateId(v)}
+            onSearch={handleDirectorateSearch}
             defaultValue={directorateId}
             containerClassName="mb-2"
           />

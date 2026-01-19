@@ -17,15 +17,18 @@ export function useAddDivisionModal(params: { isOpen: boolean; onClose: () => vo
   const { createDivision } = useDivisions();
   const { getDropdown: getDirectorateDropdown } = useDirectorates();
 
+  const [directorateSearch, setDirectorateSearch] = useState('');
+
   useEffect(() => {
-    const loadDirectorates = async () => {
+    if (!isOpen) return;
+    const handler = setTimeout(async () => {
       try {
-        const res = await getDirectorateDropdown('');
+        const res = await getDirectorateDropdown(directorateSearch);
         setDirectorates(res || []);
       } catch {}
-    };
-    if (isOpen) loadDirectorates();
-  }, [isOpen, getDirectorateDropdown]);
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [isOpen, directorateSearch, getDirectorateDropdown]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -33,6 +36,7 @@ export function useAddDivisionModal(params: { isOpen: boolean; onClose: () => vo
       setDescription('');
       setDirectorateId('');
       setMemoNumber('');
+      setDirectorateSearch('');
       useFileStore.getState().clearSkFile();
     }
   }, [isOpen]);
@@ -88,5 +92,6 @@ export function useAddDivisionModal(params: { isOpen: boolean; onClose: () => vo
     handleSubmit,
     handleFileChange,
     skFileName,
+    handleDirectorateSearch: setDirectorateSearch,
   };
 }

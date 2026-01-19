@@ -34,7 +34,7 @@ export interface UseOrganizationChangeReturn {
   updateOrganizationChange: (id: string, payload: UpdateOrganizationChangePayload) => Promise<boolean>;
   refresh: () => Promise<void>;
   fetchChangeTypeOptions: () => Promise<void>;
-  fetchEmployeeOptions: () => Promise<void>;
+  fetchEmployeeOptions: (search?: string) => Promise<void>;
   handleSearchChange: (search: string) => void;
   handleSortChange: (columnId: string, order: 'asc' | 'desc') => void;
   handlePageChange: (newPage: number) => void;
@@ -308,10 +308,10 @@ export function useOrganizationChange({
     }
   }, []);
 
-  const fetchEmployeeOptions = useCallback(async () => {
+  const fetchEmployeeOptions = useCallback(async (searchTerm?: string) => {
     try {
         
-      const resp = await organizationChangeService.getAllEmployeeDropdown();
+      const resp = await organizationChangeService.getAllEmployeeDropdown(searchTerm);
       const data = (resp as any)?.data ?? [];
     // need to recheck   
       const mapped = data.map((i: any) => ({

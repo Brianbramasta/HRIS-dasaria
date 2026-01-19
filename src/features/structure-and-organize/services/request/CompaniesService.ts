@@ -17,8 +17,9 @@ class CompaniesService {
    * Get Companies Dropdown
    * @returns Promise dengan data perusahaan untuk dropdown
    */
-  async getDropdown(): Promise<any> {
-    return apiService.get<any>(`${this.basePath}companies-dropdown`);
+  async getDropdown(search?: string): Promise<any> {
+    const qs = search ? `?search=${encodeURIComponent(search)}` : '';
+    return apiService.get<any>(`${this.basePath}companies-dropdown${qs}`);
   }
 
   /**
