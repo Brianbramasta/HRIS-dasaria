@@ -129,20 +129,24 @@ class EmployeeMasterDataService {
   /**
    * Dropdown: Division by Directorate
    * @param idDirectorate - UUID Direktorat
+   * @param search - Optional search query untuk filter divisi
    * @returns Promise dengan array divisi
    */
-  async getDivisionsByDirectorate(idDirectorate: string): Promise<DivisionDropdownItem[]> {
-    const resp = await apiService.get<DivisionDropdownItem[]>(`${this.basePath}/employees/division/${idDirectorate}`);
+  async getDivisionsByDirectorate(idDirectorate: string, search?: string): Promise<DivisionDropdownItem[]> {
+    const qs = search ? `?search=${encodeURIComponent(search)}` : '';
+    const resp = await apiService.get<DivisionDropdownItem[]>(`${this.basePath}/employees/division/${idDirectorate}${qs}`);
     return (resp as any)?.data ?? [];
   }
 
   /**
    * Dropdown: Department by Division
    * @param idDivision - UUID Divisi
+   * @param search - Optional search query untuk filter departemen
    * @returns Promise dengan array departemen
    */
-  async getDepartmentsByDivision(idDivision: string): Promise<DepartmentDropdownItem[]> {
-    const resp = await apiService.get<DepartmentDropdownItem[]>(`${this.basePath}/employees/department/${idDivision}`);
+  async getDepartmentsByDivision(idDivision: string, search?: string): Promise<DepartmentDropdownItem[]> {
+    const qs = search ? `?search=${encodeURIComponent(search)}` : '';
+    const resp = await apiService.get<DepartmentDropdownItem[]>(`${this.basePath}/employees/department/${idDivision}${qs}`);
     return (resp as any)?.data ?? [];
   }
 
@@ -270,8 +274,9 @@ class EmployeeMasterDataService {
   }
 
   // /api/employee-master-data/employees/units/019b4976-3df7-700b-ae68-c73682551d2e
-  async getUnitDropdownByDepartmentId(departmentId?: string): Promise<any[]> {
-    const resp = await apiService.get<any[]>(`${this.basePath}/employees/units/${departmentId}`);
+  async getUnitDropdownByDepartmentId(departmentId?: string, search?: string): Promise<any[]> {
+    const qs = search ? `?search=${encodeURIComponent(search)}` : '';
+    const resp = await apiService.get<any[]>(`${this.basePath}/employees/units/${departmentId}${qs}`);
     return (resp as any)?.data ?? [];
   }
 

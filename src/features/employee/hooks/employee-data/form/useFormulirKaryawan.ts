@@ -60,8 +60,8 @@ export const getStructuralJobDropdownOptions = async (IdJabatanKepangkatan?: str
   return (data || []).map((j: any) => ({ label: j.name, value: j.id }));
 }
 
-export const getUnitDropdownByDepartmentIdOptions = async (departmentId?: string): Promise<DropdownOption[]> => {
-  const data = await employeeMasterDataService.getUnitDropdownByDepartmentId(departmentId);
+export const getUnitDropdownByDepartmentIdOptions = async (departmentId?: string, search?: string): Promise<DropdownOption[]> => {
+  const data = await employeeMasterDataService.getUnitDropdownByDepartmentId(departmentId, search);
   console.log('Unit dropdown data:', data);
   return (data || []).map((u: any) => ({ label: u.name ?? u.name, value: u.id }));
 }
