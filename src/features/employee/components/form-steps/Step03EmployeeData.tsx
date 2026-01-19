@@ -23,6 +23,16 @@ export const Step03EmployeeData: React.FC = () => {
     selectedGrade,
     step3,
     unitOptions,
+    handleCompanySearch,
+    handleOfficeSearch,
+    handleDirectorateSearch,
+    handleDivisionSearch,
+    handleDepartmentSearch,
+    handleUnitSearch,
+    handleJobTitleSearch,
+    handlePositionSearch,
+    handlePositionLevelSearch,
+    handleEmployeeCategorySearch,
   } = useStep3Data();
 
   return (
@@ -55,6 +65,7 @@ export const Step03EmployeeData: React.FC = () => {
                     }
                   }
                 }}
+                onSearch={handleEmployeeCategorySearch}
                 placeholder="Select"
                 required
               />
@@ -75,6 +86,7 @@ export const Step03EmployeeData: React.FC = () => {
                 options={companyOptions}
                 defaultValue={step3.company}
                 onChange={(value) => handleChange('company', value)}
+                onSearch={handleCompanySearch}
                 placeholder="Select"
                 required
               />
@@ -85,6 +97,7 @@ export const Step03EmployeeData: React.FC = () => {
                 options={directorateOptions}
                 defaultValue={step3.direktorat}
                 onChange={(value) => handleChange('direktorat', value)}
+                onSearch={handleDirectorateSearch}
                 placeholder="Select"
                 required
               />
@@ -96,6 +109,7 @@ export const Step03EmployeeData: React.FC = () => {
                 defaultValue={step3.departemen}
                 onChange={(value) => handleChange('departemen', value)}
                 disabled={departmentOptions.length === 0}
+                onSearch={handleDepartmentSearch}
                 placeholder="Select"
                 required
               />
@@ -106,6 +120,7 @@ export const Step03EmployeeData: React.FC = () => {
                 options={jobTitleOptions}
                 defaultValue={step3.jabatan}
                 onChange={(value) => handleChange('jabatan', value)}
+                onSearch={handleJobTitleSearch}
                 placeholder="Select"
                 required
               />
@@ -116,6 +131,7 @@ export const Step03EmployeeData: React.FC = () => {
                 options={positionLevelOptions}
                 defaultValue={step3.jenjangJabatan}
                 onChange={(value) => handleChange('jenjangJabatan', value)}
+                onSearch={handlePositionLevelSearch}
                 placeholder="Select"
                 required
               />
@@ -160,6 +176,7 @@ export const Step03EmployeeData: React.FC = () => {
                 options={officeOptions.length > 0 ? officeOptions : [{ label: 'Pilih perusahaan terlebih dahulu', value: '' }]}
                 defaultValue={step3.kantor}
                 onChange={(value) => handleChange('kantor', value)}
+                onSearch={handleOfficeSearch}
                 placeholder="Select"
                 disabled={officeOptions.length === 0}
                 required
@@ -171,6 +188,7 @@ export const Step03EmployeeData: React.FC = () => {
                 options={divisionOptions.length > 0 ? divisionOptions : [{ label: 'Pilih direktorat terlebih dahulu', value: '' }]}
                 defaultValue={step3.divisi}
                 onChange={(value) => handleChange('divisi', value)}
+                onSearch={handleDivisionSearch}
                 disabled={divisionOptions.length === 0}
                 placeholder="Select"
                 required
@@ -182,6 +200,7 @@ export const Step03EmployeeData: React.FC = () => {
                 options={unitOptions.length > 0 ? unitOptions : [{ label: 'Pilih departemen terlebih dahulu', value: '' }]}
                 defaultValue={step3.unit}
                 onChange={(value) => handleChange('unit', value)}
+                onSearch={handleUnitSearch}
                 placeholder="Select"
                 disabled={unitOptions.length === 0}
                 // required
@@ -193,6 +212,7 @@ export const Step03EmployeeData: React.FC = () => {
                 options={positionOptions}
                 defaultValue={step3.position}
                 onChange={(value) => handleChange('position', value)}
+                onSearch={handlePositionSearch}
                 placeholder="Select"
                 required
               />
