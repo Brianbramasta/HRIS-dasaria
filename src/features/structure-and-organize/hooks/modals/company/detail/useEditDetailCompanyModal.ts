@@ -111,7 +111,10 @@ export function useEditDetailCompanyModal(params: {
         return null;
       };
 
-      const payload: any = {
+      const formData = new FormData();
+      formData.append('_method', 'PATCH');
+
+      const payloadMap: any = {
         address: form.address || null,
         postal_code: form.postalCode || null,
         email: form.email || null,
@@ -126,7 +129,14 @@ export function useEditDetailCompanyModal(params: {
         id_bl: form.businessLineId || null,
       };
 
-      await companyService.updateDetailByUuid(company.id, payload);
+      Object.keys(payloadMap).forEach((key) => {
+        const val = payloadMap[key];
+        if (val !== undefined && val !== null) {
+          formData.append(key, val);
+        }
+      });
+
+      await companyService.updateDetailByUuid(company.id, formData);
       onSuccess?.();
       onClose();
     } catch {

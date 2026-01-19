@@ -61,13 +61,21 @@ export function useEditCompanyModal(params: {
     setSubmitting(true);
     try {
       const skFilePayload = skFile || null;
-      const updated = await companyService.update(company.id, {
-        name: name.trim(),
-        description: description.trim(),
-        businessLineId: businessLineId || company.businessLineId || undefined,
-        memoNumber: docNumber.trim(),
-        skFile: skFilePayload,
-      });
+      
+      const formData = new FormData();
+      formData.append('_method', 'PUT');
+      if (name.trim()) formData.append('company_name', name.trim());
+      if (description.trim()) formData.append('company_description', description.trim());
+      const blId = businessLineId || company.businessLineId;
+      if (blId) formData.append('id_bl', blId);
+
+      if (docNumber.trim() || skFilePayload) {
+        formData.append('documents[0][cd_name]', 'Dokumen');
+        if (docNumber.trim()) formData.append('documents[0][cd_decree_number]', docNumber.trim());
+        if (skFilePayload) formData.append('documents[0][cd_file]', skFilePayload);
+      }
+
+      const updated = await companyService.update(company.id, formData);
       onSuccess?.(updated);
       onClose();
     } catch {

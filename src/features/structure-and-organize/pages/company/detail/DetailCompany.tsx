@@ -96,29 +96,38 @@ const DetailPerusahaan: React.FC = () => {
       { id: 'type', label: 'Status', render: (v: string) => (v === 'active' ? 'Dokumen Aktif' : v === 'archive' ? 'Arsip' : '—') },
   ]), []);
 
-  const docActions = React.useMemo(() => ((row: any) => {
-    if (row?.type === 'archive') return [];
-    return [
-      {
-        label: 'Delete',
-        icon: <IconHapus />,
-        className: 'h-9 w-9 flex items-center justify-center rounded-lg  text-white ',
-        onClick: (r: any) => { setSelectedDoc(r); setDeleteDocOpen(true); console.log('Delete Dokumen', r); },
+  const docActions = React.useMemo(
+    () =>
+      (row: any) => {
+        const detailAction = {
+          label: 'Detail',
+          icon: <IconFileDetail />,
+          className: 'h-9 w-9 flex items-center justify-center rounded-lg  text-white ',
+          onClick: (r: any) => {
+            console.log('Detail Dokumen', r);
+            const url = formatUrlFile(r?.fileUrl || r?.url || r?.link);
+            if (url) window.open(url, '_blank');
+          },
+        };
+
+        if (row?.type === 'archive') return [detailAction];
+
+        return [
+          {
+            label: 'Delete',
+            icon: <IconHapus />,
+            className: 'h-9 w-9 flex items-center justify-center rounded-lg  text-white ',
+            onClick: (r: any) => {
+              setSelectedDoc(r);
+              setDeleteDocOpen(true);
+              console.log('Delete Dokumen', r);
+            },
+          },
+          detailAction,
+        ];
       },
-      {
-        label: 'Detail',
-        icon: <IconFileDetail />,
-        className: 'h-9 w-9 flex items-center justify-center rounded-lg  text-white ',
-        onClick: (r: any) => { console.log('Detail Dokumen', r);const url = formatUrlFile(r?.fileUrl || r?.url || r?.link); if (url) window.open(url, '_blank'); },
-      },
-      // {
-      //   label: 'Edit',
-      //   icon: <IconPencil />,
-      //   className: 'h-9 w-9 flex items-center justify-center rounded-lg  text-white ',
-      //   onClick: (r: any) => { setSelectedDoc(r); setEditDocOpen(true); },
-      // }
-    ];
-  }), []);
+    [],
+  );
 
   
 

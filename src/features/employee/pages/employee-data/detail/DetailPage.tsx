@@ -38,7 +38,7 @@ export default function DetailKaryawanPage() {
   return (
     <div className="space-y-6 p-4">
       {/* Header */}
-      <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900 mb-4">
+      <div className="rounded-xl border border-gray-200 bg-white p-6 dark:text-white dark:border-gray-800 dark:bg-gray-900 mb-4">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex flex-col md:flex-row items-center gap-3">
             <img

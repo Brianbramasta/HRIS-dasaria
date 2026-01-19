@@ -126,7 +126,14 @@ export const useBusinessLines = (options?: { autoFetch?: boolean }): UseBusiness
     setError(null);
     
     try {
-      const created = await businessLinesService.create(payload);
+      const formData = new FormData();
+      formData.append('bl_name', payload.name);
+      formData.append('bl_decree_number', payload.memoNumber);
+      if (payload.description !== undefined && payload.description !== null) {
+        formData.append('bl_description', payload.description);
+      }
+
+      const created = await businessLinesService.create(formData);
       const item = (created as any)?.data as any;
       const mapped = mapToBusinessLine(item);
       await fetchBusinessLines();
@@ -145,7 +152,15 @@ export const useBusinessLines = (options?: { autoFetch?: boolean }): UseBusiness
     setError(null);
     
     try {
-      const updated = await businessLinesService.update(id, payload);
+      const formData = new FormData();
+      formData.append('_method', 'PATCH');
+      if (payload.name !== undefined) formData.append('bl_name', payload.name);
+      formData.append('bl_decree_number', payload.memoNumber);
+      if (payload.description !== undefined && payload.description !== null) {
+        formData.append('bl_description', payload.description);
+      }
+
+      const updated = await businessLinesService.update(id, formData);
       const item = (updated as any)?.data as any;
       const mapped = mapToBusinessLine(item);
       await fetchBusinessLines();
@@ -164,7 +179,13 @@ export const useBusinessLines = (options?: { autoFetch?: boolean }): UseBusiness
     setError(null);
     
     try {
-      const resp = await businessLinesService.delete(id, payload);
+      const formData = new FormData();
+      formData.append('_method', 'DELETE');
+      if (payload.memoNumber) {
+        formData.append('bl_delete_decree_number', payload.memoNumber);
+      }
+
+      const resp = await businessLinesService.delete(id, formData);
       // service returns raw response; success flag may be in resp.data.success or resp.success
       const success = !!((resp as any)?.data?.success ?? (resp as any)?.success);
       await fetchBusinessLines();

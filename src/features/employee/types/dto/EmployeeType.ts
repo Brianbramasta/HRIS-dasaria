@@ -47,6 +47,7 @@ export interface Karyawan {
   department_name?: string; // API field
   departement?: string; // alias tampilan untuk department
   departmentId?: string;
+  unit?: string | null;
   division?: string;
   division_name?: string; // API field
   directorate?: string;
@@ -196,6 +197,7 @@ export interface EmployeeListItem {
   company?: string;
   contract_remaining?: number | null;
   department?: string;
+  unit?: string | null;
   directorate?: string;
   division?: string;
   email: string;

@@ -43,55 +43,30 @@ class BusinessLinesService {
 
   /**
    * Create Business Line
-   * @param payload - Data untuk membuat business line
+   * @param formData - FormData yang sudah dibangun di hooks
    * @returns Promise dengan response API
    */
-  async create(payload: { name: string; description?: string | null; memoNumber: string; skFile?: File | undefined; }): Promise<any> {
-    const formData = new FormData();
-    formData.append('bl_name', payload.name);
-    formData.append('bl_decree_number', payload.memoNumber);
-    if (payload.description !== undefined && payload.description !== null) {
-      formData.append('bl_description', payload.description);
-    }
-    if (payload.skFile) {
-      formData.append('bl_decree_file', payload.skFile);
-    }
-    return apiService.post<any>(`${this.basePath}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+  async create(formData: FormData): Promise<any> {
+    return apiService.post<any>(`${this.basePath}business-lines`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
   }
 
   /**
    * Update Business Line
    * @param id - Business line ID
-   * @param payload - Data untuk update business line
+   * @param formData - FormData yang sudah dibangun di hooks
    * @returns Promise dengan response API
    */
-  async update(id: string, payload: { name?: string; description?: string | null; memoNumber: string; skFile?: File | null; }): Promise<any> {
-    const formData = new FormData();
-    formData.append('_method', 'PATCH');
-    if (payload.name !== undefined) formData.append('bl_name', payload.name);
-    formData.append('bl_decree_number', payload.memoNumber);
-    if (payload.description !== undefined && payload.description !== null) {
-      formData.append('bl_description', payload.description);
-    }
-    if (payload.skFile) {
-      formData.append('bl_decree_file', payload.skFile as File);
-    }
+  async update(id: string, formData: FormData): Promise<any> {
     return apiService.post<any>(`${this.basePath}business-lines/${id}/update`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
   }
 
   /**
    * Delete Business Line
    * @param id - Business line ID
-   * @param payload - Memo number dan file untuk delete
+   * @param formData - FormData yang sudah dibangun di hooks
    * @returns Promise dengan response API
    */
-  async delete(id: string, payload: { memoNumber: string; skFile?: File | undefined; }): Promise<any> {
-    const formData = new FormData();
-    formData.append('_method', 'DELETE');
-    if (payload.memoNumber) formData.append('bl_delete_decree_number', payload.memoNumber);
-    if (payload.skFile) {
-      formData.append('bl_delete_decree_file', payload.skFile as File);
-    }
+  async delete(id: string, formData: FormData): Promise<any> {
     return apiService.post<any>(`${this.basePath}business-lines${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
   }
 }

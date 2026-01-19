@@ -12,7 +12,7 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 dark:text-white">
       <Tabs tabs={tabs} activeTab={activeTab} />
       <div className="py-4">
         <Outlet />

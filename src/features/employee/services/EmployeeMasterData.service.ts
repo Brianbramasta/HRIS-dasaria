@@ -262,9 +262,16 @@ class EmployeeMasterDataService {
  
 
   // /employee-status-dropdown
+  
   async getEmployeeStatusDropdown(search?: string): Promise<any[]> {
     const qs = search ? `?search=${encodeURIComponent(search)}` : '';
     const resp = await apiService.get<any[]>(`${this.basePath}/employees/employee-status-dropdown${qs}`);
+    return (resp as any)?.data ?? [];
+  }
+
+  // /api/employee-master-data/employees/units/019b4976-3df7-700b-ae68-c73682551d2e
+  async getUnitDropdownByDepartmentId(departmentId?: string): Promise<any[]> {
+    const resp = await apiService.get<any[]>(`${this.basePath}/employees/units/${departmentId}`);
     return (resp as any)?.data ?? [];
   }
 

@@ -159,7 +159,16 @@ export const useEmployeePositions = (): UseEmployeePositionsReturn => {
     setError(null);
     
     try {
-      const created = await employeePositionsService.create(employeePositionData);
+      const form = new FormData();
+      form.append('position_name', employeePositionData.name);
+      form.append('job_title_id', employeePositionData.positionId);
+      if (employeePositionData.directorateId) form.append('directorate_id', employeePositionData.directorateId);
+      if (employeePositionData.divisionId) form.append('division_id', employeePositionData.divisionId);
+      if (employeePositionData.departmentId) form.append('department_id', employeePositionData.departmentId);
+      if (employeePositionData.memoNumber) form.append('position_decree_number', employeePositionData.memoNumber);
+      if (employeePositionData.skFile) form.append('position_decree_file', employeePositionData.skFile);
+
+      const created = await employeePositionsService.create(form);
       const body = (created as any).data ?? {};
       const item = body?.data ?? body;
       const newEmployeePosition = mapToEmployeePosition(item);
@@ -189,7 +198,23 @@ export const useEmployeePositions = (): UseEmployeePositionsReturn => {
     setError(null);
     
     try {
-      const updated = await employeePositionsService.update(id, employeePositionData);
+      const form = new FormData();
+      form.append('_method', 'PATCH');
+      if (employeePositionData.name !== undefined) form.append('position_name', employeePositionData.name);
+      if (employeePositionData.positionId !== undefined) form.append('job_title_id', employeePositionData.positionId);
+      if (employeePositionData.directorateId !== undefined && employeePositionData.directorateId !== null) {
+        form.append('directorate_id', employeePositionData.directorateId);
+      }
+      if (employeePositionData.divisionId !== undefined && employeePositionData.divisionId !== null) {
+        form.append('division_id', employeePositionData.divisionId);
+      }
+      if (employeePositionData.departmentId !== undefined && employeePositionData.departmentId !== null) {
+        form.append('department_id', employeePositionData.departmentId);
+      }
+      if (employeePositionData.memoNumber) form.append('position_decree_number', employeePositionData.memoNumber);
+      if (employeePositionData.skFile) form.append('position_decree_file', employeePositionData.skFile);
+
+      const updated = await employeePositionsService.update(id, form);
       const body = (updated as any).data ?? {};
       const item = body?.data ?? body;
       const updatedEmployeePosition = mapToEmployeePosition(item);
@@ -209,7 +234,12 @@ export const useEmployeePositions = (): UseEmployeePositionsReturn => {
     setError(null);
     
     try {
-      await employeePositionsService.delete(id, payload);
+      const form = new FormData();
+      form.append('_method', 'DELETE');
+      if (payload.memoNumber) form.append('position_deleted_decree_number', payload.memoNumber);
+      if (payload.skFileId) form.append('position_deleted_decree_file', payload.skFileId);
+
+      await employeePositionsService.delete(id, form);
       setEmployeePositions(prev => prev.filter(employeePosition => employeePosition.id !== id));
       await fetchEmployeePositions();
     } catch (err) {

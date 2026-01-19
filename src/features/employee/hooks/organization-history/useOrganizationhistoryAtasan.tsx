@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   useOrganizationChange,
@@ -21,6 +21,7 @@ export function useOrganizationHistoryAtasan(options: UseOrganizationHistoryAtas
   // Use the shared logic hook
   const {
     organizationChanges: data,
+    rowsWithStatus,
     isLoading: loading,
     error,
     total,
@@ -85,12 +86,6 @@ export function useOrganizationHistoryAtasan(options: UseOrganizationHistoryAtas
     []
   );
 
-  // Compute rows with status
-  const rowsWithStatus = useMemo(
-    () => data.map((r) => ({ ...r, statusPerubahan: r.status || 'Draft' })),
-    [data]
-  );
-
   useEffect(() => {
     fetchOrganizationHistory();
   }, [fetchOrganizationHistory]);
@@ -142,6 +137,7 @@ export function useOrganizationHistoryAtasan(options: UseOrganizationHistoryAtas
         position_id: formData?.position_id || '',
         position_level_id: formData?.position_level_id || '',
         employee_category_id: formData?.employee_category_id || '',
+        unit_id: formData?.unit_id || '',
         decree_file: formData?.skFile ?? null,
       };
       const ok = await createOrganizationHistory(employeeId, payload);

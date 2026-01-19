@@ -4,6 +4,7 @@ import {
   getEmployeeCategoryDropdownOptions,
   getPositionLevelDropdownOptions,
   getStructuralJobDropdownOptions,
+  getUnitDropdownByDepartmentIdOptions,
 } from '@/features/employee/hooks/employee-data/form/useFormulirKaryawan';
 import { useOrganizationChange } from '@/features/employee/hooks/organization-history/useOrganizationChange';
 
@@ -22,6 +23,7 @@ export type OrganizationChangeForm = {
   division_id?: string;
   reason?: string;
   department_id?: string;
+   unit_id?: string;
   position_id?: string;
   position_level_id?: string;
   skFile?: File | null;
@@ -45,6 +47,7 @@ export function useEditOrganizationHistoryModal({ isOpen, initialData }: Params)
   const [directorateOptions, setDirectorateOptions] = useState<any[]>([]);
   const [divisionOptions, setDivisionOptions] = useState<any[]>([]);
   const [departmentOptions, setDepartmentOptions] = useState<any[]>([]);
+  const [unitOptions, setUnitOptions] = useState<any[]>([]);
   const [jobTitleOptions, setJobTitleOptions] = useState<any[]>([]);
   const [positionOptions, setPositionOptions] = useState<any[]>([]);
   const [structuralJobOptions, setStructuralJobOptions] = useState<any[]>([]);
@@ -67,6 +70,7 @@ export function useEditOrganizationHistoryModal({ isOpen, initialData }: Params)
         directorate_id: initialData.new_directorate_id || initialData.directorate_id,
         division_id: initialData.new_division_id || initialData.division_id,
         department_id: initialData.new_department_id || initialData.department_id,
+        unit_id: initialData.new_unit_id || initialData.unit_id,
         position_id: initialData.new_position_id || initialData.position_id,
         job_title_id: initialData.new_job_title_id || initialData.job_title_id,
         structural_job_id: initialData.new_structural_job_id || initialData.structural_job_id,
@@ -99,6 +103,10 @@ export function useEditOrganizationHistoryModal({ isOpen, initialData }: Params)
       }
       if (key === 'division_id') {
         next.department_id = '';
+        next.unit_id = '';
+      }
+      if (key === 'department_id') {
+        next.unit_id = '';
       }
       if (key === 'nip') {
         const selectedEmp = employeeOptions.find((e: any) => e.value === value);
@@ -203,6 +211,22 @@ export function useEditOrganizationHistoryModal({ isOpen, initialData }: Params)
   }, [form.division_id]);
 
   useEffect(() => {
+    const fetchUnits = async () => {
+      if (!form.department_id) {
+        setUnitOptions([]);
+        return;
+      }
+      try {
+        const items = await getUnitDropdownByDepartmentIdOptions(form.department_id);
+        setUnitOptions(items);
+      } catch {
+        setUnitOptions([]);
+      }
+    };
+    fetchUnits();
+  }, [form.department_id]);
+
+  useEffect(() => {
     if (form.job_title_id && jobTitleOptions.length > 0) {
       const selectedJob = jobTitleOptions.find((j: any) => j.value === form.job_title_id);
       if (selectedJob?.grade) {
@@ -238,6 +262,7 @@ export function useEditOrganizationHistoryModal({ isOpen, initialData }: Params)
     directorateOptions,
     divisionOptions,
     departmentOptions,
+    unitOptions,
     jobTitleOptions,
     positionOptions,
     structuralJobOptions,

@@ -3,6 +3,7 @@ import StatusKepegawaian from "../../components/chart/EmploymentStatus";
 import Demographic from "../../components/chart/Demographic";
 import EmployeeEngagement from "../../components/chart/EmployeeEngagement";
 import Statistik from "../../components/chart/Statistic";
+import EmployeeCount from "../../components/chart/EmployeeCount";
 // Dokumentasi: Import tabel ulang tahun bulanan
 import TableUlangtahun from "../../components/tables/BirthdayTable";
 // Dokumentasi: Import tabel daftar pelanggaran aktif
@@ -129,6 +130,8 @@ export default function Dashboard() {
         </div>
       </div>
 
+      
+
       {/* Demographic and Engagement */}
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-12 md:gap-6">
         <div className="xl:col-span-8">
@@ -138,6 +141,7 @@ export default function Dashboard() {
           <EmployeeEngagement />
         </div>
       </div>
+      <EmployeeCount />
 
       {/* Statistik */}
       <div>

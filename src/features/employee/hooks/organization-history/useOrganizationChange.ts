@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { addNotification } from '@/stores/notificationStore';
 import {
   organizationChangeService,
@@ -18,6 +18,7 @@ export interface UseOrganizationChangeOptions {
 
 export interface UseOrganizationChangeReturn {
   organizationChanges: OrganizationChangeItem[];
+  rowsWithStatus: (OrganizationChangeItem & { statusPerubahan: string })[];
   detail: OrganizationChangeDetailRaw | null;
   isLoading: boolean;
   error: string | null;
@@ -226,6 +227,7 @@ export function useOrganizationChange({
         appendIfValue(fd, 'employee_category_id', payload?.employee_category_id);
         appendIfValue(fd, 'approved_by', payload?.approved_by);
         appendIfValue(fd, 'recommended_by', payload?.recommended_by);
+        appendIfValue(fd, 'unit_id', payload?.unit_id);
         if (payload?.decree_file) fd.append('decree_file', payload?.decree_file);
 
         await organizationChangeService.storeOrganizationChange(leadEmployeeId ?? null, fd);
@@ -335,8 +337,14 @@ export function useOrganizationChange({
     }
   }, [autoFetch, fetchOrganizationChanges]);
 
+  const rowsWithStatus = useMemo(
+    () => organizationChanges.map((r) => ({ ...r, statusPerubahan: r.status || 'Draft' })),
+    [organizationChanges]
+  );
+
   return {
     organizationChanges,
+    rowsWithStatus,
     detail,
     isLoading,
     error,

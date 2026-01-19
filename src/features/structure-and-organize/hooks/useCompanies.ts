@@ -228,13 +228,25 @@ export const useCompanies = (): UseCompaniesReturn => {
     website?: string | null;
     logoFileId?: string | null;
     memoNumber: string;
-    skFileId: string;
+    skFile?: File | null;
   }): Promise<CompanyListItem | null> => {
     setLoading(true);
     setError(null);
     
     try {
-      const created = await companiesService.create(payload);
+      const formData = new FormData();
+      formData.append('company_name', payload.name);
+      formData.append('business_line_id', payload.businessLineId);
+      if (payload.description !== undefined && payload.description !== null) {
+        formData.append('company_description', payload.description);
+      }
+      if (payload.memoNumber) formData.append('documents[0][cd_decree_number]', payload.memoNumber);
+      formData.append('documents[0][cd_name]', 'Dokumen');
+      if (payload.skFile) {
+        formData.append('documents[0][cd_file]', payload.skFile);
+      }
+
+      const created = await companiesService.create(formData);
       const body = (created as any).data ?? {};
       const comp = body.company ?? body.data?.company ?? body.data ?? body;
       const newCompany = mapToCompany(comp);
@@ -264,13 +276,30 @@ export const useCompanies = (): UseCompaniesReturn => {
     website?: string | null;
     logoFileId?: string | null;
     memoNumber: string;
-    skFileId: string;
+    skFile?: File | null;
   }): Promise<CompanyListItem | null> => {
     setLoading(true);
     setError(null);
     
     try {
-      const updated = await companiesService.update(id, payload);
+      const formData = new FormData();
+      formData.append('_method', 'PUT');
+      if (payload.name !== undefined) formData.append('company_name', payload.name);
+      if (payload.businessLineId !== undefined) formData.append('id_bl', payload.businessLineId);
+      if (payload.description !== undefined && payload.description !== null) {
+        formData.append('company_description', payload.description);
+      }
+      if (payload.memoNumber !== undefined || payload.skFile) {
+        formData.append('documents[0][cd_name]', 'Dokumen');
+        if (payload.memoNumber !== undefined) {
+          formData.append('documents[0][cd_decree_number]', payload.memoNumber);
+        }
+        if (payload.skFile) {
+          formData.append('documents[0][cd_file]', payload.skFile);
+        }
+      }
+
+      const updated = await companiesService.update(id, formData);
       const body = (updated as any).data ?? {};
       const comp = body.company ?? body.data?.company ?? body.data ?? body;
       const updatedCompany = mapToCompany(comp);
@@ -290,7 +319,12 @@ export const useCompanies = (): UseCompaniesReturn => {
     setError(null);
     
     try {
-      const resp = await companiesService.delete(id, payload);
+      const formData = new FormData();
+      formData.append('_method', 'DELETE');
+      if (payload.memoNumber) formData.append('company_delete_decree_number', payload.memoNumber);
+      if (payload.skFile) formData.append('company_delete_decree_file', payload.skFile);
+
+      const resp = await companiesService.delete(id, formData);
       const body = (resp as any)?.data ?? {};
       const status = body?.meta?.status ?? (resp as any)?.status ?? 200;
       const success = status === 200;

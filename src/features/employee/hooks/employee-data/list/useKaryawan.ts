@@ -68,6 +68,7 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
       company: apiData.company || '',
       office: apiData.office || '',
       department: apiData.department || '',
+      unit: apiData.unit ?? null,
       division: apiData.division || '',
       directorate: apiData.directorate || '',
       

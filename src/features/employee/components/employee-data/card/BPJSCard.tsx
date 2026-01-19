@@ -13,18 +13,17 @@ interface Props {
   bpjsData?: any;  // BPJS_Data from API response
 }
 
-export default function BPJSCard({  salaryData, bpjsData }: Props) {
+export default function BPJSCard({ employeeId, salaryData, bpjsData }: Props) {
   const {
     isOpen,
     openModal,
     closeModal,
-    employeeId,
     initialData,
     isComplete,
     updateSalaryData,
     updateBpjsData,
     loading,
-  } = useBPJSCard(salaryData, bpjsData);
+  } = useBPJSCard(employeeId, salaryData, bpjsData);
 
   return (
     <ExpandCard title="BPJS" leftIcon={isComplete ? <IconLengkap /> : <IconTidakLengkap />} withHeaderDivider>

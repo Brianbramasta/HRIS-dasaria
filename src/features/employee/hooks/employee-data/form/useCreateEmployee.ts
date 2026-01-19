@@ -96,6 +96,7 @@ export function useCreateEmployee() {
       appendIfValue(fd, 'directorate_id', formData.step3Employee.direktorat);
       appendIfValue(fd, 'division_id', formData.step3Employee.divisi);
       appendIfValue(fd, 'department_id', formData.step3Employee.departemen);
+      appendIfValue(fd, 'unit_id', formData.step3Employee.unit);
       appendIfValue(fd, 'position_id', formData.step3Employee.position);
       appendIfValue(fd, 'job_title_id', formData.step3Employee.jabatan);
       appendIfValue(fd, 'structural_job_id', formData.step3Employee.jabatanStruktural);

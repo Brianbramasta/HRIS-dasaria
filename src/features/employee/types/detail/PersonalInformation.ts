@@ -179,6 +179,7 @@ export interface UpdateEmploymentPositionPayload {
   division_id?: string;
   employee_category_id?: string;
   structural_job_id?: string;
+  unit_id?: string;
 }
 
 export interface EmployeeDocumentDetailItem {

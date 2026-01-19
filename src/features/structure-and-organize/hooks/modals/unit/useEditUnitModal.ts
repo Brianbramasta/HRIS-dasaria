@@ -3,6 +3,8 @@ import { useDepartments } from '../../useDepartments';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
 import type { UnitRow } from '../../useUnits';
+import { useGetUnitById, useUpdateUnit, useGetUnits } from '../../api/useApiUnits';
+import { toFileSummary } from '../../../utils/shared/toFileSummary';
 
 interface UseEditUnitModalProps {
   isOpen: boolean;
@@ -17,22 +19,60 @@ export const useEditUnitModal = ({ isOpen, onClose, unit, onSuccess }: UseEditUn
   const [memoNumber, setMemoNumber] = useState('');
   const [description, setDescription] = useState('');
   const [departments, setDepartments] = useState<{ value: string; label: string }[]>([]);
-  const [submitting, setSubmitting] = useState(false);
+  
+  const { execute: getUnitById, loading: fetching } = useGetUnitById();
+  const { execute: updateUnit, loading: submitting } = useUpdateUnit();
+  const { execute: fetchApi } = useGetUnits();
+
 
   const { getDropdown } = useDepartments();
   const skFile = useFileStore(s => s.skFile);
+  const setSkFile = useFileStore(s => s.setSkFile);
+  const clearSkFile = useFileStore(s => s.clearSkFile);
 
   useEffect(() => {
-    if (!unit) return;
-    setName(unit['nama-unit'] || '');
-    setDescription(unit['deskripsi-umum'] || '');
-    // Note: memoNumber is not being set in the original code? 
-    // Checking original code: 
-    // const [memoNumber, setMemoNumber] = useState('');
-    // ...
-    // useEffect(() => { if (!unit) return; setName(...); setDescription(...); }, [unit]);
-    // It seems memoNumber was NOT being set in original EditUnitModal either. I will keep it as is to preserve behavior.
-  }, [unit]);
+    if (!isOpen || !unit?.id) return;
+
+    const fetchData = async () => {
+      try {
+        const res = await getUnitById(unit.id);
+        const data = (res as any)?.data;
+        if (data) {
+          setName(data.unit_name || '');
+          setDescription(data.description || '');
+          setMemoNumber(data.unit_decree_number || '');
+          
+          if (data.unit_decree_file_url) {
+            const summary = toFileSummary(data.unit_decree_file_url);
+            if (summary) {
+                setSkFile({
+                    name: summary.fileName,
+                    path: summary.fileUrl,
+                    size: Number(summary.size) || 0,
+                    type: summary.fileType,
+                });
+            }
+          } else {
+            clearSkFile();
+          }
+
+          // Set department
+          if (data.department_id) {
+             setDepartmentId(data.department_id);
+          }
+        }
+      } catch (err) {
+        addNotification({
+          variant: 'error',
+          title: 'Gagal mengambil data',
+          description: 'Data unit tidak ditemukan',
+          hideDuration: 4000,
+        });
+      }
+    };
+
+    fetchData();
+  }, [isOpen, unit?.id, getUnitById, setSkFile, clearSkFile]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -41,17 +81,24 @@ export const useEditUnitModal = ({ isOpen, onClose, unit, onSuccess }: UseEditUn
         const res = await getDropdown('');
         const opts = (res || []).map(d => ({ value: d.id, label: d.department_name }));
         setDepartments(opts);
-        if (unit) {
-          const found = opts.find(d => d.label === unit.departemen);
-          if (found) setDepartmentId(found.value);
-        }
       } catch {
         setDepartments([]);
       }
     })();
-  }, [isOpen, getDropdown, unit]);
+  }, [isOpen, getDropdown]);
 
-  const handleFileChange = (_e: React.ChangeEvent<HTMLInputElement>) => {};
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSkFile({
+        name: file.name,
+        path: URL.createObjectURL(file),
+        size: file.size,
+        type: file.type,
+        file: file
+      });
+    }
+  };
 
   const handleSearchDepartments = async (q: string) => {
     try {
@@ -64,22 +111,39 @@ export const useEditUnitModal = ({ isOpen, onClose, unit, onSuccess }: UseEditUn
   };
 
   const handleSubmit = async () => {
-    if (!name.trim() || !departmentId || !memoNumber.trim() || !skFile?.file) {
+    if (!unit?.id) return;
+    
+    if (!name.trim() || !departmentId || !memoNumber.trim()) {
       addNotification({
         variant: 'error',
         title: 'Unit tidak diupdate',
-        description: 'Nama Unit, Departemen, No. SK/Memo, dan File wajib diisi',
+        description: 'Nama Unit, Departemen, dan No. SK/Memo wajib diisi',
         hideDuration: 4000,
       });
       return;
     }
 
-    setSubmitting(true);
     try {
+      await updateUnit(unit.id, {
+        name,
+        departmentId,
+        memoNumber,
+        description,
+        skFile: skFile?.file || null,
+      });
+
+      addNotification({
+        variant: 'success',
+        title: 'Berhasil',
+        description: 'Unit berhasil diupdate',
+        hideDuration: 4000,
+      });
+      await fetchApi({});
+
       onSuccess?.();
       onClose();
-    } finally {
-      setSubmitting(false);
+    } catch (error) {
+      // Error handled by hook
     }
   };
 
@@ -94,6 +158,7 @@ export const useEditUnitModal = ({ isOpen, onClose, unit, onSuccess }: UseEditUn
     setDescription,
     departments,
     submitting,
+    fetching,
     skFile,
     handleFileChange,
     handleSearchDepartments,

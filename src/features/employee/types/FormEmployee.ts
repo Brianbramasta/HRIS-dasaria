@@ -117,6 +117,7 @@ export interface EmployeeDataFormData {
   kantor: string;
   direktorat: string;
   departemen: string;
+  unit: string;
   employmentStatus: string;
   jabatanStruktural: string;
   // resignationStatus: string;

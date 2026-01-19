@@ -16,7 +16,7 @@ interface CardDescriptionProps {
 // Card Component
 const Card: React.FC<CardProps> = ({ children }) => {
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
+    <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900 sm:p-6">
       {children}
     </div>
   );

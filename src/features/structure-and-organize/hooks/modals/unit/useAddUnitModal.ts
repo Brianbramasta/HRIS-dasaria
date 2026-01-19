@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useDepartments } from '../../useDepartments';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
+import { useCreateUnit, useGetUnits } from '../../api/useApiUnits';
 
 interface UseAddUnitModalProps {
   isOpen: boolean;
@@ -15,10 +16,25 @@ export const useAddUnitModal = ({ isOpen, onClose, onSuccess }: UseAddUnitModalP
   const [memoNumber, setMemoNumber] = useState('');
   const [description, setDescription] = useState('');
   const [departments, setDepartments] = useState<{ value: string; label: string }[]>([]);
-  const [submitting, setSubmitting] = useState(false);
+  
+  const { execute: createUnit, loading: submitting } = useCreateUnit();
+  const {execute: fetchApi } = useGetUnits();
+
 
   const { getDropdown } = useDepartments();
   const skFile = useFileStore(s => s.skFile);
+  const setSkFile = useFileStore(s => s.setSkFile);
+  const clearSkFile = useFileStore(s => s.clearSkFile);
+
+  useEffect(() => {
+    if (isOpen) {
+        clearSkFile();
+        setName('');
+        setDepartmentId('');
+        setMemoNumber('');
+        setDescription('');
+    }
+  }, [isOpen, clearSkFile]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -32,7 +48,18 @@ export const useAddUnitModal = ({ isOpen, onClose, onSuccess }: UseAddUnitModalP
     })();
   }, [isOpen, getDropdown]);
 
-  const handleFileChange = (_e: React.ChangeEvent<HTMLInputElement>) => {};
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSkFile({
+        name: file.name,
+        path: URL.createObjectURL(file),
+        size: file.size,
+        type: file.type,
+        file: file
+      });
+    }
+  };
 
   const handleSearchDepartments = async (q: string) => {
     try {
@@ -54,16 +81,27 @@ export const useAddUnitModal = ({ isOpen, onClose, onSuccess }: UseAddUnitModalP
       return;
     }
 
-    setSubmitting(true);
     try {
+      await createUnit({
+        name,
+        departmentId,
+        memoNumber,
+        description,
+        skFile: skFile.file,
+      });
+
+      addNotification({
+        variant: 'success',
+        title: 'Berhasil',
+        description: 'Unit berhasil ditambahkan',
+        hideDuration: 4000,
+      });
+      await fetchApi({});
+      
       onSuccess?.();
       onClose();
-      setName('');
-      setDepartmentId('');
-      setMemoNumber('');
-      setDescription('');
-    } finally {
-      setSubmitting(false);
+    } catch (error) {
+       // Error handled by hook
     }
   };
 

@@ -1,14 +1,12 @@
 import { useMemo } from 'react';
 import { useModal } from '@/hooks/useModal';
-import { useParams } from 'react-router-dom';
 import { type EmployeeDataForm } from '@/features/employee/components/modals/employee-data/personal-information/EmployeeDataModal';
 import usePersonalInformation from '@/features/employee/hooks/employee-data/detail/contract/usePersonalInformation';
 import { addNotification } from '@/stores/notificationStore';
 
-export default function useEmployeeDataCard(data: any) {
+export default function useEmployeeDataCard(data: any, employeeId?: string) {
   const { isOpen, openModal, closeModal } = useModal(false);
-  const { id } = useParams<{ id: string }>();
-  const { updateEmploymentPosition } = usePersonalInformation(id);
+  const { updateEmploymentPosition } = usePersonalInformation(employeeId);
 
   const initialForm: EmployeeDataForm = useMemo(() => {
     return {
@@ -17,6 +15,7 @@ export default function useEmployeeDataCard(data: any) {
       directorate_id: data?.directorate_id || '',
       division_id: data?.division_id || '',
       department_id: data?.department_id || '',
+      unit_id: data?.unit_id || '',
       position_id: data?.position_id || '',
       job_title_id: data?.job_title_id || '',
       start_date: data?.start_date || '',
@@ -56,6 +55,7 @@ export default function useEmployeeDataCard(data: any) {
       'directorate_id',
       'division_id',
       'department_id',
+      'unit_id',
       'position_id',
       'job_title_id',
       'position_level_id',
@@ -70,8 +70,8 @@ export default function useEmployeeDataCard(data: any) {
   }, [initialForm]);
 
   const handleSubmit = async (payload: EmployeeDataForm) => {
-    if (!id) return;
-    
+    if (!employeeId) return;
+
     const requiredFields = [
       { value: payload.employee_category_id, label: 'Kategori Karyawan' },
       { value: payload.employment_status_id, label: 'Status Karyawan' },
@@ -81,6 +81,7 @@ export default function useEmployeeDataCard(data: any) {
       { value: payload.directorate_id, label: 'Direktorat' },
       { value: payload.division_id, label: 'Divisi' },
       { value: payload.department_id, label: 'Departemen' },
+      { value: payload.unit_id, label: 'Unit' },
       { value: payload.position_id, label: 'Position' },
       { value: payload.job_title_id, label: 'Jabatan' },
       { value: payload.position_level_id, label: 'Jenjang Jabatan' },
@@ -97,7 +98,7 @@ export default function useEmployeeDataCard(data: any) {
       });
       return;
     }
-    await updateEmploymentPosition(id || '', payload);
+    await updateEmploymentPosition(employeeId, payload);
     closeModal();
   };
 

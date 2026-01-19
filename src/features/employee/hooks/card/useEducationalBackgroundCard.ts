@@ -1,14 +1,11 @@
 import { useMemo } from 'react';
 import { useModal } from '@/hooks/useModal';
 import { usePersonalInformation } from '@/features/employee/hooks/employee-data/detail/contract/usePersonalInformation';
-import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
 import { type EducationModalForm } from '@/features/employee/components/modals/employee-data/personal-information/EducationalBackgroundModal';
 
-export default function useEducationalBackgroundCard(education: any) {
+export default function useEducationalBackgroundCard(education: any, employeeId?: string) {
   const { isOpen, openModal, closeModal } = useModal(false);
-  const { detail } = useDetailDataKaryawanPersonalInfo();
-  const { updateEducationData, loading: submitting } = usePersonalInformation(detail?.Personal_Data?.id);
-  const employeeId = detail?.Personal_Data?.id;
+  const { updateEducationData, loading: submitting } = usePersonalInformation(employeeId);
   const formalEducation = useMemo(() => education?.formal_educations || [], [education]);
   const nonFormalEducation = useMemo(() => education?.non_formal_educations || [], [education]);
 

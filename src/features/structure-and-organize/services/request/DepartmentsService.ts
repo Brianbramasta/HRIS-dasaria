@@ -34,48 +34,31 @@ class DepartmentsService {
 
   /**
    * Create Department
-   * @param payload - Data untuk membuat departemen
+   * @param formData - FormData yang sudah dibangun di hooks
    * @returns Promise dengan response API
    */
-  async create(payload: { name: string; divisionId: string; description?: string | null; memoNumber: string; skFile: File; }): Promise<any> {
-    const form = new FormData();
-    form.append('department_name', payload.name);
-    form.append('division_id', payload.divisionId);
-    form.append('department_decree_number', payload.memoNumber);
-    if (payload.description !== undefined && payload.description !== null) form.append('department_description', payload.description);
-    form.append('department_decree_file', payload.skFile);
-    return apiService.post<any>(`${this.basePath}departments`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
+  async create(formData: FormData): Promise<any> {
+    return apiService.post<any>(`${this.basePath}departments`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
   }
 
   /**
    * Update Department
    * @param id - Department ID
-   * @param payload - Data untuk update departemen
+   * @param formData - FormData yang sudah dibangun di hooks
    * @returns Promise dengan response API
    */
-  async update(id: string, payload: { name?: string; divisionId?: string; description?: string | null; memoNumber: string; skFile?: File | null; }): Promise<any> {
-    const form = new FormData();
-    form.append('_method', 'PATCH');
-    if (payload.name !== undefined) form.append('department_name', payload.name);
-    if (payload.divisionId !== undefined) form.append('division_id', payload.divisionId);
-    form.append('department_decree_number', payload.memoNumber);
-    if (payload.description !== undefined && payload.description !== null) form.append('department_description', payload.description);
-    if (payload.skFile) form.append('department_decree_file', payload.skFile);
-    return apiService.post<any>(`${this.basePath}departments/${id}/update`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
+  async update(id: string, formData: FormData): Promise<any> {
+    return apiService.post<any>(`${this.basePath}departments/${id}/update`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
   }
 
   /**
    * Delete Department
    * @param id - Department ID
-   * @param payload - Memo number dan file untuk delete
+   * @param formData - FormData yang sudah dibangun di hooks
    * @returns Promise dengan response API
    */
-  async delete(id: string, payload: { memoNumber: string; skFile?: File; }): Promise<any> {
-    const form = new FormData();
-    form.append('_method', 'DELETE');
-    if (payload.memoNumber) form.append('department_deleted_decree_number', payload.memoNumber);
-    if (payload.skFile) form.append('department_deleted_decree_file', payload.skFile);
-    return apiService.post<any>(`${this.basePath}departments/${id}/delete`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
+  async delete(id: string, formData: FormData): Promise<any> {
+    return apiService.post<any>(`${this.basePath}departments/${id}/delete`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
   }
 }
 

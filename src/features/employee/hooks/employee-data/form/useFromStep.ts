@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { employeeMasterDataService } from '../../../services/EmployeeMasterData.service';
 import { PTKPDropdownItem } from '../../../types/dto/EmployeeType';
-import { getReligionDropdownOptions, getEducationDropdownOptions, getBankDropdownOptions, getEmployeeCategoryDropdownOptions, getPositionLevelDropdownOptions, getEmployeeStatusDropdownOptions, getFieldDocument, getStructuralJobDropdownOptions } from './useFormulirKaryawan';
+import { getReligionDropdownOptions, getEducationDropdownOptions, getBankDropdownOptions, getEmployeeCategoryDropdownOptions, getPositionLevelDropdownOptions, getEmployeeStatusDropdownOptions, getFieldDocument, getStructuralJobDropdownOptions, getUnitDropdownByDepartmentIdOptions } from './useFormulirKaryawan';
 import { useFormulirKaryawanStore } from '@/features/employee/stores/useFormulirKaryawanStore';
 import { DocumentItem, EducationItem } from '../../../types/FormEmployee';
+
 
 // NOTE: The hooks below centralize business logic used across form steps 1-5.
 // Each exported hook includes a comment indicating which form step(s) use it.
@@ -173,6 +174,7 @@ export const useStep3Data = (isOpen?: boolean) => {
   const [positionLevelOptions, setPositionLevelOptions] = useState<any[]>([]);
   const [employeeStatusOptions, setEmployeeStatusOptions] = useState<any[]>([]);
   const [jabatanStrukturalOptions, setJabatanStrukturalOptions] = useState<any[]>([]);
+  const [unitOptions, setUnitOptions] = useState<any[]>([]);
   
   const { formData,updateStep3Employee } = useFormulirKaryawanStore();
   const step3 = formData.step3Employee;
@@ -189,6 +191,10 @@ export const useStep3Data = (isOpen?: boolean) => {
     }
     if (field === 'divisi') {
       updateStep3Employee({ divisi: value, departemen: '' } as any);
+      return;
+    }
+    if (field === 'departemen') {
+      updateStep3Employee({ departemen: value, unit: '' } as any);
       return;
     }
     if (field === 'jabatan') {
@@ -294,6 +300,19 @@ export const useStep3Data = (isOpen?: boolean) => {
     fetchDepartments();
   }, [step3?.divisi, isOpen]);
 
+  // units when department changes
+  useEffect(() => {
+    if (isOpen === false) return;
+    const fetchUnits = async () => {
+      if (!step3?.departemen) { setUnitOptions([]); return; }
+      try {
+        const items = await getUnitDropdownByDepartmentIdOptions(step3.departemen);
+        setUnitOptions(items);
+      } catch (error) { console.error('Error fetching units:', error); setUnitOptions([]); }
+    };
+    fetchUnits();
+  }, [step3?.departemen, isOpen]);
+
   // offices when company changes
   useEffect(() => {
     if (isOpen === false) return;
@@ -323,6 +342,7 @@ export const useStep3Data = (isOpen?: boolean) => {
     setSelectedGrade,
     handleChange,
     jabatanStrukturalOptions,
+    unitOptions,
   };
 };
 

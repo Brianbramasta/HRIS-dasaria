@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   useOrganizationChange,
@@ -20,6 +20,7 @@ export function useOrganizationHistory(options: UseOrganizationHistoryOptions = 
   // Use the shared logic hook
   const {
     organizationChanges: data,
+    rowsWithStatus,
     isLoading: loading,
     isSubmitting,
     error,
@@ -52,6 +53,7 @@ export function useOrganizationHistory(options: UseOrganizationHistoryOptions = 
         approved_by: 'di approve manual tanpa login ',
         recommended_by: 'di approve manual tanpa login ',
       };
+      console.log('enrichedPayload', enrichedPayload);
       const success = await createOrgChange(null, enrichedPayload);
       if (success) {
         await fetchOrganizationHistory();
@@ -70,12 +72,6 @@ export function useOrganizationHistory(options: UseOrganizationHistoryOptions = 
       return success;
     },
     [updateOrgChange, fetchOrganizationHistory]
-  );
-
-  // Compute rows with status
-  const rowsWithStatus = useMemo(
-    () => data.map((r) => ({ ...r, statusPerubahan: r.status || 'Draft' })),
-    [data]
   );
 
   // UI Handlers
@@ -125,8 +121,11 @@ export function useOrganizationHistory(options: UseOrganizationHistoryOptions = 
         position_id: formData?.position_id || '',
         position_level_id: formData?.position_level_id || '',
         employee_category_id: formData?.employee_category_id || '',
+        unit_id: formData?.unit_id || '',
         decree_file: formData?.skFile ?? null,
       };
+      console.log('payload', payload);
+      // return;
       const ok = await createOrganizationHistory(payload);
       if (ok) {
         setIsEditOrgOpen(false);

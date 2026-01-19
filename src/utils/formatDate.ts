@@ -8,7 +8,7 @@ export function formatDate(value: string | Date): string {
     return `${mm}/${dd}/${yyyy}`;
   }
   if (typeof value === "string") {
-    const m = value.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    const m = value.match(/^(\d{4})[-/](\d{2})[-/](\d{2})/);
     if (m) return `${m[2]}/${m[3]}/${m[1]}`;
     const d = new Date(value);
     if (Number.isNaN(d.getTime())) return "";

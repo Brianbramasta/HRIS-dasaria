@@ -20,6 +20,7 @@ export type EmployeeDataForm = {
   end_date?: string;
   structural_job_id?: string;
   golongan?: string;
+  unit_id?: string;
 };
 
 type Params = {
@@ -46,6 +47,7 @@ export function useEmployeeDataModal({ isOpen, initialData }: Params) {
     kategoriKaryawanOptions,
     positionLevelOptions,
     employeeStatusOptions,
+    unitOptions,
     selectedGrade,
   } = useStep3Data(isOpen);
 
@@ -112,6 +114,7 @@ export function useEmployeeDataModal({ isOpen, initialData }: Params) {
       'directorate_id',
       'division_id',
       'department_id',
+      'unit_id',
       'position_id',
       'job_title_id',
       'position_level_id',
@@ -141,6 +144,7 @@ export function useEmployeeDataModal({ isOpen, initialData }: Params) {
     kategoriKaryawanOptions,
     positionLevelOptions,
     employeeStatusOptions,
+    unitOptions,
     structuralJobOptions,
     selectedGrade,
     handleInput,

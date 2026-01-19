@@ -22,6 +22,7 @@ export const Step03EmployeeData: React.FC = () => {
     handleChange,
     selectedGrade,
     step3,
+    unitOptions,
   } = useStep3Data();
 
   return (
@@ -173,6 +174,17 @@ export const Step03EmployeeData: React.FC = () => {
                 disabled={divisionOptions.length === 0}
                 placeholder="Select"
                 required
+              />
+            </div>
+            <div>
+              <SelectField
+                label="Unit"
+                options={unitOptions.length > 0 ? unitOptions : [{ label: 'Pilih departemen terlebih dahulu', value: '' }]}
+                defaultValue={step3.unit}
+                onChange={(value) => handleChange('unit', value)}
+                placeholder="Select"
+                disabled={unitOptions.length === 0}
+                // required
               />
             </div>
             <div>

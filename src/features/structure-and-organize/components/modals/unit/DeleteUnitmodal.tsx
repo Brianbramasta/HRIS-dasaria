@@ -13,7 +13,7 @@ type Props = {
 };
 
 const DeleteUnitmodal: React.FC<Props> = ({ isOpen, onClose, unit, onSuccess }) => {
-  const { submitting, skFile, handleFileChange, handleDelete } = useDeleteUnitModal({
+  const { submitting, skFile, memoNumber, setMemoNumber, handleFileChange, handleDelete } = useDeleteUnitModal({
     isOpen,
     onClose,
     unit,
@@ -30,9 +30,10 @@ const DeleteUnitmodal: React.FC<Props> = ({ isOpen, onClose, unit, onSuccess }) 
         <>
           <InputField
             label="No. Surat Keputusan / Memo Internal"
-            value={''}
+            value={memoNumber}
+            onChange={(e) => setMemoNumber(e.target.value)}
             required
-            className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary bg-gray-100"
+            className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
             containerClassName="space-y-2 mb-2"
             labelClassName="text-sm font-medium"
           />

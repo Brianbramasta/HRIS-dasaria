@@ -123,7 +123,17 @@ export const useDirectorates = (): UseDirectoratesReturn => {
     setError(null);
     
     try {
-      const created = await directoratesService.create(directorateData);
+      const formData = new FormData();
+      formData.append('directorate_name', directorateData.name);
+      formData.append('directorate_decree_number', directorateData.memoNumber);
+      if (directorateData.description !== undefined && directorateData.description !== null) {
+        formData.append('directorate_description', directorateData.description);
+      }
+      if (directorateData.skFile) {
+        formData.append('directorate_decree_file', directorateData.skFile);
+      }
+
+      const created = await directoratesService.create(formData);
       const item = (created as any).data as any;
       const newDirectorate = mapToDirectorate(item);
       setDirectorates(prev => [...prev, newDirectorate]);
@@ -141,7 +151,18 @@ export const useDirectorates = (): UseDirectoratesReturn => {
     setError(null);
     
     try {
-      const updated = await directoratesService.update(id, directorateData);
+      const formData = new FormData();
+      formData.append('_method', 'PATCH');
+      if (directorateData.name !== undefined) formData.append('directorate_name', directorateData.name);
+      formData.append('directorate_decree_number', directorateData.memoNumber);
+      if (directorateData.description !== undefined && directorateData.description !== null) {
+        formData.append('directorate_description', directorateData.description);
+      }
+      if (directorateData.skFile) {
+        formData.append('directorate_decree_file', directorateData.skFile);
+      }
+
+      const updated = await directoratesService.update(id, formData);
       const item = (updated as any).data as any;
       const updatedDirectorate = mapToDirectorate(item);
       setDirectorates(prev => prev.map(directorate => 
@@ -160,7 +181,12 @@ export const useDirectorates = (): UseDirectoratesReturn => {
     setError(null);
     
     try {
-      await directoratesService.delete(id, payload);
+      const formData = new FormData();
+      formData.append('_method', 'DELETE');
+      if (payload.memoNumber) formData.append('directorate_deleted_decree_number', payload.memoNumber);
+      if (payload.skFile) formData.append('directorate_deleted_decree_file', payload.skFile);
+
+      await directoratesService.delete(id, formData);
       setDirectorates(prev => prev.filter(directorate => directorate.id !== id));
       await fetchDirectorates();
     } catch (err) {

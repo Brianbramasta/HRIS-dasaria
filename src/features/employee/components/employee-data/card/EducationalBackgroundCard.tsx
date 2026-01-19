@@ -13,7 +13,7 @@ interface Props {
   employeeId?: string; // ID karyawan untuk update
 }
 
-export default function EducationalBackgroundCard({ education }: Props) {
+export default function EducationalBackgroundCard({ education, employeeId }: Props) {
   const {
     isOpen,
     openModal,
@@ -24,7 +24,7 @@ export default function EducationalBackgroundCard({ education }: Props) {
     nonFormalEducation,
     submitting,
     handleSubmit,
-  } = useEducationalBackgroundCard(education);
+  } = useEducationalBackgroundCard(education, employeeId);
 
   return (
     <ExpandCard title="Riwayat Pendidikan" leftIcon={isComplete ? <IconLengkap /> : <IconTidakLengkap />} withHeaderDivider>
