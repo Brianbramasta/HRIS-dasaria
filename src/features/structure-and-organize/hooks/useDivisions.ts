@@ -110,7 +110,16 @@ export const useDivisions = (): UseDivisionsReturn => {
     setError(null);
     
     try {
-      const created = await divisionsService.create(divisionData);
+      const formData = new FormData();
+      formData.append('division_name', divisionData.name);
+      formData.append('directorate_id', divisionData.directorateId);
+      formData.append('division_decree_number', divisionData.memoNumber);
+      if (divisionData.description !== undefined && divisionData.description !== null) {
+        formData.append('division_description', divisionData.description);
+      }
+      formData.append('division_decree_file', divisionData.skFile);
+
+      const created = await divisionsService.create(formData);
       const item = (created as any).data as any;
       const newDivision = mapToDivision(item);
       setDivisions(prev => [...prev, newDivision]);
@@ -129,7 +138,17 @@ export const useDivisions = (): UseDivisionsReturn => {
     setError(null);
     
     try {
-      const updated = await divisionsService.update(id, divisionData);
+      const formData = new FormData();
+      formData.append('_method', 'PATCH');
+      if (divisionData.name !== undefined) formData.append('division_name', divisionData.name);
+      if (divisionData.directorateId !== undefined) formData.append('directorate_id', divisionData.directorateId);
+      formData.append('division_decree_number', divisionData.memoNumber);
+      if (divisionData.description !== undefined && divisionData.description !== null) {
+        formData.append('division_description', divisionData.description);
+      }
+      if (divisionData.skFile) formData.append('division_decree_file', divisionData.skFile);
+
+      const updated = await divisionsService.update(id, formData);
       const item = (updated as any).data as any;
       const updatedDivision = mapToDivision(item);
       setDivisions(prev => prev.map(division => 
@@ -149,7 +168,12 @@ export const useDivisions = (): UseDivisionsReturn => {
     setError(null);
     
     try {
-      await divisionsService.delete(id, payload);
+      const formData = new FormData();
+      formData.append('_method', 'DELETE');
+      if (payload.memoNumber) formData.append('division_deleted_decree_number', payload.memoNumber);
+      if (payload.skFile) formData.append('division_deleted_decree_file', payload.skFile);
+
+      await divisionsService.delete(id, formData);
       setDivisions(prev => prev.filter(division => division.id !== id));
       await fetchDivisions();
     } catch (err) {
