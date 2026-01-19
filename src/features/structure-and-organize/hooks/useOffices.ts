@@ -111,7 +111,28 @@ export const useOffices = (): UseOfficesReturn => {
     setError(null);
     
     try {
-      const created = await officesService.create(officeData as any);
+      const formData = new FormData();
+      formData.append('office_name', officeData.name);
+      
+      // Handle company IDs
+      const ids = Array.isArray(officeData.companyIds) && officeData.companyIds.length > 0
+        ? officeData.companyIds
+        : [];
+        
+      // DOK: Sesuai api.contract.kantor.md, gunakan company[n][company_id] untuk multi-select perusahaan
+      ids.forEach((id, index) => formData.append(`company[${index}][company_id]`, id));
+      
+      formData.append('office_decree_number', officeData.memoNumber);
+      
+      if (officeData.description !== undefined && officeData.description !== null) {
+        formData.append('office_description', officeData.description);
+      }
+      
+      if (officeData.skFile) {
+        formData.append('office_decree_file', officeData.skFile);
+      }
+
+      const created = await officesService.create(formData);
       const item = (created as any).data as any;
       const newOffice = mapToOffice(item);
       setOffices(prev => [...prev, newOffice]);
@@ -130,7 +151,27 @@ export const useOffices = (): UseOfficesReturn => {
     setError(null);
     
     try {
-      const updated = await officesService.update(id, officeData as any);
+      const formData = new FormData();
+      formData.append('_method', 'PATCH');
+      
+      if (officeData.name !== undefined) formData.append('office_name', officeData.name);
+      
+      // DOK: PATCH Kantor menggunakan company[n][id_company] untuk multi-select perusahaan
+      if (Array.isArray(officeData.companyIds) && officeData.companyIds.length > 0) {
+        officeData.companyIds.forEach((companyId, index) => formData.append(`company[${index}][company_id]`, companyId));
+      }
+      
+      formData.append('office_decree_number', officeData.memoNumber);
+      
+      if (officeData.description !== undefined && officeData.description !== null) {
+        formData.append('office_description', officeData.description);
+      }
+      
+      if (officeData.skFile) {
+        formData.append('office_decree_file', officeData.skFile);
+      }
+
+      const updated = await officesService.update(id, formData);
       const item = (updated as any).data as any;
       const updatedOffice = mapToOffice(item);
       setOffices(prev => prev.map(office => 
@@ -149,7 +190,12 @@ export const useOffices = (): UseOfficesReturn => {
     setError(null);
     
     try {
-      await officesService.delete(id, payload);
+      const formData = new FormData();
+      formData.append('_method', 'DELETE');
+      if (payload.memoNumber) formData.append('office_delete_decree_number', payload.memoNumber);
+      if (payload.skFile) formData.append('office_delete_decree_file', payload.skFile);
+
+      await officesService.delete(id, formData);
       setOffices(prev => prev.filter(office => office.id !== id));
       await fetchOffices();
     } catch (err) {
