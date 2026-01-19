@@ -113,7 +113,14 @@ export const useDepartments = (): UseDepartmentsReturn => {
     setError(null);
     
     try {
-      const created = await departmentsService.create(departmentData);
+      const formData = new FormData();
+      formData.append('department_name', departmentData.name);
+      formData.append('division_id', departmentData.divisionId);
+      formData.append('department_decree_number', departmentData.memoNumber);
+      if (departmentData.description) formData.append('department_description', departmentData.description);
+      formData.append('department_decree_file', departmentData.skFile);
+
+      const created = await departmentsService.create(formData);
       const item = (created as any).data as any;
       const newDepartment = mapToDepartment(item);
       setDepartments(prev => [...prev, newDepartment]);
@@ -132,7 +139,15 @@ export const useDepartments = (): UseDepartmentsReturn => {
     setError(null);
     
     try {
-      const updated = await departmentsService.update(id, departmentData);
+      const formData = new FormData();
+      formData.append('_method', 'PATCH');
+      if (departmentData.name !== undefined) formData.append('department_name', departmentData.name);
+      if (departmentData.divisionId !== undefined) formData.append('division_id', departmentData.divisionId);
+      formData.append('department_decree_number', departmentData.memoNumber);
+      if (departmentData.description !== undefined && departmentData.description !== null) formData.append('department_description', departmentData.description);
+      if (departmentData.skFile) formData.append('department_decree_file', departmentData.skFile);
+
+      const updated = await departmentsService.update(id, formData);
       const item = (updated as any).data as any;
       const updatedDepartment = mapToDepartment(item);
       setDepartments(prev => prev.map(department => 
@@ -152,7 +167,12 @@ export const useDepartments = (): UseDepartmentsReturn => {
     setError(null);
     
     try {
-      await departmentsService.delete(id, payload);
+      const formData = new FormData();
+      formData.append('_method', 'DELETE');
+      if (payload.memoNumber) formData.append('department_deleted_decree_number', payload.memoNumber);
+      if (payload.skFile) formData.append('department_deleted_decree_file', payload.skFile);
+
+      await departmentsService.delete(id, formData);
       setDepartments(prev => prev.filter(department => department.id !== id));
       await fetchDepartments();
     } catch (err) {
