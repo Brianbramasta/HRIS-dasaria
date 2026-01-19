@@ -102,6 +102,12 @@ describe('useAddUnitModal', () => {
     mockedUseDepartments.mockReturnValue({
       getDropdown: getDropdownMock,
     });
+
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   it('menampilkan notifikasi error ketika field wajib kosong', async () => {
@@ -198,11 +204,15 @@ describe('useAddUnitModal', () => {
     ]);
 
     const { result } = renderHook(() =>
-      useAddUnitModal({ isOpen: false, onClose, onSuccess })
+      useAddUnitModal({ isOpen: true, onClose, onSuccess })
     );
 
     await act(async () => {
-      await result.current.handleSearchDepartments('it');
+      result.current.handleSearchDepartments('it');
+    });
+
+    await act(async () => {
+      jest.advanceTimersByTime(500);
     });
 
     expect(getDropdownMock).toHaveBeenCalledWith('it');
