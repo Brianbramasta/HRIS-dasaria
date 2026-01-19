@@ -21,9 +21,6 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
   const {
     title,
     form,
-    officeDropdown,
-    divisionDropdown,
-    departmentDropdown,
     companyOptions,
     officeOptions,
     directorateOptions,
@@ -39,6 +36,16 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
     selectedGrade,
     handleInput,
     isDisabledField,
+    handleCompanySearch,
+    handleOfficeSearch,
+    handleDirectorateSearch,
+    handleDivisionSearch,
+    handleDepartmentSearch,
+    handleUnitSearch,
+    handleJobTitleSearch,
+    handlePositionSearch,
+    handlePositionLevelSearch,
+    handleEmployeeCategorySearch,
   } = useEmployeeDataModal({ isOpen, initialData });
 
 
@@ -70,6 +77,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
                 }
               }
             }}
+            onSearch={handleEmployeeCategorySearch}
             placeholder="Select"
             disabled={isDisabledField}
             required
@@ -116,6 +124,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             options={companyOptions}
             defaultValue={form.company_id || ''}
             onChange={(v) => handleInput('company_id', v)}
+            onSearch={handleCompanySearch}
             placeholder="Select"
             disabled={isDisabledField}
             required
@@ -125,10 +134,11 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
           <SelectField
             label="Kantor"
             htmlFor="officeSelectRight"
-            options={officeDropdown.length > 0 ? officeDropdown : officeOptions.length > 0 ? officeOptions : [{ label: 'Pilih perusahaan terlebih dahulu', value: '' }]}
+            options={officeOptions}
             defaultValue={form.office_id || ''}
             onChange={(v) => handleInput('office_id', v)}
-            disabled={officeDropdown.length === 0 && officeOptions.length === 0 || isDisabledField}
+            onSearch={handleOfficeSearch}
+            disabled={!form.company_id || isDisabledField}
             placeholder="Select"
             required
           />
@@ -140,6 +150,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             options={directorateOptions}
             defaultValue={form.directorate_id || ''}
             onChange={(v) => handleInput('directorate_id', v)}
+            onSearch={handleDirectorateSearch}
             placeholder="Select"
             disabled={isDisabledField}
             required
@@ -149,10 +160,11 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
           <SelectField
             label="Divisi"
             htmlFor="divisionSelect"
-            options={divisionDropdown.length > 0 ? divisionDropdown : divisionOptions.length > 0 ? divisionOptions : [{ label: 'Pilih direktorat terlebih dahulu', value: '' }]}
+            options={divisionOptions}
             defaultValue={form.division_id || ''}
             onChange={(v) => handleInput('division_id', v)}
-            disabled={divisionDropdown.length === 0 && divisionOptions.length === 0 || isDisabledField}
+            onSearch={handleDivisionSearch}
+            disabled={!form.directorate_id || isDisabledField}
             placeholder="Select"
             required
           />
@@ -161,10 +173,11 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
           <SelectField
             label="Departemen"
             htmlFor="departmentSelectLeft"
-            options={departmentDropdown.length > 0 ? departmentDropdown : departmentOptions.length > 0 ? departmentOptions : [{ label: 'Pilih divisi terlebih dahulu', value: '' }]}
+            options={departmentOptions}
             defaultValue={form.department_id || ''}
             onChange={(v) => handleInput('department_id', v)}
-            disabled={departmentDropdown.length === 0 && departmentOptions.length === 0 || isDisabledField}
+            onSearch={handleDepartmentSearch}
+            disabled={!form.division_id || isDisabledField}
             placeholder="Select"
             required
           />
@@ -176,8 +189,9 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             options={unitOptions}
             defaultValue={form.unit_id || ''}
             onChange={(v) => handleInput('unit_id', v)}
+            onSearch={handleUnitSearch}
             placeholder="Select"
-            disabled={isDisabledField}
+            disabled={!form.department_id || isDisabledField}
             required
           />
         </div>
@@ -188,6 +202,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             options={positionOptions}
             defaultValue={form.position_id || ''}
             onChange={(v) => handleInput('position_id', v)}
+            onSearch={handlePositionSearch}
             placeholder="Select"
             disabled={isDisabledField}
             required
@@ -200,6 +215,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             options={jobTitleOptions}
             defaultValue={form.job_title_id || ''}
             onChange={(v) => handleInput('job_title_id', v)}
+            onSearch={handleJobTitleSearch}
             placeholder="Select"
             disabled={isDisabledField}
             required
@@ -209,11 +225,11 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
           <SelectField
             label="Jabatan Struktural"
             htmlFor="structuralJobSelect"
-            options={structuralJobOptions.length > 0 ? structuralJobOptions : [{ label: 'Pilih Jabatan Kepangkatan terlebih dahulu', value: '' }]}
+            options={structuralJobOptions}
             defaultValue={form.structural_job_id || ''}
             onChange={(v) => handleInput('structural_job_id', v)}
             placeholder="Select"
-            disabled={structuralJobOptions.length === 0 || isDisabledField}
+            disabled={!form.job_title_id || isDisabledField}
             required
           />
         </div>
@@ -236,6 +252,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             options={positionLevelOptions}
             defaultValue={form.position_level_id || ''}
             onChange={(v) => handleInput('position_level_id', v)}
+            onSearch={handlePositionLevelSearch}
             placeholder="Select"
             disabled={isDisabledField}
             required
