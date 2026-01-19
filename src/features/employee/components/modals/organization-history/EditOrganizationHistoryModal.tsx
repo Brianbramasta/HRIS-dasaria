@@ -41,6 +41,7 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
     selectedGrade,
     handleInput,
     handleFileChange,
+    handleEmployeeSearch,
   } = useEditOrganizationHistoryModal({ isOpen, initialData });
 
 
@@ -54,6 +55,7 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
               options={employeeOptions.length > 0 ? employeeOptions : [{ label: 'Memuat opsi...', value: '' }]}
               defaultValue={form.nip || ''}
               onChange={(v) => handleInput('nip', v)}
+              onSearch={handleEmployeeSearch}
               placeholder="Pilih NIP"
               disabled={isEditMode || employeeOptions.length === 0}
           />

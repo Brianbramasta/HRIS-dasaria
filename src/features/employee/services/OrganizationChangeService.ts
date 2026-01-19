@@ -195,8 +195,10 @@ class OrganizationChangeService {
    * Get All Employee Dropdown - Mendapatkan daftar semua karyawan
    * @returns Promise dengan daftar semua karyawan
    */
-  async getAllEmployeeDropdown(): Promise<ApiResponse<DropdownItem[]>> {
-    return apiService.get<DropdownItem[]>(`${this.basePath}/all-employee-dropdown`);
+  async getAllEmployeeDropdown(search?: string): Promise<ApiResponse<DropdownItem[]>> {
+    const qs = apiService.buildQueryString(search ? { search } : undefined);
+    const url = qs ? `${this.basePath}/all-employee-dropdown?${qs}` : `${this.basePath}/all-employee-dropdown`;
+    return apiService.get<DropdownItem[]>(url);
   }
 
 

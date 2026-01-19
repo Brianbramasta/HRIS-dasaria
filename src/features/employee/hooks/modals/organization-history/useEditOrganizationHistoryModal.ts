@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { employeeMasterDataService } from '@/features/employee/services/EmployeeMasterData.service';
 import {
   getEmployeeCategoryDropdownOptions,
@@ -54,6 +54,7 @@ export function useEditOrganizationHistoryModal({ isOpen, initialData }: Params)
   const [kategoriKaryawanOptions, setKategoriKaryawanOptions] = useState<any[]>([]);
   const [positionLevelOptions, setPositionLevelOptions] = useState<any[]>([]);
   const [selectedGrade, setSelectedGrade] = useState<string>('');
+  const [employeeSearch, setEmployeeSearch] = useState<string>('');
   const isEditMode = !!initialData;
 
   useEffect(() => {
@@ -90,6 +91,14 @@ export function useEditOrganizationHistoryModal({ isOpen, initialData }: Params)
     fetchChangeTypeOptions();
     fetchEmployeeOptions();
   }, [isOpen, fetchChangeTypeOptions, fetchEmployeeOptions]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handler = setTimeout(() => {
+      fetchEmployeeOptions(employeeSearch || undefined);
+    }, 400);
+    return () => clearTimeout(handler);
+  }, [employeeSearch, isOpen, fetchEmployeeOptions]);
 
   const handleInput = (key: keyof OrganizationChangeForm, value: any) => {
     setForm((prev) => {
@@ -132,6 +141,10 @@ export function useEditOrganizationHistoryModal({ isOpen, initialData }: Params)
       return next;
     });
   };
+
+  const handleEmployeeSearch = useCallback((query: string) => {
+    setEmployeeSearch(query);
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
@@ -271,5 +284,6 @@ export function useEditOrganizationHistoryModal({ isOpen, initialData }: Params)
     selectedGrade,
     handleInput,
     handleFileChange,
+    handleEmployeeSearch,
   };
 }
