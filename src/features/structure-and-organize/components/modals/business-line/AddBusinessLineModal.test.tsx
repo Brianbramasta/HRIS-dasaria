@@ -108,6 +108,7 @@ describe('AddBusinessLineModal', () => {
   });
 
   it('menampilkan judul dan field ketika modal dibuka', () => {
+    expect(React).toBeDefined();
     render(
       <AddBusinessLineModal
         isOpen
@@ -199,4 +200,3 @@ describe('AddBusinessLineModal', () => {
     ).not.toBeInTheDocument();
   });
 });
-
