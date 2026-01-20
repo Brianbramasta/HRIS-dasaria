@@ -1,4 +1,3 @@
-import React from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
 import { IconPencil as Edit, IconHapus as Trash, FileText } from '@/icons/components/icons';
 import { usePositions } from '../../Index';

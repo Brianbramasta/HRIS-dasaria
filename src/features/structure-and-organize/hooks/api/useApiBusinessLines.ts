@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import {
   TableFilter,
   BusinessLineListItem,
@@ -65,7 +65,7 @@ interface UseApiBusinessLinesReturn {
   setSort: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
 }
 
-export const useApiBusinessLines = (options?: { autoFetch?: boolean }): UseApiBusinessLinesReturn => {
+export const useApiBusinessLines = (): UseApiBusinessLinesReturn => {
   const [businessLines, setBusinessLines] = useState<BusinessLineListItem[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
