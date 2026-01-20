@@ -1,24 +1,14 @@
-import  { useState } from 'react';
 import { Link } from 'react-router';
-import DataTable, { DataTableColumn } from '../../../../components/shared/datatable/DataTable';
-// import { Edit, Trash } from 'react-feather';
-import { IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
-import {
-  useBusinessLines,
-} from '../../Index';
+import DataTable, { DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
+import { IconPencil as Edit, IconHapus as Trash, FileText } from '@/icons/components/icons';
+import { useBusinessLines } from '../../Index';
 import AddBusinessLineModal from '../../components/modals/business-line/AddBusinessLineModal';
 import EditBusinessLineModal from '../../components/modals/business-line/EditBusinessLineModal';
 import DeleteBusinessLineModal from '../../components/modals/business-line/DeleteBusinessLineModal';
-// import { addNotification } from '../../../../stores/notificationStore';
 
 import type { BLRow } from '../../types/OrganizationTableTypes';
-import type { BusinessLineListItem } from '../../types/OrganizationApiTypes';
-import { FileText } from '@/icons/components/icons';
-import { useFileStore } from '@/stores/fileStore';
 
 type Props = { resetKey: string };
-
-
 
 const businessLineColumns: DataTableColumn<BLRow>[] = [
   { id: 'no', label: 'No', sortable: false },
@@ -32,33 +22,46 @@ const businessLineColumns: DataTableColumn<BLRow>[] = [
 ];
 
 export default function BusinessLinesTab({ resetKey }: Props) {
-  const [isAddOpen, setIsAddOpen] = useState(false);
-  const [isEditOpen, setIsEditOpen] = useState(false);
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const [selectedBusinessLine, setSelectedBusinessLine] = useState<BusinessLineListItem | null>(null);
-  const fileStore = useFileStore();
-
   const {
-    businessLines,
-    fetchBusinessLines,
+    rows_column,
     loading,
     total,
     page,
     pageSize,
-    rows_column,
     setSearch,
     setPage,
     setPageSize,
     setSort,
-    getById
-  } = useBusinessLines();
+    
+    // Modal & Handlers
+    addModal,
+    editModal,
+    deleteModal,
+    selected,
+    handleAddOpen,
+    handleEditOpen,
+    handleDeleteOpen,
+    handleClose,
+    handleSuccess,
+  } = useBusinessLines() as any; // Cast to any to avoid type issues if return type is not fully inferred yet, though strictly it should be typed. useDepartments used 'as any'.
 
-  // pages only call addNotification; the container is rendered globally in App.tsx
-
-  
-
-
+  const actions: DataTableAction<any>[] = [
+    { 
+      label: '', 
+      variant: 'outline', 
+      className: 'border-0', 
+      icon: <Edit />, 
+      onClick: (row: any) => handleEditOpen(row.raw) 
+    },
+    { 
+      label: '', 
+      variant: 'outline', 
+      className: 'border-0', 
+      color: 'error', 
+      icon: <Trash />, 
+      onClick: (row: any) => handleDeleteOpen(row.raw) 
+    },
+  ];
 
   return (
     <>
@@ -71,34 +74,7 @@ export default function BusinessLinesTab({ resetKey }: Props) {
         useExternalPagination
         externalPage={page}
         externalTotal={total}
-        actions={[
-          {
-            label: '',
-            variant: 'outline',
-            className: 'border-0',
-            icon: <Edit />,
-            onClick: async (row: any) => {
-              const idx = (row?.no ?? 0) - 1;
-              setSelectedIndex(idx);
-              const detail = await getById(businessLines[idx].id);
-              console.log('detail',detail)
-              setSelectedBusinessLine(detail as BusinessLineListItem);
-              setIsEditOpen(true);
-            },
-          },
-          {
-            label: '',
-            variant: 'outline',
-            className: 'border-0',
-            color: 'error',
-            icon: <Trash />,
-            onClick: (row: any) => {
-              const idx = (row?.no ?? 0) - 1;
-              setSelectedIndex(idx);
-              setIsDeleteOpen(true);
-            },
-          },
-        ]}
+        actions={actions}
         searchable
         filterable
         resetKey={resetKey}
@@ -106,58 +82,28 @@ export default function BusinessLinesTab({ resetKey }: Props) {
         onSortChange={(columnId, order) => { setSort(columnId, order); }}
         onPageChangeExternal={(p) => { setPage(p); }}
         onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); }}
-        onColumnVisibilityChange={() => {}}
-
-        onAdd={() => setIsAddOpen(true)}
+        
+        onAdd={handleAddOpen}
         onExport={() => {}}
       />
 
       <AddBusinessLineModal
-        isOpen={isAddOpen}
-        onClose={() => { setIsAddOpen(false); fileStore.clearSkFile(); }}
-        onSuccess={() => {
-          fetchBusinessLines();
-          // addNotification({
-          //   variant: 'success',
-          //   title: 'Lini Bisnis ditambahkan',
-          //   description: 'Berhasil menambahkan lini bisnis',
-          //   hideDuration: 4000,
-          // });
-        }}
+        isOpen={addModal.isOpen}
+        onClose={handleClose}
+        onSuccess={handleSuccess}
       />
       <EditBusinessLineModal
-        isOpen={isEditOpen}
-        onClose={() => {
-          setIsEditOpen(false);
-          fileStore.clearSkFile();
-        }}
-        businessLine={selectedBusinessLine}
-        onSuccess={() => {
-          fetchBusinessLines();
-          // addNotification({
-          //   variant: 'success',
-          //   title: 'Lini Bisnis diubah',
-          //   description: 'Berhasil mengubah lini bisnis',
-          //   hideDuration: 4000,
-          // });
-        }}
+        isOpen={editModal.isOpen}
+        onClose={handleClose}
+        businessLine={selected}
+        onSuccess={handleSuccess}
       />
       <DeleteBusinessLineModal
-        isOpen={isDeleteOpen}
-        onClose={() => { setIsDeleteOpen(false); fileStore.clearSkFile(); }}
-        businessLine={selectedIndex !== null ? (businessLines?.[selectedIndex] as any) : null}
-        onSuccess={() => {
-          fetchBusinessLines();
-          // addNotification({
-          //   variant: 'success',
-          //   title: 'Lini Bisnis dihapus',
-          //   description: 'Berhasil menghapus lini bisnis',
-          //   hideDuration: 4000,
-          // });
-        }}
+        isOpen={deleteModal.isOpen}
+        onClose={handleClose}
+        businessLine={selected}
+        onSuccess={handleSuccess}
       />
-
-      {/* notification container moved to App.tsx */}
     </>
   );
 }
