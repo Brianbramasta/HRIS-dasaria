@@ -1,312 +1,103 @@
-// Penyesuaian hooks Jabatan agar sesuai kontrak API 1.7 (job-title)
-import { useState, useCallback } from 'react';
-import { positionsService } from '../../services/request/PositionService';
-import { PositionListItem, TableFilter } from '../../types/OrganizationApiTypes';
-import useFilterStore from '../../../../stores/filterStore';
-import { toFileSummary } from '../../utils/shared/index';
+import { useEffect, useMemo, useState } from 'react';
+import { useApiJobTitles } from '../api/useApiJobTitles';
+import { useModal } from '../../../../hooks/useModal';
+import { useFileStore } from '@/stores/fileStore';
+import { PositionListItem } from '../../types/OrganizationApiTypes';
+import { PositionRow } from '../../types/OrganizationTableTypes';
 
-
-export const mapToPosition = (item: any): PositionListItem => {
-  const structuralJobs: string[] = [];
-  const structuralJobIds: (string | null)[] = [];
-
-  if (typeof item.structural_job_list === 'string' && item.structural_job_list.trim() !== '') {
-    const parts = item.structural_job_list
-      .split(',')
-      .map((s: string) => s.trim())
-      .filter(Boolean);
-    structuralJobs.push(...parts);
-    structuralJobIds.push(...parts.map(() => null));
-  } else if (Array.isArray(item.structural_jobs)) {
-    item.structural_jobs.forEach((s: any) => {
-      const name =
-        s && typeof s.structural_job_name === 'string'
-          ? s.structural_job_name.trim()
-          : '';
-      if (name) {
-        structuralJobs.push(name);
-        structuralJobIds.push(typeof s.id === 'string' ? s.id : s.id?.toString?.() ?? null);
-      }
-    });
-  } else if (typeof item.direct_subordinate === 'string') {
-    const parts = item.direct_subordinate
-      .split(',')
-      .map((s: string) => s.trim())
-      .filter(Boolean);
-    structuralJobs.push(...parts);
-    structuralJobIds.push(...parts.map(() => null));
-  } else if (Array.isArray(item.direct_subordinate)) {
-    structuralJobs.push(...item.direct_subordinate);
-    structuralJobIds.push(...item.direct_subordinate.map(() => null));
-  }
-
-  return {
-    id: item.id ?? '',
-    name: item.job_title_name ?? item.name ?? '',
-    grade: item.grade ?? null,
-    jobDescription: item.job_title_description ?? item.description ?? null,
-    structuralJobs,
-    structuralJobIds,
-    memoNumber: item.job_title_decree_number ?? null,
-    skFile: toFileSummary(item.job_title_decree_file_url ?? item.job_title_decree_file ?? null),
-  };
-};
-
-// Map UI sort field to API column
-const toSortField = (field?: string): string => {
-  const map: Record<string, string> = {
-    name: 'job_title_name',
-    'Nama Posisi': 'job_title_name',
-    'nama-posisi': 'job_title_name',
-    'Nama Jabatan': 'job_title_name',
-    'nama-jabatan': 'job_title_name',
-    'Jabatan': 'job_title_name',
-    jabatan: 'job_title_name',
-    job_title_name: 'job_title_name',
-    grade: 'grade',
-  };
-  return map[field || ''] || 'job_title_name';
-};
-
-interface UsePositionsReturn {
-  positions: PositionListItem[];
-  loading: boolean;
-  error: string | null;
-  total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
-  search: string;
-  sortBy: string;
-  sortOrder: 'asc' | 'desc';
-  filterValue: string;
-
-  // Actions
-  fetchPositions: (filter?: TableFilter) => Promise<void>;
-  createPosition: (payload: { name: string; grade?: string | null; jobDescription?: string | null; structuralJobs?: string[]; memoNumber: string; skFile: File; }) => Promise<void>;
-  updatePosition: (id: string, payload: { name?: string; grade?: string | null; jobDescription?: string | null; structuralJobs?: string[]; structuralJobIds?: (string | null)[]; memoNumber: string; skFile?: File | null; }) => Promise<void>;
-  deletePosition: (id: string, payload: { memoNumber: string; skFile?: File; }) => Promise<void>;
-  detail: (id: string) => Promise<PositionListItem | null>;
-  getDropdown: (search?: string) => Promise<{ id: string; job_title_name: string }[]>;
-  setPage: (page: number) => void;
-  setPageSize: (pageSize: number) => void;
-  setSearch: (search: string) => void;
-  setSort: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
-}
-
-export const usePositions = (): UsePositionsReturn => {
-  const [positions, setPositions] = useState<PositionListItem[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [total, setTotal] = useState(0);
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-  const [totalPages, setTotalPages] = useState(0);
-  const [search, setSearch] = useState('');
-  const [sortBy, setSortBy] = useState('');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-  const filterValue = useFilterStore((s) => s.filters['Jabatan'] ?? '');
-
-  const fetchPositions = useCallback(async (filter?: TableFilter) => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const effectivePage = filter?.page ?? page;
-      const effectivePageSize = filter?.pageSize ?? pageSize;
-      const effectiveSearch = filter?.search ?? search;
-      const effectiveSortBy = filter?.sortBy ?? sortBy;
-      const effectiveSortOrder = filter?.sortOrder ?? sortOrder;
-      const effectiveFilter = filter?.filter ?? filterValue;
-      const params: any = { page: effectivePage, per_page: effectivePageSize };
-      if (effectiveSearch) params.search = effectiveSearch;
-      if (effectiveFilter) params.filter = effectiveFilter;
-      if (effectiveSortBy) {
-        params.column = toSortField(effectiveSortBy);
-        if (effectiveSortOrder) params.sort = effectiveSortOrder;
-      }
-      const result = await positionsService.getList(params);
-      
-      const payload = (result as any);
-      const items = payload?.data?.data ?? [];
-      const total = payload?.data?.total ?? (items?.length || 0);
-      // const currentPage = payload?.data?.current_page ?? page;
-      const perPage = payload?.data?.per_page ?? pageSize;
-      const totalPagesCount = perPage ? Math.ceil(total / perPage) : 1;
-      
-      setPositions((items || []).map(mapToPosition));
-      setTotal(total);
-      setTotalPages(totalPagesCount);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch positions');
-    } finally {
-      setLoading(false);
-    }
-  }, [page, pageSize, search, sortBy, sortOrder, filterValue]);
-
-  // Create Jabatan menggunakan multipart sesuai kontrak API
-  const createPosition = useCallback(async (positionData: { name: string; grade?: string | null; jobDescription?: string | null; structuralJobs?: string[]; memoNumber: string; skFile: File; }) => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const form = new FormData();
-      form.append('job_title_name', positionData.name);
-      if (positionData.grade !== undefined && positionData.grade !== null) form.append('grade', positionData.grade);
-      if (positionData.jobDescription !== undefined && positionData.jobDescription !== null) form.append('job_title_description', positionData.jobDescription);
-      if (positionData.structuralJobs && positionData.structuralJobs.length > 0) {
-        positionData.structuralJobs.forEach((jobName, index) => {
-          const value = jobName?.trim();
-          if (value) {
-            form.append(`mt_structural_job[${index}][mt_structural_job_name]`, value);
-          }
-        });
-      }
-      form.append('job_title_decree_number', positionData.memoNumber);
-      form.append('job_title_decree_file', positionData.skFile);
-
-      const created = await positionsService.create(form);
-      const item = (created as any).data as any;
-      const newPosition = mapToPosition(item);
-      setPositions(prev => [...prev, newPosition]);
-      await fetchPositions();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create position');
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, [fetchPositions]);
-
-  // Update Jabatan menggunakan POST + _method=PATCH multipart
-  const updatePosition = useCallback(async (id: string, positionData: { name?: string; grade?: string | null; jobDescription?: string | null; structuralJobs?: string[]; structuralJobIds?: (string | null)[]; memoNumber: string; skFile?: File | null; }) => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const form = new FormData();
-      form.append('_method', 'PATCH');
-      if (positionData.name !== undefined) form.append('job_title_name', positionData.name);
-      if (positionData.grade !== undefined && positionData.grade !== null) form.append('grade', positionData.grade);
-      if (positionData.jobDescription !== undefined && positionData.jobDescription !== null) form.append('job_title_description', positionData.jobDescription);
-      if (positionData.structuralJobs && positionData.structuralJobs.length > 0) {
-        positionData.structuralJobs.forEach((jobName, index) => {
-          const value = jobName?.trim();
-          const idValue = positionData.structuralJobIds?.[index] ?? null;
-          if (idValue) {
-            form.append(`mt_structural_job[${index}][id]`, idValue);
-          }
-          if (value) {
-            form.append(`mt_structural_job[${index}][mt_structural_job_name]`, value);
-          }
-        });
-      }
-      form.append('job_title_decree_number', positionData.memoNumber);
-      if (positionData.skFile) form.append('job_title_decree_file', positionData.skFile);
-
-      const updated = await positionsService.update(id, form);
-      const item = (updated as any).data as any;
-      const updatedPosition = mapToPosition(item);
-      setPositions(prev => prev.map(position => 
-        position.id === id ? updatedPosition : position
-      ));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update position');
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  // Delete Jabatan menggunakan POST + _method=DELETE multipart
-  const deletePosition = useCallback(async (id: string, payload: { memoNumber: string; skFile?: File; }) => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const form = new FormData();
-      form.append('_method', 'DELETE');
-      if (payload.memoNumber) form.append('job_title_deleted_decree_number', payload.memoNumber);
-      if (payload.skFile) form.append('job_title_deleted_decree_file', payload.skFile);
-
-      await positionsService.delete(id, form);
-      setPositions(prev => prev.filter(position => position.id !== id));
-      await fetchPositions();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to delete position');
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, [fetchPositions]);
-
-  const handleSetPage = useCallback((newPage: number) => {
-    setPage(newPage);
-  }, []);
-
-  const handleSetPageSize = useCallback((newPageSize: number) => {
-    setPageSize(newPageSize);
-    setPage(1); // Reset to first page when changing page size
-  }, []);
-
-  const handleSetSearch = useCallback((newSearch: string) => {
-    setSearch(newSearch);
-    setPage(1); // Reset to first page when searching
-  }, []);
-
-  const handleSetSort = useCallback((newSortBy: string, newSortOrder: 'asc' | 'desc') => {
-    setSortBy(newSortBy);
-    setSortOrder(newSortOrder);
-  }, []);
-
-  const detail = useCallback(async (id: string): Promise<PositionListItem | null> => {
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await positionsService.detail(id);
-      return mapToPosition(result.data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to get position detail');
-      console.error('Error getting position detail:', err);
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const getDropdown = useCallback(async (search?: string): Promise<{ id: string; job_title_name: string }[]> => {
-    try {
-      const result = await positionsService.getDropdown(search || '');
-      return result.data || [];
-    } catch (err) {
-      console.error('Error fetching position dropdown:', err);
-      return [];
-    }
-  }, []);
-
+export const usePositions = () => {
+  // Gunakan hook API yang baru
+  const api = useApiJobTitles();
   
+  const addModal = useModal(false);
+  const editModal = useModal(false);
+  const deleteModal = useModal(false);
+  const [selected, setSelected] = useState<PositionListItem | null>(null);
+  const fileStore = useFileStore();
+
+  // Sinkronisasi data ketika parameter berubah
+  useEffect(() => {
+    api.fetchPositions();
+  }, [
+    api.fetchPositions, 
+    api.page, 
+    api.pageSize, 
+    api.search, 
+    api.sortBy, 
+    api.sortOrder, 
+    api.filterValue
+  ]);
+
+  const rows: PositionRow[] = useMemo(() => {
+    return (api.positions || []).map((p, idx) => ({
+      no: idx + 1,
+      'nama-jabatan': (p as any).name ?? '—',
+      'grade': (p as any).grade ?? (p as any).level ?? '—',
+      'deskripsi-tugas': (p as any).jobDescription ?? (p as any).description ?? '—',
+      'jabatan-struktural': Array.isArray((p as any).structuralJobs) ? (p as any).structuralJobs.join(', ') : '—',
+      'file-sk-dan-mou': (p as any).skFile ?? '—',
+      raw: p,
+    }));
+  }, [api.positions]);
+
+  const exportCSV = (filename: string, data: any[]) => {
+    if (!data || data.length === 0) return;
+    const headers = Object.keys(data[0]);
+    const csv = [headers.join(','), ...data.map(r => headers.map(h => JSON.stringify((r as any)[h] ?? '')).join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleAddOpen = () => {
+    addModal.openModal();
+  };
+
+  const handleEditOpen = (item: PositionListItem) => {
+    setSelected(item);
+    editModal.openModal();
+  };
+
+  const handleDeleteOpen = (item: PositionListItem) => {
+    setSelected(item);
+    deleteModal.openModal();
+  };
+
+  const handleClose = () => {
+    setSelected(null);
+    fileStore.clearSkFile();
+    addModal.closeModal();
+    editModal.closeModal();
+    deleteModal.closeModal();
+  };
+
+  const handleSuccess = () => {
+    api.fetchPositions();
+    addModal.closeModal();
+    editModal.closeModal();
+    deleteModal.closeModal();
+  };
 
   return {
-    positions,
-    loading,
-    error,
-    total,
-    page,
-    pageSize,
-    totalPages,
-    search,
-    sortBy,
-    sortOrder,
-    filterValue,
-    fetchPositions,
-    createPosition,
-    updatePosition,
-    deletePosition,
-    detail,
-    getDropdown,
-    setPage: handleSetPage,
-    setPageSize: handleSetPageSize,
-    setSearch: handleSetSearch,
-    setSort: handleSetSort,
+    ...api, // Spread API return values (positions, loading, etc.)
+    rows,
+    selected,
+    setSelected,
+    addModal,
+    editModal,
+    deleteModal,
+    fileStore,
+    exportCSV,
+    handleAddOpen,
+    handleEditOpen,
+    handleDeleteOpen,
+    handleClose,
+    handleSuccess,
   };
 };
