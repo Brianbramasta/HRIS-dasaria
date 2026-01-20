@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
 import { useOffices } from '../../../hooks/useOffices';
-import { useCompanies } from '../../companies/useCompanies';
+import { useCompanies } from '../../company/useCompanies';
 
 export function useAddOfficeModal(isOpen: boolean, onClose: () => void, onSuccess?: () => void) {
   const [name, setName] = useState('');

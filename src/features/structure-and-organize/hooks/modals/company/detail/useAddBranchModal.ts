@@ -1,7 +1,7 @@
 import React from 'react';
 import { officeService } from '../../../../services/OrganizationService';
 import { addNotification } from '@/stores/notificationStore';
-import { useCompanies } from '../../../companies/useCompanies';
+import { useCompanies } from '../../../company/useCompanies';
 
 export function useAddBranchModal(params: {
   isOpen: boolean;
