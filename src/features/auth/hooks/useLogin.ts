@@ -47,8 +47,20 @@ export const useLogin = () => {
 
       const intendedUrl = localStorage.getItem('intended_url') || '/';
       localStorage.removeItem('intended_url');
+      console.log('Login response:', response.employee.account_roles?.[0]?.role?.name_role);
+      console.log('Login response:', response);
+      const user = {
+        id: response.account.id,
+        email: response.account.email,
+        name: response.employee.employee.full_name,
+        role: response.employee.account_roles?.[0]?.role?.name_role || 'User',
+        avatar: response.employee.employee.avatar,
+        isActive: true,
+        createdAt: response.account.created_at || new Date().toISOString(),
+        updatedAt: response.account.updated_at || new Date().toISOString(),
+      };
 
-      setAuth({ user: response.user, accessToken: response.accessToken, refreshToken: response.refreshToken });
+      setAuth({ user, accessToken: response.token });
 
       console.log('Login successful:', response);
 
