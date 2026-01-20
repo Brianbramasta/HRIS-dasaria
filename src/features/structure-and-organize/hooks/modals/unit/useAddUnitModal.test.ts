@@ -12,7 +12,7 @@ jest.mock('../../api/useApiUnits', () => ({
   useDeleteUnit: jest.fn(),
 }));
 
-jest.mock('../../useDepartments', () => ({
+jest.mock('../../departement/useDepartments', () => ({
   useDepartments: jest.fn(),
 }));
 
