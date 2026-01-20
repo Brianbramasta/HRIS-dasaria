@@ -5,7 +5,7 @@ import { useFileStore } from '@/stores/fileStore';
 import { BusinessLineListItem } from '../../types/OrganizationApiTypes';
 import { BLRow } from '../../types/OrganizationTableTypes';
 
-export const useBusinessLines = () => {
+export const useBusinessLines = ({ autoFetch = true }: { autoFetch?: boolean } = {}) => {
   const api = useApiBusinessLines();
   
   const addModal = useModal(false);
@@ -16,7 +16,9 @@ export const useBusinessLines = () => {
   const fileStore = useFileStore();
 
   useEffect(() => {
-    api.fetchBusinessLines();
+    if (autoFetch) {
+      api.fetchBusinessLines();
+    }
   }, [
     api.fetchBusinessLines, 
     api.page, 
@@ -24,7 +26,8 @@ export const useBusinessLines = () => {
     api.search, 
     api.sortBy, 
     api.sortOrder, 
-    api.filterValue
+    api.filterValue,
+    autoFetch
   ]);
 
   const rows_column: BLRow[] = useMemo(() => {
