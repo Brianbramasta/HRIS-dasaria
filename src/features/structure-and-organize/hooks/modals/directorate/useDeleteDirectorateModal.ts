@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { DirectorateListItem } from '../../../types/OrganizationApiTypes';
 import { addNotification } from '@/stores/notificationStore';
 import { useFileStore } from '@/stores/fileStore';
-import { useDirectorates } from '../../useDirectorates';
+import { useDirectorates } from '../../directorate/useDirectorates';
 
 export function useDeleteDirectorateModal(
   directorate?: DirectorateListItem | null,

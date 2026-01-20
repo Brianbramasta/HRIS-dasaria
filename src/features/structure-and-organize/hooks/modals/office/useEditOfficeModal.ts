@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { OfficeListItem } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
-import { useOffices } from '../../../hooks/useOffices';
+import { useOffices } from '../../office/useOffices';
 import { useCompanies } from '../../company/useCompanies';
 
 export function useEditOfficeModal(

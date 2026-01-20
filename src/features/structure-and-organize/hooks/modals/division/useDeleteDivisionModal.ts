@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { DivisionListItem } from '../../../types/OrganizationApiTypes';
 import { addNotification } from '@/stores/notificationStore';
 import { useFileStore } from '@/stores/fileStore';
-import { useDivisions } from '../../../hooks/useDivisions';
+import { useDivisions } from '../../division/useDivisions';
 
 export function useDeleteDivisionModal(params: {
   isOpen: boolean;

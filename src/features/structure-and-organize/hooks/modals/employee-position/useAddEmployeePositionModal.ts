@@ -2,11 +2,11 @@ import { useEffect, useMemo, useState, useRef } from 'react';
 import type { EmployeePositionListItem } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
-import { useEmployeePositions } from '../../../hooks/useEmployeePositions';
-import { usePositions } from '../../../hooks/useJobTitle';
-import { useDirectorates } from '../../../hooks/useDirectorates';
-import { useDivisions } from '../../../hooks/useDivisions';
-import { useDepartments } from '../../../hooks/useDepartments';
+import { useEmployeePositions } from '../../employee-positions/useEmployeePositions';
+import { usePositions } from '../../job-tittle/useJobTitle';
+import { useDirectorates } from '../../directorate/useDirectorates';
+import { useDivisions } from '../../division/useDivisions';
+import { useDepartments } from '../../departement/useDepartments';
 
 interface UseAddEmployeePositionModalParams {
   isOpen: boolean;

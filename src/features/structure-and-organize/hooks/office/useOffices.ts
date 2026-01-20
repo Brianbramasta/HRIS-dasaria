@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react';
-import { officesService } from '../services/request/OfficesService';
-import { OfficeListItem, TableFilter } from '../types/OrganizationApiTypes';
-import useFilterStore from '../../../stores/filterStore';
-import { toFileSummary } from '../utils/shared/index';
+import { officesService } from '../../services/request/OfficesService';
+import { OfficeListItem, TableFilter } from '../../types/OrganizationApiTypes';
+import useFilterStore from '../../../../stores/filterStore';
+import { toFileSummary } from '../../utils/shared/index';
 
 
 export const mapToOffice = (item: any): OfficeListItem => ({

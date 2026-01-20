@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { OfficeListItem } from '../../../types/OrganizationApiTypes';
 import { addNotification } from '@/stores/notificationStore';
 import { useFileStore } from '@/stores/fileStore';
-import { useOffices } from '../../../hooks/useOffices';
+import { useOffices } from '../../office/useOffices';
 
 export function useDeleteOfficeModal(onClose: () => void, office?: OfficeListItem | null, onSuccess?: () => void) {
   const [memoNumber, setMemoNumber] = useState('');

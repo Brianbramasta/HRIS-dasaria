@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import type { DivisionDropdown } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
-import { useDepartments } from '../../../hooks/useDepartments';
-import { useDivisions } from '../../../hooks/useDivisions';
+import { useDepartments } from '../../departement/useDepartments';
+import { useDivisions } from '../../division/useDivisions';
 
 export function useAddDepartmentModal(params: { isOpen: boolean; onClose: () => void; onSuccess?: () => void }) {
   const { isOpen, onClose, onSuccess } = params;

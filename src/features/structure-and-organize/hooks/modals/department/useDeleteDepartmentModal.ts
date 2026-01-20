@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { DepartmentListItem } from '../../../types/OrganizationApiTypes';
 import { addNotification } from '@/stores/notificationStore';
-import { useDepartments } from '../../../hooks/useDepartments';
+import { useDepartments } from '../../departement/useDepartments';
 
 export function useDeleteDepartmentModal(params: {
   isOpen: boolean;

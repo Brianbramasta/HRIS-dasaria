@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useDepartments } from '../../useDepartments';
+import { useDepartments } from '../../departement/useDepartments';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
 import { useCreateUnit, useGetUnits } from '../../api/useApiUnits';

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { DirectorateListItem } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
-import { useDirectorates } from '../../useDirectorates';
+import { useDirectorates } from '../../directorate/useDirectorates';
 
 export function useEditDirectorateModal(
   isOpen: boolean,

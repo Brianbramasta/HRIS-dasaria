@@ -1,10 +1,10 @@
 import { useState, useCallback } from 'react';
-import { directoratesService } from '../services/request/DirectoratesService';
-import { DirectorateListItem, TableFilter } from '../types/OrganizationApiTypes';
-import useFilterStore from '../../../stores/filterStore';
+import { directoratesService } from '../../services/request/DirectoratesService';
+import { DirectorateListItem, TableFilter } from '../../types/OrganizationApiTypes';
+import useFilterStore from '../../../../stores/filterStore';
 // import { formatUrlFile } from '../../../utils/formatUrlFile';
-import type { DirectorateRow } from '../types/OrganizationTableTypes';
-import { toFileSummary } from '../utils/shared/toFileSummary';
+import type { DirectorateRow } from '../../types/OrganizationTableTypes';
+import { toFileSummary } from '../../utils/shared/toFileSummary';
 
 // Mapping helpers
 

@@ -7,12 +7,12 @@ export * from './services/OrganizationService';
 // Hooks
 export * from './hooks/business-lines/useBusinessLines';
 export * from './hooks/company/useCompanies';
-export * from './hooks/useOffices';
-export * from './hooks/useDirectorates';
-export * from './hooks/useDivisions';
-export * from './hooks/useDepartments';
-export * from './hooks/useJobTitle';
-export * from './hooks/useEmployeePositions';
+export * from './hooks/office/useOffices';
+export * from './hooks/directorate/useDirectorates';
+export * from './hooks/division/useDivisions';
+export * from './hooks/departement/useDepartments';
+export * from './hooks/job-tittle/useJobTitle';
+export * from './hooks/employee-positions/useEmployeePositions';
 
 // Components
 export * from '../../components/shared/datatable/DataTable';

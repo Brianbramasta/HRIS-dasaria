@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import type { DivisionListItem, DirectorateDropdown } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
-import { useDivisions } from '../../../hooks/useDivisions';
-import { useDirectorates } from '../../../hooks/useDirectorates';
+import { useDivisions } from '../../division/useDivisions';
+import { useDirectorates } from '../../directorate/useDirectorates';
 
 export function useEditDivisionModal(params: {
   isOpen: boolean;

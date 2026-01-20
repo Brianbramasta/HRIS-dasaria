@@ -15,7 +15,7 @@ type Props = { resetKey: string };
 import { useFileStore } from '@/stores/fileStore';
 import { formatUrlFile } from '@/utils/formatUrlFile';
 import { divisionsService } from '../../services/request/DivisionsService';
-import { mapToDivision } from '../../hooks/useDivisions';
+import { mapToDivision } from '../../hooks/division/useDivisions';
 
 
 const divisionColumns: DataTableColumn<DivisionRow>[] = [

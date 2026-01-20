@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react';
 import { useAddUnitModal } from './useAddUnitModal';
 import { useCreateUnit, useGetUnits } from '../../api/useApiUnits';
-import { useDepartments } from '../../useDepartments';
+import { useDepartments } from '../../departement/useDepartments';
 import { addNotification } from '@/stores/notificationStore';
 
 jest.mock('../../api/useApiUnits', () => ({

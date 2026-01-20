@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react';
-import { employeePositionsService } from '../services/request/EmployeePositionsService';
-import { EmployeePositionListItem, TableFilter } from '../types/OrganizationApiTypes';
-import useFilterStore from '../../../stores/filterStore';
-import { toFileSummary } from '../utils/shared/toFileSummary';
+import { employeePositionsService } from '../../services/request/EmployeePositionsService';
+import { EmployeePositionListItem, TableFilter } from '../../types/OrganizationApiTypes';
+import useFilterStore from '../../../../stores/filterStore';
+import { toFileSummary } from '../../utils/shared/toFileSummary';
 
 // Mapping helpers
 
