@@ -1,8 +1,9 @@
 import { renderHook, act } from '@testing-library/react';
-import { useCompanies, mapToCompanyDetail } from './useCompanies';
-import { companiesService } from '../services/request/CompaniesService';
-import useFilterStore from '../../../stores/filterStore';
-import type { CompanyDetailResponse } from '../types/OrganizationApiTypes';
+import { useCompanies } from './useCompanies';
+import { mapToCompanyDetail } from '../api/useApiCompanies';
+import { companiesService } from '../../services/request/CompaniesService';
+import useFilterStore from '../../../../stores/filterStore';
+import type { CompanyDetailResponse } from '../../types/OrganizationApiTypes';
 
 jest.mock('../../../services/api', () => ({
   apiService: {},

@@ -3,7 +3,7 @@ import type { OfficeListItem } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
 import { useOffices } from '../../../hooks/useOffices';
-import { useCompanies } from '../../../hooks/useCompanies';
+import { useCompanies } from '../../companies/useCompanies';
 
 export function useEditOfficeModal(
   isOpen: boolean,

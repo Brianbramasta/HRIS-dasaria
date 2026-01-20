@@ -6,7 +6,7 @@ export * from './services/OrganizationService';
 
 // Hooks
 export * from './hooks/business-lines/useBusinessLines';
-export * from './hooks/useCompanies';
+export * from './hooks/companies/useCompanies';
 export * from './hooks/useOffices';
 export * from './hooks/useDirectorates';
 export * from './hooks/useDivisions';

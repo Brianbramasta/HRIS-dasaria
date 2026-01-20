@@ -3,10 +3,10 @@ import {
   TableFilter,
   CompanyListItem,
   CompanyDetailResponse,
-} from '../types/OrganizationApiTypes';
-import { companiesService } from '../services/request/CompaniesService';
-import useFilterStore from '../../../stores/filterStore';
-import { toFileSummary } from '../utils/shared/toFileSummary';
+} from '../../types/OrganizationApiTypes';
+import { companiesService } from '../../services/request/CompaniesService';
+import useFilterStore from '../../../../stores/filterStore';
+import { toFileSummary } from '../../utils/shared/toFileSummary';
 
 // Mapping helpers
 
@@ -85,7 +85,7 @@ export const mapToCompanyDetail = (result: any): CompanyDetailResponse => {
   };
 };
 
-interface UseCompaniesReturn {
+interface UseApiCompaniesReturn {
   companies: CompanyListItem[];
   loading: boolean;
   error: string | null;
@@ -147,7 +147,7 @@ interface UseCompaniesReturn {
   setSort: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
 }
 
-export const useCompanies = (): UseCompaniesReturn => {
+export const useApiCompanies = (): UseApiCompaniesReturn => {
   const [companies, setCompanies] = useState<CompanyListItem[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);

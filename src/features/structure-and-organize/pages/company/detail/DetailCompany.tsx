@@ -20,7 +20,7 @@ import {  formatDateToIndonesian } from '@/utils/formatDate';
 import { formatImage } from '@/utils/formatImage';
 import { formatUrlFile } from '@/utils/formatUrlFile';
 import { useFileStore } from '@/stores/fileStore';
-import { mapToCompanyDetail } from '../../../hooks/useCompanies';
+import { mapToCompanyDetail } from '../../../hooks/api/useApiCompanies';
 
 const DetailPerusahaan: React.FC = () => {
   const { id } = useParams();
