@@ -1,255 +1,101 @@
-// Penyesuaian hooks Departemen agar sesuai kontrak API 1.7 (departments)
-import { useState, useCallback } from 'react';
-import { departmentsService } from '../../services/request/DepartmentsService';
-import { DepartmentListItem, TableFilter } from '../../types/OrganizationApiTypes';
-import useFilterStore from '../../../../stores/filterStore';
-import { toFileSummary } from '../../utils/shared/toFileSummary';
+import { useEffect, useMemo, useState } from 'react';
+import { useApiDepartments } from '../api/useApiDepartments';
+import { useModal } from '../../../../hooks/useModal';
+import { useFileStore } from '@/stores/fileStore';
+import { DepartmentListItem } from '../../types/OrganizationApiTypes';
 
-// Mapping helpers
+export const useDepartments = () => {
+  // Gunakan hook API yang baru
+  const api = useApiDepartments();
+  
+  const addModal = useModal(false);
+  const editModal = useModal(false);
+  const deleteModal = useModal(false);
+  const [selected, setSelected] = useState<DepartmentListItem | null>(null);
+  const fileStore = useFileStore();
 
-export const mapToDepartment = (item: any): DepartmentListItem => ({
-  id: item.id ?? item.id ?? '',
-  name: item.department_name ?? item.name ?? '',
-  description: item.department_description ?? item.description ?? null,
-  divisionId: item.division_id ?? null,
-  divisionName: item.division_name ?? null,
-  memoNumber: item.department_decree_number ?? null,
-  skFile: toFileSummary(item.department_decree_file_url ?? item.department_decree_file ?? null),
-});
+  // Sinkronisasi data ketika parameter berubah
+  useEffect(() => {
+    api.fetchDepartments();
+  }, [
+    api.fetchDepartments, 
+    api.page, 
+    api.pageSize, 
+    api.search, 
+    api.sortBy, 
+    api.sortOrder, 
+    api.filterValue
+  ]);
 
-// Map UI sort field to API column
-const toSortField = (field?: string): string => {
-  const map: Record<string, string> = {
-    name: 'department_name',
-    'Nama Departemen': 'department_name',
-    'nama-departemen': 'department_name',
-    department_name: 'department_name',
-    'Nama Divisi': 'division_name',
-    'nama-divisi': 'division_name',
-    division_name: 'division_name',
+  // Perbaikan: tambahkan tipe eksplisit pada parameter callback map untuk menghindari implicit any
+  const rows: any[] = useMemo(() => {
+    return (api.departments || []).map((d: DepartmentListItem, idx: number) => ({
+      no: idx + 1,
+      'nama-departemen': (d as any).name ?? '—',
+      'nama-divisi': (d as any).divisionName ?? '—',
+      'file-sk-dan-memo': (d as any).skFile ?? '_',
+      raw: d,
+    }));
+  }, [api.departments]);
+
+  const exportCSV = (filename: string, data: any[]) => {
+    if (!data || data.length === 0) return;
+    const headers = Object.keys(data[0]);
+    const csv = [headers.join(','), ...data.map(r => headers.map(h => JSON.stringify((r as any)[h] ?? '')).join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
-  return map[field || ''] || 'department_name';
-};
 
-interface UseDepartmentsReturn {
-  departments: DepartmentListItem[];
-  loading: boolean;
-  error: string | null;
-  total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
-  filterValue: string;
-  search: string;
-  sortBy: string;
-  sortOrder: 'asc' | 'desc' | null;
-  
-  // Actions
-  fetchDepartments: (filter?: TableFilter) => Promise<void>;
-  createDepartment: (payload: { name: string; divisionId: string; description?: string | null; memoNumber: string; skFile: File; }) => Promise<void>;
-  updateDepartment: (id: string, payload: { name?: string; divisionId?: string; description?: string | null; memoNumber: string; skFile?: File | null; }) => Promise<void>;
-  deleteDepartment: (id: string, payload: { memoNumber: string; skFile?: File; }) => Promise<void>;
-  getById: (id: string) => Promise<DepartmentListItem | null>;
-  getDropdown: (search?: string) => Promise<{ id: string; department_name: string }[]>;
-  setPage: (page: number) => void;
-  setPageSize: (pageSize: number) => void;
-  setSearch: (search: string) => void;
-  setSort: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
-}
+  const handleAddOpen = () => {
+    addModal.openModal();
+  };
 
-export const useDepartments = (): UseDepartmentsReturn => {
-  const [departments, setDepartments] = useState<DepartmentListItem[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [total, setTotal] = useState(0);
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-  const [totalPages, setTotalPages] = useState(0);
-  const [search, setSearch] = useState('');
-  const [sortBy, setSortBy] = useState('');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
-  const filterValue = useFilterStore((s) => s.filters['Departemen'] ?? '');
+  const handleEditOpen = (item: DepartmentListItem) => {
+    setSelected(item);
+    editModal.openModal();
+  };
 
-  const fetchDepartments = useCallback(async (filter?: TableFilter) => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const effectivePage = filter?.page ?? page;
-      const effectivePageSize = filter?.pageSize ?? pageSize;
-      const effectiveSearch = filter?.search ?? search;
-      const effectiveSortBy = filter?.sortBy ?? sortBy;
-      const effectiveSortOrder = filter?.sortOrder ?? sortOrder;
-      const effectiveFilter = filter?.filter ?? filterValue;
-      const params: any = { page: effectivePage, per_page: effectivePageSize };
-      if (effectiveSearch) params.search = effectiveSearch;
-      if (effectiveFilter) params.filter = effectiveFilter;
-      if (effectiveSortBy) {
-        params.column = toSortField(effectiveSortBy);
-        if (effectiveSortOrder) params.sort = effectiveSortOrder;
-      }
-      const result = await departmentsService.getList(params);
-      
-      const payload = (result as any);
-      const items = payload?.data?.data ?? [];
-      const total = payload?.data?.total ?? (items?.length || 0);
-      // const currentPage = payload?.data?.current_page ?? page;
-      const perPage = payload?.data?.per_page ?? pageSize;
-      const totalPagesCount = perPage ? Math.ceil(total / perPage) : 1;
-      
-      setDepartments((items || []).map(mapToDepartment));
-      setTotal(total);
-      setTotalPages(totalPagesCount);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch departments');
-    } finally {
-      setLoading(false);
-    }
-  }, [page, pageSize, search, sortBy, sortOrder, filterValue]);
+  const handleDeleteOpen = (item: DepartmentListItem) => {
+    setSelected(item);
+    deleteModal.openModal();
+  };
 
-  // Create Departemen menggunakan multipart sesuai kontrak API
-  const createDepartment = useCallback(async (departmentData: { name: string; divisionId: string; description?: string | null; memoNumber: string; skFile: File; }) => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const formData = new FormData();
-      formData.append('department_name', departmentData.name);
-      formData.append('division_id', departmentData.divisionId);
-      formData.append('department_decree_number', departmentData.memoNumber);
-      if (departmentData.description) formData.append('department_description', departmentData.description);
-      formData.append('department_decree_file', departmentData.skFile);
+  const handleClose = () => {
+    setSelected(null);
+    fileStore.clearSkFile();
+    addModal.closeModal();
+    editModal.closeModal();
+    deleteModal.closeModal();
+  };
 
-      const created = await departmentsService.create(formData);
-      const item = (created as any).data as any;
-      const newDepartment = mapToDepartment(item);
-      setDepartments(prev => [...prev, newDepartment]);
-      await fetchDepartments();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create department');
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, [fetchDepartments]);
-
-  // Update Departemen menggunakan POST + _method=PATCH multipart
-  const updateDepartment = useCallback(async (id: string, departmentData: { name?: string; divisionId?: string; description?: string | null; memoNumber: string; skFile?: File | null; }) => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const formData = new FormData();
-      formData.append('_method', 'PATCH');
-      if (departmentData.name !== undefined) formData.append('department_name', departmentData.name);
-      if (departmentData.divisionId !== undefined) formData.append('division_id', departmentData.divisionId);
-      formData.append('department_decree_number', departmentData.memoNumber);
-      if (departmentData.description !== undefined && departmentData.description !== null) formData.append('department_description', departmentData.description);
-      if (departmentData.skFile) formData.append('department_decree_file', departmentData.skFile);
-
-      const updated = await departmentsService.update(id, formData);
-      const item = (updated as any).data as any;
-      const updatedDepartment = mapToDepartment(item);
-      setDepartments(prev => prev.map(department => 
-        department.id === id ? updatedDepartment : department
-      ));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update department');
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  // Delete Departemen menggunakan POST + _method=DELETE multipart
-  const deleteDepartment = useCallback(async (id: string, payload: { memoNumber: string; skFile?: File; }) => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const formData = new FormData();
-      formData.append('_method', 'DELETE');
-      if (payload.memoNumber) formData.append('department_deleted_decree_number', payload.memoNumber);
-      if (payload.skFile) formData.append('department_deleted_decree_file', payload.skFile);
-
-      await departmentsService.delete(id, formData);
-      setDepartments(prev => prev.filter(department => department.id !== id));
-      await fetchDepartments();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to delete department');
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, [fetchDepartments]);
-
-  const handleSetPage = useCallback((newPage: number) => {
-    setPage(newPage);
-  }, []);
-
-  const handleSetPageSize = useCallback((newPageSize: number) => {
-    setPageSize(newPageSize);
-    setPage(1); // Reset to first page when changing page size
-  }, []);
-
-  const handleSetSearch = useCallback((newSearch: string) => {
-    setSearch(newSearch);
-    setPage(1); // Reset to first page when searching
-  }, []);
-
-  const handleSetSort = useCallback((newSortBy: string, newSortOrder: 'asc' | 'desc') => {
-    setSortBy(newSortBy);
-    setSortOrder(newSortOrder);
-  }, []);
-
-  const getById = useCallback(async (id: string): Promise<DepartmentListItem | null> => {
-    setLoading(true);
-    setError(null);
-    try {
-      const detail = await departmentsService.getById(id);
-      return mapToDepartment(detail.data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to get department');
-      console.error('Error getting department by id:', err);
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const getDropdown = useCallback(async (search?: string): Promise<{ id: string; department_name: string }[]> => {
-    try {
-      const result = await departmentsService.getDropdown(search || '');
-      return result.data || [];
-    } catch (err) {
-      console.error('Error fetching department dropdown:', err);
-      return [];
-    }
-  }, []);
-
-  
+  const handleSuccess = () => {
+    api.fetchDepartments();
+    addModal.closeModal();
+    editModal.closeModal();
+    deleteModal.closeModal();
+  };
 
   return {
-    departments,
-    loading,
-    error,
-    total,
-    page,
-    pageSize,
-    totalPages,
-    filterValue,
-    search,
-    sortBy,
-    sortOrder,
-    fetchDepartments,
-    createDepartment,
-    updateDepartment,
-    deleteDepartment,
-    getById,
-    getDropdown,
-    setPage: handleSetPage,
-    setPageSize: handleSetPageSize,
-    setSearch: handleSetSearch,
-    setSort: handleSetSort,
+    ...api, // Spread API return values (departments, loading, etc.)
+    rows,
+    selected,
+    setSelected,
+    addModal,
+    editModal,
+    deleteModal,
+    fileStore,
+    exportCSV,
+    handleAddOpen,
+    handleEditOpen,
+    handleDeleteOpen,
+    handleClose,
+    handleSuccess,
   };
 };
