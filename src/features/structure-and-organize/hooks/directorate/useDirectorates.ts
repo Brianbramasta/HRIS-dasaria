@@ -13,17 +13,11 @@ export const useDirectorates = () => {
   const [selected, setSelected] = useState<DirectorateListItem | null>(null);
   const fileStore = useFileStore();
 
+  const { fetchDirectorates } = api;
+
   useEffect(() => {
-    api.fetchDirectorates();
-  }, [
-    api.fetchDirectorates, 
-    api.page, 
-    api.pageSize, 
-    api.search, 
-    api.sortBy, 
-    api.sortOrder, 
-    api.filterValue
-  ]);
+    fetchDirectorates();
+  }, [fetchDirectorates]);
 
   const rows: DirectorateRow[] = useMemo(() => {
     return (api.directorates || []).map((d, idx) => ({

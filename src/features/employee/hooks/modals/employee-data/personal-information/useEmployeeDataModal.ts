@@ -72,7 +72,7 @@ export function useEmployeeDataModal({ isOpen, initialData }: Params) {
           employeeMasterDataService.getEmployeeStatusDropdown(),
         ]);
         setEmployeeStatusOptions((status || []).map((i: any) => ({ label: i.name, value: i.id })));
-      } catch (e) {
+      } catch {
         setEmployeeStatusOptions([]);
       }
     };
@@ -204,7 +204,7 @@ export function useEmployeeDataModal({ isOpen, initialData }: Params) {
       try {
         const items = await getStructuralJobDropdownOptions(jobTitleId);
         setStructuralJobOptions(items);
-      } catch (error) {
+      } catch {
         setStructuralJobOptions([]);
       }
     };

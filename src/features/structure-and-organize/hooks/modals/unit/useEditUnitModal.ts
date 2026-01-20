@@ -62,7 +62,7 @@ export const useEditUnitModal = ({ isOpen, onClose, unit, onSuccess }: UseEditUn
              setDepartmentId(data.department_id);
           }
         }
-      } catch (err) {
+      } catch {
         addNotification({
           variant: 'error',
           title: 'Gagal mengambil data',
@@ -144,7 +144,7 @@ export const useEditUnitModal = ({ isOpen, onClose, unit, onSuccess }: UseEditUn
 
       onSuccess?.();
       onClose();
-    } catch (error) {
+    } catch {
       // Error handled by hook
     }
   };

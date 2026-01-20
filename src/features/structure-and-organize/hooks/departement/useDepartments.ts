@@ -14,18 +14,12 @@ export const useDepartments = () => {
   const [selected, setSelected] = useState<DepartmentListItem | null>(null);
   const fileStore = useFileStore();
 
+  const { fetchDepartments } = api;
+
   // Sinkronisasi data ketika parameter berubah
   useEffect(() => {
-    api.fetchDepartments();
-  }, [
-    api.fetchDepartments, 
-    api.page, 
-    api.pageSize, 
-    api.search, 
-    api.sortBy, 
-    api.sortOrder, 
-    api.filterValue
-  ]);
+    fetchDepartments();
+  }, [fetchDepartments]);
 
   // Perbaikan: tambahkan tipe eksplisit pada parameter callback map untuk menghindari implicit any
   const rows: any[] = useMemo(() => {

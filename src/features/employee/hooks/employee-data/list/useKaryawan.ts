@@ -23,7 +23,6 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(initialPage);
   const [limit, setLimit] = useState(initialLimit);
-  const [isInitialFetch, setIsInitialFetch] = useState(true);
   const filterValue = useFilterStore((s) => s.filters['Data Master Karyawan'] ?? '');
   const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
   const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
@@ -165,17 +164,9 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
   // Auto-fetch when page, limit, or filter changes
   useEffect(() => {
     if (autoFetch) {
-      // Skip initial fetch if it's the first render (will be handled separately)
-      if (isInitialFetch) {
-        setIsInitialFetch(false);
-        fetchKaryawan();
-      } else {
-        // For subsequent changes, fetch data
-        fetchKaryawan();
-      }
+      fetchKaryawan();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, limit, filterValue, columnFilters, dateRangeFilters, autoFetch]);
+  }, [autoFetch, fetchKaryawan]);
 
   const createKaryawan = useCallback(
     async (formData: FormData) => {

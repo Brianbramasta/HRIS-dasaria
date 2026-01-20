@@ -185,7 +185,7 @@ export const useApiEmployeePositions = (): UseEmployeePositionsReturn => {
     } finally {
       setLoading(false);
     }
-  }, [page, pageSize, search, sortBy, sortOrder, filterValue, fetchEmployeePositions]);
+  }, [fetchEmployeePositions]);
 
   // Dokumentasi: updateEmployeePosition - kirim File asli via service
   const updateEmployeePosition = useCallback(async (id: string, employeePositionData: {

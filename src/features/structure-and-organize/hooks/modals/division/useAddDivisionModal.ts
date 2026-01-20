@@ -25,7 +25,9 @@ export function useAddDivisionModal(params: { isOpen: boolean; onClose: () => vo
       try {
         const res = await getDirectorateDropdown(directorateSearch);
         setDirectorates(res || []);
-      } catch {}
+      } catch {
+        // ignore
+      }
     }, 500);
     return () => clearTimeout(handler);
   }, [isOpen, directorateSearch, getDirectorateDropdown]);
@@ -64,7 +66,7 @@ export function useAddDivisionModal(params: { isOpen: boolean; onClose: () => vo
       });
       onSuccess?.();
       onClose();
-    } catch (err) {
+    } catch {
       addNotification({
         variant: 'error',
         title: 'Divisi tidak ditambahkan',

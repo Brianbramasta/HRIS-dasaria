@@ -20,7 +20,7 @@ export function useAddDirectorateModal(isOpen: boolean, onClose: () => void, onS
     }
   }, [isOpen]);
 
-  const handleFileChange = (_e: React.ChangeEvent<HTMLInputElement>) => {};
+  const handleFileChange = () => {};
 
   const handleSubmit = async () => {
     if (!skFile?.name) {

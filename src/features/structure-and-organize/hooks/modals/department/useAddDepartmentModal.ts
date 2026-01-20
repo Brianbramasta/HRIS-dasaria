@@ -24,7 +24,9 @@ export function useAddDepartmentModal(params: { isOpen: boolean; onClose: () => 
       try {
         const res = await getDivisionDropdown(divisionSearch);
         setDivisions(res || []);
-      } catch {}
+      } catch {
+        // ignore
+      }
     }, 500);
 
     return () => clearTimeout(handler);

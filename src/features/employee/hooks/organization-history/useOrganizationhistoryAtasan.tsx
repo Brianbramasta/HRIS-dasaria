@@ -13,7 +13,7 @@ import {
 // Re-export type for UI usage
 export type { OrganizationChangeItem };
 
-export interface UseOrganizationHistoryAtasanOptions extends UseOrganizationChangeOptions {}
+export type UseOrganizationHistoryAtasanOptions = UseOrganizationChangeOptions;
 
 export function useOrganizationHistoryAtasan(options: UseOrganizationHistoryAtasanOptions = {}) {
   const navigate = useNavigate();

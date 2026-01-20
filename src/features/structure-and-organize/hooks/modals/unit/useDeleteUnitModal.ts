@@ -68,7 +68,7 @@ export const useDeleteUnitModal = ({ isOpen, onClose, unit, onSuccess }: Args) =
       
       onSuccess?.();
       onClose();
-    } catch (err) {
+    } catch {
       // Error handled by hook
     }
   };

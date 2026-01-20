@@ -59,7 +59,9 @@ export function useEditDepartmentModal(params: {
       try {
         const res = await getDivisionDropdown(divisionSearch);
         setDivisions(res || []);
-      } catch {}
+      } catch {
+        // ignore
+      }
     }, 500);
 
     return () => clearTimeout(handler);
@@ -86,6 +88,7 @@ export function useEditDepartmentModal(params: {
       onSuccess?.();
       onClose();
     } catch {
+      // ignore
     } finally {
       setSubmitting(false);
     }

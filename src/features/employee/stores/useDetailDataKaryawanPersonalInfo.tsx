@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { personalInformationService } from '@/features/employee/services/detail/PersonalInformationService';
 
@@ -41,23 +41,23 @@ export const useDetailDataKaryawanPersonalInfo = (): DetailDataKaryawanPersonalI
     staleTime: 5 * 60 * 1000,
   });
 
-  const fetchDetail = async (id: string) => {
+  const fetchDetail = useCallback(async (id: string) => {
     setEmployeeId(id);
-  };
+  }, []);
 
-  const refetchDetail = async (id?: string) => {
+  const refetchDetail = useCallback(async (id?: string) => {
     const targetId = id ?? employeeId;
     if (!targetId) return;
     await queryClient.invalidateQueries({ queryKey: ['employee-personal-info', targetId] });
     await queryClient.refetchQueries({ queryKey: ['employee-personal-info', targetId] });
-  };
+  }, [employeeId, queryClient]);
 
-  const clearDetail = () => {
+  const clearDetail = useCallback(() => {
     if (employeeId) {
       queryClient.removeQueries({ queryKey: ['employee-personal-info', employeeId] });
     }
     setEmployeeId(null);
-  };
+  }, [employeeId, queryClient]);
 
   const state: DetailDataKaryawanPersonalInfoState = useMemo(
     () => ({

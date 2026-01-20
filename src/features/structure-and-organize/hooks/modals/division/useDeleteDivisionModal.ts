@@ -38,7 +38,7 @@ export function useDeleteDivisionModal(params: {
       await deleteDivision(division.id, { memoNumber: memoNumber.trim(), skFile: skFileMeta.file as File });
       onSuccess?.();
       onClose();
-    } catch (err) {
+    } catch {
       addNotification({
         variant: 'error',
         title: 'Divisi tidak dihapus',

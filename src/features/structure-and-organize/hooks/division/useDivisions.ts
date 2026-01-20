@@ -14,18 +14,12 @@ export const useDivisions = () => {
   const [selected, setSelected] = useState<DivisionListItem | null>(null);
   const fileStore = useFileStore();
 
+  const { fetchDivisions } = api;
+
   // Sinkronisasi data ketika parameter berubah
   useEffect(() => {
-    api.fetchDivisions();
-  }, [
-    api.fetchDivisions, 
-    api.page, 
-    api.pageSize, 
-    api.search, 
-    api.sortBy, 
-    api.sortOrder, 
-    api.filterValue
-  ]);
+    fetchDivisions();
+  }, [fetchDivisions]);
 
   const rows: any[] = useMemo(() => {
     return (api.divisions || []).map((d: DivisionListItem, idx: number) => ({

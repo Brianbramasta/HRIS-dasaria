@@ -5,16 +5,13 @@ import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { ChevronDown } from 'react-feather';
 import EditRiwayatOrganisasiModal from '@/features/employee/components/modals/organization-history/EditOrganizationHistoryModal';
 import { IconFileDetail } from '@/icons/components/icons';
-import { useMemo, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useMemo } from 'react';
 import { formatUrlFile } from '@/utils/formatUrlFile';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 
 type OrgHistoryListRow = OrganizationChangeItem & { statusPerubahan: string };
 
 export default function OrganizationHistoryAtasanPage() {
-  const navigate = useNavigate();
-  
   const {
     data,
     rowsWithStatus,
@@ -30,7 +27,6 @@ export default function OrganizationHistoryAtasanPage() {
     handlePageChange,
     handleRowsPerPageChange,
     handleAddOrganization,
-    handleEditOrganization,
     handleCloseModal,
     handleSubmitModal,
     handleDropdownToggle,
@@ -39,14 +35,6 @@ export default function OrganizationHistoryAtasanPage() {
     handleNavigateToAtasan,
     detail,
   } = useOrganizationHistoryAtasan();
-
-  // Format date helper
-  const formatDate = useCallback((iso: string) => {
-    if (!iso) return '-';
-    const d = new Date(iso);
-    const fmt = new Intl.DateTimeFormat('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-    return fmt.format(d);
-  }, []);
 
   // Define columns
   const columns: DataTableColumn<OrgHistoryListRow>[] = useMemo(
@@ -122,7 +110,7 @@ export default function OrganizationHistoryAtasanPage() {
         },
       },
     ],
-    [data, formatDate]
+    [data]
   );
 
   // Define actions (Atasan only has view action)
@@ -139,7 +127,7 @@ export default function OrganizationHistoryAtasanPage() {
         },
       }
     ],
-    [navigate, handleEditOrganization]
+    []
   );
 
   return (

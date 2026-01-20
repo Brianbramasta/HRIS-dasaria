@@ -15,9 +15,11 @@ export const useCompanies = () => {
   const [isDeleteOpen, setDeleteOpen] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState<CompanyListItem | null>(null);
 
+  const { fetchCompanies } = api;
+
   useEffect(() => {
-    api.fetchCompanies();
-  }, [api.search, api.sortBy, api.sortOrder, api.page, api.pageSize, api.filterValue, api.fetchCompanies]);
+    fetchCompanies();
+  }, [fetchCompanies]);
 
   const rows: (CompanyRow & { id?: string })[] = useMemo(() => {
     return (api.companies || []).map((c, idx) => ({

@@ -30,7 +30,9 @@ export function useEditDivisionModal(params: {
       try {
         const res = await getDirectorateDropdown(directorateSearch);
         setDirectorates(res || []);
-      } catch {}
+      } catch {
+        // ignore
+      }
     }, 500);
     return () => clearTimeout(handler);
   }, [isOpen, directorateSearch, getDirectorateDropdown]);
@@ -59,7 +61,7 @@ export function useEditDivisionModal(params: {
       });
       onSuccess?.();
       onClose();
-    } catch (err) {
+    } catch {
       addNotification({
         variant: 'error',
         title: 'Divisi tidak diupdate',

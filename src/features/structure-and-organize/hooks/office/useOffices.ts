@@ -13,17 +13,11 @@ export const useOffices = () => {
   const [selected, setSelected] = useState<OfficeListItem | null>(null);
   const fileStore = useFileStore();
 
+  const { fetchOffices } = api;
+
   useEffect(() => {
-    api.fetchOffices();
-  }, [
-    api.fetchOffices, 
-    api.page, 
-    api.pageSize, 
-    api.search, 
-    api.sortBy, 
-    api.sortOrder, 
-    api.filterValue
-  ]);
+    fetchOffices();
+  }, [fetchOffices]);
 
   const rows = useMemo(() => {
     return (api.offices || []).map((o, idx) => ({

@@ -45,10 +45,12 @@ export function useEditOfficeModal(
             const detail = await getCompanyDetail(id);
             opts.push({ value: id, text: detail.company.name });
           } catch {
+            // ignore
           }
         }
         setCompanyOptions(opts);
       } catch {
+        // ignore
       }
     })();
   }, [isOpen, office, getById, getCompanyDropdown, getCompanyDetail]);
@@ -87,7 +89,8 @@ export function useEditOfficeModal(
       });
       onSuccess?.();
       onClose();
-    } catch {
+    } catch (error) {
+      console.error(error);
       addNotification({
         variant: 'error',
         title: 'Office tidak diupdate',

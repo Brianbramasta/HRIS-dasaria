@@ -99,7 +99,7 @@ export const useAddUnitModal = ({ isOpen, onClose, onSuccess }: UseAddUnitModalP
       
       onSuccess?.();
       onClose();
-    } catch (error) {
+    } catch {
        // Error handled by hook
     }
   };

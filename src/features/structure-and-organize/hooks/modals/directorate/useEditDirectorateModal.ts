@@ -25,7 +25,7 @@ export function useEditDirectorateModal(
     }
   }, [isOpen, directorate]);
 
-  const handleFileChange = (_e: React.ChangeEvent<HTMLInputElement>) => {};
+  const handleFileChange = () => {};
 
   const handleSubmit = async () => {
     if (!directorate) return;

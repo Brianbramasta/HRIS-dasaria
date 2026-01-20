@@ -16,7 +16,7 @@ export const useAddBusinessLineModal = ({ onClose, onSuccess }: Args) => {
   const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
 
-  const handleFileChange = (_e: React.ChangeEvent<HTMLInputElement>) => {};
+  const handleFileChange = () => {};
 
   const handleSubmit = async () => {
     if (!name.trim()) return;
@@ -47,7 +47,7 @@ export const useAddBusinessLineModal = ({ onClose, onSuccess }: Args) => {
       setMemoNumber('');
       setDescription('');
       useFileStore.getState().clearSkFile();
-    } catch (err) {
+    } catch {
       addNotification({
         variant: 'error',
         title: 'Lini Bisnis tidak ditambahkan',

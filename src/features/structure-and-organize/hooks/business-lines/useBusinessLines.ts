@@ -15,20 +15,13 @@ export const useBusinessLines = ({ autoFetch = true }: { autoFetch?: boolean } =
   const [selected, setSelected] = useState<BusinessLineListItem | null>(null);
   const fileStore = useFileStore();
 
+  const { fetchBusinessLines } = api;
+
   useEffect(() => {
     if (autoFetch) {
-      api.fetchBusinessLines();
+      fetchBusinessLines();
     }
-  }, [
-    api.fetchBusinessLines, 
-    api.page, 
-    api.pageSize, 
-    api.search, 
-    api.sortBy, 
-    api.sortOrder, 
-    api.filterValue,
-    autoFetch
-  ]);
+  }, [fetchBusinessLines, autoFetch]);
 
   const rows_column: BLRow[] = useMemo(() => {
       return (api.businessLines || []).map((b, idx) => ({

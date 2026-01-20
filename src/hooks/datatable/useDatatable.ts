@@ -48,6 +48,11 @@ export function useDatatable<T = any>({
   );
   const location = useLocation();
 
+  const onColumnVisibilityChangeRef = useRef(onColumnVisibilityChange);
+  useEffect(() => {
+    onColumnVisibilityChangeRef.current = onColumnVisibilityChange;
+  }, [onColumnVisibilityChange]);
+
   // Initialize visible columns from saved filters or defaults
   useEffect(() => {
     const pageKey = resetKey ?? location.pathname;
@@ -73,8 +78,7 @@ export function useDatatable<T = any>({
 
   // Notify parent when visible columns change
   useEffect(() => {
-    onColumnVisibilityChange?.(visibleColumns);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    onColumnVisibilityChangeRef.current?.(visibleColumns);
   }, [visibleColumns]);
 
   // Handle sorting logic
@@ -99,7 +103,7 @@ export function useDatatable<T = any>({
     //     return value.toString().toLowerCase().includes(searchTerm.toLowerCase());
     //   })
     // );
-  }, [data, searchTerm, columns, visibleColumns]);
+  }, [data]);
 
   // Sort filtered data
   const sortedData = useMemo(() => {

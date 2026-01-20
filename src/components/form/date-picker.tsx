@@ -341,14 +341,17 @@ export default function DatePicker({
     }
     return null;
   };
+
+  const getReferenceDateRef = useRef(getReferenceDate);
+  getReferenceDateRef.current = getReferenceDate;
+
   useEffect(() => {
     if (isOpen) {
-      const ref = getReferenceDate();
+      const ref = getReferenceDateRef.current();
       if (ref) {
         setCurrentMonth(new Date(ref.getFullYear(), ref.getMonth()));
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
   // Klik hari pada kalender

@@ -14,18 +14,12 @@ export const useEmployeePositions = () => {
   const [selected, setSelected] = useState<EmployeePositionListItem | null>(null);
   const fileStore = useFileStore();
 
+  const { fetchEmployeePositions } = api;
+
   // Sinkronisasi data ketika parameter berubah
   useEffect(() => {
-    api.fetchEmployeePositions();
-  }, [
-    api.fetchEmployeePositions, 
-    api.page, 
-    api.pageSize, 
-    api.search, 
-    api.sortBy, 
-    api.sortOrder, 
-    api.filterValue
-  ]);
+    fetchEmployeePositions();
+  }, [fetchEmployeePositions]);
 
   const rows: any[] = useMemo(() => {
     return (api.employeePositions || []).map((ep: EmployeePositionListItem, idx: number) => ({

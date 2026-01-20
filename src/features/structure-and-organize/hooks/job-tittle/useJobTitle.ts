@@ -15,18 +15,12 @@ export const usePositions = () => {
   const [selected, setSelected] = useState<PositionListItem | null>(null);
   const fileStore = useFileStore();
 
+  const { fetchPositions } = api;
+
   // Sinkronisasi data ketika parameter berubah
   useEffect(() => {
-    api.fetchPositions();
-  }, [
-    api.fetchPositions, 
-    api.page, 
-    api.pageSize, 
-    api.search, 
-    api.sortBy, 
-    api.sortOrder, 
-    api.filterValue
-  ]);
+    fetchPositions();
+  }, [fetchPositions]);
 
   const rows: PositionRow[] = useMemo(() => {
     return (api.positions || []).map((p, idx) => ({
