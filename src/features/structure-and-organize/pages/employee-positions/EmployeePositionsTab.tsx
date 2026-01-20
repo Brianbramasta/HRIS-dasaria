@@ -1,20 +1,16 @@
 // Penyesuaian besar: halaman Posisi Pegawai kompatibel dengan pagination eksternal DataTable
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
 // import { Edit, Trash } from 'react-feather';
 import { IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
 import { useEmployeePositions } from '../../Index';
-import type { EmployeePositionListItem } from '../../types/OrganizationApiTypes';
 import { EmployeePositionRow } from '../../types/OrganizationTableTypes';
 import AddEmployeePositionModal from '../../components/modals/employee-position/AddEmployeePositionModal';
 import EditEmployeePositionModal from '../../components/modals/employee-position/EditEmployeePositionModal';
 import DeleteEmployeePositionModal from '../../components/modals/employee-position/DeleteEmployeePositionModal';
-import { useModal } from '../../../../hooks/useModal';
 // import { addNotification } from '@/stores/notificationStore';
 import { FileText } from '@/icons/components/icons';
-import { useFileStore } from '@/stores/fileStore';
 import { formatUrlFile } from '@/utils/formatUrlFile';
-import { useFilterStore } from '@/stores/filterStore';
 
 type Props = { resetKey: string };
 
@@ -29,92 +25,39 @@ const employeePositionColumns: DataTableColumn<EmployeePositionRow>[] = [
 ];
 
 export default function EmployeePositionsTab({ resetKey }: Props) {
-  // Dokumentasi: gunakan tipe return dari useEmployeePositions agar inference parameter map tidak any
-  const { employeePositions, fetchEmployeePositions, setSearch, setPage, setPageSize, setSort, page, pageSize, total } = useEmployeePositions();
-  const addModal = useModal(false);
-  const editModal = useModal(false);
-  const deleteModal = useModal(false);
-  const [selectedEmployeePosition, setSelectedEmployeePosition] = useState<EmployeePositionListItem | null>(null);
-  const fileStore = useFileStore();
-  // Dokumentasi: flag untuk memastikan fetch awal hanya berjalan sekali saat mount
-  const [hasInitialFetch, setHasInitialFetch] = useState(false);
-  // Dokumentasi: ambil nilai filter dari store untuk kunci judul tabel
-  const filterValue = useFilterStore((s) => s.filters['Posisi Pegawai'] ?? '');
+  const { 
+    rows, 
+    page, 
+    pageSize, 
+    total, 
+    setPage, 
+    setPageSize, 
+    setSearch, 
+    setSort,
+    exportCSV,
+    addModal,
+    editModal,
+    deleteModal,
+    selected,
+    handleAddOpen,
+    handleEditOpen,
+    handleDeleteOpen,
+    handleClose,
+    handleSuccess,
+  } = useEmployeePositions() as any;
 
-  const rows: EmployeePositionRow[] = useMemo(() => {
-    // DOK: Pastikan kolom bertipe string; gunakan nama file untuk tampilan
-    // Alasan: tipe EmployeePositionRow mengharuskan 'File SK & MoU' bertipe string
-    return (employeePositions || []).map((ep: EmployeePositionListItem, idx: number) => ({
-      id: ep.id,
-      no: idx + 1,
-      'nama-posisi': ep.name ?? ep.positionName ?? '—',
-      'jabatan': ep.positionName ?? '—',
-      'direktorat': ep.directorateName ?? '—',
-      'divisi': ep.divisionName ?? '—',
-      'departemen': ep.departmentName ?? '—',
-      'file-sk-dan-mou': ep.skFile ?? '—',
-      fileUrl: ep.skFile?.fileUrl ?? undefined,
-      raw: ep,
-    }));
-  }, [employeePositions]);
-
-  const handleAddSuccess = () => {
-    fetchEmployeePositions();
-  };
-
-  const handleUpdateSuccess = () => {
-    fetchEmployeePositions();
-  };
-
-  const handleDeleteSuccess = () => {
-    fetchEmployeePositions();
-  };
-
-  const actionsIconOnly = [
+  const actionsIconOnly: DataTableAction<any>[] = [
     {
       label: '',
-      onClick: (row: any) => {
-        setSelectedEmployeePosition(row.raw as EmployeePositionListItem);
-        editModal.openModal();
-      },
+      onClick: (row: any) => handleEditOpen(row.raw),
       variant: 'outline', className: 'border-0', icon: <Edit  />
     },
     {
       label: '',
-      onClick: (row: any) => {
-        setSelectedEmployeePosition(row.raw as EmployeePositionListItem);
-        deleteModal.openModal();
-      },
+      onClick: (row: any) => handleDeleteOpen(row.raw),
       variant: 'outline', className: 'border-0', color: 'error', icon: <Trash  />
     },
-  ] as DataTableAction<any>[];
-
-  const exportCSV = (filename: string, data: any[]) => {
-    if (!data || data.length === 0) return;
-    const headers = Object.keys(data[0]);
-    const csv = [headers.join(','), ...data.map(r => headers.map(h => JSON.stringify((r as any)[h] ?? '')).join(','))].join('\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', filename);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
-
-  // Dokumentasi: jalankan fetch list sekali saat mount dan set penanda selesai inisialisasi
-  React.useEffect(() => { fetchEmployeePositions(); setHasInitialFetch(true); }, [fetchEmployeePositions]);
-
-  // Dokumentasi: ketika tombol Cari di modal Filter ditekan (menyimpan ke filterStore),
-  // sinkronkan pencarian dan jalankan request API seperti halaman Jabatan
-  React.useEffect(() => {
-    if (!hasInitialFetch) return;
-    setSearch(filterValue);
-    setPage(1);
-    fetchEmployeePositions({ search: filterValue, page: 1 });
-  }, [filterValue, hasInitialFetch, setSearch, setPage, fetchEmployeePositions]);
+  ];
 
   return (
     <>
@@ -126,66 +69,40 @@ export default function EmployeePositionsTab({ resetKey }: Props) {
         searchable
         filterable
         resetKey={resetKey}
-        // Dokumentasi: event pencarian hanya fetch setelah inisialisasi selesai
-        onSearchChange={(val) => { setSearch(val); setPage(1); if (hasInitialFetch) { fetchEmployeePositions({ search: val, page: 1 }); } }}
-        // Dokumentasi: event sort hanya fetch setelah inisialisasi selesai
-        onSortChange={(columnId, order) => { setSort(columnId, order); if (hasInitialFetch) { fetchEmployeePositions({ sortBy: columnId, sortOrder: order }); } }}
-        // Dokumentasi: event ganti halaman hanya fetch setelah inisialisasi selesai
-        onPageChangeExternal={(p) => { setPage(p); if (hasInitialFetch) { fetchEmployeePositions({ page: p }); } }}
-        // Dokumentasi: event ganti jumlah baris hanya fetch setelah inisialisasi selesai dan reset ke halaman pertama
-        onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); setPage(1); if (hasInitialFetch) { fetchEmployeePositions({ pageSize: ps, page: 1 }); } }}
+        // Dokumentasi: event pencarian hanya fetch setelah inisialisasi selesai (ditangani oleh useEffect di hook)
+        onSearchChange={(val) => { setSearch(val); }}
+        // Dokumentasi: event sort hanya fetch setelah inisialisasi selesai (ditangani oleh useEffect di hook)
+        onSortChange={(columnId, order) => { setSort(columnId, order); }}
+        // Dokumentasi: event ganti halaman hanya fetch setelah inisialisasi selesai (ditangani oleh useEffect di hook)
+        onPageChangeExternal={(p) => { setPage(p); }}
+        // Dokumentasi: event ganti jumlah baris hanya fetch setelah inisialisasi selesai dan reset ke halaman pertama (ditangani oleh useEffect di hook)
+        onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); }}
         useExternalPagination
         externalPage={page}
         externalTotal={total}
         pageSize={pageSize}
+        loading={false}
         // Dokumentasi: perubahan visibilitas kolom tidak memicu refetch data agar tidak menambah panggilan API saat inisialisasi
         onColumnVisibilityChange={() => {}}
-        onAdd={() => addModal.openModal()}
+        onAdd={handleAddOpen}
         onExport={() => exportCSV('posisi-pegawai.csv', rows)}
       />
       <AddEmployeePositionModal
         isOpen={addModal.isOpen}
-        onClose={() => { addModal.closeModal(); fileStore.clearSkFile(); }}
-        onSuccess={() => {
-          handleAddSuccess();
-          addModal.closeModal();
-          // addNotification({
-          //   description: 'Posisi pegawai berhasil ditambahkan',
-          //   variant: 'success',
-          //   hideDuration: 4000,
-          //   title: 'Posisi pegawai ditambahkan',
-          // });
-        }}
+        onClose={handleClose}
+        onSuccess={handleSuccess}
       />
       <EditEmployeePositionModal
         isOpen={editModal.isOpen}
-        onClose={() => { editModal.closeModal(); setSelectedEmployeePosition(null); fileStore.clearSkFile(); }}
-        onSuccess={() => {
-          handleUpdateSuccess();
-          editModal.closeModal();
-          // addNotification({
-          //   description: 'Posisi pegawai berhasil diupdate',
-          //   variant: 'success',
-          //   hideDuration: 4000,
-          //   title: 'Posisi pegawai diupdate',
-          // });
-        }}
-        employeePosition={selectedEmployeePosition}
+        onClose={handleClose}
+        onSuccess={handleSuccess}
+        employeePosition={selected}
       />
       <DeleteEmployeePositionModal
         isOpen={deleteModal.isOpen}
-        onClose={() => { deleteModal.closeModal(); setSelectedEmployeePosition(null); fileStore.clearSkFile(); }}
-        onSuccess={() => {
-          handleDeleteSuccess();
-          deleteModal.closeModal();
-          // addNotification({
-          //   description: 'Posisi pegawai berhasil dihapus',
-          //   variant: 'success',
-          //   hideDuration: 4000,
-          //   title: 'Posisi pegawai dihapus',
-          // });
-        }}
-        employeePosition={selectedEmployeePosition}
+        onClose={handleClose}
+        onSuccess={handleSuccess}
+        employeePosition={selected}
       />
     </>
   );

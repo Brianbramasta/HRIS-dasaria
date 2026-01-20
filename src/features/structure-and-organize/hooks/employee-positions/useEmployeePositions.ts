@@ -1,308 +1,105 @@
-import { useState, useCallback } from 'react';
-import { employeePositionsService } from '../../services/request/EmployeePositionsService';
-import { EmployeePositionListItem, TableFilter } from '../../types/OrganizationApiTypes';
-import useFilterStore from '../../../../stores/filterStore';
-import { toFileSummary } from '../../utils/shared/toFileSummary';
+import { useEffect, useMemo, useState } from 'react';
+import { useApiEmployeePositions } from '../api/useApiEmployeePositions';
+import { useModal } from '../../../../hooks/useModal';
+import { useFileStore } from '@/stores/fileStore';
+import { EmployeePositionListItem } from '../../types/OrganizationApiTypes';
 
-// Mapping helpers
-
-export const mapToEmployeePosition = (item: any): EmployeePositionListItem => ({
-  id: item.id ?? item.id ?? '',
-  name: item.position_name ?? item.name ?? '',
-  positionId: item.job_title_id ?? item.positionId ?? null,
-  positionName: item.job_title_name ?? item.positionName ?? null,
-  directorateId: item.directorate_id ?? item.directorateId ?? null,
-  directorateName: item.directorate_name ?? item.directorateName ?? null,
-  divisionId: item.division_id ?? item.divisionId ?? null,
-  divisionName: item.division_name ?? item.divisionName ?? null,
-  departmentId: item.department_id ?? item.departmentId ?? null,
-  departmentName: item.department_name ?? item.departmentName ?? null,
-  description: item.position_description ?? item.description ?? null,
-  startDate: item.start_date ?? item.startDate ?? null,
-  endDate: item.end_date ?? item.endDate ?? null,
-  memoNumber: item.position_decree_number ?? item.memoNumber ?? null,
-  skFile: toFileSummary(item.position_decree_file_url ?? item.position_decree_file ?? null),
-});
-
-// Map UI sort field to API column
-const toSortField = (field?: string): string => {
-  const map: Record<string, string> = {
-    name: 'position_name',
-    'Nama Posisi': 'position_name',
-    'nama-posisi': 'position_name',
-    position_name: 'position_name',
-    'Nama Jabatan': 'job_title_name',
-    'nama-jabatan': 'job_title_name',
-    Jabatan: 'job_title_name',
-    jabatan: 'job_title_name',
-    job_title_name: 'job_title_name',
-  };
-  return map[field || ''] || 'position_name';
-};
-
-interface UseEmployeePositionsReturn {
-  employeePositions: EmployeePositionListItem[];
-  loading: boolean;
-  error: string | null;
-  total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
+export const useEmployeePositions = () => {
+  // Gunakan hook API yang baru
+  const api = useApiEmployeePositions();
   
-  // Actions
-  // Dokumentasi: izinkan Partial agar page memanggil dengan subset filter
-  fetchEmployeePositions: (filter?: Partial<TableFilter>) => Promise<void>;
-  createEmployeePosition: (payload: {
-    name: string;
-    positionId: string;
-    directorateId?: string | null;
-    divisionId?: string | null;
-    departmentId?: string | null;
-    startDate?: string | null;
-    endDate?: string | null;
-    memoNumber: string;
-    skFile?: File | null;
-  }) => Promise<void>;
-  updateEmployeePosition: (id: string, payload: {
-    name?: string;
-    positionId?: string;
-    directorateId?: string | null;
-    divisionId?: string | null;
-    departmentId?: string | null;
-    startDate?: string | null;
-    endDate?: string | null;
-    memoNumber: string;
-    skFile?: File | null;
-  }) => Promise<void>;
-  deleteEmployeePosition: (id: string, payload: { memoNumber: string; skFileId: string; }) => Promise<void>;
-  detail: (id: string) => Promise<EmployeePositionListItem | null>;
-  setPage: (page: number) => void;
-  setPageSize: (pageSize: number) => void;
-  setSearch: (search: string) => void;
-  setSort: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
-}
+  const addModal = useModal(false);
+  const editModal = useModal(false);
+  const deleteModal = useModal(false);
+  const [selected, setSelected] = useState<EmployeePositionListItem | null>(null);
+  const fileStore = useFileStore();
 
-// Penyesuaian besar: hooks Posisi Pegawai disesuaikan untuk pagination eksternal DataTable
-export const useEmployeePositions = (): UseEmployeePositionsReturn => {
-  const [employeePositions, setEmployeePositions] = useState<EmployeePositionListItem[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [total, setTotal] = useState(0);
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-  const [totalPages, setTotalPages] = useState(0);
-  const [search, setSearch] = useState('');
-  // Dokumentasi: set default sort 'Nama Posisi' dan hindari auto-fetch berulang
-  const [sortBy, setSortBy] = useState('');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-  const filterValue = useFilterStore((s) => s.filters['Posisi Pegawai'] ?? '');
+  // Sinkronisasi data ketika parameter berubah
+  useEffect(() => {
+    api.fetchEmployeePositions();
+  }, [
+    api.fetchEmployeePositions, 
+    api.page, 
+    api.pageSize, 
+    api.search, 
+    api.sortBy, 
+    api.sortOrder, 
+    api.filterValue
+  ]);
 
-  // Dokumentasi: menerima Partial<TableFilter>, kombinasikan dengan state lokal
-  const fetchEmployeePositions = useCallback(async (filter?: Partial<TableFilter>) => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const effectivePage = filter?.page ?? page;
-      const effectivePageSize = filter?.pageSize ?? pageSize;
-      const effectiveSearch = filter?.search ?? search;
-      const effectiveSortBy = filter?.sortBy ?? sortBy;
-      const effectiveSortOrder = filter?.sortOrder ?? sortOrder;
-      const effectiveFilter = filter?.filter ?? filterValue;
-      const params: any = { page: effectivePage, per_page: effectivePageSize };
-      if (effectiveSearch) params.search = effectiveSearch;
-      if (effectiveFilter) params.filter = effectiveFilter;
-      if (effectiveSortBy) {
-        params.column = toSortField(effectiveSortBy);
-        if (effectiveSortOrder) params.sort = effectiveSortOrder;
-      }
-      const result = await employeePositionsService.getList(params);
-      
-      const payload = (result as any);
-      const topData = payload?.data;
-      const items = Array.isArray(topData)
-        ? topData
-        : Array.isArray(topData?.data)
-          ? topData.data
-          : Array.isArray(payload?.data?.data)
-            ? payload.data.data
-            : [];
-      const pagination = payload?.pagination ?? (Array.isArray(topData) ? undefined : topData) ?? {};
-      const total = pagination?.total ?? items.length ?? 0;
-      // const currentPage = pagination?.current_page ?? filter?.page ?? page ?? 1;
-      const perPage = pagination?.per_page ?? filter?.pageSize ?? pageSize ?? items.length;
-      const totalPagesCount = pagination?.last_page ?? (perPage ? Math.ceil(total / perPage) : 1);
-      
-      setEmployeePositions((items || []).map(mapToEmployeePosition));
-      setTotal(total);
-      setTotalPages(totalPagesCount);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch employee positions');
-    } finally {
-      setLoading(false);
-    }
-  }, [page, pageSize, search, sortBy, sortOrder, filterValue]);
+  const rows: any[] = useMemo(() => {
+    return (api.employeePositions || []).map((ep: EmployeePositionListItem, idx: number) => ({
+      id: ep.id,
+      no: idx + 1,
+      'nama-posisi': ep.name ?? ep.positionName ?? '—',
+      'jabatan': ep.positionName ?? '—',
+      'direktorat': ep.directorateName ?? '—',
+      'divisi': ep.divisionName ?? '—',
+      'departemen': ep.departmentName ?? '—',
+      'file-sk-dan-mou': ep.skFile ?? '—',
+      fileUrl: ep.skFile?.fileUrl ?? undefined,
+      raw: ep,
+    }));
+  }, [api.employeePositions]);
 
-  // Dokumentasi: createEmployeePosition - kirim File asli via service
-  const createEmployeePosition = useCallback(async (employeePositionData: {
-    name: string;
-    positionId: string;
-    directorateId?: string | null;
-    divisionId?: string | null;
-    departmentId?: string | null;
-    startDate?: string | null;
-    endDate?: string | null;
-    memoNumber: string;
-    skFile?: File | null;
-  }) => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const form = new FormData();
-      form.append('position_name', employeePositionData.name);
-      form.append('job_title_id', employeePositionData.positionId);
-      if (employeePositionData.directorateId) form.append('directorate_id', employeePositionData.directorateId);
-      if (employeePositionData.divisionId) form.append('division_id', employeePositionData.divisionId);
-      if (employeePositionData.departmentId) form.append('department_id', employeePositionData.departmentId);
-      if (employeePositionData.memoNumber) form.append('position_decree_number', employeePositionData.memoNumber);
-      if (employeePositionData.skFile) form.append('position_decree_file', employeePositionData.skFile);
+  const exportCSV = (filename: string, data: any[]) => {
+    if (!data || data.length === 0) return;
+    const headers = Object.keys(data[0]);
+    const csv = [headers.join(','), ...data.map(r => headers.map(h => JSON.stringify((r as any)[h] ?? '')).join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
-      const created = await employeePositionsService.create(form);
-      const body = (created as any).data ?? {};
-      const item = body?.data ?? body;
-      const newEmployeePosition = mapToEmployeePosition(item);
-      setEmployeePositions(prev => [...prev, newEmployeePosition]);
-      await fetchEmployeePositions();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create employee position');
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, [page, pageSize, search, sortBy, sortOrder, filterValue, fetchEmployeePositions]);
+  const handleAddOpen = () => {
+    addModal.openModal();
+  };
 
-  // Dokumentasi: updateEmployeePosition - kirim File asli via service
-  const updateEmployeePosition = useCallback(async (id: string, employeePositionData: {
-    name?: string;
-    positionId?: string;
-    directorateId?: string | null;
-    divisionId?: string | null;
-    departmentId?: string | null;
-    startDate?: string | null;
-    endDate?: string | null;
-    memoNumber: string;
-    skFile?: File | null;
-  }) => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const form = new FormData();
-      form.append('_method', 'PATCH');
-      if (employeePositionData.name !== undefined) form.append('position_name', employeePositionData.name);
-      if (employeePositionData.positionId !== undefined) form.append('job_title_id', employeePositionData.positionId);
-      if (employeePositionData.directorateId !== undefined && employeePositionData.directorateId !== null) {
-        form.append('directorate_id', employeePositionData.directorateId);
-      }
-      if (employeePositionData.divisionId !== undefined && employeePositionData.divisionId !== null) {
-        form.append('division_id', employeePositionData.divisionId);
-      }
-      if (employeePositionData.departmentId !== undefined && employeePositionData.departmentId !== null) {
-        form.append('department_id', employeePositionData.departmentId);
-      }
-      if (employeePositionData.memoNumber) form.append('position_decree_number', employeePositionData.memoNumber);
-      if (employeePositionData.skFile) form.append('position_decree_file', employeePositionData.skFile);
+  const handleEditOpen = (item: EmployeePositionListItem) => {
+    setSelected(item);
+    editModal.openModal();
+  };
 
-      const updated = await employeePositionsService.update(id, form);
-      const body = (updated as any).data ?? {};
-      const item = body?.data ?? body;
-      const updatedEmployeePosition = mapToEmployeePosition(item);
-      setEmployeePositions(prev => prev.map(employeePosition => 
-        employeePosition.id === id ? updatedEmployeePosition : employeePosition
-      ));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update employee position');
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const handleDeleteOpen = (item: EmployeePositionListItem) => {
+    setSelected(item);
+    deleteModal.openModal();
+  };
 
-  const deleteEmployeePosition = useCallback(async (id: string, payload: { memoNumber: string; skFileId: string; }) => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const form = new FormData();
-      form.append('_method', 'DELETE');
-      if (payload.memoNumber) form.append('position_deleted_decree_number', payload.memoNumber);
-      if (payload.skFileId) form.append('position_deleted_decree_file', payload.skFileId);
+  const handleClose = () => {
+    setSelected(null);
+    fileStore.clearSkFile();
+    addModal.closeModal();
+    editModal.closeModal();
+    deleteModal.closeModal();
+  };
 
-      await employeePositionsService.delete(id, form);
-      setEmployeePositions(prev => prev.filter(employeePosition => employeePosition.id !== id));
-      await fetchEmployeePositions();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to delete employee position');
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, [fetchEmployeePositions]);
-
-  const handleSetPage = useCallback((newPage: number) => {
-    setPage(newPage);
-  }, []);
-
-  const handleSetPageSize = useCallback((newPageSize: number) => {
-    setPageSize(newPageSize);
-    setPage(1); // Reset to first page when changing page size
-  }, []);
-
-  const handleSetSearch = useCallback((newSearch: string) => {
-    setSearch(newSearch);
-    setPage(1); // Reset to first page when searching
-  }, []);
-
-  const handleSetSort = useCallback((newSortBy: string, newSortOrder: 'asc' | 'desc') => {
-    setSortBy(newSortBy);
-    setSortOrder(newSortOrder);
-  }, []);
-
-  const detail = useCallback(async (id: string): Promise<EmployeePositionListItem | null> => {
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await employeePositionsService.detail(id);
-      return mapToEmployeePosition(result.data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to get employee position detail');
-      console.error('Error getting employee position detail:', err);
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  // Dokumentasi: tidak auto-fetch di hook agar initial fetch di Page hanya terjadi sekali
-  // (Page memanggil fetchEmployeePositions() saat mount sehingga sort default hanya berjalan sekali)
+  const handleSuccess = () => {
+    api.fetchEmployeePositions();
+    addModal.closeModal();
+    editModal.closeModal();
+    deleteModal.closeModal();
+  };
 
   return {
-    employeePositions,
-    loading,
-    error,
-    total,
-    page,
-    pageSize,
-    totalPages,
-    fetchEmployeePositions,
-    createEmployeePosition,
-    updateEmployeePosition,
-    deleteEmployeePosition,
-    detail,
-    setPage: handleSetPage,
-    setPageSize: handleSetPageSize,
-    setSearch: handleSetSearch,
-    setSort: handleSetSort,
+    ...api, // Spread API return values
+    rows,
+    selected,
+    setSelected,
+    addModal,
+    editModal,
+    deleteModal,
+    fileStore,
+    exportCSV,
+    handleAddOpen,
+    handleEditOpen,
+    handleDeleteOpen,
+    handleClose,
+    handleSuccess,
   };
 };
