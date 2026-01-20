@@ -5,7 +5,7 @@ import {
   useUpdateUnit,
   useGetUnits,
 } from '../../api/useApiUnits';
-import { useDepartments } from '../../useDepartments';
+import { useDepartments } from '../../departement/useDepartments';
 import { toFileSummary } from '../../../utils/shared/toFileSummary';
 import { addNotification } from '@/stores/notificationStore';
 
@@ -17,7 +17,7 @@ jest.mock('../../api/useApiUnits', () => ({
   useDeleteUnit: jest.fn(),
 }));
 
-jest.mock('../../useDepartments', () => ({
+jest.mock('../../departement/useDepartments', () => ({
   useDepartments: jest.fn(),
 }));
 

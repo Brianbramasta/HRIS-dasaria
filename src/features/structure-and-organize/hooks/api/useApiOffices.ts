@@ -1,9 +1,8 @@
 import { useState, useCallback } from 'react';
-import { officesService } from '../services/request/OfficesService';
-import { OfficeListItem, TableFilter } from '../types/OrganizationApiTypes';
-import useFilterStore from '../../../stores/filterStore';
-import { toFileSummary } from '../utils/shared/index';
-
+import { officesService } from '../../services/request/OfficesService';
+import { OfficeListItem, TableFilter } from '../../types/OrganizationApiTypes';
+import useFilterStore from '../../../../stores/filterStore';
+import { toFileSummary } from '../../utils/shared/toFileSummary';
 
 export const mapToOffice = (item: any): OfficeListItem => ({
   id: item.id ?? item.id ?? '',
@@ -47,9 +46,7 @@ interface UseOfficesReturn {
 
   // Actions
   fetchOffices: (filter?: TableFilter) => Promise<void>;
-  // DOK: createOffice kini mendukung multi-select perusahaan melalui companyIds
   createOffice: (payload: { companyIds: string[]; name: string; description?: string | null; memoNumber: string; skFile?: File | null; }) => Promise<void>;
-  // DOK: updateOffice mendukung multi-select perusahaan melalui companyIds
   updateOffice: (id: string, payload: { companyIds?: string[]; name?: string; description?: string | null; memoNumber: string; skFile?: File | null; }) => Promise<void>;
   deleteOffice: (id: string, payload: { memoNumber: string; skFile: File; }) => Promise<void>;
   getById: (id: string) => Promise<OfficeListItem | null>;
@@ -59,7 +56,7 @@ interface UseOfficesReturn {
   setSort: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
 }
 
-export const useOffices = (): UseOfficesReturn => {
+export const useApiOffices = (): UseOfficesReturn => {
   const [offices, setOffices] = useState<OfficeListItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -239,8 +236,6 @@ export const useOffices = (): UseOfficesReturn => {
       setLoading(false);
     }
   }, []);
-
-  
 
   return {
     offices,

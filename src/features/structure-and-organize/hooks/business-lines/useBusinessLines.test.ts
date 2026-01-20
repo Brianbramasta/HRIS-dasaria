@@ -74,16 +74,24 @@ describe('useBusinessLines Hook', () => {
     expect(result.current.error).toBe('API Error');
   });
 
-  it('harus memperbarui pagination state', () => {
+  it('harus memperbarui pagination state', async () => {
     const { result } = renderHook(() => useBusinessLines({ autoFetch: false }));
 
     act(() => {
       result.current.setPage(2);
+    });
+
+    await waitFor(() => {
+      expect(result.current.page).toBe(2);
+    });
+
+    act(() => {
       result.current.setPageSize(20);
     });
 
-    expect(result.current.page).toBe(2);
-    expect(result.current.pageSize).toBe(20);
+    await waitFor(() => {
+      expect(result.current.pageSize).toBe(20);
+    });
   });
 
   it('harus melakukan pencarian dan memperbarui state search', async () => {
@@ -147,7 +155,7 @@ describe('useBusinessLines Hook', () => {
         const ci = createdItem as BusinessLineListItem;
         expect(ci.name).toBe(newLine.name);
     }
-    expect(mockBusinessLinesService.getList).toHaveBeenCalled();
+    // expect(mockBusinessLinesService.getList).toHaveBeenCalled(); // Auto-fetch removed
   });
 
   it('harus menangani error saat pembuatan gagal', async () => {
@@ -193,7 +201,7 @@ describe('useBusinessLines Hook', () => {
       const ui = updatedItem as BusinessLineListItem | null;
       expect(ui?.name).toBe('Updated');
     }
-    expect(mockBusinessLinesService.getList).toHaveBeenCalled();
+    // expect(mockBusinessLinesService.getList).toHaveBeenCalled(); // Auto-fetch removed
   });
 
   it('harus menghapus business line dengan sukses', async () => {
@@ -216,7 +224,7 @@ describe('useBusinessLines Hook', () => {
     expect(fd.get('_method')).toBe('DELETE');
     expect(fd.get('bl_delete_decree_number')).toBe(deletePayload.memoNumber);
     expect(success).toBe(true);
-    expect(mockBusinessLinesService.getList).toHaveBeenCalled();
+    // expect(mockBusinessLinesService.getList).toHaveBeenCalled(); // Auto-fetch removed
   });
 
   it('harus mendapatkan detail business line', async () => {

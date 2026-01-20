@@ -1,9 +1,9 @@
 // Penyesuaian hooks Divisi agar sesuai kontrak API terbaru (1.7)
 import { useState, useCallback } from 'react';
-import { divisionsService } from '../services/request/DivisionsService';
-import { DivisionListItem, TableFilter } from '../types/OrganizationApiTypes';
-import useFilterStore from '../../../stores/filterStore';
-import { toFileSummary } from '../utils/shared/toFileSummary';
+import { divisionsService } from '../../services/request/DivisionsService';
+import { DivisionListItem, TableFilter } from '../../types/OrganizationApiTypes';
+import useFilterStore from '../../../../stores/filterStore';
+import { toFileSummary } from '../../utils/shared/toFileSummary';
 
 // Mapping helpers
 
@@ -52,13 +52,14 @@ interface UseDivisionsReturn {
   updateDivision: (id: string, payload: { name?: string; directorateId?: string; description?: string | null; memoNumber: string; skFile: File; }) => Promise<void>;
   deleteDivision: (id: string, payload: { memoNumber: string; skFile: File; }) => Promise<void>;
   getDropdown: (search?: string) => Promise<{ id: string; division_name: string }[]>;
+  getById: (id: string) => Promise<DivisionListItem | null>;
   setPage: (page: number) => void;
   setPageSize: (pageSize: number) => void;
   setSearch: (search: string) => void;
   setSort: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
 }
 
-export const useDivisions = (): UseDivisionsReturn => {
+export const useApiDivisions = (): UseDivisionsReturn => {
   const [divisions, setDivisions] = useState<DivisionListItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -214,9 +215,20 @@ export const useDivisions = (): UseDivisionsReturn => {
     }
   }, []);
 
-  
-
-  
+  const getById = useCallback(async (id: string): Promise<DivisionListItem | null> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const detail = await divisionsService.getById(id);
+      return mapToDivision(detail.data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to get division');
+      console.error('Error getting division by id:', err);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   return {
     divisions,
@@ -234,10 +246,11 @@ export const useDivisions = (): UseDivisionsReturn => {
     createDivision,
     updateDivision,
     deleteDivision,
+    getDropdown,
+    getById,
     setPage: handleSetPage,
     setPageSize: handleSetPageSize,
     setSearch: handleSetSearch,
     setSort: handleSetSort,
-    getDropdown,
   };
 };

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { EmployeePositionListItem } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
-import { useEmployeePositions } from '../../../hooks/useEmployeePositions';
+import { useEmployeePositions } from '../../employee-positions/useEmployeePositions';
 
 interface UseDeleteEmployeePositionModalParams {
   isOpen: boolean;

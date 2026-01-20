@@ -1,10 +1,8 @@
 import { useState, useCallback } from 'react';
-import { directoratesService } from '../services/request/DirectoratesService';
-import { DirectorateListItem, TableFilter } from '../types/OrganizationApiTypes';
-import useFilterStore from '../../../stores/filterStore';
-// import { formatUrlFile } from '../../../utils/formatUrlFile';
-import type { DirectorateRow } from '../types/OrganizationTableTypes';
-import { toFileSummary } from '../utils/shared/toFileSummary';
+import { directoratesService } from '../../services/request/DirectoratesService';
+import { DirectorateListItem, TableFilter } from '../../types/OrganizationApiTypes';
+import useFilterStore from '../../../../stores/filterStore';
+import { toFileSummary } from '../../utils/shared/toFileSummary';
 
 // Mapping helpers
 
@@ -39,7 +37,6 @@ interface UseDirectoratesReturn {
   page: number;
   pageSize: number;
   totalPages: number;
-  rows: DirectorateRow[];
   filterValue: string;
   search: string;
   sortBy: string;
@@ -55,10 +52,9 @@ interface UseDirectoratesReturn {
   setPageSize: (pageSize: number) => void;
   setSearch: (search: string) => void;
   setSort: (sortBy: string, sortOrder: 'asc' | 'desc'  ) => void;
-  exportToCSV: (filename: string) => void;
 }
 
-export const useDirectorates = (): UseDirectoratesReturn => {
+export const useApiDirectorates = (): UseDirectoratesReturn => {
   const [directorates, setDirectorates] = useState<DirectorateListItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -70,16 +66,6 @@ export const useDirectorates = (): UseDirectoratesReturn => {
   const [sortBy, setSortBy] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
   const filterValue = useFilterStore((s) => s.filters['Direktorat'] ?? '');
-
-  // Map directorates to table rows
-  const rows: DirectorateRow[] = (directorates || []).map((d, idx) => ({
-    no: idx + 1,
-    'direktorat-name': d.name ?? '—',
-    'deskripsi-umum': d.description ?? '—',
-    'file-sk-dan-memo': d.skFile ?? '-',
-    fileUrl: d.skFile?.fileUrl ?? null,
-    raw: d,
-  }));
 
   const fetchDirectorates = useCallback(async (filter?: TableFilter) => {
     setLoading(true);
@@ -104,7 +90,6 @@ export const useDirectorates = (): UseDirectoratesReturn => {
       const payload = (result as any);
       const items = payload?.data?.data ?? [];
       const total = payload?.data?.total ?? (items?.length || 0);
-      // const currentPage = payload?.data?.current_page ?? page;
       const perPage = payload?.data?.per_page ?? pageSize;
       const totalPagesCount = perPage ? Math.ceil(total / perPage) : 1;
       
@@ -226,27 +211,6 @@ export const useDirectorates = (): UseDirectoratesReturn => {
     }
   }, []);
 
-  // Export directorates to CSV
-  const exportToCSV = useCallback((filename: string) => {
-    if (!rows || rows.length === 0) return;
-    const headers = Object.keys(rows[0]).filter(key => key !== 'raw' && key !== 'fileUrl');
-    const csv = [
-      headers.join(','),
-      ...rows.map(r => headers.map(h => JSON.stringify((r as any)[h] ?? '')).join(','))
-    ].join('\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', filename);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  }, [rows]);
-
-  
-
   return {
     directorates,
     loading,
@@ -255,7 +219,6 @@ export const useDirectorates = (): UseDirectoratesReturn => {
     page,
     pageSize,
     totalPages,
-    rows,
     filterValue,
     search,
     sortBy,
@@ -270,6 +233,5 @@ export const useDirectorates = (): UseDirectoratesReturn => {
     setPageSize: handleSetPageSize,
     setSearch: handleSetSearch,
     setSort: handleSetSort,
-    exportToCSV,
   };
 };

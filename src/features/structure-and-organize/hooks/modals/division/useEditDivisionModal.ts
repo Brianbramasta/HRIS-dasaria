@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import type { DivisionListItem, DirectorateDropdown } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
-import { useDivisions } from '../../../hooks/useDivisions';
-import { useDirectorates } from '../../../hooks/useDirectorates';
+import { useDivisions } from '../../division/useDivisions';
+import { useDirectorates } from '../../directorate/useDirectorates';
 
 export function useEditDivisionModal(params: {
   isOpen: boolean;
@@ -30,7 +30,9 @@ export function useEditDivisionModal(params: {
       try {
         const res = await getDirectorateDropdown(directorateSearch);
         setDirectorates(res || []);
-      } catch {}
+      } catch {
+        // ignore
+      }
     }, 500);
     return () => clearTimeout(handler);
   }, [isOpen, directorateSearch, getDirectorateDropdown]);
@@ -59,7 +61,7 @@ export function useEditDivisionModal(params: {
       });
       onSuccess?.();
       onClose();
-    } catch (err) {
+    } catch {
       addNotification({
         variant: 'error',
         title: 'Divisi tidak diupdate',

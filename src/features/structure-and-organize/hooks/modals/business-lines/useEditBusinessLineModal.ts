@@ -25,7 +25,7 @@ export const useEditBusinessLineModal = ({ businessLine, onClose, onSuccess }: A
     }
   }, [businessLine]);
 
-  const handleFileChange = (_e: React.ChangeEvent<HTMLInputElement>) => {};
+  const handleFileChange = () => {};
 
   const handleSubmit = async () => {
     if (!businessLine) return;
@@ -48,7 +48,7 @@ export const useEditBusinessLineModal = ({ businessLine, onClose, onSuccess }: A
       const item = (updated as any)?.data ?? updated;
       onSuccess?.(item as BusinessLineListItem);
       onClose();
-    } catch (err) {
+    } catch {
       addNotification({
         variant: 'error',
         title: 'Lini Bisnis tidak diupdate',

@@ -314,6 +314,7 @@ export function useEditOrganizationHistoryModal({ isOpen, initialData }: Params)
         setPositionOptions((positions || []).map((i: any) => ({ label: i.position_name, value: i.id })));
         setJobTitleOptions((jobTitles || []).map((i: any) => ({ label: i.job_title_name, value: i.id, grade: i.grade })));
       } catch {
+        // ignore
       }
     };
     fetchInitialData();

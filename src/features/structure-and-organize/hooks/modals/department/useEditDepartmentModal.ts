@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import type { DepartmentListItem, DivisionDropdown } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
-import { useDepartments } from '../../../hooks/useDepartments';
-import { useDivisions } from '../../../hooks/useDivisions';
+import { useDepartments } from '../../departement/useDepartments';
+import { useDivisions } from '../../division/useDivisions';
 
 export function useEditDepartmentModal(params: {
   isOpen: boolean;
@@ -59,7 +59,9 @@ export function useEditDepartmentModal(params: {
       try {
         const res = await getDivisionDropdown(divisionSearch);
         setDivisions(res || []);
-      } catch {}
+      } catch {
+        // ignore
+      }
     }, 500);
 
     return () => clearTimeout(handler);
@@ -86,6 +88,7 @@ export function useEditDepartmentModal(params: {
       onSuccess?.();
       onClose();
     } catch {
+      // ignore
     } finally {
       setSubmitting(false);
     }

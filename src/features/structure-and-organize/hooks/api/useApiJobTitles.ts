@@ -1,10 +1,9 @@
 // Penyesuaian hooks Jabatan agar sesuai kontrak API 1.7 (job-title)
 import { useState, useCallback } from 'react';
-import { positionsService } from '../services/request/PositionService';
-import { PositionListItem, TableFilter } from '../types/OrganizationApiTypes';
-import useFilterStore from '../../../stores/filterStore';
-import { toFileSummary } from '../utils/shared/index';
-
+import { positionsService } from '../../services/request/PositionService';
+import { PositionListItem, TableFilter } from '../../types/OrganizationApiTypes';
+import useFilterStore from '../../../../stores/filterStore';
+import { toFileSummary } from '../../utils/shared/index';
 
 export const mapToPosition = (item: any): PositionListItem => {
   const structuralJobs: string[] = [];
@@ -68,7 +67,7 @@ const toSortField = (field?: string): string => {
   return map[field || ''] || 'job_title_name';
 };
 
-interface UsePositionsReturn {
+interface UseApiJobTitlesReturn {
   positions: PositionListItem[];
   loading: boolean;
   error: string | null;
@@ -94,7 +93,7 @@ interface UsePositionsReturn {
   setSort: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
 }
 
-export const usePositions = (): UsePositionsReturn => {
+export const useApiJobTitles = (): UseApiJobTitlesReturn => {
   const [positions, setPositions] = useState<PositionListItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

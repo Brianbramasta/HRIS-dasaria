@@ -72,7 +72,7 @@ export function useEmployeeCount() {
       { name: "W&L", data: [6, 5, 4, 5, 4, 5, 6, 5, 2, 3, 5, 6] },
       { name: "BS", data: [5, 4, 3, 4, 3, 4, 5, 4, 1, 2, 4, 5] },
     ],
-    [directorate, division, department, unit, year]
+    []
   );
 
   const colors = [

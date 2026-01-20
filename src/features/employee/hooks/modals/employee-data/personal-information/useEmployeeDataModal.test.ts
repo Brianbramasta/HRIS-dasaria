@@ -1,6 +1,7 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { useEmployeeDataModal } from './useEmployeeDataModal';
 import { employeeMasterDataService } from '@/features/employee/services/EmployeeMasterData.service';
+import { getStructuralJobDropdownOptions } from '@/features/employee/hooks/employee-data/form/useFormulirKaryawan';
 
 // Mock dependencies
 jest.mock('react-router-dom', () => ({
@@ -207,8 +208,7 @@ describe('useEmployeeDataModal', () => {
     const mockJobTitles = [{ id: 'j1', job_title_name: 'Manager', grade: 'GR-1' }];
     
     (employeeMasterDataService.getJobTitleDropdown as jest.Mock).mockResolvedValue(mockJobTitles);
-    const { getStructuralJobDropdownOptions } = require('@/features/employee/hooks/employee-data/form/useFormulirKaryawan');
-    getStructuralJobDropdownOptions.mockResolvedValue(mockStructuralJobs);
+    (getStructuralJobDropdownOptions as jest.Mock).mockResolvedValue(mockStructuralJobs);
 
     // Trigger load job titles
     act(() => {

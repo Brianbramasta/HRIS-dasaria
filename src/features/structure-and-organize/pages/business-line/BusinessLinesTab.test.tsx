@@ -1,4 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { useState } from 'react';
 import BusinessLinesTab from './BusinessLinesTab';
 import { useBusinessLines } from '../../Index';
 
@@ -132,42 +133,81 @@ describe('BusinessLinesTab', () => {
       skFile: null,
     });
 
-    mockedUseBusinessLines.mockReturnValue({
-      businessLines: [
-        {
-          id: '1',
-          name: 'Lini Bisnis 1',
-          description: 'Deskripsi 1',
-          memoNumber: 'MEMO-001',
-          skFile: null,
+    mockedUseBusinessLines.mockImplementation(() => {
+      const [addOpen, setAddOpen] = useState(false);
+      const [editOpen, setEditOpen] = useState(false);
+      const [deleteOpen, setDeleteOpen] = useState(false);
+      const [selected, setSelected] = useState<any>(null);
+      
+      return {
+        businessLines: [
+          {
+            id: '1',
+            name: 'Lini Bisnis 1',
+            description: 'Deskripsi 1',
+            memoNumber: 'MEMO-001',
+            skFile: null,
+          },
+        ],
+        fetchBusinessLines,
+        loading: false,
+        total: 1,
+        page: 1,
+        pageSize: 10,
+        totalPages: 1,
+        rows_column: [
+          {
+            id: '1',
+            no: 1,
+            'lini-bisnis': 'Lini Bisnis 1',
+            'deskripsi-umum': 'Deskripsi 1',
+            'file-sk-dan-memo': 'Detail',
+            raw: { id: '1', name: 'Lini Bisnis 1' }
+          },
+        ],
+        setSearch,
+        setPage,
+        setPageSize,
+        setSort,
+        getById,
+        createBusinessLine: jest.fn(),
+        updateBusinessLine: jest.fn(),
+        deleteBusinessLine: jest.fn(),
+        getDetail: jest.fn(),
+        getDropdown: jest.fn(),
+        
+        // Mock modal states
+        addModal: { isOpen: addOpen, openModal: () => setAddOpen(true), closeModal: () => setAddOpen(false) },
+        editModal: { isOpen: editOpen, openModal: () => setEditOpen(true), closeModal: () => setEditOpen(false) },
+        deleteModal: { isOpen: deleteOpen, openModal: () => setDeleteOpen(true), closeModal: () => setDeleteOpen(false) },
+        selected,
+        fileStore: { clearSkFile: clearSkFileMock },
+        handleAddOpen: () => setAddOpen(true),
+        handleEditOpen: async (row: any) => { 
+          const detail = await getById('1');
+          setSelected(detail || row.raw || row);
+          setEditOpen(true); 
         },
-      ],
-      fetchBusinessLines,
-      loading: false,
-      total: 1,
-      page: 1,
-      pageSize: 10,
-      totalPages: 1,
-      rows_column: [
-        {
-          id: '1',
-          no: 1,
-          'lini-bisnis': 'Lini Bisnis 1',
-          'deskripsi-umum': 'Deskripsi 1',
-          'file-sk-dan-memo': 'Detail',
+        handleDeleteOpen: (row: any) => {
+          setSelected(row.raw || row);
+          setDeleteOpen(true);
         },
-      ],
-      setSearch,
-      setPage,
-      setPageSize,
-      setSort,
-      getById,
-      createBusinessLine: jest.fn(),
-      updateBusinessLine: jest.fn(),
-      deleteBusinessLine: jest.fn(),
-      getDetail: jest.fn(),
-      getDropdown: jest.fn(),
-    } as any);
+        handleClose: () => { 
+          setAddOpen(false); 
+          setEditOpen(false); 
+          setDeleteOpen(false); 
+          setSelected(null);
+          clearSkFileMock();
+        },
+        handleSuccess: () => {
+          fetchBusinessLines();
+          setAddOpen(false);
+          setEditOpen(false);
+          setDeleteOpen(false);
+          setSelected(null);
+        },
+      } as any;
+    });
   };
 
   beforeEach(() => {
@@ -204,9 +244,9 @@ describe('BusinessLinesTab', () => {
 
     await waitFor(() => {
       expect(getById).toHaveBeenCalledWith('1');
+      expect(screen.getByTestId('edit-modal')).toBeInTheDocument();
     });
 
-    expect(screen.getByTestId('edit-modal')).toBeInTheDocument();
     expect(screen.getByTestId('edit-modal-name')).toHaveTextContent(
       'Detail Lini Bisnis'
     );

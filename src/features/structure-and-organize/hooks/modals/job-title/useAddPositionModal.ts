@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
-import { usePositions } from '../../../hooks/useJobTitle';
+import { usePositions } from '../../job-tittle/useJobTitle';
 
 interface UseAddPositionModalParams {
   isOpen: boolean;

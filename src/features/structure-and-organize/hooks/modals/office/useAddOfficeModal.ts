@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
-import { useOffices } from '../../../hooks/useOffices';
-import { useCompanies } from '../../../hooks/useCompanies';
+import { useOffices } from '../../office/useOffices';
+import { useCompanies } from '../../company/useCompanies';
 
 export function useAddOfficeModal(isOpen: boolean, onClose: () => void, onSuccess?: () => void) {
   const [name, setName] = useState('');
@@ -22,7 +22,7 @@ export function useAddOfficeModal(isOpen: boolean, onClose: () => void, onSucces
       try {
         const res = await getCompanyDropdown(companySearch || undefined);
         setCompanyOptions((res || []).map((c: any) => ({ value: c.id, text: c.company_name ?? c.name ?? '' })));
-      } catch (e) {
+      } catch {
         setCompanyOptions([]);
       }
     }, 400);
@@ -71,7 +71,7 @@ export function useAddOfficeModal(isOpen: boolean, onClose: () => void, onSucces
       setDescription('');
       useFileStore.getState().clearSkFile();
       onClose();
-    } catch (err) {
+    } catch {
       addNotification({
         variant: 'error',
         title: 'Office tidak ditambahkan',

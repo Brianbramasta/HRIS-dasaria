@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useDepartments } from '../../useDepartments';
+import { useDepartments } from '../../departement/useDepartments';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
 import type { UnitRow } from '../../useUnits';
@@ -62,7 +62,7 @@ export const useEditUnitModal = ({ isOpen, onClose, unit, onSuccess }: UseEditUn
              setDepartmentId(data.department_id);
           }
         }
-      } catch (err) {
+      } catch {
         addNotification({
           variant: 'error',
           title: 'Gagal mengambil data',
@@ -144,7 +144,7 @@ export const useEditUnitModal = ({ isOpen, onClose, unit, onSuccess }: UseEditUn
 
       onSuccess?.();
       onClose();
-    } catch (error) {
+    } catch {
       // Error handled by hook
     }
   };

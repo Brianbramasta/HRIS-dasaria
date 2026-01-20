@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react';
-import { employeePositionsService } from '../services/request/EmployeePositionsService';
-import { EmployeePositionListItem, TableFilter } from '../types/OrganizationApiTypes';
-import useFilterStore from '../../../stores/filterStore';
-import { toFileSummary } from '../utils/shared/toFileSummary';
+import { employeePositionsService } from '../../services/request/EmployeePositionsService';
+import { EmployeePositionListItem, TableFilter } from '../../types/OrganizationApiTypes';
+import useFilterStore from '../../../../stores/filterStore';
+import { toFileSummary } from '../../utils/shared/toFileSummary';
 
 // Mapping helpers
 
@@ -80,10 +80,15 @@ interface UseEmployeePositionsReturn {
   setPageSize: (pageSize: number) => void;
   setSearch: (search: string) => void;
   setSort: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
+  // Expose state for hooks
+  search: string;
+  sortBy: string;
+  sortOrder: 'asc' | 'desc';
+  filterValue: string;
 }
 
 // Penyesuaian besar: hooks Posisi Pegawai disesuaikan untuk pagination eksternal DataTable
-export const useEmployeePositions = (): UseEmployeePositionsReturn => {
+export const useApiEmployeePositions = (): UseEmployeePositionsReturn => {
   const [employeePositions, setEmployeePositions] = useState<EmployeePositionListItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -180,7 +185,7 @@ export const useEmployeePositions = (): UseEmployeePositionsReturn => {
     } finally {
       setLoading(false);
     }
-  }, [page, pageSize, search, sortBy, sortOrder, filterValue, fetchEmployeePositions]);
+  }, [fetchEmployeePositions]);
 
   // Dokumentasi: updateEmployeePosition - kirim File asli via service
   const updateEmployeePosition = useCallback(async (id: string, employeePositionData: {
@@ -304,5 +309,9 @@ export const useEmployeePositions = (): UseEmployeePositionsReturn => {
     setPageSize: handleSetPageSize,
     setSearch: handleSetSearch,
     setSort: handleSetSort,
+    search,
+    sortBy,
+    sortOrder,
+    filterValue
   };
 };

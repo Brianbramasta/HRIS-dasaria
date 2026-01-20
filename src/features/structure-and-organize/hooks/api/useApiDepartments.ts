@@ -1,9 +1,9 @@
 // Penyesuaian hooks Departemen agar sesuai kontrak API 1.7 (departments)
 import { useState, useCallback } from 'react';
-import { departmentsService } from '../services/request/DepartmentsService';
-import { DepartmentListItem, TableFilter } from '../types/OrganizationApiTypes';
-import useFilterStore from '../../../stores/filterStore';
-import { toFileSummary } from '../utils/shared/toFileSummary';
+import { departmentsService } from '../../services/request/DepartmentsService';
+import { DepartmentListItem, TableFilter } from '../../types/OrganizationApiTypes';
+import useFilterStore from '../../../../stores/filterStore';
+import { toFileSummary } from '../../utils/shared/toFileSummary';
 
 // Mapping helpers
 
@@ -57,7 +57,7 @@ interface UseDepartmentsReturn {
   setSort: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
 }
 
-export const useDepartments = (): UseDepartmentsReturn => {
+export const useApiDepartments = (): UseDepartmentsReturn => {
   const [departments, setDepartments] = useState<DepartmentListItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

@@ -1,15 +1,16 @@
-import { renderHook, act } from '@testing-library/react';
-import { useCompanies, mapToCompanyDetail } from './useCompanies';
-import { companiesService } from '../services/request/CompaniesService';
-import useFilterStore from '../../../stores/filterStore';
-import type { CompanyDetailResponse } from '../types/OrganizationApiTypes';
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { useCompanies } from './useCompanies';
+import { mapToCompanyDetail } from '../api/useApiCompanies';
+import { companiesService } from '../../services/request/CompaniesService';
+import useFilterStore from '../../../../stores/filterStore';
+import type { CompanyDetailResponse } from '../../types/OrganizationApiTypes';
 
-jest.mock('../../../services/api', () => ({
+jest.mock('../../../../services/api', () => ({
   apiService: {},
 }));
-jest.mock('../services/request/CompaniesService');
-jest.mock('../../../stores/filterStore');
-jest.mock('../utils/shared/toFileSummary', () => ({
+jest.mock('../../services/request/CompaniesService');
+jest.mock('../../../../stores/filterStore');
+jest.mock('../../utils/shared/toFileSummary', () => ({
   toFileSummary: (url: string | null) => (url ? { name: 'mock-sk', url } : null),
 }));
 
@@ -25,8 +26,14 @@ describe('hook useCompanies - perusahaan', () => {
     });
   });
 
-  it('harus menginisialisasi state default dengan benar', () => {
+  it('harus menginisialisasi state default dengan benar', async () => {
+    mockCompaniesService.getList.mockResolvedValue({
+      data: { data: [], total: 0, per_page: 10, last_page: 1 },
+    } as any);
+
     const { result } = renderHook(() => useCompanies());
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
 
     expect(result.current.companies).toEqual([]);
     expect(result.current.loading).toBe(false);
@@ -34,7 +41,7 @@ describe('hook useCompanies - perusahaan', () => {
     expect(result.current.total).toBe(0);
     expect(result.current.page).toBe(1);
     expect(result.current.pageSize).toBe(10);
-    expect(result.current.totalPages).toBe(0);
+    expect(result.current.totalPages).toBe(1);
     expect(result.current.search).toBe('');
     expect(result.current.sortBy).toBe('');
     expect(result.current.sortOrder).toBeNull();
@@ -58,13 +65,11 @@ describe('hook useCompanies - perusahaan', () => {
         last_page: 1,
       },
     };
-    mockCompaniesService.getList.mockResolvedValueOnce(mockResponse as any);
+    mockCompaniesService.getList.mockResolvedValue(mockResponse as any);
 
     const { result } = renderHook(() => useCompanies());
 
-    await act(async () => {
-      await result.current.fetchCompanies();
-    });
+    await waitFor(() => expect(result.current.loading).toBe(false));
 
     expect(mockCompaniesService.getList).toHaveBeenCalledWith(
       expect.objectContaining({ page: 1, per_page: 10 }),
@@ -88,15 +93,13 @@ describe('hook useCompanies - perusahaan', () => {
       const state = { filters: { Perusahaan: 'aktif' } };
       return selector(state);
     });
-    mockCompaniesService.getList.mockResolvedValueOnce({
+    mockCompaniesService.getList.mockResolvedValue({
       data: { data: [], total: 0, per_page: 10, last_page: 1 },
     } as any);
 
     const { result } = renderHook(() => useCompanies());
 
-    await act(async () => {
-      await result.current.fetchCompanies();
-    });
+    await waitFor(() => expect(result.current.loading).toBe(false));
 
     expect(mockCompaniesService.getList).toHaveBeenCalledWith(
       expect.objectContaining({ filter: 'aktif' }),
@@ -108,9 +111,7 @@ describe('hook useCompanies - perusahaan', () => {
 
     const { result } = renderHook(() => useCompanies());
 
-    await act(async () => {
-      await result.current.fetchCompanies();
-    });
+    await waitFor(() => expect(result.current.loading).toBe(false));
 
     expect(result.current.loading).toBe(false);
     expect(result.current.error).toBe('Gagal ambil data');
@@ -153,11 +154,12 @@ describe('hook useCompanies - perusahaan', () => {
       },
     };
     mockCompaniesService.create.mockResolvedValueOnce(mockCreateResponse as any);
-    mockCompaniesService.getList.mockResolvedValueOnce({
+    mockCompaniesService.getList.mockResolvedValue({
       data: { data: [], total: 0, per_page: 10, last_page: 1 },
     } as any);
 
     const { result } = renderHook(() => useCompanies());
+    await waitFor(() => expect(result.current.loading).toBe(false));
 
     let created: any = null;
     await act(async () => {
@@ -172,8 +174,12 @@ describe('hook useCompanies - perusahaan', () => {
 
   it('harus mengatur error ketika createCompany gagal', async () => {
     mockCompaniesService.create.mockRejectedValueOnce(new Error('Gagal membuat perusahaan'));
+    mockCompaniesService.getList.mockResolvedValue({
+        data: { data: [], total: 0, per_page: 10, last_page: 1 },
+      } as any);
 
     const { result } = renderHook(() => useCompanies());
+    await waitFor(() => expect(result.current.loading).toBe(false));
 
     let created: any = null;
     await act(async () => {
@@ -206,11 +212,12 @@ describe('hook useCompanies - perusahaan', () => {
       },
     };
     mockCompaniesService.update.mockResolvedValueOnce(mockUpdateResponse as any);
-    mockCompaniesService.getList.mockResolvedValueOnce({
+    mockCompaniesService.getList.mockResolvedValue({
       data: { data: [], total: 0, per_page: 10, last_page: 1 },
     } as any);
 
     const { result } = renderHook(() => useCompanies());
+    await waitFor(() => expect(result.current.loading).toBe(false));
 
     let updated: any = null;
     await act(async () => {
@@ -231,11 +238,12 @@ describe('hook useCompanies - perusahaan', () => {
       },
     };
     mockCompaniesService.delete.mockResolvedValueOnce(mockDeleteResponse as any);
-    mockCompaniesService.getList.mockResolvedValueOnce({
+    mockCompaniesService.getList.mockResolvedValue({
       data: { data: [], total: 0, per_page: 10, last_page: 1 },
     } as any);
 
     const { result } = renderHook(() => useCompanies());
+    await waitFor(() => expect(result.current.loading).toBe(false));
 
     let success = false;
     await act(async () => {
@@ -249,8 +257,12 @@ describe('hook useCompanies - perusahaan', () => {
 
   it('harus mengembalikan false ketika deleteCompany gagal', async () => {
     mockCompaniesService.delete.mockRejectedValueOnce(new Error('Gagal hapus'));
+    mockCompaniesService.getList.mockResolvedValue({
+        data: { data: [], total: 0, per_page: 10, last_page: 1 },
+      } as any);
 
     const { result } = renderHook(() => useCompanies());
+    await waitFor(() => expect(result.current.loading).toBe(false));
 
     let success = true;
     await act(async () => {

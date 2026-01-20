@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import type { OfficeListItem } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
-import { useOffices } from '../../../hooks/useOffices';
-import { useCompanies } from '../../../hooks/useCompanies';
+import { useOffices } from '../../office/useOffices';
+import { useCompanies } from '../../company/useCompanies';
 
 export function useEditOfficeModal(
   isOpen: boolean,
@@ -45,10 +45,12 @@ export function useEditOfficeModal(
             const detail = await getCompanyDetail(id);
             opts.push({ value: id, text: detail.company.name });
           } catch {
+            // ignore
           }
         }
         setCompanyOptions(opts);
       } catch {
+        // ignore
       }
     })();
   }, [isOpen, office, getById, getCompanyDropdown, getCompanyDetail]);
@@ -87,7 +89,8 @@ export function useEditOfficeModal(
       });
       onSuccess?.();
       onClose();
-    } catch {
+    } catch (error) {
+      console.error(error);
       addNotification({
         variant: 'error',
         title: 'Office tidak diupdate',

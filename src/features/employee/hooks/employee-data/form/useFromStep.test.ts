@@ -311,7 +311,7 @@ describe('useFromStep Hooks', () => {
 
     it('mengambil data divisi ketika direktorat dipilih', async () => {
       // Setup dynamic store behavior
-      let currentStep3Data = { ...mockStep3Data, direktorat: 'dir1' };
+      const currentStep3Data = { ...mockStep3Data, direktorat: 'dir1' };
       (useFormulirKaryawanStore as unknown as jest.Mock).mockImplementation(() => ({
         formData: { step3Employee: currentStep3Data },
         updateStep3Employee: mockUpdateStep3Employee,

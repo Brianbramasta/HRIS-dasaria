@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOffices } from '../../../useOffices';
+import { useOffices } from '../../../office/useOffices';
 import { addNotification } from '@/stores/notificationStore';
 import { useFileStore } from '@/stores/fileStore';
 

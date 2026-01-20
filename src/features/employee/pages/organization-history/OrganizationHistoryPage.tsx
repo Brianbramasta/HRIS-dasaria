@@ -4,9 +4,9 @@ import Button from '@/components/ui/button/Button';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { ChevronDown } from 'react-feather';
 import EditRiwayatOrganisasiModal from '@/features/employee/components/modals/organization-history/EditOrganizationHistoryModal';
-import { IconPencil, IconFileDetail } from '@/icons/components/icons';
-import { useMemo, useCallback } from 'react';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { IconPencil, IconFileDetail } from '@/icons/components/icons';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 
 type OrgHistoryListRow = OrganizationChangeItem & { statusPerubahan: string };
@@ -40,14 +40,6 @@ export default function OrganizationHistoryPage() {
     // setIsEditOrgOpen,
     detail,
   } = useOrganizationHistory();
-
-  // Format date helper
-  const formatDate = useCallback((iso: string) => {
-    if (!iso) return '-';
-    const d = new Date(iso);
-    const fmt = new Intl.DateTimeFormat('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-    return fmt.format(d);
-  }, []);
 
   // Define columns
   const columns: DataTableColumn<OrgHistoryListRow>[] = useMemo(
@@ -124,7 +116,7 @@ export default function OrganizationHistoryPage() {
         },
       },
     ],
-    [data, formatDate]
+    [data]
   );
 
   // Define actions

@@ -14,7 +14,7 @@ export const useDeleteBusinessLineModal = ({ businessLine, onClose, onSuccess }:
   const [submitting, setSubmitting] = useState(false);
   const skFile = useFileStore((s) => s.skFile);
 
-  const handleFileChange = (_e: React.ChangeEvent<HTMLInputElement>) => {};
+  const handleFileChange = () => {};
 
   const handleDelete = async () => {
     if (!businessLine) return;
@@ -39,7 +39,7 @@ export const useDeleteBusinessLineModal = ({ businessLine, onClose, onSuccess }:
       await businessLinesService.delete(businessLine.id, formData);
       onSuccess?.();
       onClose();
-    } catch (err) {
+    } catch {
       addNotification({
         variant: 'error',
         title: 'Lini Bisnis tidak dihapus',

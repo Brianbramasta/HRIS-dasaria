@@ -183,6 +183,6 @@ import Form from '../../../../../components/form/Form';
 import Input from '../../../../../components/form/input/InputField';
 import DatePicker from '../../../../../components/form/date-picker';
 import Select from '../../../../../components/form/Select';
-import { useDepartments } from '../../../../structure-and-organize/hooks/useDepartments';
-import { usePositions } from '../../../../structure-and-organize/hooks/useJobTitle';
+import { useDepartments } from '../../../../structure-and-organize/hooks/departement/useDepartments';
+import { usePositions } from '../../../../structure-and-organize/hooks/job-tittle/useJobTitle';
 import { IconShare } from '@/icons/components/icons';

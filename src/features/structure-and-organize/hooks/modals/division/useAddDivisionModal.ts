@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import type { DirectorateDropdown } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
-import { useDivisions } from '../../../hooks/useDivisions';
-import { useDirectorates } from '../../../hooks/useDirectorates';
+import { useDivisions } from '../../division/useDivisions';
+import { useDirectorates } from '../../directorate/useDirectorates';
 
 export function useAddDivisionModal(params: { isOpen: boolean; onClose: () => void; onSuccess?: () => void }) {
   const { isOpen, onClose, onSuccess } = params;
@@ -25,7 +25,9 @@ export function useAddDivisionModal(params: { isOpen: boolean; onClose: () => vo
       try {
         const res = await getDirectorateDropdown(directorateSearch);
         setDirectorates(res || []);
-      } catch {}
+      } catch {
+        // ignore
+      }
     }, 500);
     return () => clearTimeout(handler);
   }, [isOpen, directorateSearch, getDirectorateDropdown]);
@@ -64,7 +66,7 @@ export function useAddDivisionModal(params: { isOpen: boolean; onClose: () => vo
       });
       onSuccess?.();
       onClose();
-    } catch (err) {
+    } catch {
       addNotification({
         variant: 'error',
         title: 'Divisi tidak ditambahkan',
