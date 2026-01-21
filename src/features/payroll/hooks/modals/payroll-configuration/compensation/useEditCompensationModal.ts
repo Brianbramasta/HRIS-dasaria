@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 export type EditKompensasiForm = {
   levelJabatan?: string;
+  jabatanStruktural?: string;
   kategori?: string;
   general?: string;
   junior?: string;
@@ -51,7 +52,23 @@ export const useEditCompensationModal = (params: {
   };
 
   const setNominal = (key: keyof EditKompensasiForm, rawValue: string) => {
-    setForm((prev) => ({ ...prev, [key]: formatRupiah(rawValue) }));
+    setForm((prev) => {
+      const updated = { ...prev, [key]: formatRupiah(rawValue) };
+      
+      // Logika eksklusif: Jika input General diisi, kosongkan Junior/Middle/Senior
+      if (key === 'general' && rawValue) {
+        updated.junior = '';
+        updated.middle = '';
+        updated.senior = '';
+      }
+      
+      // Jika input Junior/Middle/Senior diisi, kosongkan General
+      if ((key === 'junior' || key === 'middle' || key === 'senior') && rawValue) {
+        updated.general = '';
+      }
+      
+      return updated;
+    });
   };
 
   const handleSubmit = () => {

@@ -1,29 +1,33 @@
 // Dokumentasi: Tabel Kompensasi menggunakan DataTable dengan kolom No., Level Jabatan, Kategori, General, Junior, Middle, Senior, dan Aksi
 // Dokumentasi: Integrasi Modal EditKompensasiModal - buka saat tombol edit diklik
-import { useMemo, useState } from 'react';
 import { DataTable, type DataTableColumn, type DataTableAction } from '@/components/shared/datatable/DataTable';
 // import { Edit } from 'react-feather';
 import { IconPencil } from '@/icons/components/icons';
-import EditKompensasiModal, { type EditKompensasiForm } from '@/features/payroll/components/modals/payroll-configuration/compensation/editCompensationModal';
-
-type CompensationRow = {
-  no?: number;
-  'level-jabatan': string;
-  kategori: string;
-  general: string;
-  junior: string;
-  middle: string;
-  senior: string;
-};
+import EditKompensasiModal from '@/features/payroll/components/modals/payroll-configuration/compensation/editCompensationModal';
+import { useCompensation, CompensationRow } from '@/features/payroll/hooks/payroll-configuration/compensation/useCompensation';
 
 export default function KompensasiPage() {
-  // Dokumentasi: State kendali modal edit kompensasi
-  const [showEdit, setShowEdit] = useState(false);
-  const [rowToEdit, setRowToEdit] = useState<EditKompensasiForm | null>(null);
+  const {
+    rows,
+    loading,
+    total,
+    page,
+    pageSize,
+    setSearch,
+    setPage,
+    setPageSize,
+    setSort,
+    editModal,
+    initialFormData,
+    handleEditOpen,
+    handleEditClose,
+    handleEditSubmit,
+  } = useCompensation();
+
   // Dokumentasi: util sederhana untuk ekspor data ke CSV mengikuti pola halaman lain
   const exportCSV = (filename: string, data: any[]) => {
     if (!data || data.length === 0) return;
-    const headers = Object.keys(data[0]);
+    const headers = Object.keys(data[0]).filter(k => k !== 'raw' && k !== 'id');
     const csv = [headers.join(','), ...data.map(r => headers.map(h => JSON.stringify((r as any)[h] ?? '')).join(','))].join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -49,35 +53,11 @@ export default function KompensasiPage() {
     {
       label: '',
       icon: <IconPencil  />,
-      onClick: (row) => {
-        // Dokumentasi: Buka modal edit dengan data baris
-        setRowToEdit({
-          levelJabatan: row['level-jabatan'],
-          kategori: row.kategori,
-          general: row.general,
-          junior: row.junior,
-          middle: row.middle,
-          senior: row.senior,
-        });
-        setShowEdit(true);
-      },
+      onClick: (row) => handleEditOpen(row.raw),
       variant: 'outline',
       className: 'border-0',
     },
   ];
-
-  const rows: CompensationRow[] = useMemo(() => (
-    [
-      { 'level-jabatan': 'Direktur', kategori: 'Gaji Pokok', general: '-', junior: '3.524.238', middle: '3.524.238', senior: '5.000.000' },
-      { 'level-jabatan': 'Manager', kategori: 'Gaji Pokok', general: '-', junior: '4.100.000', middle: '4.100.000', senior: '5.000.000' },
-      { 'level-jabatan': 'Supervisor', kategori: 'Gaji Pokok', general: '-', junior: '3.524.238', middle: '3.524.238', senior: '5.000.000' },
-      { 'level-jabatan': 'Senior Officer', kategori: 'Gaji Pokok', general: '-', junior: '3.524.238', middle: '3.524.238', senior: '5.000.000' },
-      { 'level-jabatan': 'Officer', kategori: 'Gaji Pokok', general: '-', junior: '4.000.000', middle: '4.000.000', senior: '5.000.000' },
-      { 'level-jabatan': 'Entry Level', kategori: 'Gaji Pokok', general: '-', junior: '5.000.000', middle: '5.000.000', senior: '5.000.000' },
-      { 'level-jabatan': 'Under Staff - Internship', kategori: 'Uang Saku', general: '-', junior: '2.000.000', middle: '2.000.000', senior: '3.000.000' },
-      { 'level-jabatan': 'Under Staff - PKL', kategori: 'Uang Saku', general: '1.000.000', junior: '-', middle: '-', senior: '-' },
-    ]
-  ), []);
 
   return (
     <div className="p-4">
@@ -86,21 +66,26 @@ export default function KompensasiPage() {
         data={rows}
         columns={columns}
         actions={actions}
+        loading={loading}
+        pageSize={pageSize}
+        useExternalPagination
+        externalPage={page}
+        externalTotal={total}
         searchable
         filterable
+        onSearchChange={(val) => setSearch(val)}
+        onSortChange={(columnId, order) => setSort(columnId, order)}
+        onPageChangeExternal={(p) => setPage(p)}
+        onRowsPerPageChangeExternal={(ps) => setPageSize(ps)}
         onExport={() => exportCSV('kompensasi.csv', rows)}
       />
       {/* Dokumentasi: Render modal edit kompensasi ketika state showEdit true */}
       <EditKompensasiModal
-        isOpen={showEdit}
-        initialData={rowToEdit}
-        onClose={() => { setShowEdit(false); setRowToEdit(null); }}
-        onSubmit={(data) => {
-          // Dokumentasi: Simpan perubahan (sementara: log). Integrasi API atau state update di masa depan.
-          console.log('simpan perubahan kompensasi', data);
-          setShowEdit(false);
-          setRowToEdit(null);
-        }}
+        isOpen={editModal.isOpen}
+        initialData={initialFormData}
+        onClose={handleEditClose}
+        onSubmit={handleEditSubmit}
+        submitting={loading}
       />
     </div>
   );
