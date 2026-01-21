@@ -25,8 +25,14 @@ const mapToCompensationListItem = (item: any): CompensationListItem => ({
 const toSortField = (field?: string): string => {
   const map: Record<string, string> = {
     jobTitleName: 'job_title_name',
+    'level-jabatan': 'job_title_name',
     structuralJobName: 'mt_structural_job_name',
     categoryCompensation: 'category_compensation',
+    kategori: 'category_compensation',
+    general: 'amount_general',
+    junior: 'amount_junior',
+    middle: 'amount_middle',
+    senior: 'amount_senior',
   };
   return map[field || ''] || field || 'created_at';
 };

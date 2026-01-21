@@ -3,9 +3,11 @@ import { useApiCompensation } from '../../api/useApiCompensation';
 import { useModal } from '@/hooks/useModal';
 import { CompensationListItem, CompensationUpdatePayload } from '../../../types/dto/CompensationType';
 import { EditKompensasiForm } from '../../modals/payroll-configuration/compensation/useEditCompensationModal';
-import { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
-import { IconPencil } from '@/icons/components/icons';
-import React from 'react';
+import {
+  formatCurrency,
+  formatCurrencyValue,
+  parseCurrency,
+} from '@/utils/formatCurrency';
 
 // Tipe baris untuk DataTable
 export type CompensationRow = {
@@ -20,26 +22,21 @@ export type CompensationRow = {
   raw: CompensationListItem;
 };
 
-export const useCompensation = () => {
+export const useCompensation = ({ autoFetch = true }: { autoFetch?: boolean } = {}) => {
   const api = useApiCompensation();
   const editModal = useModal(false);
   const [selected, setSelected] = useState<CompensationListItem | null>(null);
 
-  // Auto fetch data saat mount
+  const { fetchCompensations } = api;
+
+  // Auto fetch data saat mount atau saat parameter berubah (server-side)
   useEffect(() => {
-    api.fetchCompensations();
-  }, []);
+    if (autoFetch) {
+      fetchCompensations();
+    }
+  }, [fetchCompensations, autoFetch]);
 
-  // Helper formatting
-  const formatCurrency = (val: number | null) => {
-    if (val === null || val === undefined) return '-';
-    return val.toLocaleString('id-ID');
-  };
 
-  const parseCurrency = (val: string | undefined): number | null => {
-    if (!val || val === '-') return null;
-    return parseInt(val.replace(/\./g, ''), 10);
-  };
 
   // Mapping data API ke format DataTable
   const rows: CompensationRow[] = useMemo(() => {
@@ -48,10 +45,10 @@ export const useCompensation = () => {
       no: (api.page - 1) * api.pageSize + index + 1,
       'level-jabatan': item.jobTitleName,
       kategori: item.categoryCompensation,
-      general: formatCurrency(item.amountGeneral),
-      junior: formatCurrency(item.amountJunior),
-      middle: formatCurrency(item.amountMiddle),
-      senior: formatCurrency(item.amountSenior),
+      general: formatCurrencyValue(item.amountGeneral),
+      junior: formatCurrencyValue(item.amountJunior),
+      middle: formatCurrencyValue(item.amountMiddle),
+      senior: formatCurrencyValue(item.amountSenior),
       raw: item,
     }));
   }, [api.compensations, api.page, api.pageSize]);
@@ -63,10 +60,10 @@ export const useCompensation = () => {
       levelJabatan: selected.jobTitleName,
       jabatanStruktural: selected.structuralJobs?.map(s => s.structuralJobName).join(', ') || selected.structuralJobName || '',
       kategori: selected.categoryCompensation,
-      general: selected.amountGeneral !== null ? selected.amountGeneral.toString() : '',
-      junior: selected.amountJunior !== null ? selected.amountJunior.toString() : '',
-      middle: selected.amountMiddle !== null ? selected.amountMiddle.toString() : '',
-      senior: selected.amountSenior !== null ? selected.amountSenior.toString() : '',
+      general: selected.amountGeneral !== null ? formatCurrency(selected.amountGeneral) : '',
+      junior: selected.amountJunior !== null ? formatCurrency(selected.amountJunior) : '',
+      middle: selected.amountMiddle !== null ? formatCurrency(selected.amountMiddle) : '',
+      senior: selected.amountSenior !== null ? formatCurrency(selected.amountSenior) : '',
     };
   }, [selected]);
 
@@ -111,7 +108,7 @@ export const useCompensation = () => {
       amountSenior: parseCurrency(formData.senior),
     };
 
-    const result = await api.updateCompensation(selected.id, payload);
+    await api.updateCompensation(selected.id, payload);
     
     // Jika berhasil (result tidak null atau error tidak ada), tutup modal dan refresh
     // Note: api.updateCompensation return null on error or success with no data mapping, 

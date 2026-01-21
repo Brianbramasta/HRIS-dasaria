@@ -45,6 +45,7 @@ const EditKompensasiModal: React.FC<Props> = ({ isOpen, initialData, onClose, on
           onChange={(e) => handleInput('levelJabatan', e.target.value)}
           placeholder="Nyesuain struktur Organisasi"
           readonly
+          required={true}
         />
 
         <InputField
@@ -52,6 +53,7 @@ const EditKompensasiModal: React.FC<Props> = ({ isOpen, initialData, onClose, on
           value={form.jabatanStruktural || ''}
           placeholder="Nyesuain struktur Organisasi"
           readonly
+          required={true}
         />
 
         <SelectField
@@ -60,6 +62,8 @@ const EditKompensasiModal: React.FC<Props> = ({ isOpen, initialData, onClose, on
           defaultValue={form.kategori || ''}
           onChange={(v) => handleInput('kategori', v)}
           placeholder="Gaji Pokok / Uang Saku"
+
+          required={true}
         />
 
         <InputField
@@ -68,6 +72,7 @@ const EditKompensasiModal: React.FC<Props> = ({ isOpen, initialData, onClose, on
           value={form.general || ''}
           onChange={(e) => setNominal('general', e.target.value)}
           disabled={isLevelFilled}
+          required={!isLevelFilled}
         />
         <InputField
           label="Nominal Junior"
@@ -75,6 +80,7 @@ const EditKompensasiModal: React.FC<Props> = ({ isOpen, initialData, onClose, on
           value={form.junior || ''}
           onChange={(e) => setNominal('junior', e.target.value)}
           disabled={isGeneralFilled}
+          required={!isGeneralFilled}
         />
         <InputField
           label="Nominal Middle"
@@ -82,6 +88,7 @@ const EditKompensasiModal: React.FC<Props> = ({ isOpen, initialData, onClose, on
           value={form.middle || ''}
           onChange={(e) => setNominal('middle', e.target.value)}
           disabled={isGeneralFilled}
+          required={!isGeneralFilled}
         />
         <div className='md:col-span-2'>
           <InputField
@@ -90,6 +97,7 @@ const EditKompensasiModal: React.FC<Props> = ({ isOpen, initialData, onClose, on
           value={form.senior || ''}
           onChange={(e) => setNominal('senior', e.target.value)}
           disabled={isGeneralFilled}
+          required={!isGeneralFilled}
         />
         </div>
         

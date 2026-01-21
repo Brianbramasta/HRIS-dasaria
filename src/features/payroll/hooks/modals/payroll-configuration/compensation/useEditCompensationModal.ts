@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { formatInputCurrency } from '@/utils/formatCurrency';
 
 export type EditKompensasiForm = {
   levelJabatan?: string;
@@ -10,11 +11,6 @@ export type EditKompensasiForm = {
   senior?: string;
 };
 
-const formatRupiah = (val: string) => {
-  const cleaned = (val || '').replace(/[^0-9]/g, '');
-  if (!cleaned) return '';
-  return cleaned.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-};
 
 const LEVEL_JABATAN_OPTIONS = [
   { value: 'Direktur', label: 'Direktur' },
@@ -53,17 +49,18 @@ export const useEditCompensationModal = (params: {
 
   const setNominal = (key: keyof EditKompensasiForm, rawValue: string) => {
     setForm((prev) => {
-      const updated = { ...prev, [key]: formatRupiah(rawValue) };
+      const formatted = formatInputCurrency(rawValue);
+      const updated = { ...prev, [key]: formatted };
       
       // Logika eksklusif: Jika input General diisi, kosongkan Junior/Middle/Senior
-      if (key === 'general' && rawValue) {
+      if (key === 'general' && formatted) {
         updated.junior = '';
         updated.middle = '';
         updated.senior = '';
       }
       
       // Jika input Junior/Middle/Senior diisi, kosongkan General
-      if ((key === 'junior' || key === 'middle' || key === 'senior') && rawValue) {
+      if ((key === 'junior' || key === 'middle' || key === 'senior') && formatted) {
         updated.general = '';
       }
       
