@@ -21,17 +21,21 @@ Response (200 OK):
 {
     "meta": {
         "status": 200,
-        "message": "Success"
+        "message": "Berhasil mendapatkan data potongan MT"
     },
     "data": {
         "current_page": 1,
         "data": [
             {
-                "id": "uuid",
-                "deduction_name": "string",
-                "category": "notfixed"
+                "id": "019be30b-9ebf-7235-9420-a2622f0fefe7",
+                "deduction_name": "tes",
+                "category": "notfixed",
+                "description": "tes"
             }
-        ]
+        ],
+        "per_page": 10,
+        "to": 1,
+        "total": 1
     }
 }
 ```
@@ -53,11 +57,16 @@ Response (201 Created):
 ```json
 {
     "meta": {
-        "status": 201,
-        "message": "Created Success"
+        "status": 200,
+        "message": "Berhasil membuat data potongan MT"
     },
     "data": {
-        "id": "uuid"
+        "deduction_name": "tes",
+        "category": "notfixed",
+        "description": null,
+        "id": "019be54d-7d04-72cb-ac68-b7dd95c4adc3",
+        "updated_at": "2026-01-22T10:43:39.000000Z",
+        "created_at": "2026-01-22T10:43:39.000000Z"
     }
 }
 ```
@@ -74,13 +83,17 @@ Response (200 OK):
 {
     "meta": {
         "status": 200,
-        "message": "Success"
+        "message": "Berhasil mendapatkan data potongan MT berdasarkan ID"
     },
     "data": {
-        "id": "uuid",
-        "deduction_name": "string",
-        "category": "string",
-        "description": "string"
+        "id": "019be30b-9ebf-7235-9420-a2622f0fefe7",
+        "deduction_name": "tes",
+        "category": "notfixed",
+        "description": "tes",
+        "is_active": 1,
+        "deleted_at": null,
+        "created_at": "2026-01-22T00:12:28.000000Z",
+        "updated_at": "2026-01-22T00:17:26.000000Z"
     }
 }
 ```
@@ -102,10 +115,17 @@ Response (200 OK):
 {
     "meta": {
         "status": 200,
-        "message": "Update Success"
+        "message": "Berhasil memperbarui data potongan MT"
     },
     "data": {
-        "id": "uuid"
+        "id": "019be30b-9ebf-7235-9420-a2622f0fefe7",
+        "deduction_name": "tes",
+        "category": "notfixed",
+        "description": "tes",
+        "is_active": 1,
+        "deleted_at": null,
+        "created_at": "2026-01-22T00:12:28.000000Z",
+        "updated_at": "2026-01-22T00:17:26.000000Z"
     }
 }
 ```
@@ -124,7 +144,8 @@ Response (200 OK):
 {
     "meta": {
         "status": 200,
-        "message": "Delete Success"
-    }
+        "message": "Berhasil menghapus data potongan MT"
+    },
+    "data": null
 }
 ```
