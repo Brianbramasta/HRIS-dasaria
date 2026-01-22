@@ -9,6 +9,8 @@ import EditTunjanganTransportasiModal from '@/features/payroll/components/modals
 // Dokumentasi: Integrasi modal Edit/Detail Tunjangan Jabatan & BPJS
 import EditDetailTunjanganJabatanDanBpjsModal from '@/features/payroll/components/modals/payroll-configuration/fixedAllowance/EditPositionAndBPJSAllowanceModal';
 import { useMarriageAllowance } from '@/features/payroll/hooks/payroll-configuration/fixed-allowance/useMarriageAllowance';
+import { useLengthOfServiceAllowance } from '@/features/payroll/hooks/payroll-configuration/fixed-allowance/useLengthOfServiceAllowance';
+import { formatCurrency } from '@/utils/formatCurrency';
 
 export default function TunjanganTetapPage() {
   const jabatanBpjsItems = [
@@ -35,16 +37,15 @@ export default function TunjanganTetapPage() {
     selected: selectedMarriage
   } = useMarriageAllowance();
 
-  // Dokumentasi: state tabel Tunjangan Lama Kerja + handler modal
-  const [lamaKerjaItems, setLamaKerjaItems] = useState([
-    { id: 1, lamaKerja: 'Tahun Ke-1', nominal: '3.524.238' },
-    { id: 2, lamaKerja: 'Tahun Ke-2', nominal: '4.100.000' },
-    { id: 3, lamaKerja: 'Tahun Ke-3', nominal: '3.524.238' },
-    { id: 4, lamaKerja: 'Tahun Ke-4', nominal: '3.524.238' },
-    { id: 5, lamaKerja: 'Tahun Ke-5', nominal: '3.524.238' },
-  ]);
-  const [isEditLamaKerjaOpen, setEditLamaKerjaOpen] = useState(false);
-  const [selectedLamaKerjaIndex, setSelectedLamaKerjaIndex] = useState<number | null>(null);
+  // Dokumentasi: Integrasi hook useLengthOfServiceAllowance untuk Tunjangan Lama Kerja
+  const {
+    lengthOfServiceRows,
+    loading: loadingLengthOfService,
+    editModal: editModalLengthOfService,
+    handleEditOpen: handleEditOpenLengthOfService,
+    handleUpdate: handleUpdateLengthOfService,
+    selected: selectedLengthOfService
+  } = useLengthOfServiceAllowance();
 
   // Dokumentasi: state tabel Tunjangan Transportasi + handler modal
   const [transportasiItems, setTransportasiItems] = useState([
@@ -82,7 +83,7 @@ export default function TunjanganTetapPage() {
             { id: 'statusPernikahan', label: 'Status Pernikahan' },
             { id: 'status', label: 'Status' },
             { id: 'tanggungan', label: 'Tanggungan', align: 'center' },
-            { id: 'nominal', label: 'Nominal', align: 'right', render: (val: any) => `Rp ${Number(val || 0).toLocaleString('id-ID')}` },
+            { id: 'nominal', label: 'Nominal', align: 'right', render: (val: any) => formatCurrency(val || 0) },
           ] as any}
           actions={[{ icon: <IconPencil />, onClick: (row: any) => handleEditOpenMarriage(row) }]}
         />
@@ -90,13 +91,13 @@ export default function TunjanganTetapPage() {
 
       <ExpandCard title="Tunjangan Lama Kerja" withHeaderDivider defaultOpen>
         <DocumentsTable
-          items={lamaKerjaItems as any}
+          items={lengthOfServiceRows as any}
           columns={[
             { id: 'no', label: 'No.', align: 'center', render: (_v: any, _r: any, idx: number) => idx + 1 },
             { id: 'lamaKerja', label: 'Lama Kerja' },
-            { id: 'nominal', label: 'Nominal', align: 'right' },
+            { id: 'nominal', label: 'Nominal', align: 'right', render: (val: any) => formatCurrency(val || 0) },
           ] as any}
-          actions={[{ icon: <IconPencil />, onClick: (row: any) => { const idx = lamaKerjaItems.indexOf(row); setSelectedLamaKerjaIndex(idx >= 0 ? idx : null); setEditLamaKerjaOpen(true); } }]}
+          actions={[{ icon: <IconPencil />, onClick: (row: any) => handleEditOpenLengthOfService(row) }]}
         />
       </ExpandCard>
 
@@ -121,13 +122,11 @@ export default function TunjanganTetapPage() {
         isLoading={loadingMarriage}
       />
       <EditTunjanganLamaKerjaModal
-        isOpen={isEditLamaKerjaOpen}
-        onClose={() => setEditLamaKerjaOpen(false)}
-        defaultValues={selectedLamaKerjaIndex !== null ? lamaKerjaItems[selectedLamaKerjaIndex] : undefined}
-        onSave={(values) => {
-          if (selectedLamaKerjaIndex === null) return;
-          setLamaKerjaItems((prev) => prev.map((r, i) => i === selectedLamaKerjaIndex ? { ...r, ...values } : r));
-        }}
+        isOpen={editModalLengthOfService.isOpen}
+        onClose={editModalLengthOfService.closeModal}
+        defaultValues={selectedLengthOfService as any}
+        onSave={handleUpdateLengthOfService}
+        isLoading={loadingLengthOfService}
       />
       <EditTunjanganTransportasiModal
         isOpen={isEditTransportasiOpen}
