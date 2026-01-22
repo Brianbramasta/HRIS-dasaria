@@ -74,7 +74,7 @@ export default function TunjanganTetapPage() {
                   setPositionMode('detail');
                   handleEditOpenPosition(row);
                 }} 
-                className="flex items-center justify-center"
+                className="flex items-center justify-center w-full"
               >
                 <IconFileDetail />
               </button>
