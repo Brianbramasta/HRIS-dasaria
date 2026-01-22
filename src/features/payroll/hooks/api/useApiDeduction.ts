@@ -87,6 +87,11 @@ export const useApiDeduction = (): UseApiDeductionReturn => {
       const params: any = { page: effectivePage, per_page: effectivePageSize };
       if (effectiveSearch) params.search = effectiveSearch;
       if (effectiveFilter) params.filter = effectiveFilter;
+      // Allow passing category from filter
+      if ((filter as any)?.category) {
+        params.category = (filter as any).category;
+      }
+
       if (effectiveSortBy) {
         params.column = toSortField(effectiveSortBy);
         if (effectiveSortOrder) params.sort = effectiveSortOrder;

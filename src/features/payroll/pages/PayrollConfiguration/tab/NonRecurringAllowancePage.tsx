@@ -63,11 +63,10 @@ export default function NonRecurringAllowancePage() {
       description: values.deskripsiUmum
     };
 
-    let result;
     if (selected) {
-      result = await updateData(selected.id, payload);
+      await updateData(selected.id, payload);
     } else {
-      result = await createData(payload);
+      await createData(payload);
     }
     
     // If successful (assuming no error caught in hook or we check result)
