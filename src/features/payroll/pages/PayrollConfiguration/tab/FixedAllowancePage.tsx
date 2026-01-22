@@ -8,6 +8,7 @@ import EditTunjanganLamaKerjaModal from '@/features/payroll/components/modals/pa
 import EditTunjanganTransportasiModal from '@/features/payroll/components/modals/payroll-configuration/fixedAllowance/EditTransportationAllowanceModal';
 // Dokumentasi: Integrasi modal Edit/Detail Tunjangan Jabatan & BPJS
 import EditDetailTunjanganJabatanDanBpjsModal from '@/features/payroll/components/modals/payroll-configuration/fixedAllowance/EditPositionAndBPJSAllowanceModal';
+import { useMarriageAllowance } from '@/features/payroll/hooks/payroll-configuration/fixed-allowance/useMarriageAllowance';
 
 export default function TunjanganTetapPage() {
   const jabatanBpjsItems = [
@@ -24,19 +25,15 @@ export default function TunjanganTetapPage() {
   const [modeEditDetail, setModeEditDetail] = useState<'detail' | 'edit'>('detail');
   const [selectedJabatanIndex, setSelectedJabatanIndex] = useState<number | null>(null);
 
-  // Dokumentasi: state tabel Tunjangan Pernikahan + handler modal
-  const [pernikahanItems, setPernikahanItems] = useState([
-    { id: 1, statusPernikahan: 'TK/0', status: 'Tidak Menikah', tanggungan: 0, nominal: '3.524.238' },
-    { id: 2, statusPernikahan: 'TK/1', status: 'Tidak Menikah', tanggungan: 1, nominal: '4.100.000' },
-    { id: 3, statusPernikahan: 'TK/2', status: 'Tidak Menikah', tanggungan: 2, nominal: '4.100.000' },
-    { id: 4, statusPernikahan: 'TK/3', status: 'Tidak Menikah', tanggungan: 3, nominal: '3.524.238' },
-    { id: 5, statusPernikahan: 'K/0', status: 'Menikah', tanggungan: 0, nominal: '3.524.238' },
-    { id: 6, statusPernikahan: 'K/1', status: 'Menikah', tanggungan: 1, nominal: '3.524.238' },
-    { id: 7, statusPernikahan: 'K/2', status: 'Menikah', tanggungan: 2, nominal: '3.524.238' },
-    { id: 8, statusPernikahan: 'K/3', status: 'Menikah', tanggungan: 3, nominal: '3.524.238' },
-  ]);
-  const [isEditPernikahanOpen, setEditPernikahanOpen] = useState(false);
-  const [selectedPernikahanIndex, setSelectedPernikahanIndex] = useState<number | null>(null);
+  // Dokumentasi: Integrasi hook useMarriageAllowance untuk Tunjangan Pernikahan
+  const { 
+    marriageAllowanceRows, 
+    loading: loadingMarriage, 
+    editModal: editModalMarriage, 
+    handleEditOpen: handleEditOpenMarriage, 
+    handleUpdate: handleUpdateMarriage,
+    selected: selectedMarriage
+  } = useMarriageAllowance();
 
   // Dokumentasi: state tabel Tunjangan Lama Kerja + handler modal
   const [lamaKerjaItems, setLamaKerjaItems] = useState([
@@ -79,15 +76,15 @@ export default function TunjanganTetapPage() {
 
       <ExpandCard title="Tunjangan Pernikahan" withHeaderDivider defaultOpen>
         <DocumentsTable
-          items={pernikahanItems as any}
+          items={marriageAllowanceRows as any}
           columns={[
             { id: 'no', label: 'No.', align: 'center', render: (_v: any, _r: any, idx: number) => idx + 1 },
             { id: 'statusPernikahan', label: 'Status Pernikahan' },
             { id: 'status', label: 'Status' },
             { id: 'tanggungan', label: 'Tanggungan', align: 'center' },
-            { id: 'nominal', label: 'Nominal', align: 'right' },
+            { id: 'nominal', label: 'Nominal', align: 'right', render: (val: any) => `Rp ${Number(val || 0).toLocaleString('id-ID')}` },
           ] as any}
-          actions={[{ icon: <IconPencil />, onClick: (row: any) => { const idx = pernikahanItems.indexOf(row); setSelectedPernikahanIndex(idx >= 0 ? idx : null); setEditPernikahanOpen(true); } }]}
+          actions={[{ icon: <IconPencil />, onClick: (row: any) => handleEditOpenMarriage(row) }]}
         />
       </ExpandCard>
 
@@ -117,14 +114,11 @@ export default function TunjanganTetapPage() {
       </ExpandCard>
       {/* Dokumentasi: render tiga modal edit dan handler simpan untuk masing-masing section */}
       <EditTunjanganPernikahanModal
-        isOpen={isEditPernikahanOpen}
-        onClose={() => setEditPernikahanOpen(false)}
-        // Dokumentasi: Menyesuaikan tipe defaultValues - tanggungan harus string
-        defaultValues={selectedPernikahanIndex !== null ? { ...pernikahanItems[selectedPernikahanIndex], tanggungan: String(pernikahanItems[selectedPernikahanIndex].tanggungan) } : undefined}
-        onSave={(values) => {
-          if (selectedPernikahanIndex === null) return;
-          setPernikahanItems((prev) => prev.map((r, i) => i === selectedPernikahanIndex ? { ...r, ...values, tanggungan: Number(values.tanggungan) } : r));
-        }}
+        isOpen={editModalMarriage.isOpen}
+        onClose={editModalMarriage.closeModal}
+        defaultValues={selectedMarriage}
+        onSave={handleUpdateMarriage}
+        isLoading={loadingMarriage}
       />
       <EditTunjanganLamaKerjaModal
         isOpen={isEditLamaKerjaOpen}
