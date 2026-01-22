@@ -6,7 +6,7 @@ import {
   BpjsItemUpdatePayload,
   BpjsListGrouped,
 } from '../../types/dto/BpjsItemType';
-import { payrollConfigurationServices } from '../../services/PayrollConfigurationServices';
+import { bpjsItemServices } from '../../services/BpjsItemServices';
 import useFilterStore from '../../../../stores/filterStore';
 
 // Mapping helpers
@@ -95,7 +95,7 @@ export const useApiBpjsItem = (): UseApiBpjsItemReturn => {
         if (effectiveSortOrder) params.sort = effectiveSortOrder;
       }
       
-      const response = await payrollConfigurationServices.getBpjsItems(params);
+      const response = await bpjsItemServices.getBpjsItems(params);
 
       const payload = (response as any)?.data ?? {};
       const items = payload?.data ?? [];
@@ -124,7 +124,7 @@ export const useApiBpjsItem = (): UseApiBpjsItemReturn => {
     setLoading(true);
     setError(null);
     try {
-      const response = await payrollConfigurationServices.getBpjsListGrouped();
+      const response = await bpjsItemServices.getBpjsListGrouped();
       const data = (response as any)?.data ?? {};
       setBpjsListGrouped(data);
     } catch (err) {
@@ -148,9 +148,9 @@ export const useApiBpjsItem = (): UseApiBpjsItemReturn => {
         formData.append('employee_percentage', String(payload.employeePercentage));
       }
 
-      await payrollConfigurationServices.updateBpjsItem(id, formData);
-      
-      return null;
+      const response = await bpjsItemServices.updateBpjsItem(id, formData);
+      const data = (response as any)?.data ?? {};
+      return mapToBpjsItemListItem(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update BPJS item');
       console.error('Error updating BPJS item:', err);
@@ -164,7 +164,7 @@ export const useApiBpjsItem = (): UseApiBpjsItemReturn => {
     setLoading(true);
     setError(null);
     try {
-      const resp = await payrollConfigurationServices.getBpjsItemDetail(id);
+      const resp = await bpjsItemServices.getBpjsItemDetail(id);
       const item = (resp as any)?.data as any;
       if (!item) return null;
 
