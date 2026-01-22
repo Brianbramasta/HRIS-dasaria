@@ -10,7 +10,7 @@ export const useBpjsPage = () => {
 
   useEffect(() => {
     api.fetchBpjsItems();
-  }, []);
+  }, [api.fetchBpjsItems]);
 
   const handleEditOpen = (item: BpjsItemListItem) => {
     setSelected(item);

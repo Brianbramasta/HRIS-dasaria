@@ -22,9 +22,13 @@ const mapToBpjsItemListItem = (item: any): BpjsItemListItem => ({
 const toSortField = (field?: string): string => {
   const map: Record<string, string> = {
     detailName: 'detail_name',
+    detailBpjs: 'detail_name', // Mapped from DataTable ID
     category: 'category',
+    kategoriBpjs: 'category', // Mapped from DataTable ID
     type: 'type',
+    jenis: 'type', // Mapped from DataTable ID
     companyPercentage: 'company_percentage',
+    percent: 'company_percentage', // Mapped from DataTable ID
   };
   return map[field || ''] || field || 'created_at';
 };
