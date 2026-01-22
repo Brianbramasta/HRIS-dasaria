@@ -1,0 +1,247 @@
+import { useState, useCallback } from 'react';
+import { TableFilter } from '@/types/SharedType';
+import {
+  NonFixedAllowanceListItem,
+  NonFixedAllowanceDetailResponse,
+  NonFixedAllowancePayload,
+} from '../../../types/dto/non-fixed-allowance/NonFixedAllowanceType';
+import { nonFixedAllowanceServices } from '../../../services/non-fixed-allowance/NonFixedAllowanceServices';
+import useFilterStore from '../../../../../stores/filterStore';
+
+// Mapping helpers
+const mapToListItem = (item: any): NonFixedAllowanceListItem => ({
+  id: item.id,
+  allowanceName: item.allowance_name,
+  categorySub: item.category_sub,
+  description: item.description,
+});
+
+const toSortField = (field?: string): string => {
+  const map: Record<string, string> = {
+    allowanceName: 'allowance_name',
+    categorySub: 'category_sub',
+    description: 'description',
+  };
+  return map[field || ''] || field || 'created_at';
+};
+
+interface UseApiNonFixedAllowanceReturn {
+  data: NonFixedAllowanceListItem[];
+  loading: boolean;
+  error: string | null;
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  search: string;
+  sortBy: string;
+  sortOrder: 'asc' | 'desc' | null;
+  filterValue: string;
+
+  // Actions
+  fetchList: (filter?: Partial<TableFilter>) => Promise<void>;
+  createData: (payload: NonFixedAllowancePayload) => Promise<NonFixedAllowanceListItem | null>;
+  updateData: (id: string, payload: NonFixedAllowancePayload) => Promise<NonFixedAllowanceListItem | null>;
+  deleteData: (id: string) => Promise<boolean>;
+  getDetail: (id: string) => Promise<NonFixedAllowanceDetailResponse | null>;
+
+  // Pagination
+  setPage: (page: number) => void;
+  setPageSize: (pageSize: number) => void;
+
+  // Search & Filter
+  setSearch: (search: string) => void;
+  setSort: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
+}
+
+export const useApiNonFixedAllowance = (): UseApiNonFixedAllowanceReturn => {
+  const [data, setData] = useState<NonFixedAllowanceListItem[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [total, setTotal] = useState<number>(0);
+  const [page, setPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [search, setSearch] = useState<string>('');
+  const [sortBy, setSortBy] = useState<string>('');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
+
+  // Assuming filterStore is global and has keys for features.
+  // Using 'NonFixedAllowance' as key, adjust if necessary
+  const filterValue = useFilterStore((s: any) => s.filters['NonFixedAllowance'] ?? '');
+
+  const fetchList = useCallback(async (filter?: Partial<TableFilter>) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const effectivePage = filter?.page ?? page;
+      const effectivePageSize = filter?.pageSize ?? pageSize;
+      const effectiveSearch = filter?.search ?? search;
+      const effectiveSortBy = filter?.sortBy ?? sortBy;
+      const effectiveSortOrder = filter?.sortOrder ?? sortOrder;
+      const effectiveFilter = filter?.filter ?? filterValue;
+
+      const params: any = { page: effectivePage, per_page: effectivePageSize };
+      if (effectiveSearch) params.search = effectiveSearch;
+      if (effectiveFilter) params.filter = effectiveFilter;
+      if (effectiveSortBy) {
+        params.column = toSortField(effectiveSortBy);
+        if (effectiveSortOrder) params.sort = effectiveSortOrder;
+      }
+
+      const response = await nonFixedAllowanceServices.getList(params);
+
+      const payload = (response as any)?.data ?? {};
+      const items = payload?.data ?? [];
+      const totalCount = payload?.total ?? (items?.length || 0);
+      const perPage = payload?.per_page ?? filter?.pageSize ?? pageSize;
+      const totalPagesCalc = perPage ? Math.ceil(totalCount / perPage) : 1;
+
+      setData((items || []).map(mapToListItem));
+      setTotal(totalCount);
+      setTotalPages(totalPagesCalc);
+
+      if (filter?.page) setPage(filter.page);
+      if (filter?.pageSize) setPageSize(filter.pageSize);
+      if (filter?.search !== undefined) setSearch(filter.search);
+      if (filter?.sortBy) setSortBy(filter.sortBy);
+      if (filter?.sortOrder) setSortOrder(filter.sortOrder);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch data');
+      console.error('Error fetching non-fixed allowance list:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [search, sortBy, sortOrder, page, pageSize, filterValue]);
+
+  const createData = useCallback(async (payload: NonFixedAllowancePayload): Promise<NonFixedAllowanceListItem | null> => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append('allowance_name', payload.allowanceName);
+      formData.append('category_sub', payload.categorySub);
+      formData.append('description', payload.description);
+
+      const response = await nonFixedAllowanceServices.create(formData);
+      // Optional: return mapped data if response returns created object
+      // Based on contract: returns meta and data object
+      const item = (response as any)?.data;
+      return item ? mapToListItem(item) : null;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create data');
+      console.error('Error creating non-fixed allowance:', err);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const updateData = useCallback(async (id: string, payload: NonFixedAllowancePayload): Promise<NonFixedAllowanceListItem | null> => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append('_method', 'PATCH');
+      formData.append('allowance_name', payload.allowanceName);
+      formData.append('category_sub', payload.categorySub);
+      formData.append('description', payload.description);
+
+      await nonFixedAllowanceServices.update(id, formData);
+      return null;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update data');
+      console.error('Error updating non-fixed allowance:', err);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const deleteData = useCallback(async (id: string): Promise<boolean> => {
+    setLoading(true);
+    setError(null);
+    try {
+      await nonFixedAllowanceServices.delete(id);
+      return true;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete data');
+      console.error('Error deleting non-fixed allowance:', err);
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const getDetail = useCallback(async (id: string): Promise<NonFixedAllowanceDetailResponse | null> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const resp = await nonFixedAllowanceServices.getDetail(id);
+      const item = (resp as any)?.data;
+      if (!item) return null;
+
+      return {
+        id: item.id,
+        allowanceName: item.allowance_name,
+        categorySub: item.category_sub,
+        description: item.description,
+        createdAt: item.created_at,
+        updatedAt: item.updated_at,
+      };
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to get detail');
+      console.error('Error getting non-fixed allowance detail:', err);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const handleSetPage = useCallback((newPage: number) => {
+    setPage(newPage);
+  }, []);
+
+  const handleSetPageSize = useCallback((newPageSize: number) => {
+    setPageSize(newPageSize);
+    setPage(1);
+  }, []);
+
+  const handleSetSearch = useCallback((newSearch: string) => {
+    setSearch(newSearch);
+    setPage(1);
+  }, []);
+
+  const handleSetSort = useCallback((newSortBy: string, newSortOrder: 'asc' | 'desc') => {
+    setSortBy(newSortBy);
+    setSortOrder(newSortOrder);
+  }, []);
+
+  return {
+    data,
+    loading,
+    error,
+    total,
+    page,
+    pageSize,
+    totalPages,
+    search,
+    sortBy,
+    sortOrder,
+    filterValue,
+
+    fetchList,
+    createData,
+    updateData,
+    deleteData,
+    getDetail,
+
+    setPage: handleSetPage,
+    setPageSize: handleSetPageSize,
+    setSearch: handleSetSearch,
+    setSort: handleSetSort,
+  };
+};

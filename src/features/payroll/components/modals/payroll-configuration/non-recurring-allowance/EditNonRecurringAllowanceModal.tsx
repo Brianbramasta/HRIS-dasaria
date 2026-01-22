@@ -1,9 +1,8 @@
 // Dokumentasi: Modal Tambah/Edit Tunjangan Tidak Tetap (Nama Tunjangan, Deksripsi Umum)
 import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
-import Label from '@/components/form/Label';
-import Input from '@/components/form/input/InputField';
-import TextArea from '@/components/form/input/TextArea';
+import InputField from '@/components/shared/field/InputField';
+import TextAreaField from '@/components/shared/field/TextAreaField';
 import { useEditNonRecurringAllowanceModal } from '@/features/payroll/hooks/modals/payroll-configuration/non-recurring-allowance/useEditNonRecurringAllowanceModal';
 
 type FormValues = {
@@ -30,14 +29,20 @@ const EditTunjanganTidakTetapModal: React.FC<Props> = ({ isOpen, onClose, defaul
 
   const content = (
     <div className="space-y-5">
-      <div>
-        <Label>Nama Tunjangan</Label>
-        <Input placeholder="Masukkan nama tunjangan" value={form.namaTunjangan} onChange={(e) => setField('namaTunjangan', e.target.value)} />
-      </div>
-      <div>
-        <Label>Deksripsi Umum</Label>
-        <TextArea placeholder="Tulis description ..." value={form.deskripsiUmum} onChange={(value) => setField('deskripsiUmum', value)} />
-      </div>
+      <InputField
+        label="Nama Tunjangan"
+        placeholder="Masukkan nama tunjangan"
+        value={form.namaTunjangan}
+        onChange={(e) => setField('namaTunjangan', e.target.value)}
+        required
+      />
+      <TextAreaField
+        label="Deksripsi Umum"
+        placeholder="Tulis description ..."
+        value={form.deskripsiUmum}
+        onChange={(value) => setField('deskripsiUmum', value)}
+        required
+      />
     </div>
   );
 
