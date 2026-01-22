@@ -1,23 +1,41 @@
 
-
 // Dokumentasi: Tabel Tunjangan Hari Raya + integrasi Modal Edit THR
-import  { useMemo, useState } from 'react';
 import DataTable, { type DataTableColumn, type DataTableAction } from '@/components/shared/datatable/DataTable';
 import { IconPencil } from '@/icons/components/icons';
 import Switch from '@/components/form/switch/Switch';
 import EditThrModal from '@/features/payroll/components/modals/payroll-configuration/thr/EditThrModal';
+import { useConfigurationTHR } from '@/features/payroll/hooks/payroll-configuration/thr/useConfigurationTHR';
 
 type THRConfigRow = {
-  no?: number;
+  id: string;
+  no: number;
   'Lama Kerja': string;
   'Deksripsi Umum': string;
+  raw: any;
 };
 
 export default function THRPage() {
-  const [isEnabled, setIsEnabled] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [defaultValues, setDefaultValues] = useState<{ lamaKerja: string; deskripsiUmum: string } | null>(null);
+  const {
+    rows,
+    loading,
+    total,
+    page,
+    pageSize,
+    setSearch,
+    setPage,
+    setPageSize,
+    setSort,
+    
+    // Modal & Handlers
+    editModal,
+    selected,
+    handleEditOpen,
+    handleClose,
+    handleSave,
+    handleToggleStatus,
+  } = useConfigurationTHR();
 
+  // Columns definition
   const columns: DataTableColumn<THRConfigRow>[] = [
     { id: 'no', label: 'No.', align: 'center', sortable: false },
     { id: 'Lama Kerja', label: 'Lama Kerja', sortable: true },
@@ -25,22 +43,18 @@ export default function THRPage() {
   ];
 
   const actions: DataTableAction<THRConfigRow>[] = [
-    { label: '', icon: <IconPencil />, onClick: (row) => {
-      setDefaultValues({ lamaKerja: row['Lama Kerja'], deskripsiUmum: row['Deksripsi Umum'] });
-      setIsModalOpen(true);
-    }, variant: 'outline', className: 'border-0' },
+    { 
+      label: '', 
+      icon: <IconPencil />, 
+      onClick: (row) => handleEditOpen(row.raw), 
+      variant: 'outline', 
+      className: 'border-0' 
+    },
   ];
-
-  const rows: THRConfigRow[] = useMemo(() => (
-    [
-      { 'Lama Kerja': 'Kurang dari 1 Tahun', 'Deksripsi Umum': 'Masa Kerja: Dihitung dalam satuan bulan.' },
-      { 'Lama Kerja': '1 tahun atau lebih', 'Deksripsi Umum': 'THR dibayarkan 1 (satu) kali Gaji Penuh.' },
-    ]
-  ), []);
 
   const exportCSV = (filename: string, data: any[]) => {
     if (!data || data.length === 0) return;
-    const headers = Object.keys(data[0]);
+    const headers = Object.keys(data[0]).filter(k => k !== 'raw' && k !== 'id');
     const csv = [headers.join(',') , ...data.map(r => headers.map(h => JSON.stringify((r as any)[h] ?? '')).join(','))].join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -55,9 +69,9 @@ export default function THRPage() {
 
   const switchSlot = (
     <Switch
-      label={isEnabled ? 'ON' : 'OFF'}
-      defaultChecked={isEnabled}
-      onChange={setIsEnabled}
+      label={'Status THR'}
+      defaultChecked={false} 
+      onChange={(val) => handleToggleStatus(val)}
       color="blue"
     />
   );
@@ -71,17 +85,28 @@ export default function THRPage() {
         actions={actions}
         searchable
         filterable
+        loading={loading}
+        pageSize={pageSize}
+        useExternalPagination
+        externalPage={page}
+        externalTotal={total}
+        onSearchChange={(val) => setSearch(val)}
+        onSortChange={(columnId, order) => setSort(columnId, order)}
+        onPageChangeExternal={(p) => setPage(p)}
+        onRowsPerPageChangeExternal={(ps) => setPageSize(ps)}
         onExport={() => exportCSV('tunjangan-hari-raya.csv', rows)}
-        onAdd={() => console.log('tambah potongan')}
-        addButtonLabel="Tambah Potongan"
         toolbarRightSlotAtas={switchSlot}
       />
-      {isModalOpen && (
+      {editModal.isOpen && (
         <EditThrModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          defaultValues={defaultValues}
-          onSave={(values) => { console.log('save thr', values); }}
+          isOpen={editModal.isOpen}
+          onClose={handleClose}
+          defaultValues={selected ? {
+            lamaKerja: selected.lengthOfService,
+            deskripsiUmum: selected.description
+          } : null}
+          onSave={handleSave}
+          isLoading={loading}
         />
       )}
     </div>

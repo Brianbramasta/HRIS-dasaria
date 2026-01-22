@@ -11,7 +11,7 @@ export const useEditThrModal = (params: {
   onSave: (values: ThrFormValues) => void;
   onClose: () => void;
 }) => {
-  const { isOpen, defaultValues, onSave, onClose } = params;
+  const { isOpen, defaultValues, onSave } = params;
 
   const initial: ThrFormValues = useMemo(
     () => ({
@@ -33,9 +33,8 @@ export const useEditThrModal = (params: {
 
   const handleSubmit = () => {
     onSave(form);
-    onClose();
+    // Removed onClose() to allow parent to control closing (e.g. after async save)
   };
 
   return { form, setField, handleSubmit };
 };
-
