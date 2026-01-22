@@ -1,8 +1,8 @@
 // Dokumentasi: Halaman Tunjangan Tetap + integrasi tiga Modal Edit (Pernikahan, Lama Kerja, Transportasi)
+import { useState } from 'react';
 import DocumentsTable from '@/features/structure-and-organize/components/table/TableGlobal';
 import ExpandCard from '@/features/structure-and-organize/components/card/ExpandCard';
 import { IconFileDetail, IconPencil } from '@/icons/components/icons';
-import { useState } from 'react';
 import EditTunjanganPernikahanModal from '@/features/payroll/components/modals/payroll-configuration/fixedAllowance/EditMarriageAllowanceModal';
 import EditTunjanganLamaKerjaModal from '@/features/payroll/components/modals/payroll-configuration/fixedAllowance/EditLengthOfServiceAllowanceModal';
 import EditTunjanganTransportasiModal from '@/features/payroll/components/modals/payroll-configuration/fixedAllowance/EditTransportationAllowanceModal';
@@ -10,22 +10,22 @@ import EditTunjanganTransportasiModal from '@/features/payroll/components/modals
 import EditDetailTunjanganJabatanDanBpjsModal from '@/features/payroll/components/modals/payroll-configuration/fixedAllowance/EditPositionAndBPJSAllowanceModal';
 import { useMarriageAllowance } from '@/features/payroll/hooks/payroll-configuration/fixed-allowance/useMarriageAllowance';
 import { useLengthOfServiceAllowance } from '@/features/payroll/hooks/payroll-configuration/fixed-allowance/useLengthOfServiceAllowance';
+import { usePositionAllowance } from '@/features/payroll/hooks/payroll-configuration/fixed-allowance/usePositionAllowance';
+import { useTransportationAllowance } from '@/features/payroll/hooks/payroll-configuration/fixed-allowance/useTransportationAllowance';
 import { formatCurrency } from '@/utils/formatCurrency';
 
 export default function TunjanganTetapPage() {
-  const jabatanBpjsItems = [
-    { id: 1, jabatan: 'Entry Level', presentase: '10%', nominal: '4.100.000', detailBpjs: 'link-doc-1', fileUrl: '#' },
-    { id: 2, jabatan: 'Officer', presentase: '12%', nominal: '4.100.000', detailBpjs: 'link-doc-2', fileUrl: '#' },
-    { id: 3, jabatan: 'Senior Officer', presentase: '14%', nominal: '4.100.000', detailBpjs: 'link-doc-3', fileUrl: '#' },
-    { id: 4, jabatan: 'Supervisor', presentase: '16%', nominal: '4.100.000', detailBpjs: 'link-doc-4', fileUrl: '#' },
-    { id: 5, jabatan: 'Manager', presentase: '18%', nominal: '4.100.000', detailBpjs: 'link-doc-5', fileUrl: '#' },
-    { id: 6, jabatan: 'Direktur', presentase: '20%', nominal: '4.100.000', detailBpjs: 'link-doc-6', fileUrl: '#' },
-  ];
+  const [positionMode, setPositionMode] = useState<'detail' | 'edit'>('edit');
 
-  // Dokumentasi: state & handler untuk modal Tunjangan Jabatan & BPJS
-  const [isEditDetailJabatanOpen, setEditDetailJabatanOpen] = useState(false);
-  const [modeEditDetail, setModeEditDetail] = useState<'detail' | 'edit'>('detail');
-  const [selectedJabatanIndex, setSelectedJabatanIndex] = useState<number | null>(null);
+  // Dokumentasi: Integrasi hook usePositionAllowance untuk Tunjangan Jabatan & BPJS
+  const {
+    positionAllowanceRows,
+    loading: loadingPosition,
+    editModal: editModalPosition,
+    handleEditOpen: handleEditOpenPosition,
+    handleUpdate: handleUpdatePosition,
+    selected: selectedPosition,
+  } = usePositionAllowance();
 
   // Dokumentasi: Integrasi hook useMarriageAllowance untuk Tunjangan Pernikahan
   const { 
@@ -47,31 +47,44 @@ export default function TunjanganTetapPage() {
     selected: selectedLengthOfService
   } = useLengthOfServiceAllowance();
 
-  // Dokumentasi: state tabel Tunjangan Transportasi + handler modal
-  const [transportasiItems, setTransportasiItems] = useState([
-    { id: 1, transportasi: 'Transportasi-01', kategori: 'Staff', nominal: '1.000.000' },
-    { id: 2, transportasi: 'Transportasi-02', kategori: 'Kemitraan', nominal: '1.000.000' },
-  ]);
-  const [isEditTransportasiOpen, setEditTransportasiOpen] = useState(false);
-  const [selectedTransportasiIndex, setSelectedTransportasiIndex] = useState<number | null>(null);
+  // Dokumentasi: Integrasi hook useTransportationAllowance untuk Tunjangan Transportasi
+  const {
+    transportationAllowanceRows,
+    loading: loadingTransportation,
+    editModal: editModalTransportation,
+    handleEditOpen: handleEditOpenTransportation,
+    handleUpdate: handleUpdateTransportation,
+    selected: selectedTransportation,
+  } = useTransportationAllowance();
 
   return (
     <div className="space-y-6 p-4">
       <ExpandCard title="Tunjangan Jabatan dan BPJS" withHeaderDivider defaultOpen>
         <DocumentsTable
-          items={jabatanBpjsItems as any}
+          items={positionAllowanceRows as any}
           columns={[
             { id: 'no', label: 'No.', align: 'center', render: (_v: any, _r: any, idx: number) => idx + 1 },
             { id: 'jabatan', label: 'Jabatan' },
             { id: 'presentase', label: 'Presentase', align: 'center' },
-            { id: 'nominal', label: 'Nominal', align: 'right' },
+            { id: 'nominal', label: 'Nominal', align: 'right', render: (val: any) => formatCurrency(val || 0) },
             { id: 'detailBpjs', label: 'Detail  BPJS', align: 'center', render: (_v: any, row: any) => (
               // Dokumentasi: tombol Detail membuka modal Detail Tunjangan Jabatan
-              <button onClick={() => { const idx = jabatanBpjsItems.indexOf(row); setSelectedJabatanIndex(idx >= 0 ? idx : null); setModeEditDetail('detail'); setEditDetailJabatanOpen(true); }} className="flex items-center justify-center"><IconFileDetail /></button>
+              <button 
+                onClick={() => {
+                  setPositionMode('detail');
+                  handleEditOpenPosition(row);
+                }} 
+                className="flex items-center justify-center"
+              >
+                <IconFileDetail />
+              </button>
             ) },
           ] as any}
           // Dokumentasi: tombol Edit membuka modal Edit Tunjangan Jabatan
-          actions={[{ icon: <IconPencil />, onClick: (row: any) => { const idx = jabatanBpjsItems.indexOf(row); setSelectedJabatanIndex(idx >= 0 ? idx : null); setModeEditDetail('edit'); setEditDetailJabatanOpen(true); } }]}
+          actions={[{ icon: <IconPencil />, onClick: (row: any) => {
+            setPositionMode('edit');
+            handleEditOpenPosition(row);
+          } }]}
         />
       </ExpandCard>
 
@@ -103,16 +116,17 @@ export default function TunjanganTetapPage() {
 
       <ExpandCard title="Tunjangan Transportasi" withHeaderDivider defaultOpen>
         <DocumentsTable
-          items={transportasiItems as any}
+          items={transportationAllowanceRows as any}
           columns={[
             { id: 'no', label: 'No.', align: 'center', render: (_v: any, _r: any, idx: number) => idx + 1 },
             { id: 'transportasi', label: 'Transportasi' },
             { id: 'kategori', label: 'Kategori' },
-            { id: 'nominal', label: 'Nominal', align: 'right' },
+            { id: 'nominal', label: 'Nominal', align: 'right', render: (val: any) => formatCurrency(val || 0) },
           ] as any}
-          actions={[{ icon: <IconPencil />, onClick: (row: any) => { const idx = transportasiItems.indexOf(row); setSelectedTransportasiIndex(idx >= 0 ? idx : null); setEditTransportasiOpen(true); } }]}
+          actions={[{ icon: <IconPencil />, onClick: (row: any) => handleEditOpenTransportation(row) }]}
         />
       </ExpandCard>
+
       {/* Dokumentasi: render tiga modal edit dan handler simpan untuk masing-masing section */}
       <EditTunjanganPernikahanModal
         isOpen={editModalMarriage.isOpen}
@@ -129,24 +143,20 @@ export default function TunjanganTetapPage() {
         isLoading={loadingLengthOfService}
       />
       <EditTunjanganTransportasiModal
-        isOpen={isEditTransportasiOpen}
-        onClose={() => setEditTransportasiOpen(false)}
-        defaultValues={selectedTransportasiIndex !== null ? transportasiItems[selectedTransportasiIndex] : undefined}
-        onSave={(values) => {
-          if (selectedTransportasiIndex === null) return;
-          setTransportasiItems((prev) => prev.map((r, i) => i === selectedTransportasiIndex ? { ...r, ...values } : r));
-        }}
+        isOpen={editModalTransportation.isOpen}
+        onClose={editModalTransportation.closeModal}
+        defaultValues={selectedTransportation}
+        onSave={handleUpdateTransportation}
+        isLoading={loadingTransportation}
       />
       {/* Dokumentasi: render modal Edit/Detail Tunjangan Jabatan & BPJS */}
       <EditDetailTunjanganJabatanDanBpjsModal
-        isOpen={isEditDetailJabatanOpen}
-        onClose={() => setEditDetailJabatanOpen(false)}
-        mode={modeEditDetail}
-        defaultValues={selectedJabatanIndex !== null ? {
-          jabatan: jabatanBpjsItems[selectedJabatanIndex].jabatan,
-          percent: jabatanBpjsItems[selectedJabatanIndex].presentase,
-          nominal: jabatanBpjsItems[selectedJabatanIndex].nominal,
-        } : undefined}
+        isOpen={editModalPosition.isOpen}
+        onClose={editModalPosition.closeModal}
+        mode={positionMode}
+        defaultValues={selectedPosition}
+        onSave={handleUpdatePosition}
+        isLoading={loadingPosition}
       />
     </div>
   );

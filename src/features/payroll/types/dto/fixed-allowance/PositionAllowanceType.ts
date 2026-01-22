@@ -13,12 +13,14 @@ export interface BpjsItemDetail {
 }
 
 export interface PositionAllowanceDetailResponse {
-  fixedAllowance: {
+  fixed_allowance: {
     id: string;
-    jobTitleId: string;
-    jobTitleName: string;
+    job_title_id: string;
+    job_title_name: string;
+    percentage_value: number | null;
+    nominal_value: number | null;
   };
-  bpjsItems: Record<string, BpjsItemDetail[]>;
+  bpjs_items: Record<string, BpjsItemDetail[]>;
 }
 
 export interface PositionAllowanceBpjsUpdateItem {
@@ -28,7 +30,7 @@ export interface PositionAllowanceBpjsUpdateItem {
 
 export interface PositionAllowanceUpdatePayload {
   jobLevelId: string;
-  percentageValue?: number;
-  nominalValue?: number;
+  percentage_value?: number | null;
+  nominal_value?: number | null;
   positionAllowanceBpjs: PositionAllowanceBpjsUpdateItem[];
 }

@@ -122,12 +122,12 @@ export const useApiPositionAllowance = (): UseApiPositionAllowanceReturn => {
       
       formData.append('job_level_id', payload.jobLevelId);
       
-      if (payload.percentageValue !== undefined && payload.percentageValue !== null) {
-        formData.append('percentage_value', String(payload.percentageValue));
+      if (payload.percentage_value !== undefined && payload.percentage_value !== null) {
+        formData.append('percentage_value', String(payload.percentage_value));
       }
       
-      if (payload.nominalValue !== undefined && payload.nominalValue !== null) {
-        formData.append('nominal_value', String(payload.nominalValue));
+      if (payload.nominal_value !== undefined && payload.nominal_value !== null) {
+        formData.append('nominal_value', String(payload.nominal_value));
       }
 
       if (Array.isArray(payload.positionAllowanceBpjs)) {
@@ -174,12 +174,14 @@ export const useApiPositionAllowance = (): UseApiPositionAllowanceReturn => {
       });
 
       return {
-        fixedAllowance: {
+        fixed_allowance: {
           id: fixedAllowance.id,
-          jobTitleId: fixedAllowance.job_title_id,
-          jobTitleName: fixedAllowance.job_title_name,
+          job_title_id: fixedAllowance.job_title_id,
+          job_title_name: fixedAllowance.job_title_name,
+          percentage_value: fixedAllowance.percentage_value,
+          nominal_value: fixedAllowance.nominal_value,
         },
-        bpjsItems,
+        bpjs_items: bpjsItems,
       };
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to get detail');

@@ -3,25 +3,20 @@ import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import Input from '@/components/form/input/InputField';
-import Select from '@/components/form/Select';
 import { useEditTransportationAllowanceModal } from '@/features/payroll/hooks/modals/payroll-configuration/fixedAllowance/useEditTransportationAllowanceModal';
-
-type FormValues = {
-  transportasi: string;
-  kategori: string;
-  nominal: string;
-};
+import { TransportationAllowanceDetailResponse, TransportationAllowanceUpdatePayload } from '@/features/payroll/types/dto/fixed-allowance/TransportationAllowanceType';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  defaultValues?: Partial<FormValues> | null;
-  onSave: (values: FormValues) => void;
+  defaultValues?: TransportationAllowanceDetailResponse | null;
+  onSave: (values: TransportationAllowanceUpdatePayload) => void;
+  isLoading?: boolean;
 }
 
 // Dokumentasi: komponen modal utama untuk edit Tunjangan Transportasi
-const EditTunjanganTransportasiModal: React.FC<Props> = ({ isOpen, onClose, defaultValues, onSave }) => {
-  const { form, setField, kategoriOptions, handleSubmit } = useEditTransportationAllowanceModal({
+const EditTunjanganTransportasiModal: React.FC<Props> = ({ isOpen, onClose, defaultValues, onSave, isLoading }) => {
+  const { form, setField, handleSubmit } = useEditTransportationAllowanceModal({
     defaultValues,
     onSave,
     onClose,
@@ -30,15 +25,27 @@ const EditTunjanganTransportasiModal: React.FC<Props> = ({ isOpen, onClose, defa
   const content = (
     <div className="space-y-5">
       <div>
-        <Label>TransPortasi</Label>
-        <Input placeholder="Transportasi-01" value={form.transportasi} onChange={(e) => setField('transportasi', e.target.value)} />
+        <Label>Transportasi</Label>
+        <Input 
+          placeholder="Transportasi-01" 
+          value={form.transportasi} 
+          onChange={(e) => setField('transportasi', e.target.value)} 
+          disabled
+          className="bg-gray-100"
+        />
       </div>
       <div>
         <Label>Kategori</Label>
-        <Select options={kategoriOptions} placeholder="Select" defaultValue={form.kategori} onChange={(v) => setField('kategori', v)} />
+        <Input 
+          placeholder="Staff" 
+          value={form.kategori} 
+          onChange={(e) => setField('kategori', e.target.value)} 
+          disabled
+          className="bg-gray-100"
+        />
       </div>
       <div>
-        <Label>Nomianal</Label>
+        <Label>Nominal</Label>
         <Input placeholder="edit Nominal" value={form.nominal} onChange={(e) => setField('nominal', e.target.value)} />
       </div>
     </div>
@@ -51,7 +58,7 @@ const EditTunjanganTransportasiModal: React.FC<Props> = ({ isOpen, onClose, defa
       onClose={onClose}
       content={content}
       handleSubmit={handleSubmit}
-      submitting={false}
+      submitting={isLoading ?? false}
       maxWidth="max-w-lg"
       confirmTitleButton="Simpan Perubahan"
       closeTitleButton="Tutup"
