@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import NonRecurringDeductionPage from './NonRecurringDeductionPage';
 import { useNonRecurringDeduction } from '@/features/payroll/hooks/payroll-configuration/non-recurring-deduction/useNonRecurringDeduction';
 import '@testing-library/jest-dom';

@@ -1,4 +1,4 @@
-import { renderHook, act, waitFor } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import { useConfigurationTHR } from './useConfigurationTHR';
 import { useApiConfigurationTHR } from '../../api/useApiConfigurationTHR';
 import { useModal } from '@/hooks/useModal';

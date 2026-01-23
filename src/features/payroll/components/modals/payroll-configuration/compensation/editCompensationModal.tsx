@@ -68,7 +68,7 @@ const EditKompensasiModal: React.FC<Props> = ({ isOpen, initialData, onClose, on
 
         <InputField
           label="Nominal General"
-          placeholder="-"
+          placeholder="Masukkan Nominal General"
           value={form.general || ''}
           onChange={(e) => setNominal('general', e.target.value)}
           disabled={isLevelFilled}
@@ -76,7 +76,7 @@ const EditKompensasiModal: React.FC<Props> = ({ isOpen, initialData, onClose, on
         />
         <InputField
           label="Nominal Junior"
-          placeholder="-"
+          placeholder="Masukkan Nominal Junior"
           value={form.junior || ''}
           onChange={(e) => setNominal('junior', e.target.value)}
           disabled={isGeneralFilled}
@@ -84,7 +84,7 @@ const EditKompensasiModal: React.FC<Props> = ({ isOpen, initialData, onClose, on
         />
         <InputField
           label="Nominal Middle"
-          placeholder="-"
+          placeholder="Masukkan Nominal Middle"
           value={form.middle || ''}
           onChange={(e) => setNominal('middle', e.target.value)}
           disabled={isGeneralFilled}
@@ -93,7 +93,7 @@ const EditKompensasiModal: React.FC<Props> = ({ isOpen, initialData, onClose, on
         <div className='md:col-span-2'>
           <InputField
           label="Nominal Senior"
-          placeholder="-"
+          placeholder="Masukkan Nominal Senior"
           value={form.senior || ''}
           onChange={(e) => setNominal('senior', e.target.value)}
           disabled={isGeneralFilled}
