@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useApiNonFixedAllowance } from '../api/non-fixed-allowance/useApiNonFixedAllowance';
+import { useApiNonFixedAllowance } from '../../../api/non-fixed-allowance/useApiNonFixedAllowance';
 import { useModal } from '@/hooks/useModal';
-import { NonFixedAllowanceListItem } from '../../types/dto/non-fixed-allowance/NonFixedAllowanceType';
+import { NonFixedAllowanceListItem } from '../../../../types/dto/non-fixed-allowance/NonFixedAllowanceType';
 
 export const useNonFixedAllowance = ({ autoFetch = true }: { autoFetch?: boolean } = {}) => {
   const api = useApiNonFixedAllowance();

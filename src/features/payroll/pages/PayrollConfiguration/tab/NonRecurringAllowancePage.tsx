@@ -1,4 +1,4 @@
-import { useNonFixedAllowance } from '@/features/payroll/hooks/non-fixed-allowance/useNonFixedAllowance';
+import { useNonFixedAllowance } from '@/features/payroll/hooks/modals/payroll-configuration/non-fixed-allowance/useNonFixedAllowance';
 import DataTable, { type DataTableColumn, type DataTableAction } from '@/components/shared/datatable/DataTable';
 import { IconPencil, IconHapus } from '@/icons/components/icons';
 import EditTunjanganTidakTetapModal from '@/features/payroll/components/modals/payroll-configuration/non-recurring-allowance/EditNonRecurringAllowanceModal';
