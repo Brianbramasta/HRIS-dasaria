@@ -2,6 +2,7 @@ import { useNonFixedAllowance } from '@/features/payroll/hooks/non-fixed-allowan
 import DataTable, { type DataTableColumn, type DataTableAction } from '@/components/shared/datatable/DataTable';
 import { IconPencil, IconHapus } from '@/icons/components/icons';
 import EditTunjanganTidakTetapModal from '@/features/payroll/components/modals/payroll-configuration/non-recurring-allowance/EditNonRecurringAllowanceModal';
+import EditNonRecurringAllowanceModalDelete from '@/features/payroll/components/modals/payroll-configuration/non-recurring-allowance/EditNonRecurringAllowanceModalDelete';
 
 // Refactored Page Component
 export default function NonRecurringAllowancePage() {
@@ -131,28 +132,12 @@ export default function NonRecurringAllowancePage() {
       )}
 
       {/* Delete Confirmation Modal */}
-       {deleteModal.isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-             <h3 className="text-lg font-bold mb-4">Konfirmasi Hapus</h3>
-             <p className="mb-6">Apakah Anda yakin ingin menghapus tunjangan <strong>{selected?.allowanceName}</strong>?</p>
-             <div className="flex justify-end gap-3">
-               <button 
-                 onClick={handleClose}
-                 className="px-4 py-2 text-gray-600 border border-gray-300 rounded hover:bg-gray-50"
-               >
-                 Batal
-               </button>
-               <button 
-                 onClick={handleDelete}
-                 className="px-4 py-2 text-white bg-red-600 rounded hover:bg-red-700"
-               >
-                 Hapus
-               </button>
-             </div>
-           </div>
-        </div>
-      )}
+      <EditNonRecurringAllowanceModalDelete
+        isOpen={deleteModal.isOpen}
+        onClose={handleClose}
+        onDelete={handleDelete}
+        allowanceName={selected?.allowanceName}
+      />
     </div>
   );
 }
