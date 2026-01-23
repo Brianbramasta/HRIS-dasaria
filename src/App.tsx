@@ -22,9 +22,9 @@ export default function App() {
   return (
     <>
     <PageMeta
-            title="HRIS"
-            description="This is HRIS"
-          />
+          title="HRIS"
+          description="This is HRIS"
+        />
       <Router>
         <ScrollToTop />
         <AppRoutes />

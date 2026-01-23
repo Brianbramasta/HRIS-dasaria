@@ -3,12 +3,14 @@
 import DataTable, { type DataTableColumn, type DataTableAction } from '@/components/shared/datatable/DataTable';
 import { IconPencil, IconHapus } from '@/icons/components/icons';
 import NonRecurringDeductionModal from '@/features/payroll/components/modals/payroll-configuration/non-recurring-deduction/NonRecurringDeductionModal';
+import NonRecurringDeductionModalDelete from '@/features/payroll/components/modals/payroll-configuration/non-recurring-deduction/NonRecurringDeductionModalDelete';
 import { useNonRecurringDeduction } from '@/features/payroll/hooks/payroll-configuration/non-recurring-deduction/useNonRecurringDeduction';
 
 type DeductionRow = {
   id: string;
   no: number;
   deductionName: string;
+  category: string;
   description: string;
 };
 
@@ -26,17 +28,21 @@ export default function NonRecurringDeductionPage() {
     
     addModal,
     editModal,
+    deleteModal,
     detailValues,
+    selectedName,
     
     handleAddOpen,
     handleEditOpen,
     handleDelete,
+    onDeleteConfirm,
     handleSave,
   } = useNonRecurringDeduction();
 
   const columns: DataTableColumn<DeductionRow>[] = [
     { id: 'no', label: 'No.', align: 'center', sortable: false },
     { id: 'deductionName', label: 'Nama Potongan', sortable: true },
+    { id: 'category', label: 'Kategori', sortable: true },
     { id: 'description', label: 'Deksripsi Umum', sortable: true },
   ];
 
@@ -51,7 +57,7 @@ export default function NonRecurringDeductionPage() {
     { 
       label: '', 
       icon: <IconHapus />, 
-      onClick: (row) => handleDelete(row.id), 
+      onClick: (row) => handleDelete(row.id, row.deductionName), 
       variant: 'outline', 
       className: 'border-0',
       color: 'error' 
@@ -118,6 +124,14 @@ export default function NonRecurringDeductionPage() {
         title="Edit Potongan Tidak Tetap"
         confirmTitleButton="Simpan Perubahan"
         isLoading={loading}
+      />
+
+      {/* Delete Modal */}
+      <NonRecurringDeductionModalDelete
+        isOpen={deleteModal.isOpen}
+        onClose={deleteModal.closeModal}
+        onDelete={onDeleteConfirm}
+        deductionName={selectedName}
       />
     </div>
   );

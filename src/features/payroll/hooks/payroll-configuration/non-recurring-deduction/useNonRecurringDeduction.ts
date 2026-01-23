@@ -5,6 +5,7 @@ import { DeductionCreatePayload, DeductionUpdatePayload } from '../../../types/d
 
 export type NonRecurringDeductionForm = {
   namaPotongan: string;
+  kategori: string;
   deskripsiUmum: string;
 };
 
@@ -13,8 +14,10 @@ export const useNonRecurringDeduction = () => {
   
   const addModal = useModal(false);
   const editModal = useModal(false);
+  const deleteModal = useModal(false);
   
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedName, setSelectedName] = useState<string>('');
   const [detailValues, setDetailValues] = useState<NonRecurringDeductionForm | null>(null);
 
   // Initial Fetch with category filter
@@ -34,6 +37,7 @@ export const useNonRecurringDeduction = () => {
       id: item.id,
       no: (api.page - 1) * api.pageSize + index + 1,
       deductionName: item.deductionName,
+      category: item.category === 'fixed' ? 'Potongan tetap' : 'Potongan tidak tetap',
       description: item.description ?? '',
       original: item, // Keep original reference if needed
     }));
@@ -51,6 +55,7 @@ export const useNonRecurringDeduction = () => {
     if (detail) {
       setDetailValues({
         namaPotongan: detail.deductionName,
+        kategori: detail.category === 'fixed' ? 'Potongan tetap' : 'Potongan tidak tetap',
         deskripsiUmum: detail.description || '',
       });
       setSelectedId(id);
@@ -58,18 +63,25 @@ export const useNonRecurringDeduction = () => {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    // You might want to show a confirmation modal here or in the UI
-    const success = await api.deleteDeduction(id);
+  const handleDelete = (id: string, name: string) => {
+    setSelectedId(id);
+    setSelectedName(name);
+    deleteModal.openModal();
+  };
+
+  const onDeleteConfirm = async () => {
+    if (!selectedId) return;
+    const success = await api.deleteDeduction(selectedId);
     if (success) {
       refreshData();
+      deleteModal.closeModal();
     }
   };
 
   const handleSave = async (values: NonRecurringDeductionForm) => {
     const payload: DeductionCreatePayload | DeductionUpdatePayload = {
       deductionName: values.namaPotongan,
-      category: 'notfixed',
+      category: values.kategori === 'Potongan tetap' ? 'fixed' : 'notfixed',
       description: values.deskripsiUmum,
     };
 
@@ -104,12 +116,15 @@ export const useNonRecurringDeduction = () => {
     // Modal State
     addModal,
     editModal,
+    deleteModal,
     detailValues,
+    selectedName,
     
     // Handlers
     handleAddOpen,
     handleEditOpen,
     handleDelete,
+    onDeleteConfirm,
     handleSave,
   };
 };

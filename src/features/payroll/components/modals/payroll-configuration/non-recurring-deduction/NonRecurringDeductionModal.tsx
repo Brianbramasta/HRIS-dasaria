@@ -2,6 +2,7 @@
 import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import InputField from '@/components/shared/field/InputField';
+import SelectField from '@/components/shared/field/SelectField';
 import TextAreaField from '@/components/shared/field/TextAreaField';
 import { useNonRecurringDeductionModal, NonRecurringDeductionForm } from '@/features/payroll/hooks/modals/payroll-configuration/non-recurring-deduction/useNonRecurringDeductionModal';
 
@@ -40,6 +41,17 @@ const NonRecurringDeductionModal: React.FC<Props> = ({
         placeholder="Masukkan nama potongan"
         value={form.namaPotongan}
         onChange={(e) => setField('namaPotongan', e.target.value)}
+        required
+      />
+      <SelectField
+        label="Kategori"
+        placeholder="Pilih kategori"
+        options={[
+          { value: 'Potongan tidak tetap', label: 'Potongan tidak tetap' },
+          { value: 'Potongan tetap', label: 'Potongan tetap' },
+        ]}
+        defaultValue={form.kategori}
+        onChange={(value) => setField('kategori', value)}
         required
       />
       <TextAreaField
