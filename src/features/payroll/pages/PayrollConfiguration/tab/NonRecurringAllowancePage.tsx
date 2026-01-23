@@ -36,6 +36,7 @@ export default function NonRecurringAllowancePage() {
   const columns: DataTableColumn<any>[] = [
     { id: 'no', label: 'No.', align: 'center', sortable: false },
     { id: 'Nama Tunjangan', label: 'Nama Tunjangan', sortable: true },
+    { id: 'Sub Kategori', label: 'Sub Kategori', sortable: true },
     { id: 'Deksripsi Umum', label: 'Deksripsi Umum', sortable: true },
   ];
 
@@ -56,10 +57,10 @@ export default function NonRecurringAllowancePage() {
     },
   ];
 
-  const handleSave = async (values: { namaTunjangan: string; deskripsiUmum: string }) => {
+  const handleSave = async (values: { namaTunjangan: string; kategori: string; deskripsiUmum: string }) => {
     const payload = {
       allowanceName: values.namaTunjangan,
-      categorySub: 'umum',
+      categorySub: values.kategori,
       description: values.deskripsiUmum
     };
 
@@ -122,7 +123,7 @@ export default function NonRecurringAllowancePage() {
         <EditTunjanganTidakTetapModal
           isOpen={addModal.isOpen || editModal.isOpen}
           onClose={handleClose}
-          defaultValues={selected ? { namaTunjangan: selected.allowanceName, deskripsiUmum: selected.description } : { namaTunjangan: '', deskripsiUmum: '' }}
+          defaultValues={selected ? { namaTunjangan: selected.allowanceName, kategori: selected.categorySub, deskripsiUmum: selected.description } : { namaTunjangan: '', kategori: 'umum', deskripsiUmum: '' }}
           onSave={handleSave}
           title={selected ? 'Edit Tunjangan Tidak Tetap' : 'Tambah Tunjangan Tidak Tetap'}
           confirmTitleButton={selected ? 'Simpan Perubahan' : 'Simpan'}

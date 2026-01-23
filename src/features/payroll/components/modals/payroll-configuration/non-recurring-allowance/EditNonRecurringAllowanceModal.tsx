@@ -2,11 +2,13 @@
 import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import InputField from '@/components/shared/field/InputField';
+import SelectField from '@/components/shared/field/SelectField';
 import TextAreaField from '@/components/shared/field/TextAreaField';
 import { useEditNonRecurringAllowanceModal } from '@/features/payroll/hooks/modals/payroll-configuration/non-recurring-allowance/useEditNonRecurringAllowanceModal';
 
 type FormValues = {
   namaTunjangan: string;
+  kategori: string;
   deskripsiUmum: string;
 };
 
@@ -18,6 +20,11 @@ interface Props {
   title?: string;
   confirmTitleButton?: string;
 }
+
+const kategoriOptions = [
+  { value: 'Umum', label: 'Umum' },
+  { value: 'Personal/Diskresi', label: 'Personal/Diskresi' },
+];
 
 const EditTunjanganTidakTetapModal: React.FC<Props> = ({ isOpen, onClose, defaultValues, onSave, title, confirmTitleButton }) => {
   const { form, setField, handleSubmit } = useEditNonRecurringAllowanceModal({
@@ -34,6 +41,14 @@ const EditTunjanganTidakTetapModal: React.FC<Props> = ({ isOpen, onClose, defaul
         placeholder="Masukkan nama tunjangan"
         value={form.namaTunjangan}
         onChange={(e) => setField('namaTunjangan', e.target.value)}
+        required
+      />
+      <SelectField
+        label="Sub Kategori"
+        placeholder="Pilih sub kategori"
+        options={kategoriOptions}
+        defaultValue={form.kategori}
+        onChange={(value) => setField('kategori', value)}
         required
       />
       <TextAreaField

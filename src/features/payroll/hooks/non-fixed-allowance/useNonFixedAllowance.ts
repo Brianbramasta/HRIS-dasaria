@@ -25,6 +25,7 @@ export const useNonFixedAllowance = ({ autoFetch = true }: { autoFetch?: boolean
       id: item.id,
       no: (api.page - 1) * api.pageSize + idx + 1,
       'Nama Tunjangan': item.allowanceName,
+      'Sub Kategori': item.categorySub,
       'Deksripsi Umum': item.description,
       raw: item,
     }));

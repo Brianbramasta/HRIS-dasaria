@@ -21,6 +21,9 @@ const toSortField = (field?: string): string => {
     allowanceName: 'allowance_name',
     categorySub: 'category_sub',
     description: 'description',
+    'Nama Tunjangan': 'allowance_name',
+    'Sub Kategori': 'category_sub',
+    'Deksripsi Umum': 'description',
   };
   return map[field || ''] || field || 'created_at';
 };
