@@ -47,13 +47,7 @@ export default function NonRecurringDeductionPage() {
   ];
 
   const actions: DataTableAction<DeductionRow>[] = [
-    { 
-      label: '', 
-      icon: <IconPencil />, 
-      onClick: (row) => handleEditOpen(row.id), 
-      variant: 'outline', 
-      className: 'border-0' 
-    },
+  
     { 
       label: '', 
       icon: <IconHapus />, 
@@ -61,7 +55,13 @@ export default function NonRecurringDeductionPage() {
       variant: 'outline', 
       className: 'border-0',
       color: 'error' 
-    },
+    },  { 
+      label: '', 
+      icon: <IconPencil />, 
+      onClick: (row) => handleEditOpen(row.id), 
+      variant: 'outline', 
+      className: 'border-0' 
+    }
   ];
 
   const exportCSV = (filename: string, data: any[]) => {
