@@ -13,7 +13,8 @@ import {
 export type CompensationRow = {
   id: string;
   no: number;
-  'level-jabatan': string;
+  'jabatan-kepangkatan': string;
+  'jabatan-struktural': string;
   kategori: string;
   general: string;
   junior: string;
@@ -43,7 +44,8 @@ export const useCompensation = ({ autoFetch = true }: { autoFetch?: boolean } = 
     return api.compensations.map((item, index) => ({
       id: item.id,
       no: (api.page - 1) * api.pageSize + index + 1,
-      'level-jabatan': item.jobTitleName,
+      'jabatan-kepangkatan': item.jobTitleName,
+      'jabatan-struktural': item.structuralJobName || '-',
       kategori: item.categoryCompensation,
       general: formatCurrencyValue(item.amountGeneral),
       junior: formatCurrencyValue(item.amountJunior),

@@ -67,6 +67,7 @@ describe('useCompensation Hook', () => {
       {
         id: '1',
         jobTitleName: 'Manager',
+        structuralJobName: 'Manager Struktural',
         categoryCompensation: 'Gaji Pokok',
         amountGeneral: 1000000,
         amountJunior: null,
@@ -79,7 +80,9 @@ describe('useCompensation Hook', () => {
     const { result } = renderHook(() => useCompensation());
 
     expect(result.current.rows).toHaveLength(1);
-    expect(result.current.rows[0]['level-jabatan']).toBe('Manager');
+    expect(result.current.rows[0]['jabatan-kepangkatan']).toBe('Manager');
+    expect(result.current.rows[0]['jabatan-struktural']).toBe('Manager Struktural');
+    expect(result.current.rows[0].kategori).toBe('Gaji Pokok');
     expect(result.current.rows[0].general).toBe('Rp 1000000');
     expect(result.current.rows[0].junior).toBe('-');
   });

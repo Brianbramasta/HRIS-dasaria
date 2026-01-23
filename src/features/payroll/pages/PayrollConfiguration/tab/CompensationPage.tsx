@@ -41,7 +41,8 @@ export default function KompensasiPage() {
   };
   const columns: DataTableColumn<CompensationRow>[] = [
     { id: 'no', label: 'No.', align: 'center', sortable: false },
-    { id: 'level-jabatan', label: 'Level Jabatan', sortable: true },
+    { id: 'jabatan-kepangkatan', label: 'Jabatan Kepangkatan', sortable: true },
+    { id: 'jabatan-struktural', label: 'Jabatan Struktural', sortable: true },
     { id: 'kategori', label: 'Kategori', sortable: true },
     { id: 'general', label: 'General', align: 'center', sortable: true },
     { id: 'junior', label: 'Junior', align: 'center', sortable: true },
