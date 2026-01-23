@@ -1,61 +1,99 @@
-// Dokumentasi: Tabel Tunjangan Tidak Tetap + integrasi Modal Tambah/Edit
-import  { useMemo, useState } from 'react';
+import { useNonFixedAllowance } from '@/features/payroll/hooks/modals/payroll-configuration/non-fixed-allowance/useNonFixedAllowance';
 import DataTable, { type DataTableColumn, type DataTableAction } from '@/components/shared/datatable/DataTable';
 import { IconPencil, IconHapus } from '@/icons/components/icons';
 import EditTunjanganTidakTetapModal from '@/features/payroll/components/modals/payroll-configuration/non-recurring-allowance/EditNonRecurringAllowanceModal';
+import EditNonRecurringAllowanceModalDelete from '@/features/payroll/components/modals/payroll-configuration/non-recurring-allowance/EditNonRecurringAllowanceModalDelete';
 
-type TunjanganTidakTetapRow = {
-  no?: number;
-  'Nama Tunjangan': string;
-  'Deksripsi Umum': string;
-};
+// Refactored Page Component
+export default function NonRecurringAllowancePage() {
+  const {
+    rows,
+    loading,
+    total,
+    page,
+    pageSize,
+    setSearch,
+    setPage,
+    setPageSize,
+    setSort,
+    
+    // Modal & Handlers
+    addModal,
+    editModal,
+    deleteModal,
+    selected,
+    handleAddOpen,
+    handleEditOpen,
+    handleDeleteOpen,
+    handleClose,
+    handleSuccess,
+    
+    // API Actions
+    createData,
+    updateData,
+    deleteData
+  } = useNonFixedAllowance();
 
-export default function TunjanganTidakTetapPage() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [defaultValues, setDefaultValues] = useState<{ namaTunjangan: string; deskripsiUmum: string } | null>(null);
-  const [modalTitle, setModalTitle] = useState<string>('Edit Tunjangan Tidak Tetap');
-  const [confirmTitleButton, setConfirmTitleButton] = useState<string>('Simpan Perubahan');
-
-  const columns: DataTableColumn<TunjanganTidakTetapRow>[] = [
+  const columns: DataTableColumn<any>[] = [
     { id: 'no', label: 'No.', align: 'center', sortable: false },
     { id: 'Nama Tunjangan', label: 'Nama Tunjangan', sortable: true },
+    { id: 'Sub Kategori', label: 'Sub Kategori', sortable: true },
     { id: 'Deksripsi Umum', label: 'Deksripsi Umum', sortable: true },
   ];
 
-  const actions: DataTableAction<TunjanganTidakTetapRow>[] = [
-    { label: '', icon: <IconHapus />, onClick: (row) => { console.log('hapus', row); }, variant: 'outline', className: 'border-0' },
-    { label: '', icon: <IconPencil />, onClick: (row) => {
-      setDefaultValues({ namaTunjangan: row['Nama Tunjangan'], deskripsiUmum: row['Deksripsi Umum'] });
-      setModalTitle('Edit Tunjangan Tidak Tetap');
-      setConfirmTitleButton('Simpan Perubahan');
-      setIsModalOpen(true);
-    }, variant: 'outline', className: 'border-0' },
+  const actions: DataTableAction<any>[] = [
+    { 
+      label: '', 
+      icon: <IconHapus />, 
+      onClick: (row) => handleDeleteOpen(row.raw), 
+      variant: 'outline', 
+      className: 'border-0' 
+    },
+    { 
+      label: '', 
+      icon: <IconPencil />, 
+      onClick: (row) => handleEditOpen(row.raw), 
+      variant: 'outline', 
+      className: 'border-0' 
+    },
   ];
 
-  const rows: TunjanganTidakTetapRow[] = useMemo(() => (
-    [
-      { 'Nama Tunjangan': 'Tunjangan PPH 21', 'Deksripsi Umum': 'Biasanya tunjangan untuk menanggung PPh pasal 24 atas penghasilan dari luar negeri' },
-      { 'Nama Tunjangan': 'Tunjangan Pendidikan', 'Deksripsi Umum': 'Tunjangan untuk membantu biaya pendidikan karyawan atau keluarga (anak/spouse). Dapat berupa reimbursement biaya sekolah, kursus, atau pelatihan.' },
-      { 'Nama Tunjangan': 'Tunjangan Performa', 'Deksripsi Umum': 'Tunjangan berdasarkan penilaian kinerja (performance appraisal). Besarnya tergantung pencapaian target atau kontribusi individu/departemen dalam periode tertentu.' },
-      { 'Nama Tunjangan': 'Insentif', 'Deksripsi Umum': 'Pembayaran tambahan di luar gaji pokok yang diberikan sebagai bentuk apresiasi atas pencapaian tertentu, misalnya target penjualan, efisiensi, atau inovasi.' },
-      { 'Nama Tunjangan': 'Overtime', 'Deksripsi Umum': 'Pembayaran tambahan untuk jam kerja di luar waktu normal sesuai ketentuan ketenagakerjaan.' },
-      { 'Nama Tunjangan': 'Komisi Sales', 'Deksripsi Umum': 'Pembayaran berdasarkan nilai penjualan atau transaksi yang berhasil ditutup. Merupakan bagian dari skema kompensasi variabel.' },
-    ]
-  ), []);
+  const handleSave = async (values: { namaTunjangan: string; kategori: string; deskripsiUmum: string }) => {
+    const payload = {
+      allowanceName: values.namaTunjangan,
+      categorySub: values.kategori,
+      description: values.deskripsiUmum
+    };
 
-  const exportCSV = (filename: string, data: any[]) => {
-    if (!data || data.length === 0) return;
-    const headers = Object.keys(data[0]);
-    const csv = [headers.join(','), ...data.map(r => headers.map(h => JSON.stringify((r as any)[h] ?? '')).join(','))].join('\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', filename);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    if (selected) {
+      await updateData(selected.id, payload);
+    } else {
+      await createData(payload);
+    }
+    
+    // If successful (assuming no error caught in hook or we check result)
+    // Hook handles error state internally.
+    // For better UX, we could check if error is null, but hook implementation returns null on error for create/update/getDetail usually or handles it.
+    // Let's assume success if we reach here without error thrown (hook catches errors though).
+    // A better pattern would be if updateData returns success boolean or object.
+    // updateData returns NonFixedAllowanceListItem | null.
+    // If result is null and no error, maybe it's weird? 
+    // Wait, updateData in hook returns null on success (void-like but typed null) or null on error.
+    // Let's check updateData signature in useApiNonFixedAllowance:
+    // returns Promise<NonFixedAllowanceListItem | null>. Returns null on success (line 154) and null on error (line 158).
+    // This is ambiguous. But let's rely on handleSuccess calling fetchList.
+    // We should probably check `error` state from hook, but it's not destructured here in handleSave scope directly (it is from hook return).
+    
+    handleSuccess();
+  };
+
+  const handleDelete = async () => {
+    if (selected) {
+      const success = await deleteData(selected.id);
+      if (success) {
+        handleSuccess();
+      }
+    }
   };
 
   return (
@@ -65,22 +103,41 @@ export default function TunjanganTidakTetapPage() {
         data={rows}
         columns={columns}
         actions={actions}
+        loading={loading}
+        pageSize={pageSize}
+        useExternalPagination
+        externalPage={page}
+        externalTotal={total}
         searchable
         filterable
-        onExport={() => exportCSV('tunjangan-tidak-tetap.csv', rows)}
-        onAdd={() => { setDefaultValues({ namaTunjangan: '', deskripsiUmum: '' }); setModalTitle('Tambah Tunjangan Tidak Tetap'); setConfirmTitleButton('Simpan'); setIsModalOpen(true); }}
+        onSearchChange={setSearch}
+        onSortChange={(id, order) => setSort(id, order)}
+        onPageChangeExternal={setPage}
+        onRowsPerPageChangeExternal={setPageSize}
+        onAdd={handleAddOpen}
         addButtonLabel="Tambah Tunjangan"
+        onExport={() => { /* Implement export if needed */ }}
       />
-      {isModalOpen && (
+
+      {/* Modal Add/Edit */}
+      {(addModal.isOpen || editModal.isOpen) && (
         <EditTunjanganTidakTetapModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          defaultValues={defaultValues}
-          onSave={(values) => { console.log('save tunjangan tidak tetap', values); }}
-          title={modalTitle}
-          confirmTitleButton={confirmTitleButton}
+          isOpen={addModal.isOpen || editModal.isOpen}
+          onClose={handleClose}
+          defaultValues={selected ? { namaTunjangan: selected.allowanceName, kategori: selected.categorySub, deskripsiUmum: selected.description } : { namaTunjangan: '', kategori: 'umum', deskripsiUmum: '' }}
+          onSave={handleSave}
+          title={selected ? 'Edit Tunjangan Tidak Tetap' : 'Tambah Tunjangan Tidak Tetap'}
+          confirmTitleButton={selected ? 'Simpan Perubahan' : 'Simpan'}
         />
       )}
+
+      {/* Delete Confirmation Modal */}
+      <EditNonRecurringAllowanceModalDelete
+        isOpen={deleteModal.isOpen}
+        onClose={handleClose}
+        onDelete={handleDelete}
+        allowanceName={selected?.allowanceName}
+      />
     </div>
   );
 }

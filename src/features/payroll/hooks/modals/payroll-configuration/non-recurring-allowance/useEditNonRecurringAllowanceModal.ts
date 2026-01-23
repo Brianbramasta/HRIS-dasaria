@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 export type NonRecurringAllowanceForm = {
   namaTunjangan: string;
+  kategori: string;
   deskripsiUmum: string;
 };
 
@@ -16,6 +17,7 @@ export const useEditNonRecurringAllowanceModal = (params: {
   const initial: NonRecurringAllowanceForm = useMemo(
     () => ({
       namaTunjangan: defaultValues?.namaTunjangan ?? '',
+      kategori: defaultValues?.kategori ?? 'umum',
       deskripsiUmum: defaultValues?.deskripsiUmum ?? '',
     }),
     [defaultValues]
