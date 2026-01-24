@@ -22,6 +22,8 @@ export interface EmployeePositionListItem {
   divisionName: string | null;
   departmentId: string | null;
   departmentName: string | null;
+  unitName: string | null;
+  structuralJobName: string | null;
   // Dokumentasi: tambahkan field deskripsi mengikuti mapping service
   description: string | null;
   startDate: string | null;

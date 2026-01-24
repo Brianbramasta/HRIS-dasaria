@@ -16,10 +16,13 @@ type Props = { resetKey: string };
 const employeePositionColumns: DataTableColumn<EmployeePositionRow>[] = [
   { id: 'no', label: 'No', sortable: false },
   { id: 'nama-posisi', label: 'Nama Posisi', sortable: true },
-  { id: 'jabatan', label: 'Jabatan', sortable: true },
+  { id: 'jabatan-kepangkatan', label: 'Jabatan Kepangkatan', sortable: true },
+  { id: 'jabatan-struktural', label: 'Jabatan Struktural', sortable: true },
   { id: 'direktorat', label: 'Direktorat', sortable: true },
   { id: 'divisi', label: 'Divisi', sortable: true },
   { id: 'departemen', label: 'Departemen', sortable: true },
+  { id: 'unit', label: 'Unit', sortable: true },
+  { id: 'deskripsi-tugas', label: 'Deskripsi Tugas', sortable: true },
   { id: 'file-sk-dan-mou', label: 'File SK & MoU', sortable: false, align: 'center', isAction: true, format: (row: EmployeePositionRow) => (row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer" className='flex items-center justify-center'><FileText size={16} /></a> : '—')},
 ];
 

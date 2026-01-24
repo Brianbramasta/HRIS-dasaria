@@ -17,6 +17,8 @@ export const mapToEmployeePosition = (item: any): EmployeePositionListItem => ({
   divisionName: item.division_name ?? item.divisionName ?? null,
   departmentId: item.department_id ?? item.departmentId ?? null,
   departmentName: item.department_name ?? item.departmentName ?? null,
+  unitName: item.unit_name ?? item.unitName ?? null,
+  structuralJobName: item.mt_structural_job_name ?? item.structuralJobName ?? null,
   description: item.position_description ?? item.description ?? null,
   startDate: item.start_date ?? item.startDate ?? null,
   endDate: item.end_date ?? item.endDate ?? null,
