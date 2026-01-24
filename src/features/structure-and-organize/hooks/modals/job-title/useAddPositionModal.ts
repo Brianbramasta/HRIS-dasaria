@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
-import { usePositions } from '../../job-tittle/useJobTitle';
+import { useApiJobTitles } from '../../api/useApiJobTitles';
 
 interface UseAddPositionModalParams {
   isOpen: boolean;
@@ -17,7 +17,7 @@ export function useAddPositionModal({ onClose, onSuccess }: UseAddPositionModalP
   const [jobDescription, setJobDescription] = useState('');
   const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
-  const { createPosition } = usePositions();
+  const { createPosition } = useApiJobTitles();
 
   const handleFileChange = () => {};
 

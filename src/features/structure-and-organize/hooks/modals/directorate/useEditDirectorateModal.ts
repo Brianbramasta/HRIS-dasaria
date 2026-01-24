@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { DirectorateListItem } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
-import { useDirectorates } from '../../directorate/useDirectorates';
+import { useApiDirectorates } from '../../api/useApiDirectorates';
 
 export function useEditDirectorateModal(
   isOpen: boolean,
@@ -15,7 +15,7 @@ export function useEditDirectorateModal(
   const [memoNumber, setMemoNumber] = useState('');
   const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
-  const { updateDirectorate } = useDirectorates();
+  const { updateDirectorate } = useApiDirectorates();
 
   useEffect(() => {
     if (isOpen && directorate) {

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { PositionListItem } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
-import { usePositions } from '../../job-tittle/useJobTitle';
+import { useApiJobTitles } from '../../api/useApiJobTitles';
 
 interface UseEditPositionModalParams {
   isOpen: boolean;
@@ -25,7 +25,7 @@ export function useEditPositionModal({
   const [jobDescription, setJobDescription] = useState('');
   const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
-  const { updatePosition, detail } = usePositions();
+  const { updatePosition, detail } = useApiJobTitles();
 
   const handleFileChange = () => {};
 

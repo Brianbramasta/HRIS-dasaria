@@ -2,11 +2,11 @@ import { useEffect, useMemo, useState, useRef } from 'react';
 import type { EmployeePositionListItem } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
-import { useEmployeePositions } from '../../employee-positions/useEmployeePositions';
-import { usePositions } from '../../job-tittle/useJobTitle';
-import { useDirectorates } from '../../directorate/useDirectorates';
-import { useDivisions } from '../../division/useDivisions';
-import { useDepartments } from '../../departement/useDepartments';
+import { useApiEmployeePositions } from '../../api/useApiEmployeePositions';
+import { useApiJobTitles } from '../../api/useApiJobTitles';
+import { useApiDirectorates } from '../../api/useApiDirectorates';
+import { useApiDivisions } from '../../api/useApiDivisions';
+import { useApiDepartments } from '../../api/useApiDepartments';
 
 interface UseEditEmployeePositionModalParams {
   isOpen: boolean;
@@ -30,11 +30,11 @@ export function useEditEmployeePositionModal({
   const [description, setDescription] = useState('');
   const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
-  const { updateEmployeePosition, detail } = useEmployeePositions();
-  const { getDropdown: getPositionDropdown } = usePositions();
-  const { getDropdown: getDirectorateDropdown } = useDirectorates();
-  const { getDropdown: getDivisionDropdown } = useDivisions();
-  const { getDropdown: getDepartmentDropdown } = useDepartments();
+  const { updateEmployeePosition, detail } = useApiEmployeePositions();
+  const { getDropdown: getPositionDropdown } = useApiJobTitles();
+  const { getDropdown: getDirectorateDropdown } = useApiDirectorates();
+  const { getDropdown: getDivisionDropdown } = useApiDivisions();
+  const { getDropdown: getDepartmentDropdown } = useApiDepartments();
 
   const [positionOptions, setPositionOptions] = useState<{ value: string; label: string }[]>([]);
   const [directorateOptions, setDirectorateOptions] = useState<{ value: string; label: string }[]>([]);

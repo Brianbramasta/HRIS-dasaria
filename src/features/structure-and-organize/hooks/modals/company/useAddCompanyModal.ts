@@ -1,6 +1,6 @@
 import React from 'react';
-import { companyService } from '../../../services/OrganizationService';
-import { useBusinessLines } from '../../business-lines/useBusinessLines';
+import { companiesService } from '../../../services/request/CompaniesService';
+import { useApiBusinessLines } from '../../api/useApiBusinessLines';
 import type { BusinessLineListItem, CompanyListItem } from '../../../types/OrganizationApiTypes';
 import { addNotification } from '@/stores/notificationStore';
 
@@ -19,7 +19,7 @@ export function useAddCompanyModal(params: {
     { name: '', number: '', file: null },
   ]);
   const [submitting, setSubmitting] = React.useState(false);
-  const { getDropdown } = useBusinessLines({ autoFetch: false });
+  const { getDropdown } = useApiBusinessLines();
 
   React.useEffect(() => {
     if (!isOpen) return;
@@ -90,7 +90,7 @@ export function useAddCompanyModal(params: {
         formData.append(`documents[${i}][cd_file]`, d.file);
       });
 
-      const created = await companyService.create(formData);
+      const created = await companiesService.create(formData);
       onSuccess?.(created);
       setName('');
       setBusinessLineId('');
