@@ -1,0 +1,115 @@
+import { useState, useEffect, useMemo } from 'react';
+import { useFormulirKaryawanStore } from '@/features/employee/stores/useFormulirKaryawanStore';
+import { getBankDropdownOptions } from './useFormulirKaryawan';
+import { useAuthStore } from '@/features/auth/stores/AuthStore';
+import { useApiPayrollPreview } from '../../api/useApiPayrollPreview';
+import { NonFixAllowancePayload, PreviewPayrollQueryParams } from '../../../types/dto/PayrollPreviewType';
+
+// digunakan di form 4
+export const useStep4Data = (isOpen?: boolean) => {
+  const [bankOptions, setBankOptions] = useState<any[]>([]);
+  const { formData, updateStep3 } = useFormulirKaryawanStore();
+  const step3 = formData.step3;
+  const step1 = formData.step1;
+  const step3Employee = formData.step3Employee;
+
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+
+  // API Hooks
+  const {
+    fetchPreviewPayroll,
+    fetchNonFixAllowanceDropdown,
+    previewData,
+    nonFixAllowanceOptions,
+  } = useApiPayrollPreview();
+
+  // State for Non-Fixed Allowances
+  const [nonFixAllowances, setNonFixAllowances] = useState<NonFixAllowancePayload[]>([{ id: '', amount: 0 }]);
+
+  useEffect(() => {
+    if (isOpen === false) return;
+    
+    let mounted = true;
+    getBankDropdownOptions().then((opts:any) => { if (mounted) setBankOptions(opts); }).catch(() => {});
+    return () => { mounted = false; };
+  }, [isOpen]);
+
+  // Fetch Non-Fix Allowance Dropdown
+  useEffect(() => {
+    if (isAuthenticated && isOpen !== false) {
+      fetchNonFixAllowanceDropdown();
+    }
+  }, [fetchNonFixAllowanceDropdown, isAuthenticated, isOpen]);
+
+  // Fetch Payroll Preview
+  useEffect(() => {
+    if (isOpen === false) return;
+
+    const { statusMenikah, jumlahTanggungan } = step1;
+    const { jenjangJabatan, jabatan, kategoriKaryawan } = step3Employee;
+
+    if (isAuthenticated && jenjangJabatan && jabatan && statusMenikah && jumlahTanggungan && kategoriKaryawan) {
+      const params: PreviewPayrollQueryParams = {
+        Position_level_id: jenjangJabatan,
+        category: statusMenikah,
+        dependents: Number(jumlahTanggungan),
+        job_title_id: jabatan,
+        employee_categories_id: kategoriKaryawan,
+      };
+      fetchPreviewPayroll(params);
+    }
+  }, [
+    step1.statusMenikah,
+    step1.jumlahTanggungan,
+    step3Employee.jenjangJabatan,
+    step3Employee.jabatan,
+    step3Employee.kategoriKaryawan,
+    fetchPreviewPayroll,
+    isAuthenticated,
+    isOpen
+  ]);
+
+  // Calculate Net Salary Manually
+  const netSalary = useMemo(() => {
+    const base = previewData?.salaryAfterDeduction ?? 0;
+    const additional = nonFixAllowances.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+    return base + additional;
+  }, [previewData?.salaryAfterDeduction, nonFixAllowances]);
+
+  const handleChange = (field: string, value: string) => {
+    updateStep3({ [field]: value } as any);
+  };
+
+  // Handlers for Non-Fix Allowances
+  const addNonFixAllowance = () => {
+    setNonFixAllowances([...nonFixAllowances, { id: '', amount: 0 }]);
+  };
+
+  const removeNonFixAllowance = (index: number) => {
+    const newAllowances = [...nonFixAllowances];
+    newAllowances.splice(index, 1);
+    setNonFixAllowances(newAllowances);
+  };
+
+  const updateNonFixAllowance = (index: number, field: keyof NonFixAllowancePayload, value: any) => {
+    const newAllowances = [...nonFixAllowances];
+    newAllowances[index] = { ...newAllowances[index], [field]: value };
+    setNonFixAllowances(newAllowances);
+  };
+
+  return { 
+    bankOptions,
+    step3,
+    step1,
+    step3Employee,
+    isAuthenticated,
+    previewData,
+    nonFixAllowanceOptions,
+    nonFixAllowances,
+    netSalary,
+    handleChange,
+    addNonFixAllowance,
+    removeNonFixAllowance,
+    updateNonFixAllowance
+  };
+};
