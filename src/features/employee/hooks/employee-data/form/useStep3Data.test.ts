@@ -75,24 +75,32 @@ describe('useStep3Data', () => {
     expect(mockUpdateStep3Employee).toHaveBeenCalledWith({ company: 'comp-1', kantor: '' });
   });
 
-  it('seharusnya menangani perubahan jabatan dan mengupdate grade', () => {
-    const { result } = renderHook(() => useStep3Data(true));
-    
-    // Set jobTitleOptions manually via internal state update simulation or just rely on the effect that populates it
-    // Since we can't easily set state inside hook, we mock the fetch and wait
-    // But here we are testing handleChange which uses the current state options.
-    // The hook initializes jobTitleOptions from API.
-    
-    // Let's mock the API call first
+  it('seharusnya menangani perubahan jabatan dan mengupdate grade', async () => {
     (employeeMasterDataService.getJobTitleDropdown as jest.Mock).mockResolvedValue([
-      { job_title_name: 'Manager', id: 'job-1', grade: 'Grade A' }
+      { job_title_name: 'Manager', id: 'job-1', grade: 'Grade A' },
     ]);
 
-    // Trigger effect
-    jest.advanceTimersByTime(500);
+    const { result } = renderHook(() => useStep3Data(true));
 
-    // Re-render to get updated state? No, renderHook handles it.
-    // We need to wait for the options to be populated.
+    act(() => {
+      jest.advanceTimersByTime(400);
+    });
+
+    await waitFor(() => {
+      expect(result.current.jobTitleOptions.length).toBeGreaterThan(0);
+    });
+
+    act(() => {
+      result.current.handleChange('jabatan', 'job-1');
+    });
+
+    expect(mockUpdateStep3Employee).toHaveBeenCalledWith({
+      jabatan: 'job-1',
+    });
+
+    expect(mockUpdateStep3Employee).toHaveBeenCalledWith({
+      golongan: 'Grade A',
+    });
   });
 
   it('seharusnya memuat opsi kantor ketika company dipilih', async () => {
@@ -105,7 +113,7 @@ describe('useStep3Data', () => {
         { office_name: 'Office 1', id: 'off-1' }
     ]);
 
-    const { result } = renderHook(() => useStep3Data(true));
+    renderHook(() => useStep3Data(true));
     
     await waitFor(() => {
         expect(employeeMasterDataService.getOfficeDropdown).toHaveBeenCalledWith(undefined, 'comp-1');

@@ -77,10 +77,7 @@ describe('useStep2Data', () => {
     ];
 
     expect(mockUpdateStep2).toHaveBeenCalledWith({
-      education: expect.arrayContaining([
-          ...initialEducation,
-          expect.anything()
-      ]),
+      education: expectedEducation,
     });
   });
 
