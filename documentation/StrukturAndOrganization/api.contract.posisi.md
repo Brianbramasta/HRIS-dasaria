@@ -28,6 +28,7 @@ Body (form-data):
 - `division_id`
 - `department_id`
 - `unit_id`
+- `structural_job_id`
 - `position_decree_number`
 - `position_description`
 - `position_decree_file` (file)
@@ -51,6 +52,7 @@ Body (form-data):
 - `division_id`
 - `department_id`
 - `unit_id`
+- `structural_job_id`
 - `position_decree_number`
 - `position_description`
 - `position_decree_file` (file)

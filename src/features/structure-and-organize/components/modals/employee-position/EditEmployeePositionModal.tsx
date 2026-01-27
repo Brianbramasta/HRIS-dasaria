@@ -37,6 +37,12 @@ const EditEmployeePositionModal: React.FC<EditEmployeePositionModalProps> = ({ i
     directorateOptions,
     divisionOptions,
     departmentOptions,
+    structuralJob,
+    setStructuralJob,
+    structuralJobOptions,
+    unit,
+    setUnit,
+    unitOptions,
     handleFileChange,
     handleSubmit,
     searchPositions,
@@ -60,10 +66,10 @@ const EditEmployeePositionModal: React.FC<EditEmployeePositionModalProps> = ({ i
             onChange={(e) => setName(e.target.value)}
           />
           <SelectField
-            label="Jabatan"
+            label="Jabatan Kepangkatan"
             required
             options={positionOptions}
-            placeholder="Pilih Jabatan"
+            placeholder="Pilih Jabatan Kepangkatan"
             defaultValue={jabatan}
             onChange={(v) => {
               setJabatan(v);
@@ -72,6 +78,15 @@ const EditEmployeePositionModal: React.FC<EditEmployeePositionModalProps> = ({ i
             onSearch={async (q) => {
               await searchPositions(q);
             }}
+          />
+          <SelectField
+            label="Jabatan Struktural"
+            required={false}
+            options={structuralJobOptions}
+            placeholder="Pilih Jabatan Struktural"
+            defaultValue={structuralJob}
+            onChange={(v) => setStructuralJob(v)}
+            disabled={!jabatan}
           />
           <SelectField
             label="Direktorat"
@@ -109,6 +124,15 @@ const EditEmployeePositionModal: React.FC<EditEmployeePositionModalProps> = ({ i
               await searchDepartments(q);
             }}
           />
+          <SelectField
+            label="Unit"
+            required={false}
+            options={unitOptions}
+            placeholder="Pilih Unit"
+            defaultValue={unit}
+            onChange={(v) => setUnit(v)}
+            disabled={!departemen}
+          />
           <InputField
             label="No. Surat Keputusan / Memo Internal"
             required
@@ -117,7 +141,7 @@ const EditEmployeePositionModal: React.FC<EditEmployeePositionModalProps> = ({ i
             onChange={(e) => setMemoNumber(e.target.value)}
           />
           <TextAreaField
-            label="Gambaran Umum"
+            label="Deskripsi Tugas"
             required
             value={description}
             onChange={(val) => setDescription(val)}

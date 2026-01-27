@@ -17,7 +17,9 @@ export const mapToEmployeePosition = (item: any): EmployeePositionListItem => ({
   divisionName: item.division_name ?? item.divisionName ?? null,
   departmentId: item.department_id ?? item.departmentId ?? null,
   departmentName: item.department_name ?? item.departmentName ?? null,
+  unitId: item.unit_id ?? item.unitId ?? null,
   unitName: item.unit_name ?? item.unitName ?? null,
+  structuralJobId: item.structural_job_id ?? item.structuralJobId ?? null,
   structuralJobName: item.mt_structural_job_name ?? item.structuralJobName ?? null,
   description: item.position_description ?? item.description ?? null,
   startDate: item.start_date ?? item.startDate ?? null,
@@ -60,6 +62,9 @@ interface UseEmployeePositionsReturn {
     directorateId?: string | null;
     divisionId?: string | null;
     departmentId?: string | null;
+    unitId?: string | null;
+    structuralJobId?: string | null;
+    description?: string;
     startDate?: string | null;
     endDate?: string | null;
     memoNumber: string;
@@ -71,6 +76,9 @@ interface UseEmployeePositionsReturn {
     directorateId?: string | null;
     divisionId?: string | null;
     departmentId?: string | null;
+    unitId?: string | null;
+    structuralJobId?: string | null;
+    description?: string;
     startDate?: string | null;
     endDate?: string | null;
     memoNumber: string;
@@ -157,6 +165,9 @@ export const useApiEmployeePositions = (): UseEmployeePositionsReturn => {
     directorateId?: string | null;
     divisionId?: string | null;
     departmentId?: string | null;
+    unitId?: string | null;
+    structuralJobId?: string | null;
+    description?: string;
     startDate?: string | null;
     endDate?: string | null;
     memoNumber: string;
@@ -172,6 +183,9 @@ export const useApiEmployeePositions = (): UseEmployeePositionsReturn => {
       if (employeePositionData.directorateId) form.append('directorate_id', employeePositionData.directorateId);
       if (employeePositionData.divisionId) form.append('division_id', employeePositionData.divisionId);
       if (employeePositionData.departmentId) form.append('department_id', employeePositionData.departmentId);
+      if (employeePositionData.unitId) form.append('unit_id', employeePositionData.unitId);
+      if (employeePositionData.structuralJobId) form.append('structural_job_id', employeePositionData.structuralJobId);
+      if (employeePositionData.description) form.append('position_description', employeePositionData.description);
       if (employeePositionData.memoNumber) form.append('position_decree_number', employeePositionData.memoNumber);
       if (employeePositionData.skFile) form.append('position_decree_file', employeePositionData.skFile);
 
@@ -196,6 +210,9 @@ export const useApiEmployeePositions = (): UseEmployeePositionsReturn => {
     directorateId?: string | null;
     divisionId?: string | null;
     departmentId?: string | null;
+    unitId?: string | null;
+    structuralJobId?: string | null;
+    description?: string;
     startDate?: string | null;
     endDate?: string | null;
     memoNumber: string;
@@ -218,6 +235,13 @@ export const useApiEmployeePositions = (): UseEmployeePositionsReturn => {
       if (employeePositionData.departmentId !== undefined && employeePositionData.departmentId !== null) {
         form.append('department_id', employeePositionData.departmentId);
       }
+      if (employeePositionData.unitId !== undefined && employeePositionData.unitId !== null) {
+        form.append('unit_id', employeePositionData.unitId);
+      }
+      if (employeePositionData.structuralJobId !== undefined && employeePositionData.structuralJobId !== null) {
+        form.append('structural_job_id', employeePositionData.structuralJobId);
+      }
+      if (employeePositionData.description !== undefined) form.append('position_description', employeePositionData.description);
       if (employeePositionData.memoNumber) form.append('position_decree_number', employeePositionData.memoNumber);
       if (employeePositionData.skFile) form.append('position_decree_file', employeePositionData.skFile);
 

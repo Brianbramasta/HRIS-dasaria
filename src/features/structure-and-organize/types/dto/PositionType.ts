@@ -22,7 +22,9 @@ export interface EmployeePositionListItem {
   divisionName: string | null;
   departmentId: string | null;
   departmentName: string | null;
+  unitId?: string | null;
   unitName: string | null;
+  structuralJobId?: string | null;
   structuralJobName: string | null;
   // Dokumentasi: tambahkan field deskripsi mengikuti mapping service
   description: string | null;

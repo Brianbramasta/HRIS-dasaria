@@ -20,12 +20,16 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
     setName,
     jabatan,
     setJabatan,
+    structuralJob,
+    setStructuralJob,
     direktorat,
     setDirektorat,
     divisi,
     setDivisi,
     departemen,
     setDepartemen,
+    unit,
+    setUnit,
     memoNumber,
     setMemoNumber,
     description,
@@ -33,9 +37,11 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
     skFile,
     submitting,
     positionOptions,
+    structuralJobOptions,
     directorateOptions,
     divisionOptions,
     departmentOptions,
+    unitOptions,
     handleFileChange,
     handleSubmit,
     searchPositions,
@@ -62,15 +68,25 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
           />
           <SelectField
             containerClassName="space-y-2"
-            label="Jabatan"
+            label="Jabatan Kepangkatan"
             required
             options={positionOptions}
-            placeholder="Pilih Jabatan"
+            placeholder="Pilih Jabatan Kepangkatan"
             defaultValue={jabatan}
-            onChange={(v) => setJabatan(v)}
+            onChange={(v) => { setJabatan(v); setStructuralJob(''); }}
             onSearch={async (q) => {
               await searchPositions(q);
             }}
+          />
+          <SelectField
+            containerClassName="space-y-2"
+            label="Jabatan Struktural"
+            required={false}
+            options={structuralJobOptions}
+            placeholder="Pilih Jabatan Struktural"
+            defaultValue={structuralJob}
+            onChange={(v) => setStructuralJob(v)}
+            disabled={!jabatan}
           />
           <SelectField
             containerClassName="space-y-2"
@@ -91,7 +107,7 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
             options={divisionOptions}
             placeholder="Pilih Divisi"
             defaultValue={divisi}
-            onChange={(v) => { setDivisi(v); /* reset departemen jika divisi berubah */ setDepartemen(''); }}
+            onChange={(v) => { setDivisi(v); setDepartemen(''); setUnit(''); }}
             onSearch={async (q) => {
               await searchDivisions(q);
             }}
@@ -103,10 +119,20 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
             options={departmentOptions}
             placeholder="Pilih Departemen"
             defaultValue={departemen}
-            onChange={(v) => setDepartemen(v)}
+            onChange={(v) => { setDepartemen(v); setUnit(''); }}
             onSearch={async (q) => {
               await searchDepartments(q);
             }}
+          />
+          <SelectField
+            containerClassName="space-y-2"
+            label="Unit"
+            required={false}
+            options={unitOptions}
+            placeholder="Pilih Unit"
+            defaultValue={unit}
+            onChange={(v) => setUnit(v)}
+            disabled={!departemen}
           />
           <InputField
             containerClassName="space-y-2"
@@ -119,7 +145,7 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
           />
           <TextAreaField
             containerClassName="space-y-2"
-            label="Gambaran Umum"
+            label="Deskripsi Tugas"
             required
             value={description}
             onChange={(e) => setDescription(e)}

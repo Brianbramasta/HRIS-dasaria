@@ -7,6 +7,7 @@ import { useApiJobTitles } from '../../api/useApiJobTitles';
 import { useApiDirectorates } from '../../api/useApiDirectorates';
 import { useApiDivisions } from '../../api/useApiDivisions';
 import { useApiDepartments } from '../../api/useApiDepartments';
+import { employeeMasterDataService } from '../../../../employee/services/EmployeeMasterData.service';
 
 interface UseAddEmployeePositionModalParams {
   isOpen: boolean;
@@ -17,9 +18,11 @@ interface UseAddEmployeePositionModalParams {
 export function useAddEmployeePositionModal({ isOpen, onClose, onSuccess }: UseAddEmployeePositionModalParams) {
   const [name, setName] = useState('');
   const [jabatan, setJabatan] = useState('');
+  const [structuralJob, setStructuralJob] = useState('');
   const [direktorat, setDirektorat] = useState('');
   const [divisi, setDivisi] = useState('');
   const [departemen, setDepartemen] = useState('');
+  const [unit, setUnit] = useState('');
   const [memoNumber, setMemoNumber] = useState('');
   const [description, setDescription] = useState('');
   const skFile = useFileStore((s) => s.skFile);
@@ -31,9 +34,11 @@ export function useAddEmployeePositionModal({ isOpen, onClose, onSuccess }: UseA
   const { getDropdown: getDepartmentDropdown } = useApiDepartments();
 
   const [positionOptions, setPositionOptions] = useState<{ value: string; label: string }[]>([]);
+  const [structuralJobOptions, setStructuralJobOptions] = useState<{ value: string; label: string }[]>([]);
   const [directorateOptions, setDirectorateOptions] = useState<{ value: string; label: string }[]>([]);
   const [divisionOptions, setDivisionOptions] = useState<{ value: string; label: string }[]>([]);
   const [departmentOptionsAll, setDepartmentOptionsAll] = useState<{ value: string; label: string }[]>([]);
+  const [unitOptions, setUnitOptions] = useState<{ value: string; label: string }[]>([]);
   const departmentOptions = useMemo(() => departmentOptionsAll, [departmentOptionsAll]);
 
   const handleFileChange = () => {};
@@ -55,6 +60,40 @@ export function useAddEmployeePositionModal({ isOpen, onClose, onSuccess }: UseA
       }
     })();
   }, [isOpen, getPositionDropdown, getDirectorateDropdown, getDivisionDropdown, getDepartmentDropdown]);
+
+  // Fetch Structural Jobs when Jabatan (Kepangkatan) changes
+  useEffect(() => {
+    if (!jabatan) {
+      setStructuralJobOptions([]);
+      setStructuralJob('');
+      return;
+    }
+    (async () => {
+      try {
+        const data = await employeeMasterDataService.getStructuralJobDropdown(jabatan);
+        setStructuralJobOptions((data || []).map((j: any) => ({ value: j.id, label: j.name })));
+      } catch (e) {
+        console.error('Gagal memuat dropdown Jabatan Struktural', e);
+      }
+    })();
+  }, [jabatan]);
+
+  // Fetch Units when Department changes
+  useEffect(() => {
+    if (!departemen) {
+      setUnitOptions([]);
+      setUnit('');
+      return;
+    }
+    (async () => {
+      try {
+        const data = await employeeMasterDataService.getUnitDropdownByDepartmentId(departemen, '');
+        setUnitOptions((data || []).map((u: any) => ({ value: u.id, label: u.name ?? u.name })));
+      } catch (e) {
+        console.error('Gagal memuat dropdown Unit', e);
+      }
+    })();
+  }, [departemen]);
 
   const searchPositionsTimeout = useRef<any>(null);
   const searchDirectoratesTimeout = useRef<any>(null);
@@ -124,9 +163,12 @@ export function useAddEmployeePositionModal({ isOpen, onClose, onSuccess }: UseA
       await createEmployeePosition({
         name: name.trim(),
         positionId: jabatan.trim(),
+        structuralJobId: structuralJob.trim() || null,
         directorateId: direktorat.trim() || null,
         divisionId: divisi.trim() || null,
         departmentId: departemen.trim() || null,
+        unitId: unit.trim() || null,
+        description: description.trim(),
         startDate: null,
         endDate: null,
         memoNumber: memoNumber.trim(),
@@ -135,9 +177,11 @@ export function useAddEmployeePositionModal({ isOpen, onClose, onSuccess }: UseA
       onSuccess?.(null as any);
       setName('');
       setJabatan('');
+      setStructuralJob('');
       setDirektorat('');
       setDivisi('');
       setDepartemen('');
+      setUnit('');
       setMemoNumber('');
       setDescription('');
       onClose();
@@ -159,12 +203,16 @@ export function useAddEmployeePositionModal({ isOpen, onClose, onSuccess }: UseA
     setName,
     jabatan,
     setJabatan,
+    structuralJob,
+    setStructuralJob,
     direktorat,
     setDirektorat,
     divisi,
     setDivisi,
     departemen,
     setDepartemen,
+    unit,
+    setUnit,
     memoNumber,
     setMemoNumber,
     description,
@@ -172,9 +220,11 @@ export function useAddEmployeePositionModal({ isOpen, onClose, onSuccess }: UseA
     skFile,
     submitting,
     positionOptions,
+    structuralJobOptions,
     directorateOptions,
     divisionOptions,
     departmentOptions,
+    unitOptions,
     handleFileChange,
     handleSubmit,
     searchPositions,
