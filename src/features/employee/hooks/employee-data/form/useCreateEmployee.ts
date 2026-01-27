@@ -53,7 +53,6 @@ export function useCreateEmployee() {
     (formData.step4.documents || []).forEach((doc: DocumentItem, i: number) => {
       const fileType = doc.tipeFile || '5';
       appendIfValue(fd, `documents[${i}][employee_document_id]`, fileType);
-      console.log('doc file:', doc.file);
       if (doc.file) fd.append(`documents[${i}][file]`, doc.file);
     });
 

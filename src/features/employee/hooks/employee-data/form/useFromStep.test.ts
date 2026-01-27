@@ -459,6 +459,17 @@ describe('useFromStep Hooks', () => {
 
   describe('useStep4Data', () => {
     beforeEach(() => {
+      (useFormulirKaryawanStore as unknown as jest.Mock).mockReturnValue({
+        formData: {
+          step1: { statusMenikah: 'single', jumlahTanggungan: '0' },
+          step3: { nonFixAllowances: [] },
+          step3Employee: { jenjangJabatan: 'L1', jabatan: 'J1', kategoriKaryawan: 'K1' },
+          step4: { bank: '', noRekening: '', namaAkunBank: '' },
+        },
+        updateStep3: jest.fn(),
+        updateStep4: jest.fn(),
+      });
+
       (useFormulirKaryawan.getBankDropdownOptions as jest.Mock).mockResolvedValue([
         { value: 'b1', label: 'Bank A' },
       ]);
