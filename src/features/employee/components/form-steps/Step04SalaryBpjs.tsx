@@ -26,10 +26,12 @@ export const Step04SalaryBpjs: React.FC = () => {
       {/* Salary Section */}
       <div>
         <h4 className="text-lg font-semibold text-gray-500 dark:text-white mb-4">
-          Salary
+          Gaji
         </h4>
+        <h6 className="text-md font-medium text-gray-700 dark:text-gray-300 mb-3">Informasi Penggajian</h6>
        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          
              {/* Bank */}
         {isAuthenticated &&  
         (<div className="grid grid-cols-1  mb-4">
@@ -126,7 +128,7 @@ export const Step04SalaryBpjs: React.FC = () => {
         {/* Tunjangan Tetap */}
         {isAuthenticated && (
           <div className="mt-6">
-            <h5 className="text-md font-medium text-gray-700 dark:text-gray-300 mb-3">Tunjangan Tetap</h5>
+            <h6 className="text-md font-medium text-gray-700 dark:text-gray-300 mb-3">Tunjangan Tetap</h6>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <InputField
                 label="Tunjangan Jabatan"
@@ -174,7 +176,7 @@ export const Step04SalaryBpjs: React.FC = () => {
         {/* Potongan Tetap */}
         {isAuthenticated && (
           <div className="mt-6">
-            <h5 className="text-md font-medium text-gray-700 dark:text-gray-300 mb-3">Potongan Tetap</h5>
+            <h6 className="text-md font-medium text-gray-700 dark:text-gray-300 mb-3">Potongan Tetap</h6>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* BPJS Deductions */}
                 {previewData?.bpjsDeductionDetails.map((item: any, index: number) => (
@@ -194,7 +196,7 @@ export const Step04SalaryBpjs: React.FC = () => {
         {/* Tunjangan Tidak Tetap */}
         {isAuthenticated && (
           <div className="mt-6">
-            <h5 className="text-md font-medium text-gray-700 dark:text-gray-300 mb-3">Tunjangan Tidak Tetap</h5>
+            <h6 className="text-md font-medium text-gray-700 dark:text-gray-300 mb-3">Tunjangan Tidak Tetap</h6>
             <div className="space-y-4">
               {nonFixAllowances.map((allowance, index) => (
                 <div key={index} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
@@ -243,6 +245,7 @@ export const Step04SalaryBpjs: React.FC = () => {
         {/* Gaji Bersih */}
           {isAuthenticated && (
             <div>
+              <h6 className="text-md font-medium text-gray-700 dark:text-gray-300 mt-3  mb-2">Total Gaji Sementara</h6>
               <InputField
                 label="Gaji Bersih"
                 value={formatCurrency(netSalary)}
