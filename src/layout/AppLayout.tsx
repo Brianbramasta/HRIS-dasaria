@@ -1,13 +1,17 @@
 import { SidebarProvider, useSidebar } from "../context/SidebarContext";
-import { Outlet } from "react-router";
+import { Outlet, useLocation } from "react-router-dom";
 import AppHeader from "./AppHeader";
 import Backdrop from "./Backdrop";
 import AppSidebar from "./AppSidebar";
 import { useAuthStore } from "../features/auth/stores/AuthStore";
+import PageBreadcrumb from "../components/common/PageBreadCrumb";
+import { getBreadcrumbConfig } from "../utils/breadcrumbConfig";
 
 const LayoutContent: React.FC = () => {
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const location = useLocation();
+  const breadcrumbConfig = getBreadcrumbConfig(location.pathname);
 
   return (
     <div className="min-h-screen xl:flex">
@@ -28,6 +32,12 @@ const LayoutContent: React.FC = () => {
       >
         {isAuthenticated && <AppHeader />}
         <div className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6 bg-white dark:bg-[#1A1A1A]">
+          {isAuthenticated && breadcrumbConfig && (
+            <PageBreadcrumb
+              pageTitle={breadcrumbConfig.title}
+              breadcrumbs={breadcrumbConfig.breadcrumbs}
+            />
+          )}
           <Outlet />
         </div>
       </div>
