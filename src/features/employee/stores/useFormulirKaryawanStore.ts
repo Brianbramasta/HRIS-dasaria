@@ -104,6 +104,7 @@ const initialFormData: FormulirKaryawanData = {
     noBpjsKetenagakerjaan: '',
     statusBpjsKetenagakerjaan: '',
     nominalBpjsTk: '',
+    nonFixAllowances: [{ id: '', amount: 0 }],
   },
   step4: {
     documents: [],

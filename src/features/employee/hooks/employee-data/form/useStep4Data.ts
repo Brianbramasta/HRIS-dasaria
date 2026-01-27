@@ -24,7 +24,7 @@ export const useStep4Data = (isOpen?: boolean) => {
   } = useApiPayrollPreview();
 
   // State for Non-Fixed Allowances
-  const [nonFixAllowances, setNonFixAllowances] = useState<NonFixAllowancePayload[]>([{ id: '', amount: 0 }]);
+  const nonFixAllowances = step3.nonFixAllowances || [{ id: '', amount: 0 }];
 
   useEffect(() => {
     if (isOpen === false) return;
@@ -82,19 +82,20 @@ export const useStep4Data = (isOpen?: boolean) => {
 
   // Handlers for Non-Fix Allowances
   const addNonFixAllowance = () => {
-    setNonFixAllowances([...nonFixAllowances, { id: '', amount: 0 }]);
+    const newAllowances = [...nonFixAllowances, { id: '', amount: 0 }];
+    updateStep3({ nonFixAllowances: newAllowances } as any);
   };
 
   const removeNonFixAllowance = (index: number) => {
     const newAllowances = [...nonFixAllowances];
     newAllowances.splice(index, 1);
-    setNonFixAllowances(newAllowances);
+    updateStep3({ nonFixAllowances: newAllowances } as any);
   };
 
   const updateNonFixAllowance = (index: number, field: keyof NonFixAllowancePayload, value: any) => {
     const newAllowances = [...nonFixAllowances];
     newAllowances[index] = { ...newAllowances[index], [field]: value };
-    setNonFixAllowances(newAllowances);
+    updateStep3({ nonFixAllowances: newAllowances } as any);
   };
 
   return { 
