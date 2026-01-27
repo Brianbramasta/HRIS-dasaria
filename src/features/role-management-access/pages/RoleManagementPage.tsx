@@ -61,7 +61,7 @@ export default function HakAksesPage() {
   };
 
   return (
-    <div className="p-4">
+    <div className="px-4">
       <DataTable
         data={data}
         columns={columns}
