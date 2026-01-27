@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react';
 import { useAddUnitModal } from './useAddUnitModal';
 import { useCreateUnit, useGetUnits } from '../../api/useApiUnits';
-import { useDepartments } from '../../departement/useDepartments';
+import { useApiDepartments } from '../../api/useApiDepartments';
 import { addNotification } from '@/stores/notificationStore';
 
 jest.mock('../../api/useApiUnits', () => ({
@@ -12,8 +12,8 @@ jest.mock('../../api/useApiUnits', () => ({
   useDeleteUnit: jest.fn(),
 }));
 
-jest.mock('../../departement/useDepartments', () => ({
-  useDepartments: jest.fn(),
+jest.mock('../../api/useApiDepartments', () => ({
+  useApiDepartments: jest.fn(),
 }));
 
 jest.mock('@/stores/fileStore', () => {
@@ -58,7 +58,7 @@ jest.mock('@/stores/notificationStore', () => ({
 
 const mockedUseCreateUnit = useCreateUnit as unknown as jest.Mock;
 const mockedUseGetUnits = useGetUnits as unknown as jest.Mock;
-const mockedUseDepartments = useDepartments as unknown as jest.Mock;
+const mockedUseApiDepartments = useApiDepartments as unknown as jest.Mock;
 
 describe('useAddUnitModal', () => {
   const onClose = jest.fn();
@@ -99,7 +99,7 @@ describe('useAddUnitModal', () => {
       error: null,
     });
 
-    mockedUseDepartments.mockReturnValue({
+    mockedUseApiDepartments.mockReturnValue({
       getDropdown: getDropdownMock,
     });
 

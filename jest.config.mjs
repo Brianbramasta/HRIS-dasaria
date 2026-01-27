@@ -9,7 +9,6 @@ export default {
       {
         tsconfig: 'tsconfig.jest.json',
         useESM: true,
-        isolatedModules: true,
       },
     ],
   },
@@ -19,6 +18,7 @@ export default {
     '^.+\\.(png|jpg|jpeg|gif|ico)$': '<rootDir>/__mocks__/fileMock.js',
     '^.+\\.(svg)$': '<rootDir>/__mocks__/svgrMock.js',
     '^@/services/api$': '<rootDir>/__mocks__/apiServiceMock.ts',
+    '.*services/api$': '<rootDir>/__mocks__/apiServiceMock.ts',
     '^@/(.*)$': '<rootDir>/src/$1',
   },
   collectCoverageFrom: ['src/**/*.{ts,tsx}', '!src/**/*.d.ts'],
