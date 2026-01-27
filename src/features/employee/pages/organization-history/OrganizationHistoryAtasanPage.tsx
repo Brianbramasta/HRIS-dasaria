@@ -26,6 +26,8 @@ export default function OrganizationHistoryAtasanPage() {
     handleSortChange,
     handlePageChange,
     handleRowsPerPageChange,
+    handleDateRangeFilterChange,
+    dateRangeFilters,
     handleAddOrganization,
     handleCloseModal,
     handleSubmitModal,
@@ -56,7 +58,7 @@ export default function OrganizationHistoryAtasanPage() {
         ),
       },
       { id: 'change_type', label: 'Jenis Perubahan' },
-      { id: 'effective_date', label: 'Tanggal Efektif', format: (v: string) => formatDateToIndonesian(v || '') },
+      { id: 'effective_date', label: 'Tanggal Efektif', dateRangeFilter: true, format: (v: string) => formatDateToIndonesian(v || '') },
       { id: 'old_company', label: 'Perusahaan Lama' },
       { id: 'new_company', label: 'Perusahaan Baru' },
       { id: 'old_directorate', label: 'Direktorat Lama' },
@@ -145,6 +147,8 @@ export default function OrganizationHistoryAtasanPage() {
         externalTotal={total}
         onPageChangeExternal={handlePageChange}
         onRowsPerPageChangeExternal={handleRowsPerPageChange}
+        onDateRangeFilterChange={handleDateRangeFilterChange}
+        dateRangeFilters={dateRangeFilters}
         emptyMessage="Belum ada perubahan organisasi"
         addButtonLabel="Tambah Organisasi"
         onAdd={handleAddOrganization}
