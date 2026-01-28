@@ -84,8 +84,8 @@ export default function useRoleManagement() {
   }, [navigate]);
 
   const handleDetailLayanan = useCallback((idLayanan: string) => {
-    console.log('Detail layanan:', idLayanan);
-  }, []);
+    navigate(`/role-management-access/service-detail/${idLayanan}`);
+  }, [navigate]);
 
   return {
     roleData,
