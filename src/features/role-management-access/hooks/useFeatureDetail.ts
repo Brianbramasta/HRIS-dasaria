@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 
 export interface FeatureData {
   no: number;
@@ -11,6 +11,8 @@ export interface FeatureData {
 export default function useFeatureDetail() {
   const { modulId } = useParams<{ modulId: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { layananId } = location.state || {};
   const [isAddFeatureModalOpen, setIsAddFeatureModalOpen] = useState(false);
   const [isEditFeatureModalOpen, setIsEditFeatureModalOpen] = useState(false);
   const [isDeleteFeatureModalOpen, setIsDeleteFeatureModalOpen] = useState(false);
@@ -39,8 +41,10 @@ export default function useFeatureDetail() {
   }, []);
 
   const handleDetailFeature = useCallback((row: FeatureData) => {
-    navigate(`/role-management-access/access-detail/${row.idFitur}`);
-  }, [navigate]);
+    navigate(`/role-management-access/access-detail/${row.idFitur}`, {
+      state: { layananId, modulId }
+    });
+  }, [navigate, layananId, modulId]);
 
   const onDeleteConfirm = useCallback(() => {
     console.log('Deleting feature:', selectedFeature);

@@ -41,8 +41,10 @@ export default function useModulDetail() {
   }, []);
 
   const handleDetailModul = useCallback((row: ModulData) => {
-    navigate(`/role-management-access/feature-detail/${row.idModul}`);
-  }, [navigate]);
+    navigate(`/role-management-access/feature-detail/${row.idModul}`, {
+      state: { layananId }
+    });
+  }, [navigate, layananId]);
 
   const onDeleteConfirm = useCallback(() => {
     console.log('Deleting modul:', selectedModul);

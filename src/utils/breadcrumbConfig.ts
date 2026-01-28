@@ -7,7 +7,7 @@ export interface BreadcrumbItem {
 
 interface RouteConfig {
   title: string;
-  breadcrumbs: (params: any) => BreadcrumbItem[];
+  breadcrumbs: (params: any, state?: any) => BreadcrumbItem[];
 }
 
 // Konfigurasi mapping route ke breadcrumb
@@ -30,43 +30,46 @@ export const breadcrumbRoutes: Record<string, RouteConfig> = {
 
   // Role Management
   '/role-management-access': {
-    title: 'Akses Akun',
+    title: 'Hak Akses',
     breadcrumbs: () => [
-      { label: 'Akses Akun' }
+      { label: 'Hak Akses' }
     ]
   },
   '/role-management-access/edit/:roleId': {
     title: 'Edit Role',
     breadcrumbs: () => [
-      { label: 'Akses Akun', path: '/role-management-access' },
+      { label: 'Hak Akses', path: '/role-management-access' },
       { label: 'Edit Role' }
     ]
   },
   '/role-management-access/detail/:roleId': {
     title: 'Detail Role',
     breadcrumbs: () => [
-      { label: 'Akses Akun', path: '/role-management-access' },
+      { label: 'Hak Akses', path: '/role-management-access' },
       { label: 'Detail Role' }
     ]
   },
   '/role-management-access/service-detail/:layananId': {
     title: 'Detail Modul',
     breadcrumbs: () => [
-      { label: 'Akses Akun', path: '/role-management-access' },
+      { label: 'Hak Akses', path: '/role-management-access' },
       { label: 'Detail Modul' }
     ]
   },
   '/role-management-access/feature-detail/:modulId': {
     title: 'Detail Fitur',
-    breadcrumbs: () => [
-      { label: 'Akses Akun', path: '/role-management-access' },
+    breadcrumbs: (params, state) => [
+      { label: 'Hak Akses', path: '/role-management-access' },
+      { label: 'Detail Modul', path: state?.layananId ? `/role-management-access/service-detail/${state.layananId}` : undefined },
       { label: 'Detail Fitur' }
     ]
   },
   '/role-management-access/access-detail/:featureId': {
     title: 'Detail Akses',
-    breadcrumbs: () => [
-      { label: 'Akses Akun', path: '/role-management-access' },
+    breadcrumbs: (params, state) => [
+      { label: 'Hak Akses', path: '/role-management-access' },
+      { label: 'Detail Modul', path: state?.layananId ? `/role-management-access/service-detail/${state.layananId}` : undefined },
+      { label: 'Detail Fitur', path: state?.modulId ? `/role-management-access/feature-detail/${state.modulId}` : undefined },
       { label: 'Detail Akses' }
     ]
   },
@@ -588,7 +591,7 @@ export const breadcrumbRoutes: Record<string, RouteConfig> = {
 //   },
 };
 
-export const getBreadcrumbConfig = (pathname: string) => {
+export const getBreadcrumbConfig = (pathname: string, state?: any) => {
   // Urutkan keys berdasarkan panjang string (descending) agar yang lebih spesifik match duluan
   const sortedPaths = Object.keys(breadcrumbRoutes).sort((a, b) => b.length - a.length);
 
@@ -599,7 +602,7 @@ export const getBreadcrumbConfig = (pathname: string) => {
       const config = breadcrumbRoutes[path];
       return {
         title: config.title,
-        breadcrumbs: config.breadcrumbs(match.params)
+        breadcrumbs: config.breadcrumbs(match.params, state)
       };
     }
   }

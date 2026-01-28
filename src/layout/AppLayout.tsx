@@ -11,7 +11,7 @@ const LayoutContent: React.FC = () => {
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const location = useLocation();
-  const breadcrumbConfig = getBreadcrumbConfig(location.pathname);
+  const breadcrumbConfig = getBreadcrumbConfig(location.pathname, location.state);
 
   return (
     <div className="min-h-screen xl:flex">
