@@ -1,10 +1,9 @@
 import { DataTable, DataTableColumn, DataTableAction } from '../../../components/shared/datatable/DataTable';
 import { IconFileDetail, IconPencil, IconHapus } from '@/icons/components/icons';
 import useFeatureDetail, { FeatureData } from '../hooks/useFeatureDetail';
-// TODO: Create and import these modals
-// import AddFeatureModal from '../components/modals/feature/AddFeatureModal';
-// import EditFeatureModal from '../components/modals/feature/EditFeatureModal';
-// import DeleteFeatureModal from '../components/modals/feature/DeleteFeatureModal';
+import AddFeatureModal from '../components/modals/feature/AddFeatureModal';
+import EditFeatureModal from '../components/modals/feature/EditFeatureModal';
+import DeleteFeatureModal from '../components/modals/feature/DeleteFeatureModal';
 
 export default function FeatureDetail() {
   const {
@@ -69,7 +68,6 @@ export default function FeatureDetail() {
         pageSize={10}
         filterable={true}
       />
-      {/* 
       <AddFeatureModal
         isOpen={isAddFeatureModalOpen}
         onClose={() => setIsAddFeatureModalOpen(false)}
@@ -84,8 +82,7 @@ export default function FeatureDetail() {
         onClose={() => setIsDeleteFeatureModalOpen(false)}
         onDelete={onDeleteConfirm}
         featureName={selectedFeature?.fitur}
-      /> 
-      */}
+      />
     </div>
   );
 }
