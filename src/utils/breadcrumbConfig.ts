@@ -56,6 +56,13 @@ export const breadcrumbRoutes: Record<string, RouteConfig> = {
       { label: 'Detail Modul' }
     ]
   },
+  '/role-management-access/feature-detail/:modulId': {
+    title: 'Detail Fitur',
+    breadcrumbs: () => [
+      { label: 'Akses Akun', path: '/role-management-access' },
+      { label: 'Detail Fitur' }
+    ]
+  },
 
   // Employee Data
   '/employee-data': {

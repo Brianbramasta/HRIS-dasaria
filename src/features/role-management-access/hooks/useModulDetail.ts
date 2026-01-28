@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 export interface ModulData {
   no: number;
@@ -10,6 +10,7 @@ export interface ModulData {
 
 export default function useModulDetail() {
   const { layananId } = useParams<{ layananId: string }>();
+  const navigate = useNavigate();
   const [isAddModulModalOpen, setIsAddModulModalOpen] = useState(false);
   const [isEditModulModalOpen, setIsEditModulModalOpen] = useState(false);
   const [isDeleteModulModalOpen, setIsDeleteModulModalOpen] = useState(false);
@@ -40,8 +41,8 @@ export default function useModulDetail() {
   }, []);
 
   const handleDetailModul = useCallback((row: ModulData) => {
-    console.log('Detail modul:', row);
-  }, []);
+    navigate(`/role-management-access/feature-detail/${row.idModul}`);
+  }, [navigate]);
 
   const onDeleteConfirm = useCallback(() => {
     console.log('Deleting modul:', selectedModul);

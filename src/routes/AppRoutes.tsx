@@ -57,6 +57,7 @@ import DetailGajiPKLPage from "@/features/payroll/pages/shared/detail/detailPayr
 import HakAksesPage from "@/features/role-management-access/pages/RoleManagementPage";
 import DetailHakAksesPages from "@/features/role-management-access/pages/detail/DetailHakAksesPages";
 import ModulDetail from "@/features/role-management-access/pages/ModulDetail";
+import FeatureDetail from "@/features/role-management-access/pages/FeatureDetail";
 import EditRolePage from "@/features/role-management-access/pages/detail/EditRolePage";
 // Dokumentasi: Import halaman Kasbon dan tab terkait
 import KasbonPage from "@/features/payroll/pages/cash-advance/CashAdvancePage";
@@ -202,6 +203,7 @@ export default function AppRoutes() {
           <Route path="/role-management-access" element={<HakAksesPage />} />
           <Route path="/role-management-access/detail/:roleId" element={<DetailHakAksesPages />} />
           <Route path="/role-management-access/service-detail/:layananId" element={<ModulDetail />} />
+          <Route path="/role-management-access/feature-detail/:modulId" element={<FeatureDetail />} />
           <Route path="/role-management-access/edit/:roleId" element={<EditRolePage />} />
 
       
