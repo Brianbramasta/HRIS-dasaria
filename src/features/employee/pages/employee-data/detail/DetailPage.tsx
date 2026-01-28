@@ -7,6 +7,7 @@ import OrganizationHistoryTab from '../../../components/employee-data/tab/Organi
 import PelanggaranTab from '../../../components/employee-data/tab/Fraud';
 import StoryPayrollTab from '../../../components/employee-data/tab/StoryPayroll';
 import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
+import { formatUrlFile } from '@/utils/formatUrlFile';
 
 function useQuery() {
   const { search } = useLocation();
@@ -42,7 +43,7 @@ export default function DetailKaryawanPage() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex flex-col md:flex-row items-center gap-3">
             <img
-              src={detail?.Personal_Data?.avatar ?? 'https://api.dicebear.com/7.x/avataaars/svg?seed=${id}'}
+              src={formatUrlFile(detail?.Personal_Data?.avatar )?? 'https://api.dicebear.com/7.x/avataaars/svg?seed=${id}'}
               alt="Employee Avatar"
               className="h-12 w-12 rounded-full"
             />
