@@ -30,13 +30,72 @@ Response (200 OK):
 {
     "meta": {
         "status": 200,
-        "message": "Temporary salary retrieved successfully"
+        "message": "berhasil mendapatkan data gaji karyawan"
     },
     "data": {
-        "basic_salary": 0,
-        "allowances": [],
-        "deductions": [],
-        "total_salary": 0
+        "ptkp_status": "K/A-3",
+        "basic_salary": 5000000,
+        "position_allowance": 250000,
+        "length_of_service_allowance": 1000000,
+        "lenght_of_service_allowance": 0,
+        "marital_allowance": 3524238,
+        "bpjs_allowance_details": [
+            {
+                "item": "BPJS Kematian",
+                "value": 25000
+            },
+            {
+                "item": "BPJS Kesehatan",
+                "value": 100000
+            },
+            {
+                "item": "BPJS Kecelakaan Kerja",
+                "value": 12000
+            },
+            {
+                "item": "BPJS Hari Tua",
+                "value": 185000
+            },
+            {
+                "item": "BPJS Pensiun",
+                "value": 250000
+            }
+        ],
+        "bpjs_deduction_details": [
+            {
+                "item": "BPJS Pensiun",
+                "value": 50000
+            },
+            {
+                "item": "BPJS Kesehatan",
+                "value": 50000
+            },
+            {
+                "item": "BPJS Hari Tua",
+                "value": 50000
+            }
+        ],
+        "salary_with_allowance": 10346238,
+        "salary_after_deduction": 10196238,
+        "non_fix_allowance_details": [
+            {
+                "tr_employee_non_fix_allowance_id": "019bfea6-4a70-72e4-9c4c-053df72f35ab",
+                "non_fix_allowance_id": "019be556-2d43-7252-bd2c-ef105cf0d5f1",
+                "allowance_name": "test",
+                "amount": 3000
+            },
+            {
+                "tr_employee_non_fix_allowance_id": "019bffdc-b62c-710e-be7d-62c8853b1018",
+                "non_fix_allowance_id": "019be8bd-dda9-73f3-aa86-cff4c5bcd07e",
+                "allowance_name": "test",
+                "amount": 3000
+            }
+        ],
+        "temporary_salary": 10202238,
+        "bank_name": "Bank BCA",
+        "bank_account_holder": "morimana",
+        "bank_account_number": 34534635,
+        "npwp": 13432432
     }
 }
 ```
@@ -72,8 +131,25 @@ Response (200 OK):
 {
     "meta": {
         "status": 200,
-        "message": "Temporary salary updated successfully"
+        "message": "berhasil memperbarui data gaji karyawan"
     },
-    "data": []
+    "data": [
+        {
+            "id": "019bfea6-4a70-72e4-9c4c-053df72f35ab",
+            "employee_id": "DSR035",
+            "non_fix_allowance_id": "019be556-2d43-7252-bd2c-ef105cf0d5f1",
+            "amount": "3000",
+            "created_at": "2026-01-27T08:51:09.000000Z",
+            "updated_at": "2026-01-27T08:51:09.000000Z"
+        },
+        {
+            "employee_id": "DSR035",
+            "non_fix_allowance_id": "019be8bd-dda9-73f3-aa86-cff4c5bcd07e",
+            "amount": "3000",
+            "id": "019c02fd-b10a-7059-9db0-d7e995768e95",
+            "updated_at": "2026-01-28T05:05:06.000000Z",
+            "created_at": "2026-01-28T05:05:06.000000Z"
+        }
+    ]
 }
 ```

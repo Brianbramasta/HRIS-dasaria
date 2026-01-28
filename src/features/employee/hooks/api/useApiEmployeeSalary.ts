@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { employeeSalaryService } from '../../services/EmployeeSalaryService';
+import { employeeSalaryService } from '../../services/detail/EmployeeSalaryService';
 import {
   TemporarySalaryQueryParams,
   UpdateTemporarySalaryPayload,

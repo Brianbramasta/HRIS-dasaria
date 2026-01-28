@@ -1,5 +1,5 @@
 import { apiService } from '@/services/api';
-import { TemporarySalaryQueryParams } from '../types/dto/EmployeeSalaryType';
+import { TemporarySalaryQueryParams } from '../../types/dto/EmployeeSalaryType';
 
 class EmployeeSalaryService {
   private readonly basePath = '/employee-master-data/employees';
