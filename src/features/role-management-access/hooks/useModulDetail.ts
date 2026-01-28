@@ -10,7 +10,6 @@ export interface ModulData {
 
 export default function useModulDetail() {
   const { layananId } = useParams<{ layananId: string }>();
-  const navigate = useNavigate();
   const [isAddModulModalOpen, setIsAddModulModalOpen] = useState(false);
   
   // Mock data based on the requirement
