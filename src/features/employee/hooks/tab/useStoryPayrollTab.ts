@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import type { DataTableColumn } from '@/components/shared/datatable/DataTable';
 import { IconFileDetail } from '@/icons/components/icons';
 import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
@@ -46,7 +46,7 @@ export function useStoryPayrollTab(employeeId?: string, isEditable?: boolean) {
     }
   }, [employeeId, fetchDetail]);
 
-  useEffect(() => {
+  const refetch = useCallback(() => {
     if (detail && employeeId) {
       const personal = detail.Personal_Data;
       const position = detail.Employment_Position_Data;
@@ -62,6 +62,10 @@ export function useStoryPayrollTab(employeeId?: string, isEditable?: boolean) {
       }
     }
   }, [detail, employeeId, fetchTemporarySalary]);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   // Use temporarySalary if available, otherwise fall back to store detail or empty defaults
   const payrollInfo: PayrollInfo = useMemo(() => {
@@ -251,5 +255,8 @@ export function useStoryPayrollTab(employeeId?: string, isEditable?: boolean) {
     historyColumns,
     loading,
     error,
+    temporarySalary,
+    fetchTemporarySalary,
+    refetch,
   };
 }

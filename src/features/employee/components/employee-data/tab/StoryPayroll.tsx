@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import { type ReactNode, useState } from 'react';
 import SectionCard from '@/features/structure-and-organize/components/card/SectionCard';
 import { DataTable } from '@/components/shared/datatable/DataTable';
 import PayrollDetailCard from '@/features/employee/components/employee-data/card/story-payroll/PayrollDetailCard';
@@ -6,6 +6,7 @@ import { useStoryPayrollTab } from '@/features/employee/hooks/tab/useStoryPayrol
 import { formatCurrency } from '@/utils/formatCurrency';
 import Button from '@/components/ui/button/Button';
 import { Edit2 } from 'react-feather';
+import EditStoryPayrollModal from '@/features/employee/components/modals/story-payroll/EditStoryPayrollModal';
 
 interface Props {
   employeeId?: string;
@@ -22,10 +23,21 @@ function SummaryItem({ label, children }: { label: string; children: ReactNode }
 }
 
 export default function StoryPayrollTab({ employeeId, isEditable }: Props) {
-  const { title, payrollInfo, payrollDetailCards, historyRows, historyColumns } = useStoryPayrollTab(
+  const { title, payrollInfo, payrollDetailCards, historyRows, historyColumns, temporarySalary, refetch } = useStoryPayrollTab(
     employeeId,
     isEditable,
   );
+
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  const handleEditClick = () => {
+    setIsEditModalOpen(true);
+  };
+
+  const handleSuccessUpdate = () => {
+    refetch();
+    setIsEditModalOpen(false);
+  };
 
   return (
     <div className="space-y-6">
@@ -33,9 +45,13 @@ export default function StoryPayrollTab({ employeeId, isEditable }: Props) {
         title={title}
         withHeaderDivider
         headerRight={
-            <Button size="sm" variant="primary" startIcon={<Edit2 size={16} />}>
+          // isEditable && (
+          <>
+            <Button size="sm" variant="primary" startIcon={<Edit2 size={16} />} onClick={handleEditClick}>
               Edit
             </Button>
+            </>
+          // )
         }
       >
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -67,6 +83,16 @@ export default function StoryPayrollTab({ employeeId, isEditable }: Props) {
         isNewLine
         emptyMessage="Belum ada riwayat penggajian."
       />
+
+      {employeeId && (
+        <EditStoryPayrollModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          employeeId={employeeId}
+          data={temporarySalary || null}
+          onSuccess={handleSuccessUpdate}
+        />
+      )}
     </div>
   );
 }
