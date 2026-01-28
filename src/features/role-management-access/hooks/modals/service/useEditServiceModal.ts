@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { LayananData } from '../useRoleManagement';
+import { LayananData } from '../../useRoleManagement';
 
 export const useEditServiceModal = (
   isOpen: boolean, 

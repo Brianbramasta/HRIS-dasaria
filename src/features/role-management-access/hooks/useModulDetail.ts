@@ -11,6 +11,9 @@ export interface ModulData {
 export default function useModulDetail() {
   const { layananId } = useParams<{ layananId: string }>();
   const [isAddModulModalOpen, setIsAddModulModalOpen] = useState(false);
+  const [isEditModulModalOpen, setIsEditModulModalOpen] = useState(false);
+  const [isDeleteModulModalOpen, setIsDeleteModulModalOpen] = useState(false);
+  const [selectedModul, setSelectedModul] = useState<ModulData | null>(null);
   
   // Mock data based on the requirement
   const [modulData] = useState<ModulData[]>([
@@ -23,21 +26,28 @@ export default function useModulDetail() {
   ]);
 
   const handleAddModul = useCallback(() => {
-    // setIsAddModulModalOpen(true);
-    console.log('Add modul');
+    setIsAddModulModalOpen(true);
   }, []);
 
   const handleEditModul = useCallback((row: ModulData) => {
-    console.log('Edit modul:', row);
+    setSelectedModul(row);
+    setIsEditModulModalOpen(true);
   }, []);
 
   const handleDeleteModul = useCallback((row: ModulData) => {
-    console.log('Delete modul:', row);
+    setSelectedModul(row);
+    setIsDeleteModulModalOpen(true);
   }, []);
 
   const handleDetailModul = useCallback((row: ModulData) => {
     console.log('Detail modul:', row);
   }, []);
+
+  const onDeleteConfirm = useCallback(() => {
+    console.log('Deleting modul:', selectedModul);
+    setIsDeleteModulModalOpen(false);
+    setSelectedModul(null);
+  }, [selectedModul]);
 
   return {
     layananId,
@@ -48,5 +58,11 @@ export default function useModulDetail() {
     handleDetailModul,
     isAddModulModalOpen,
     setIsAddModulModalOpen,
+    isEditModulModalOpen,
+    setIsEditModulModalOpen,
+    isDeleteModulModalOpen,
+    setIsDeleteModulModalOpen,
+    selectedModul,
+    onDeleteConfirm
   };
 }

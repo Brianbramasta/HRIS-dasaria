@@ -1,21 +1,21 @@
 import { Modal } from '@/components/ui/modal';
 import InputField from '@/components/shared/field/InputField';
 import Button from '@/components/ui/button/Button';
-import { useEditServiceModal } from '../../../hooks/modals/service/useEditServiceModal';
-import { LayananData } from '../../../hooks/useRoleManagement';
+import { useEditModulModal } from '../../../hooks/modals/modul/useEditModulModal';
+import { ModulData } from '../../../hooks/useModulDetail';
 
-interface EditServiceModalProps {
+interface EditModulModalProps {
   isOpen: boolean;
   onClose: () => void;
-  data: LayananData | null;
+  data: ModulData | null;
 }
 
-export default function EditServiceModal({ isOpen, onClose, data }: EditServiceModalProps) {
+export default function EditModulModal({ isOpen, onClose, data }: EditModulModalProps) {
   const {
-    serviceName,
-    handleServiceChange,
+    modulName,
+    handleModulChange,
     handleSubmit,
-  } = useEditServiceModal(isOpen, onClose, data);
+  } = useEditModulModal(isOpen, onClose, data);
 
   return (
     <Modal
@@ -26,15 +26,15 @@ export default function EditServiceModal({ isOpen, onClose, data }: EditServiceM
     >
       <div className="flex flex-col gap-6">
         <h2 className="text-xl font-bold text-center text-gray-900 dark:text-white">
-          Ubah Layanan
+          Ubah Modul
         </h2>
 
         <div className="space-y-4 px-1">
           <InputField
-            label="Nama Sistem Layanan"
-            placeholder="Masukkan nama layanan"
-            value={serviceName}
-            onChange={(e) => handleServiceChange(e.target.value)}
+            label="Nama Modul"
+            placeholder="Masukkan nama modul"
+            value={modulName}
+            onChange={(e) => handleModulChange(e.target.value)}
             className="w-full"
           />
         </div>

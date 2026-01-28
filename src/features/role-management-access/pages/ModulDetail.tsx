@@ -1,6 +1,9 @@
 import { DataTable, DataTableColumn, DataTableAction } from '../../../components/shared/datatable/DataTable';
 import { IconFileDetail, IconPencil, IconHapus } from '@/icons/components/icons';
 import useModulDetail, { ModulData } from '../hooks/useModulDetail';
+import AddModulModal from '../components/modals/modul/AddModulModal';
+import EditModulModal from '../components/modals/modul/EditModulModal';
+import DeleteModulModal from '../components/modals/modul/DeleteModulModal';
 
 export default function ModulDetail() {
   const {
@@ -9,6 +12,14 @@ export default function ModulDetail() {
     handleEditModul,
     handleDeleteModul,
     handleDetailModul,
+    isAddModulModalOpen,
+    setIsAddModulModalOpen,
+    isEditModulModalOpen,
+    setIsEditModulModalOpen,
+    isDeleteModulModalOpen,
+    setIsDeleteModulModalOpen,
+    selectedModul,
+    onDeleteConfirm,
   } = useModulDetail();
 
   // Columns for Modul
@@ -57,6 +68,21 @@ export default function ModulDetail() {
         searchPlaceholder="Cari berdasarkan kata kunci"
         pageSize={10}
         filterable={true}
+      />
+      <AddModulModal
+        isOpen={isAddModulModalOpen}
+        onClose={() => setIsAddModulModalOpen(false)}
+      />
+      <EditModulModal
+        isOpen={isEditModulModalOpen}
+        onClose={() => setIsEditModulModalOpen(false)}
+        data={selectedModul}
+      />
+      <DeleteModulModal
+        isOpen={isDeleteModulModalOpen}
+        onClose={() => setIsDeleteModulModalOpen(false)}
+        onDelete={onDeleteConfirm}
+        modulName={selectedModul?.modul}
       />
     </div>
   );
