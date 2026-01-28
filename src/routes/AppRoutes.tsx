@@ -56,7 +56,7 @@ import DetailGajiTHRPage from "@/features/payroll/pages/shared/detail/detailPayr
 import DetailGajiPKLPage from "@/features/payroll/pages/shared/detail/detailPayrollPKLPage";
 import HakAksesPage from "@/features/role-management-access/pages/RoleManagementPage";
 import DetailHakAksesPages from "@/features/role-management-access/pages/detail/DetailHakAksesPages";
-import EditRolePage from "@/features/role-management-access/pages/EditRolePage";
+import EditRolePage from "@/features/role-management-access/pages/detail/EditRolePage";
 // Dokumentasi: Import halaman Kasbon dan tab terkait
 import KasbonPage from "@/features/payroll/pages/cash-advance/CashAdvancePage";
 import StatusKasbonPage from "@/features/payroll/pages/cash-advance/tab/StatusCashAdvancePage";

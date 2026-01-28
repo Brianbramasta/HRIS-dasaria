@@ -1,37 +1,45 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { DataTable, DataTableColumn, DataTableAction } from '../../../components/shared/datatable/DataTable';
 import { IconFileDetail, IconPencil, IconHapus } from '@/icons/components/icons';
-
-interface RoleData {
-  no: number;
-  idRole: string;
-  role: string;
-}
+import useRoleManagement, { RoleData, LayananData } from '../hooks/useRoleManagement';
+import AddServiceModal from '../components/modals/service/AddServiceModal';
+import DeleteServiceModal from '../components/modals/service/DeleteServiceModal';
 
 export default function HakAksesPage() {
-  const navigate = useNavigate();
-  const [data] = useState<RoleData[]>([
-    { no: 1, idRole: '225150207', role: 'Super Admin' },
-    { no: 2, idRole: '225150205', role: 'HR Admin' },
-    { no: 3, idRole: '225150206', role: 'Finance Admin' },
-  ]);
+  const {
+    roleData,
+    layananData,
+    handleAddRole,
+    handleAddLayanan,
+    handleDeleteRole,
+    handleDeleteLayanan,
+    handleEditRole,
+    handleEditLayanan,
+    handleDetailRole,
+    handleDetailLayanan,
+    isAddServiceModalOpen,
+    handleCloseAddServiceModal,
+    isDeleteServiceModalOpen,
+    handleCloseDeleteServiceModal,
+    selectedServiceToDelete,
+    handleConfirmDeleteService,
+  } = useRoleManagement();
 
-  const columns: DataTableColumn<RoleData>[] = [
+  // Columns for Role Akses
+  const roleColumns: DataTableColumn<RoleData>[] = [
     { id: 'no', label: 'No.', minWidth: 50, sortable: false },
-    { id: 'idRole', label: 'ID Role', minWidth: 150 },
-    { id: 'role', label: 'Role', minWidth: 200 },
+    { id: 'idRole', label: 'Id Role', minWidth: 150 },
+    { id: 'role', label: 'Role', minWidth: 150 },
+    { id: 'sistemLayanan', label: 'Sistem Layanan', minWidth: 300 },
     {
       id: 'detail',
       label: 'Detail',
       minWidth: 100,
       align: 'center',
       sortable: false,
-      format: (value, row) => (
-        
+      format: (_value, row) => (
         <button 
-          className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700" value={value}
-          onClick={() => navigate(`/hak-akses/detail/${row.idRole}`)}
+          className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
+          onClick={() => handleDetailRole(row.idRole)}
         >
           <IconFileDetail color="#6C757D" />
         </button>
@@ -39,39 +47,85 @@ export default function HakAksesPage() {
     },
   ];
 
-  const actions: DataTableAction<RoleData>[] = [
+  // Columns for Sistem Layanan
+  const layananColumns: DataTableColumn<LayananData>[] = [
+    { id: 'no', label: 'No.', minWidth: 50, sortable: false },
+    { id: 'idLayanan', label: 'Id Layanan', minWidth: 150 },
+    { id: 'sistemLayanan', label: 'Sistem Layanan', minWidth: 300 },
     {
-      icon: <IconPencil color="#6C757D" />,
-      onClick: (row) => {
-        navigate(`/hak-akses/edit/${row.idRole}`);
-      },
-    },
-    {
-      icon: <IconHapus color="#6C757D" />,
-      onClick: (row) => {
-        console.log('Delete role:', row);
-        // Handle delete action
-      },
+      id: 'detail',
+      label: 'Detail',
+      minWidth: 100,
+      align: 'center',
+      sortable: false,
+      format: (_value, row) => (
+        <button 
+          className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
+          onClick={() => handleDetailLayanan(row.idLayanan)}
+        >
+          <IconFileDetail color="#6C757D" />
+        </button>
+      ),
     },
   ];
 
-  const handleAdd = () => {
-    console.log('Add new role');
-    // Handle add action
-  };
+  const roleActions: DataTableAction<RoleData>[] = [
+    {
+      icon: <IconHapus color="#6C757D" />,
+      onClick: handleDeleteRole,
+    },
+    {
+      icon: <IconPencil color="#6C757D" />,
+      onClick: handleEditRole,
+    },
+  ];
+
+  const layananActions: DataTableAction<LayananData>[] = [
+    {
+      icon: <IconHapus color="#6C757D" />,
+      onClick: handleDeleteLayanan,
+    },
+    {
+      icon: <IconPencil color="#6C757D" />,
+      onClick: handleEditLayanan,
+    },
+  ];
 
   return (
-    <div className="px-4">
+    <div className="px-4 space-y-8 pb-8">
       <DataTable
-        data={data}
-        columns={columns}
-        actions={actions}
-        title="Akses Akun"
-        onAdd={handleAdd}
+        data={roleData}
+        columns={roleColumns}
+        actions={roleActions}
+        title="Role Akses"
+        onAdd={handleAddRole}
         addButtonLabel="Tambah Role"
         searchPlaceholder="Cari berdasarkan kata kunci"
         pageSize={10}
         filterable={true}
+      />
+
+      <DataTable
+        data={layananData}
+        columns={layananColumns}
+        actions={layananActions}
+        title="Sistem Layanan"
+        onAdd={handleAddLayanan}
+        addButtonLabel="Tambah Layanan"
+        searchPlaceholder="Cari berdasarkan kata kunci"
+        pageSize={10}
+        filterable={true}
+      />
+
+      <AddServiceModal
+        isOpen={isAddServiceModalOpen}
+        onClose={handleCloseAddServiceModal}
+      />
+      <DeleteServiceModal
+        isOpen={isDeleteServiceModalOpen}
+        onClose={handleCloseDeleteServiceModal}
+        onDelete={handleConfirmDeleteService}
+        serviceName={selectedServiceToDelete?.sistemLayanan}
       />
     </div>
   );
