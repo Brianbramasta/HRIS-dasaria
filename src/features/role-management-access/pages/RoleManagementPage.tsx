@@ -2,6 +2,7 @@ import { DataTable, DataTableColumn, DataTableAction } from '../../../components
 import { IconFileDetail, IconPencil, IconHapus } from '@/icons/components/icons';
 import useRoleManagement, { RoleData, LayananData } from '../hooks/useRoleManagement';
 import AddServiceModal from '../components/modals/service/AddServiceModal';
+import EditServiceModal from '../components/modals/service/EditServiceModal';
 import DeleteServiceModal from '../components/modals/service/DeleteServiceModal';
 
 export default function HakAksesPage() {
@@ -22,6 +23,9 @@ export default function HakAksesPage() {
     handleCloseDeleteServiceModal,
     selectedServiceToDelete,
     handleConfirmDeleteService,
+    isEditServiceModalOpen,
+    handleCloseEditServiceModal,
+    selectedServiceToEdit,
   } = useRoleManagement();
 
   // Columns for Role Akses
@@ -126,6 +130,11 @@ export default function HakAksesPage() {
         onClose={handleCloseDeleteServiceModal}
         onDelete={handleConfirmDeleteService}
         serviceName={selectedServiceToDelete?.sistemLayanan}
+      />
+      <EditServiceModal
+        isOpen={isEditServiceModalOpen}
+        onClose={handleCloseEditServiceModal}
+        data={selectedServiceToEdit}
       />
     </div>
   );

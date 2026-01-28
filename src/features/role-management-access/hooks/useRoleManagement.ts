@@ -19,7 +19,9 @@ export default function useRoleManagement() {
 
   const [isAddServiceModalOpen, setIsAddServiceModalOpen] = useState(false);
   const [isDeleteServiceModalOpen, setIsDeleteServiceModalOpen] = useState(false);
+  const [isEditServiceModalOpen, setIsEditServiceModalOpen] = useState(false);
   const [selectedServiceToDelete, setSelectedServiceToDelete] = useState<LayananData | null>(null);
+  const [selectedServiceToEdit, setSelectedServiceToEdit] = useState<LayananData | null>(null);
 
   // Data Role Akses
   const [roleData] = useState<RoleData[]>([
@@ -76,7 +78,13 @@ export default function useRoleManagement() {
   }, [navigate]);
 
   const handleEditLayanan = useCallback((row: LayananData) => {
-    console.log('Edit layanan:', row);
+    setSelectedServiceToEdit(row);
+    setIsEditServiceModalOpen(true);
+  }, []);
+  
+  const handleCloseEditServiceModal = useCallback(() => {
+    setIsEditServiceModalOpen(false);
+    setSelectedServiceToEdit(null);
   }, []);
 
   const handleDetailRole = useCallback((idRole: string) => {
@@ -104,5 +112,8 @@ export default function useRoleManagement() {
     handleCloseDeleteServiceModal,
     selectedServiceToDelete,
     handleConfirmDeleteService,
+    isEditServiceModalOpen,
+    handleCloseEditServiceModal,
+    selectedServiceToEdit,
   };
 }
