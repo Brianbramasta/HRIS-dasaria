@@ -22,6 +22,8 @@ export default function useRoleManagement() {
   const [isEditServiceModalOpen, setIsEditServiceModalOpen] = useState(false);
   const [selectedServiceToDelete, setSelectedServiceToDelete] = useState<LayananData | null>(null);
   const [selectedServiceToEdit, setSelectedServiceToEdit] = useState<LayananData | null>(null);
+  const [isDeleteRoleModalOpen, setIsDeleteRoleModalOpen] = useState(false);
+  const [selectedRoleToDelete, setSelectedRoleToDelete] = useState<RoleData | null>(null);
 
   // Data Role Akses
   const [roleData] = useState<RoleData[]>([
@@ -54,7 +56,8 @@ export default function useRoleManagement() {
   }, []);
 
   const handleDeleteRole = useCallback((row: RoleData) => {
-    console.log('Delete role:', row);
+    setSelectedRoleToDelete(row);
+    setIsDeleteRoleModalOpen(true);
   }, []);
 
   const handleDeleteLayanan = useCallback((row: LayananData) => {
@@ -73,8 +76,19 @@ export default function useRoleManagement() {
     handleCloseDeleteServiceModal();
   }, [selectedServiceToDelete, handleCloseDeleteServiceModal]);
 
+  const handleCloseDeleteRoleModal = useCallback(() => {
+    setIsDeleteRoleModalOpen(false);
+    setSelectedRoleToDelete(null);
+  }, []);
+
+  const handleConfirmDeleteRole = useCallback(() => {
+    console.log('Deleting role:', selectedRoleToDelete);
+    // TODO: Implement actual delete logic here
+    handleCloseDeleteRoleModal();
+  }, [selectedRoleToDelete, handleCloseDeleteRoleModal]);
+
   const handleEditRole = useCallback((row: RoleData) => {
-    navigate(`/hak-akses/edit/${row.idRole}`);
+    navigate(`/role-management-access/edit/${row.idRole}`);
   }, [navigate]);
 
   const handleEditLayanan = useCallback((row: LayananData) => {
@@ -88,7 +102,7 @@ export default function useRoleManagement() {
   }, []);
 
   const handleDetailRole = useCallback((idRole: string) => {
-    navigate(`/hak-akses/detail/${idRole}`);
+    navigate(`/role-management-access/detail/${idRole}`);
   }, [navigate]);
 
   const handleDetailLayanan = useCallback((idLayanan: string) => {
@@ -115,5 +129,9 @@ export default function useRoleManagement() {
     isEditServiceModalOpen,
     handleCloseEditServiceModal,
     selectedServiceToEdit,
+    isDeleteRoleModalOpen,
+    handleCloseDeleteRoleModal,
+    selectedRoleToDelete,
+    handleConfirmDeleteRole,
   };
 }

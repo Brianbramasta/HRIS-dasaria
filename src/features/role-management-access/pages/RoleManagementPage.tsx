@@ -4,6 +4,7 @@ import useRoleManagement, { RoleData, LayananData } from '../hooks/useRoleManage
 import AddServiceModal from '../components/modals/service/AddServiceModal';
 import EditServiceModal from '../components/modals/service/EditServiceModal';
 import DeleteServiceModal from '../components/modals/service/DeleteServiceModal';
+import DeleteRoleModal from '../components/modals/DeleteRoleModal';
 
 export default function HakAksesPage() {
   const {
@@ -26,6 +27,10 @@ export default function HakAksesPage() {
     isEditServiceModalOpen,
     handleCloseEditServiceModal,
     selectedServiceToEdit,
+    isDeleteRoleModalOpen,
+    handleCloseDeleteRoleModal,
+    selectedRoleToDelete,
+    handleConfirmDeleteRole,
   } = useRoleManagement();
 
   // Columns for Role Akses
@@ -135,6 +140,12 @@ export default function HakAksesPage() {
         isOpen={isEditServiceModalOpen}
         onClose={handleCloseEditServiceModal}
         data={selectedServiceToEdit}
+      />
+      <DeleteRoleModal
+        isOpen={isDeleteRoleModalOpen}
+        onClose={handleCloseDeleteRoleModal}
+        onDelete={handleConfirmDeleteRole}
+        roleName={selectedRoleToDelete?.role}
       />
     </div>
   );

@@ -58,7 +58,7 @@ export const breadcrumbRoutes: Record<string, RouteConfig> = {
   },
   '/role-management-access/feature-detail/:modulId': {
     title: 'Detail Fitur',
-    breadcrumbs: (params, state) => [
+    breadcrumbs: (_params, state) => [
       { label: 'Hak Akses', path: '/role-management-access' },
       { label: 'Detail Modul', path: state?.layananId ? `/role-management-access/service-detail/${state.layananId}` : undefined },
       { label: 'Detail Fitur' }
@@ -66,7 +66,7 @@ export const breadcrumbRoutes: Record<string, RouteConfig> = {
   },
   '/role-management-access/access-detail/:featureId': {
     title: 'Detail Akses',
-    breadcrumbs: (params, state) => [
+    breadcrumbs: (_params, state) => [
       { label: 'Hak Akses', path: '/role-management-access' },
       { label: 'Detail Modul', path: state?.layananId ? `/role-management-access/service-detail/${state.layananId}` : undefined },
       { label: 'Detail Fitur', path: state?.modulId ? `/role-management-access/feature-detail/${state.modulId}` : undefined },
