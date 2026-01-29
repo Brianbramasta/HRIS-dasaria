@@ -34,6 +34,8 @@ export function useOrganizationHistory(options: UseOrganizationHistoryOptions = 
     handleSortChange,
     handlePageChange,
     handleRowsPerPageChange,
+    handleDateRangeFilterChange,
+    dateRangeFilters,
     detail,
     getDetail,
   } = useOrganizationChange(options);
@@ -182,6 +184,8 @@ export function useOrganizationHistory(options: UseOrganizationHistoryOptions = 
     handleSortChange,
     handlePageChange,
     handleRowsPerPageChange,
+    handleDateRangeFilterChange,
+    dateRangeFilters,
     handleAddOrganization,
     handleEditOrganization,
     handleCloseModal,

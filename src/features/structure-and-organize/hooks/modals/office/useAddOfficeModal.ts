@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
-import { useOffices } from '../../office/useOffices';
-import { useCompanies } from '../../company/useCompanies';
+import { useApiOffices } from '../../api/useApiOffices';
+import { useApiCompanies } from '../../api/useApiCompanies';
 
 export function useAddOfficeModal(isOpen: boolean, onClose: () => void, onSuccess?: () => void) {
   const [name, setName] = useState('');
@@ -13,8 +13,8 @@ export function useAddOfficeModal(isOpen: boolean, onClose: () => void, onSucces
   const [description, setDescription] = useState('');
   const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
-  const { createOffice } = useOffices();
-  const { getDropdown: getCompanyDropdown } = useCompanies();
+  const { createOffice } = useApiOffices();
+  const { getDropdown: getCompanyDropdown } = useApiCompanies();
 
   useEffect(() => {
     if (!isOpen) return;

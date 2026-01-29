@@ -5,7 +5,7 @@ import {
   useUpdateUnit,
   useGetUnits,
 } from '../../api/useApiUnits';
-import { useDepartments } from '../../departement/useDepartments';
+import { useApiDepartments } from '../../api/useApiDepartments';
 import { toFileSummary } from '../../../utils/shared/toFileSummary';
 import { addNotification } from '@/stores/notificationStore';
 
@@ -17,8 +17,8 @@ jest.mock('../../api/useApiUnits', () => ({
   useDeleteUnit: jest.fn(),
 }));
 
-jest.mock('../../departement/useDepartments', () => ({
-  useDepartments: jest.fn(),
+jest.mock('../../api/useApiDepartments', () => ({
+  useApiDepartments: jest.fn(),
 }));
 
 jest.mock('../../../utils/shared/toFileSummary', () => ({
@@ -68,7 +68,7 @@ jest.mock('@/stores/notificationStore', () => ({
 const mockedUseGetUnitById = useGetUnitById as unknown as jest.Mock;
 const mockedUseUpdateUnit = useUpdateUnit as unknown as jest.Mock;
 const mockedUseGetUnits = useGetUnits as unknown as jest.Mock;
-const mockedUseDepartments = useDepartments as unknown as jest.Mock;
+const mockedUseApiDepartments = useApiDepartments as unknown as jest.Mock;
 const mockedToFileSummary = toFileSummary as unknown as jest.Mock;
 
 describe('useEditUnitModal', () => {
@@ -108,19 +108,19 @@ describe('useEditUnitModal', () => {
       error: null,
     });
 
-    mockedUseUpdateUnit.mockReturnValue({
-      execute: updateUnitExecuteMock,
-      loading: false,
-      error: null,
-    });
-
     mockedUseGetUnits.mockReturnValue({
       execute: getUnitsExecuteMock,
       loading: false,
       error: null,
     });
 
-    mockedUseDepartments.mockReturnValue({
+    mockedUseUpdateUnit.mockReturnValue({
+      execute: updateUnitExecuteMock,
+      loading: false,
+      error: null,
+    });
+
+    mockedUseApiDepartments.mockReturnValue({
       getDropdown: getDropdownMock,
     });
 

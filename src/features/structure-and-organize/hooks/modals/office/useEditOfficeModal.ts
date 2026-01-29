@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import type { OfficeListItem } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
-import { useOffices } from '../../office/useOffices';
-import { useCompanies } from '../../company/useCompanies';
+import { useApiOffices } from '../../api/useApiOffices';
+import { useApiCompanies } from '../../api/useApiCompanies';
 
 export function useEditOfficeModal(
   isOpen: boolean,
@@ -19,8 +19,8 @@ export function useEditOfficeModal(
   const [companyIds, setCompanyIds] = useState<string[]>([]);
   const [companyOptions, setCompanyOptions] = useState<{ value: string; text: string }[]>([]);
   const [companySearch, setCompanySearch] = useState('');
-  const { updateOffice, getById } = useOffices();
-  const { getDropdown: getCompanyDropdown, getDetail: getCompanyDetail } = useCompanies();
+  const { updateOffice, getById } = useApiOffices();
+  const { getDropdown: getCompanyDropdown, getDetail: getCompanyDetail } = useApiCompanies();
 
   useEffect(() => {
     if (!isOpen || !office?.id) return;

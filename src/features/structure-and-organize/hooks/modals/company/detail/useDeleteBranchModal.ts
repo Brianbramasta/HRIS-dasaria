@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOffices } from '../../../office/useOffices';
+import { useApiOffices } from '../../../api/useApiOffices';
 import { addNotification } from '@/stores/notificationStore';
 import { useFileStore } from '@/stores/fileStore';
 
@@ -13,7 +13,7 @@ export function useDeleteBranchModal(params: {
   const [submitting, setSubmitting] = React.useState(false);
   const [skFileName, setSkFileName] = React.useState('');
   const skFile = useFileStore((s) => s.skFile);
-  const { deleteOffice } = useOffices();
+  const { deleteOffice } = useApiOffices();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;

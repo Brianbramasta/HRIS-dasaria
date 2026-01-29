@@ -34,6 +34,8 @@ export function useOrganizationHistoryAtasan(options: UseOrganizationHistoryAtas
     handleSortChange,
     handlePageChange,
     handleRowsPerPageChange,
+    handleDateRangeFilterChange,
+    dateRangeFilters,
     detail,
     getDetail,
   } = useOrganizationChange({ ...options, autoFetch: false });
@@ -197,6 +199,8 @@ export function useOrganizationHistoryAtasan(options: UseOrganizationHistoryAtas
     handleSortChange,
     handlePageChange,
     handleRowsPerPageChange,
+    handleDateRangeFilterChange,
+    dateRangeFilters,
     handleAddOrganization,
     handleEditOrganization,
     handleCloseModal,

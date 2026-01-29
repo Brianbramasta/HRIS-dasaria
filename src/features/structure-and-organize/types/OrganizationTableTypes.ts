@@ -7,4 +7,4 @@ export type DirectorateRow = { no: number; 'direktorat-name': string; 'deskripsi
 export type DivisionRow = { no: number; 'nama-divisi': string; 'deskripsi-umum': string; 'file-sk-dan-memo': string, fileUrl?: string };
 export type DepartmentRow = { no: number; 'nama-departemen': string; 'file-sk-dan-memo': string, fileUrl?: string };
 export type PositionRow = { no: number; 'nama-jabatan': string; 'grade': string; 'deskripsi-tugas': string; 'jabatan-struktural': string; 'file-sk-dan-mou': string, fileUrl?: string };
-export type EmployeePositionRow = { no: number; 'nama-posisi': string; 'jabatan': string; 'direktorat': string; 'divisi': string; 'departemen': string; 'file-sk-dan-mou': string | FileSummary, fileUrl?: string };
+export type EmployeePositionRow = { no: number; 'nama-posisi': string; 'jabatan-kepangkatan': string; 'jabatan-struktural': string; 'jabatan': string; 'direktorat': string; 'divisi': string; 'departemen': string; 'unit': string; 'deskripsi-tugas': string; 'file-sk-dan-mou': string | FileSummary, fileUrl?: string };

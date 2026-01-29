@@ -75,6 +75,7 @@ export interface SalaryFormData {
   noRekening: string;
   npwp: string;
   ptkpStatus: string;
+  nonFixAllowances: { id: string; amount: number | string }[];
 }
 
 export interface BpjsFormData {

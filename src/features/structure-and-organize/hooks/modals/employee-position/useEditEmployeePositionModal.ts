@@ -2,11 +2,12 @@ import { useEffect, useMemo, useState, useRef } from 'react';
 import type { EmployeePositionListItem } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
-import { useEmployeePositions } from '../../employee-positions/useEmployeePositions';
-import { usePositions } from '../../job-tittle/useJobTitle';
-import { useDirectorates } from '../../directorate/useDirectorates';
-import { useDivisions } from '../../division/useDivisions';
-import { useDepartments } from '../../departement/useDepartments';
+import { useApiEmployeePositions } from '../../api/useApiEmployeePositions';
+import { useApiJobTitles } from '../../api/useApiJobTitles';
+import { useApiDirectorates } from '../../api/useApiDirectorates';
+import { useApiDivisions } from '../../api/useApiDivisions';
+import { useApiDepartments } from '../../api/useApiDepartments';
+import { employeeMasterDataService } from '../../../../employee/services/EmployeeMasterData.service';
 
 interface UseEditEmployeePositionModalParams {
   isOpen: boolean;
@@ -23,23 +24,27 @@ export function useEditEmployeePositionModal({
 }: UseEditEmployeePositionModalParams) {
   const [name, setName] = useState('');
   const [jabatan, setJabatan] = useState('');
+  const [structuralJob, setStructuralJob] = useState('');
   const [direktorat, setDirektorat] = useState('');
   const [divisi, setDivisi] = useState('');
   const [departemen, setDepartemen] = useState('');
+  const [unit, setUnit] = useState('');
   const [memoNumber, setMemoNumber] = useState('');
   const [description, setDescription] = useState('');
   const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
-  const { updateEmployeePosition, detail } = useEmployeePositions();
-  const { getDropdown: getPositionDropdown } = usePositions();
-  const { getDropdown: getDirectorateDropdown } = useDirectorates();
-  const { getDropdown: getDivisionDropdown } = useDivisions();
-  const { getDropdown: getDepartmentDropdown } = useDepartments();
+  const { updateEmployeePosition, detail } = useApiEmployeePositions();
+  const { getDropdown: getPositionDropdown } = useApiJobTitles();
+  const { getDropdown: getDirectorateDropdown } = useApiDirectorates();
+  const { getDropdown: getDivisionDropdown } = useApiDivisions();
+  const { getDropdown: getDepartmentDropdown } = useApiDepartments();
 
   const [positionOptions, setPositionOptions] = useState<{ value: string; label: string }[]>([]);
+  const [structuralJobOptions, setStructuralJobOptions] = useState<{ value: string; label: string }[]>([]);
   const [directorateOptions, setDirectorateOptions] = useState<{ value: string; label: string }[]>([]);
   const [divisionOptions, setDivisionOptions] = useState<{ value: string; label: string }[]>([]);
   const [departmentOptionsAll, setDepartmentOptionsAll] = useState<{ value: string; label: string }[]>([]);
+  const [unitOptions, setUnitOptions] = useState<{ value: string; label: string }[]>([]);
   const departmentOptions = useMemo(() => departmentOptionsAll, [departmentOptionsAll]);
 
   const handleFileChange = () => {};
@@ -52,9 +57,11 @@ export function useEditEmployeePositionModal({
         if (!mappedDetail) return;
         setName(mappedDetail.name || '');
         setJabatan(mappedDetail.positionId || '');
+        setStructuralJob(mappedDetail.structuralJobId || '');
         setDirektorat(mappedDetail.directorateId || '');
         setDivisi(mappedDetail.divisionId || '');
         setDepartemen(mappedDetail.departmentId || '');
+        setUnit(mappedDetail.unitId || '');
         setMemoNumber(mappedDetail.memoNumber || '');
         setDescription((mappedDetail as any).description || '');
 
@@ -64,6 +71,15 @@ export function useEditEmployeePositionModal({
           posOpts = [{ value: mappedDetail.positionId, label: mappedDetail.positionName }, ...posOpts];
         }
         setPositionOptions(posOpts);
+
+        if (mappedDetail.positionId) {
+          const structItems = await employeeMasterDataService.getStructuralJobDropdown(mappedDetail.positionId);
+          let structOpts = (structItems || []).map((j: any) => ({ value: j.id, label: j.name }));
+          if (mappedDetail.structuralJobId && mappedDetail.structuralJobName && !structOpts.find(o => o.value === mappedDetail.structuralJobId)) {
+            structOpts = [{ value: mappedDetail.structuralJobId, label: mappedDetail.structuralJobName }, ...structOpts];
+          }
+          setStructuralJobOptions(structOpts);
+        }
 
         const dirItems = await getDirectorateDropdown('');
         let dirOpts = (dirItems || []).map((d: any) => ({ value: d.id, label: d.directorate_name }));
@@ -85,11 +101,65 @@ export function useEditEmployeePositionModal({
           depOpts = [{ value: mappedDetail.departmentId, label: mappedDetail.departmentName }, ...depOpts];
         }
         setDepartmentOptionsAll(depOpts);
+
+        if (mappedDetail.departmentId) {
+          const unitItems = await employeeMasterDataService.getUnitDropdownByDepartmentId(mappedDetail.departmentId, '');
+          let uOpts = (unitItems || []).map((u: any) => ({ value: u.id, label: u.name ?? u.name }));
+          if (mappedDetail.unitId && mappedDetail.unitName && !uOpts.find(o => o.value === mappedDetail.unitId)) {
+            uOpts = [{ value: mappedDetail.unitId, label: mappedDetail.unitName }, ...uOpts];
+          }
+          setUnitOptions(uOpts);
+        }
+
       } catch (e) {
         console.error('Gagal inisialisasi edit posisi pegawai', e);
       }
     })();
   }, [isOpen, employeePosition?.id, detail, getPositionDropdown, getDirectorateDropdown, getDivisionDropdown, getDepartmentDropdown]);
+
+  // Fetch Structural Jobs when Jabatan (Kepangkatan) changes (User interaction)
+  useEffect(() => {
+    if (!isOpen) return;
+    if (!jabatan) {
+      setStructuralJobOptions([]);
+      // Only reset if user changed it manually, but hard to detect here.
+      // Ideally we only want to reset if the change wasn't from initialization.
+      // But for simplicity, we let the init logic handle the initial fetch, and this handles updates.
+      // To avoid clearing on init, we can check if options are empty?
+      // Actually, init logic runs once. This effect runs on `jabatan` change.
+      // Init sets `jabatan`. This effect runs.
+      // We should be careful not to overwrite the init options if they are already set correctly.
+      // However, simplest way: fetch fresh options when jabatan changes.
+    } else {
+        // We only fetch if options are not already populated for this jabatan?
+        // Or just fetch always.
+        (async () => {
+             try {
+                 const data = await employeeMasterDataService.getStructuralJobDropdown(jabatan);
+                 setStructuralJobOptions((data || []).map((j: any) => ({ value: j.id, label: j.name })));
+             } catch (e) {
+                 console.error(e);
+             }
+        })();
+    }
+  }, [jabatan, isOpen]);
+
+  // Fetch Units when Department changes
+  useEffect(() => {
+    if (!isOpen) return;
+    if (!departemen) {
+        setUnitOptions([]);
+    } else {
+        (async () => {
+             try {
+                 const data = await employeeMasterDataService.getUnitDropdownByDepartmentId(departemen, '');
+                 setUnitOptions((data || []).map((u: any) => ({ value: u.id, label: u.name ?? u.name })));
+             } catch (e) {
+                 console.error(e);
+             }
+        })();
+    }
+  }, [departemen, isOpen]);
 
   const searchPositionsTimeout = useRef<any>(null);
   const searchDirectoratesTimeout = useRef<any>(null);
@@ -151,12 +221,15 @@ export function useEditEmployeePositionModal({
       await updateEmployeePosition(employeePosition.id, {
         name: name.trim(),
         positionId: jabatan.trim(),
+        structuralJobId: structuralJob.trim() || null,
         directorateId: direktorat.trim() || null,
         divisionId: divisi.trim() || null,
         departmentId: departemen.trim() || null,
+        unitId: unit.trim() || null,
         startDate: null,
         endDate: null,
         memoNumber: memoNumber.trim(),
+        description: description.trim(),
         skFile: skFile?.file || null,
       });
       onSuccess?.(null as any);
@@ -179,12 +252,16 @@ export function useEditEmployeePositionModal({
     setName,
     jabatan,
     setJabatan,
+    structuralJob,
+    setStructuralJob,
     direktorat,
     setDirektorat,
     divisi,
     setDivisi,
     departemen,
     setDepartemen,
+    unit,
+    setUnit,
     memoNumber,
     setMemoNumber,
     description,
@@ -192,9 +269,11 @@ export function useEditEmployeePositionModal({
     skFile,
     submitting,
     positionOptions,
+    structuralJobOptions,
     directorateOptions,
     divisionOptions,
     departmentOptions,
+    unitOptions,
     handleFileChange,
     handleSubmit,
     searchPositions,

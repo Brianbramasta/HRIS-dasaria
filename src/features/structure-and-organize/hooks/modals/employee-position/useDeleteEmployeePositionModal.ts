@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { EmployeePositionListItem } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
-import { useEmployeePositions } from '../../employee-positions/useEmployeePositions';
+import { useApiEmployeePositions } from '../../api/useApiEmployeePositions';
 
 interface UseDeleteEmployeePositionModalParams {
   isOpen: boolean;
@@ -19,7 +19,7 @@ export function useDeleteEmployeePositionModal({
   const [memoNumber, setMemoNumber] = useState('');
   const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
-  const { deleteEmployeePosition } = useEmployeePositions();
+  const { deleteEmployeePosition } = useApiEmployeePositions();
 
   const handleFileChange = () => {};
 

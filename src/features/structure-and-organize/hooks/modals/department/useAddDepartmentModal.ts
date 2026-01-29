@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import type { DivisionDropdown } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
-import { useDepartments } from '../../departement/useDepartments';
-import { useDivisions } from '../../division/useDivisions';
+import { useApiDepartments } from '../../api/useApiDepartments';
+import { useApiDivisions } from '../../api/useApiDivisions';
 
 export function useAddDepartmentModal(params: { isOpen: boolean; onClose: () => void; onSuccess?: () => void }) {
   const { isOpen, onClose, onSuccess } = params;
@@ -14,8 +14,8 @@ export function useAddDepartmentModal(params: { isOpen: boolean; onClose: () => 
   const skFile = useFileStore((s) => s.skFile);
   const [divisions, setDivisions] = useState<DivisionDropdown[]>([]);
   const [submitting, setSubmitting] = useState(false);
-  const { createDepartment } = useDepartments();
-  const { getDropdown: getDivisionDropdown } = useDivisions();
+  const { createDepartment } = useApiDepartments();
+  const { getDropdown: getDivisionDropdown } = useApiDivisions();
   const [divisionSearch, setDivisionSearch] = useState('');
 
   useEffect(() => {

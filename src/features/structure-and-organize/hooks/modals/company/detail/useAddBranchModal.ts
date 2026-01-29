@@ -1,7 +1,7 @@
 import React from 'react';
 import { officeService } from '../../../../services/OrganizationService';
 import { addNotification } from '@/stores/notificationStore';
-import { useCompanies } from '../../../company/useCompanies';
+import { useApiCompanies } from '../../../api/useApiCompanies';
 
 export function useAddBranchModal(params: {
   isOpen: boolean;
@@ -16,7 +16,7 @@ export function useAddBranchModal(params: {
   const [employeeCount, setEmployeeCount] = React.useState<number | ''>('');
   const [branchOptions, setBranchOptions] = React.useState<{ value: string; label: string; meta?: any }[]>([]);
   const [submitting, setSubmitting] = React.useState(false);
-  const { getDetail: getCompanyDetail } = useCompanies();
+  const { getDetail: getCompanyDetail } = useApiCompanies();
 
   const handleSubmit = async () => {
     if (!selectedBranch || !companyId) return;

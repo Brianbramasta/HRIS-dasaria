@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import type { DepartmentListItem, DivisionDropdown } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
-import { useDepartments } from '../../departement/useDepartments';
-import { useDivisions } from '../../division/useDivisions';
+import { useApiDepartments } from '../../api/useApiDepartments';
+import { useApiDivisions } from '../../api/useApiDivisions';
 
 export function useEditDepartmentModal(params: {
   isOpen: boolean;
@@ -19,8 +19,8 @@ export function useEditDepartmentModal(params: {
   const skFile = useFileStore((s) => s.skFile);
   const [divisions, setDivisions] = useState<DivisionDropdown[]>([]);
   const [submitting, setSubmitting] = useState(false);
-  const { updateDepartment, getById } = useDepartments();
-  const { getDropdown: getDivisionDropdown } = useDivisions();
+  const { updateDepartment, getById } = useApiDepartments();
+  const { getDropdown: getDivisionDropdown } = useApiDivisions();
   const [divisionSearch, setDivisionSearch] = useState('');
   const [initialDivision, setInitialDivision] = useState<DivisionDropdown | null>(null);
 

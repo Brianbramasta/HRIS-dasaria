@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useDepartments } from '../../departement/useDepartments';
+import { useApiDepartments } from '../../api/useApiDepartments';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
 import { useCreateUnit, useGetUnits } from '../../api/useApiUnits';
@@ -22,7 +22,7 @@ export const useAddUnitModal = ({ isOpen, onClose, onSuccess }: UseAddUnitModalP
   const {execute: fetchApi } = useGetUnits();
 
 
-  const { getDropdown } = useDepartments();
+  const { getDropdown } = useApiDepartments();
   const skFile = useFileStore(s => s.skFile);
   const setSkFile = useFileStore(s => s.setSkFile);
   const clearSkFile = useFileStore(s => s.clearSkFile);

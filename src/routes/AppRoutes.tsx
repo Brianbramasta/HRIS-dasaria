@@ -56,7 +56,10 @@ import DetailGajiTHRPage from "@/features/payroll/pages/shared/detail/detailPayr
 import DetailGajiPKLPage from "@/features/payroll/pages/shared/detail/detailPayrollPKLPage";
 import HakAksesPage from "@/features/role-management-access/pages/RoleManagementPage";
 import DetailHakAksesPages from "@/features/role-management-access/pages/detail/DetailHakAksesPages";
-import EditRolePage from "@/features/role-management-access/pages/EditRolePage";
+import ModulDetail from "@/features/role-management-access/pages/ModulDetail";
+import FeatureDetail from "@/features/role-management-access/pages/FeatureDetail";
+import AccessDetail from "@/features/role-management-access/pages/AccessDetail";
+import EditRolePage from "@/features/role-management-access/pages/detail/EditRolePage";
 // Dokumentasi: Import halaman Kasbon dan tab terkait
 import KasbonPage from "@/features/payroll/pages/cash-advance/CashAdvancePage";
 import StatusKasbonPage from "@/features/payroll/pages/cash-advance/tab/StatusCashAdvancePage";
@@ -200,6 +203,9 @@ export default function AppRoutes() {
           <Route path="/organization-history/atasan" element={<OrganizationHistoryAtasanPage />} />
           <Route path="/role-management-access" element={<HakAksesPage />} />
           <Route path="/role-management-access/detail/:roleId" element={<DetailHakAksesPages />} />
+          <Route path="/role-management-access/service-detail/:layananId" element={<ModulDetail />} />
+          <Route path="/role-management-access/feature-detail/:modulId" element={<FeatureDetail />} />
+          <Route path="/role-management-access/access-detail/:featureId" element={<AccessDetail />} />
           <Route path="/role-management-access/edit/:roleId" element={<EditRolePage />} />
 
       

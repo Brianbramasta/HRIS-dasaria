@@ -1,6 +1,6 @@
 import React from 'react';
-import { companyService } from '../../../services/OrganizationService';
-import { useBusinessLines } from '../../business-lines/useBusinessLines';
+import { companiesService } from '../../../services/request/CompaniesService';
+import { useApiBusinessLines } from '../../api/useApiBusinessLines';
 import type { BusinessLineListItem, CompanyListItem } from '../../../types/OrganizationApiTypes';
 import { addNotification } from '@/stores/notificationStore';
 
@@ -19,7 +19,7 @@ export function useEditCompanyModal(params: {
   const [docNumber, setDocNumber] = React.useState('');
   const [skFile, setSkFile] = React.useState<File | null>(null);
   const [submitting, setSubmitting] = React.useState(false);
-  const { getDropdown } = useBusinessLines({ autoFetch: false });
+  const { getDropdown } = useApiBusinessLines();
 
   React.useEffect(() => {
     if (!isOpen) return;
@@ -72,7 +72,7 @@ export function useEditCompanyModal(params: {
         if (skFilePayload) formData.append('documents[0][cd_file]', skFilePayload);
       }
 
-      const updated = await companyService.update(company.id, formData);
+      const updated = await companiesService.update(company.id, formData);
       onSuccess?.(updated);
       onClose();
     } catch {

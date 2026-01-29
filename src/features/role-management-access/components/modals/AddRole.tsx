@@ -4,7 +4,7 @@ import Label from '@/components/form/Label';
 import Input from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
 import { EyeCloseIcon, EyeIcon } from '@/icons/index';
-import { useAddRoleModal, FormValues } from '@/features/role-management-access/hooks/modals/useAddRoleModal';
+import { useAddRoleModal, FormValues } from '@/features/role-management-access/hooks/modals/service/useAddRoleModal';
 
 interface TambahRoleModalProps {
   isOpen: boolean;

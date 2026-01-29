@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { DepartmentListItem } from '../../../types/OrganizationApiTypes';
 import { addNotification } from '@/stores/notificationStore';
-import { useDepartments } from '../../departement/useDepartments';
+import { useApiDepartments } from '../../api/useApiDepartments';
 
 export function useDeleteDepartmentModal(params: {
   isOpen: boolean;
@@ -14,7 +14,7 @@ export function useDeleteDepartmentModal(params: {
   const [skFileName, setSkFileName] = useState('');
   const [skFile, setSkFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const { deleteDepartment } = useDepartments();
+  const { deleteDepartment } = useApiDepartments();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;

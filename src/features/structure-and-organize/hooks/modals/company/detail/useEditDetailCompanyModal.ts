@@ -1,5 +1,5 @@
 import React from 'react';
-import { useBusinessLines } from '../../../../hooks/business-lines/useBusinessLines';
+import { useApiBusinessLines } from '../../../api/useApiBusinessLines';
 import { companyService } from '../../../../services/OrganizationService';
 import type { BusinessLineListItem } from '../../../../types/OrganizationApiTypes';
 import { addNotification } from '@/stores/notificationStore';
@@ -15,7 +15,7 @@ export function useEditDetailCompanyModal(params: {
   const [submitting, setSubmitting] = React.useState(false);
   const [logoFile, setLogoFile] = React.useState<File | null>(null);
   const [businessLines, setBusinessLines] = React.useState<BusinessLineListItem[]>([]);
-  const { getDropdown } = useBusinessLines({ autoFetch: false });
+  const { getDropdown } = useApiBusinessLines();
 
   React.useEffect(() => {
     if (!isOpen) return;

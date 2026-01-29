@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import type { DivisionListItem, DirectorateDropdown } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
-import { useDivisions } from '../../division/useDivisions';
-import { useDirectorates } from '../../directorate/useDirectorates';
+import { useApiDivisions } from '../../api/useApiDivisions';
+import { useApiDirectorates } from '../../api/useApiDirectorates';
 
 export function useEditDivisionModal(params: {
   isOpen: boolean;
@@ -19,8 +19,8 @@ export function useEditDivisionModal(params: {
   const skFile = useFileStore((s) => s.skFile);
   const [directorates, setDirectorates] = useState<DirectorateDropdown[]>([]);
   const [submitting, setSubmitting] = useState(false);
-  const { updateDivision } = useDivisions();
-  const { getDropdown: getDirectorateDropdown } = useDirectorates();
+  const { updateDivision } = useApiDivisions();
+  const { getDropdown: getDirectorateDropdown } = useApiDirectorates();
 
   const [directorateSearch, setDirectorateSearch] = useState('');
 
