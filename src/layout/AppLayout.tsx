@@ -6,6 +6,9 @@ import AppSidebar from "./AppSidebar";
 import { useAuthStore } from "../features/auth/stores/AuthStore";
 import PageBreadcrumb from "../components/common/PageBreadCrumb";
 import { getBreadcrumbConfig } from "../utils/breadcrumbConfig";
+import PayrollModalTrigger from "./PayrollModalTrigger";
+import LoginPayrollModal from "../features/payroll/components/modals/LoginPayrollModal";
+import { useLoginPayrollModalStore } from "../features/payroll/store/useLoginPayrollModalStore";
 
 const LayoutContent: React.FC = () => {
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
@@ -48,9 +51,13 @@ const LayoutContent: React.FC = () => {
 };
 
 const AppLayout: React.FC = () => {
+  const { isOpen: isLoginModalOpen } = useLoginPayrollModalStore();
+
   return (
     <SidebarProvider>
-      <LayoutContent />
+      <PayrollModalTrigger />
+      <LoginPayrollModal />
+      {!isLoginModalOpen && <LayoutContent />}
     </SidebarProvider>
   );
 };
