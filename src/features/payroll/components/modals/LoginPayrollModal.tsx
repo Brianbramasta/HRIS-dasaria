@@ -2,7 +2,6 @@ import React from "react";
 import { Modal } from "@/components/ui/modal";
 import InputField from "@/components/shared/field/InputField";
 import { useLoginPayrollModal } from "@/features/payroll/hooks/modals/useLoginPayrollModal";
-import { useLoginPayrollModalStore } from "@/features/payroll/store/useLoginPayrollModalStore";
 
 interface LoginPayrollModalProps {
   onSubmit?: (password: string) => void | Promise<void>;
@@ -11,36 +10,12 @@ interface LoginPayrollModalProps {
 const LoginPayrollModal: React.FC<LoginPayrollModalProps> = ({
   onSubmit,
 }) => {
-  const { isOpen, closeModal, setPayrollSession } = useLoginPayrollModalStore();
-  
-  const handlePasswordSubmit = async (password: string) => {
-    try {
-      // Panggil onSubmit jika ada
-      if (onSubmit) {
-        await onSubmit(password);
-      }
-      
-      // Jika berhasil, simpan dummy session ke store
-      setPayrollSession({
-        token: `payroll_session_${Date.now()}`,
-        createdAt: Date.now(),
-      });
-      
-      // Tutup modal
-      closeModal();
-    } catch (err) {
-      // Error akan dihandle oleh useLoginPayrollModal hook
-      throw err;
-    }
-  };
-
-  const { form, setField, handleSubmit, loading } = useLoginPayrollModal({
-    onSubmit: handlePasswordSubmit,
-    onClose: closeModal,
+  const { isOpen, closeModal, form, setField, handleSubmit, loading } = useLoginPayrollModal({
+    onSubmit,
   });
 
   return (
-    <Modal isOpen={isOpen} onClose={() => {}} showCloseButton={false} className={`${ 'max-w-md'} p-6 zoom-75 dark:text-white `}>
+    <Modal isOpen={isOpen} onClose={closeModal} showCloseButton={false} className={`${ 'max-w-md'} p-6 zoom-75 dark:text-white `}>
       <div className="w-full max-w-md px-6 py-8 sm:px-8 sm:py-10">
         {/* Header */}
         <div className="mb-8 text-center">

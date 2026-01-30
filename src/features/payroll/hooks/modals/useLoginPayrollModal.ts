@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLoginPayrollModalStore } from '@/features/payroll/store/useLoginPayrollModalStore';
 
 export type LoginPayrollFormValues = {
   password: string;
@@ -7,13 +8,12 @@ export type LoginPayrollFormValues = {
 
 interface UseLoginPayrollModalParams {
   onSubmit?: (password: string) => void | Promise<void>;
-  onClose?: () => void;
 }
 
 export const useLoginPayrollModal = ({
   onSubmit,
-  onClose,
-}: UseLoginPayrollModalParams) => {
+}: UseLoginPayrollModalParams = {}) => {
+  const { isOpen, closeModal, setPayrollSession } = useLoginPayrollModalStore();
   const [form, setForm] = useState<LoginPayrollFormValues>({
     password: '',
     error: '',
@@ -22,6 +22,27 @@ export const useLoginPayrollModal = ({
 
   const setField = (key: keyof LoginPayrollFormValues, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handlePasswordSubmit = async (password: string) => {
+    try {
+      // Panggil onSubmit jika ada
+      if (onSubmit) {
+        await onSubmit(password);
+      }
+
+      // Jika berhasil, simpan dummy session ke store
+      setPayrollSession({
+        token: `payroll_session_${Date.now()}`,
+        createdAt: Date.now(),
+      });
+
+      // Tutup modal
+      closeModal();
+    } catch (err) {
+      // Error akan dihandle oleh handleSubmit
+      throw err;
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,13 +57,10 @@ export const useLoginPayrollModal = ({
       setField('error', '');
       setLoading(true);
 
-      if (onSubmit) {
-        await onSubmit(form.password);
-      }
+      await handlePasswordSubmit(form.password);
 
       // Reset form after successful submission
       setForm({ password: '', error: '' });
-      onClose?.();
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An error occurred';
       setField('error', errorMessage);
@@ -54,10 +72,12 @@ export const useLoginPayrollModal = ({
   const handleClose = () => {
     // Reset form state when closing
     setForm({ password: '', error: '' });
-    onClose?.();
+    closeModal();
   };
 
   return {
+    isOpen,
+    closeModal,
     form,
     setField,
     handleSubmit,
