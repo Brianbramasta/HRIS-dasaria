@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-interface PayrollSession {
+export interface PayrollSession {
   token: string;
   createdAt: number;
 }
