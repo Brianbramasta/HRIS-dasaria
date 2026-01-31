@@ -1,9 +1,8 @@
 import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
-import Label from '@/components/form/Label';
-import Input from '@/components/form/input/InputField';
-import Select from '@/components/form/Select';
 import { EyeCloseIcon, EyeIcon } from '@/icons/index';
+import InputField from '@/components/shared/field/InputField';
+import SelectField from '@/components/shared/field/SelectField';
 import { useAddRoleModal, FormValues } from '@/features/role-management-access/hooks/modals/service/useAddRoleModal';
 
 interface TambahRoleModalProps {
@@ -31,8 +30,8 @@ const TambahRoleModal: React.FC<TambahRoleModalProps> = ({
   const content = (
     <div className="space-y-5 grid grid-cols-1 md:grid-cols-2 gap-2">
       <div>
-        <Label>NIP</Label>
-        <Select
+        <SelectField
+          label="NIP"
           options={employeeOptions}
           placeholder="Pilih NIP"
           onChange={handleEmployeeChange}
@@ -42,8 +41,8 @@ const TambahRoleModal: React.FC<TambahRoleModalProps> = ({
       </div>
 
       <div>
-        <Label>Nama</Label>
-        <Input
+        <InputField
+          label="Nama"
           type="text"
           placeholder="Otomatis dari ID"
           value={form.nama}
@@ -53,8 +52,8 @@ const TambahRoleModal: React.FC<TambahRoleModalProps> = ({
       </div>
 
       <div>
-        <Label>Role</Label>
-        <Input
+        <InputField
+          label="Role"
           type="text"
           placeholder="Otomatis dari ID"
           value={form.role}
@@ -64,8 +63,8 @@ const TambahRoleModal: React.FC<TambahRoleModalProps> = ({
       </div>
 
       <div>
-        <Label>Departemen</Label>
-        <Input
+        <InputField
+          label="Departemen"
           type="text"
           placeholder="Otomatis dari ID"
           value={form.departemen}
@@ -75,8 +74,8 @@ const TambahRoleModal: React.FC<TambahRoleModalProps> = ({
       </div>
 
       <div>
-        <Label>Email</Label>
-        <Input
+        <InputField
+          label="Email"
           type="text"
           placeholder="Otomatis dari ID"
           value={form.email}
@@ -86,27 +85,27 @@ const TambahRoleModal: React.FC<TambahRoleModalProps> = ({
       </div>
 
       <div>
-        <Label>Password</Label>
-        <div className="relative">
-          <Input
-            type={showPassword ? "text" : "password"}
-            placeholder="Masukan Password"
-            value={form.password}
-            onChange={(e) => setForm((prev) => ({ ...prev, password: e.target.value }))}
-            required
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
-          >
-            {showPassword ? (
-              <EyeIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
-            ) : (
-              <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
-            )}
-          </button>
-        </div>
+        <InputField
+          label="Password"
+          type={showPassword ? "text" : "password"}
+          placeholder="Masukan Password"
+          value={form.password}
+          onChange={(e) => setForm((prev) => ({ ...prev, password: e.target.value }))}
+          required
+          suffix={
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="cursor-pointer"
+            >
+              {showPassword ? (
+                <EyeIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
+              ) : (
+                <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
+              )}
+            </button>
+          }
+        />
       </div>
     </div>
   );

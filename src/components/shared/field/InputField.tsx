@@ -9,6 +9,7 @@ interface InputFieldProps extends InnerProps {
   labelClassName?: string;
   containerClassName?: string;
   htmlFor?: string;
+  suffix?: ReactNode;
 }
 
 const InputField: FC<InputFieldProps> = ({
@@ -18,9 +19,12 @@ const InputField: FC<InputFieldProps> = ({
   htmlFor,
   id,
   required,
+  suffix,
+  className,
   ...rest
 }) => {
   const controlId = htmlFor ?? id;
+
   return (
     <div className={containerClassName}>
       {label && (
@@ -31,7 +35,14 @@ const InputField: FC<InputFieldProps> = ({
           </>
         </Label>
       )}
-      <Input id={controlId} required={required} {...rest} />
+      <div className="relative">
+        <Input id={controlId} required={required} className={`${className || ""} ${suffix ? "pr-10" : ""}`} {...rest} />
+        {suffix && (
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 z-10">
+            {suffix}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
