@@ -1,7 +1,7 @@
 import InputField from '@/components/shared/field/InputField';
 import SelectField from '@/components/shared/field/SelectField';
 import Button from '@/components/ui/button/Button';
-import { PlusIcon } from '@/icons/index';
+import { IconPlus as PlusIcon } from '@/icons/components/icons'
 import PermissionsTable from '@/features/role-management-access/components/table/PermissionsTable';
 import useEditRole, { DEFAULT_PERMISSION_CONFIG } from '@/features/role-management-access/hooks/useEditRole';
 
@@ -47,7 +47,7 @@ export default function EditRolePage() {
             <button
               className="mb-[2px] p-[10px] rounded-lg bg-green-500 hover:bg-green-600 text-white transition-colors"
             >
-              <PlusIcon className="h-5 w-5" />
+              <PlusIcon />
             </button>
           </div>
         </div>
