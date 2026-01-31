@@ -44,8 +44,8 @@ export default function useRoleManagement() {
   ]);
 
   const handleAddRole = useCallback(() => {
-    console.log('Add role');
-  }, []);
+    navigate('/role-management-access/add');
+  }, [navigate]);
 
   const handleAddLayanan = useCallback(() => {
     setIsAddServiceModalOpen(true);
@@ -95,7 +95,7 @@ export default function useRoleManagement() {
     setSelectedServiceToEdit(row);
     setIsEditServiceModalOpen(true);
   }, []);
-  
+
   const handleCloseEditServiceModal = useCallback(() => {
     setIsEditServiceModalOpen(false);
     setSelectedServiceToEdit(null);
