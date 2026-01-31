@@ -77,7 +77,7 @@ export default function EditRolePage() {
                     onClick={() => removeServiceBlock(block.id)}
                     title="Hapus Sistem Layanan"
                   >
-                    <TrashIcon />
+                    <TrashIcon color='white' />
                   </button>
                 )}
               </div>
