@@ -1,5 +1,6 @@
 import { Modal } from '@/components/ui/modal';
 import InputField from '@/components/shared/field/InputField';
+import TextAreaField from '@/components/shared/field/TextAreaField';
 import Button from '@/components/ui/button/Button';
 import { useEditAccessModal } from '../../../hooks/modals/access/useEditAccessModal';
 import type { AccessData } from '../../../hooks/useAccessDetail';
@@ -13,8 +14,12 @@ interface EditAccessModalProps {
 export default function EditAccessModal({ isOpen, onClose, data }: EditAccessModalProps) {
   const {
     akses,
+    code,
+    deskripsi,
     fitur,
     handleAksesChange,
+    handleCodeChange,
+    handleDeskripsiChange,
     handleFiturChange,
     handleSubmit,
   } = useEditAccessModal(isOpen, onClose, data);
@@ -33,11 +38,27 @@ export default function EditAccessModal({ isOpen, onClose, data }: EditAccessMod
 
         <div className="space-y-4 px-1">
           <InputField
-            label="Akses"
+            label="Nama Akses"
             placeholder="Masukkan nama akses"
             value={akses}
             onChange={(e) => handleAksesChange(e.target.value)}
             className="w-full"
+          />
+          <InputField
+            label="Kode"
+            disabled
+            placeholder="Masukkan kode"
+            value={code}
+            onChange={(e) => handleCodeChange(e.target.value)}
+            className="w-full"
+          />
+          <TextAreaField
+            label="Catatan"
+            placeholder="Detail Catatan..."
+            value={deskripsi}
+            onChange={(e) => handleDeskripsiChange(e)}
+            className="w-full"
+            rows={4}
           />
           <InputField
             label="Fitur"

@@ -59,7 +59,7 @@ export default function HakAksesPage() {
   // Columns for Sistem Layanan
   const layananColumns: DataTableColumn<LayananData>[] = [
     { id: 'no', label: 'No.', minWidth: 50, sortable: false },
-    { id: 'idLayanan', label: 'Id Layanan', minWidth: 150 },
+    // { id: 'idLayanan', label: 'Id Layanan', minWidth: 150 },
     { id: 'sistemLayanan', label: 'Sistem Layanan', minWidth: 300 },
     {
       id: 'detail',

@@ -24,6 +24,8 @@ export default function AccessDetail() {
   const accessColumns: DataTableColumn<AccessData>[] = [
     { id: 'no', label: 'No.', minWidth: 50, sortable: false },
     { id: 'akses', label: 'Akses', minWidth: 200 },
+    { id: 'code', label: 'Kode', minWidth: 100 },
+    { id: 'deskripsi', label: 'Deskripsi', minWidth: 300 },
     { id: 'fitur', label: 'Fitur', minWidth: 200 },
   ];
 
