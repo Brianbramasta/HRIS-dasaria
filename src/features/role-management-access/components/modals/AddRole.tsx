@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
-import { EyeCloseIcon, EyeIcon } from '@/icons/index';
+import { CopyIcon } from '@/icons/index';
 import InputField from '@/components/shared/field/InputField';
 import SelectField from '@/components/shared/field/SelectField';
+import Switch from '@/components/form/switch/Switch';
 import { useAddRoleModal, FormValues } from '@/features/role-management-access/hooks/modals/service/useAddRoleModal';
+import Label from '@/components/form/Label';
 
 interface TambahRoleModalProps {
   isOpen: boolean;
@@ -18,17 +20,39 @@ const TambahRoleModal: React.FC<TambahRoleModalProps> = ({
   onSubmit,
   employeeOptions = [],
 }) => {
+  const [isPenggajianActive, setIsPenggajianActive] = useState(false);
   const {
-    showPassword,
-    setShowPassword,
     form,
     setForm,
     handleEmployeeChange,
     handleSubmit,
   } = useAddRoleModal(isOpen, onClose, onSubmit);
 
+  // Generate random password
+  const generateRandomPassword = (fieldName: 'password' | 'passwordPenggajian') => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+    let result = '';
+    for (let i = 0; i < 12; i++) {
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    setForm((prev) => ({ ...prev, [fieldName]: result }));
+  };
+
+  // Copy to clipboard
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+  };
+
   const content = (
     <div className="space-y-5 grid grid-cols-1 md:grid-cols-2 gap-2">
+      <div className="md:col-span-2 flex items-center justify-between gap-3">
+        <Label>Akses Penggajian</Label>
+        <Switch
+        label=''
+          defaultChecked={isPenggajianActive}
+          onChange={(checked) => setIsPenggajianActive(checked)}
+        />
+      </div>
       <div>
         <SelectField
           label="NIP"
@@ -87,26 +111,71 @@ const TambahRoleModal: React.FC<TambahRoleModalProps> = ({
       <div>
         <InputField
           label="Password"
-          type={showPassword ? "text" : "password"}
+          type="password"
           placeholder="Masukan Password"
           value={form.password}
           onChange={(e) => setForm((prev) => ({ ...prev, password: e.target.value }))}
           required
           suffix={
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="cursor-pointer"
-            >
-              {showPassword ? (
-                <EyeIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
-              ) : (
-                <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
-              )}
-            </button>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => generateRandomPassword('password')}
+                className="cursor-pointer"
+                title="Generate random password"
+              >
+                <svg className="fill-gray-500 dark:fill-gray-400 size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 2v4m0 12v4M2 12h4m12 0h4M5.64 5.64l2.83 2.83m5.06 5.06l2.83 2.83M5.64 18.36l2.83-2.83m5.06-5.06l2.83-2.83" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                onClick={() => copyToClipboard(form.password)}
+                className="cursor-pointer"
+                title="Copy to clipboard"
+              >
+                <CopyIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
+              </button>
+            </div>
           }
         />
       </div>
+
+      
+
+      {isPenggajianActive && (
+        <div className='md:col-span-2 '>
+          <InputField
+            label="Password Penggajian"
+            type="password"
+            placeholder="Masukan Password Penggajian"
+            value={form.passwordPenggajian || ''}
+            onChange={(e) => setForm((prev) => ({ ...prev, passwordPenggajian: e.target.value }))}
+            suffix={
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => generateRandomPassword('passwordPenggajian')}
+                  className="cursor-pointer"
+                  title="Generate random password"
+                >
+                  <svg className="fill-gray-500 dark:fill-gray-400 size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M12 2v4m0 12v4M2 12h4m12 0h4M5.64 5.64l2.83 2.83m5.06 5.06l2.83 2.83M5.64 18.36l2.83-2.83m5.06-5.06l2.83-2.83" />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => copyToClipboard(form.passwordPenggajian || '')}
+                  className="cursor-pointer"
+                  title="Copy to clipboard"
+                >
+                  <CopyIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
+                </button>
+              </div>
+            }
+          />
+        </div>
+      )}
     </div>
   );
 
