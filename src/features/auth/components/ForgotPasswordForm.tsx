@@ -4,6 +4,7 @@ import Input from '../../../components/form/input/InputField';
 import Button from '../../../components/ui/button/Button';
 import { ForgotPasswordRequest } from '../types/Index';
 // import Logo from '../../../components/common/Logo';
+import { IconArrowLeft } from '@/icons/components/icons';
 
 interface ForgotPasswordFormProps {
   onSubmit: (data: ForgotPasswordRequest) => Promise<void>;
@@ -14,15 +15,15 @@ interface ForgotPasswordFormProps {
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default function ForgotPasswordForm({ 
-  onSubmit, 
-  isLoading = false, 
+export default function ForgotPasswordForm({
+  onSubmit,
+  isLoading = false,
   error = null,
   successMessage = null,
   formData,
   onInputChange
 }: ForgotPasswordFormProps) {
-  
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,9 +85,10 @@ export default function ForgotPasswordForm({
       <div className="mt-6 text-center">
         <Link
           to="/login"
-          className="text-sm font-medium text-gray-600 hover:underline dark:text-gray-400"
+          className="text-sm font-medium text-gray-600 hover:underline dark:text-gray-400 flex items-center justify-center gap-2"
         >
-          ← Back To Login
+          <IconArrowLeft />
+          Back To Login
         </Link>
       </div>
     </div>

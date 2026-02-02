@@ -38,7 +38,7 @@ const InputField: FC<InputFieldProps> = ({
       <div className="relative">
         <Input id={controlId} required={required} className={`${className || ""} ${suffix ? "pr-10" : ""}`} {...rest} />
         {suffix && (
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 z-10">
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 z-10 flex">
             {suffix}
           </div>
         )}

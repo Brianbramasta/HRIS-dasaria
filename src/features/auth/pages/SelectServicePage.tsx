@@ -1,63 +1,12 @@
-import { useAuthStore } from '../stores/AuthStore';
-import { useNavigate } from 'react-router-dom';
-
-const services = [
-    {
-        id: 'hris',
-        title: 'HRIS',
-        description: 'Human Resource Information System',
-        icon: '/images/logo/hris-logo.png',
-        path: '/dashboard',
-    },
-    {
-        id: 'iam',
-        title: 'IAM',
-        description: 'Integrated Accounting Management',
-        icon: '/images/logo/hris-logo.png',
-        path: '/iam',
-    },
-    {
-        id: 'erp',
-        title: 'ERP',
-        description: 'Enterprise Resource Planning',
-        icon: '/images/logo/hris-logo.png',
-        path: '/erp',
-    },
-    {
-        id: 'omb',
-        title: 'OMB',
-        description: 'Operasional Manajemen Bisnis',
-        icon: '/images/logo/hris-logo.png',
-        path: '/omb',
-    },
-    {
-        id: 'bms',
-        title: 'BMS',
-        description: 'Busnies Manajemen System',
-        icon: '/images/logo/hris-logo.png',
-        path: '/bms',
-    },
-    {
-        id: 'ccc',
-        title: 'CCC',
-        description: 'Customer Chat Care',
-        icon: '/images/logo/hris-logo.png',
-        path: '/ccc',
-    },
-];
+import { useSelectService } from '../hooks/Index';
 
 export default function SelectServicePage() {
-    const { user, logout } = useAuthStore((state) => state);
-    const navigate = useNavigate();
-
-    const handleLogout = () => {
-        logout();
-        navigate('/login');
-    };
-
-    const handleServiceClick = (path: string) => {
-        navigate(path);
-    };
+    const {
+        user,
+        services,
+        handleLogout,
+        handleServiceClick
+    } = useSelectService();
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col font-sans text-gray-800">
@@ -99,17 +48,19 @@ export default function SelectServicePage() {
                         <div
                             key={service.id}
                             onClick={() => handleServiceClick(service.path)}
-                            className="bg-[#004969] hover:bg-[#093f5b] transition-colors rounded-lg p-6 cursor-pointer flex items-center gap-4 text-white shadow-lg h-40 group relative overflow-hidden"
+                            className="bg-[#004969] hover:bg-[#66A4C0] transition-colors rounded-lg p-6 cursor-pointer flex items-center gap-4 text-white hover:text-[#004969] shadow-lg h-40 group relative overflow-hidden"
                         >
                             {/* Decorative Gradient/Overlay if needed */}
-
-                            <div className="bg-white rounded-xl h-16 w-16 flex-shrink-0 flex items-center justify-center">
+                            {/* change bg if need to bg-transparent -> bg-white */}
+                            <div className="bg-transparent rounded-xl h-16 w-16 flex-shrink-0 flex items-center justify-center">
                                 {/* Using the text HRIS as logo if icon fails or generic icon */}
-                                <span className="text-[#004969] font-bold text-xs"><img src={service.icon} alt={service.title} className="w-full h-full object-contain" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement!.innerText = service.title }} /></span>
+                                <span className="text-[#004969] font-bold text-xs">
+                                    <img src={service.icon} alt={service.title} className="w-full h-full object-contain" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement!.innerText = service.title }} />
+                                </span>
                             </div>
                             <div>
                                 <h2 className="text-2xl font-bold mb-1">{service.title}</h2>
-                                <p className="text-sm text-blue-100 font-light leading-snug">{service.description}</p>
+                                <p className="text-sm leading-snug">{service.description}</p>
                             </div>
                         </div>
                     ))}

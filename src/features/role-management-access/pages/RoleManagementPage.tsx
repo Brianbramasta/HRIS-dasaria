@@ -4,7 +4,7 @@ import useRoleManagement, { RoleData, LayananData } from '../hooks/useRoleManage
 import AddServiceModal from '../components/modals/service/AddServiceModal';
 import EditServiceModal from '../components/modals/service/EditServiceModal';
 import DeleteServiceModal from '../components/modals/service/DeleteServiceModal';
-import DeleteRoleModal from '../components/modals/DeleteRoleModal';
+import DeleteRoleModal from '../components/modals/detail-role/DeleteRoleModal';
 
 export default function HakAksesPage() {
   const {
@@ -31,14 +31,25 @@ export default function HakAksesPage() {
     handleCloseDeleteRoleModal,
     selectedRoleToDelete,
     handleConfirmDeleteRole,
+    columnFilters,
+    handleColumnFilterChange,
   } = useRoleManagement();
 
   // Columns for Role Akses
   const roleColumns: DataTableColumn<RoleData>[] = [
     { id: 'no', label: 'No.', minWidth: 50, sortable: false },
-    { id: 'idRole', label: 'Id Role', minWidth: 150 },
+    // { id: 'idRole', label: 'Id Role', minWidth: 150 },
     { id: 'role', label: 'Role', minWidth: 150 },
-    { id: 'sistemLayanan', label: 'Sistem Layanan', minWidth: 300 },
+    {
+      id: 'sistemLayanan',
+      label: 'Sistem Layanan',
+      minWidth: 300,
+      filterOptions: layananData.map(item => ({
+        label: item.sistemLayanan,
+        value: item.sistemLayanan
+      })),
+      filterMaxRows: 3
+    },
     {
       id: 'detail',
       label: 'Detail',
@@ -46,7 +57,7 @@ export default function HakAksesPage() {
       align: 'center',
       sortable: false,
       format: (_value, row) => (
-        <button 
+        <button
           className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
           onClick={() => handleDetailRole(row.idRole)}
         >
@@ -60,7 +71,12 @@ export default function HakAksesPage() {
   const layananColumns: DataTableColumn<LayananData>[] = [
     { id: 'no', label: 'No.', minWidth: 50, sortable: false },
     // { id: 'idLayanan', label: 'Id Layanan', minWidth: 150 },
-    { id: 'sistemLayanan', label: 'Sistem Layanan', minWidth: 300 },
+    {
+      id: 'sistemLayanan',
+      label: 'Sistem Layanan',
+      minWidth: 300,
+
+    },
     {
       id: 'detail',
       label: 'Detail',
@@ -68,7 +84,7 @@ export default function HakAksesPage() {
       align: 'center',
       sortable: false,
       format: (_value, row) => (
-        <button 
+        <button
           className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
           onClick={() => handleDetailLayanan(row.idLayanan)}
         >
@@ -112,6 +128,8 @@ export default function HakAksesPage() {
         searchPlaceholder="Cari berdasarkan kata kunci"
         pageSize={10}
         filterable={true}
+        onColumnFilterChange={handleColumnFilterChange}
+        columnFilters={columnFilters}
       />
 
       <DataTable
@@ -124,6 +142,8 @@ export default function HakAksesPage() {
         searchPlaceholder="Cari berdasarkan kata kunci"
         pageSize={10}
         filterable={true}
+        onColumnFilterChange={handleColumnFilterChange}
+        columnFilters={columnFilters}
       />
 
       <AddServiceModal

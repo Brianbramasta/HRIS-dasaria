@@ -15,6 +15,7 @@ interface ColumnFilterPopupProps {
   onApply: (values: string[]) => void;
   onReset: () => void;
   anchorEl?: HTMLElement | null;
+  maxRows?: number;
 }
 
 export const ColumnFilterPopup: React.FC<ColumnFilterPopupProps> = ({
@@ -25,6 +26,7 @@ export const ColumnFilterPopup: React.FC<ColumnFilterPopupProps> = ({
   onApply,
   onReset,
   anchorEl,
+  maxRows,
 }) => {
   const [tempSelectedValues, setTempSelectedValues] = useState<string[]>(selectedValues);
   const popupRef = useRef<HTMLDivElement>(null);
@@ -86,7 +88,7 @@ export const ColumnFilterPopup: React.FC<ColumnFilterPopupProps> = ({
   return (
     <div
       ref={popupRef}
-      className="fixed z-50 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700"
+      className={`fixed z-50 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 ${maxRows ? 'w-auto min-w-[320px]' : 'w-64'}`}
       style={getPosition()}
     >
       <div className="p-4">
@@ -94,9 +96,12 @@ export const ColumnFilterPopup: React.FC<ColumnFilterPopupProps> = ({
           <h4 className="text-sm font-semibold text-gray-900 dark:text-white">Filter Options</h4>
         </div>
 
-        <div className={`space-y-2 ${options.length > 6 ? 'max-h-60 overflow-y-auto grid md:grid-cols-2' : ''}`}>
+        <div
+          className={maxRows ? "grid grid-flow-col gap-x-8 gap-y-2" : `space-y-2 ${options.length > 6 ? 'max-h-60 overflow-y-auto grid md:grid-cols-2' : ''}`}
+          style={maxRows ? { gridTemplateRows: `repeat(${maxRows}, minmax(0, 1fr))` } : {}}
+        >
           {options.map((option) => (
-            <div key={option.value}>
+            <div key={option.value} className="min-w-max">
               <Checkbox
                 label={option.label}
                 checked={tempSelectedValues.includes(option.value)}

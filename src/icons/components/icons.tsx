@@ -1,4 +1,5 @@
 export * from './icons/FileText';
+export * from './icons/IconArrowLeft';
 export * from './icons/IconBirthday';
 export * from './icons/IconCalendarFilter';
 export * from './icons/IconChangePassword';
@@ -31,3 +32,6 @@ export * from './icons/IconReportTotalPayrollCost';
 export * from './icons/IconShare';
 export * from './icons/IconStrukturOrganisasi';
 export * from './icons/IconTidakLengkap';
+export * from './icons/IconEmail';
+export * from './icons/IconEyeOpen';
+export * from './icons/IconEyeClose';
