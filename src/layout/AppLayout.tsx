@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { SidebarProvider, useSidebar } from "../context/SidebarContext";
 import { Outlet, useLocation } from "react-router-dom";
 import AppHeader from "./AppHeader";
@@ -9,6 +10,8 @@ import { getBreadcrumbConfig } from "../utils/breadcrumbConfig";
 import PayrollModalTrigger from "./PayrollModalTrigger";
 import LoginPayrollModal from "../features/payroll/components/modals/LoginPayrollModal";
 import { useLoginPayrollModalStore } from "../features/payroll/store/useLoginPayrollModalStore";
+import { SpamModal } from "../features/employee/components/modals/SpamModal";
+import { useSpamModalStore } from "../stores/useSpamModalStore";
 
 const LayoutContent: React.FC = () => {
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
@@ -52,11 +55,21 @@ const LayoutContent: React.FC = () => {
 
 const AppLayout: React.FC = () => {
   const { isOpen: isLoginModalOpen } = useLoginPayrollModalStore();
+  const { setOpen: setSpamModalOpen } = useSpamModalStore();
+  const location = useLocation();
+
+  // Handle URL parameter SpamModal=true
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const showSpamModal = searchParams.get("SpamModal") === "true";
+    setSpamModalOpen(showSpamModal);
+  }, [location.search, setSpamModalOpen]);
 
   return (
     <SidebarProvider>
       <PayrollModalTrigger />
       <LoginPayrollModal />
+      <SpamModal />
       {!isLoginModalOpen && <LayoutContent />}
     </SidebarProvider>
   );
