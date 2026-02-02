@@ -20,7 +20,7 @@ const policies: Record<string, RolePolicy> = {
   },
   staff: {
     allowSections: { main: true },
-    allowedPaths: ["/data-karyawan","/pengunduran-diri"],
+    allowedPaths: ["/data-karyawan", "/pengunduran-diri", "/select-service"],
   },
 };
 

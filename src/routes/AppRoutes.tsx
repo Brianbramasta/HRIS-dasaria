@@ -80,6 +80,7 @@ import JenisPengajuanPage from "@/features/submission-type/pages/SubmissionPage"
 
 // Auth Feature Pages
 import { LoginPage, ForgotPasswordPage } from "../features/auth/pages/Index";
+import SelectServicePage from "../features/auth/pages/SelectServicePage";
 import ProtectedOutlet from "./ProtectedOutlet";
 import FormKasbonPage from "@/features/payroll/pages/cash-advance/form-cash-advance/FormCashAdvancePage";
 import NotFound from "@/pages/OtherPage/NotFound";
@@ -214,10 +215,11 @@ export default function AppRoutes() {
         </Route>
       </Route>
 
-      {/* Export print view tanpa AppLayout */}
+      {/* Export print view tanpa AppLayout dan Halaman Pilih Layanan */}
       <Route element={<ProtectedOutlet />}>
         <Route path="/structure-and-organize/export" element={<ExportPage />} />
         <Route path="/export" element={<ExportPage />} />
+        <Route path="/select-service" element={<SelectServicePage />} />
       </Route>
 
       {/* Auth Layout */}
