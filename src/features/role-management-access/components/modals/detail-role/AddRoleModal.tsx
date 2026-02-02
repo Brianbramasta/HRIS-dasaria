@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
-import { CopyIcon } from '@/icons/index';
 import InputField from '@/components/shared/field/InputField';
 import SelectField from '@/components/shared/field/SelectField';
 import Switch from '@/components/form/switch/Switch';
