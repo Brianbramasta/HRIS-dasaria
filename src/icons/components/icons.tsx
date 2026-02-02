@@ -1,4 +1,5 @@
 export * from './icons/FileText';
+export * from './icons/IconArrowLeft';
 export * from './icons/IconBirthday';
 export * from './icons/IconCalendarFilter';
 export * from './icons/IconChangePassword';
