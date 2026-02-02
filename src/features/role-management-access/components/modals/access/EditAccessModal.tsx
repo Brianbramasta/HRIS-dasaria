@@ -45,6 +45,14 @@ export default function EditAccessModal({ isOpen, onClose, data }: EditAccessMod
             className="w-full"
           />
           <InputField
+            label="Fitur"
+            disabled
+            placeholder="Masukkan nama fitur"
+            value={fitur}
+            onChange={(e) => handleFiturChange(e.target.value)}
+            className="w-full"
+          />
+          <InputField
             label="Kode"
             disabled
             placeholder="Masukkan kode"
@@ -60,13 +68,7 @@ export default function EditAccessModal({ isOpen, onClose, data }: EditAccessMod
             className="w-full"
             rows={4}
           />
-          <InputField
-            label="Fitur"
-            placeholder="Masukkan nama fitur"
-            value={fitur}
-            onChange={(e) => handleFiturChange(e.target.value)}
-            className="w-full"
-          />
+
         </div>
 
         <div className="flex justify-end gap-3 pt-2">
