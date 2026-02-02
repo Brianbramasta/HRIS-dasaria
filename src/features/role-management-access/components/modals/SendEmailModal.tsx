@@ -9,10 +9,10 @@ interface SendEmailModalProps {
 }
 
 const IconBlueEnvelope = () => (
-    <svg width="86" height="86" viewBox="0 0 86 86" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="3" y="18" width="80" height="50" rx="8" fill="#007AFF" />
-        <path d="M3 18L43 48L83 18" stroke="white" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+    <svg width="78" height="78" viewBox="0 0 78 78" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M64.5 13H12.5C8.925 13 6.0325 15.925 6.0325 19.5L6 58.5C6 62.075 8.925 65 12.5 65H64.5C68.075 65 71 62.075 71 58.5V19.5C71 15.925 68.075 13 64.5 13ZM64.5 26L38.5 42.25L12.5 26V19.5L38.5 35.75L64.5 19.5V26Z" fill="#007BFF" />
     </svg>
+
 );
 
 const SendEmailModal: React.FC<SendEmailModalProps> = ({ isOpen, onClose, onSubmit, isLoading = false }) => {
