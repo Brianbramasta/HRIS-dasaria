@@ -103,7 +103,7 @@ export default function SelectServicePage() {
                         >
                             {/* Decorative Gradient/Overlay if needed */}
 
-                            <div className="bg-white  rounded-xl h-16 w-16 flex-shrink-0 flex items-center justify-center">
+                            <div className="bg-white rounded-xl h-16 w-16 flex-shrink-0 flex items-center justify-center">
                                 {/* Using the text HRIS as logo if icon fails or generic icon */}
                                 <span className="text-[#004969] font-bold text-xs"><img src={service.icon} alt={service.title} className="w-full h-full object-contain" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement!.innerText = service.title }} /></span>
                             </div>
