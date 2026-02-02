@@ -31,14 +31,24 @@ export default function HakAksesPage() {
     handleCloseDeleteRoleModal,
     selectedRoleToDelete,
     handleConfirmDeleteRole,
+    columnFilters,
+    handleColumnFilterChange,
   } = useRoleManagement();
 
   // Columns for Role Akses
   const roleColumns: DataTableColumn<RoleData>[] = [
     { id: 'no', label: 'No.', minWidth: 50, sortable: false },
-    { id: 'idRole', label: 'Id Role', minWidth: 150 },
+    // { id: 'idRole', label: 'Id Role', minWidth: 150 },
     { id: 'role', label: 'Role', minWidth: 150 },
-    { id: 'sistemLayanan', label: 'Sistem Layanan', minWidth: 300 },
+    {
+      id: 'sistemLayanan',
+      label: 'Sistem Layanan',
+      minWidth: 300,
+      filterOptions: layananData.map(item => ({
+        label: item.sistemLayanan,
+        value: item.sistemLayanan
+      }))
+    },
     {
       id: 'detail',
       label: 'Detail',
@@ -60,7 +70,15 @@ export default function HakAksesPage() {
   const layananColumns: DataTableColumn<LayananData>[] = [
     { id: 'no', label: 'No.', minWidth: 50, sortable: false },
     // { id: 'idLayanan', label: 'Id Layanan', minWidth: 150 },
-    { id: 'sistemLayanan', label: 'Sistem Layanan', minWidth: 300 },
+    {
+      id: 'sistemLayanan',
+      label: 'Sistem Layanan',
+      minWidth: 300,
+      filterOptions: layananData.map(item => ({
+        label: item.sistemLayanan,
+        value: item.sistemLayanan
+      }))
+    },
     {
       id: 'detail',
       label: 'Detail',
@@ -112,6 +130,8 @@ export default function HakAksesPage() {
         searchPlaceholder="Cari berdasarkan kata kunci"
         pageSize={10}
         filterable={true}
+        onColumnFilterChange={handleColumnFilterChange}
+        columnFilters={columnFilters}
       />
 
       <DataTable
@@ -124,6 +144,8 @@ export default function HakAksesPage() {
         searchPlaceholder="Cari berdasarkan kata kunci"
         pageSize={10}
         filterable={true}
+        onColumnFilterChange={handleColumnFilterChange}
+        columnFilters={columnFilters}
       />
 
       <AddServiceModal
