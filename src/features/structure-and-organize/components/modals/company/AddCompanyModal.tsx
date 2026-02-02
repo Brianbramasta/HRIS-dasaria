@@ -63,8 +63,8 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
               placeholder="Pilih Lini Bisnis"
               defaultValue={businessLineId}
               onChange={(value) => setBusinessLineId(value)}
-              onSearch={async (q) => {
-                await searchBusinessLines(q);
+              onSearch={(q) => {
+                searchBusinessLines(q);
               }}
               containerClassName="space-y-2"
             />

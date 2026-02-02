@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import type { DirectorateDropdown } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
-import { useDivisions } from '../../../hooks/useDivisions';
-import { useDirectorates } from '../../../hooks/useDirectorates';
+import { useApiDivisions } from '../../api/useApiDivisions';
+import { useApiDirectorates } from '../../api/useApiDirectorates';
 
 export function useAddDivisionModal(params: { isOpen: boolean; onClose: () => void; onSuccess?: () => void }) {
   const { isOpen, onClose, onSuccess } = params;
@@ -14,18 +14,23 @@ export function useAddDivisionModal(params: { isOpen: boolean; onClose: () => vo
   const skFile = useFileStore((s) => s.skFile);
   const [directorates, setDirectorates] = useState<DirectorateDropdown[]>([]);
   const [submitting, setSubmitting] = useState(false);
-  const { createDivision } = useDivisions();
-  const { getDropdown: getDirectorateDropdown } = useDirectorates();
+  const { createDivision } = useApiDivisions();
+  const { getDropdown: getDirectorateDropdown } = useApiDirectorates();
+
+  const [directorateSearch, setDirectorateSearch] = useState('');
 
   useEffect(() => {
-    const loadDirectorates = async () => {
+    if (!isOpen) return;
+    const handler = setTimeout(async () => {
       try {
-        const res = await getDirectorateDropdown('');
+        const res = await getDirectorateDropdown(directorateSearch);
         setDirectorates(res || []);
-      } catch {}
-    };
-    if (isOpen) loadDirectorates();
-  }, [isOpen, getDirectorateDropdown]);
+      } catch {
+        // ignore
+      }
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [isOpen, directorateSearch, getDirectorateDropdown]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -33,6 +38,7 @@ export function useAddDivisionModal(params: { isOpen: boolean; onClose: () => vo
       setDescription('');
       setDirectorateId('');
       setMemoNumber('');
+      setDirectorateSearch('');
       useFileStore.getState().clearSkFile();
     }
   }, [isOpen]);
@@ -60,7 +66,7 @@ export function useAddDivisionModal(params: { isOpen: boolean; onClose: () => vo
       });
       onSuccess?.();
       onClose();
-    } catch (err) {
+    } catch {
       addNotification({
         variant: 'error',
         title: 'Divisi tidak ditambahkan',
@@ -88,5 +94,6 @@ export function useAddDivisionModal(params: { isOpen: boolean; onClose: () => vo
     handleSubmit,
     handleFileChange,
     skFileName,
+    handleDirectorateSearch: setDirectorateSearch,
   };
 }

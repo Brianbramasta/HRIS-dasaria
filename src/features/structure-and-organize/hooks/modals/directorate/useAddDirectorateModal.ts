@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
-import { useDirectorates } from '../../useDirectorates';
+import { useApiDirectorates } from '../../api/useApiDirectorates';
 
 export function useAddDirectorateModal(isOpen: boolean, onClose: () => void, onSuccess?: () => void) {
   const [name, setName] = useState('');
@@ -9,7 +9,7 @@ export function useAddDirectorateModal(isOpen: boolean, onClose: () => void, onS
   const [memoNumber, setMemoNumber] = useState('');
   const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
-  const { createDirectorate } = useDirectorates();
+  const { createDirectorate } = useApiDirectorates();
 
   useEffect(() => {
     if (!isOpen) {
@@ -20,7 +20,7 @@ export function useAddDirectorateModal(isOpen: boolean, onClose: () => void, onS
     }
   }, [isOpen]);
 
-  const handleFileChange = (_e: React.ChangeEvent<HTMLInputElement>) => {};
+  const handleFileChange = () => {};
 
   const handleSubmit = async () => {
     if (!skFile?.name) {

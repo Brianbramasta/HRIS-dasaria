@@ -11,6 +11,14 @@ export interface CompanyListItem {
   logo: string | FileSummary | null;
 }
 
+export interface CompanyDocument {
+  id: string;
+  fileName: string;
+  number: string;
+  type: 'active' | 'archive';
+  fileUrl: string | null;
+}
+
 export interface CompanyDetailResponse {
   company: {
     id: string;
@@ -33,5 +41,5 @@ export interface CompanyDetailResponse {
     skFile: FileSummary | null;
   };
   branches: { id: string; name: string; address: string | null; employeeCount: number | null }[];
-  documents: FileSummary[];
+  documents: CompanyDocument[];
 }

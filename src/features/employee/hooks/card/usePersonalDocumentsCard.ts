@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useModal } from '@/hooks/useModal';
-import { useParams } from 'react-router-dom';
 import { usePersonalInformation } from '@/features/employee/hooks/employee-data/detail/contract/usePersonalInformation';
 
-export default function usePersonalDocumentsCard(documents: any) {
+export default function usePersonalDocumentsCard(documents: any, employeeId?: string) {
   const [personalFiles, setPersonalFiles] = useState<Array<{ id: number | string; no: number; namaFile: string; dokumen?: string; jenis_file?: string; fileType?: string; fileUrl?: string }>>([]);
   const { isOpen, openModal, closeModal } = useModal(false);
-  const { id } = useParams<{ id: string }>();
-  const { updateEmployeeDocument } = usePersonalInformation(id);
+  const { updateEmployeeDocument } = usePersonalInformation(employeeId);
 
   useEffect(() => {
     const docs = documents?.documents || [];
@@ -39,7 +37,8 @@ export default function usePersonalDocumentsCard(documents: any) {
   };
 
   const handleSubmit = async (payload: any) => {
-    await updateEmployeeDocument(id as string, payload);
+    if (!employeeId) return;
+    await updateEmployeeDocument(employeeId, payload);
     closeModal();
   };
 

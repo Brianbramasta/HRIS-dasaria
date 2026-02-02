@@ -3,9 +3,8 @@
 // Nominal General, Nominal Junior, Nominal Middle, Nominal Senior. Menggunakan wrapper ModalAddEdit.
 import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
-import Label from '@/components/form/Label';
-import Select from '@/components/form/Select';
-import Input from '@/components/form/input/InputField';
+import SelectField from '@/components/shared/field/SelectField';
+import InputField from '@/components/shared/field/InputField';
 import { useEditCompensationModal } from '@/features/payroll/hooks/modals/payroll-configuration/compensation/useEditCompensationModal';
 
 export type EditKompensasiForm = {
@@ -26,7 +25,7 @@ interface Props {
 }
 
 const EditKompensasiModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSubmit, submitting = false }) => {
-  const { title, form, handleInput, setNominal, LEVEL_JABATAN_OPTIONS, KATEGORI_OPTIONS, handleSubmit } =
+  const { title, form, handleInput, setNominal, KATEGORI_OPTIONS, handleSubmit } =
     useEditCompensationModal({
       isOpen,
       initialData,
@@ -34,36 +33,74 @@ const EditKompensasiModal: React.FC<Props> = ({ isOpen, initialData, onClose, on
       onSubmit,
     });
 
+  const isGeneralFilled = !!form.general;
+  const isLevelFilled = !!form.junior || !!form.middle || !!form.senior;
+
   const content = (
     <div className="space-y-8">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <div>
-          <Label>Level Jabatan</Label>
-          <Select options={LEVEL_JABATAN_OPTIONS} defaultValue={form.levelJabatan || ''} onChange={(v) => handleInput('levelJabatan', v)} placeholder="Nyesuain struktur Organisasi" />
-        </div>
-        <div>
-          <Label>Kategori</Label>
-          <Select options={KATEGORI_OPTIONS} defaultValue={form.kategori || ''} onChange={(v) => handleInput('kategori', v)} placeholder="Gaji Pokok / Uang Saku" />
-        </div>
-      </div>
+        <InputField
+          label="Level Jabatan"
+          value={form.levelJabatan || ''}
+          onChange={(e) => handleInput('levelJabatan', e.target.value)}
+          placeholder="Nyesuain struktur Organisasi"
+          readonly
+          required={true}
+        />
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <div>
-          <Label>Nominal General</Label>
-          <Input placeholder="-" value={form.general || ''} onChange={(e) => setNominal('general', e.target.value)} />
+        <InputField
+          label="Jabatan Struktural"
+          value={form.jabatanStruktural || ''}
+          placeholder="Nyesuain struktur Organisasi"
+          readonly
+          required={true}
+        />
+
+        <SelectField
+          label="Kategori"
+          options={KATEGORI_OPTIONS}
+          defaultValue={form.kategori || ''}
+          onChange={(v) => handleInput('kategori', v)}
+          placeholder="Gaji Pokok / Uang Saku"
+
+          required={true}
+        />
+
+        <InputField
+          label="Nominal General"
+          placeholder="Masukkan Nominal General"
+          value={form.general || ''}
+          onChange={(e) => setNominal('general', e.target.value)}
+          disabled={isLevelFilled}
+          required={!isLevelFilled}
+        />
+        <InputField
+          label="Nominal Junior"
+          placeholder="Masukkan Nominal Junior"
+          value={form.junior || ''}
+          onChange={(e) => setNominal('junior', e.target.value)}
+          disabled={isGeneralFilled}
+          required={!isGeneralFilled}
+        />
+        <InputField
+          label="Nominal Middle"
+          placeholder="Masukkan Nominal Middle"
+          value={form.middle || ''}
+          onChange={(e) => setNominal('middle', e.target.value)}
+          disabled={isGeneralFilled}
+          required={!isGeneralFilled}
+        />
+        <div className='md:col-span-2'>
+          <InputField
+          label="Nominal Senior"
+          placeholder="Masukkan Nominal Senior"
+          value={form.senior || ''}
+          onChange={(e) => setNominal('senior', e.target.value)}
+          disabled={isGeneralFilled}
+          required={!isGeneralFilled}
+        />
         </div>
-        <div>
-          <Label>Nominal Junior</Label>
-          <Input placeholder="-" value={form.junior || ''} onChange={(e) => setNominal('junior', e.target.value)} />
-        </div>
-        <div>
-          <Label>Nominal Middle</Label>
-          <Input placeholder="-" value={form.middle || ''} onChange={(e) => setNominal('middle', e.target.value)} />
-        </div>
-        <div>
-          <Label>Nominal Senior</Label>
-          <Input placeholder="-" value={form.senior || ''} onChange={(e) => setNominal('senior', e.target.value)} />
-        </div>
+        
       </div>
 
       <p className="text-xs text-gray-500 dark:text-gray-400">* Harap skema nominal yang diisi bersifat eksklusif (pilih salah satu: Nominal General, ATAU Nominal Junior/Middle/Senior).</p>

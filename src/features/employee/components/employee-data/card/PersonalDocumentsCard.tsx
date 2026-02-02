@@ -9,9 +9,10 @@ import usePersonalDocumentsCard from '@/features/employee/hooks/card/usePersonal
 
 interface Props {
   documents: any; // API response from employee-master-data
+  employeeId: string;
 }
 
-export default function PersonalDocumentsCard({ documents }: Props) {
+export default function PersonalDocumentsCard({ documents, employeeId }: Props) {
   const {
     personalFiles,
     isOpen,
@@ -20,7 +21,7 @@ export default function PersonalDocumentsCard({ documents }: Props) {
     isComplete,
     initialData,
     handleSubmit,
-  } = usePersonalDocumentsCard(documents);
+  } = usePersonalDocumentsCard(documents, employeeId);
 
   return (
     <ExpandCard title="Berkas/Dokumen Pribadi" leftIcon={isComplete ? <IconLengkap /> : <IconTidakLengkap />} withHeaderDivider>

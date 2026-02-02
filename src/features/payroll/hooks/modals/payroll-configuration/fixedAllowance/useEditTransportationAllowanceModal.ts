@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useState, useEffect } from 'react';
+import { TransportationAllowanceDetailResponse, TransportationAllowanceUpdatePayload } from '@/features/payroll/types/dto/fixed-allowance/TransportationAllowanceType';
 
 type FormValues = {
   transportasi: string;
@@ -7,27 +8,17 @@ type FormValues = {
 };
 
 export function useEditTransportationAllowanceModal(args: {
-  defaultValues?: Partial<FormValues> | null;
-  onSave: (values: FormValues) => void;
+  defaultValues?: TransportationAllowanceDetailResponse | null;
+  onSave?: (values: TransportationAllowanceUpdatePayload) => void;
   onClose: () => void;
 }) {
   const { defaultValues, onSave, onClose } = args;
 
-  const initial: FormValues = useMemo(
-    () => ({
-      transportasi: defaultValues?.transportasi ?? '',
-      kategori: defaultValues?.kategori ?? '',
-      nominal: defaultValues?.nominal ?? '',
-    }),
-    [defaultValues],
-  );
-
-  const [form, setForm] = useState<FormValues>(initial);
-
-  const kategoriOptions = [
-    { value: 'Staff', label: 'Staff' },
-    { value: 'Kemitraan', label: 'Kemitraan' },
-  ];
+  const [form, setForm] = useState<FormValues>({
+    transportasi: '',
+    kategori: '',
+    nominal: '',
+  });
 
   const formatRupiah = (val: string) => {
     const cleaned = (val || '').replace(/[^0-9]/g, '');
@@ -35,15 +26,30 @@ export function useEditTransportationAllowanceModal(args: {
     return cleaned.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   };
 
+  useEffect(() => {
+    if (defaultValues) {
+      setForm({
+        transportasi: defaultValues.nameTransportation,
+        kategori: defaultValues.categoryName,
+        nominal: formatRupiah(String(defaultValues.nominalValue)),
+      });
+    }
+  }, [defaultValues]);
+
   const setField = (key: keyof FormValues, value: string) => {
     setForm((prev) => ({ ...prev, [key]: key === 'nominal' ? formatRupiah(value) : value }));
   };
 
   const handleSubmit = () => {
-    onSave(form);
+    if (onSave) {
+      const payload: TransportationAllowanceUpdatePayload = {
+        nominalValue: Number(form.nominal.replace(/\./g, '')),
+      };
+      onSave(payload);
+    }
     onClose();
   };
 
-  return { form, setField, kategoriOptions, handleSubmit };
+  return { form, setField, handleSubmit };
 }
 

@@ -53,6 +53,21 @@ export const getEmployeeStatusDropdownOptions = async (search?: string): Promise
   console.log('Employee Status dropdown data:', data);
   return (data || []).map((s: any) => ({ label: s.name, value: s.id }));
 }
+
+export const getStructuralJobDropdownOptions = async (IdJabatanKepangkatan?: string): Promise<DropdownOption[]> => {
+  const data = await employeeMasterDataService.getStructuralJobDropdown(IdJabatanKepangkatan);
+  console.log('Structural Job dropdown data:', data);
+  return (data || []).map((j: any) => ({ label: j.name, value: j.id }));
+}
+
+export const getUnitDropdownByDepartmentIdOptions = async (departmentId?: string, search?: string): Promise<DropdownOption[]> => {
+  const data = await employeeMasterDataService.getUnitDropdownByDepartmentId(departmentId, search);
+  console.log('Unit dropdown data:', data);
+  return (data || []).map((u: any) => ({ label: u.name ?? u.name, value: u.id }));
+}
+
+
+
 export const getFieldDocument = async (id?: string): Promise<any[]> => {
   const data = await employeeMasterDataService.getFieldDocument(id);
   return data;
@@ -137,12 +152,12 @@ export const useFormulirKaryawan = (): UseFormulirKaryawanReturn => {
 
       if (isAuthenticated) {
         // Jika user login, redirect ke /data-karyawan dan tampilkan notification
-        addNotification({
-          variant: 'success',
-          title: 'Data Karyawan ditambahkan !',
-          description: 'Penambahan Data Karyawan Berhasil Dikonfirmasi',
-          hideDuration: 5000,
-        });
+        // addNotification({
+        //   variant: 'success',
+        //   title: 'Data Karyawan ditambahkan !',
+        //   description: 'Penambahan Data Karyawan Berhasil Dikonfirmasi',
+        //   hideDuration: 5000,
+        // });
         navigate('/employee-data');
       } else {
         // Jika user tidak login, tampilkan success modal

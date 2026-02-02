@@ -43,10 +43,15 @@ export function useAddDocumentModal(params: {
     }
     setSubmitting(true);
     try {
-      await companiesService.addDocuments(
-        companyId,
-        valid.map((e) => ({ name: e.name.trim(), number: e.docNumber.trim(), file: e.file as File }))
-      );
+      const formData = new FormData();
+      formData.append('_method', 'POST');
+      valid.forEach((e, i) => {
+        formData.append(`documents[${i}][cd_name]`, e.name.trim());
+        formData.append(`documents[${i}][cd_decree_number]`, e.docNumber.trim());
+        formData.append(`documents[${i}][cd_file]`, e.file as File);
+      });
+
+      await companiesService.addDocuments(companyId, formData);
       onSuccess?.();
       setEntries([{ name: '', docNumber: '', file: null }]);
       onClose();

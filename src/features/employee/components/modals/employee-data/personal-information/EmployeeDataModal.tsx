@@ -21,9 +21,6 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
   const {
     title,
     form,
-    officeDropdown,
-    divisionDropdown,
-    departmentDropdown,
     companyOptions,
     officeOptions,
     directorateOptions,
@@ -34,9 +31,21 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
     kategoriKaryawanOptions,
     positionLevelOptions,
     employeeStatusOptions,
+    structuralJobOptions,
+    unitOptions,
     selectedGrade,
     handleInput,
     isDisabledField,
+    handleCompanySearch,
+    handleOfficeSearch,
+    handleDirectorateSearch,
+    handleDivisionSearch,
+    handleDepartmentSearch,
+    handleUnitSearch,
+    handleJobTitleSearch,
+    handlePositionSearch,
+    handlePositionLevelSearch,
+    handleEmployeeCategorySearch,
   } = useEmployeeDataModal({ isOpen, initialData });
 
 
@@ -48,191 +57,218 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
       </div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <div className="space-y-4">
-          <div>
-            <SelectField
-              label="Kategori Karyawan"
-              htmlFor="employeeCategorySelect"
-              options={kategoriKaryawanOptions}
-              defaultValue={form.employee_category_id || ''}
-              onChange={(v) => {
-                handleInput('employee_category_id', v);
-                const selectedCategory = kategoriKaryawanOptions.find((opt: any) => opt.value === v);
-                if (selectedCategory) {
-                  const label = selectedCategory.label;
-                  if (['Staff', 'Mitra'].includes(label)) {
-                    const statusEvaluasi = employeeStatusOptions.find((opt: any) => opt.label === 'Evaluasi');
-                    if (statusEvaluasi) handleInput('employment_status_id', statusEvaluasi.value);
-                  } else if (label === 'Non-Staff') {
-                    const statusAktif = employeeStatusOptions.find((opt: any) => opt.label === 'Aktif');
-                    if (statusAktif) handleInput('employment_status_id', statusAktif.value);
-                  }
+        <div>
+          <SelectField
+            label="Kategori Karyawan"
+            htmlFor="employeeCategorySelect"
+            options={kategoriKaryawanOptions}
+            defaultValue={form.employee_category_id || ''}
+            onChange={(v) => {
+              handleInput('employee_category_id', v);
+              const selectedCategory = kategoriKaryawanOptions.find((opt: any) => opt.value === v);
+              if (selectedCategory) {
+                const label = selectedCategory.label;
+                if (['Staff', 'Mitra'].includes(label)) {
+                  const statusEvaluasi = employeeStatusOptions.find((opt: any) => opt.label === 'Evaluasi');
+                  if (statusEvaluasi) handleInput('employment_status_id', statusEvaluasi.value);
+                } else if (label === 'Non-Staff') {
+                  const statusAktif = employeeStatusOptions.find((opt: any) => opt.label === 'Aktif');
+                  if (statusAktif) handleInput('employment_status_id', statusAktif.value);
                 }
-              }}
-              placeholder="Select"
-              disabled={isDisabledField}
-              required
-            />
-          </div>
-          <div>
-            <SelectField
-              label="Status Karyawan"
-              htmlFor="employmentStatusSelect"
-              options={employeeStatusOptions}
-              defaultValue={form.employment_status_id || ''}
-              onChange={(v) => handleInput('employment_status_id', v)}
-              placeholder="Select"
-              disabled={true}
-              required
-            />
-          </div>
-          <div>
-            <DateField
-              id="joinDatePicker"
-              label="Tanggal Masuk"
-              defaultDate={formatDateToIndonesian(form.start_date as string) || undefined}
-              placeholder="Pilih tanggal"
-              onChange={(...args) => handleInput('start_date', args[1])}
-              disabled={isDisabledField}
-              required
-            />
-          </div>
-          <div>
-            <DateField
-              id="endDatePicker"
-              label="Tanggal Akhir"
-              defaultDate={formatDateToIndonesian(form.end_date as string) || undefined}
-              placeholder="(masih aktif)"
-              onChange={(...args) => handleInput('end_date', args[1])}
-              disabled={isDisabledField}
-              required
-            />
-          </div>
-          <div>
-            <SelectField
-              label="Perusahaan"
-              htmlFor="companySelect"
-              options={companyOptions}
-              defaultValue={form.company_id || ''}
-              onChange={(v) => handleInput('company_id', v)}
-              placeholder="Select"
-              disabled={isDisabledField}
-              required
-            />
-          </div>
-          <div>
-            <SelectField
-              label="Kantor"
-              htmlFor="officeSelect"
-              options={officeDropdown.length > 0 ? officeDropdown : officeOptions.length > 0 ? officeOptions : [{ label: 'Pilih perusahaan terlebih dahulu', value: '' }]}
-              defaultValue={form.office_id || ''}
-              onChange={(v) => handleInput('office_id', v)}
-              disabled={officeDropdown.length === 0 && officeOptions.length === 0 || isDisabledField}
-              placeholder="Select"
-              required
-            />
-          </div>
-          <div>
-            <SelectField
-              label="Direktorat"
-              htmlFor="directorateSelect"
-              options={directorateOptions}
-              defaultValue={form.directorate_id || ''}
-              onChange={(v) => handleInput('directorate_id', v)}
-              placeholder="Select"
-              disabled={isDisabledField}
-              required
-            />
-          </div>
-          
+              }
+            }}
+            onSearch={handleEmployeeCategorySearch}
+            placeholder="Select"
+            disabled={isDisabledField}
+            required
+          />
         </div>
-
-        <div className="space-y-4">
-          <div>
-            <SelectField
-              label="Divisi"
-              htmlFor="divisionSelect"
-              options={divisionDropdown.length > 0 ? divisionDropdown : divisionOptions.length > 0 ? divisionOptions : [{ label: 'Pilih direktorat terlebih dahulu', value: '' }]}
-              defaultValue={form.division_id || ''}
-              onChange={(v) => handleInput('division_id', v)}
-              disabled={divisionDropdown.length === 0 && divisionOptions.length === 0 || isDisabledField}
-              placeholder="Select"
-              required
-            />
-          </div>
-          <div>
-            <SelectField
-              label="Departemen"
-              htmlFor="departmentSelect"
-              options={departmentDropdown.length > 0 ? departmentDropdown : departmentOptions.length > 0 ? departmentOptions : [{ label: 'Pilih divisi terlebih dahulu', value: '' }]}
-              defaultValue={form.department_id || ''}
-              onChange={(v) => handleInput('department_id', v)}
-              disabled={departmentDropdown.length === 0 && departmentOptions.length === 0 || isDisabledField}
-              placeholder="Select"
-              required
-            />
-          </div>
-          <div>
-            <SelectField
-              label="Position"
-              htmlFor="positionSelect"
-              options={positionOptions}
-              defaultValue={form.position_id || ''}
-              onChange={(v) => handleInput('position_id', v)}
-              placeholder="Select"
-              disabled={isDisabledField}
-              required
-            />
-          </div>
-          <div>
-            <SelectField
-              label="Jabatan"
-              htmlFor="jobTitleSelect"
-              options={jobTitleOptions}
-              defaultValue={form.job_title_id || ''}
-              onChange={(v) => handleInput('job_title_id', v)}
-              placeholder="Select"
-              disabled={isDisabledField}
-              required
-            />
-          </div>
-          <div>
-            <SelectField
-              label="Jenjang Jabatan"
-              htmlFor="positionLevelSelect"
-              options={positionLevelOptions}
-              defaultValue={form.position_level_id || ''}
-              onChange={(v) => handleInput('position_level_id', v)}
-              placeholder="Select"
-              disabled={isDisabledField}
-              required
-            />
-          </div>
-          <div>
-            <InputField
-              label="Golongan"
-              id="golonganInput"
-              type="text"
-              value={selectedGrade || form.golongan || ''}
-              placeholder="Otomatis dari Jabatan"
-              disabled={isDisabledField}
-              onChange={() => {}}
-              required
-            />
-          </div>
-          <div>
-            <SelectField
-              label="Status PayRoll"
-              htmlFor="payrollStatusSelect"
-              options={STATUS_PAYROLL_OPTIONS}
-              defaultValue={form.payroll_status || ''}
-              onChange={(v) => handleInput('payroll_status', v)}
-              placeholder="Select"
-              disabled={isDisabledField}
-              required
-            />
-          </div>
-          
+        <div>
+          <SelectField
+            label="Status Karyawan"
+            htmlFor="employmentStatusSelect"
+            options={employeeStatusOptions}
+            defaultValue={form.employment_status_id || ''}
+            onChange={(v) => handleInput('employment_status_id', v)}
+            placeholder="Select"
+            disabled={true}
+            required
+          />
+        </div>
+        <div>
+          <DateField
+            id="joinDatePicker"
+            label="Tanggal Masuk"
+            defaultDate={formatDateToIndonesian(form.start_date as string) || undefined}
+            placeholder="Pilih tanggal"
+            onChange={(...args) => handleInput('start_date', args[1])}
+            disabled={isDisabledField}
+            required
+          />
+        </div>
+        <div>
+          <DateField
+            id="endDatePickerRight"
+            label="Tanggal Akhir"
+            defaultDate={formatDateToIndonesian(form.end_date as string) || undefined}
+            placeholder="(masih aktif)"
+            onChange={(...args) => handleInput('end_date', args[1])}
+            disabled={isDisabledField}
+            required
+          />
+        </div>
+        <div>
+          <SelectField
+            label="Perusahaan"
+            htmlFor="companySelect"
+            options={companyOptions}
+            defaultValue={form.company_id || ''}
+            onChange={(v) => handleInput('company_id', v)}
+            onSearch={handleCompanySearch}
+            placeholder="Select"
+            disabled={isDisabledField}
+            required
+          />
+        </div>
+        <div>
+          <SelectField
+            label="Kantor"
+            htmlFor="officeSelectRight"
+            options={officeOptions}
+            defaultValue={form.office_id || ''}
+            onChange={(v) => handleInput('office_id', v)}
+            onSearch={handleOfficeSearch}
+            disabled={!form.company_id || isDisabledField}
+            placeholder="Select"
+            required
+          />
+        </div>
+        <div>
+          <SelectField
+            label="Direktorat"
+            htmlFor="directorateSelect"
+            options={directorateOptions}
+            defaultValue={form.directorate_id || ''}
+            onChange={(v) => handleInput('directorate_id', v)}
+            onSearch={handleDirectorateSearch}
+            placeholder="Select"
+            disabled={isDisabledField}
+            required
+          />
+        </div>
+        <div>
+          <SelectField
+            label="Divisi"
+            htmlFor="divisionSelect"
+            options={divisionOptions}
+            defaultValue={form.division_id || ''}
+            onChange={(v) => handleInput('division_id', v)}
+            onSearch={handleDivisionSearch}
+            disabled={!form.directorate_id || isDisabledField}
+            placeholder="Select"
+            required
+          />
+        </div>
+        <div>
+          <SelectField
+            label="Departemen"
+            htmlFor="departmentSelectLeft"
+            options={departmentOptions}
+            defaultValue={form.department_id || ''}
+            onChange={(v) => handleInput('department_id', v)}
+            onSearch={handleDepartmentSearch}
+            disabled={!form.division_id || isDisabledField}
+            placeholder="Select"
+            required
+          />
+        </div>
+        <div>
+          <SelectField
+            label="Unit"
+            htmlFor="unitSelect"
+            options={unitOptions}
+            defaultValue={form.unit_id || ''}
+            onChange={(v) => handleInput('unit_id', v)}
+            onSearch={handleUnitSearch}
+            placeholder="Select"
+            disabled={!form.department_id || isDisabledField}
+            required
+          />
+        </div>
+        <div>
+          <SelectField
+            label="Position"
+            htmlFor="positionSelect"
+            options={positionOptions}
+            defaultValue={form.position_id || ''}
+            onChange={(v) => handleInput('position_id', v)}
+            onSearch={handlePositionSearch}
+            placeholder="Select"
+            disabled={isDisabledField}
+            required
+          />
+        </div>
+        <div>
+          <SelectField
+            label="Jabatan Kepangkatan"
+            htmlFor="jobTitleSelect"
+            options={jobTitleOptions}
+            defaultValue={form.job_title_id || ''}
+            onChange={(v) => handleInput('job_title_id', v)}
+            onSearch={handleJobTitleSearch}
+            placeholder="Select"
+            disabled={isDisabledField}
+            required
+          />
+        </div>
+        <div>
+          <SelectField
+            label="Jabatan Struktural"
+            htmlFor="structuralJobSelect"
+            options={structuralJobOptions}
+            defaultValue={form.structural_job_id || ''}
+            onChange={(v) => handleInput('structural_job_id', v)}
+            placeholder="Select"
+            disabled={!form.job_title_id || isDisabledField}
+            required
+          />
+        </div>
+        <div>
+          <InputField
+            label="Golongan"
+            id="golonganInput"
+            type="text"
+            value={selectedGrade || form.golongan || ''}
+            placeholder="Otomatis dari Jabatan"
+            disabled={isDisabledField}
+            onChange={() => {}}
+            required
+          />
+        </div>
+        <div>
+          <SelectField
+            label="Jenjang Jabatan"
+            htmlFor="positionLevelSelect"
+            options={positionLevelOptions}
+            defaultValue={form.position_level_id || ''}
+            onChange={(v) => handleInput('position_level_id', v)}
+            onSearch={handlePositionLevelSearch}
+            placeholder="Select"
+            disabled={isDisabledField}
+            required
+          />
+        </div>
+        <div>
+          <SelectField
+            label="Status PayRoll"
+            htmlFor="payrollStatusSelect"
+            options={STATUS_PAYROLL_OPTIONS}
+            defaultValue={form.payroll_status || ''}
+            onChange={(v) => handleInput('payroll_status', v)}
+            placeholder="Select"
+            disabled={isDisabledField}
+            required
+          />
         </div>
       </div>
     </div>

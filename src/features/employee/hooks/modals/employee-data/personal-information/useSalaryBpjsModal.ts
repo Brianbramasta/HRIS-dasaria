@@ -67,6 +67,7 @@ export function useSalaryBpjsModal({ isOpen, employeeId = '', initialData, onClo
       }
       onClose();
     } catch {
+      // ignore
     } finally {
       setIsSubmitting(false);
     }

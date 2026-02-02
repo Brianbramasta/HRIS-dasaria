@@ -1,46 +1,68 @@
 
-
 // Dokumentasi: Tabel Potongan Tidak Tetap + integrasi Modal Tambah/Edit
-import  { useMemo, useState } from 'react';
 import DataTable, { type DataTableColumn, type DataTableAction } from '@/components/shared/datatable/DataTable';
 import { IconPencil, IconHapus } from '@/icons/components/icons';
-import PotonganTidakTetapModal from '@/features/payroll/components/modals/payroll-configuration/non-recurring-deduction/NonRecurringDeductionModal';
+import NonRecurringDeductionModal from '@/features/payroll/components/modals/payroll-configuration/non-recurring-deduction/NonRecurringDeductionModal';
+import NonRecurringDeductionModalDelete from '@/features/payroll/components/modals/payroll-configuration/non-recurring-deduction/NonRecurringDeductionModalDelete';
+import { useNonRecurringDeduction } from '@/features/payroll/hooks/payroll-configuration/non-recurring-deduction/useNonRecurringDeduction';
 
-type PotonganTidakTetapRow = {
-  no?: number;
-  'Nama Potongan': string;
-  'Deksripsi Umum': string;
+type DeductionRow = {
+  id: string;
+  no: number;
+  deductionName: string;
+  category: string;
+  description: string;
 };
 
-export default function PotonganTidakTetapPage() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [defaultValues, setDefaultValues] = useState<{ namaPotongan: string; deskripsiUmum: string } | null>(null);
-  const [modalTitle, setModalTitle] = useState<string>('Edit Potongan Tidak Tetap');
-  const [confirmTitleButton, setConfirmTitleButton] = useState<string>('Simpan Perubahan');
-  const columns: DataTableColumn<PotonganTidakTetapRow>[] = [
+export default function NonRecurringDeductionPage() {
+  const {
+    rows,
+    loading,
+    total,
+    page,
+    pageSize,
+    setSearch,
+    setPage,
+    setPageSize,
+    setSort,
+    
+    addModal,
+    editModal,
+    deleteModal,
+    detailValues,
+    selectedName,
+    
+    handleAddOpen,
+    handleEditOpen,
+    handleDelete,
+    onDeleteConfirm,
+    handleSave,
+  } = useNonRecurringDeduction();
+
+  const columns: DataTableColumn<DeductionRow>[] = [
     { id: 'no', label: 'No.', align: 'center', sortable: false },
-    { id: 'Nama Potongan', label: 'Nama Potongan', sortable: true },
-    { id: 'Deksripsi Umum', label: 'Deksripsi Umum', sortable: true },
+    { id: 'deductionName', label: 'Nama Potongan', sortable: true },
+    { id: 'category', label: 'Kategori', sortable: true },
+    { id: 'description', label: 'Deksripsi Umum', sortable: true },
   ];
 
-  const actions: DataTableAction<PotonganTidakTetapRow>[] = [
-    { label: '', icon: <IconHapus />, onClick: (row) => { console.log('hapus', row); }, variant: 'outline', className: 'border-0' },
-    { label: '', icon: <IconPencil />, onClick: (row) => {
-      setDefaultValues({ namaPotongan: row['Nama Potongan'], deskripsiUmum: row['Deksripsi Umum'] });
-      setModalTitle('Edit Potongan Tidak Tetap');
-      setConfirmTitleButton('Simpan Perubahan');
-      setIsModalOpen(true);
-    }, variant: 'outline', className: 'border-0' },
+  const actions: DataTableAction<DeductionRow>[] = [
+  
+    { 
+      label: '', 
+      icon: <IconHapus />, 
+      onClick: (row) => handleDelete(row.id, row.deductionName), 
+      variant: 'outline', 
+      className: 'border-0',
+      color: 'error' 
+    },  { 
+      label: '', 
+      icon: <IconPencil />, 
+      onClick: (row) => handleEditOpen(row.id), 
+      variant: 'outline', 
+      className: 'border-0' 
+    }
   ];
-
-  const rows: PotonganTidakTetapRow[] = useMemo(() => (
-    [
-      { 'Nama Potongan': 'Denda Keterlambatan', 'Deksripsi Umum': 'Potongan karena keterlambatan hadir atau melewati jam kerja yang ditentukan.' },
-      { 'Nama Potongan': 'Kerusakan Inventaris', 'Deksripsi Umum': 'Potongan atas biaya penggantian inventaris atau peralatan perusahaan yang rusak karena kelalaian.' },
-      { 'Nama Potongan': 'Kedisiplinan', 'Deksripsi Umum': 'Potongan terkait pelanggaran kebijakan internal perusahaan yang bersifat administratif.' },
-      { 'Nama Potongan': 'Lainnya', 'Deksripsi Umum': 'Potongan tidak tetap lain sesuai kebijakan dan persetujuan terkait.' },
-    ]
-  ), []);
 
   const exportCSV = (filename: string, data: any[]) => {
     if (!data || data.length === 0) return;
@@ -64,22 +86,53 @@ export default function PotonganTidakTetapPage() {
         data={rows}
         columns={columns}
         actions={actions}
+        loading={loading}
+        pageSize={pageSize}
+        useExternalPagination
+        externalPage={page}
+        externalTotal={total}
+        
         searchable
         filterable
+        
+        onSearchChange={(val) => setSearch(val)}
+        onSortChange={(columnId, order) => setSort(columnId, order)}
+        onPageChangeExternal={(p) => setPage(p)}
+        onRowsPerPageChangeExternal={(ps) => setPageSize(ps)}
+        
         onExport={() => exportCSV('potongan-tidak-tetap.csv', rows)}
-        onAdd={() => { setDefaultValues({ namaPotongan: '', deskripsiUmum: '' }); setModalTitle('Tambah Potongan Tidak Tetap'); setConfirmTitleButton('Simpan'); setIsModalOpen(true); }}
+        onAdd={handleAddOpen}
         addButtonLabel="Tambah Potongan"
       />
-      {isModalOpen && (
-        <PotonganTidakTetapModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          defaultValues={defaultValues}
-          onSave={(values) => { console.log('save potongan tidak tetap', values); }}
-          title={modalTitle}
-          confirmTitleButton={confirmTitleButton}
-        />
-      )}
+
+      {/* Add Modal */}
+      <NonRecurringDeductionModal
+        isOpen={addModal.isOpen}
+        onClose={addModal.closeModal}
+        onSave={handleSave}
+        title="Tambah Potongan Tidak Tetap"
+        confirmTitleButton="Simpan"
+        isLoading={loading}
+      />
+
+      {/* Edit Modal */}
+      <NonRecurringDeductionModal
+        isOpen={editModal.isOpen}
+        onClose={editModal.closeModal}
+        defaultValues={detailValues}
+        onSave={handleSave}
+        title="Edit Potongan Tidak Tetap"
+        confirmTitleButton="Simpan Perubahan"
+        isLoading={loading}
+      />
+
+      {/* Delete Modal */}
+      <NonRecurringDeductionModalDelete
+        isOpen={deleteModal.isOpen}
+        onClose={deleteModal.closeModal}
+        onDelete={onDeleteConfirm}
+        deductionName={selectedName}
+      />
     </div>
   );
 }

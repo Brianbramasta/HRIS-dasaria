@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { addNotification } from '@/stores/notificationStore';
 import {
   organizationChangeService,
@@ -18,6 +18,7 @@ export interface UseOrganizationChangeOptions {
 
 export interface UseOrganizationChangeReturn {
   organizationChanges: OrganizationChangeItem[];
+  rowsWithStatus: (OrganizationChangeItem & { statusPerubahan: string })[];
   detail: OrganizationChangeDetailRaw | null;
   isLoading: boolean;
   error: string | null;
@@ -33,7 +34,7 @@ export interface UseOrganizationChangeReturn {
   updateOrganizationChange: (id: string, payload: UpdateOrganizationChangePayload) => Promise<boolean>;
   refresh: () => Promise<void>;
   fetchChangeTypeOptions: () => Promise<void>;
-  fetchEmployeeOptions: () => Promise<void>;
+  fetchEmployeeOptions: (search?: string) => Promise<void>;
   handleSearchChange: (search: string) => void;
   handleSortChange: (columnId: string, order: 'asc' | 'desc') => void;
   handlePageChange: (newPage: number) => void;
@@ -122,7 +123,7 @@ export function useOrganizationChange({
 
         const mapped: OrganizationChangeItem[] = list.map((item) => ({
           id: item.id,
-          employee_id: item.employee_id, // Not provided in list
+          employee_id: item.employee_id,
           full_name: item.full_name,
           change_type: item.jenis_perubahan,
           effective_date: item.efektif_date,
@@ -135,14 +136,18 @@ export function useOrganizationChange({
           new_division: item.divisi_baru,
           old_department: item.departemen_lama,
           new_department: item.departemen_baru,
+          old_unit: (item as any).unit_lama,
+          new_unit: (item as any).unit_baru,
           old_position: item.posisi_lama,
           new_position: item.posisi_baru,
           old_job_title: item.jabatan_lama,
           new_job_title: item.jabatan_baru,
+          old_structural_job_title: item.jabatan_struktural_lama ?? null,
+          new_structural_job_title: item.jabatan_struktural_baru ?? null,
           old_position_level: item.jenjang_jabatan_lama,
           new_position_level: item.jenjang_jabatan_baru,
-          old_employee_category: item.kategori_karyawan_lama,
-          new_employee_category: item.kategori_karyawan_baru,
+          old_employee_category: item.kategori_karyawan_lama ?? undefined,
+          new_employee_category: item.kategori_karyawan_baru ?? undefined,
           status: item.status,
           decree_file: item.decree_file,
         }));
@@ -216,11 +221,13 @@ export function useOrganizationChange({
         appendIfValue(fd, 'division_id', payload?.division_id);
         appendIfValue(fd, 'department_id', payload?.department_id);
         appendIfValue(fd, 'job_title_id', payload?.job_title_id);
+        appendIfValue(fd, 'structural_job_id', payload?.structural_job_id);
         appendIfValue(fd, 'position_id', payload?.position_id);
         appendIfValue(fd, 'position_level_id', payload?.position_level_id);
         appendIfValue(fd, 'employee_category_id', payload?.employee_category_id);
         appendIfValue(fd, 'approved_by', payload?.approved_by);
         appendIfValue(fd, 'recommended_by', payload?.recommended_by);
+        appendIfValue(fd, 'unit_id', payload?.unit_id);
         if (payload?.decree_file) fd.append('decree_file', payload?.decree_file);
 
         await organizationChangeService.storeOrganizationChange(leadEmployeeId ?? null, fd);
@@ -301,10 +308,10 @@ export function useOrganizationChange({
     }
   }, []);
 
-  const fetchEmployeeOptions = useCallback(async () => {
+  const fetchEmployeeOptions = useCallback(async (searchTerm?: string) => {
     try {
         
-      const resp = await organizationChangeService.getAllEmployeeDropdown();
+      const resp = await organizationChangeService.getAllEmployeeDropdown(searchTerm);
       const data = (resp as any)?.data ?? [];
     // need to recheck   
       const mapped = data.map((i: any) => ({
@@ -330,8 +337,14 @@ export function useOrganizationChange({
     }
   }, [autoFetch, fetchOrganizationChanges]);
 
+  const rowsWithStatus = useMemo(
+    () => organizationChanges.map((r) => ({ ...r, statusPerubahan: r.status || 'Draft' })),
+    [organizationChanges]
+  );
+
   return {
     organizationChanges,
+    rowsWithStatus,
     detail,
     isLoading,
     error,

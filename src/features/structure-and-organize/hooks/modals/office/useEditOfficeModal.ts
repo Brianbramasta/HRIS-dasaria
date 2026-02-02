@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import type { OfficeListItem } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
-import { useOffices } from '../../../hooks/useOffices';
-import { useCompanies } from '../../../hooks/useCompanies';
+import { useApiOffices } from '../../api/useApiOffices';
+import { useApiCompanies } from '../../api/useApiCompanies';
 
 export function useEditOfficeModal(
   isOpen: boolean,
@@ -18,8 +18,9 @@ export function useEditOfficeModal(
   const [submitting, setSubmitting] = useState(false);
   const [companyIds, setCompanyIds] = useState<string[]>([]);
   const [companyOptions, setCompanyOptions] = useState<{ value: string; text: string }[]>([]);
-  const { updateOffice, getById } = useOffices();
-  const { getDropdown: getCompanyDropdown, getDetail: getCompanyDetail } = useCompanies();
+  const [companySearch, setCompanySearch] = useState('');
+  const { updateOffice, getById } = useApiOffices();
+  const { getDropdown: getCompanyDropdown, getDetail: getCompanyDetail } = useApiCompanies();
 
   useEffect(() => {
     if (!isOpen || !office?.id) return;
@@ -37,22 +38,42 @@ export function useEditOfficeModal(
           Array.isArray(initialIds) && initialIds.length > 0 ? initialIds : fallbackId ? [fallbackId] : [];
         setCompanyIds(selectedIds);
         const res = await getCompanyDropdown();
-        const opts = res.map((c: any) => ({ value: c.id, text: c.name }));
+        const opts = (res || []).map((c: any) => ({ value: c.id, text: c.name ?? c.company_name ?? '' }));
         const missing = selectedIds.filter((id) => !opts.some((o: any) => o.value === id));
         for (const id of missing) {
           try {
             const detail = await getCompanyDetail(id);
             opts.push({ value: id, text: detail.company.name });
           } catch {
+            // ignore
           }
         }
         setCompanyOptions(opts);
       } catch {
+        // ignore
       }
     })();
   }, [isOpen, office, getById, getCompanyDropdown, getCompanyDetail]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handler = setTimeout(async () => {
+      try {
+        const res = await getCompanyDropdown(companySearch || undefined);
+        const opts = (res || []).map((c: any) => ({ value: c.id, text: c.name ?? c.company_name ?? '' }));
+        setCompanyOptions(opts);
+      } catch {
+        setCompanyOptions([]);
+      }
+    }, 400);
+    return () => clearTimeout(handler);
+  }, [isOpen, companySearch, getCompanyDropdown]);
+
   const handleFileChange = () => {};
+
+  const handleCompanySearch = (value: string) => {
+    setCompanySearch(value);
+  };
 
   const handleSubmit = async () => {
     if (!office) return;
@@ -68,7 +89,8 @@ export function useEditOfficeModal(
       });
       onSuccess?.();
       onClose();
-    } catch {
+    } catch (error) {
+      console.error(error);
       addNotification({
         variant: 'error',
         title: 'Office tidak diupdate',
@@ -92,6 +114,7 @@ export function useEditOfficeModal(
     companyIds,
     setCompanyIds,
     companyOptions,
+    handleCompanySearch,
     handleFileChange,
     handleSubmit,
   };

@@ -15,10 +15,14 @@ export interface OrganizationChangeItem {
   new_division?: string; // divisi_baru
   old_department?: string; // departemen_lama
   new_department?: string; // departemen_baru
+  old_unit?: string;
+  new_unit?: string;
   old_position?: string; // posisi_lama
   new_position?: string; // posisi_baru
   old_job_title?: string; // jabatan_lama
   new_job_title?: string; // jabatan_baru
+  old_structural_job_title?: string | null; // jabatan_struktural_lama
+  new_structural_job_title?: string | null; // jabatan_struktural_baru
   old_position_level?: string; // jenjang_jabatan_lama
   new_position_level?: string; // jenjang_jabatan_baru
   old_employee_category?: string; // kategori_karyawan_lama
@@ -57,8 +61,10 @@ export interface OrganizationChangeListItemRaw {
   jabatan_baru: string;
   jenjang_jabatan_lama: string;
   jenjang_jabatan_baru: string;
-  kategori_karyawan_lama: string;
-  kategori_karyawan_baru: string;
+  jabatan_struktural_lama?: string | null;
+  jabatan_struktural_baru?: string | null;
+  kategori_karyawan_lama: string | null;
+  kategori_karyawan_baru: string | null;
   reason: string;
   status: string;
   decree_file?: string | null;
@@ -83,11 +89,13 @@ export interface CreateOrganizationChangePayload {
   division_id: string;
   department_id: string;
   job_title_id: string;
+   structural_job_id?: string;
   position_id: string;
   position_level_id: string;
   employee_category_id: string;
   decree_file?: File | null;
   approved_by?: string;
+  unit_id?: string;
   recommended_by?: string;
 }
 
@@ -187,8 +195,10 @@ class OrganizationChangeService {
    * Get All Employee Dropdown - Mendapatkan daftar semua karyawan
    * @returns Promise dengan daftar semua karyawan
    */
-  async getAllEmployeeDropdown(): Promise<ApiResponse<DropdownItem[]>> {
-    return apiService.get<DropdownItem[]>(`${this.basePath}/all-employee-dropdown`);
+  async getAllEmployeeDropdown(search?: string): Promise<ApiResponse<DropdownItem[]>> {
+    const qs = apiService.buildQueryString(search ? { search } : undefined);
+    const url = qs ? `${this.basePath}/all-employee-dropdown?${qs}` : `${this.basePath}/all-employee-dropdown`;
+    return apiService.get<DropdownItem[]>(url);
   }
 
 

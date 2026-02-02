@@ -2,7 +2,7 @@
 import { useCallback } from 'react';
 import { useFormulirKaryawanStore } from '../../../stores/useFormulirKaryawanStore';
 import employeeMasterDataService from '../../../services/EmployeeMasterData.service';
-import { EducationItem, DocumentItem } from '../../../types/FormEmployee';
+import { DocumentItem } from '../../../types/FormEmployee';
 import { useAuthStore } from '../../../../auth/stores/AuthStore';
 
 const appendIfValue = (fd: FormData, key: string, value: any) => {
@@ -53,31 +53,30 @@ export function useCreateEmployee() {
     (formData.step4.documents || []).forEach((doc: DocumentItem, i: number) => {
       const fileType = doc.tipeFile || '5';
       appendIfValue(fd, `documents[${i}][employee_document_id]`, fileType);
-      console.log('doc file:', doc.file);
       if (doc.file) fd.append(`documents[${i}][file]`, doc.file);
     });
 
-    // Education formal (ambil entri formal pertama)
-    const formal: EducationItem | undefined = (formData.step2.education || []).find((e) => (e.jenisPendidikan ?? 'formal') === 'formal');
-    if (formal) {
-      appendIfValue(fd, 'education_formal_detail[0][education_level_id]', formal.jenjang);
-      appendIfValue(fd, 'education_formal_detail[0][institution_name]', formal.namaLembaga);
-      appendIfValue(fd, 'education_formal_detail[0][degree]', formal.gelar);
-      appendIfValue(fd, 'education_formal_detail[0][final_grade]', formal.nilaiPendidikan);
-      appendIfValue(fd, 'education_formal_detail[0][major]', formal.jurusanKeahlian);
-      appendIfValue(fd, 'education_formal_detail[0][graduation_year]', formal.tahunLulus);
-    }
+    // Education formal (semua entri formal)
+    const formalList = (formData.step2.education || []).filter((e) => (e.jenisPendidikan ?? 'formal') === 'formal');
+    formalList.forEach((formal, index) => {
+      appendIfValue(fd, `education_formal_detail[${index}][education_level_id]`, formal.jenjang);
+      appendIfValue(fd, `education_formal_detail[${index}][institution_name]`, formal.namaLembaga);
+      appendIfValue(fd, `education_formal_detail[${index}][degree]`, formal.gelar);
+      appendIfValue(fd, `education_formal_detail[${index}][final_grade]`, formal.nilaiPendidikan);
+      appendIfValue(fd, `education_formal_detail[${index}][major]`, formal.jurusanKeahlian);
+      appendIfValue(fd, `education_formal_detail[${index}][graduation_year]`, formal.tahunLulus);
+    });
 
-    // Education non-formal (ambil entri non-formal pertama)
-    const nonFormal: EducationItem | undefined = (formData.step2.education || []).find((e) => e.jenisPendidikan === 'non-formal');
-    if (nonFormal) {
-      appendIfValue(fd, 'non_formal_education[0][certificate_name]', nonFormal.namaSertifikat);
-      appendIfValue(fd, 'non_formal_education[0][institution_name]', nonFormal.organisasiPenerbit);
-      appendIfValue(fd, 'non_formal_education[0][start_date]', nonFormal.tanggalPenerbitan || '');
-      appendIfValue(fd, 'non_formal_education[0][end_date]', nonFormal.tanggalKedaluwarsa || '');
-      appendIfValue(fd, 'non_formal_education[0][certificate_id]', nonFormal.idKredensial);
-      if (nonFormal.fileSertifikat) fd.append('non_formal_education[0][certificate_file]', nonFormal.fileSertifikat);
-    }
+    // Education non-formal (semua entri non-formal)
+    const nonFormalList = (formData.step2.education || []).filter((e) => e.jenisPendidikan === 'non-formal');
+    nonFormalList.forEach((nonFormal, index) => {
+      appendIfValue(fd, `non_formal_education[${index}][certificate_name]`, nonFormal.namaSertifikat);
+      appendIfValue(fd, `non_formal_education[${index}][institution_name]`, nonFormal.organisasiPenerbit);
+      appendIfValue(fd, `non_formal_education[${index}][start_date]`, nonFormal.tanggalPenerbitan || '');
+      appendIfValue(fd, `non_formal_education[${index}][end_date]`, nonFormal.tanggalKedaluwarsa || '');
+      appendIfValue(fd, `non_formal_education[${index}][certificate_id]`, nonFormal.idKredensial);
+      if (nonFormal.fileSertifikat) fd.append(`non_formal_education[${index}][certificate_file]`, nonFormal.fileSertifikat);
+    });
 
     // Media Sosial & Kontak Darurat
     appendIfValue(fd, 'facebook_name', formData.step2.facebook);
@@ -89,6 +88,17 @@ export function useCreateEmployee() {
     appendIfValue(fd, 'emergency_contact_name', formData.step2.namaNoKontakDarurat);
     appendIfValue(fd, 'emergency_contact_relationship', formData.step2.hubunganKontakDarurat);
 
+    // Non Fix Allowance
+    (formData.step3.nonFixAllowances || []).forEach((allowance: { id: string; amount: string | number }, index: number) => {
+      appendIfValue(fd, `non_fix_allowance[${index}][non_fix_allowance_id]`, allowance.id);
+      appendIfValue(fd, `non_fix_allowance[${index}][amount]`, allowance.amount);
+    });
+
+    // Avatar
+    if (formData.step1.fotoProfil) {
+      fd.append('avatar', formData.step1.fotoProfil);
+    }
+
     // Organization (opsional; set *_id jika tersedia dari UI login)
     if (isAuthenticated) {
       appendIfValue(fd, 'company_id', formData.step3Employee.company);
@@ -96,8 +106,10 @@ export function useCreateEmployee() {
       appendIfValue(fd, 'directorate_id', formData.step3Employee.direktorat);
       appendIfValue(fd, 'division_id', formData.step3Employee.divisi);
       appendIfValue(fd, 'department_id', formData.step3Employee.departemen);
+      appendIfValue(fd, 'unit_id', formData.step3Employee.unit);
       appendIfValue(fd, 'position_id', formData.step3Employee.position);
       appendIfValue(fd, 'job_title_id', formData.step3Employee.jabatan);
+      appendIfValue(fd, 'structural_job_id', formData.step3Employee.jabatanStruktural);
       appendIfValue(fd, 'start_date', formData.step3Employee.tanggalMasuk);
       appendIfValue(fd, 'end_date', formData.step3Employee.tanggalAkhir);
       appendIfValue(fd, 'position_level_id', formData.step3Employee.jenjangJabatan);

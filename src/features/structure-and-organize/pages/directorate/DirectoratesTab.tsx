@@ -1,17 +1,12 @@
-import { useEffect, useState } from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
-// import { Edit, Trash } from 'react-feather';
 import { IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
 import { useDirectorates } from '../../Index';
 import type { DirectorateRow } from '../../types/OrganizationTableTypes';
-import type { DirectorateListItem } from '../../types/OrganizationApiTypes';
-import { useModal } from '../../../../hooks/useModal';
 import AddDirectorateModal from '../../components/modals/directorate/AddDirectorateModal';
 import EditDirectorateModal from '../../components/modals/directorate/EditDirectorateModal';
 import DeleteDirectorateModal from '../../components/modals/directorate/DeleteDirectorateModal';
 import { FileText } from '@/icons/components/icons';
 import { formatUrlFile } from '@/utils/formatUrlFile';
-import { useFileStore } from '@/stores/fileStore';
 
 type Props = { resetKey: string };
 
@@ -24,21 +19,32 @@ const directorateColumns: DataTableColumn<DirectorateRow>[] = [
 ];
 
 export default function DirectoratesTab({ resetKey }: Props) {
-  const { rows, fetchDirectorates, setSearch, setPage, setPageSize, setSort, page, pageSize, total, exportToCSV, search, sortBy, sortOrder, filterValue } = useDirectorates();
-  const addModal = useModal(false);
-  const editModal = useModal(false);
-  const deleteModal = useModal(false);
-  const [selected, setSelected] = useState<DirectorateListItem | null>(null);
-  const fileStore = useFileStore();
+  const { 
+    rows, 
+    fetchDirectorates, 
+    setSearch, 
+    setPage, 
+    setPageSize, 
+    setSort, 
+    page, 
+    pageSize, 
+    total, 
+    exportToCSV, 
+    addModal,
+    editModal,
+    deleteModal,
+    selected,
+    handleAddOpen,
+    handleEditOpen,
+    handleDeleteOpen,
+    handleClose,
+    handleSuccess
+  } = useDirectorates();
 
-  const actionsIconOnly = [
-    { label: '', onClick: (row: any) => { setSelected(row.raw as DirectorateListItem); editModal.openModal(); }, variant: 'outline', className: 'border-0', icon: <Edit  /> },
-    { label: '', onClick: (row: any) => { setSelected(row.raw as DirectorateListItem); deleteModal.openModal(); }, variant: 'outline', className: 'border-0', color: 'error', icon: <Trash  /> },
-  ] as DataTableAction<any>[];
-
-  useEffect(() => {
-    fetchDirectorates();
-  }, [fetchDirectorates, page, pageSize, search, sortBy, sortOrder, filterValue]);
+  const actionsIconOnly: DataTableAction<any>[] = [
+    { label: '', onClick: (row: any) => handleEditOpen(row.raw), variant: 'outline', className: 'border-0', icon: <Edit  /> },
+    { label: '', onClick: (row: any) => handleDeleteOpen(row.raw), variant: 'outline', className: 'border-0', color: 'error', icon: <Trash  /> },
+  ];
 
   return (
     <>
@@ -58,34 +64,25 @@ export default function DirectoratesTab({ resetKey }: Props) {
       externalPage={page}
       externalTotal={total}
       pageSize={pageSize}
-      onAdd={() => addModal.openModal()}
+      onAdd={handleAddOpen}
       onExport={() => exportToCSV('direktorat.csv')}
     />
     <AddDirectorateModal
       isOpen={addModal.isOpen}
-      onClose={() => { addModal.closeModal(); fileStore.clearSkFile(); }}
-      onSuccess={() => {
-        fetchDirectorates();
-        addModal.closeModal();
-      }}
+      onClose={handleClose}
+      onSuccess={handleSuccess}
     />
     <EditDirectorateModal
       isOpen={editModal.isOpen}
-      onClose={() => { editModal.closeModal(); setSelected(null); fileStore.clearSkFile(); }}
+      onClose={handleClose}
       directorate={selected}
-      onSuccess={() => {
-        fetchDirectorates();
-        editModal.closeModal();
-      }}
+      onSuccess={handleSuccess}
     />
     <DeleteDirectorateModal
       isOpen={deleteModal.isOpen}
-      onClose={() => { deleteModal.closeModal(); setSelected(null);fileStore.clearSkFile();  }}
+      onClose={handleClose}
       directorate={selected}
-      onSuccess={() => {
-        fetchDirectorates();
-        deleteModal.closeModal();
-      }}
+      onSuccess={handleSuccess}
     />
     </>
   );

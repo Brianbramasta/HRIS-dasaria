@@ -21,7 +21,7 @@ interface Props {
 
 function SummaryItem({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div className="h-fit rounded-lg border border-gray-200 bg-white p-3">
+    <div className="h-fit rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900 dark:text-white">
       <div className="text-sm font-bold ">{label}</div>
       <div className="mt-1 text-xs ">{children}</div>
     </div>
@@ -56,7 +56,7 @@ export default function ContractTab({ employeeId: employeeIdProp, data }: Props)
   return (
     <>
       <ComponentCard title="Kontrak">
-        <div className="grid grid-cols-1 gap-0 md:gap-6 md:grid-cols-5">
+        <div className="grid grid-cols-1 gap-0 md:gap-6 md:grid-cols-5 ">
           {/* Left PDF Preview */}
           <div className="col-span-1 flex flex-col mb-6 md:mb-0">
             <PdfPreviewEmbed 

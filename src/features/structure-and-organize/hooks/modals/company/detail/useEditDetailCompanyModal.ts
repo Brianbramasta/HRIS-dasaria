@@ -1,5 +1,5 @@
 import React from 'react';
-import { useBusinessLines } from '../../../../hooks/business-lines/useBusinessLines';
+import { useApiBusinessLines } from '../../../api/useApiBusinessLines';
 import { companyService } from '../../../../services/OrganizationService';
 import type { BusinessLineListItem } from '../../../../types/OrganizationApiTypes';
 import { addNotification } from '@/stores/notificationStore';
@@ -15,7 +15,7 @@ export function useEditDetailCompanyModal(params: {
   const [submitting, setSubmitting] = React.useState(false);
   const [logoFile, setLogoFile] = React.useState<File | null>(null);
   const [businessLines, setBusinessLines] = React.useState<BusinessLineListItem[]>([]);
-  const { getDropdown } = useBusinessLines({ autoFetch: false });
+  const { getDropdown } = useApiBusinessLines();
 
   React.useEffect(() => {
     if (!isOpen) return;
@@ -111,7 +111,10 @@ export function useEditDetailCompanyModal(params: {
         return null;
       };
 
-      const payload: any = {
+      const formData = new FormData();
+      formData.append('_method', 'PATCH');
+
+      const payloadMap: any = {
         address: form.address || null,
         postal_code: form.postalCode || null,
         email: form.email || null,
@@ -126,7 +129,14 @@ export function useEditDetailCompanyModal(params: {
         id_bl: form.businessLineId || null,
       };
 
-      await companyService.updateDetailByUuid(company.id, payload);
+      Object.keys(payloadMap).forEach((key) => {
+        const val = payloadMap[key];
+        if (val !== undefined && val !== null) {
+          formData.append(key, val);
+        }
+      });
+
+      await companyService.updateDetailByUuid(company.id, formData);
       onSuccess?.();
       onClose();
     } catch {

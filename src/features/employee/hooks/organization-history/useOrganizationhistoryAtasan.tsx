@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   useOrganizationChange,
@@ -13,7 +13,7 @@ import {
 // Re-export type for UI usage
 export type { OrganizationChangeItem };
 
-export interface UseOrganizationHistoryAtasanOptions extends UseOrganizationChangeOptions {}
+export type UseOrganizationHistoryAtasanOptions = UseOrganizationChangeOptions;
 
 export function useOrganizationHistoryAtasan(options: UseOrganizationHistoryAtasanOptions = {}) {
   const navigate = useNavigate();
@@ -21,6 +21,7 @@ export function useOrganizationHistoryAtasan(options: UseOrganizationHistoryAtas
   // Use the shared logic hook
   const {
     organizationChanges: data,
+    rowsWithStatus,
     isLoading: loading,
     error,
     total,
@@ -33,6 +34,8 @@ export function useOrganizationHistoryAtasan(options: UseOrganizationHistoryAtas
     handleSortChange,
     handlePageChange,
     handleRowsPerPageChange,
+    handleDateRangeFilterChange,
+    dateRangeFilters,
     detail,
     getDetail,
   } = useOrganizationChange({ ...options, autoFetch: false });
@@ -85,12 +88,6 @@ export function useOrganizationHistoryAtasan(options: UseOrganizationHistoryAtas
     []
   );
 
-  // Compute rows with status
-  const rowsWithStatus = useMemo(
-    () => data.map((r) => ({ ...r, statusPerubahan: r.status || 'Draft' })),
-    [data]
-  );
-
   useEffect(() => {
     fetchOrganizationHistory();
   }, [fetchOrganizationHistory]);
@@ -138,9 +135,11 @@ export function useOrganizationHistoryAtasan(options: UseOrganizationHistoryAtas
         division_id: formData?.division_id || '',
         department_id: formData?.department_id || '',
         job_title_id: formData?.job_title_id || '',
+        structural_job_id: formData?.structural_job_id || '',
         position_id: formData?.position_id || '',
         position_level_id: formData?.position_level_id || '',
         employee_category_id: formData?.employee_category_id || '',
+        unit_id: formData?.unit_id || '',
         decree_file: formData?.skFile ?? null,
       };
       const ok = await createOrganizationHistory(employeeId, payload);
@@ -200,6 +199,8 @@ export function useOrganizationHistoryAtasan(options: UseOrganizationHistoryAtas
     handleSortChange,
     handlePageChange,
     handleRowsPerPageChange,
+    handleDateRangeFilterChange,
+    dateRangeFilters,
     handleAddOrganization,
     handleEditOrganization,
     handleCloseModal,

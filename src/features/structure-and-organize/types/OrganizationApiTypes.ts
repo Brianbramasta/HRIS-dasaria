@@ -8,3 +8,4 @@ export * from './dto/DirectorateType';
 export * from './dto/DivisionType';
 export * from './dto/DepartmentType';
 export * from './dto/PositionType';
+export * from './dto/UnitType';

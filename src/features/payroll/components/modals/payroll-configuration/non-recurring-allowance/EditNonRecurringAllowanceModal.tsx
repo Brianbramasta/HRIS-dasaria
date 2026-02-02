@@ -1,13 +1,14 @@
 // Dokumentasi: Modal Tambah/Edit Tunjangan Tidak Tetap (Nama Tunjangan, Deksripsi Umum)
 import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
-import Label from '@/components/form/Label';
-import Input from '@/components/form/input/InputField';
-import TextArea from '@/components/form/input/TextArea';
+import InputField from '@/components/shared/field/InputField';
+import SelectField from '@/components/shared/field/SelectField';
+import TextAreaField from '@/components/shared/field/TextAreaField';
 import { useEditNonRecurringAllowanceModal } from '@/features/payroll/hooks/modals/payroll-configuration/non-recurring-allowance/useEditNonRecurringAllowanceModal';
 
 type FormValues = {
   namaTunjangan: string;
+  kategori: string;
   deskripsiUmum: string;
 };
 
@@ -20,6 +21,11 @@ interface Props {
   confirmTitleButton?: string;
 }
 
+const kategoriOptions = [
+  { value: 'Umum', label: 'Umum' },
+  { value: 'Personal/Diskresi', label: 'Personal/Diskresi' },
+];
+
 const EditTunjanganTidakTetapModal: React.FC<Props> = ({ isOpen, onClose, defaultValues, onSave, title, confirmTitleButton }) => {
   const { form, setField, handleSubmit } = useEditNonRecurringAllowanceModal({
     isOpen,
@@ -30,14 +36,28 @@ const EditTunjanganTidakTetapModal: React.FC<Props> = ({ isOpen, onClose, defaul
 
   const content = (
     <div className="space-y-5">
-      <div>
-        <Label>Nama Tunjangan</Label>
-        <Input placeholder="Masukkan nama tunjangan" value={form.namaTunjangan} onChange={(e) => setField('namaTunjangan', e.target.value)} />
-      </div>
-      <div>
-        <Label>Deksripsi Umum</Label>
-        <TextArea placeholder="Tulis description ..." value={form.deskripsiUmum} onChange={(value) => setField('deskripsiUmum', value)} />
-      </div>
+      <InputField
+        label="Nama Tunjangan"
+        placeholder="Masukkan nama tunjangan"
+        value={form.namaTunjangan}
+        onChange={(e) => setField('namaTunjangan', e.target.value)}
+        required
+      />
+      <SelectField
+        label="Sub Kategori"
+        placeholder="Pilih sub kategori"
+        options={kategoriOptions}
+        defaultValue={form.kategori}
+        onChange={(value) => setField('kategori', value)}
+        required
+      />
+      <TextAreaField
+        label="Deksripsi Umum"
+        placeholder="Tulis description ..."
+        value={form.deskripsiUmum}
+        onChange={(value) => setField('deskripsiUmum', value)}
+        required
+      />
     </div>
   );
 

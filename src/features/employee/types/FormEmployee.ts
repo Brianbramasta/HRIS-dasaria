@@ -75,6 +75,7 @@ export interface SalaryFormData {
   noRekening: string;
   npwp: string;
   ptkpStatus: string;
+  nonFixAllowances: { id: string; amount: number | string }[];
 }
 
 export interface BpjsFormData {
@@ -117,7 +118,9 @@ export interface EmployeeDataFormData {
   kantor: string;
   direktorat: string;
   departemen: string;
+  unit: string;
   employmentStatus: string;
+  jabatanStruktural: string;
   // resignationStatus: string;
 }
 

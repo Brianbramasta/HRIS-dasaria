@@ -1,57 +1,12 @@
 import Chart from "react-apexcharts";
-import { ApexOptions } from "apexcharts";
 import { ArrowDownIcon, ArrowUpIcon } from "../../../../icons";
+import { useEmployeeEngagement } from "../../hooks/chart/useEmployeeEngagement";
 
 export default function EmployeeEngagement() {
-  const series = [75];
-  const options: ApexOptions = {
-    colors: ["#465FFF"],
-    chart: {
-      fontFamily: "Outfit, sans-serif",
-      type: "radialBar",
-      height: 260,
-      sparkline: {
-        enabled: true,
-      },
-      toolbar: { show: false },
-    },
-    plotOptions: {
-      radialBar: {
-        startAngle: -90,
-        endAngle: 90,
-        hollow: {
-          size: "70%",
-        },
-        track: {
-          background: "#E4E7EC",
-          strokeWidth: "100%",
-          margin: 5,
-        },
-        dataLabels: {
-          name: { show: false },
-          value: {
-            show: true,
-            fontSize: "44px",
-            fontWeight: 700,
-            offsetY: -15,
-            color: "#1D2939",
-            formatter: (val) => `${Math.round(Number(val))}%`,
-          },
-        },
-      },
-    },
-    fill: {
-      type: "solid",
-      colors: ["#465FFF"],
-    },
-    stroke: {
-      lineCap: "round",
-    },
-    labels: ["Engagement"],
-  };
+  const { series, options } = useEmployeeEngagement();
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03] h-full">
+    <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 h-full">
       <div className="px-5 pt-5 pb-6 sm:px-6 sm:pt-6">
         <h4 className="text-lg font-semibold text-gray-800 dark:text-white/90">Survei Kepuasan Karyawan</h4>
         <div className="relative mt-4">

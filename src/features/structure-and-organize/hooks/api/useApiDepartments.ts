@@ -1,0 +1,255 @@
+// Penyesuaian hooks Departemen agar sesuai kontrak API 1.7 (departments)
+import { useState, useCallback } from 'react';
+import { departmentsService } from '../../services/request/DepartmentsService';
+import { DepartmentListItem, TableFilter } from '../../types/OrganizationApiTypes';
+import useFilterStore from '../../../../stores/filterStore';
+import { toFileSummary } from '../../utils/shared/toFileSummary';
+
+// Mapping helpers
+
+export const mapToDepartment = (item: any): DepartmentListItem => ({
+  id: item.id ?? item.id ?? '',
+  name: item.department_name ?? item.name ?? '',
+  description: item.department_description ?? item.description ?? null,
+  divisionId: item.division_id ?? null,
+  divisionName: item.division_name ?? null,
+  memoNumber: item.department_decree_number ?? null,
+  skFile: toFileSummary(item.department_decree_file_url ?? item.department_decree_file ?? null),
+});
+
+// Map UI sort field to API column
+const toSortField = (field?: string): string => {
+  const map: Record<string, string> = {
+    name: 'department_name',
+    'Nama Departemen': 'department_name',
+    'nama-departemen': 'department_name',
+    department_name: 'department_name',
+    'Nama Divisi': 'division_name',
+    'nama-divisi': 'division_name',
+    division_name: 'division_name',
+  };
+  return map[field || ''] || 'department_name';
+};
+
+interface UseDepartmentsReturn {
+  departments: DepartmentListItem[];
+  loading: boolean;
+  error: string | null;
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  filterValue: string;
+  search: string;
+  sortBy: string;
+  sortOrder: 'asc' | 'desc' | null;
+  
+  // Actions
+  fetchDepartments: (filter?: TableFilter) => Promise<void>;
+  createDepartment: (payload: { name: string; divisionId: string; description?: string | null; memoNumber: string; skFile: File; }) => Promise<void>;
+  updateDepartment: (id: string, payload: { name?: string; divisionId?: string; description?: string | null; memoNumber: string; skFile?: File | null; }) => Promise<void>;
+  deleteDepartment: (id: string, payload: { memoNumber: string; skFile?: File; }) => Promise<void>;
+  getById: (id: string) => Promise<DepartmentListItem | null>;
+  getDropdown: (search?: string) => Promise<{ id: string; department_name: string }[]>;
+  setPage: (page: number) => void;
+  setPageSize: (pageSize: number) => void;
+  setSearch: (search: string) => void;
+  setSort: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
+}
+
+export const useApiDepartments = (): UseDepartmentsReturn => {
+  const [departments, setDepartments] = useState<DepartmentListItem[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
+  const [search, setSearch] = useState('');
+  const [sortBy, setSortBy] = useState('');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
+  const filterValue = useFilterStore((s) => s.filters['Departemen'] ?? '');
+
+  const fetchDepartments = useCallback(async (filter?: TableFilter) => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const effectivePage = filter?.page ?? page;
+      const effectivePageSize = filter?.pageSize ?? pageSize;
+      const effectiveSearch = filter?.search ?? search;
+      const effectiveSortBy = filter?.sortBy ?? sortBy;
+      const effectiveSortOrder = filter?.sortOrder ?? sortOrder;
+      const effectiveFilter = filter?.filter ?? filterValue;
+      const params: any = { page: effectivePage, per_page: effectivePageSize };
+      if (effectiveSearch) params.search = effectiveSearch;
+      if (effectiveFilter) params.filter = effectiveFilter;
+      if (effectiveSortBy) {
+        params.column = toSortField(effectiveSortBy);
+        if (effectiveSortOrder) params.sort = effectiveSortOrder;
+      }
+      const result = await departmentsService.getList(params);
+      
+      const payload = (result as any);
+      const items = payload?.data?.data ?? [];
+      const total = payload?.data?.total ?? (items?.length || 0);
+      // const currentPage = payload?.data?.current_page ?? page;
+      const perPage = payload?.data?.per_page ?? pageSize;
+      const totalPagesCount = perPage ? Math.ceil(total / perPage) : 1;
+      
+      setDepartments((items || []).map(mapToDepartment));
+      setTotal(total);
+      setTotalPages(totalPagesCount);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch departments');
+    } finally {
+      setLoading(false);
+    }
+  }, [page, pageSize, search, sortBy, sortOrder, filterValue]);
+
+  // Create Departemen menggunakan multipart sesuai kontrak API
+  const createDepartment = useCallback(async (departmentData: { name: string; divisionId: string; description?: string | null; memoNumber: string; skFile: File; }) => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const formData = new FormData();
+      formData.append('department_name', departmentData.name);
+      formData.append('division_id', departmentData.divisionId);
+      formData.append('department_decree_number', departmentData.memoNumber);
+      if (departmentData.description) formData.append('department_description', departmentData.description);
+      formData.append('department_decree_file', departmentData.skFile);
+
+      const created = await departmentsService.create(formData);
+      const item = (created as any).data as any;
+      const newDepartment = mapToDepartment(item);
+      setDepartments(prev => [...prev, newDepartment]);
+      await fetchDepartments();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create department');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchDepartments]);
+
+  // Update Departemen menggunakan POST + _method=PATCH multipart
+  const updateDepartment = useCallback(async (id: string, departmentData: { name?: string; divisionId?: string; description?: string | null; memoNumber: string; skFile?: File | null; }) => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const formData = new FormData();
+      formData.append('_method', 'PATCH');
+      if (departmentData.name !== undefined) formData.append('department_name', departmentData.name);
+      if (departmentData.divisionId !== undefined) formData.append('division_id', departmentData.divisionId);
+      formData.append('department_decree_number', departmentData.memoNumber);
+      if (departmentData.description !== undefined && departmentData.description !== null) formData.append('department_description', departmentData.description);
+      if (departmentData.skFile) formData.append('department_decree_file', departmentData.skFile);
+
+      const updated = await departmentsService.update(id, formData);
+      const item = (updated as any).data as any;
+      const updatedDepartment = mapToDepartment(item);
+      setDepartments(prev => prev.map(department => 
+        department.id === id ? updatedDepartment : department
+      ));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update department');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Delete Departemen menggunakan POST + _method=DELETE multipart
+  const deleteDepartment = useCallback(async (id: string, payload: { memoNumber: string; skFile?: File; }) => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const formData = new FormData();
+      formData.append('_method', 'DELETE');
+      if (payload.memoNumber) formData.append('department_deleted_decree_number', payload.memoNumber);
+      if (payload.skFile) formData.append('department_deleted_decree_file', payload.skFile);
+
+      await departmentsService.delete(id, formData);
+      setDepartments(prev => prev.filter(department => department.id !== id));
+      await fetchDepartments();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete department');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchDepartments]);
+
+  const handleSetPage = useCallback((newPage: number) => {
+    setPage(newPage);
+  }, []);
+
+  const handleSetPageSize = useCallback((newPageSize: number) => {
+    setPageSize(newPageSize);
+    setPage(1); // Reset to first page when changing page size
+  }, []);
+
+  const handleSetSearch = useCallback((newSearch: string) => {
+    setSearch(newSearch);
+    setPage(1); // Reset to first page when searching
+  }, []);
+
+  const handleSetSort = useCallback((newSortBy: string, newSortOrder: 'asc' | 'desc') => {
+    setSortBy(newSortBy);
+    setSortOrder(newSortOrder);
+  }, []);
+
+  const getById = useCallback(async (id: string): Promise<DepartmentListItem | null> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const detail = await departmentsService.getById(id);
+      return mapToDepartment(detail.data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to get department');
+      console.error('Error getting department by id:', err);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const getDropdown = useCallback(async (search?: string): Promise<{ id: string; department_name: string }[]> => {
+    try {
+      const result = await departmentsService.getDropdown(search || '');
+      return result.data || [];
+    } catch (err) {
+      console.error('Error fetching department dropdown:', err);
+      return [];
+    }
+  }, []);
+
+  
+
+  return {
+    departments,
+    loading,
+    error,
+    total,
+    page,
+    pageSize,
+    totalPages,
+    filterValue,
+    search,
+    sortBy,
+    sortOrder,
+    fetchDepartments,
+    createDepartment,
+    updateDepartment,
+    deleteDepartment,
+    getById,
+    getDropdown,
+    setPage: handleSetPage,
+    setPageSize: handleSetPageSize,
+    setSearch: handleSetSearch,
+    setSort: handleSetSort,
+  };
+};

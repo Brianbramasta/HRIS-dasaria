@@ -5,27 +5,30 @@ import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { ChevronDown } from 'react-feather';
 import EditRiwayatOrganisasiModal from '@/features/employee/components/modals/organization-history/EditOrganizationHistoryModal';
 import { IconFileDetail } from '@/icons/components/icons';
-import { useMemo, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useMemo } from 'react';
 import { formatUrlFile } from '@/utils/formatUrlFile';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 
 type OrgHistoryListRow = OrganizationChangeItem & { statusPerubahan: string };
 
 export default function OrganizationHistoryAtasanPage() {
-  const navigate = useNavigate();
-  
   const {
     data,
     rowsWithStatus,
     loading,
+    total,
+    page,
+    limit,
     isEditOrgOpen,
     isDropdownOpen,
     selectedRow,
     handleSearchChange,
     handleSortChange,
+    handlePageChange,
+    handleRowsPerPageChange,
+    handleDateRangeFilterChange,
+    dateRangeFilters,
     handleAddOrganization,
-    handleEditOrganization,
     handleCloseModal,
     handleSubmitModal,
     handleDropdownToggle,
@@ -35,22 +38,14 @@ export default function OrganizationHistoryAtasanPage() {
     detail,
   } = useOrganizationHistoryAtasan();
 
-  // Format date helper
-  const formatDate = useCallback((iso: string) => {
-    if (!iso) return '-';
-    const d = new Date(iso);
-    const fmt = new Intl.DateTimeFormat('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-    return fmt.format(d);
-  }, []);
-
   // Define columns
   const columns: DataTableColumn<OrgHistoryListRow>[] = useMemo(
     () => [
       { id: 'no', label: 'No.', align: 'center', format: (_v, row) => data.findIndex((r) => r.id === row.id) + 1 },
-      // { id: 'employee_id', label: 'NIP' },
+      { id: 'employee_id', label: 'NIP' },
       {
         id: 'full_name',
-        label: 'Nama Karyawan',
+        label: 'Nama',
         format: (_v, row) => (
           <div className="flex items-center gap-2">
             <img
@@ -63,13 +58,43 @@ export default function OrganizationHistoryAtasanPage() {
         ),
       },
       { id: 'change_type', label: 'Jenis Perubahan' },
-      { id: 'effective_date', label: 'Tanggal Efektif', format: (v: string) => formatDateToIndonesian(v || '') },
-      { id: 'old_position', label: 'Posisi Lama' },
-      { id: 'new_position', label: 'Posisi Baru' },
-      { id: 'old_division', label: 'Divisi Lama' },
-      { id: 'new_division', label: 'Divisi Baru' },
+      { id: 'effective_date', label: 'Tanggal Efektif', dateRangeFilter: true, format: (v: string) => formatDateToIndonesian(v || '') },
+      { id: 'old_company', label: 'Perusahaan Lama' },
+      { id: 'new_company', label: 'Perusahaan Baru' },
       { id: 'old_directorate', label: 'Direktorat Lama' },
       { id: 'new_directorate', label: 'Direktorat Baru' },
+      { id: 'old_division', label: 'Divisi Lama' },
+      { id: 'new_division', label: 'Divisi Baru' },
+      { id: 'old_department', label: 'Departemen Lama' },
+      { id: 'new_department', label: 'Departemen Baru' },
+      {
+        id: 'old_unit',
+        label: 'Unit Lama',
+        format: (v: string | undefined) => v || '-',
+      },
+      {
+        id: 'new_unit',
+        label: 'Unit Baru',
+        format: (v: string | undefined) => v || '-',
+      },
+      { id: 'old_position', label: 'Posisi Lama' },
+      { id: 'new_position', label: 'Posisi Baru' },
+      { id: 'old_job_title', label: 'Jabatan Kepangkatan Lama' },
+      { id: 'new_job_title', label: 'Jabatan Kepangkatan Baru' },
+      {
+        id: 'old_structural_job_title',
+        label: 'Jabatan Struktural Lama',
+        format: (v: string | null | undefined) => v || '-',
+      },
+      {
+        id: 'new_structural_job_title',
+        label: 'Jabatan Struktural Baru',
+        format: (v: string | null | undefined) => v || '-',
+      },
+      { id: 'old_position_level', label: 'Jenjang Jabatan Lama' },
+      { id: 'new_position_level', label: 'Jenjang Jabatan Baru' },
+      { id: 'old_employee_category', label: 'Kategori Karyawan Lama' },
+      { id: 'new_employee_category', label: 'Kategori Karyawan Baru' },
       { id: 'reason', label: 'Alasan Perubahan' },
       {
         id: 'statusPerubahan',
@@ -87,7 +112,7 @@ export default function OrganizationHistoryAtasanPage() {
         },
       },
     ],
-    [data, formatDate]
+    [data]
   );
 
   // Define actions (Atasan only has view action)
@@ -104,7 +129,7 @@ export default function OrganizationHistoryAtasanPage() {
         },
       }
     ],
-    [navigate, handleEditOrganization]
+    []
   );
 
   return (
@@ -114,8 +139,16 @@ export default function OrganizationHistoryAtasanPage() {
         data={rowsWithStatus}
         columns={columns}
         actions={actions}
+        pageSize={limit}
         loading={loading}
         filterable
+        useExternalPagination
+        externalPage={page}
+        externalTotal={total}
+        onPageChangeExternal={handlePageChange}
+        onRowsPerPageChangeExternal={handleRowsPerPageChange}
+        onDateRangeFilterChange={handleDateRangeFilterChange}
+        dateRangeFilters={dateRangeFilters}
         emptyMessage="Belum ada perubahan organisasi"
         addButtonLabel="Tambah Organisasi"
         onAdd={handleAddOrganization}

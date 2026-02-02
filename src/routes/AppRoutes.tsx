@@ -10,6 +10,7 @@ import OfficesTab from "../features/structure-and-organize/pages/office/OfficesT
 import DirectoratesTab from "../features/structure-and-organize/pages/directorate/DirectoratesTab";
 import DivisionsTab from "../features/structure-and-organize/pages/division/DivisionsTab";
 import DepartmentsTab from "../features/structure-and-organize/pages/departement/DepartmentsTab";
+import UnitTab from "../features/structure-and-organize/pages/unit/UnitTab";
 import PositionsTab from "../features/structure-and-organize/pages/job-tittle/PositionsTab";
 import EmployeePositionsTab from "../features/structure-and-organize/pages/employee-positions/EmployeePositionsTab";
 import DetailLiniBisnis from "../features/structure-and-organize/pages/business-line/DetailLiniBisnis";
@@ -55,7 +56,10 @@ import DetailGajiTHRPage from "@/features/payroll/pages/shared/detail/detailPayr
 import DetailGajiPKLPage from "@/features/payroll/pages/shared/detail/detailPayrollPKLPage";
 import HakAksesPage from "@/features/role-management-access/pages/RoleManagementPage";
 import DetailHakAksesPages from "@/features/role-management-access/pages/detail/DetailHakAksesPages";
-import EditRolePage from "@/features/role-management-access/pages/EditRolePage";
+import ModulDetail from "@/features/role-management-access/pages/ModulDetail";
+import FeatureDetail from "@/features/role-management-access/pages/FeatureDetail";
+import AccessDetail from "@/features/role-management-access/pages/AccessDetail";
+import EditRolePage from "@/features/role-management-access/pages/detail/EditRolePage";
 // Dokumentasi: Import halaman Kasbon dan tab terkait
 import KasbonPage from "@/features/payroll/pages/cash-advance/CashAdvancePage";
 import StatusKasbonPage from "@/features/payroll/pages/cash-advance/tab/StatusCashAdvancePage";
@@ -76,6 +80,7 @@ import JenisPengajuanPage from "@/features/submission-type/pages/SubmissionPage"
 
 // Auth Feature Pages
 import { LoginPage, ForgotPasswordPage } from "../features/auth/pages/Index";
+import SelectServicePage from "../features/auth/pages/SelectServicePage";
 import ProtectedOutlet from "./ProtectedOutlet";
 import FormKasbonPage from "@/features/payroll/pages/cash-advance/form-cash-advance/FormCashAdvancePage";
 import NotFound from "@/pages/OtherPage/NotFound";
@@ -96,7 +101,7 @@ export default function AppRoutes() {
         <Route path="/employee-data/form" element={<FormulirKaryawanPage />} />
         <Route path="/resignation/form" element={<FormResignPage />} />
         {/* Protected routes */}
-        <Route element={<ProtectedOutlet />}> 
+        <Route element={<ProtectedOutlet />}>
           <Route path="/dashboard" element={<DashboardPage />}>
             <Route index element={<Dashboard />} />
             <Route path="notification" element={<Notification />} />
@@ -114,9 +119,10 @@ export default function AppRoutes() {
             <Route path="offices" element={<OfficesTab resetKey="offices" />} />
             <Route path="directorates" element={<DirectoratesTab resetKey="directorates" />} />
             <Route path="divisions" element={<DivisionsTab resetKey="divisions" />} />
-          <Route path="departments" element={<DepartmentsTab resetKey="departments" />} />
-          <Route path="positions" element={<PositionsTab resetKey="positions" />} />
-          <Route path="employee-positions" element={<EmployeePositionsTab resetKey="employee-positions" />} />
+            <Route path="departments" element={<DepartmentsTab resetKey="departments" />} />
+            <Route path="units" element={<UnitTab resetKey="units" />} />
+            <Route path="positions" element={<PositionsTab resetKey="positions" />} />
+            <Route path="employee-positions" element={<EmployeePositionsTab resetKey="employee-positions" />} />
           </Route>
           {/* Penggajian */}
           {/* <Route path="/payroll-period" element={<DaftarPenggajianPage />} /> */}
@@ -172,7 +178,7 @@ export default function AppRoutes() {
             <Route path="detail-thr/:id" element={<DetailGajiTHRPage />} />
             <Route path="detail-pkl/:id" element={<DetailGajiPKLPage />} />
           </Route>
-          
+
           {/* // Dokumentasi: Nested route untuk Distribusi Gaji dengan tiga tab */}
           <Route path="/salary-distribution" element={<DistribusiGajiPage />}>
             {/* Dokumentasi: index default Non-AE untuk /salary-distribution */}
@@ -181,34 +187,39 @@ export default function AppRoutes() {
             <Route path="ae" element={<AEDistributionTab />} />
             <Route path="thr" element={<THRDistributionTab />} />
           </Route>
-          
+
           <Route path="/employee-data" element={<DataKaryawanIndexPage />} />
           <Route path="/employee-data/:id" element={<DetailKaryawanPage />} />
           <Route path="/employee-data/contract-extension" element={<PerpanjanganKontrak />} />
           <Route path="/employee-data/:id/pelanggaran" element={<PelanggaranRoute />} />
           <Route path="/resignation" element={<PengunduranDiri />} />
-          
+
           <Route path="/resignation/:id" element={<DetailPengunduranDiriPage />} />
           <Route path="/contract-extension" element={<PerpanjanganKontrak />} />
           <Route path="/contract-extension/persetujuan" element={<PersetujuanPerpanjanganKontrak />} />
           <Route path="contract-extension/detail/:id" element={<PerpanjangKontrakEdit />} />
-          
+
           <Route path="/submission-types" element={<JenisPengajuanPage />} />
           <Route path="/organization-history" element={<OrganizationHistoryPage />} />
           <Route path="/organization-history/atasan" element={<OrganizationHistoryAtasanPage />} />
           <Route path="/role-management-access" element={<HakAksesPage />} />
           <Route path="/role-management-access/detail/:roleId" element={<DetailHakAksesPages />} />
+          <Route path="/role-management-access/service-detail/:layananId" element={<ModulDetail />} />
+          <Route path="/role-management-access/feature-detail/:modulId" element={<FeatureDetail />} />
+          <Route path="/role-management-access/access-detail/:featureId" element={<AccessDetail />} />
+          <Route path="/role-management-access/add" element={<EditRolePage />} />
           <Route path="/role-management-access/edit/:roleId" element={<EditRolePage />} />
 
-      
-          
+
+
         </Route>
       </Route>
 
-      {/* Export print view tanpa AppLayout */}
+      {/* Export print view tanpa AppLayout dan Halaman Pilih Layanan */}
       <Route element={<ProtectedOutlet />}>
         <Route path="/structure-and-organize/export" element={<ExportPage />} />
         <Route path="/export" element={<ExportPage />} />
+        <Route path="/select-service" element={<SelectServicePage />} />
       </Route>
 
       {/* Auth Layout */}

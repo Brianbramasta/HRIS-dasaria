@@ -42,7 +42,12 @@ export function useEditDocumentModal(params: {
     setSubmitting(true);
     try {
       if (file) {
-        await companiesService.addDocuments(companyId, [{ name: name.trim(), number: docNumber.trim(), file }]);
+        const formData = new FormData();
+        formData.append('_method', 'POST');
+        formData.append('documents[0][cd_name]', name.trim());
+        formData.append('documents[0][cd_decree_number]', docNumber.trim());
+        formData.append('documents[0][cd_file]', file);
+        await companiesService.addDocuments(companyId, formData);
       } else {
         const payload: any = {
           name: name.trim(),

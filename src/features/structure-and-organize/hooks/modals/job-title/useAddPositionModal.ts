@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
-import { usePositions } from '../../../hooks/useJobTitle';
+import { useApiJobTitles } from '../../api/useApiJobTitles';
 
 interface UseAddPositionModalParams {
   isOpen: boolean;
@@ -12,16 +12,26 @@ interface UseAddPositionModalParams {
 export function useAddPositionModal({ onClose, onSuccess }: UseAddPositionModalParams) {
   const [name, setName] = useState('');
   const [grade, setGrade] = useState('');
-  const [directSubordinates, setDirectSubordinates] = useState('');
+  const [structuralPositions, setStructuralPositions] = useState<string[]>(['']);
   const [memoNumber, setMemoNumber] = useState('');
   const [jobDescription, setJobDescription] = useState('');
   const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
-  const { createPosition } = usePositions();
+  const { createPosition } = useApiJobTitles();
 
   const handleFileChange = () => {};
 
   const handleSubmit = async () => {
+    const cleanedStructural = structuralPositions.map((s) => s.trim()).filter(Boolean);
+    if (cleanedStructural.length === 0) {
+      addNotification({
+        variant: 'error',
+        title: 'Jabatan tidak ditambahkan',
+        description: 'Jabatan Struktural wajib diisi minimal satu baris',
+        hideDuration: 4000,
+      });
+      return;
+    }
     if (!skFile?.file) {
       addNotification({
         variant: 'error',
@@ -37,10 +47,7 @@ export function useAddPositionModal({ onClose, onSuccess }: UseAddPositionModalP
         name: name.trim(),
         grade: grade.trim() || null,
         jobDescription: jobDescription.trim() || null,
-        directSubordinates: directSubordinates
-          .split(',')
-          .map((s) => s.trim())
-          .filter(Boolean),
+        structuralJobs: cleanedStructural,
         memoNumber: memoNumber.trim(),
         skFile: skFile?.file as File,
       };
@@ -48,7 +55,7 @@ export function useAddPositionModal({ onClose, onSuccess }: UseAddPositionModalP
       onSuccess?.();
       setName('');
       setGrade('');
-      setDirectSubordinates('');
+      setStructuralPositions(['']);
       setMemoNumber('');
       setJobDescription('');
       onClose();
@@ -65,13 +72,27 @@ export function useAddPositionModal({ onClose, onSuccess }: UseAddPositionModalP
     }
   };
 
+  const addStructuralRow = () => {
+    setStructuralPositions((prev) => [...prev, '']);
+  };
+
+  const removeStructuralRow = (index: number) => {
+    setStructuralPositions((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const updateStructuralAt = (index: number, value: string) => {
+    setStructuralPositions((prev) => prev.map((v, i) => (i === index ? value : v)));
+  };
+
   return {
     name,
     setName,
     grade,
     setGrade,
-    directSubordinates,
-    setDirectSubordinates,
+    structuralPositions,
+    addStructuralRow,
+    removeStructuralRow,
+    updateStructuralAt,
     memoNumber,
     setMemoNumber,
     jobDescription,

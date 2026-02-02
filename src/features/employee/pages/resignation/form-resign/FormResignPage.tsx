@@ -8,11 +8,11 @@ import Input from '../../../../../components/form/input/InputField';
 import DatePicker from '../../../../../components/form/date-picker';
 import Select from '../../../../../components/form/Select';
 import FileInput from '../../../../../components/shared/form/FileInput';
-import { useCompanies } from '../../../../structure-and-organize/hooks/useCompanies';
-import { useDirectorates } from '../../../../structure-and-organize/hooks/useDirectorates';
-import { useDivisions } from '../../../../structure-and-organize/hooks/useDivisions';
-import { useDepartments } from '../../../../structure-and-organize/hooks/useDepartments';
-import { usePositions } from '../../../../structure-and-organize/hooks/useJobTitle';
+import { useCompanies } from '../../../../structure-and-organize/hooks/company/useCompanies';
+import { useDirectorates } from '../../../../structure-and-organize/hooks/directorate/useDirectorates';
+import { useDivisions } from '../../../../structure-and-organize/hooks/division/useDivisions';
+import { useDepartments } from '../../../../structure-and-organize/hooks/departement/useDepartments';
+import { usePositions } from '../../../../structure-and-organize/hooks/job-tittle/useJobTitle';
 import { useFileStore } from '@/stores/fileStore';
 import { IconShare } from '@/icons/components/icons';
 

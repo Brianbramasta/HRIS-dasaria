@@ -6,12 +6,26 @@ export type OrgHistoryRow = {
   id: string;
   jenisPerubahan: string;
   tanggalEfektif: string;
-  posisiLama: string;
-  posisiBaru: string;
-  divisiLama: string;
-  divisiBaru: string;
+  perusahaanLama: string;
+  perusahaanBaru: string;
   direktoratLama: string;
   direktoratBaru: string;
+  divisiLama: string;
+  divisiBaru: string;
+  departemenLama: string;
+  departemenBaru: string;
+  unitLama: string;
+  unitBaru: string;
+  posisiLama: string;
+  posisiBaru: string;
+  jabatanLama: string;
+  jabatanBaru: string;
+  jabatanStrukturalLama: string | null;
+  jabatanStrukturalBaru: string | null;
+  jenjangJabatanLama: string;
+  jenjangJabatanBaru: string;
+  kategoriKaryawanLama: string | null;
+  kategoriKaryawanBaru: string | null;
   alasanPerubahan: string;
   decree_file?: string | null;
 };
@@ -28,13 +42,28 @@ function mapToRow(item: OrganizationChangeListItemRaw): OrgHistoryRow {
     id: item.id,
     jenisPerubahan: item.jenis_perubahan,
     tanggalEfektif: item.efektif_date,
-    posisiLama: item.posisi_lama,
-    posisiBaru: item.posisi_baru,
-    divisiLama: item.divisi_lama,
-    divisiBaru: item.divisi_baru,
+    perusahaanLama: item.perusahaan_lama,
+    perusahaanBaru: item.perusahaan_baru,
     direktoratLama: item.direktorat_lama,
     direktoratBaru: item.direktorat_baru,
+    divisiLama: item.divisi_lama,
+    divisiBaru: item.divisi_baru,
+    departemenLama: item.departemen_lama,
+    departemenBaru: item.departemen_baru,
+    unitLama: (item as any).unit_lama ?? '-',
+    unitBaru: (item as any).unit_baru ?? '-',
+    posisiLama: item.posisi_lama,
+    posisiBaru: item.posisi_baru,
+    jabatanLama: item.jabatan_lama,
+    jabatanBaru: item.jabatan_baru,
+    jabatanStrukturalLama: item.jabatan_struktural_lama ?? null,
+    jabatanStrukturalBaru: item.jabatan_struktural_baru ?? null,
+    jenjangJabatanLama: item.jenjang_jabatan_lama,
+    jenjangJabatanBaru: item.jenjang_jabatan_baru,
+    kategoriKaryawanLama: item.kategori_karyawan_lama,
+    kategoriKaryawanBaru: item.kategori_karyawan_baru,
     alasanPerubahan: item.reason,
+    decree_file: item.decree_file,
   };
 }
 

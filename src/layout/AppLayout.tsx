@@ -1,13 +1,20 @@
 import { SidebarProvider, useSidebar } from "../context/SidebarContext";
-import { Outlet } from "react-router";
+import { Outlet, useLocation } from "react-router-dom";
 import AppHeader from "./AppHeader";
 import Backdrop from "./Backdrop";
 import AppSidebar from "./AppSidebar";
 import { useAuthStore } from "../features/auth/stores/AuthStore";
+import PageBreadcrumb from "../components/common/PageBreadCrumb";
+import { getBreadcrumbConfig } from "../utils/breadcrumbConfig";
+import PayrollModalTrigger from "./PayrollModalTrigger";
+import LoginPayrollModal from "../features/payroll/components/modals/LoginPayrollModal";
+import { useLoginPayrollModalStore } from "../features/payroll/store/useLoginPayrollModalStore";
 
 const LayoutContent: React.FC = () => {
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const location = useLocation();
+  const breadcrumbConfig = getBreadcrumbConfig(location.pathname, location.state);
 
   return (
     <div className="min-h-screen xl:flex">
@@ -27,7 +34,15 @@ const LayoutContent: React.FC = () => {
         } ${isMobileOpen ? "ml-0" : ""}`}
       >
         {isAuthenticated && <AppHeader />}
-        <div className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6 bg-white dark:bg-[#1A1A1A]">
+        <div className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6 ">
+          <div className="mx-4">
+            {isAuthenticated && breadcrumbConfig && (
+              <PageBreadcrumb
+                pageTitle={breadcrumbConfig.title}
+                breadcrumbs={breadcrumbConfig.breadcrumbs}
+              />
+            )}
+          </div>
           <Outlet />
         </div>
       </div>
@@ -36,9 +51,13 @@ const LayoutContent: React.FC = () => {
 };
 
 const AppLayout: React.FC = () => {
+  const { isOpen: isLoginModalOpen } = useLoginPayrollModalStore();
+
   return (
     <SidebarProvider>
-      <LayoutContent />
+      <PayrollModalTrigger />
+      <LoginPayrollModal />
+      {!isLoginModalOpen && <LayoutContent />}
     </SidebarProvider>
   );
 };

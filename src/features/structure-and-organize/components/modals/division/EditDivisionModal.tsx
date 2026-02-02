@@ -29,6 +29,7 @@ const EditDivisionModal: React.FC<EditDivisionModalProps> = ({ isOpen, onClose, 
     handleSubmit,
     handleFileChange,
     skFileName,
+    handleDirectorateSearch,
   } = useEditDivisionModal({ isOpen, onClose, division, onSuccess });
 
   return (
@@ -55,6 +56,7 @@ const EditDivisionModal: React.FC<EditDivisionModalProps> = ({ isOpen, onClose, 
             options={directorates.map((d) => ({ value: d.id, label: d.directorate_name }))}
             placeholder="Pilih Direktorat"
             onChange={(v) => setDirectorateId(v)}
+            onSearch={handleDirectorateSearch}
             defaultValue={directorateId}
             containerClassName="mb-2"
           />

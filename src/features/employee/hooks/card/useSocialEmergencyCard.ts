@@ -1,11 +1,8 @@
 import { useModal } from '@/hooks/useModal';
 import { usePersonalInformation } from '@/features/employee/hooks/employee-data/detail/contract/usePersonalInformation';
-import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
 
-export default function useSocialEmergencyCard(personalInformation: any[]) {
+export default function useSocialEmergencyCard(personalInformation: any[], employeeId?: string) {
   const { isOpen, openModal, closeModal } = useModal(false);
-  const { detail } = useDetailDataKaryawanPersonalInfo();
-  const employeeId = detail?.Personal_Data?.id;
   const { updateSocialMediaData, loading: submitting } = usePersonalInformation(employeeId);
 
   const socialEmergencyData = personalInformation[0] || {};
@@ -30,6 +27,7 @@ export default function useSocialEmergencyCard(personalInformation: any[]) {
   );
 
   const handleSubmit = async (payload: any) => {
+
     if (!employeeId) return;
 
     await updateSocialMediaData(employeeId, payload as any);

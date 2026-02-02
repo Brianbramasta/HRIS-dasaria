@@ -1,18 +1,13 @@
-import  { useEffect, useMemo, useState } from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
-// import { Edit, Trash } from 'react-feather';
 import { IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
 import { useOffices } from '../../Index';
 import type { OfficeRow } from '../../types/OrganizationTableTypes';
-import { useModal } from '../../../../hooks/useModal';
-import type { OfficeListItem } from '../../types/OrganizationApiTypes';
 import AddOfficeModal from '../../components/modals/office/AddOfficeModal';
 import EditOfficeModal from '../../components/modals/office/EditOfficeModal';
 import DeleteOfficeModal from '../../components/modals/office/DeleteOfficeModal';
-// import { addNotification } from '@/stores/notificationStore';
 import { FileText } from '@/icons/components/icons';
 import { formatUrlFile } from '@/utils/formatUrlFile';
-import { useFileStore } from '@/stores/fileStore';
+
 type Props = { resetKey: string };
 
 const officeColumns: DataTableColumn<OfficeRow>[] = [
@@ -20,58 +15,37 @@ const officeColumns: DataTableColumn<OfficeRow>[] = [
   { id: 'nama-kantor', label: 'Kantor', sortable: true },
   { id: 'deskripsi-umum', label: 'Deskripsi Umum', sortable: true },
   { id: 'file-sk-dan-memo', label: 'File SK dan Memo', sortable: false, align: 'center', isAction: true, format: (row: OfficeRow) => (
-    // <div onClick={() => {
-    //   console.log(formatUrlFile(row.fileUrl as string));
-    //   if (row.fileUrl) {
-    //     window.open(formatUrlFile(row.fileUrl as string));
-    //   }
-    // }} className='w-full flex justify-center items-center'><FileText size={16} /></div>
     row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer" className='flex justify-center items-center'><FileText size={16} /></a> : '—'
   ) },
 ];
 
 export default function OfficesTab({ resetKey }: Props) {
-  const { offices, fetchOffices, setSearch, setPage, setPageSize, setSort, page, pageSize, total, search, sortBy, sortOrder, filterValue } = useOffices();
-  const addModal = useModal(false);
-  const editModal = useModal(false);
-  const deleteModal = useModal(false);
-  const [selected, setSelected] = useState<OfficeListItem | null>(null);
-  const fileStore = useFileStore();
+  const { 
+    rows, 
+    page, 
+    pageSize, 
+    total, 
+    setPage, 
+    setPageSize, 
+    setSearch, 
+    setSort,
+    fetchOffices, 
+    exportCSV,
+    addModal,
+    editModal,
+    deleteModal,
+    selected,
+    handleAddOpen,
+    handleEditOpen,
+    handleDeleteOpen,
+    handleClose,
+    handleSuccess,
+  } = useOffices() as any;
 
-  useEffect(() => {
-    fetchOffices();
-  }, [page, pageSize, search, sortBy, sortOrder, filterValue, fetchOffices]);
-
-  const rows: OfficeRow[] = useMemo(() => {
-    return (offices || []).map((o, idx) => ({
-      no: idx + 1,
-      'nama-kantor': (o as any).name ?? '—',
-      'deskripsi-umum': (o as any).description ?? '—',
-      'file-sk-dan-memo': (o as any).skFile ??'-',
-      raw: o,
-    }));
-  }, [offices]);
-
-  const actionsIconOnly = [
-    { label: '', onClick: (row: any) => { setSelected(row.raw as OfficeListItem); editModal.openModal(); }, variant: 'outline', className: 'border-0', icon: <Edit /> },
-    { label: '', onClick: (row: any) => { setSelected(row.raw as OfficeListItem); deleteModal.openModal(); }, variant: 'outline', className: 'border-0', color: 'error', icon: <Trash /> },
-  ] as DataTableAction<any>[];
-
-  const exportCSV = (filename: string, data: any[]) => {
-    if (!data || data.length === 0) return;
-    const headers = Object.keys(data[0]);
-    const csv = [headers.join(','), ...data.map(r => headers.map(h => JSON.stringify((r as any)[h] ?? '')).join(','))].join('\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', filename);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
-
+  const actionsIconOnly: DataTableAction<any>[] = [
+    { label: '', onClick: (row: any) => handleEditOpen(row.raw), variant: 'outline', className: 'border-0', icon: <Edit /> },
+    { label: '', onClick: (row: any) => handleDeleteOpen(row.raw), variant: 'outline', className: 'border-0', color: 'error', icon: <Trash /> },
+  ];
 
   return (
     <>
@@ -91,47 +65,26 @@ export default function OfficesTab({ resetKey }: Props) {
       externalPage={page}
       externalTotal={total}
       pageSize={pageSize}
-      
-      onAdd={() => addModal.openModal()}
+      loading={false}
+      onAdd={handleAddOpen}
       onExport={() => exportCSV('office.csv', rows)}
     />
     <AddOfficeModal
       isOpen={addModal.isOpen}
-      onClose={() => { addModal.closeModal(); fileStore.clearSkFile(); }} 
-      onSuccess={() => {fetchOffices();
-        // addNotification({
-        //   description: 'Kantor berhasil ditambahkan',
-        //   variant: 'success',
-        //   hideDuration: 4000,
-        //   title: 'Kantor ditambahkan',
-        // });
-      }}
+      onClose={handleClose} 
+      onSuccess={handleSuccess}
     />
     <EditOfficeModal
       isOpen={editModal.isOpen}
-      onClose={() => { editModal.closeModal(); setSelected(null); fileStore.clearSkFile(); }}
+      onClose={handleClose}
       office={selected}
-      onSuccess={() => {fetchOffices();
-        // addNotification({
-        //   description: 'Kantor berhasil diupdate',
-        //   variant: 'success',
-        //   hideDuration: 4000,
-        //   title: 'Kantor diupdate',
-        // });
-      }}
+      onSuccess={handleSuccess}
     />
     <DeleteOfficeModal
       isOpen={deleteModal.isOpen}
-      onClose={() => { deleteModal.closeModal(); setSelected(null); }}
+      onClose={handleClose}
       office={selected}
-      onSuccess={() => {fetchOffices();
-        // addNotification({
-        //   description: 'Kantor berhasil dihapus',
-        //   variant: 'success',
-        //   hideDuration: 4000,
-        //   title: 'Kantor dihapus',
-        // });
-      }}
+      onSuccess={handleSuccess}
     />
     </>
   );

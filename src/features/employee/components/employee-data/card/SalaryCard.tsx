@@ -13,18 +13,17 @@ interface Props {
   bpjsData?: any;  // BPJS_Data from API response
 }
 
-export default function SalaryCard({  salaryData, bpjsData }: Props) {
+export default function SalaryCard({ employeeId, salaryData, bpjsData }: Props) {
   const {
     isOpen,
     openModal,
     closeModal,
-    employeeId,
     initialData,
     isComplete,
     updateSalaryData,
     updateBpjsData,
     loading,
-  } = useSalaryCard(salaryData, bpjsData);
+  } = useSalaryCard(employeeId, salaryData, bpjsData);
 
   return (
     <ExpandCard title="Gaji" leftIcon={isComplete ? <IconLengkap /> : <IconTidakLengkap />} withHeaderDivider>

@@ -18,6 +18,7 @@ export default function StrukturOrganisasiPage() {
     { id: 'directorates', label: 'Direktorat', link: '/structure-and-organize/directorates' },
     { id: 'divisions', label: 'Divisi', link: '/structure-and-organize/divisions' },
     { id: 'departments', label: 'Departemen', link: '/structure-and-organize/departments' },
+    { id: 'units', label: 'Unit', link: '/structure-and-organize/units' },
     { id: 'positions', label: 'Jabatan', link: '/structure-and-organize/positions' },
     { id: 'employee-positions', label: 'Posisi Pegawai', link: '/structure-and-organize/employee-positions' },
   ];

@@ -1,9 +1,8 @@
 // Dokumentasi: Modal Edit THR (Lama Kerja, Deksripsi Umum)
 import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
-import Label from '@/components/form/Label';
-import Input from '@/components/form/input/InputField';
-import TextArea from '@/components/form/input/TextArea';
+import InputField from '@/components/shared/field/InputField';
+import TextAreaField from '@/components/shared/field/TextAreaField';
 import { useEditThrModal } from '@/features/payroll/hooks/modals/payroll-configuration/thr/useEditThrModal';
 
 type FormValues = {
@@ -16,9 +15,10 @@ interface Props {
   onClose: () => void;
   defaultValues?: Partial<FormValues> | null;
   onSave: (values: FormValues) => void;
+  isLoading?: boolean;
 }
 
-const EditThrModal: React.FC<Props> = ({ isOpen, onClose, defaultValues, onSave }) => {
+const EditThrModal: React.FC<Props> = ({ isOpen, onClose, defaultValues, onSave, isLoading = false }) => {
   const { form, setField, handleSubmit } = useEditThrModal({
     isOpen,
     defaultValues,
@@ -28,14 +28,20 @@ const EditThrModal: React.FC<Props> = ({ isOpen, onClose, defaultValues, onSave 
 
   const content = (
     <div className="space-y-5">
-      <div>
-        <Label>Lama Kerja</Label>
-        <Input placeholder="Masukkan lama kerja" value={form.lamaKerja} onChange={(e) => setField('lamaKerja', e.target.value)} />
-      </div>
-      <div>
-        <Label>Deksripsi Umum</Label>
-        <TextArea placeholder="Tulis description ..." value={form.deskripsiUmum} onChange={(value) => setField('deskripsiUmum', value)} />
-      </div>
+      <InputField
+        label="Lama Kerja"
+        placeholder="Masukkan lama kerja"
+        value={form.lamaKerja}
+        onChange={(e) => setField('lamaKerja', e.target.value)}
+        required
+      />
+      <TextAreaField
+        label="Deskripsi Umum"
+        placeholder="Tulis description ..."
+        value={form.deskripsiUmum}
+        onChange={(value) => setField('deskripsiUmum', value)}
+        required
+      />
     </div>
   );
 
@@ -46,7 +52,7 @@ const EditThrModal: React.FC<Props> = ({ isOpen, onClose, defaultValues, onSave 
       onClose={onClose}
       content={content}
       handleSubmit={handleSubmit}
-      submitting={false}
+      submitting={isLoading}
       maxWidth="max-w-lg"
       confirmTitleButton="Simpan Perubahan"
       closeTitleButton="Tutup"

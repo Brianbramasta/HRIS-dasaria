@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { DivisionListItem } from '../../../types/OrganizationApiTypes';
 import { addNotification } from '@/stores/notificationStore';
 import { useFileStore } from '@/stores/fileStore';
-import { useDivisions } from '../../../hooks/useDivisions';
+import { useApiDivisions } from '../../api/useApiDivisions';
 
 export function useDeleteDivisionModal(params: {
   isOpen: boolean;
@@ -15,7 +15,7 @@ export function useDeleteDivisionModal(params: {
   const [skFileName, setSkFileName] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const skFileMeta = useFileStore((s) => s.skFile);
-  const { deleteDivision } = useDivisions();
+  const { deleteDivision } = useApiDivisions();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
@@ -38,7 +38,7 @@ export function useDeleteDivisionModal(params: {
       await deleteDivision(division.id, { memoNumber: memoNumber.trim(), skFile: skFileMeta.file as File });
       onSuccess?.();
       onClose();
-    } catch (err) {
+    } catch {
       addNotification({
         variant: 'error',
         title: 'Divisi tidak dihapus',

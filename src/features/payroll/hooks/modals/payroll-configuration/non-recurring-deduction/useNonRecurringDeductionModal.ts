@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 export type NonRecurringDeductionForm = {
   namaPotongan: string;
+  kategori: string;
   deskripsiUmum: string;
 };
 
@@ -16,6 +17,7 @@ export const useNonRecurringDeductionModal = (params: {
   const initial: NonRecurringDeductionForm = useMemo(
     () => ({
       namaPotongan: defaultValues?.namaPotongan ?? '',
+      kategori: defaultValues?.kategori ?? '',
       deskripsiUmum: defaultValues?.deskripsiUmum ?? '',
     }),
     [defaultValues]

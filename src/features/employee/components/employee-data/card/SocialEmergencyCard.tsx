@@ -12,7 +12,7 @@ interface Props {
   employeeId?: string; // ID karyawan untuk update
 }
 
-export default function SocialEmergencyCard({ personalInformation }: Props) {
+export default function SocialEmergencyCard({ personalInformation, employeeId }: Props) {
   const {
     isOpen,
     openModal,
@@ -22,7 +22,7 @@ export default function SocialEmergencyCard({ personalInformation }: Props) {
     socialEmergencyData,
     submitting,
     handleSubmit,
-  } = useSocialEmergencyCard(personalInformation);
+  } = useSocialEmergencyCard(personalInformation, employeeId);
   return (
     <ExpandCard title="Media Sosial & Kontak Darurat" leftIcon={isComplete ? <IconLengkap /> : <IconTidakLengkap />} withHeaderDivider>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

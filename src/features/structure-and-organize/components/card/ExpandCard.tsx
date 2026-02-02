@@ -23,7 +23,7 @@ export default function ExpandCard({
   const [open, setOpen] = useState<boolean>(defaultOpen);
 
   return (
-    <div className={`rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900 ${className ?? ''}`}>
+    <div className={`rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900 dark:text-white ${className ?? ''}`}>
       <div
         className={`flex items-center justify-between p-6 ${
           withHeaderDivider ? 'border-b border-gray-200 dark:border-gray-800' : ''

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { DirectorateListItem } from '../../../types/OrganizationApiTypes';
 import { addNotification } from '@/stores/notificationStore';
 import { useFileStore } from '@/stores/fileStore';
-import { useDirectorates } from '../../useDirectorates';
+import { useApiDirectorates } from '../../api/useApiDirectorates';
 
 export function useDeleteDirectorateModal(
   directorate?: DirectorateListItem | null,
@@ -13,7 +13,7 @@ export function useDeleteDirectorateModal(
   const [skFileName, setSkFileName] = useState('');
   const skFile = useFileStore((s) => s.skFile);
   const [submitting, setSubmitting] = useState(false);
-  const { deleteDirectorate } = useDirectorates();
+  const { deleteDirectorate } = useApiDirectorates();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;

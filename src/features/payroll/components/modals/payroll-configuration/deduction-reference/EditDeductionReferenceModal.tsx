@@ -1,52 +1,59 @@
-// Dokumentasi: Modal Edit Acuan Potongan dengan field Acuan Potongan, Kategori, Nominal, dan Keterangan
 import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
-import Label from '@/components/form/Label';
-import Input from '@/components/form/input/InputField';
-import Select from '@/components/form/Select';
-import TextArea from '@/components/form/input/TextArea';
+import InputField from '@/components/shared/field/InputField';
+import SelectField from '@/components/shared/field/SelectField';
+import TextAreaField from '@/components/shared/field/TextAreaField';
 import { useEditDeductionReferenceModal } from '@/features/payroll/hooks/modals/payroll-configuration/deduction-reference/useEditDeductionReferenceModal';
-
-type FormValues = {
-  acuanPotongan: string;
-  kategori: string;
-  nominal: string;
-  keterangan: string;
-};
+import { RefDeductionListItem } from '@/features/payroll/types/dto/RefDeductionType';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  defaultValues?: Partial<FormValues> | null;
-  onSave: (values: FormValues) => void;
+  refDeductionData?: RefDeductionListItem | null;
+  onSuccess: () => void;
 }
 
-const EditAcuanPotonganModal: React.FC<Props> = ({ isOpen, onClose, defaultValues, onSave }) => {
-  const { form, setField, kategoriOptions, handleSubmit } = useEditDeductionReferenceModal({
+const EditAcuanPotonganModal: React.FC<Props> = ({ isOpen, onClose, refDeductionData, onSuccess }) => {
+  const { form, setField, kategoriOptions, handleSubmit, loading } = useEditDeductionReferenceModal({
     isOpen,
-    defaultValues,
-    onSave,
+    refDeductionData,
+    onSuccess,
     onClose,
   });
 
   const content = (
     <div className="space-y-5">
-      <div>
-        <Label>Acuan Potongan</Label>
-        <Input placeholder="Contoh: UMR" value={form.acuanPotongan} onChange={(e) => setField('acuanPotongan', e.target.value)} />
-      </div>
-      <div>
-        <Label>Kategori</Label>
-        <Select options={kategoriOptions} placeholder="Select" defaultValue={form.kategori} onChange={(v) => setField('kategori', v)} />
-      </div>
-      <div>
-        <Label>Nominal</Label>
-        <Input placeholder="3.524.238" value={form.nominal} onChange={(e) => setField('nominal', e.target.value)} />
-      </div>
-      <div>
-        <Label>Keterangan</Label>
-        <TextArea placeholder="Tambahkan keterangan" value={form.keterangan} onChange={(value) => setField('keterangan', value)} />
-      </div>
+      <InputField
+        label="Acuan Potongan"
+        placeholder="Contoh: UMR"
+        value={form.acuanPotongan}
+        onChange={(e) => setField('acuanPotongan', e.target.value)}
+        disabled
+      />
+      
+      <SelectField
+        label="Kategori"
+        options={kategoriOptions}
+        placeholder="Select"
+        defaultValue={form.kategori}
+        onChange={(v) => setField('kategori', v)}
+        disabled
+      />
+
+      <InputField
+        label="Nominal"
+        placeholder="3.524.238"
+        value={form.nominal}
+        onChange={(e) => setField('nominal', e.target.value)}
+        required
+      />
+
+      <TextAreaField
+        label="Keterangan"
+        placeholder="Tambahkan keterangan"
+        value={form.keterangan}
+        onChange={(value) => setField('keterangan', value)}
+      />
     </div>
   );
 
@@ -57,7 +64,7 @@ const EditAcuanPotonganModal: React.FC<Props> = ({ isOpen, onClose, defaultValue
       onClose={onClose}
       content={content}
       handleSubmit={handleSubmit}
-      submitting={false}
+      submitting={loading}
       maxWidth="max-w-lg"
       confirmTitleButton="Simpan Perubahan"
       closeTitleButton="Tutup"

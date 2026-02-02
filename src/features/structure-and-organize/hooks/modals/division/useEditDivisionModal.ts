@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import type { DivisionListItem, DirectorateDropdown } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
-import { useDivisions } from '../../../hooks/useDivisions';
-import { useDirectorates } from '../../../hooks/useDirectorates';
+import { useApiDivisions } from '../../api/useApiDivisions';
+import { useApiDirectorates } from '../../api/useApiDirectorates';
 
 export function useEditDivisionModal(params: {
   isOpen: boolean;
@@ -19,18 +19,23 @@ export function useEditDivisionModal(params: {
   const skFile = useFileStore((s) => s.skFile);
   const [directorates, setDirectorates] = useState<DirectorateDropdown[]>([]);
   const [submitting, setSubmitting] = useState(false);
-  const { updateDivision } = useDivisions();
-  const { getDropdown: getDirectorateDropdown } = useDirectorates();
+  const { updateDivision } = useApiDivisions();
+  const { getDropdown: getDirectorateDropdown } = useApiDirectorates();
+
+  const [directorateSearch, setDirectorateSearch] = useState('');
 
   useEffect(() => {
-    const loadDirectorates = async () => {
+    if (!isOpen) return;
+    const handler = setTimeout(async () => {
       try {
-        const res = await getDirectorateDropdown('');
+        const res = await getDirectorateDropdown(directorateSearch);
         setDirectorates(res || []);
-      } catch {}
-    };
-    if (isOpen) loadDirectorates();
-  }, [isOpen, getDirectorateDropdown]);
+      } catch {
+        // ignore
+      }
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [isOpen, directorateSearch, getDirectorateDropdown]);
 
   useEffect(() => {
     if (isOpen && division) {
@@ -56,7 +61,7 @@ export function useEditDivisionModal(params: {
       });
       onSuccess?.();
       onClose();
-    } catch (err) {
+    } catch {
       addNotification({
         variant: 'error',
         title: 'Divisi tidak diupdate',
@@ -84,5 +89,6 @@ export function useEditDivisionModal(params: {
     handleSubmit,
     handleFileChange,
     skFileName,
+    handleDirectorateSearch: setDirectorateSearch,
   };
 }

@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import type { DepartmentListItem, DivisionDropdown } from '../../../types/OrganizationApiTypes';
 import { useFileStore } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
-import { useDepartments } from '../../../hooks/useDepartments';
-import { useDivisions } from '../../../hooks/useDivisions';
+import { useApiDepartments } from '../../api/useApiDepartments';
+import { useApiDivisions } from '../../api/useApiDivisions';
 
 export function useEditDepartmentModal(params: {
   isOpen: boolean;
@@ -19,8 +19,10 @@ export function useEditDepartmentModal(params: {
   const skFile = useFileStore((s) => s.skFile);
   const [divisions, setDivisions] = useState<DivisionDropdown[]>([]);
   const [submitting, setSubmitting] = useState(false);
-  const { updateDepartment, getById } = useDepartments();
-  const { getDropdown: getDivisionDropdown } = useDivisions();
+  const { updateDepartment, getById } = useApiDepartments();
+  const { getDropdown: getDivisionDropdown } = useApiDivisions();
+  const [divisionSearch, setDivisionSearch] = useState('');
+  const [initialDivision, setInitialDivision] = useState<DivisionDropdown | null>(null);
 
   useEffect(() => {
     const initEdit = async () => {
@@ -32,6 +34,11 @@ export function useEditDepartmentModal(params: {
         setDivisionId(mappedDepartment.divisionId || '');
         setDescription(mappedDepartment.description || '');
         setMemoNumber(mappedDepartment.memoNumber || '');
+        
+        if (mappedDepartment.divisionId && mappedDepartment.divisionName) {
+          setInitialDivision({ id: mappedDepartment.divisionId, division_name: mappedDepartment.divisionName });
+        }
+
         const dd = await getDivisionDropdown('');
         setDivisions(dd || []);
       } catch {
@@ -45,6 +52,25 @@ export function useEditDepartmentModal(params: {
     };
     if (isOpen) initEdit();
   }, [isOpen, department?.id, getById, getDivisionDropdown]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handler = setTimeout(async () => {
+      try {
+        const res = await getDivisionDropdown(divisionSearch);
+        setDivisions(res || []);
+      } catch {
+        // ignore
+      }
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [isOpen, divisionSearch, getDivisionDropdown]);
+
+  const finalDivisions = [...divisions];
+  if (initialDivision && !finalDivisions.find((d) => d.id === initialDivision.id)) {
+    finalDivisions.push(initialDivision);
+  }
 
   const handleFileChange = () => {};
 
@@ -62,6 +88,7 @@ export function useEditDepartmentModal(params: {
       onSuccess?.();
       onClose();
     } catch {
+      // ignore
     } finally {
       setSubmitting(false);
     }
@@ -78,10 +105,11 @@ export function useEditDepartmentModal(params: {
     setDescription,
     memoNumber,
     setMemoNumber,
-    divisions,
+    divisions: finalDivisions,
     submitting,
     handleSubmit,
     handleFileChange,
     skFileName,
+    handleDivisionSearch: setDivisionSearch,
   };
 }

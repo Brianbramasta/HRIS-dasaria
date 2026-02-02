@@ -1,6 +1,6 @@
 import React from 'react';
-import { companyService } from '../../../services/OrganizationService';
-import { useBusinessLines } from '../../business-lines/useBusinessLines';
+import { companiesService } from '../../../services/request/CompaniesService';
+import { useApiBusinessLines } from '../../api/useApiBusinessLines';
 import type { BusinessLineListItem, CompanyListItem } from '../../../types/OrganizationApiTypes';
 import { addNotification } from '@/stores/notificationStore';
 
@@ -13,24 +13,26 @@ export function useAddCompanyModal(params: {
   const [name, setName] = React.useState('');
   const [businessLineId, setBusinessLineId] = React.useState('');
   const [businessLines, setBusinessLines] = React.useState<BusinessLineListItem[]>([]);
+  const [businessLineSearch, setBusinessLineSearch] = React.useState('');
   const [description, setDescription] = React.useState('');
   const [documents, setDocuments] = React.useState<{ name: string; number: string; file: File | null }[]>([
     { name: '', number: '', file: null },
   ]);
   const [submitting, setSubmitting] = React.useState(false);
-  const { getDropdown } = useBusinessLines({ autoFetch: false });
+  const { getDropdown } = useApiBusinessLines();
 
   React.useEffect(() => {
     if (!isOpen) return;
-    (async () => {
+    const handler = setTimeout(async () => {
       try {
-        const items = await getDropdown();
+        const items = await getDropdown(businessLineSearch || undefined);
         setBusinessLines(items);
       } catch (e) {
         void e;
       }
-    })();
-  }, [isOpen, getDropdown]);
+    }, 400);
+    return () => clearTimeout(handler);
+  }, [isOpen, getDropdown, businessLineSearch]);
 
   const handleDocChange = (index: number, key: 'name' | 'number', value: string) => {
     setDocuments((prev) => {
@@ -57,13 +59,8 @@ export function useAddCompanyModal(params: {
     setDocuments((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const searchBusinessLines = async (q?: string) => {
-    try {
-      const items = await getDropdown(q);
-      setBusinessLines(items);
-    } catch (e) {
-      void e;
-    }
+  const searchBusinessLines = (q?: string) => {
+    setBusinessLineSearch(q || '');
   };
 
   const handleSubmit = async () => {
@@ -82,12 +79,18 @@ export function useAddCompanyModal(params: {
         .filter((d) => d.file && d.name.trim())
         .map((d) => ({ name: d.name.trim(), number: d.number.trim(), file: d.file as File }));
 
-      const created = await companyService.create({
-        name: name.trim(),
-        businessLineId: businessLineId || '',
-        description: description.trim(),
-        documents: validDocs,
-      } as any);
+      const formData = new FormData();
+      formData.append('company_name', name.trim());
+      formData.append('business_line_id', businessLineId || '');
+      formData.append('company_description', description.trim());
+      
+      validDocs.forEach((d, i) => {
+        formData.append(`documents[${i}][cd_name]`, d.name);
+        formData.append(`documents[${i}][cd_decree_number]`, d.number);
+        formData.append(`documents[${i}][cd_file]`, d.file);
+      });
+
+      const created = await companiesService.create(formData);
       onSuccess?.(created);
       setName('');
       setBusinessLineId('');

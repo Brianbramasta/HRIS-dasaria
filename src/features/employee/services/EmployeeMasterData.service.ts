@@ -1,6 +1,5 @@
 // Service: Employee Master Data – Lengkap sesuai kontrak API karyawan
 import apiService, { ApiResponse } from '../../../services/api';
-import { FormulirKaryawanData } from '../types/FormEmployee';
 import { ApiPaginatedResponse } from '../../../types/SharedType';
 import {
   EmployeeListParams,
@@ -13,45 +12,14 @@ import {
   JobTitleDropdownItem,
   PositionDropdownItem,
   PTKPDropdownItem,
+  ReligionDropdownItem,
+  EducationDropdownItem,
+  PositionLevelDropdownItem,
+  EmployeeCategoryDropdownItem,
+  DocumentTypeDropdownItem,
+  ResignationStatusDropdownItem,
+  BankDropdownItem,
 } from '../types/dto/EmployeeType';
-
-interface ReligionDropdownItem {
-    id: string;
-    religion_name: string;
-  }
-
-interface EducationDropdownItem {
-    id_education: string;
-    education_name: string;
-  }
-
-interface PositionLevelDropdownItem {
-    id_level: string;
-    level_name: string;
-  }
-
-interface EmployeeCategoryDropdownItem {
-    id_category: string;
-    category_name: string;
-  }
-
-
-
-interface DocumentTypeDropdownItem {
-    id_doc_type: string;
-    doc_type_name: string;
-  }
-
-interface ResignationStatusDropdownItem {
-    id_resign_status: string;
-    resign_status_name: string;
-  }
-
-interface BankDropdownItem {
-    id_bank: string;
-    bank_code: string;
-    bank_name: string;
-  }
 
 class EmployeeMasterDataService {
   private readonly basePath = 'employee-master-data';
@@ -161,20 +129,24 @@ class EmployeeMasterDataService {
   /**
    * Dropdown: Division by Directorate
    * @param idDirectorate - UUID Direktorat
+   * @param search - Optional search query untuk filter divisi
    * @returns Promise dengan array divisi
    */
-  async getDivisionsByDirectorate(idDirectorate: string): Promise<DivisionDropdownItem[]> {
-    const resp = await apiService.get<DivisionDropdownItem[]>(`${this.basePath}/employees/division/${idDirectorate}`);
+  async getDivisionsByDirectorate(idDirectorate: string, search?: string): Promise<DivisionDropdownItem[]> {
+    const qs = search ? `?search=${encodeURIComponent(search)}` : '';
+    const resp = await apiService.get<DivisionDropdownItem[]>(`${this.basePath}/employees/division/${idDirectorate}${qs}`);
     return (resp as any)?.data ?? [];
   }
 
   /**
    * Dropdown: Department by Division
    * @param idDivision - UUID Divisi
+   * @param search - Optional search query untuk filter departemen
    * @returns Promise dengan array departemen
    */
-  async getDepartmentsByDivision(idDivision: string): Promise<DepartmentDropdownItem[]> {
-    const resp = await apiService.get<DepartmentDropdownItem[]>(`${this.basePath}/employees/department/${idDivision}`);
+  async getDepartmentsByDivision(idDivision: string, search?: string): Promise<DepartmentDropdownItem[]> {
+    const qs = search ? `?search=${encodeURIComponent(search)}` : '';
+    const resp = await apiService.get<DepartmentDropdownItem[]>(`${this.basePath}/employees/department/${idDivision}${qs}`);
     return (resp as any)?.data ?? [];
   }
 
@@ -294,9 +266,17 @@ class EmployeeMasterDataService {
  
 
   // /employee-status-dropdown
+  
   async getEmployeeStatusDropdown(search?: string): Promise<any[]> {
     const qs = search ? `?search=${encodeURIComponent(search)}` : '';
     const resp = await apiService.get<any[]>(`${this.basePath}/employees/employee-status-dropdown${qs}`);
+    return (resp as any)?.data ?? [];
+  }
+
+  // /api/employee-master-data/employees/units/019b4976-3df7-700b-ae68-c73682551d2e
+  async getUnitDropdownByDepartmentId(departmentId?: string, search?: string): Promise<any[]> {
+    const qs = search ? `?search=${encodeURIComponent(search)}` : '';
+    const resp = await apiService.get<any[]>(`${this.basePath}/employees/units/${departmentId}${qs}`);
     return (resp as any)?.data ?? [];
   }
 
@@ -306,93 +286,13 @@ class EmployeeMasterDataService {
     return (resp as any)?.data ?? [];
   }
 
-  /**
-   * Helper: Convert FormulirKaryawanData to FormData for API
-   * @param formData - Data formulir karyawan
-   * @returns FormData ready to send to API
-   */
-  convertToApiPayload(formData: FormulirKaryawanData): FormData {
-    const payload = new FormData();
-
-    // Step 1: Personal Data
-    payload.append('full_name', formData.step1.namaLengkap);
-    payload.append('email', formData.step1.email);
-    payload.append('national_id', formData.step1.nik);
-    payload.append('religion', formData.step1.agama);
-    payload.append('birth_place', formData.step1.tempatLahir);
-    if (formData.step1.golDarah) payload.append('blood_type', formData.step1.golDarah);
-    payload.append('birth_date', formData.step1.tanggalLahir);
-    payload.append('last_education', formData.step1.pendidikanTerakhir);
-    payload.append('gender', formData.step1.jenisKelamin);
-    payload.append('marital_status', formData.step1.statusMenikah);
-    payload.append('phone_number', formData.step1.nomorTelepon);
-    if (formData.step1.jumlahTanggungan) payload.append('household_dependents', formData.step1.jumlahTanggungan);
-    payload.append('current_address', formData.step1.alamatDomisili);
-    payload.append('ktp_address', formData.step1.alamatKtp);
-
-    // Step 2: Educational Background
-    formData.step2.education.forEach((edu: any, index: number) => {
-      if (edu.jenisPendidikan === 'formal') {
-        payload.append(`education_formal_detail[${index}][education_level]`, edu.jenjang);
-        payload.append(`education_formal_detail[${index}][institution_name]`, edu.namaLembaga);
-        payload.append(`education_formal_detail[${index}][degree]`, edu.gelar);
-        payload.append(`education_formal_detail[${index}][final_grade]`, edu.nilaiPendidikan);
-        payload.append(`education_formal_detail[${index}][major]`, edu.jurusanKeahlian);
-        payload.append(`education_formal_detail[${index}][graduation_year]`, edu.tahunLulus);
-      } else if (edu.jenisPendidikan === 'non-formal' && edu.namaSertifikat) {
-        payload.append(`non_formal_education[${index}][certificate_name]`, edu.namaSertifikat);
-        if (edu.organisasiPenerbit) payload.append(`non_formal_education[${index}][institution_name]`, edu.organisasiPenerbit);
-        if (edu.tanggalPenerbitan) payload.append(`non_formal_education[${index}][start_date]`, edu.tanggalPenerbitan);
-        if (edu.tanggalKedaluwarsa) payload.append(`non_formal_education[${index}][end_date]`, edu.tanggalKedaluwarsa);
-        if (edu.idKredensial) payload.append(`non_formal_education[${index}][certificate_id]`, edu.idKredensial);
-        if (edu.fileSertifikat) payload.append(`non_formal_education[${index}][certificate_file]`, edu.fileSertifikat);
-      }
-    });
-
-    // Step 2: Media Sosial & Emergency Contact
-    payload.append('emergency_contact_number', formData.step2.noKontakDarurat);
-    payload.append('emergency_contact_name', formData.step2.namaNoKontakDarurat);
-    payload.append('emergency_contact_relationship', formData.step2.hubunganKontakDarurat);
-    if (formData.step2.facebook) payload.append('facebook_name', formData.step2.facebook);
-    if (formData.step2.instagram) payload.append('instagram_name', formData.step2.instagram);
-    if (formData.step2.linkedin) payload.append('linkedin_name', formData.step2.linkedin);
-    if (formData.step2.xCom) payload.append('twitter_name', formData.step2.xCom);
-    if (formData.step2.akunSosialMediaTerdekat) payload.append('relative_social_media', formData.step2.akunSosialMediaTerdekat);
-
-    // Step 3: Salary & BPJS
-    payload.append('bank_name', formData.step3.bank);
-    payload.append('bank_account_holder', formData.step3.namaAkunBank);
-    payload.append('bank_account_number', formData.step3.noRekening);
-    if (formData.step3.npwp) payload.append('npwp', formData.step3.npwp);
-    payload.append('ptkp_id', formData.step3.ptkpStatus);
-
-    if (formData.step3.noBpjsKesehatan) payload.append('bpjs_health_number', formData.step3.noBpjsKesehatan);
-    if (formData.step3.statusBpjsKesehatan) payload.append('bpjs_health_status', formData.step3.statusBpjsKesehatan);
-    if (formData.step3.noBpjsKetenagakerjaan) payload.append('bpjs_employment_number', formData.step3.noBpjsKetenagakerjaan);
-    if (formData.step3.statusBpjsKetenagakerjaan) payload.append('bpjs_employment_status', formData.step3.statusBpjsKetenagakerjaan);
-
-    // Step 3 Employee: Organizational Data
-    payload.append('company_id', formData.step3Employee.company);
-    payload.append('office_id', formData.step3Employee.kantor);
-    payload.append('directorate_id', formData.step3Employee.direktorat);
-    payload.append('division_id', formData.step3Employee.divisi);
-    payload.append('department_id', formData.step3Employee.departemen);
-    payload.append('position_id', formData.step3Employee.position);
-    payload.append('job_title_id', formData.step3Employee.jabatan);
-    payload.append('start_date', formData.step3Employee.tanggalMasuk);
-    if (formData.step3Employee.tanggalAkhir) payload.append('end_date', formData.step3Employee.tanggalAkhir);
-    payload.append('position_level', formData.step3Employee.jenjangJabatan);
-    payload.append('payroll_status', formData.step3Employee.statusPayroll);
-    payload.append('employee_category', formData.step3Employee.kategoriKaryawan);
-
-    // Step 4: Documents
-    formData.step4.documents.forEach((doc: any, index: number) => {
-      payload.append(`documents[${index}][file_type]`, doc.tipeFile);
-      if (doc.file) payload.append(`documents[${index}][file]`, doc.file);
-    });
-
-    return payload;
+  // {{base_url}}/api/employee-master-data/employees/structural-job-dropdown/019bbab5-1a01-7012-9739-43a9cd3b4659
+  async getStructuralJobDropdown(IdJabatanKepangkatan?:string): Promise<any[]> {
+    const resp = await apiService.get<any[]>(`${this.basePath}/employees/structural-job-dropdown/${IdJabatanKepangkatan}`);
+    return (resp as any)?.data ?? [];
   }
+
+ 
 }
 
 export const employeeMasterDataService = new EmployeeMasterDataService();
