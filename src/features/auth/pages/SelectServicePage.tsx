@@ -48,17 +48,19 @@ export default function SelectServicePage() {
                         <div
                             key={service.id}
                             onClick={() => handleServiceClick(service.path)}
-                            className="bg-[#004969] hover:bg-[#093f5b] transition-colors rounded-lg p-6 cursor-pointer flex items-center gap-4 text-white shadow-lg h-40 group relative overflow-hidden"
+                            className="bg-[#004969] hover:bg-[#66A4C0] transition-colors rounded-lg p-6 cursor-pointer flex items-center gap-4 text-white hover:text-[#004969] shadow-lg h-40 group relative overflow-hidden"
                         >
                             {/* Decorative Gradient/Overlay if needed */}
-
-                            <div className="bg-white rounded-xl h-16 w-16 flex-shrink-0 flex items-center justify-center">
+                            {/* change bg if need to bg-transparent -> bg-white */}
+                            <div className="bg-transparent rounded-xl h-16 w-16 flex-shrink-0 flex items-center justify-center">
                                 {/* Using the text HRIS as logo if icon fails or generic icon */}
-                                <span className="text-[#004969] font-bold text-xs"><img src={service.icon} alt={service.title} className="w-full h-full object-contain" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement!.innerText = service.title }} /></span>
+                                <span className="text-[#004969] font-bold text-xs">
+                                    <img src={service.icon} alt={service.title} className="w-full h-full object-contain" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement!.innerText = service.title }} />
+                                </span>
                             </div>
                             <div>
                                 <h2 className="text-2xl font-bold mb-1">{service.title}</h2>
-                                <p className="text-sm text-blue-100 font-light leading-snug">{service.description}</p>
+                                <p className="text-sm leading-snug">{service.description}</p>
                             </div>
                         </div>
                     ))}
