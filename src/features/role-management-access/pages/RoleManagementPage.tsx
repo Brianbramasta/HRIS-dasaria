@@ -47,7 +47,8 @@ export default function HakAksesPage() {
       filterOptions: layananData.map(item => ({
         label: item.sistemLayanan,
         value: item.sistemLayanan
-      }))
+      })),
+      filterMaxRows: 3
     },
     {
       id: 'detail',
@@ -74,10 +75,7 @@ export default function HakAksesPage() {
       id: 'sistemLayanan',
       label: 'Sistem Layanan',
       minWidth: 300,
-      filterOptions: layananData.map(item => ({
-        label: item.sistemLayanan,
-        value: item.sistemLayanan
-      }))
+
     },
     {
       id: 'detail',
