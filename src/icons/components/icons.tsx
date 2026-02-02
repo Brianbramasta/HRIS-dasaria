@@ -32,3 +32,5 @@ export * from './icons/IconShare';
 export * from './icons/IconStrukturOrganisasi';
 export * from './icons/IconTidakLengkap';
 export * from './icons/IconEmail';
+export * from './icons/IconEyeOpen';
+export * from './icons/IconEyeClose';

@@ -79,7 +79,8 @@ import JenisPengajuanPage from "@/features/submission-type/pages/SubmissionPage"
 
 
 // Auth Feature Pages
-import { LoginPage, ForgotPasswordPage } from "../features/auth/pages/Index";
+import { LoginPage, ForgotPasswordPage, ResetPasswordPage } from "../features/auth/pages/Index";
+
 import SelectServicePage from "../features/auth/pages/SelectServicePage";
 import ProtectedOutlet from "./ProtectedOutlet";
 import FormKasbonPage from "@/features/payroll/pages/cash-advance/form-cash-advance/FormCashAdvancePage";
@@ -225,6 +226,7 @@ export default function AppRoutes() {
       {/* Auth Layout */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
 
       {/* Fallback Route */}
       <Route path="*" element={<NotFound />} />

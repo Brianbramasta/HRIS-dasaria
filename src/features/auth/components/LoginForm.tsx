@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
-import { EyeCloseIcon, EyeIcon } from '../../../icons';
-import Label from '../../../components/form/Label';
-import Input from '../../../components/form/input/InputField';
+import { IconEyeOpen, IconEyeClose } from '@/icons/components/icons';
 import Checkbox from '../../../components/form/input/Checkbox';
 import Button from '../../../components/ui/button/Button';
+import InputField from '../../../components/shared/field/InputField';
+import Label from '../../../components/form/Label';
 import { LoginRequest } from '../types/Index';
 
 interface LoginFormProps {
@@ -19,7 +19,7 @@ interface LoginFormProps {
 }
 
 export default function LoginForm({ onSubmit, isLoading = false, error = null, formData, showPassword, keepMeLoggedIn, onInputChange, onKeepMeLoggedInChange, onToggleShowPassword }: LoginFormProps) {
-  
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,49 +47,41 @@ export default function LoginForm({ onSubmit, isLoading = false, error = null, f
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            placeholder="Enter your email"
-            value={formData.email}
-            onChange={onInputChange}
-            required
-            disabled={isLoading}
-            className="w-full"
-          />
-        </div>
+        <InputField
+          label="Email"
+          id="email"
+          name="email"
+          type="email"
+          placeholder="Enter your email"
+          value={formData.email}
+          onChange={onInputChange}
+          required
+          disabled={isLoading}
+          className="w-full"
+        />
 
-        <div>
-          <Label htmlFor="password">Password</Label>
-          <div className="relative">
-            <Input
-              id="password"
-              name="password"
-              type={showPassword ? 'text' : 'password'}
-              placeholder="Enter your password"
-              value={formData.password}
-              onChange={onInputChange}
-              required
-              disabled={isLoading}
-              className="w-full pr-12"
-            />
+        <InputField
+          label="Password"
+          id="password"
+          name="password"
+          type={showPassword ? 'text' : 'password'}
+          placeholder="Enter your password"
+          value={formData.password}
+          onChange={onInputChange}
+          required
+          disabled={isLoading}
+          className="w-full"
+          suffix={
             <button
               type="button"
               onClick={onToggleShowPassword}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
               disabled={isLoading}
             >
-              {showPassword ? (
-                <EyeIcon className="w-5 h-5" />
-              ) : (
-                <EyeCloseIcon className="w-5 h-5" />
-              )}
+              {showPassword ? <IconEyeClose /> : <IconEyeOpen />}
             </button>
-          </div>
-        </div>
+          }
+        />
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
