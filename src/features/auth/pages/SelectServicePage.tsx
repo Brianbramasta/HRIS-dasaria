@@ -1,63 +1,12 @@
-import { useAuthStore } from '../stores/AuthStore';
-import { useNavigate } from 'react-router-dom';
-
-const services = [
-    {
-        id: 'hris',
-        title: 'HRIS',
-        description: 'Human Resource Information System',
-        icon: '/images/logo/hris-logo.png',
-        path: '/dashboard',
-    },
-    {
-        id: 'iam',
-        title: 'IAM',
-        description: 'Integrated Accounting Management',
-        icon: '/images/logo/hris-logo.png',
-        path: '/iam',
-    },
-    {
-        id: 'erp',
-        title: 'ERP',
-        description: 'Enterprise Resource Planning',
-        icon: '/images/logo/hris-logo.png',
-        path: '/erp',
-    },
-    {
-        id: 'omb',
-        title: 'OMB',
-        description: 'Operasional Manajemen Bisnis',
-        icon: '/images/logo/hris-logo.png',
-        path: '/omb',
-    },
-    {
-        id: 'bms',
-        title: 'BMS',
-        description: 'Busnies Manajemen System',
-        icon: '/images/logo/hris-logo.png',
-        path: '/bms',
-    },
-    {
-        id: 'ccc',
-        title: 'CCC',
-        description: 'Customer Chat Care',
-        icon: '/images/logo/hris-logo.png',
-        path: '/ccc',
-    },
-];
+import { useSelectService } from '../hooks/Index';
 
 export default function SelectServicePage() {
-    const { user, logout } = useAuthStore((state) => state);
-    const navigate = useNavigate();
-
-    const handleLogout = () => {
-        logout();
-        navigate('/login');
-    };
-
-    const handleServiceClick = (path: string) => {
-        navigate(path);
-    };
+    const {
+        user,
+        services,
+        handleLogout,
+        handleServiceClick
+    } = useSelectService();
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col font-sans text-gray-800">
