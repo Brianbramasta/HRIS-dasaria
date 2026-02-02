@@ -1,61 +1,61 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { DataTable, DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
-import { IconHapus, IconChangePassword } from '@/icons/components/icons';
+import { IconHapus, IconChangePassword, IconEmail } from '@/icons/components/icons';
 import TambahRoleModal from '../../components/modals/AddRole';
 
 interface UserData {
   no: number;
   idKaryawan: string;
   nama: string;
-  role: string;
+  posisi: string;
+  direktorat: string;
   email: string;
-  password: string;
 }
 
 export default function DetailHakAksesPages() {
   const { roleId } = useParams<{ roleId: string }>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [data] = useState<UserData[]>([
-    { 
-      no: 1, 
-      idKaryawan: '1234567890', 
-      nama: 'Lindsey Curtis', 
-      role: 'HR Admin', 
-      email: 'Maling@gmail.com', 
-      password: '*******' 
+    {
+      no: 1,
+      idKaryawan: 'DSR999',
+      nama: 'Lindsey Curtis',
+      posisi: 'Direktur HRGA',
+      direktorat: 'HRGA',
+      email: 'Maling@gmail.com',
     },
-    { 
-      no: 2, 
-      idKaryawan: '1234567890', 
-      nama: 'Dedik Mulyadi', 
-      role: 'Super Admin', 
-      email: 'Maling@gmail.com', 
-      password: '*******' 
+    {
+      no: 2,
+      idKaryawan: 'DSR999',
+      nama: 'Dedik Mulyadi',
+      posisi: 'Direktur N&T',
+      direktorat: 'Direktur N&T',
+      email: 'Maling@gmail.com',
     },
-    { 
-      no: 3, 
-      idKaryawan: '1234567890', 
-      nama: 'Onana', 
-      role: 'Super Admin', 
-      email: 'Maling@gmail.com', 
-      password: '*******' 
+    {
+      no: 3,
+      idKaryawan: 'DSR999',
+      nama: 'Onana',
+      posisi: 'Direktur FAT',
+      direktorat: 'FAT',
+      email: 'Maling@gmail.com',
     },
-    { 
-      no: 4, 
-      idKaryawan: '1234567890', 
-      nama: 'Maguire', 
-      role: 'Super Admin', 
-      email: 'Maling@gmail.com', 
-      password: '*******' 
+    {
+      no: 4,
+      idKaryawan: 'DSR999',
+      nama: 'Maguire',
+      posisi: 'Direktur Utama',
+      direktorat: '-',
+      email: 'Maling@gmail.com',
     },
-    { 
-      no: 5, 
-      idKaryawan: '1234567890', 
-      nama: 'Mulyadi', 
-      role: 'Finance Admin', 
-      email: 'Maling@gmail.com', 
-      password: '*******' 
+    {
+      no: 5,
+      idKaryawan: 'DSR999',
+      nama: 'Mulyadi',
+      posisi: 'Direktur BusDev',
+      direktorat: 'Finance Admin',
+      email: 'Maling@gmail.com',
     },
   ]);
 
@@ -63,26 +63,33 @@ export default function DetailHakAksesPages() {
     { id: 'no', label: 'No.', minWidth: 50, sortable: false },
     { id: 'idKaryawan', label: 'NIP', minWidth: 150 },
     { id: 'nama', label: 'Nama', minWidth: 200 },
-    { id: 'role', label: 'Role', minWidth: 150 },
+    { id: 'posisi', label: 'Posisi', minWidth: 150 },
+    { id: 'direktorat', label: 'Direktorat', minWidth: 150 },
     { id: 'email', label: 'Email', minWidth: 200 },
-    { id: 'password', label: 'Password', minWidth: 150, sortable: false },
   ];
 
   const actions: DataTableAction<UserData>[] = [
-    
     {
       icon: <IconHapus color="#6C757D" />,
       onClick: (row) => {
         console.log('Delete user:', row);
         // Handle delete action
       },
-    },{
+    },
+    {
       icon: <IconChangePassword color="#6C757D" />,
       onClick: (row) => {
         console.log('Change password for:', row);
         // Handle change password action
       },
-    }
+    },
+    {
+      icon: <IconEmail color="#6C757D" />,
+      onClick: (row) => {
+        console.log('Send email to:', row);
+        // Handle email action
+      },
+    },
   ];
 
   // Get role name based on roleId
@@ -129,7 +136,7 @@ export default function DetailHakAksesPages() {
         pageSize={10}
         filterable={true}
       />
-      
+
       <TambahRoleModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

@@ -31,3 +31,4 @@ export * from './icons/IconReportTotalPayrollCost';
 export * from './icons/IconShare';
 export * from './icons/IconStrukturOrganisasi';
 export * from './icons/IconTidakLengkap';
+export * from './icons/IconEmail';
