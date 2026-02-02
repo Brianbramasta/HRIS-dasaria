@@ -4,7 +4,7 @@ import useRoleManagement, { RoleData, LayananData } from '../hooks/useRoleManage
 import AddServiceModal from '../components/modals/service/AddServiceModal';
 import EditServiceModal from '../components/modals/service/EditServiceModal';
 import DeleteServiceModal from '../components/modals/service/DeleteServiceModal';
-import DeleteRoleModal from '../components/modals/DeleteRoleModal';
+import DeleteRoleModal from '../components/modals/detail-role/DeleteRoleModal';
 
 export default function HakAksesPage() {
   const {
@@ -46,7 +46,7 @@ export default function HakAksesPage() {
       align: 'center',
       sortable: false,
       format: (_value, row) => (
-        <button 
+        <button
           className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
           onClick={() => handleDetailRole(row.idRole)}
         >
@@ -68,7 +68,7 @@ export default function HakAksesPage() {
       align: 'center',
       sortable: false,
       format: (_value, row) => (
-        <button 
+        <button
           className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
           onClick={() => handleDetailLayanan(row.idLayanan)}
         >

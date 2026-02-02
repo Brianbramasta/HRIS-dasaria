@@ -2,7 +2,10 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { DataTable, DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
 import { IconHapus, IconChangePassword, IconEmail } from '@/icons/components/icons';
-import TambahRoleModal from '../../components/modals/AddRole';
+import TambahRoleModal from '../../components/modals/detail-role/AddRoleModal';
+import SendEmailModal from '../../components/modals/SendEmailModal';
+import ResetPasswordModal from '../../components/modals/detail-role/ResetPasswordModal';
+import DeleteRoleModal from '../../components/modals/detail-role/DeleteRoleModal';
 
 interface UserData {
   no: number;
@@ -16,6 +19,10 @@ interface UserData {
 export default function DetailHakAksesPages() {
   const { roleId } = useParams<{ roleId: string }>();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSendEmailModalOpen, setIsSendEmailModalOpen] = useState(false);
+  const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
   const [data] = useState<UserData[]>([
     {
       no: 1,
@@ -72,22 +79,22 @@ export default function DetailHakAksesPages() {
     {
       icon: <IconHapus color="#6C757D" />,
       onClick: (row) => {
-        console.log('Delete user:', row);
-        // Handle delete action
+        setSelectedUser(row);
+        setIsDeleteModalOpen(true);
       },
     },
     {
       icon: <IconChangePassword color="#6C757D" />,
       onClick: (row) => {
-        console.log('Change password for:', row);
-        // Handle change password action
+        setSelectedUser(row);
+        setIsResetPasswordModalOpen(true);
       },
     },
     {
       icon: <IconEmail color="#6C757D" />,
       onClick: (row) => {
-        console.log('Send email to:', row);
-        // Handle email action
+        setSelectedUser(row);
+        setIsSendEmailModalOpen(true);
       },
     },
   ];
@@ -142,6 +149,35 @@ export default function DetailHakAksesPages() {
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleSubmit}
         employeeOptions={employeeOptions}
+      />
+
+      <SendEmailModal
+        isOpen={isSendEmailModalOpen}
+        onClose={() => setIsSendEmailModalOpen(false)}
+        onSubmit={() => {
+          console.log('Email sent to:', selectedUser);
+          setIsSendEmailModalOpen(false);
+        }}
+      />
+
+      <ResetPasswordModal
+        isOpen={isResetPasswordModalOpen}
+        onClose={() => setIsResetPasswordModalOpen(false)}
+        onSubmit={(values) => {
+          console.log('Reset password submitted:', values);
+          setIsResetPasswordModalOpen(false);
+        }}
+        data={selectedUser ? { nip: selectedUser.idKaryawan, nama: selectedUser.nama } : null}
+      />
+
+      <DeleteRoleModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onDelete={() => {
+          console.log('Delete user confirmed:', selectedUser);
+          setIsDeleteModalOpen(false);
+        }}
+        roleName={roleName}
       />
     </div>
   );
