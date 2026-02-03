@@ -43,10 +43,15 @@ import PotonganTidakTetapPage from "@/features/payroll/pages/PayrollConfiguratio
 import THRPage from "@/features/payroll/pages/PayrollConfiguration/tab/BonusTHRPage";
 // Dokumentasi: Halaman dan tab Periode Penggajian
 import PeriodePenggajianPage from "@/features/payroll/pages/payroll-period/PayrollPeriodPage";
-import NonAETab from "@/features/payroll/pages/shared/tab/NonAEPages";
-import AETab from "@/features/payroll/pages/shared/tab/AEPages";
+import NonAETab from "@/features/payroll/pages/payroll-period/tab/NonAEPages";
+import AETab from "@/features/payroll/pages/payroll-period/tab/AEPages";
 import PKLTab from "@/features/payroll/pages/shared/tab/PKLPages";
-import THRTab from "@/features/payroll/pages/shared/tab/THRPages";
+import THRTab from "@/features/payroll/pages/payroll-period/tab/THRPages";
+
+// shared tabs
+import SharedNonAETab from "@/features/payroll/pages/shared/tab/NonAEPages";
+import SharedAETab from "@/features/payroll/pages/shared/tab/AEPages";
+import SharedTHRTab from "@/features/payroll/pages/shared/tab/THRPages";
 // Dokumentasi: Import halaman Detail Gaji untuk navigasi dari tabel Periode Penggajian
 // import DetailGajiPage from "@/features/penggajian/pages/periodePenggajian/detail/detailGaji";
 // Dokumentasi: Import halaman Detail Gaji AE dan Non-AE terpisah
@@ -145,8 +150,8 @@ export default function AppRoutes() {
 
             <Route path="non-ae" element={<NonAETab />} />
             <Route path="ae" element={<AETab />} />
-            <Route path="internship" element={<PKLTab />} />
-            <Route path="holiday-allowance" element={<THRTab />} />
+            <Route path="pkl" element={<PKLTab />} />
+            <Route path="thr" element={<THRTab />} />
           </Route>
           {/* Dokumentasi: Route Detail Gaji terpisah agar dapat diakses dari tombol Edit */}
           {/* <Route path="/payroll-period/detail/:id" element={<DetailGajiPage />} /> */}
@@ -168,11 +173,11 @@ export default function AppRoutes() {
           <Route path="/payroll-dashboard" element={<DashboardPenggajianPage />} />
           <Route path="/payroll-period-approval" element={<ApprovalPeriodeGajianPage />}>
             {/* Dokumentasi: index default Non-AE untuk /payroll-period-approval */}
-            <Route index element={<NonAETab />} />
-            <Route path="non-ae" element={<NonAETab />} />
-            <Route path="ae" element={<AETab />} />
+            <Route index element={<SharedNonAETab />} />
+            <Route path="non-ae" element={<SharedNonAETab />} />
+            <Route path="ae" element={<SharedAETab />} />
             <Route path="pkl" element={<PKLTab />} />
-            <Route path="thr" element={<THRTab />} />
+            <Route path="thr" element={<SharedTHRTab />} />
             {/* detail approval */}
             <Route path="detail-ae/:id" element={<DetailGajiAEPage />} />
             <Route path="detail-non-ae/:id" element={<DetailGajiNonAEPage />} />
