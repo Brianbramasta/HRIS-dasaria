@@ -48,7 +48,8 @@ export default function DetailGajiAEPage() {
       ModalComponent: TambahPotonganTidakTetapModalAE,
     },
     rekapitulasi: true,
-    catatan: true,
+    catatanKaryawan: true,
+    catatanBOD: true,
   };
 
   return <DetailPayrollContent config={config} />;

@@ -1,21 +1,26 @@
 // Dokumentasi: Komponen dinamis layout halaman Detail Gaji untuk berbagai tipe (AE, Non-AE, PKL, THR)
 import PayrollCard from "@/features/payroll/components/cards/Cards";
-import Label from "@/components/form/Label";
-import Input from "@/components/form/input/InputField";
-import DatePicker from "@/components/form/date-picker";
-import TextArea from "@/components/form/input/TextArea";
+import InputField from "@/components/shared/field/InputField";
+import DateField from "@/components/shared/field/DateField";
+import TextAreaField from "@/components/shared/field/TextAreaField";
+import SelectField from "@/components/shared/field/SelectField";
+import MultiSelectField from "@/components/shared/field/MultiSelectField";
+import FIleField from "@/components/shared/field/FIleField";
 import Button from "@/components/ui/button/Button";
 import { ChevronLeft } from "react-feather";
+import { IconPencil as Edit3 } from "@/icons/components/icons";
 import { useLayoutDetail } from "@/features/payroll/hooks/layouts/useLayoutDetail";
+import RecapModall from "@/features/payroll/components/modals/detail-payroll/RecapModall";
 
-export type FieldType = "input" | "date";
+export type FieldType = "input" | "date" | "select" | "multi-select" | "file";
 export type FieldDescriptor = {
   name: string;
   label: string;
   type: FieldType;
+  options?: { label: string; value: string }[];
   placeholder?: string;
   readonly?: boolean;
-  value?: string;
+  value?: string | any;
   inputType?: string;
   colSpan?: 1 | 2 | 3;
   id?: string;
@@ -45,7 +50,8 @@ export type SectionConfig = {
     ModalComponent?: React.ComponentType<ModalProps>;
   };
   rekapitulasi?: boolean;
-  catatan?: boolean;
+  catatanKaryawan?: boolean;
+  catatanBOD?: boolean;
 };
 
 // Dokumentasi: Komponen utama layout detail, menerima konfigurasi section & modal
@@ -64,6 +70,8 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
     setIsTTModalOpen,
     isPTTModalOpen,
     setIsPTTModalOpen,
+    isRecapModalOpen,
+    setIsRecapModalOpen,
     gridColsInfo,
     gridColsTT,
     gridColsPTT,
@@ -71,22 +79,67 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
 
   const renderField = (field: FieldDescriptor) => {
     const colClass = field.colSpan ? `md:col-span-${field.colSpan}` : "";
-    const common = (
-      <div className={colClass}>
-        <Label>{field.label}</Label>
-        {field.type === "input" ? (
-          <Input
-            placeholder={field.placeholder ?? "Inputan"}
-            value={field.value}
-            type={field.inputType ?? "text"}
-            readonly={field.readonly}
-          />
-        ) : (
-          <DatePicker id={field.id ?? field.name} placeholder={field.placeholder ?? "Pilih tanggal"} />
-        )}
-      </div>
-    );
-    return common;
+
+    switch (field.type) {
+      case "input":
+        return (
+          <div key={field.name} className={colClass}>
+            <InputField
+              label={field.label}
+              placeholder={field.placeholder ?? "Inputan"}
+              value={field.value}
+              type={field.inputType ?? "text"}
+              readonly={field.readonly}
+            />
+          </div>
+        );
+      case "date":
+        return (
+          <div key={field.name} className={colClass}>
+            <DateField
+              label={field.label}
+              id={field.id ?? field.name}
+              placeholder={field.placeholder ?? "Pilih tanggal"}
+            />
+          </div>
+        );
+      case "select":
+        return (
+          <div key={field.name} className={colClass}>
+            <SelectField
+              label={field.label}
+              options={field.options ?? []}
+              placeholder={field.placeholder ?? "Pilih..."}
+              defaultValue={field.value}
+              onChange={() => { }}
+              disabled={field.readonly}
+            />
+          </div>
+        );
+      case "multi-select":
+        return (
+          <div key={field.name} className={colClass}>
+            <MultiSelectField
+              label={field.label}
+              options={(field.options ?? []).map(o => ({ value: o.value, text: o.label }))}
+              defaultSelected={Array.isArray(field.value) ? field.value : []}
+              onChange={() => { }}
+              disabled={field.readonly}
+            />
+          </div>
+        );
+      case "file":
+        return (
+          <div key={field.name} className={colClass}>
+            <FIleField
+              label={field.label}
+              htmlFor={field.id ?? field.name}
+            />
+          </div>
+        );
+      default:
+        return null;
+    }
   };
 
   return (
@@ -98,11 +151,11 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
           onClick={goBack}
           className="text-sm text-gray-600 hover:text-brand-500 dark:text-gray-400 dark:hover:text-brand-400"
         >
-          <ChevronLeft size={24} className="text-gray-700 dark:text-gray-300" /> 
+          <ChevronLeft size={24} className="text-gray-700 dark:text-gray-300" />
         </button>
         <h2 className="text-xl font-semibold text-gray-800 dark:text-white/90">Detail Gaji</h2>
       </div>
-      
+
 
       {/* Informasi Karyawan */}
       <PayrollCard title="Informasi Karyawan" headerColor="gray">
@@ -115,38 +168,14 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
       {config.tunjanganTetap && (
         <PayrollCard title="Tunjangan Tetap" headerColor="green">
           <div className={gridColsTT}>
-            <div>
-              <Label>BPJS Ketenagakerjaan JKK (0,24%)</Label>
-              <Input placeholder="Otomatis" readonly />
-            </div>
-            <div>
-              <Label>BPJS Ketenagakerjaan JKM (0,30%)</Label>
-              <Input placeholder="Otomatis" readonly />
-            </div>
-            <div>
-              <Label>BPJS Ketenagakerjaan JHT (3,7%)</Label>
-              <Input placeholder="Otomatis" readonly />
-            </div>
-            <div>
-              <Label>BPJS Kesehatan JKN (2%)</Label>
-              <Input placeholder="Otomatis" readonly />
-            </div>
-            <div>
-              <Label>Tunjangan Jabatan</Label>
-              <Input placeholder="Otomatis" readonly />
-            </div>
-            <div>
-              <Label>Tunjangan Pernikahan</Label>
-              <Input placeholder="Otomatis" readonly />
-            </div>
-            <div>
-              <Label>Tunjangan Lama Kerja</Label>
-              <Input placeholder="Otomatis" readonly />
-            </div>
-            <div>
-              <Label>Tunjangan Transportasi</Label>
-              <Input placeholder="Otomatis" readonly />
-            </div>
+            <InputField label="BPJS Ketenagakerjaan JKK (0,24%)" placeholder="Otomatis" readonly />
+            <InputField label="BPJS Ketenagakerjaan JKM (0,30%)" placeholder="Otomatis" readonly />
+            <InputField label="BPJS Ketenagakerjaan JHT (3,7%)" placeholder="Otomatis" readonly />
+            <InputField label="BPJS Kesehatan JKN (2%)" placeholder="Otomatis" readonly />
+            <InputField label="Tunjangan Jabatan" placeholder="Otomatis" readonly />
+            <InputField label="Tunjangan Pernikahan" placeholder="Otomatis" readonly />
+            <InputField label="Tunjangan Lama Kerja" placeholder="Otomatis" readonly />
+            <InputField label="Tunjangan Transportasi" placeholder="Otomatis" readonly />
           </div>
         </PayrollCard>
       )}
@@ -156,10 +185,13 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
         <PayrollCard title="Tunjangan Tidak Tetap" headerColor="green">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {config.tunjanganTidakTetap.fields.map((f) => (
-              <div key={f.name}>
-                <Label>{f.label}</Label>
-                <Input placeholder={f.placeholder ?? "Inputan"} value={ttValues[f.name] ?? ""} readonly />
-              </div>
+              <InputField
+                key={f.name}
+                label={f.label}
+                placeholder={f.placeholder ?? "Inputan"}
+                value={ttValues[f.name] ?? ""}
+                readonly
+              />
             ))}
           </div>
           {/* Dokumentasi: Tampilkan tombol Edit jika FAT atau HRGA/BOD approval atau Distribusi */}
@@ -171,6 +203,7 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
                 className="bg-blue-600 text-white"
                 onClick={() => setIsTTModalOpen(true)}
               >
+                <Edit3 color="white" />
                 Edit
               </Button>
             </div>
@@ -184,11 +217,19 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
           <div className={gridColsPTT}>
             {config.potonganTetap.fields.map((f) => (
               <div key={f.name} className={f.colSpan ? `md:col-span-${f.colSpan}` : ""}>
-                <Label>{f.label}</Label>
                 {f.type === "input" ? (
-                  <Input placeholder={f.placeholder ?? "Inputan"} type={f.inputType ?? "text"} readonly={f.readonly} />
+                  <InputField
+                    label={f.label}
+                    placeholder={f.placeholder ?? "Inputan"}
+                    type={f.inputType ?? "text"}
+                    readonly={f.readonly}
+                  />
                 ) : (
-                  <DatePicker id={f.id ?? f.name} placeholder={f.placeholder ?? "Pilih tanggal"} />
+                  <DateField
+                    label={f.label}
+                    id={f.id ?? f.name}
+                    placeholder={f.placeholder ?? "Pilih tanggal"}
+                  />
                 )}
               </div>
             ))}
@@ -201,10 +242,13 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
         <PayrollCard title="Potongan Tidak Tetap" headerColor="red">
           <div className={gridColsPTT}>
             {config.potonganTidakTetap.fields.map((f) => (
-              <div key={f.name}>
-                <Label>{f.label}</Label>
-                <Input placeholder={f.placeholder ?? "Otomatis"} value={pttValues[f.name] ?? ""} readonly />
-              </div>
+              <InputField
+                key={f.name}
+                label={f.label}
+                placeholder={f.placeholder ?? "Otomatis"}
+                value={pttValues[f.name] ?? ""}
+                readonly
+              />
             ))}
           </div>
           {/* Dokumentasi: Tampilkan tombol Edit hanya jika FAT approval atau Distribusi */}
@@ -216,6 +260,7 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
                 className="bg-blue-600 text-white"
                 onClick={() => setIsPTTModalOpen(true)}
               >
+                <Edit3 color="white" />
                 Edit
               </Button>
             </div>
@@ -227,27 +272,39 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
       {config.rekapitulasi && (
         <PayrollCard title="REKAPITULASI" headerColor="slate">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            <div>
-              <Label>Total Pendapatan Kotor</Label>
-              <Input placeholder="Otomatis" readonly />
-            </div>
-            <div>
-              <Label>Total Potongan</Label>
-              <Input placeholder="Otomatis" readonly />
-            </div>
-            <div>
-              <Label>Gaji Bersih</Label>
-              <Input placeholder="Otomatis" readonly />
-            </div>
+            <InputField label="Total Pendapatan Kotor" placeholder="Otomatis" readonly />
+            <InputField label="Total Potongan" placeholder="Otomatis" readonly />
+            <InputField label="Gaji Bersih" placeholder="Otomatis" readonly />
           </div>
-          {config.catatan && (
-            <div className="mt-6">
-              <Label>Catatan</Label>
-              <TextArea placeholder="Detail Catatan..." rows={4} />
-            </div>
-          )}
+          <div className="space-y-4 mt-6">
+            {config.catatanKaryawan && (
+              <TextAreaField label="Catatan Karyawan" placeholder="Detail Catatan..." rows={4} />
+            )}
+            {config.catatanBOD && (
+              <TextAreaField label="Catatan BOD" placeholder="Detail Catatan..." rows={4} />
+            )}
+          </div>
+          {/* Dokumentasi: Tombol Edit di bagian bawah sesuai screenshot */}
+          <div className="w-full flex justify-end mt-6">
+            <Button
+              size="md"
+              variant="custom"
+              className="bg-blue-600 text-white flex items-center gap-2"
+              onClick={() => setIsRecapModalOpen(true)}
+            >
+              <Edit3 color="white" />
+              Edit
+            </Button>
+          </div>
         </PayrollCard>
       )}
+
+
+
+      <RecapModall
+        isOpen={isRecapModalOpen}
+        onClose={() => setIsRecapModalOpen(false)}
+      />
 
       {/* Dokumentasi: Modal Tunjangan Tidak Tetap bila disediakan */}
       {config.tunjanganTidakTetap?.ModalComponent && (

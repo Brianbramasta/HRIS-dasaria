@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Modal } from "@/components/ui/modal";
 import { useSpamModalStore } from "@/stores/useSpamModalStore";
+import { useNavigate } from "react-router";
 
 interface ContractData {
   id: string;
@@ -60,6 +61,7 @@ export const SpamModal: React.FC<SpamModalProps> = ({
   ],
 }) => {
   const { isOpen, closeModal } = useSpamModalStore();
+  const navigate = useNavigate();
   const [selectedEmployees] = useState<Set<string>>(
     new Set()
   );
@@ -81,6 +83,7 @@ export const SpamModal: React.FC<SpamModalProps> = ({
 
   const handleProcess = () => {
     console.log("Processing selected employees:", Array.from(selectedEmployees));
+    navigate("/contract-extension");
     // Handle the process here
     closeModal();
   };
