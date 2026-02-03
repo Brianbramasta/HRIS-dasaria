@@ -1,6 +1,5 @@
 // Documentation: Cash Advance Submission Detail Page with read-only fields
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft } from 'react-feather';
 import LinkPreview from '@/components/shared/form/LinkPreview';
 import PayrollCard from '@/features/payroll/components/cards/Cards';
 import InputField from '@/components/shared/field/InputField';
