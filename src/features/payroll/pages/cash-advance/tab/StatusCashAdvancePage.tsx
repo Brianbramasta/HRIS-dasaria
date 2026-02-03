@@ -1,8 +1,10 @@
 // Dokumentasi: Tabel "Status Kasbon" menggunakan DataTable
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DataTable, type DataTableColumn } from '@/components/shared/datatable/DataTable';
 import { IconFileDetail } from '@/icons/components/icons';
+import { formatDateToIndonesian } from '@/utils/formatDate';
+import { formatCurrencyValue, parseCurrency } from '@/utils/formatCurrency';
 
 type StatusKasbonRow = {
   no?: number;
@@ -23,24 +25,30 @@ type StatusKasbonRow = {
   detail?: string;
 };
 
+type DateRangeFilter = {
+  startDate: string;
+  endDate: string | null;
+};
+
 export default function StatusKasbonPage() {
   const navigate = useNavigate();
-  
-  // Dokumentasi: util ekspor CSV sederhana
-//   const exportCSV = (filename: string, data: any[]) => {
-//     if (!data || data.length === 0) return;
-//     const headers = Object.keys(data[0]);
-//     const csv = [headers.join(','), ...data.map(r => headers.map(h => JSON.stringify((r as any)[h] ?? '')).join(','))].join('\n');
-//     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-//     const url = URL.createObjectURL(blob);
-//     const link = document.createElement('a');
-//     link.href = url;
-//     link.setAttribute('download', filename);
-//     document.body.appendChild(link);
-//     link.click();
-//     document.body.removeChild(link);
-//     URL.revokeObjectURL(url);
-//   };
+
+  const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, DateRangeFilter>>({});
+  const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
+
+  const handleDateRangeFilterChange = (columnId: string, startDate: string, endDate: string | null) => {
+    setDateRangeFilters((prev) => ({
+      ...prev,
+      [columnId]: { startDate, endDate },
+    }));
+  };
+
+  const handleColumnFilterChange = (columnId: string, values: string[]) => {
+    setColumnFilters((prev) => ({
+      ...prev,
+      [columnId]: values,
+    }));
+  };
 
   // Dokumentasi: definisi kolom tabel sesuai kebutuhan UI
   const columns: DataTableColumn<StatusKasbonRow>[] = [
@@ -67,25 +75,60 @@ export default function StatusKasbonPage() {
         </div>
       ),
     },
-    { id: 'tanggalPengajuan', label: 'Tanggal Pengajuan', sortable: true },
+    {
+      id: 'tanggalPengajuan',
+      label: 'Tanggal Pengajuan',
+      sortable: true,
+      dateRangeFilter: true,
+      format: (val) => formatDateToIndonesian(val) || val
+    },
     { id: 'posisi', label: 'Posisi', sortable: true },
     { id: 'departemen', label: 'Departemen', sortable: true },
-    { id: 'tanggalMulaiPotongan', label: 'Tanggal Mulai Potongan', sortable: true },
-    { id: 'tanggalPencairan', label: 'Tanggal Pencairan', sortable: true },
+    {
+      id: 'tanggalMulaiPotongan',
+      label: 'Tanggal Mulai Potongan',
+      sortable: true,
+      dateRangeFilter: true,
+      format: (val) => formatDateToIndonesian(val) || val
+    },
+    {
+      id: 'tanggalPencairan',
+      label: 'Tanggal Pencairan',
+      sortable: true,
+      dateRangeFilter: true,
+      format: (val) => formatDateToIndonesian(val) || val
+    },
     { id: 'jenisKasbon', label: 'Jenis Kasbon', sortable: true },
-    { id: 'nominalKasbon', label: 'Nominal Kasbon', align: 'right', sortable: true },
-    { id: 'nominalCicilan', label: 'Nominal Cicilan', align: 'right', sortable: true },
+    {
+      id: 'nominalKasbon',
+      label: 'Nominal Kasbon',
+      align: 'right',
+      sortable: true,
+      format: (val) => formatCurrencyValue(parseCurrency(val))
+    },
+    {
+      id: 'nominalCicilan',
+      label: 'Nominal Cicilan',
+      align: 'right',
+      sortable: true,
+      format: (val) => formatCurrencyValue(parseCurrency(val))
+    },
     { id: 'sisaPeriodeCicilan', label: 'Sisa Periode Cicilan', sortable: true },
     { id: 'periodeCicilan', label: 'Periode Cicilan', sortable: true },
     {
       id: 'statusKasbon',
       label: 'Status Kasbon',
       sortable: true,
+      filterOptions: [
+        { label: 'Menunggu Cicilan', value: 'Menunggu Cicilan' },
+        { label: 'Selesai', value: 'Selesai' },
+        { label: 'New Cicilan', value: 'New Cicilan' },
+      ],
       format: (value: StatusKasbonRow['statusKasbon']) => {
         const color =
           value === 'Selesai' ? 'bg-success-100 text-success-700' :
-          value === 'Menunggu Cicilan' ? 'bg-warning-100 text-warning-700' :
-          'bg-error-100 text-error-700';
+            value === 'Menunggu Cicilan' ? 'bg-warning-100 text-warning-700' :
+              'bg-error-100 text-error-700';
         return <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${color}`}>{value}</span>;
       },
     },
@@ -95,7 +138,7 @@ export default function StatusKasbonPage() {
       align: 'center',
       sortable: false,
       format: (_, row) => (
-        <button 
+        <button
           onClick={() => navigate(`/cash-advance/detail/${row.idKaryawan}`)}
           className="inline-flex items-center justify-center rounded-md border border-gray-200 p-2 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-white/[0.06]"
         >
@@ -106,26 +149,62 @@ export default function StatusKasbonPage() {
   ];
 
   // Dokumentasi: contoh data statis untuk tampilan tabel
-  const rows: StatusKasbonRow[] = useMemo(() => (
-    [
-      { idKaryawan: '1523409876', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'TA', departemen: 'HR', tanggalMulaiPotongan: '20/11/2025', tanggalPencairan: '—', jenisKasbon: 'Swari', nominalKasbon: '3.000.000', nominalCicilan: '300.000', sisaPeriodeCicilan: '3 bulan', periodeCicilan: '3 bulan', statusKasbon: 'New Cicilan' },
-      { idKaryawan: '1523409877', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'TA', departemen: 'HR', tanggalMulaiPotongan: '20/11/2025', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '10.000.000', nominalCicilan: '1.000.000', sisaPeriodeCicilan: '6 bulan', periodeCicilan: '10 bulan', statusKasbon: 'Selesai' },
-      { idKaryawan: '1523409878', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', tanggalMulaiPotongan: '20/11/2025', tanggalPencairan: '—', jenisKasbon: 'Pribadi', nominalKasbon: '8.000.000', nominalCicilan: '600.000', sisaPeriodeCicilan: '4 bulan', periodeCicilan: '13 bulan', statusKasbon: 'Selesai' },
-      { idKaryawan: '1523409879', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', tanggalMulaiPotongan: '20/11/2025', tanggalPencairan: '—', jenisKasbon: 'Operasional', nominalKasbon: '7.000.000', nominalCicilan: '700.000', sisaPeriodeCicilan: '12 bulan', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Cicilan' },
-      { idKaryawan: '1523409880', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'LND', departemen: 'HR', tanggalMulaiPotongan: '20/11/2025', tanggalPencairan: '—', jenisKasbon: 'Swari', nominalKasbon: '3.000.000', nominalCicilan: '300.000', sisaPeriodeCicilan: '3 bulan', periodeCicilan: '3 bulan', statusKasbon: 'New Cicilan' },
-    ]
-  ), []);
+  const rows: StatusKasbonRow[] = useMemo(() => {
+    let filteredData: StatusKasbonRow[] = [
+      { idKaryawan: 'DSR999', pengguna: 'Lindsey Curtis', tanggalPengajuan: '2023-01-28', posisi: 'TA', departemen: 'HR', tanggalMulaiPotongan: '2023-01-28', tanggalPencairan: '2023-01-28', jenisKasbon: 'Swari', nominalKasbon: '3.000.000', nominalCicilan: '300.000', sisaPeriodeCicilan: '3 bulan', periodeCicilan: '3 bulan', statusKasbon: 'New Cicilan' },
+      { idKaryawan: 'DSR999', pengguna: 'Lindsey Curtis', tanggalPengajuan: '2023-01-28', posisi: 'TA', departemen: 'HR', tanggalMulaiPotongan: '2023-01-28', tanggalPencairan: '2023-01-28', jenisKasbon: 'Operasional', nominalKasbon: '10.000.000', nominalCicilan: '1.000.000', sisaPeriodeCicilan: '6 bulan', periodeCicilan: '10 bulan', statusKasbon: 'Selesai' },
+      { idKaryawan: 'DSR999', pengguna: 'Lindsey Curtis', tanggalPengajuan: '2023-01-28', posisi: 'HEBP', departemen: 'HR', tanggalMulaiPotongan: '2023-01-28', tanggalPencairan: '2023-01-28', jenisKasbon: 'Pribadi', nominalKasbon: '8.000.000', nominalCicilan: '600.000', sisaPeriodeCicilan: '4 bulan', periodeCicilan: '13 bulan', statusKasbon: 'Selesai' },
+      { idKaryawan: 'DSR999', pengguna: 'Lindsey Curtis', tanggalPengajuan: '2023-01-28', posisi: 'HEBP', departemen: 'HR', tanggalMulaiPotongan: '—', tanggalPencairan: '2023-01-28', jenisKasbon: 'Operasional', nominalKasbon: '7.000.000', nominalCicilan: '700.000', sisaPeriodeCicilan: '12 bulan', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Cicilan' },
+      { idKaryawan: 'DSR999', pengguna: 'Lindsey Curtis', tanggalPengajuan: '2023-01-28', posisi: 'LND', departemen: 'HR', tanggalMulaiPotongan: '2023-01-28', tanggalPencairan: '2023-01-28', jenisKasbon: 'Swari', nominalKasbon: '3.000.000', nominalCicilan: '300.000', sisaPeriodeCicilan: '3 bulan', periodeCicilan: '3 bulan', statusKasbon: 'New Cicilan' },
+    ];
+
+    // Apply date range filters
+    Object.entries(dateRangeFilters).forEach(([columnId, range]) => {
+      if (range.startDate) {
+        const start = new Date(range.startDate);
+        const end = range.endDate ? new Date(range.endDate) : null;
+
+        filteredData = filteredData.filter((row: StatusKasbonRow) => {
+          const cellValue = row[columnId as keyof StatusKasbonRow];
+          if (!cellValue || typeof cellValue !== 'string') return true;
+
+          const cellDate = new Date(cellValue);
+          if (isNaN(cellDate.getTime())) return true;
+
+          if (end) {
+            return cellDate >= start && cellDate <= end;
+          }
+          return cellDate >= start;
+        });
+      }
+    });
+
+    // Apply column filters
+    Object.entries(columnFilters).forEach(([columnId, values]) => {
+      if (values && values.length > 0) {
+        filteredData = filteredData.filter((row: StatusKasbonRow) => {
+          const cellValue = row[columnId as keyof StatusKasbonRow];
+          if (cellValue === undefined || cellValue === null) return false;
+          return values.includes(cellValue.toString());
+        });
+      }
+    });
+
+    return filteredData;
+  }, [dateRangeFilters, columnFilters]);
 
   return (
     <div className="p-0">
-      {/* <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Status Kasbon</h1> */}
       <DataTable
         title="Status Kasbon"
         data={rows}
         columns={columns}
         searchable
         filterable
-        // onExport={() => exportCSV('status-kasbon.csv', rows)}
+        onDateRangeFilterChange={handleDateRangeFilterChange}
+        dateRangeFilters={dateRangeFilters}
+        onColumnFilterChange={handleColumnFilterChange}
+        columnFilters={columnFilters}
       />
     </div>
   );

@@ -10,6 +10,8 @@ interface RejectCashAdvanceConfirmationModalProps {
     data?: {
         nip: string;
         nama: string;
+        bulanMulaiPotongan?: string;
+        tanggalPencairan?: string;
     };
 }
 
@@ -45,7 +47,7 @@ export const RejectCashAdvanceConfirmationModal: React.FC<RejectCashAdvanceConfi
 
             {/* Form Fields */}
             <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-4 text-left">
                     <InputField
                         label="NIP"
                         value={data?.nip || ''}
@@ -59,6 +61,23 @@ export const RejectCashAdvanceConfirmationModal: React.FC<RejectCashAdvanceConfi
                         disabled
                         containerClassName="w-full"
                         labelClassName="text-sm font-semibold mb-1"
+                    />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 text-left">
+                    <InputField
+                        label="Bulan Mulai Potongan"
+                        value={data?.bulanMulaiPotongan || '—'}
+                        disabled
+                        containerClassName="w-full"
+                        labelClassName="text-sm font-semibold mb-1 text-[#475467]"
+                    />
+                    <InputField
+                        label="Tanggal Pencairan"
+                        value={data?.tanggalPencairan || '—'}
+                        disabled
+                        containerClassName="w-full"
+                        labelClassName="text-sm font-semibold mb-1 text-[#475467]"
                     />
                 </div>
 

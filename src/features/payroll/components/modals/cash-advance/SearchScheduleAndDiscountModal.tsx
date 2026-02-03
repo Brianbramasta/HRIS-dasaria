@@ -10,6 +10,8 @@ interface SearchScheduleAndDiscountModalProps {
     data?: {
         nip: string;
         namaLengkap: string;
+        bulanMulaiPotongan?: string;
+        tanggalPencairan?: string;
     };
 }
 
@@ -19,8 +21,8 @@ export const SearchScheduleAndDiscountModal: React.FC<SearchScheduleAndDiscountM
     onSave,
     data,
 }) => {
-    const [bulanMulaiPotongan, setBulanMulaiPotongan] = React.useState<string>('');
-    const [tanggalPencairan, setTanggalPencairan] = React.useState<string>('');
+    const [bulanMulaiPotongan, setBulanMulaiPotongan] = React.useState<string>(data?.bulanMulaiPotongan || '');
+    const [tanggalPencairan, setTanggalPencairan] = React.useState<string>(data?.tanggalPencairan || '');
 
     const handleSave = () => {
         onSave?.({
