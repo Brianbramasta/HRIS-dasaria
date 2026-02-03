@@ -5,6 +5,7 @@ import ExpandCard from '@/features/structure-and-organize/components/card/Expand
 import { IconFileDetail, IconPencil } from '@/icons/components/icons';
 import EditTunjanganPernikahanModal from '@/features/payroll/components/modals/payroll-configuration/fixedAllowance/EditMarriageAllowanceModal';
 import EditTunjanganLamaKerjaModal from '@/features/payroll/components/modals/payroll-configuration/fixedAllowance/EditLengthOfServiceAllowanceModal';
+import EditFeeModal from '@/features/payroll/components/modals/payroll-configuration/fixedAllowance/EditFeeModal';
 // import EditTunjanganTransportasiModal from '@/features/payroll/components/modals/payroll-configuration/fixedAllowance/EditTransportationAllowanceModal';
 // Dokumentasi: Integrasi modal Edit/Detail Tunjangan Jabatan & BPJS
 import EditDetailTunjanganJabatanDanBpjsModal from '@/features/payroll/components/modals/payroll-configuration/fixedAllowance/EditPositionAndBPJSAllowanceModal';
@@ -61,10 +62,10 @@ export default function TunjanganTetapPage() {
   const {
     feeAllowanceRows,
     handleEditOpen: handleEditOpenFee,
-    // editModal: editModalFee,
-    // handleUpdate: handleUpdateFee,
-    // selected: selectedFee,
-    // loading: loadingFee,
+    editModal: editModalFee,
+    handleUpdate: handleUpdateFee,
+    selected: selectedFee,
+    loading: loadingFee,
   } = useFeeAllowance();
 
   return (
@@ -167,6 +168,13 @@ export default function TunjanganTetapPage() {
         defaultValues={selectedLengthOfService as any}
         onSave={handleUpdateLengthOfService}
         isLoading={loadingLengthOfService}
+      />
+      <EditFeeModal
+        isOpen={editModalFee.isOpen}
+        onClose={editModalFee.closeModal}
+        defaultValues={selectedFee}
+        onSave={handleUpdateFee}
+        isLoading={loadingFee}
       />
       {/* <EditTunjanganTransportasiModal
         isOpen={editModalTransportation.isOpen}
