@@ -89,8 +89,8 @@ export default function RiwayatPengajuanPage() {
       format: (value: KasbonRiwayatRow['statusKasbon']) => {
         const color =
           value === 'Disetujui' ? 'bg-success-100 text-success-700' :
-          value === 'Ditolak' ? 'bg-error-100 text-error-700' :
-          'bg-warning-100 text-warning-700';
+            value === 'Ditolak' ? 'bg-error-100 text-error-700' :
+              'bg-warning-100 text-warning-700';
         return <span className={`rounded-full p-[10px] flex justify-center items-center text-center text-xs font-semibold ${color}`}>{value}</span>;
       },
     },
@@ -100,7 +100,7 @@ export default function RiwayatPengajuanPage() {
       align: 'center',
       sortable: false,
       format: (_, row) => (
-        <button 
+        <button
           onClick={() => navigate(`/cash-advance/detail/${row.idKaryawan}`)}
           className="inline-flex items-center justify-center rounded-md p-2 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-white/[0.06]"
         >
@@ -192,8 +192,8 @@ export default function RiwayatPengajuanPage() {
         columns={columns}
         searchable
         filterable
-        onExport={() => exportCSV('riwayat-pengajuan-kasbon.csv', rows)}
-        onAdd={() => setIsModalOpen(true)}
+        // onExport={() => exportCSV('riwayat-pengajuan-kasbon.csv', rows)}
+        // onAdd={() => setIsModalOpen(true)}
         addButtonLabel="Form Pengajuan Kasbon"
         toolbarRightSlot={
           <div className="relative">
