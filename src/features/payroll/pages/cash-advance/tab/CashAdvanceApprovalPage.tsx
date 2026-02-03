@@ -8,6 +8,7 @@ import Button from '@/components/ui/button/Button';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { ChevronDown } from 'react-feather';
 import SearchScheduleAndDiscountModal from '@/features/payroll/components/modals/cash-advance/SearchScheduleAndDiscountModal';
+import RejectCashAdvanceConfirmationModal from '@/features/payroll/components/modals/cash-advance/RejectCashAdvanceConfirmationModal';
 
 type KasbonApprovalRow = {
   no?: number;
@@ -32,6 +33,7 @@ export default function CashAdvanceApprovalPage() {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState<KasbonApprovalRow | null>(null);
 
   // Dokumentasi: util ekspor CSV sederhana
@@ -174,7 +176,8 @@ export default function CashAdvanceApprovalPage() {
       className: 'text-error-600 hover:text-error-700',
       onClick: (row) => {
         console.log('Reject kasbon:', row);
-        // Implementasi reject logic
+        setSelectedRow(row);
+        setIsRejectModalOpen(true);
       },
     },
   ];
@@ -188,7 +191,7 @@ export default function CashAdvanceApprovalPage() {
         actions={actions}
         searchable
         filterable
-        onExport={() => exportCSV('persetujuan-kasbon.csv', rows)}
+        // onExport={() => exportCSV('persetujuan-kasbon.csv', rows)}
         toolbarRightSlot={
           <div className="relative">
             <Button
@@ -238,6 +241,22 @@ export default function CashAdvanceApprovalPage() {
             console.log('Saving schedule and discount:', data);
             // Implementasikan logic simpan di sini (misal: panggil API)
             setIsSearchModalOpen(false);
+          }}
+        />
+      )}
+
+      {isRejectModalOpen && (
+        <RejectCashAdvanceConfirmationModal
+          isOpen={isRejectModalOpen}
+          onClose={() => setIsRejectModalOpen(false)}
+          data={selectedRow ? {
+            nip: selectedRow.idKaryawan,
+            nama: selectedRow.pengguna
+          } : undefined}
+          onConfirm={(alasan) => {
+            console.log('Rejecting kasbon with reason:', alasan);
+            // Implementasikan logic reject di sini (misal: panggil API)
+            setIsRejectModalOpen(false);
           }}
         />
       )}
