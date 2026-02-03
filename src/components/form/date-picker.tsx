@@ -9,7 +9,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import Label from "./Label";
 import { CalenderIcon } from "../../icons";
 import Button from "@/components/ui/button/Button";
-import { formatDateToIndonesian, formatIndonesianToISO } from "@/utils/formatDate";
+import { formatDateToIndonesian, formatIndonesianToISO, formatMonthYearToIndonesian } from "@/utils/formatDate";
 import Switch from "@/components/form/switch/Switch"; // Import Switch component
 
 type ModeType = "single" | "multiple" | "range" | "time";
@@ -36,6 +36,7 @@ export type DatePickerProps = {
   hideInput?: boolean;
   className?: string;
   required?: boolean;
+  view?: "date" | "month";
 };
 
 // Util: konversi ke string ISO yyyy-mm-dd
@@ -93,10 +94,11 @@ export default function DatePicker({
   hideInput = false,
   className,
   required = false,
+  view = "date",
 }: DatePickerProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
-  
+
   const [internalIsOpen, setInternalIsOpen] = useState(false);
   const isOpen = controlledIsOpen !== undefined ? controlledIsOpen : internalIsOpen;
 
@@ -112,7 +114,7 @@ export default function DatePicker({
   // State seleksi
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
   const [selectingStartDate, setSelectingStartDate] = useState<boolean>(true);
-  const [showMonthYearPicker, setShowMonthYearPicker] = useState<boolean>(false);
+  const [showMonthYearPicker, setShowMonthYearPicker] = useState<boolean>(view === "month");
   const [timeHour, setTimeHour] = useState<number>(new Date().getHours());
   const [timeMinute, setTimeMinute] = useState<number>(new Date().getMinutes());
   // Dokumentasi: state untuk editing tahun secara manual pada picker
@@ -158,29 +160,29 @@ export default function DatePicker({
 
     // Logika parsing defaultDate tetap menggunakan struktur data untuk menebak/mengisi state
     // Kita gunakan 'mode' prop asli atau deteksi bentuk data untuk inisialisasi awal
-    
+
     // Helper untuk cek apakah defaultDate terlihat seperti range
-    const looksLikeRange = 
+    const looksLikeRange =
       (typeof defaultDate === "object" && "from" in (defaultDate as any) && (defaultDate as any).to) || // Pastikan 'to' ada untuk dianggap range aktif
       (Array.isArray(defaultDate) && defaultDate.length === 2 && showEndDateToggle); // Heuristik sederhana
 
     if (showEndDateToggle) {
-        // Jika toggle aktif, kita percayakan pada bentuk data
-        // Jika data punya 'from' dan 'to', atau array 2 elemen, maka range mode
-        // Jika tidak (misal cuma 'from' atau single string), maka single mode
-        setIsRangeMode(!!looksLikeRange);
+      // Jika toggle aktif, kita percayakan pada bentuk data
+      // Jika data punya 'from' dan 'to', atau array 2 elemen, maka range mode
+      // Jika tidak (misal cuma 'from' atau single string), maka single mode
+      setIsRangeMode(!!looksLikeRange);
     }
 
     // Logic pengisian state (mirip dengan sebelumnya tapi kita isi semua potensi state agar aman saat toggle)
     // Single
     const isoSingle = Array.isArray(defaultDate)
-        ? toISO(defaultDate[0] as any)
-        : typeof defaultDate === "object" && "from" in (defaultDate as any)
+      ? toISO(defaultDate[0] as any)
+      : typeof defaultDate === "object" && "from" in (defaultDate as any)
         ? toISO((defaultDate as any).from)
         : toISO(defaultDate as any);
     if (isoSingle) {
-        setSingleDate(isoSingle);
-        setCommittedSingle(isoSingle);
+      setSingleDate(isoSingle);
+      setCommittedSingle(isoSingle);
     }
 
     // Range
@@ -189,43 +191,43 @@ export default function DatePicker({
     const isoFrom = toISO(from as any);
     const isoTo = toISO(to as any);
     if (isoFrom) {
-        setRangeStart(isoFrom);
-        setCommittedRangeStart(isoFrom);
+      setRangeStart(isoFrom);
+      setCommittedRangeStart(isoFrom);
     }
     if (isoTo) {
-        setRangeEnd(isoTo);
-        setCommittedRangeEnd(isoTo);
+      setRangeEnd(isoTo);
+      setCommittedRangeEnd(isoTo);
     }
 
     // Multiple
     const nextMultiple = new Set<string>();
     if (Array.isArray(defaultDate)) {
-        for (const v of defaultDate as any[]) {
-          const iso = toISO(v);
-          if (iso) nextMultiple.add(iso);
-        }
-    } else {
-        const iso = toISO(defaultDate as any);
+      for (const v of defaultDate as any[]) {
+        const iso = toISO(v);
         if (iso) nextMultiple.add(iso);
+      }
+    } else {
+      const iso = toISO(defaultDate as any);
+      if (iso) nextMultiple.add(iso);
     }
     setMultipleDates(nextMultiple);
     setCommittedMultiple(nextMultiple);
 
     // Time
-     const base =
-        Array.isArray(defaultDate) && defaultDate.length > 0
-          ? defaultDate[0]
-          : !Array.isArray(defaultDate)
+    const base =
+      Array.isArray(defaultDate) && defaultDate.length > 0
+        ? defaultDate[0]
+        : !Array.isArray(defaultDate)
           ? (defaultDate as any)
           : undefined;
-      if (base instanceof Date) {
-        setTimeHour(base.getHours());
-        setTimeMinute(base.getMinutes());
-        setCommittedTimeHour(base.getHours());
-        setCommittedTimeMinute(base.getMinutes());
-      }
+    if (base instanceof Date) {
+      setTimeHour(base.getHours());
+      setTimeMinute(base.getMinutes());
+      setCommittedTimeHour(base.getHours());
+      setCommittedTimeMinute(base.getMinutes());
+    }
 
-  }, [defaultDate, showEndDateToggle]); 
+  }, [defaultDate, showEndDateToggle]);
   // Note: removed 'mode' dependency to avoid reset logic conflict, assuming defaultDate is stable source of truth for init
 
   // Tutup popup saat klik di luar
@@ -234,7 +236,7 @@ export default function DatePicker({
       const clickedInput = inputRef.current && inputRef.current.contains(e.target as Node);
       const clickedPopup = popupRef.current && popupRef.current.contains(e.target as Node);
       const clickedAnchor = anchorEl && anchorEl.contains(e.target as Node);
-      
+
       if (isOpen && !clickedPopup && !clickedInput && !clickedAnchor) {
         setIsOpen(false);
       }
@@ -254,7 +256,7 @@ export default function DatePicker({
     // Tambah tinggi sedikit jika ada toggle
     const estimatedHeight = showEndDateToggle ? 520 : 450;
     const padding = 8;
-    
+
     let left = rect.left;
     if (left + popupWidth > window.innerWidth - padding) {
       left = window.innerWidth - popupWidth - padding;
@@ -270,9 +272,9 @@ export default function DatePicker({
     // 1. Coba bawah jika muat
     // 2. Jika tidak, coba atas jika muat
     // 3. Jika tidak muat keduanya, pilih yang space-nya lebih besar
-    
+
     let isBottom = true;
-    
+
     if (spaceBelow < estimatedHeight) {
       if (spaceAbove >= estimatedHeight) {
         isBottom = false;
@@ -292,7 +294,7 @@ export default function DatePicker({
     if (isBottom) {
       style.top = rect.bottom - 5;
       // Batasi tinggi agar tidak overflow screen
-      style.maxHeight = spaceBelow + 5; 
+      style.maxHeight = spaceBelow + 5;
     } else {
       style.bottom = window.innerHeight - rect.top + 5;
       style.top = "auto";
@@ -307,6 +309,7 @@ export default function DatePicker({
     const useCommitted = showActions;
     if (activeMode === "single") {
       const src = useCommitted ? committedSingle : singleDate;
+      if (view === "month" && src) return formatMonthYearToIndonesian(src);
       return src ? formatDateToIndonesian(src) : "";
     }
     if (activeMode === "multiple") {
@@ -325,7 +328,7 @@ export default function DatePicker({
     const hh = String(useCommitted ? committedTimeHour : timeHour).padStart(2, "0");
     const mm = String(useCommitted ? committedTimeMinute : timeMinute).padStart(2, "0");
     return `${hh}:${mm}`;
-  }, [activeMode, singleDate, multipleDates, rangeStart, rangeEnd, timeHour, timeMinute, showActions, committedSingle, committedMultiple, committedRangeStart, committedRangeEnd, committedTimeHour, committedTimeMinute]);
+  }, [activeMode, singleDate, multipleDates, rangeStart, rangeEnd, timeHour, timeMinute, showActions, committedSingle, committedMultiple, committedRangeStart, committedRangeEnd, committedTimeHour, committedTimeMinute, view]);
 
   // Sinkronisasi bulan kalender saat popup dibuka berdasarkan tanggal terpilih
   const getReferenceDate = (): Date | null => {
@@ -418,7 +421,18 @@ export default function DatePicker({
   };
   const handleMonthChange = (monthIndex: number) => {
     setCurrentMonth(new Date(currentMonth.getFullYear(), monthIndex));
-    setShowMonthYearPicker(false);
+    if (view === "month") {
+      const year = currentMonth.getFullYear();
+      const selected = fmtYMD(year, monthIndex, 1);
+      setSingleDate(selected);
+      if (!showActions) {
+        const d = parseISOToDate(selected);
+        if (onChange) onChange(d ? [d] : [], selected);
+        setIsOpen(false);
+      }
+    } else {
+      setShowMonthYearPicker(false);
+    }
   };
   const handleYearChange = (year: number) => {
     setCurrentMonth(new Date(year, currentMonth.getMonth()));
@@ -479,21 +493,23 @@ export default function DatePicker({
     return (
       <div className="p-4">
         {/* Navigasi bulan/tahun */}
-        <div className="flex items-center justify-between mb-3">
-          <button type="button" onClick={handlePreviousMonth} className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
-            <span className="text-gray-600 dark:text-gray-400">{/* << */}‹</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setShowMonthYearPicker(!showMonthYearPicker)}
-            className="text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-1 rounded transition-colors"
-          >
-            {monthNames[month]} {year}
-          </button>
-          <button type="button" onClick={handleNextMonth} className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
-            <span className="text-gray-600 dark:text-gray-400">{/* >> */}›</span>
-          </button>
-        </div>
+        {view !== "month" && (
+          <div className="flex items-center justify-between mb-3">
+            <button type="button" onClick={handlePreviousMonth} className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
+              <span className="text-gray-600 dark:text-gray-400">{/* << */}‹</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowMonthYearPicker(!showMonthYearPicker)}
+              className="text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-1 rounded transition-colors"
+            >
+              {monthNames[month]} {year}
+            </button>
+            <button type="button" onClick={handleNextMonth} className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
+              <span className="text-gray-600 dark:text-gray-400">{/* >> */}›</span>
+            </button>
+          </div>
+        )}
 
         {showMonthYearPicker ? (
           <div className="mb-3">
@@ -684,19 +700,19 @@ export default function DatePicker({
   const handleToggleRange = (checked: boolean) => {
     setIsRangeMode(checked);
     if (checked) {
-        // Switch Single -> Range
-        // Gunakan tanggal single sebagai start date jika ada
-        if (singleDate) {
-            setRangeStart(singleDate);
-            setRangeEnd(""); 
-            setSelectingStartDate(false); // User diharapkan memilih end date selanjutnya
-        }
+      // Switch Single -> Range
+      // Gunakan tanggal single sebagai start date jika ada
+      if (singleDate) {
+        setRangeStart(singleDate);
+        setRangeEnd("");
+        setSelectingStartDate(false); // User diharapkan memilih end date selanjutnya
+      }
     } else {
-        // Switch Range -> Single
-        // Gunakan start date range sebagai single date jika ada
-        if (rangeStart) {
-            setSingleDate(rangeStart);
-        }
+      // Switch Range -> Single
+      // Gunakan start date range sebagai single date jika ada
+      if (rangeStart) {
+        setSingleDate(rangeStart);
+      }
     }
   };
 
@@ -704,31 +720,31 @@ export default function DatePicker({
     <div className={className}>
       {label && !hideInput && <Label htmlFor={id}>{label}</Label>}
       {!hideInput && (
-      <div className="relative">
-        <input
-          id={id}
-          ref={inputRef}
-          autoComplete="off"
-          placeholder={placeholder}
-          disabled={disabled}
-          required={required}
-          value={inputValue}
-          onChange={() => {}}
-          onKeyDown={(e) => {
-            if (e.key !== "Tab") e.preventDefault();
-          }}
-          onPaste={(e) => e.preventDefault()}
-          onDrop={(e) => e.preventDefault()}
-          inputMode="none"
-          onClick={() => {
-            if (!disabled) setIsOpen(true);
-          }}
-          className="h-11 w-full rounded-lg border appearance-none px-4 pr-12 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30  bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20 dark:border-gray-700  dark:focus:border-brand-800 dark:focus:ring-brand-800/30 disabled:cursor-not-allowed disabled:opacity-50"
-        />
-        <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
-          <CalenderIcon className="size-6" />
-        </span>
-      </div>
+        <div className="relative">
+          <input
+            id={id}
+            ref={inputRef}
+            autoComplete="off"
+            placeholder={placeholder}
+            disabled={disabled}
+            required={required}
+            value={inputValue}
+            onChange={() => { }}
+            onKeyDown={(e) => {
+              if (e.key !== "Tab") e.preventDefault();
+            }}
+            onPaste={(e) => e.preventDefault()}
+            onDrop={(e) => e.preventDefault()}
+            inputMode="none"
+            onClick={() => {
+              if (!disabled) setIsOpen(true);
+            }}
+            className="h-11 w-full rounded-lg border appearance-none px-4 pr-12 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30  bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20 dark:border-gray-700  dark:focus:border-brand-800 dark:focus:ring-brand-800/30 disabled:cursor-not-allowed disabled:opacity-50"
+          />
+          <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
+            <CalenderIcon className="size-6" />
+          </span>
+        </div>
       )}
 
       {isOpen && (
@@ -740,7 +756,7 @@ export default function DatePicker({
           {/* Main Calendar Card */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 flex-1 overflow-auto">
             {/* Input display (range gunakan 2 kolom) */}
-            {activeMode !== "time" && (
+            {activeMode !== "time" && view !== "month" && (
               <div className="p-3 border-b border-gray-200 dark:border-gray-700">
                 <div className="flex items-center gap-2 mb-2">
                   {(activeMode === "single" || activeMode === "range") && (

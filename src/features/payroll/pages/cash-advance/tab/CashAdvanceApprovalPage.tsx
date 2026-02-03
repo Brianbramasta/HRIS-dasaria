@@ -7,6 +7,7 @@ import { CheckCircle, XCircle } from 'react-feather';
 import Button from '@/components/ui/button/Button';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { ChevronDown } from 'react-feather';
+import SearchScheduleAndDiscountModal from '@/features/payroll/components/modals/cash-advance/SearchScheduleAndDiscountModal';
 
 type KasbonApprovalRow = {
   no?: number;
@@ -30,6 +31,8 @@ export default function CashAdvanceApprovalPage() {
   // Dokumentasi: inisialisasi navigate dan state dropdown
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const [selectedRow, setSelectedRow] = useState<KasbonApprovalRow | null>(null);
 
   // Dokumentasi: util ekspor CSV sederhana
   const exportCSV = (filename: string, data: any[]) => {
@@ -88,8 +91,8 @@ export default function CashAdvanceApprovalPage() {
       format: (value: KasbonApprovalRow['statusKasbon']) => {
         const color =
           value === 'Disetujui' ? 'bg-success-100 text-success-700' :
-          value === 'Ditolak' ? 'bg-error-100 text-error-700' :
-          'bg-warning-100 text-warning-700';
+            value === 'Ditolak' ? 'bg-error-100 text-error-700' :
+              'bg-warning-100 text-warning-700';
         return <span className={`rounded-full p-[10px] flex justify-center items-center text-center text-xs font-semibold ${color}`}>{value}</span>;
       },
     },
@@ -99,7 +102,7 @@ export default function CashAdvanceApprovalPage() {
       align: 'center',
       sortable: false,
       format: (_, row) => (
-        <button 
+        <button
           onClick={() => navigate(`/cash-advance/detail/${row.idKaryawan}`)}
           className="inline-flex items-center justify-center rounded-md p-2 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-white/[0.06]"
         >
@@ -162,7 +165,8 @@ export default function CashAdvanceApprovalPage() {
       className: 'text-success-600 hover:text-success-700',
       onClick: (row) => {
         console.log('Approve kasbon:', row);
-        // Implementasi approve logic
+        setSelectedRow(row);
+        setIsSearchModalOpen(true);
       },
     },
     {
@@ -221,6 +225,22 @@ export default function CashAdvanceApprovalPage() {
           </div>
         }
       />
+
+      {isSearchModalOpen && (
+        <SearchScheduleAndDiscountModal
+          isOpen={isSearchModalOpen}
+          onClose={() => setIsSearchModalOpen(false)}
+          data={selectedRow ? {
+            nip: selectedRow.idKaryawan,
+            namaLengkap: selectedRow.pengguna
+          } : undefined}
+          onSave={(data) => {
+            console.log('Saving schedule and discount:', data);
+            // Implementasikan logic simpan di sini (misal: panggil API)
+            setIsSearchModalOpen(false);
+          }}
+        />
+      )}
     </div>
   );
 }
