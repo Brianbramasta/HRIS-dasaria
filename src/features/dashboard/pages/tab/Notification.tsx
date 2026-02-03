@@ -3,10 +3,12 @@
 import { useMemo, useState } from "react";
 import DatePicker from "../../../../components/form/date-picker";
 import { Card, CardTitle, CardDescription } from "../../../../components/ui/card";
-import {IconNotifDetail,
-IconNotifDiTolak,
-IconNotifNegosiasi,
-IconNotifDisetujui} from "@/icons/components/icons"
+import {
+  IconNotifDetail,
+  IconNotifDiTolak,
+  IconNotifNegosiasi,
+  IconNotifDisetujui
+} from "@/icons/components/icons"
 import { ContractRenewalDetailModal } from "../../components/modals/ContractRenewalDetailModal";
 import RejectConfirmationModal from "../../components/modals/RejectConfirmationModal";
 import ActionConfirmationModal, { ActionType } from "../../components/modals/ActionConfirmationModal";
@@ -32,12 +34,12 @@ const sampleData: NotificationItem[] = [
     title: "Dimas Ananda · HR telah mengajukan perpanjangan kontrak (PKWT)",
     timeAgo: "5 Menit yang lalu",
     lines: ["UI/UX Designer · HRIS", "Kontrak berakhir: 30 Maret 2025 (50 hari lagi)"],
-    actions: [
-      { key: "detail", label: "Detail", color: "blue-old" },
-      { key: "reject", label: "Ditolak", color: "red" },
-      { key: "negotiate", label: "Negosiasi", color: "blue" },
-      { key: "approve", label: "Disetujui", color: "green" },
-    ],
+    // actions: [
+    //   { key: "detail", label: "Detail", color: "blue-old" },
+    //   { key: "reject", label: "Ditolak", color: "red" },
+    //   { key: "negotiate", label: "Negosiasi", color: "blue" },
+    //   { key: "approve", label: "Disetujui", color: "green" },
+    // ],
   },
   {
     id: "n-2",
@@ -64,7 +66,7 @@ export default function Notification() {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   // State untuk modal konfirmasi penolakan
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
-  
+
   // State untuk modal aksi (Approve / Negotiate)
   const [isActionModalOpen, setIsActionModalOpen] = useState(false);
   const [actionType, setActionType] = useState<ActionType>('approve');
@@ -131,22 +133,22 @@ export default function Notification() {
                     a.color === "blue"
                       ? "bg-blue-600 text-white hover:bg-blue-700"
                       : a.color === "red"
-                      ? "bg-red-600 text-white hover:bg-red-700"
-                      : a.color === "green"
-                      ? "bg-green-600 text-white hover:bg-green-700"
-                      : "bg-[#003E80] text-white hover:bg-blue-700";
+                        ? "bg-red-600 text-white hover:bg-red-700"
+                        : a.color === "green"
+                          ? "bg-green-600 text-white hover:bg-green-700"
+                          : "bg-[#003E80] text-white hover:bg-blue-700";
                   const icon =
                     a.key === "detail"
                       ? <IconNotifDetail />
                       : a.key === "reject"
-                      ? <IconNotifDiTolak />
-                      : a.key === "negotiate"
-                      ? <IconNotifNegosiasi />
-                      : <IconNotifDisetujui />;
+                        ? <IconNotifDiTolak />
+                        : a.key === "negotiate"
+                          ? <IconNotifNegosiasi />
+                          : <IconNotifDisetujui />;
                   return (
-                    <button 
-                      key={a.key} 
-                      type="button" 
+                    <button
+                      key={a.key}
+                      type="button"
                       className={`${base} ${styles}`}
                       onClick={() => {
                         if (a.key === "detail") {
@@ -173,9 +175,9 @@ export default function Notification() {
         ))}
       </div>
 
-      <ContractRenewalDetailModal 
-        isOpen={isDetailModalOpen} 
-        onClose={() => setIsDetailModalOpen(false)} 
+      <ContractRenewalDetailModal
+        isOpen={isDetailModalOpen}
+        onClose={() => setIsDetailModalOpen(false)}
       />
 
       <RejectConfirmationModal
