@@ -1,11 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useApiCashAdvance } from '../api/useApiCashAdvance';
 import { useNavigate } from 'react-router-dom';
-
-type DateRangeFilter = {
-    startDate: string;
-    endDate: string | null;
-};
 
 export const useStatusCashAdvance = () => {
     const navigate = useNavigate();
@@ -20,15 +15,16 @@ export const useStatusCashAdvance = () => {
         setPageSize,
         setSearch,
         setSort,
+        columnFilters,
+        dateRangeFilters,
+        setColumnFilters,
+        setDateRangeFilters,
     } = api;
 
-    const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, DateRangeFilter>>({});
-    const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
     const [loans, setLoans] = useState<any[]>([]);
 
     useEffect(() => {
         const fetchLoans = async () => {
-            // TODO: Update this when backend supports filtering for active-and-completed-loans endpoint
             const result = await getActiveAndCompletedLoans();
             if (result) {
                 setLoans(result);
@@ -37,21 +33,30 @@ export const useStatusCashAdvance = () => {
         fetchLoans();
     }, [getActiveAndCompletedLoans]);
 
-    const handleDateRangeFilterChange = (columnId: string, startDate: string, endDate: string | null) => {
-        setDateRangeFilters((prev) => ({
-            ...prev,
-            [columnId]: { startDate, endDate },
-        }));
-        // TODO: When backend supports date range filtering, call API here
-    };
+    // Fetch when filters change
+    useEffect(() => {
+        const fetchLoans = async () => {
+            const result = await getActiveAndCompletedLoans();
+            if (result) {
+                setLoans(result);
+            }
+        };
+        fetchLoans();
+    }, [columnFilters, dateRangeFilters, getActiveAndCompletedLoans]);
 
-    const handleColumnFilterChange = (columnId: string, values: string[]) => {
-        setColumnFilters((prev) => ({
-            ...prev,
+    const handleDateRangeFilterChange = useCallback((columnId: string, startDate: string, endDate: string | null) => {
+        setDateRangeFilters({
+            ...dateRangeFilters,
+            [columnId]: { startDate, endDate },
+        });
+    }, [dateRangeFilters, setDateRangeFilters]);
+
+    const handleColumnFilterChange = useCallback((columnId: string, values: string[]) => {
+        setColumnFilters({
+            ...columnFilters,
             [columnId]: values,
-        }));
-        // TODO: When backend supports column filtering, call API here
-    };
+        });
+    }, [columnFilters, setColumnFilters]);
 
     const rows = useMemo(() => {
         return loans.map((item, index) => ({

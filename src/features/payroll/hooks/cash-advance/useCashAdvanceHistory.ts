@@ -1,12 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useApiCashAdvance } from '../api/useApiCashAdvance';
 import { useModal } from '@/hooks/useModal';
 import { useNavigate } from 'react-router-dom';
-
-type DateRangeFilter = {
-    startDate: string;
-    endDate: string | null;
-};
 
 export const useCashAdvanceHistory = () => {
     const navigate = useNavigate();
@@ -16,17 +11,29 @@ export const useCashAdvanceHistory = () => {
         cashAdvances,
         page,
         pageSize,
+        setPage,
+        setPageSize,
+        setSearch,
+        setSort,
+        columnFilters,
+        dateRangeFilters,
+        setColumnFilters,
+        setDateRangeFilters,
     } = api;
 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const submissionModal = useModal(false);
     const shareModal = useModal(false);
-    const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, DateRangeFilter>>({});
-    const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
 
+    // Initial fetch
     useEffect(() => {
         fetchCashAdvances();
     }, [fetchCashAdvances]);
+
+    // Fetch when filters change
+    useEffect(() => {
+        fetchCashAdvances();
+    }, [columnFilters, dateRangeFilters, fetchCashAdvances]);
 
     const handleOpenShare = () => {
         shareModal.openModal();
@@ -37,21 +44,19 @@ export const useCashAdvanceHistory = () => {
         navigate('/cash-advance/cash-advance-form');
     };
 
-    const handleDateRangeFilterChange = (columnId: string, startDate: string, endDate: string | null) => {
-        setDateRangeFilters((prev) => ({
-            ...prev,
+    const handleDateRangeFilterChange = useCallback((columnId: string, startDate: string, endDate: string | null) => {
+        setDateRangeFilters({
+            ...dateRangeFilters,
             [columnId]: { startDate, endDate },
-        }));
-        // TODO: When backend supports date range filtering, call fetchCashAdvances with filter params
-    };
+        });
+    }, [dateRangeFilters, setDateRangeFilters]);
 
-    const handleColumnFilterChange = (columnId: string, values: string[]) => {
-        setColumnFilters((prev) => ({
-            ...prev,
+    const handleColumnFilterChange = useCallback((columnId: string, values: string[]) => {
+        setColumnFilters({
+            ...columnFilters,
             [columnId]: values,
-        }));
-        // TODO: When backend supports column filtering, call fetchCashAdvances with filter params
-    };
+        });
+    }, [columnFilters, setColumnFilters]);
 
     const rows = useMemo(() => {
         return cashAdvances.map((item, index) => ({
@@ -78,8 +83,15 @@ export const useCashAdvanceHistory = () => {
     }, [cashAdvances, page, pageSize]);
 
     return {
-        ...api,
         rows,
+        loading: api.loading,
+        total: api.total,
+        page: api.page,
+        pageSize: api.pageSize,
+        setPage,
+        setPageSize,
+        setSearch,
+        setSort,
         isDropdownOpen,
         setIsDropdownOpen,
         submissionModal,

@@ -1,13 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useApiCashAdvance } from '../api/useApiCashAdvance';
 import { CashAdvanceListItem } from '../../types/dto/CashAdvanceType';
 import { useModal } from '@/hooks/useModal';
 import { useNavigate } from 'react-router-dom';
-
-type DateRangeFilter = {
-    startDate: string;
-    endDate: string | null;
-};
 
 export const useCashAdvanceApproval = () => {
     const navigate = useNavigate();
@@ -17,18 +12,30 @@ export const useCashAdvanceApproval = () => {
         cashAdvances,
         page,
         pageSize,
+        setPage,
+        setPageSize,
+        setSearch,
+        setSort,
+        columnFilters,
+        dateRangeFilters,
+        setColumnFilters,
+        setDateRangeFilters,
     } = api;
 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const searchModal = useModal(false);
     const rejectModal = useModal(false);
     const [selected, setSelected] = useState<CashAdvanceListItem | null>(null);
-    const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, DateRangeFilter>>({});
-    const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
 
+    // Initial fetch
     useEffect(() => {
         fetchCashAdvances();
     }, [fetchCashAdvances]);
+
+    // Fetch when filters change
+    useEffect(() => {
+        fetchCashAdvances();
+    }, [columnFilters, dateRangeFilters, fetchCashAdvances]);
 
     const handleApproveOpen = (item: CashAdvanceListItem) => {
         setSelected(item);
@@ -46,21 +53,19 @@ export const useCashAdvanceApproval = () => {
         rejectModal.closeModal();
     };
 
-    const handleDateRangeFilterChange = (columnId: string, startDate: string, endDate: string | null) => {
-        setDateRangeFilters((prev) => ({
-            ...prev,
+    const handleDateRangeFilterChange = useCallback((columnId: string, startDate: string, endDate: string | null) => {
+        setDateRangeFilters({
+            ...dateRangeFilters,
             [columnId]: { startDate, endDate },
-        }));
-        // TODO: When backend supports date range filtering, call fetchCashAdvances with filter params
-    };
+        });
+    }, [dateRangeFilters, setDateRangeFilters]);
 
-    const handleColumnFilterChange = (columnId: string, values: string[]) => {
-        setColumnFilters((prev) => ({
-            ...prev,
+    const handleColumnFilterChange = useCallback((columnId: string, values: string[]) => {
+        setColumnFilters({
+            ...columnFilters,
             [columnId]: values,
-        }));
-        // TODO: When backend supports column filtering, call fetchCashAdvances with filter params
-    };
+        });
+    }, [columnFilters, setColumnFilters]);
 
     const rows = useMemo(() => {
         return cashAdvances.map((item, index) => ({
@@ -87,8 +92,15 @@ export const useCashAdvanceApproval = () => {
     }, [cashAdvances, page, pageSize]);
 
     return {
-        ...api,
         rows,
+        loading: api.loading,
+        total: api.total,
+        page: api.page,
+        pageSize: api.pageSize,
+        setPage,
+        setPageSize,
+        setSearch,
+        setSort,
         isDropdownOpen,
         setIsDropdownOpen,
         searchModal,

@@ -90,6 +90,12 @@ interface UseApiCashAdvanceReturn {
     // Search & Filter
     setSearch: (search: string) => void;
     setSort: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
+    setColumnFilters: (filters: Record<string, string[]>) => void;
+    setDateRangeFilters: (filters: Record<string, { startDate: string; endDate: string | null }>) => void;
+
+    // Column filters
+    columnFilters: Record<string, string[]>;
+    dateRangeFilters: Record<string, { startDate: string; endDate: string | null }>;
 }
 
 export const useApiCashAdvance = (): UseApiCashAdvanceReturn => {
@@ -103,6 +109,8 @@ export const useApiCashAdvance = (): UseApiCashAdvanceReturn => {
     const [search, setSearch] = useState<string>('');
     const [sortBy, setSortBy] = useState<string>('');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
+    const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
+    const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
 
     const filterStatus = useFilterStore((s) => s.filters['CashAdvanceStatus'] ?? '');
 
@@ -125,6 +133,33 @@ export const useApiCashAdvance = (): UseApiCashAdvanceReturn => {
                 params.column = toSortField(effectiveSortBy);
                 if (effectiveSortOrder) params.sort = effectiveSortOrder;
             }
+
+            // Add column filters - format: filter_column[column_name][in][]=value
+            Object.entries(columnFilters).forEach(([columnId, values]) => {
+                if (values && values.length > 0) {
+                    values.forEach((value) => {
+                        const key = `filter_column[${columnId}][in][]`;
+                        if (!params[key]) {
+                            params[key] = [];
+                        }
+                        params[key].push(value);
+                    });
+                }
+            });
+
+            // Add date range filters - format: filter_column[column_name][range][]=start_date & filter_column[column_name][range][]=end_date
+            Object.entries(dateRangeFilters).forEach(([columnId, dateRange]) => {
+                if (dateRange && dateRange.startDate) {
+                    const key = `filter_column[${columnId}][range][]`;
+                    if (!params[key]) {
+                        params[key] = [];
+                    }
+                    params[key].push(dateRange.startDate);
+                    if (dateRange.endDate) {
+                        params[key].push(dateRange.endDate);
+                    }
+                }
+            });
 
             const response = await cashAdvanceServices.getCashAdvanceList(params);
 
@@ -149,7 +184,7 @@ export const useApiCashAdvance = (): UseApiCashAdvanceReturn => {
         } finally {
             setLoading(false);
         }
-    }, [search, sortBy, sortOrder, page, pageSize, filterStatus]);
+    }, [search, sortBy, sortOrder, page, pageSize, filterStatus, columnFilters, dateRangeFilters]);
 
     const getCashAdvanceDetail = useCallback(async (id: string): Promise<CashAdvanceDetail | null> => {
         setLoading(true);
@@ -284,6 +319,14 @@ export const useApiCashAdvance = (): UseApiCashAdvanceReturn => {
         setSortOrder(newSortOrder);
     }, []);
 
+    const handleSetColumnFilters = useCallback((newColumnFilters: Record<string, string[]>) => {
+        setColumnFilters(newColumnFilters);
+    }, []);
+
+    const handleSetDateRangeFilters = useCallback((newDateRangeFilters: Record<string, { startDate: string; endDate: string | null }>) => {
+        setDateRangeFilters(newDateRangeFilters);
+    }, []);
+
     return {
         cashAdvances,
         loading,
@@ -308,5 +351,10 @@ export const useApiCashAdvance = (): UseApiCashAdvanceReturn => {
         setPageSize: handleSetPageSize,
         setSearch: handleSetSearch,
         setSort: handleSetSort,
+        setColumnFilters: handleSetColumnFilters,
+        setDateRangeFilters: handleSetDateRangeFilters,
+
+        columnFilters,
+        dateRangeFilters,
     };
 };
