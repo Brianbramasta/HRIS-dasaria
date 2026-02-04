@@ -41,13 +41,14 @@ export const useCashAdvanceHistory = () => {
             tanggalPengajuan: item.applicationDate,
             posisi: item.positionName,
             departemen: item.departmentName,
-            bulanMulaiPotongan: '—',
+            bulanMulaiPotongan: item.deductionStartPeriod || '—',
             tanggalPencairan: item.disbursedAt || '—',
             jenisKasbon: item.loanTypeName,
             nominalKasbon: String(item.nominalLoan),
             nominalCicilan: String(item.nominalInstallment),
             periodeCicilan: `${item.loanPeriod} bulan`,
             statusKasbon: item.loanStatusName as any,
+            rejectionReason: item.rejectionReason || '—',
             raw: item,
         }));
     }, [cashAdvances, page, pageSize]);

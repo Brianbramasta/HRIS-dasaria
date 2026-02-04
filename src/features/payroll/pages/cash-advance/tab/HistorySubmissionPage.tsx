@@ -132,6 +132,12 @@ export default function RiwayatPengajuanPage() {
       },
     },
     {
+      id: 'rejectionReason',
+      label: 'Alasan Penolakkan',
+      sortable: true,
+      format: (val) => val || '—'
+    },
+    {
       id: 'detail',
       label: 'Detail',
       align: 'center',
@@ -168,7 +174,7 @@ export default function RiwayatPengajuanPage() {
         onPageChangeExternal={setPage}
         onRowsPerPageChangeExternal={setPageSize}
         // onExport={() => exportCSV('riwayat-pengajuan-kasbon.csv', rows)}
-        onAdd={() => submissionModal.openModal()}
+        // onAdd={() => submissionModal.openModal()}
         addButtonLabel="Form Pengajuan Kasbon"
         toolbarRightSlot={
           <div className="relative">

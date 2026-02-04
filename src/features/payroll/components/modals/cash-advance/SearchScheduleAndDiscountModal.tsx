@@ -2,12 +2,14 @@ import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import InputField from '@/components/shared/field/InputField';
 import DateField from '@/components/shared/field/DateField';
+import { useSearchScheduleAndDiscountModal } from '@/features/payroll/hooks/modals/cash-advance/useSearchScheduleAndDiscountModal';
 
 interface SearchScheduleAndDiscountModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSave?: (data: { bulanMulaiPotongan: string; tanggalPencairan: string }) => void;
+    onSuccess?: () => void;
     data?: {
+        loanId: string;
         nip: string;
         namaLengkap: string;
         bulanMulaiPotongan?: string;
@@ -18,24 +20,32 @@ interface SearchScheduleAndDiscountModalProps {
 export const SearchScheduleAndDiscountModal: React.FC<SearchScheduleAndDiscountModalProps> = ({
     isOpen,
     onClose,
-    onSave,
+    onSuccess,
     data,
 }) => {
-    const [bulanMulaiPotongan, setBulanMulaiPotongan] = React.useState<string>(data?.bulanMulaiPotongan || '');
-    const [tanggalPencairan, setTanggalPencairan] = React.useState<string>(data?.tanggalPencairan || '');
-
-    const handleSave = () => {
-        onSave?.({
-            bulanMulaiPotongan,
-            tanggalPencairan,
-        });
-    };
+    const {
+        bulanMulaiPotongan,
+        setBulanMulaiPotongan,
+        tanggalPencairan,
+        setTanggalPencairan,
+        handleSubmit,
+        loading,
+    } = useSearchScheduleAndDiscountModal({
+        isOpen,
+        loanId: data?.loanId,
+        defaultValues: {
+            bulanMulaiPotongan: data?.bulanMulaiPotongan,
+            tanggalPencairan: data?.tanggalPencairan,
+        },
+        onSuccess,
+        onClose,
+    });
 
     const modalContent = (
         <div className="space-y-5">
             <InputField
                 label="NIP"
-                value={data?.nip || 'DSR999'}
+                value={data?.nip || ''}
                 disabled
                 containerClassName="w-full"
                 labelClassName="text-sm font-semibold mb-1"
@@ -43,7 +53,7 @@ export const SearchScheduleAndDiscountModal: React.FC<SearchScheduleAndDiscountM
 
             <InputField
                 label="Nama Lengkap"
-                value={data?.namaLengkap || 'Megawati'}
+                value={data?.namaLengkap || ''}
                 disabled
                 containerClassName="w-full"
                 labelClassName="text-sm font-semibold mb-1"
@@ -54,6 +64,7 @@ export const SearchScheduleAndDiscountModal: React.FC<SearchScheduleAndDiscountM
                 placeholder="Pilih Bulan & Tahun"
                 containerClassName="w-full"
                 labelClassName="text-sm font-semibold mb-1"
+                defaultDate={bulanMulaiPotongan}
                 onChange={(_, dateStr) => setBulanMulaiPotongan(dateStr || '')}
                 view="month"
             />
@@ -63,6 +74,7 @@ export const SearchScheduleAndDiscountModal: React.FC<SearchScheduleAndDiscountM
                 placeholder="Pilih Tanggal"
                 containerClassName="w-full"
                 labelClassName="text-sm font-semibold mb-1"
+                defaultDate={tanggalPencairan}
                 onChange={(_, dateStr) => setTanggalPencairan(dateStr || '')}
             />
 
@@ -78,8 +90,8 @@ export const SearchScheduleAndDiscountModal: React.FC<SearchScheduleAndDiscountM
             onClose={onClose}
             title="Atur Jadwal Pencairan & Potongan"
             content={modalContent}
-            handleSubmit={handleSave}
-            submitting={false}
+            handleSubmit={handleSubmit}
+            submitting={loading}
             maxWidth="max-w-xl"
             confirmTitleButton="Simpan"
             closeTitleButton="Tutup"

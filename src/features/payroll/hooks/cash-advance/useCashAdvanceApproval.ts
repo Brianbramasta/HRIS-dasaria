@@ -12,8 +12,6 @@ export const useCashAdvanceApproval = () => {
         cashAdvances,
         page,
         pageSize,
-        approveCashAdvance,
-        rejectCashAdvance,
     } = api;
 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -41,26 +39,7 @@ export const useCashAdvanceApproval = () => {
         rejectModal.closeModal();
     };
 
-    const handleApprove = async (data: { bulanMulaiPotongan: string; tanggalPencairan: string }) => {
-        if (!selected) return;
-        await approveCashAdvance(selected.loanId, {
-            status: 'Disetujui',
-            deductionStartPeriod: data.bulanMulaiPotongan,
-            disbursedAt: data.tanggalPencairan,
-        });
-        await fetchCashAdvances();
-        handleClose();
-    };
 
-    const handleReject = async (rejectionReason: string) => {
-        if (!selected) return;
-        await rejectCashAdvance(selected.loanId, {
-            status: 'Ditolak',
-            rejectionReason,
-        });
-        await fetchCashAdvances();
-        handleClose();
-    };
 
     const rows = useMemo(() => {
         return cashAdvances.map((item, index) => ({
@@ -73,13 +52,14 @@ export const useCashAdvanceApproval = () => {
             tanggalPengajuan: item.applicationDate,
             posisi: item.positionName,
             departemen: item.departmentName,
-            bulanMulaiPotongan: '—', // This might need to come from detail or be added to list API
+            bulanMulaiPotongan: item.deductionStartPeriod || '—',
             tanggalPencairan: item.disbursedAt || '—',
             jenisKasbon: item.loanTypeName,
             nominalKasbon: String(item.nominalLoan),
             nominalCicilan: String(item.nominalInstallment),
             periodeCicilan: `${item.loanPeriod} bulan`,
             statusKasbon: item.loanStatusName as any,
+            rejectionReason: item.rejectionReason || '—',
             raw: item,
         }));
     }, [cashAdvances, page, pageSize]);
@@ -95,8 +75,7 @@ export const useCashAdvanceApproval = () => {
         handleApproveOpen,
         handleRejectOpen,
         handleClose,
-        handleApprove,
-        handleReject,
+        fetchCashAdvances,
         navigate,
     };
 };

@@ -40,7 +40,7 @@ export interface DataTableAction<T = any> {
   icon?: React.ReactNode;
   onClick: (row: T) => void;
   color?: 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info';
-  variant?: 'text' | 'outline' | 'primary';
+  variant?: 'text' | 'outline' | 'primary' | 'custom';
   condition?: (row: T) => boolean;
   className?: string;
 }
@@ -399,7 +399,7 @@ export function DataTable<T = any>({
                                 className={action.className}
                                 key={actionIndex}
                                 onClick={() => action.onClick(row)}
-                                variant={action.variant as 'primary' | 'outline' || 'outline'}
+                                variant={action.variant as 'primary' | 'outline' | 'custom' || 'outline'}
                                 size="sm"
                               >
                                 {action.icon && <span className="mr-1">{action.icon}</span>}
@@ -429,7 +429,7 @@ export function DataTable<T = any>({
                                 className={action.className}
                                 key={actionIndex}
                                 onClick={() => action.onClick(row)}
-                                variant={action.variant as 'primary' | 'outline' || 'outline'}
+                                variant={action.variant as 'primary' | 'outline' | 'custom' || 'outline'}
                                 size="sm"
                               >
                                 {action.icon && <span className="mr-1">{action.icon}</span>}

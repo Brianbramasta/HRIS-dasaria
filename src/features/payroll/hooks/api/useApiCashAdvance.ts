@@ -22,11 +22,13 @@ const mapToCashAdvanceListItem = (item: any): CashAdvanceListItem => ({
     nominalLoan: item.nominal_loan,
     nominalInstallment: item.nominal_installment,
     loanPeriod: item.loan_period,
+    deductionStartPeriod: item.deduction_start_period,
     disbursedAt: item.disbursed_at,
     loanTypeName: item.loan_type_name,
     loanStatusName: item.loan_status_name,
     positionName: item.position_name,
     departmentName: item.department_name,
+    rejectionReason: item.rejection_reason,
 });
 
 const toSortField = (field?: string): string => {

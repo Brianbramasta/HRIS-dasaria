@@ -1,4 +1,4 @@
-// Dokumentasi: Tabel "Persetujuan Kasbon" dengan kolom aksi tambahan
+import { useMemo } from 'react';
 import { DataTable, type DataTableColumn, type DataTableAction } from '@/components/shared/datatable/DataTable';
 import { IconFileDetail } from '@/icons/components/icons';
 import { CheckCircle, XCircle } from 'react-feather';
@@ -50,8 +50,7 @@ export default function CashAdvanceApprovalPage() {
     handleApproveOpen,
     handleRejectOpen,
     handleClose,
-    handleApprove,
-    handleReject,
+    fetchCashAdvances,
     navigate,
   } = useCashAdvanceApproval();
 
@@ -136,6 +135,12 @@ export default function CashAdvanceApprovalPage() {
       },
     },
     {
+      id: 'rejectionReason',
+      label: 'Alasan Penolakkan',
+      sortable: true,
+      format: (val) => val || '—'
+    },
+    {
       id: 'detail',
       label: 'Detail',
       align: 'center',
@@ -154,16 +159,47 @@ export default function CashAdvanceApprovalPage() {
   // Dokumentasi: definisi aksi untuk approve/reject
   const actions: DataTableAction<KasbonApprovalRow>[] = [
     {
-      icon: <CheckCircle size={18} />,
-      className: 'text-success-600 hover:text-success-700',
-      onClick: (row) => handleApproveOpen((row as any).raw),
-    },
-    {
       icon: <XCircle size={18} />,
       className: 'text-error-600 hover:text-error-700',
       onClick: (row) => handleRejectOpen((row as any).raw),
+      condition: (row) => row.statusKasbon === 'Menunggu Persetujuan HR',
+    },
+    {
+      icon: <CheckCircle size={18} />,
+      className: 'text-success-600 hover:text-success-700',
+      onClick: (row) => handleApproveOpen((row as any).raw),
+      condition: (row) => row.statusKasbon === 'Menunggu Persetujuan HR',
+    },
+    {
+      label: 'Disetujui',
+      icon: <CheckCircle size={18} />,
+      variant: 'custom',
+      className: 'text-success-600 font-bold flex items-center gap-2 cursor-default pointer-events-none p-0',
+      onClick: () => { },
+      condition: (row) => row.statusKasbon === 'Disetujui',
+    },
+    {
+      label: 'Ditolak',
+      icon: <XCircle size={18} />,
+      variant: 'custom',
+      className: 'text-error-600 font-bold flex items-center gap-2 cursor-default pointer-events-none p-0',
+      onClick: () => { },
+      condition: (row) => row.statusKasbon === 'Ditolak',
     },
   ];
+
+  // Dokumentasi: Stabilkan referensi data modal agar tidak memicu reset pada hook modal
+  const modalData = useMemo(() => {
+    if (!selected) return undefined;
+    return {
+      loanId: selected.loanId,
+      nip: selected.employeeId,
+      namaLengkap: selected.fullName,
+      nama: selected.fullName, // Untuk Reject modal yang menggunakan key 'nama'
+      bulanMulaiPotongan: '', // Gunakan string kosong agar bisa diproses DatePicker
+      tanggalPencairan: selected.disbursedAt || ''
+    };
+  }, [selected]);
 
   return (
     <div className="p-0">
@@ -225,13 +261,8 @@ export default function CashAdvanceApprovalPage() {
         <SearchScheduleAndDiscountModal
           isOpen={searchModal.isOpen}
           onClose={handleClose}
-          data={selected ? {
-            nip: selected.employeeId,
-            namaLengkap: selected.fullName,
-            bulanMulaiPotongan: '—', // This should probably be blank or current date in the modal
-            tanggalPencairan: selected.disbursedAt || ''
-          } : undefined}
-          onSave={handleApprove}
+          data={modalData as any}
+          onSuccess={() => fetchCashAdvances()}
         />
       )}
 
@@ -239,13 +270,8 @@ export default function CashAdvanceApprovalPage() {
         <RejectCashAdvanceConfirmationModal
           isOpen={rejectModal.isOpen}
           onClose={handleClose}
-          data={selected ? {
-            nip: selected.employeeId,
-            nama: selected.fullName,
-            bulanMulaiPotongan: '—',
-            tanggalPencairan: selected.disbursedAt || ''
-          } : undefined}
-          onConfirm={handleReject}
+          data={modalData as any}
+          onSuccess={() => fetchCashAdvances()}
         />
       )}
     </div>

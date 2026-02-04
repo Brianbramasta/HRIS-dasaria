@@ -2,12 +2,14 @@ import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import InputField from '@/components/shared/field/InputField';
 import TextAreaField from '@/components/shared/field/TextAreaField';
+import { useRejectCashAdvanceModal } from '@/features/payroll/hooks/modals/cash-advance/useRejectCashAdvanceModal';
 
 interface RejectCashAdvanceConfirmationModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onConfirm?: (alasan: string) => void;
+    onSuccess?: () => void;
     data?: {
+        loanId: string;
         nip: string;
         nama: string;
         bulanMulaiPotongan?: string;
@@ -18,14 +20,15 @@ interface RejectCashAdvanceConfirmationModalProps {
 export const RejectCashAdvanceConfirmationModal: React.FC<RejectCashAdvanceConfirmationModalProps> = ({
     isOpen,
     onClose,
-    onConfirm,
+    onSuccess,
     data,
 }) => {
-    const [alasan, setAlasan] = React.useState('');
-
-    const handleConfirm = () => {
-        onConfirm?.(alasan);
-    };
+    const { rejectionReason, setRejectionReason, handleSubmit, loading } = useRejectCashAdvanceModal({
+        isOpen,
+        loanId: data?.loanId,
+        onSuccess,
+        onClose,
+    });
 
     const modalContent = (
         <div className="space-y-6">
@@ -84,8 +87,8 @@ export const RejectCashAdvanceConfirmationModal: React.FC<RejectCashAdvanceConfi
                 <TextAreaField
                     label="Alasan Penolakan (Wajib Diisi)"
                     placeholder="Enter as description ..."
-                    value={alasan}
-                    onChange={(val) => setAlasan(val)}
+                    value={rejectionReason}
+                    onChange={(val) => setRejectionReason(val)}
                     required
                     rows={5}
                     containerClassName="w-full"
@@ -105,8 +108,8 @@ export const RejectCashAdvanceConfirmationModal: React.FC<RejectCashAdvanceConfi
             onClose={onClose}
             title={null} // Title is handled inside content for custom layout
             content={modalContent}
-            handleSubmit={handleConfirm}
-            submitting={false}
+            handleSubmit={handleSubmit}
+            submitting={loading}
             maxWidth="max-w-2xl"
             confirmTitleButton="Simpan"
             closeTitleButton="Tutup"

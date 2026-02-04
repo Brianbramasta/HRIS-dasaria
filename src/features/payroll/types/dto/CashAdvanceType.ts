@@ -8,11 +8,13 @@ export interface CashAdvanceListItem {
     nominalLoan: number;
     nominalInstallment: number;
     loanPeriod: number;
+    deductionStartPeriod: string | null;
     disbursedAt: string | null;
     loanTypeName: string;
     loanStatusName: string;
     positionName: string;
     departmentName: string;
+    rejectionReason?: string | null;
 }
 
 export interface CashAdvanceDetail {
