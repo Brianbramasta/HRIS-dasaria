@@ -59,6 +59,7 @@ export const useStatusCashAdvance = () => {
             idKaryawan: item.employeeId,
             loanId: item.loanId,
             pengguna: item.fullName,
+            avatar: item.avatar,
             tanggalPengajuan: item.applicationDate,
             posisi: item.positionName,
             departemen: item.departmentName,

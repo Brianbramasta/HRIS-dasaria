@@ -4,6 +4,7 @@ export interface CashAdvanceListItem {
     email: string;
     nationalId: number;
     loanId: string;
+    avatar?: string | null;
     applicationDate: string;
     nominalLoan: number;
     nominalInstallment: number;
@@ -43,6 +44,7 @@ export interface ActiveAndCompletedLoansListItem {
     employeeId: string;
     fullName: string;
     email: string;
+    avatar?: string | null;
     loanId: string;
     applicationDate: string;
     nominalLoan: number;

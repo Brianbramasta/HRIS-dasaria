@@ -70,6 +70,7 @@ export const useCashAdvanceApproval = () => {
             email: item.email,
             nationalId: item.nationalId,
             loanId: item.loanId,
+            avatar: item.avatar,
             tanggalPengajuan: item.applicationDate,
             posisi: item.positionName,
             departemen: item.departmentName,
