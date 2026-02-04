@@ -32,6 +32,16 @@ class CashAdvanceServices {
     }
 
     /**
+     * Get Active and Completed Loans
+     * @param filter - Filter parameters (optional employee_id)
+     * @returns Promise dengan data active and completed loans
+     */
+    async getActiveAndCompletedLoans(filter?: any): Promise<any> {
+        const qs = apiService.buildQueryString(filter || {});
+        return apiService.get<any>(`${this.basePath}/active-and-completed-loans${qs ? `?${qs}` : ''}`);
+    }
+
+    /**
      * Approve Cash Advance
      * @param id - Cash Advance ID
      * @param formData - FormData dengan status, deduction_start_period, dan disbursed_at

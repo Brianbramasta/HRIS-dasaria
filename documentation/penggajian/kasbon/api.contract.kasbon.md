@@ -36,6 +36,7 @@ Mengambil daftar pengajuan kasbon.
         "data": [
             {
                 "employee_id": "DSR040",
+                "avatar": null,
                 "full_name": "tes bpjs",
                 "email": "tes40@gmail.com",
                 "national_id": 50641591,
@@ -45,7 +46,7 @@ Mengambil daftar pengajuan kasbon.
                 "nominal_installment": 700,
                 "loan_period": 4,
                 "deduction_start_period": "2026-02-01",
-                "disbursed_at": "2026-02-04",
+                "disbursed_at": "2026-02-03",
                 "rejection_reason": null,
                 "loan_type_name": "Darurat",
                 "loan_status_name": "Disetujui",
@@ -54,6 +55,7 @@ Mengambil daftar pengajuan kasbon.
             },
             {
                 "employee_id": "DSR039",
+                "avatar": null,
                 "full_name": "tes direktur",
                 "email": "tes39@gmail.com",
                 "national_id": 50641590,
@@ -140,7 +142,51 @@ Mengambil informasi dasar karyawan pratinjau sebelum/saat pengajuan kasbon.
 
 ---
 
-### 4. Approve Kasbon
+### 4. Get Active and Completed Loans
+Mengambil daftar kasbon aktif dan selesai untuk seorang karyawan.
+
+**Endpoint**: `GET /api/payroll/kasbon/active-and-completed-loans`
+
+**Query Parameters** (opsional):
+- `employee_id` (string) – filter berdasarkan ID karyawan.
+
+**Response** (200 OK):
+```json
+{
+    "meta": {
+        "status": 200,
+        "message": "Active and completed loans retrieved successfully"
+    },
+    "data": {
+        "current_page": 1,
+        "data": [
+            {
+                "employee_id": "DSR038",
+                "full_name": "tes direktur",
+                "email": "tes38@gmail.com",
+                "loan_id": "71c9d0b0-0174-11f1-ade4-54e1ad857d3e",
+                "application_date": "2026-02-03",
+                "nominal_loan": 5000000,
+                "nominal_installment": 1000000,
+                "loan_period": 5,
+                "deduction_start_period": "2026-02-04",
+                "disbursed_at": "2026-02-05",
+                "loan_type_name": "Darurat",
+                "loan_status_name": "Masa Cicilan",
+                "position_name": "test",
+                "department_name": "hris"
+            }
+        ],
+        "per_page": 10,
+        "to": 1,
+        "total": 1
+    }
+}
+```
+
+---
+
+### 5. Approve Kasbon
 Menyetujui pengajuan kasbon.
 
 **Endpoint**: `POST /api/payroll/kasbon/{id}/approve`
@@ -183,7 +229,7 @@ Menyetujui pengajuan kasbon.
 
 ---
 
-### 5. Reject Kasbon
+### 6. Reject Kasbon
 Menolak pengajuan kasbon.
 
 **Endpoint**: `POST /api/payroll/kasbon/{id}/reject`

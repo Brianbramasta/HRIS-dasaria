@@ -52,6 +52,13 @@ export default function CashAdvanceApprovalPage() {
     handleRejectOpen,
     handleClose,
     fetchCashAdvances,
+
+    // Filters
+    dateRangeFilters,
+    columnFilters,
+    handleDateRangeFilterChange,
+    handleColumnFilterChange,
+
     navigate,
   } = useCashAdvanceApproval();
 
@@ -220,6 +227,10 @@ export default function CashAdvanceApprovalPage() {
         onSortChange={setSort}
         onPageChangeExternal={setPage}
         onRowsPerPageChangeExternal={setPageSize}
+        onDateRangeFilterChange={handleDateRangeFilterChange}
+        dateRangeFilters={dateRangeFilters}
+        onColumnFilterChange={handleColumnFilterChange}
+        columnFilters={columnFilters}
         // onExport={() => exportCSV('persetujuan-kasbon.csv', rows)}
         toolbarRightSlot={
           <div className="relative">

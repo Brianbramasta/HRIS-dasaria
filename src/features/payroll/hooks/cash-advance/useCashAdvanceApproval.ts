@@ -4,6 +4,11 @@ import { CashAdvanceListItem } from '../../types/dto/CashAdvanceType';
 import { useModal } from '@/hooks/useModal';
 import { useNavigate } from 'react-router-dom';
 
+type DateRangeFilter = {
+    startDate: string;
+    endDate: string | null;
+};
+
 export const useCashAdvanceApproval = () => {
     const navigate = useNavigate();
     const api = useApiCashAdvance();
@@ -18,6 +23,8 @@ export const useCashAdvanceApproval = () => {
     const searchModal = useModal(false);
     const rejectModal = useModal(false);
     const [selected, setSelected] = useState<CashAdvanceListItem | null>(null);
+    const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, DateRangeFilter>>({});
+    const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
 
     useEffect(() => {
         fetchCashAdvances();
@@ -39,7 +46,21 @@ export const useCashAdvanceApproval = () => {
         rejectModal.closeModal();
     };
 
+    const handleDateRangeFilterChange = (columnId: string, startDate: string, endDate: string | null) => {
+        setDateRangeFilters((prev) => ({
+            ...prev,
+            [columnId]: { startDate, endDate },
+        }));
+        // TODO: When backend supports date range filtering, call fetchCashAdvances with filter params
+    };
 
+    const handleColumnFilterChange = (columnId: string, values: string[]) => {
+        setColumnFilters((prev) => ({
+            ...prev,
+            [columnId]: values,
+        }));
+        // TODO: When backend supports column filtering, call fetchCashAdvances with filter params
+    };
 
     const rows = useMemo(() => {
         return cashAdvances.map((item, index) => ({
@@ -76,6 +97,10 @@ export const useCashAdvanceApproval = () => {
         handleRejectOpen,
         handleClose,
         fetchCashAdvances,
+        dateRangeFilters,
+        columnFilters,
+        handleDateRangeFilterChange,
+        handleColumnFilterChange,
         navigate,
     };
 };

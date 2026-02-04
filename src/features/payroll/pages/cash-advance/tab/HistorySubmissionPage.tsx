@@ -49,6 +49,13 @@ export default function RiwayatPengajuanPage() {
     shareModal,
     handleOpenShare,
     handleOpenFormKasbon,
+
+    // Filters
+    dateRangeFilters,
+    columnFilters,
+    handleDateRangeFilterChange,
+    handleColumnFilterChange,
+
     navigate,
   } = useCashAdvanceHistory();
 
@@ -174,6 +181,10 @@ export default function RiwayatPengajuanPage() {
         onSortChange={setSort}
         onPageChangeExternal={setPage}
         onRowsPerPageChangeExternal={setPageSize}
+        onDateRangeFilterChange={handleDateRangeFilterChange}
+        dateRangeFilters={dateRangeFilters}
+        onColumnFilterChange={handleColumnFilterChange}
+        columnFilters={columnFilters}
         // onExport={() => exportCSV('riwayat-pengajuan-kasbon.csv', rows)}
         // onAdd={() => submissionModal.openModal()}
         addButtonLabel="Form Pengajuan Kasbon"

@@ -7,6 +7,7 @@ import {
     CashAdvanceApprovePayload,
     CashAdvanceRejectPayload,
     CashAdvanceResponse,
+    ActiveAndCompletedLoansListItem,
 } from '../../types/dto/CashAdvanceType';
 import { cashAdvanceServices } from '../../services/CashAdvanceServices';
 import useFilterStore from '../../../../stores/filterStore';
@@ -29,6 +30,23 @@ const mapToCashAdvanceListItem = (item: any): CashAdvanceListItem => ({
     positionName: item.position_name,
     departmentName: item.department_name,
     rejectionReason: item.rejection_reason,
+});
+
+const mapToActiveAndCompletedLoansListItem = (item: any): ActiveAndCompletedLoansListItem => ({
+    employeeId: item.employee_id,
+    fullName: item.full_name,
+    email: item.email,
+    loanId: item.loan_id,
+    applicationDate: item.application_date,
+    nominalLoan: item.nominal_loan,
+    nominalInstallment: item.nominal_installment,
+    loanPeriod: item.loan_period,
+    deductionStartPeriod: item.deduction_start_period,
+    disbursedAt: item.disbursed_at,
+    loanTypeName: item.loan_type_name,
+    loanStatusName: item.loan_status_name,
+    positionName: item.position_name,
+    departmentName: item.department_name,
 });
 
 const toSortField = (field?: string): string => {
@@ -59,6 +77,7 @@ interface UseApiCashAdvanceReturn {
     fetchCashAdvances: (filter?: Partial<TableFilter>) => Promise<void>;
     getCashAdvanceDetail: (id: string) => Promise<CashAdvanceDetail | null>;
     getEmployeeInfo: (employeeId: string) => Promise<CashAdvanceEmployeeInfo | null>;
+    getActiveAndCompletedLoans: (employeeId?: string) => Promise<ActiveAndCompletedLoansListItem[] | null>;
     approveCashAdvance: (id: string, payload: CashAdvanceApprovePayload) => Promise<CashAdvanceResponse | null>;
     rejectCashAdvance: (id: string, payload: CashAdvanceRejectPayload) => Promise<CashAdvanceResponse | null>;
 
@@ -184,6 +203,27 @@ export const useApiCashAdvance = (): UseApiCashAdvanceReturn => {
         }
     }, []);
 
+    const getActiveAndCompletedLoans = useCallback(async (employeeId?: string): Promise<ActiveAndCompletedLoansListItem[] | null> => {
+        setLoading(true);
+        setError(null);
+        try {
+            const params: any = {};
+            if (employeeId) params.employee_id = employeeId;
+
+            const resp = await cashAdvanceServices.getActiveAndCompletedLoans(params);
+            const payload = (resp as any)?.data ?? {};
+            const items = payload?.data ?? [];
+
+            return (items || []).map(mapToActiveAndCompletedLoansListItem);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to get active and completed loans');
+            console.error('Error getting active and completed loans:', err);
+            return null;
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
     const approveCashAdvance = useCallback(async (id: string, payload: CashAdvanceApprovePayload): Promise<CashAdvanceResponse | null> => {
         setLoading(true);
         setError(null);
@@ -258,6 +298,7 @@ export const useApiCashAdvance = (): UseApiCashAdvanceReturn => {
         fetchCashAdvances,
         getCashAdvanceDetail,
         getEmployeeInfo,
+        getActiveAndCompletedLoans,
         approveCashAdvance,
         rejectCashAdvance,
 

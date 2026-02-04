@@ -39,6 +39,23 @@ export interface CashAdvanceEmployeeInfo {
     fullName: string;
 }
 
+export interface ActiveAndCompletedLoansListItem {
+    employeeId: string;
+    fullName: string;
+    email: string;
+    loanId: string;
+    applicationDate: string;
+    nominalLoan: number;
+    nominalInstallment: number;
+    loanPeriod: number;
+    deductionStartPeriod: string;
+    disbursedAt: string;
+    loanTypeName: string;
+    loanStatusName: string;
+    positionName: string;
+    departmentName: string;
+}
+
 export interface CashAdvanceApprovePayload {
     status: 'Disetujui';
     deductionStartPeriod: string;
