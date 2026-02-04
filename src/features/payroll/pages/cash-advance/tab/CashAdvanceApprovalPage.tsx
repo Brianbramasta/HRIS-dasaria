@@ -1,6 +1,4 @@
 // Dokumentasi: Tabel "Persetujuan Kasbon" dengan kolom aksi tambahan
-import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { DataTable, type DataTableColumn, type DataTableAction } from '@/components/shared/datatable/DataTable';
 import { IconFileDetail } from '@/icons/components/icons';
 import { CheckCircle, XCircle } from 'react-feather';
@@ -11,6 +9,7 @@ import SearchScheduleAndDiscountModal from '@/features/payroll/components/modals
 import RejectCashAdvanceConfirmationModal from '@/features/payroll/components/modals/cash-advance/RejectCashAdvanceConfirmationModal';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 import { formatCurrencyValue, parseCurrency } from '@/utils/formatCurrency';
+import { useCashAdvanceApproval } from '@/features/payroll/hooks/cash-advance/useCashAdvanceApproval';
 
 type KasbonApprovalRow = {
   no?: number;
@@ -30,36 +29,31 @@ type KasbonApprovalRow = {
   detail?: string;
 };
 
-type DateRangeFilter = {
-  startDate: string;
-  endDate: string | null;
-};
-
 export default function CashAdvanceApprovalPage() {
-  // Dokumentasi: inisialisasi navigate dan state dropdown
-  const navigate = useNavigate();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
-  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
-  const [selectedRow, setSelectedRow] = useState<KasbonApprovalRow | null>(null);
+  const {
+    rows,
+    loading,
+    total,
+    page,
+    pageSize,
+    setSearch,
+    setPage,
+    setPageSize,
+    setSort,
 
-  const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, DateRangeFilter>>({});
-  const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
-
-  const handleDateRangeFilterChange = (columnId: string, startDate: string, endDate: string | null) => {
-    setDateRangeFilters((prev) => ({
-      ...prev,
-      [columnId]: { startDate, endDate },
-    }));
-  };
-
-  const handleColumnFilterChange = (columnId: string, values: string[]) => {
-    setColumnFilters((prev) => ({
-      ...prev,
-      [columnId]: values,
-    }));
-  };
-
+    // Actions & Modals
+    isDropdownOpen,
+    setIsDropdownOpen,
+    searchModal,
+    rejectModal,
+    selected,
+    handleApproveOpen,
+    handleRejectOpen,
+    handleClose,
+    handleApprove,
+    handleReject,
+    navigate,
+  } = useCashAdvanceApproval();
 
   // Dokumentasi: definisi kolom tabel sesuai kebutuhan UI
   const columns: DataTableColumn<KasbonApprovalRow>[] = [
@@ -68,7 +62,6 @@ export default function CashAdvanceApprovalPage() {
       label: 'No.',
       align: 'center',
       sortable: false,
-      format: (_, row) => rows.indexOf(row) + 1,
     },
     { id: 'idKaryawan', label: 'NIP', sortable: true },
     {
@@ -158,75 +151,17 @@ export default function CashAdvanceApprovalPage() {
     },
   ];
 
-  // Dokumentasi: contoh data statis untuk tampilan tabel
-  const rows: KasbonApprovalRow[] = useMemo(() => {
-    let filteredData: KasbonApprovalRow[] = [
-      { idKaryawan: 'DSR999', pengguna: 'Lindsey Curtis', tanggalPengajuan: '2023-01-28', posisi: 'TA', departemen: 'HR', bulanMulaiPotongan: '2023-01-28', tanggalPencairan: '2023-01-28', jenisKasbon: 'Operasional', nominalKasbon: '3.000.000', nominalCicilan: '300.000', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Persetujuan HR' },
-      { idKaryawan: 'DSR999', pengguna: 'Lindsey Curtis', tanggalPengajuan: '2023-01-28', posisi: 'TA', departemen: 'HR', bulanMulaiPotongan: '2023-01-28', tanggalPencairan: '2023-01-28', jenisKasbon: 'Pribadi', nominalKasbon: '8.000.000', nominalCicilan: '600.000', periodeCicilan: '13 bulan', statusKasbon: 'Disetujui' },
-      { idKaryawan: 'DSR999', pengguna: 'Lindsey Curtis', tanggalPengajuan: '2023-01-28', posisi: 'TA', departemen: 'HR', bulanMulaiPotongan: '2023-01-28', tanggalPencairan: '2023-01-28', jenisKasbon: 'Operasional', nominalKasbon: '1.200.000', nominalCicilan: '150.000', periodeCicilan: '8 bulan', statusKasbon: 'Ditolak' },
-      { idKaryawan: 'DSR999', pengguna: 'Lindsey Curtis', tanggalPengajuan: '2023-01-28', posisi: 'HRBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '2023-01-28', jenisKasbon: 'Pribadi', nominalKasbon: '5.000.000', nominalCicilan: '500.000', periodeCicilan: '10 bulan', statusKasbon: 'Disetujui' },
-      { idKaryawan: 'DSR999', pengguna: 'Lindsey Curtis', tanggalPengajuan: '2023-01-28', posisi: 'HRBP', departemen: 'HR', bulanMulaiPotongan: '2023-01-28', tanggalPencairan: '2023-01-28', jenisKasbon: 'Operasional', nominalKasbon: '2.500.000', nominalCicilan: '250.000', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Persetujuan HR' },
-      { idKaryawan: 'DSR999', pengguna: 'Lindsey Curtis', tanggalPengajuan: '2023-01-28', posisi: 'HRBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '2023-01-28', jenisKasbon: 'Operasional', nominalKasbon: '3.000.000', nominalCicilan: '300.000', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Persetujuan HR' },
-      { idKaryawan: 'DSR999', pengguna: 'Lindsey Curtis', tanggalPengajuan: '2023-01-28', posisi: 'HRBP', departemen: 'HR', bulanMulaiPotongan: '2023-01-28', tanggalPencairan: '2023-01-28', jenisKasbon: 'Operasional', nominalKasbon: '3.000.000', nominalCicilan: '300.000', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Persetujuan HR' },
-      { idKaryawan: 'DSR999', pengguna: 'Lindsey Curtis', tanggalPengajuan: '2023-01-28', posisi: 'HRBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '2023-01-28', jenisKasbon: 'Operasional', nominalKasbon: '3.000.000', nominalCicilan: '300.000', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Persetujuan HR' },
-      { idKaryawan: 'DSR999', pengguna: 'Lindsey Curtis', tanggalPengajuan: '2023-01-28', posisi: 'HRBP', departemen: 'HR', bulanMulaiPotongan: '2023-01-28', tanggalPencairan: '2023-01-28', jenisKasbon: 'Operasional', nominalKasbon: '3.000.000', nominalCicilan: '300.000', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Persetujuan HR' },
-      { idKaryawan: 'DSR999', pengguna: 'Lindsey Curtis', tanggalPengajuan: '2023-01-28', posisi: 'HRBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '2023-01-28', jenisKasbon: 'Operasional', nominalKasbon: '3.000.000', nominalCicilan: '300.000', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Persetujuan HR' },
-    ];
-
-    // Apply date range filters
-    Object.entries(dateRangeFilters).forEach(([columnId, range]) => {
-      if (range.startDate) {
-        const start = new Date(range.startDate);
-        const end = range.endDate ? new Date(range.endDate) : null;
-
-        filteredData = filteredData.filter((row: KasbonApprovalRow) => {
-          const cellValue = row[columnId as keyof KasbonApprovalRow];
-          if (!cellValue || typeof cellValue !== 'string') return true;
-
-          const cellDate = new Date(cellValue);
-          if (isNaN(cellDate.getTime())) return true;
-
-          if (end) {
-            return cellDate >= start && cellDate <= end;
-          }
-          return cellDate >= start;
-        });
-      }
-    });
-
-    // Apply column filters
-    Object.entries(columnFilters).forEach(([columnId, values]) => {
-      if (values && values.length > 0) {
-        filteredData = filteredData.filter((row: KasbonApprovalRow) => {
-          const cellValue = row[columnId as keyof KasbonApprovalRow];
-          if (cellValue === undefined || cellValue === null) return false;
-          return values.includes(cellValue.toString());
-        });
-      }
-    });
-
-    return filteredData;
-  }, [dateRangeFilters, columnFilters]);
-
   // Dokumentasi: definisi aksi untuk approve/reject
   const actions: DataTableAction<KasbonApprovalRow>[] = [
     {
       icon: <CheckCircle size={18} />,
       className: 'text-success-600 hover:text-success-700',
-      onClick: (row) => {
-        console.log('Approve kasbon:', row);
-        setSelectedRow(row);
-        setIsSearchModalOpen(true);
-      },
+      onClick: (row) => handleApproveOpen((row as any).raw),
     },
     {
       icon: <XCircle size={18} />,
       className: 'text-error-600 hover:text-error-700',
-      onClick: (row) => {
-        console.log('Reject kasbon:', row);
-        setSelectedRow(row);
-        setIsRejectModalOpen(true);
-      },
+      onClick: (row) => handleRejectOpen((row as any).raw),
     },
   ];
 
@@ -234,15 +169,20 @@ export default function CashAdvanceApprovalPage() {
     <div className="p-0">
       <DataTable
         title="Persetujuan Kasbon"
-        data={rows}
+        data={rows as any}
         columns={columns}
         actions={actions}
         searchable
         filterable
-        onDateRangeFilterChange={handleDateRangeFilterChange}
-        dateRangeFilters={dateRangeFilters}
-        onColumnFilterChange={handleColumnFilterChange}
-        columnFilters={columnFilters}
+        loading={loading}
+        pageSize={pageSize}
+        useExternalPagination
+        externalPage={page}
+        externalTotal={total}
+        onSearchChange={setSearch}
+        onSortChange={setSort}
+        onPageChangeExternal={setPage}
+        onRowsPerPageChangeExternal={setPageSize}
         // onExport={() => exportCSV('persetujuan-kasbon.csv', rows)}
         toolbarRightSlot={
           <div className="relative">
@@ -281,39 +221,31 @@ export default function CashAdvanceApprovalPage() {
         }
       />
 
-      {isSearchModalOpen && (
+      {searchModal.isOpen && (
         <SearchScheduleAndDiscountModal
-          isOpen={isSearchModalOpen}
-          onClose={() => setIsSearchModalOpen(false)}
-          data={selectedRow ? {
-            nip: selectedRow.idKaryawan,
-            namaLengkap: selectedRow.pengguna,
-            bulanMulaiPotongan: selectedRow.bulanMulaiPotongan,
-            tanggalPencairan: selectedRow.tanggalPencairan
+          isOpen={searchModal.isOpen}
+          onClose={handleClose}
+          data={selected ? {
+            nip: selected.employeeId,
+            namaLengkap: selected.fullName,
+            bulanMulaiPotongan: '—', // This should probably be blank or current date in the modal
+            tanggalPencairan: selected.disbursedAt || ''
           } : undefined}
-          onSave={(data) => {
-            console.log('Saving schedule and discount:', data);
-            // Implementasikan logic simpan di sini (misal: panggil API)
-            setIsSearchModalOpen(false);
-          }}
+          onSave={handleApprove}
         />
       )}
 
-      {isRejectModalOpen && (
+      {rejectModal.isOpen && (
         <RejectCashAdvanceConfirmationModal
-          isOpen={isRejectModalOpen}
-          onClose={() => setIsRejectModalOpen(false)}
-          data={selectedRow ? {
-            nip: selectedRow.idKaryawan,
-            nama: selectedRow.pengguna,
-            bulanMulaiPotongan: selectedRow.bulanMulaiPotongan,
-            tanggalPencairan: selectedRow.tanggalPencairan
+          isOpen={rejectModal.isOpen}
+          onClose={handleClose}
+          data={selected ? {
+            nip: selected.employeeId,
+            nama: selected.fullName,
+            bulanMulaiPotongan: '—',
+            tanggalPencairan: selected.disbursedAt || ''
           } : undefined}
-          onConfirm={(alasan) => {
-            console.log('Rejecting kasbon with reason:', alasan);
-            // Implementasikan logic reject di sini (misal: panggil API)
-            setIsRejectModalOpen(false);
-          }}
+          onConfirm={handleReject}
         />
       )}
     </div>
