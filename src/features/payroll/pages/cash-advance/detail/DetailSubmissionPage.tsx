@@ -1,41 +1,39 @@
 // Documentation: Cash Advance Submission Detail Page with read-only fields
-import { useNavigate } from 'react-router-dom';
 import LinkPreview from '@/components/shared/form/LinkPreview';
 import PayrollCard from '@/features/payroll/components/cards/Cards';
 import InputField from '@/components/shared/field/InputField';
 import DateField from '@/components/shared/field/DateField';
 import TextAreaField from '@/components/shared/field/TextAreaField';
 import { formatCurrencyValue } from '@/utils/formatCurrency';
+import { useDetailSubmission } from '@/features/payroll/hooks/cash-advance/useDetailSubmission';
 
 export default function DetailSubmissionPage() {
-  const navigate = useNavigate();
+  const { cashAdvanceData, loading, handleBack } = useDetailSubmission();
 
-  // Documentation: Sample static data - in real app this would come from API/state based on id
-  const cashAdvanceData = {
-    nip: '1523409876',
-    pengguna: 'Lindsay Curtis',
-    tanggalPengajuan: '2025-10-20',
-    posisi: 'TA',
-    departemen: 'HR',
-    bulanMulaiPotongan: '2025-11-01',
-    tanggalPencairan: '2025-10-25',
-    jenisKasbon: 'Operasional',
-    nominalKasbon: 3000000,
-    periodeCicilan: '10 bulan',
-    nominalCicilan: 300000,
-    sisaPeriodeCicilan: '4',
-    statusKasbon: 'Masa Cicilan',
-    suratPersetujuanAtasan: 'dokumen_persetujuan.pdf',
-    dokumenPendukung: 'dokumen_pendukung.pdf',
-    keterangan: 'Pengajuan kasbon untuk kebutuhan operasional kantor termasuk pembelian peralatan dan supplies yang diperlukan untuk menunjang pekerjaan sehari-hari.',
-  };
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="p-6 flex items-center justify-center">
+        <div className="text-gray-500">Loading...</div>
+      </div>
+    );
+  }
+
+  // Show empty state if no data
+  if (!cashAdvanceData) {
+    return (
+      <div className="p-6 flex items-center justify-center">
+        <div className="text-gray-500">Data tidak ditemukan</div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 space-y-6">
       {/* Header with Back Button */}
       <div className="flex items-center gap-2 mb-6">
         <button
-          onClick={() => navigate(-1)}
+          onClick={handleBack}
           className="flex items-center gap-2  text-sm font-medium text-gray-700"
         >
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -54,49 +52,42 @@ export default function DetailSubmissionPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <InputField
             label="NIP"
-            value={cashAdvanceData.nip}
+            value={cashAdvanceData.nip || ''}
             readonly
             placeholder="Otomatis"
           />
 
           <InputField
             label="Pengguna"
-            value={cashAdvanceData.pengguna}
+            value={cashAdvanceData.fullName || ''}
             readonly
             placeholder="Otomatis"
           />
 
           <DateField
             label="Tanggal Pengajuan"
-            defaultDate={cashAdvanceData.tanggalPengajuan}
+            defaultDate={cashAdvanceData.applicationDate}
             disabled
             placeholder="Pilih tanggal"
           />
 
           <InputField
             label="Posisi"
-            value={cashAdvanceData.posisi}
+            value={cashAdvanceData.positionName || ''}
             readonly
             placeholder="Otomatis"
           />
 
           <InputField
             label="Departemen"
-            value={cashAdvanceData.departemen}
+            value={cashAdvanceData.departmentName || ''}
             readonly
             placeholder="Otomatis"
           />
 
           <DateField
             label="Bulan Mulai Potongan"
-            defaultDate={cashAdvanceData.bulanMulaiPotongan}
-            disabled
-            placeholder="Pilih tanggal"
-          />
-
-          <DateField
-            label="Tanggal Pencairan"
-            defaultDate={cashAdvanceData.tanggalPencairan}
+            defaultDate={cashAdvanceData.deductionStartPeriod}
             disabled
             placeholder="Pilih tanggal"
           />
@@ -111,44 +102,30 @@ export default function DetailSubmissionPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <InputField
             label="Jenis Kasbon"
-            value={cashAdvanceData.jenisKasbon}
+            value={cashAdvanceData.loanTypeName || ''}
             readonly
             placeholder="Jenis Kasbon"
           />
 
           <InputField
             label="Nominal Kasbon"
-            value={formatCurrencyValue(cashAdvanceData.nominalKasbon)}
+            value={formatCurrencyValue(cashAdvanceData.nominalLoan)}
             readonly
             placeholder="Nominal Kasbon"
           />
 
           <InputField
             label="Periode Cicilan"
-            value={cashAdvanceData.periodeCicilan}
+            value={`${cashAdvanceData.loanPeriod} bulan`}
             readonly
             placeholder="Periode Cicilan"
           />
 
           <InputField
             label="Nominal Cicilan"
-            value={formatCurrencyValue(cashAdvanceData.nominalCicilan)}
+            value={formatCurrencyValue(cashAdvanceData.nominalInstallment)}
             readonly
             placeholder="Nominal Cicilan"
-          />
-
-          <InputField
-            label="Sisa Periode Cicilan"
-            value={cashAdvanceData.sisaPeriodeCicilan}
-            readonly
-            placeholder="Sisa Periode Cicilan"
-          />
-
-          <InputField
-            label="Status Kasbon"
-            value={cashAdvanceData.statusKasbon}
-            readonly
-            placeholder="Status Kasbon"
           />
 
           <div>
@@ -156,7 +133,7 @@ export default function DetailSubmissionPage() {
               Surat Persetujuan Atasan
             </label>
             <LinkPreview
-              url={cashAdvanceData.suratPersetujuanAtasan}
+              url={cashAdvanceData.supervisorApprovalFile || ''}
               label="Lihat Detail"
             />
           </div>
@@ -166,7 +143,7 @@ export default function DetailSubmissionPage() {
               Dokumen Pendukung
             </label>
             <LinkPreview
-              url={cashAdvanceData.dokumenPendukung}
+              url={cashAdvanceData.supportingDocuments || ''}
               label="Lihat Detail"
             />
           </div>
@@ -174,7 +151,7 @@ export default function DetailSubmissionPage() {
           <div className="md:col-span-2 lg:col-span-3">
             <TextAreaField
               label="Keterangan"
-              value={cashAdvanceData.keterangan}
+              value={cashAdvanceData.loanDescription || ''}
               readonly
               rows={4}
               placeholder="Detail Catatan ..."

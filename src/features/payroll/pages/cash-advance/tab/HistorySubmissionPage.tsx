@@ -14,6 +14,7 @@ import { useCashAdvanceHistory } from '@/features/payroll/hooks/cash-advance/use
 type KasbonRiwayatRow = {
   no?: number;
   idKaryawan: string;
+  loanId: string;
   pengguna: string;
   avatar?: string;
   tanggalPengajuan: string;
@@ -144,7 +145,7 @@ export default function RiwayatPengajuanPage() {
       sortable: false,
       format: (_, row) => (
         <button
-          onClick={() => navigate(`/cash-advance/detail/${row.idKaryawan}`)}
+          onClick={() => navigate(`/cash-advance/detail/${row.loanId}`)}
           className="inline-flex items-center justify-center rounded-md p-2 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-white/[0.06]"
         >
           <IconFileDetail />
