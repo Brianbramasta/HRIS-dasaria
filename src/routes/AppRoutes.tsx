@@ -28,6 +28,7 @@ import PerpanjangKontrakEdit from "../features/employee/pages/contract-renewal/c
 import DataKaryawanPelanggaran from "../features/employee/components/employee-data/tab/Fraud";
 import OrganizationHistoryPage from "../features/employee/pages/organization-history/OrganizationHistoryPage";
 import OrganizationHistoryAtasanPage from "../features/employee/pages/organization-history/OrganizationHistoryAtasanPage";
+import DetailOrganizationHistoryPage from "../features/employee/pages/organization-history/detail/DetailOrganizationHistory";
 import DashboardPage from "@/features/dashboard/pages/Index";
 import Dashboard from "@/features/dashboard/pages/tab/Dashboard";
 import Notification from "@/features/dashboard/pages/tab/Notification";
@@ -208,6 +209,7 @@ export default function AppRoutes() {
           <Route path="/submission-types" element={<JenisPengajuanPage />} />
           <Route path="/organization-history" element={<OrganizationHistoryPage />} />
           <Route path="/organization-history/atasan" element={<OrganizationHistoryAtasanPage />} />
+          <Route path="/organization-history/detail" element={<DetailOrganizationHistoryPage />} />
           <Route path="/role-management-access" element={<HakAksesPage />} />
           <Route path="/role-management-access/detail/:roleId" element={<DetailHakAksesPages />} />
           <Route path="/role-management-access/service-detail/:layananId" element={<ModulDetail />} />

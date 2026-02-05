@@ -1,5 +1,5 @@
 import { ChevronLeft } from 'react-feather';
-import { useState, useEffect } from 'react';
+import {  useEffect } from 'react';
 import ContractRenewalDetail from '@/features/employee/components/contract-renewal/ContractRenewalDetail';
 import OldContract from '@/features/employee/components/contract-renewal/OldContract';
 import NewContract from '@/features/employee/components/contract-renewal/NewContract';
@@ -12,7 +12,6 @@ import { useContractRenewalStore } from '../../../../stores/useContractRenewalSt
 
 
 export default function PerpanjangKontrakEdit() {
-  const [isEditing, setIsEditing] = useState(false);
   const {
     kontrakData,
     // isLoading,
@@ -27,10 +26,8 @@ export default function PerpanjangKontrakEdit() {
 
   const {
     setChangeTypeName,
-    resetChangeTypeName,
     shouldShowAllComponents,
     shouldShowDetailAndOldContract,
-    shouldShowOnlyDetail,
   } = useContractRenewalStore();
 
   // Update store when kontrakData changes
@@ -41,7 +38,6 @@ export default function PerpanjangKontrakEdit() {
   }, [kontrakData, setChangeTypeName]);
 
   const handleEditClick = () => {
-    setIsEditing(true);
     setIsStatusModalOpen(true);
   };
 

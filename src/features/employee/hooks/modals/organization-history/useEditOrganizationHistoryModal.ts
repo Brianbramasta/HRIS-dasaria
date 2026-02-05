@@ -7,6 +7,7 @@ import {
   getUnitDropdownByDepartmentIdOptions,
 } from '@/features/employee/hooks/employee-data/form/useFormulirKaryawan';
 import { useOrganizationChange } from '@/features/employee/hooks/organization-history/useOrganizationChange';
+import { Karyawan } from '@/features/employee/types/dto/EmployeeType';
 
 export type OrganizationChangeForm = {
   id?: string;
@@ -64,6 +65,9 @@ export function useEditOrganizationHistoryModal({ isOpen, initialData }: Params)
   const [positionSearch, setPositionSearch] = useState<string>('');
   const [positionLevelSearch, setPositionLevelSearch] = useState<string>('');
   const isEditMode = !!initialData;
+  
+  const [currentEmployee, setCurrentEmployee] = useState<Karyawan | null>(null);
+  const [isLoadingEmployee, setIsLoadingEmployee] = useState(false);
 
   useEffect(() => {
     if (initialData && isOpen) {
@@ -409,10 +413,53 @@ export function useEditOrganizationHistoryModal({ isOpen, initialData }: Params)
     fetchStructuralJobs();
   }, [form.job_title_id]);
 
+  useEffect(() => {
+    if (!form.employee_id) {
+      setCurrentEmployee(null);
+      return;
+    }
+
+    const fetchEmployee = async () => {
+      setIsLoadingEmployee(true);
+      try {
+        // Try to find in existing options first to avoid call if possible? 
+        // No, options only have name/id. We need full details.
+        
+        // We use getEmployees with search or filter. 
+        // Since we don't have a direct "getById" that returns EmployeeListItem guaranteed, 
+        // we'll try getEmployees with search/filter.
+        // Assuming form.employee_id is the UUID.
+        
+        // Strategy: Use getEmployees with search param set to the UUID or Name?
+        // UUID search support depends on backend.
+        // Alternatively, use getEmployeeDetailPersonal and map it to EmployeeListItem structure if needed.
+        // Let's try getEmployeeDetailPersonal as it is by ID.
+        
+        const resp = await employeeMasterDataService.getEmployeeDetailPersonal(form.employee_id as string);
+        const data = resp.data;
+        if (data) {
+           // Map response to EmployeeListItem-like structure if needed, or just use it.
+           // The UI expects fields like company_name, position_name, etc.
+           // Let's assume data has them.
+           setCurrentEmployee(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch employee details", error);
+        setCurrentEmployee(null);
+      } finally {
+        setIsLoadingEmployee(false);
+      }
+    };
+
+    fetchEmployee();
+  }, [form.employee_id]);
+
   return {
     title,
     form,
     isEditMode,
+    currentEmployee,
+    isLoadingEmployee,
     changeTypeOptions,
     employeeOptions,
     companyOptions,

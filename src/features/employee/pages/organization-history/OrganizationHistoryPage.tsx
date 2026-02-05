@@ -95,7 +95,7 @@ export default function OrganizationHistoryPage() {
           // console.log(row);
           // return;
           // navigate(`/organization-history/preview?id=${row.id}`);
-          navigate(`/employee-data/${row.employee_id}?mode=view&tab=organization-history`);
+          navigate(`/organization-history/detail?id=${row.id}`);
         },
       },
       {
