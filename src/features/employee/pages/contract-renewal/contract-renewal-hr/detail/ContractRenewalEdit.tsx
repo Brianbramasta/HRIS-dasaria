@@ -1,5 +1,5 @@
 import { ChevronLeft } from 'react-feather';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ContractRenewalDetail from '@/features/employee/components/contract-renewal/ContractRenewalDetail';
 import OldContract from '@/features/employee/components/contract-renewal/OldContract';
 import NewContract from '@/features/employee/components/contract-renewal/NewContract';
@@ -7,6 +7,7 @@ import EditStatusPerpanjanganModal from '@/features/employee/components/modals/e
 import EditPengajuanKontrakModal from '@/features/employee/components/modals/employee-data/contract-renewal/EditContractRequestModal';
 import Button from '@/components/ui/button/Button';
 import { useEditContractRenewal } from '../../../../hooks/contract-renewal/useEditContractRenewal';
+import { useContractRenewalStore } from '../../../../stores/useContractRenewalStore';
 
 
 
@@ -23,6 +24,21 @@ export default function PerpanjangKontrakEdit() {
     handleUpdateStatus,
     handleUpdatePengajuan,
   } = useEditContractRenewal();
+
+  const {
+    setChangeTypeName,
+    resetChangeTypeName,
+    shouldShowAllComponents,
+    shouldShowDetailAndOldContract,
+    shouldShowOnlyDetail,
+  } = useContractRenewalStore();
+
+  // Update store when kontrakData changes
+  useEffect(() => {
+    if (kontrakData?.pengajuan_kontrak?.change_type_name) {
+      setChangeTypeName(kontrakData.pengajuan_kontrak.change_type_name);
+    }
+  }, [kontrakData, setChangeTypeName]);
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -48,7 +64,7 @@ export default function PerpanjangKontrakEdit() {
 
         {/* Card Content */}
         <div className="px-6 pb-8 space-y-8">
-          {/* Section 1: Status Perpanjangan */}
+          {/* Section 1: Status Perpanjangan - Always Show */}
           <div>
             <ContractRenewalDetail
               data={kontrakData?.status_perpanjangan}
@@ -56,22 +72,35 @@ export default function PerpanjangKontrakEdit() {
             />
           </div>
 
-          {/* Section 2 & 3: Kontrak Lama dan Kontrak Baru */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 ">
-            <div>
-              <OldContract
-                data={kontrakData?.pengajuan_kontrak}
-                isEditing={isEditing}
-              />
-            </div>
+          {/* Section 2 & 3: Kontrak Lama dan Kontrak Baru - Conditional Rendering */}
+          {shouldShowAllComponents() && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <OldContract
+                  data={kontrakData?.pengajuan_kontrak}
+                  isEditing={isEditing}
+                />
+              </div>
 
-            <div>
-              <NewContract
-                data={{}}
-                isEditing={isEditing}
-              />
+              <div>
+                <NewContract
+                  data={{}}
+                  isEditing={isEditing}
+                />
+              </div>
             </div>
-          </div>
+          )}
+
+          {shouldShowDetailAndOldContract() && (
+            <div className="grid grid-cols-1 gap-6">
+              <div>
+                <OldContract
+                  data={kontrakData?.pengajuan_kontrak}
+                  isEditing={isEditing}
+                />
+              </div>
+            </div>
+          )}
 
           {/* Edit Button */}
           <div className="flex justify-end pt-4 ">

@@ -1,8 +1,9 @@
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
-import Input from '@/components/form/input/InputField';
-import TextArea from '@/components/form/input/TextArea';
-import Select from '@/components/form/Select';
+import ContractRenewalDetail from '@/features/employee/components/modals/employee-data/contract-renewal/slice-component/ContractRenewalDetail';
+import OldContract from '@/features/employee/components/modals/employee-data/contract-renewal/slice-component/OldContract';
+import NewContract from '@/features/employee/components/modals/employee-data/contract-renewal/slice-component/NewContract';
 import useEditContractRenewalStatusModal from '@/features/employee/hooks/modals/employee-data/contract-renewal/useEditContractRenewalStatusModal';
+import { useState, useEffect } from 'react';
 
 interface EditStatusPerpanjanganModalProps {
   isOpen: boolean;
@@ -30,20 +31,85 @@ export default function EditStatusPerpanjanganModal({
   onSuccess,
 }: EditStatusPerpanjanganModalProps) {
   const {
-    statusPerpanjanganOptions,
-    statusAtasanOptions,
-    statusKaryawanOptions,
-    statusPerpanjangan,
-    setStatusPerpanjangan,
-    statusAtasan,
-    setStatusAtasan,
-    statusKaryawan,
-    setStatusKaryawan,
-    catatan,
-    setCatatan,
     submitting,
     handleSubmit,
   } = useEditContractRenewalStatusModal({ kontrakData, onClose, onSuccess });
+
+  const [contractRenewalData, setContractRenewalData] = useState<any>(null);
+  const [oldContractData, setOldContractData] = useState<any>(null);
+  const [newContractData, setNewContractData] = useState<any>(null);
+
+  useEffect(() => {
+    if (isOpen && kontrakData) {
+      // Map contract renewal data
+      setContractRenewalData({
+        employee_id: kontrakData.idKaryawan,
+        full_name: kontrakData.pengguna,
+        position_name: kontrakData.posisi,
+        department_name: kontrakData.departemen,
+        join_date: kontrakData.tanggalMasuk,
+        end_date: kontrakData.tanggalBerakhir,
+        remaining_contract: kontrakData.sisaKontrak,
+        renewal_status_name: kontrakData.statusPerpanjangan,
+        notes: kontrakData.catatan,
+      });
+
+      // Initialize old and new contract data (can be extended based on actual data structure)
+      setOldContractData({
+        employee_category_name: kontrakData.pengguna,
+        company_name: '',
+        office_name: '',
+        directorate_name: '',
+        division_name: '',
+        department_name: kontrakData.departemen,
+        unit_name: '',
+        position_name: kontrakData.posisi,
+        job_title_name: '',
+        structural_position_name: '',
+        position_level_name: '',
+        grade: '',
+        basic_salary: 0,
+      });
+
+      setNewContractData({
+        new_change_type_name: '',
+        new_employee_category_name: '',
+        new_company_name: '',
+        new_office_name: '',
+        new_directorate_name: '',
+        new_division_name: '',
+        new_department_name: '',
+        new_unit_name: '',
+        new_position_name: '',
+        new_job_title_name: '',
+        new_structural_position_name: '',
+        new_position_level_name: '',
+        new_grade: '',
+        new_basic_salary: 0,
+      });
+    }
+  }, [isOpen, kontrakData]);
+
+  const handleContractRenewalChange = (field: string, value: any) => {
+    setContractRenewalData((prev: any) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleOldContractChange = (field: string, value: any) => {
+    setOldContractData((prev: any) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleNewContractChange = (field: string, value: any) => {
+    setNewContractData((prev: any) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
 
   return (
     <ModalAddEdit
@@ -52,81 +118,30 @@ export default function EditStatusPerpanjanganModal({
       onClose={onClose}
       handleSubmit={handleSubmit}
       submitting={submitting}
-      maxWidth="max-w-4xl"
+      maxWidth="max-w-6xl"
       content={
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">NIP</label>
-              <Input type="text" value={kontrakData?.idKaryawan} disabled />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Pengguna</label>
-              <Input type="text" value={kontrakData?.pengguna} disabled />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Posisi</label>
-              <Input type="text" value={kontrakData?.posisi} disabled />
-            </div>
-          </div>
+        <div className="space-y-6">
+          {/* Contract Renewal Detail Section */}
+            <ContractRenewalDetail
+              data={contractRenewalData}
+              isEditing={false}
+              onChange={handleContractRenewalChange}
+            />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Departemen</label>
-              <Input type="text" value={kontrakData?.departemen} disabled />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Tanggal Masuk</label>
-              <Input type="text" value={kontrakData?.tanggalMasuk} disabled />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Tanggal Berakhir</label>
-              <Input type="text" value={kontrakData?.tanggalBerakhir} disabled />
-            </div>
-          </div>
+          {/* Old Contract Section */}
+            <OldContract
+              data={oldContractData}
+              isEditing={false}
+              onChange={handleOldContractChange}
+            />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Sisa Kontrak</label>
-              <Input type="text" value={kontrakData?.sisaKontrak} disabled />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Status Perpanjangan</label>
-              <Select
-                options={statusPerpanjanganOptions}
-                defaultValue={statusPerpanjangan}
-                onChange={setStatusPerpanjangan}
-                placeholder="Pilih Status Perpanjangan"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Status Atasan</label>
-              <Select
-                options={statusAtasanOptions}
-                defaultValue={statusAtasan}
-                onChange={setStatusAtasan}
-                placeholder="Pilih Status Atasan"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Status Karyawan</label>
-              <Select
-                options={statusKaryawanOptions}
-                defaultValue={statusKaryawan}
-                onChange={setStatusKaryawan}
-                placeholder="Pilih Status Karyawan"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Catatan</label>
-            <TextArea value={catatan} onChange={setCatatan} placeholder="Detail Catatan ..." />
-          </div>
-        </>
+          {/* New Contract Section */}
+            <NewContract
+              data={newContractData}
+              isEditing={true}
+              onChange={handleNewContractChange}
+            />
+        </div>
       }
     />
   );

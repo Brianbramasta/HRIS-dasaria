@@ -4,7 +4,7 @@ import SelectField from '@/components/shared/field/SelectField';
 import TextAreaField from '@/components/shared/field/TextAreaField';
 import DateField from '@/components/shared/field/DateField';
 import LinkPreview from '@/components/shared/form/LinkPreview';
-import { useContractRenewalStore } from '../../stores/useContractRenewalStore';
+import { useContractRenewalStore } from '../../../../../stores/useContractRenewalStore';
 
 interface ContractRenewalDetailProps {
   data?: {
