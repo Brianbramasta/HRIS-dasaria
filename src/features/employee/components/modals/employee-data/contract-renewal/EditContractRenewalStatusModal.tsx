@@ -186,6 +186,7 @@ export default function EditStatusPerpanjanganModal({
   return (
     <ModalAddEdit
       title="Edit Status Perpanjangan"
+      titleAlign='left'
       isOpen={isOpen}
       onClose={onClose}
       handleSubmit={handleSubmit}
