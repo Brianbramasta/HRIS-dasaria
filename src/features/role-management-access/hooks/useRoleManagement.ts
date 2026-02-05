@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export interface RoleData {
@@ -24,9 +24,10 @@ export default function useRoleManagement() {
   const [selectedServiceToEdit, setSelectedServiceToEdit] = useState<LayananData | null>(null);
   const [isDeleteRoleModalOpen, setIsDeleteRoleModalOpen] = useState(false);
   const [selectedRoleToDelete, setSelectedRoleToDelete] = useState<RoleData | null>(null);
+  const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
 
   // Data Role Akses
-  const [roleData] = useState<RoleData[]>([
+  const [rawRoleData] = useState<RoleData[]>([
     { no: 1, idRole: '225150207', role: 'Super Admin', sistemLayanan: 'HRIS, IAM, ERP, OMB, BMS, Customer Care Chat' },
     { no: 2, idRole: '225150205', role: 'HR Admin', sistemLayanan: 'HRIS' },
     { no: 3, idRole: '225150206', role: 'Finance Admin', sistemLayanan: 'HRIS, IAM' },
@@ -34,7 +35,7 @@ export default function useRoleManagement() {
   ]);
 
   // Data Sistem Layanan
-  const [layananData] = useState<LayananData[]>([
+  const [rawLayananData] = useState<LayananData[]>([
     { no: 1, idLayanan: '225150207', sistemLayanan: 'HRIS' },
     { no: 2, idLayanan: '225150205', sistemLayanan: 'IAM' },
     { no: 3, idLayanan: '225150206', sistemLayanan: 'ERP' },
@@ -43,9 +44,33 @@ export default function useRoleManagement() {
     { no: 6, idLayanan: '225150206', sistemLayanan: 'Customer Chat Care' },
   ]);
 
+  const roleData = useMemo(() => {
+    return rawRoleData.filter((row) => {
+      // Filter by Sistem Layanan (multi-select)
+      const selectedLayanan = columnFilters['sistemLayanan'];
+      if (selectedLayanan && selectedLayanan.length > 0) {
+        const rowLayanan = row.sistemLayanan.split(',').map((s) => s.trim());
+        const matches = selectedLayanan.some((selected) => rowLayanan.includes(selected));
+        if (!matches) return false;
+      }
+      return true;
+    });
+  }, [rawRoleData, columnFilters]);
+
+  const layananData = useMemo(() => {
+    return rawLayananData.filter((row) => {
+      // Filter by Sistem Layanan (multi-select)
+      const selectedLayanan = columnFilters['sistemLayanan'];
+      if (selectedLayanan && selectedLayanan.length > 0) {
+        if (!selectedLayanan.includes(row.sistemLayanan)) return false;
+      }
+      return true;
+    });
+  }, [rawLayananData, columnFilters]);
+
   const handleAddRole = useCallback(() => {
-    console.log('Add role');
-  }, []);
+    navigate('/role-management-access/add');
+  }, [navigate]);
 
   const handleAddLayanan = useCallback(() => {
     setIsAddServiceModalOpen(true);
@@ -95,7 +120,7 @@ export default function useRoleManagement() {
     setSelectedServiceToEdit(row);
     setIsEditServiceModalOpen(true);
   }, []);
-  
+
   const handleCloseEditServiceModal = useCallback(() => {
     setIsEditServiceModalOpen(false);
     setSelectedServiceToEdit(null);
@@ -108,6 +133,13 @@ export default function useRoleManagement() {
   const handleDetailLayanan = useCallback((idLayanan: string) => {
     navigate(`/role-management-access/service-detail/${idLayanan}`);
   }, [navigate]);
+
+  const handleColumnFilterChange = useCallback((columnId: string, values: string[]) => {
+    setColumnFilters((prev) => ({
+      ...prev,
+      [columnId]: values,
+    }));
+  }, []);
 
   return {
     roleData,
@@ -133,5 +165,7 @@ export default function useRoleManagement() {
     handleCloseDeleteRoleModal,
     selectedRoleToDelete,
     handleConfirmDeleteRole,
+    columnFilters,
+    handleColumnFilterChange,
   };
 }

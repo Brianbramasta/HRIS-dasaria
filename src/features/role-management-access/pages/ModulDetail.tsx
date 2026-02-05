@@ -25,7 +25,7 @@ export default function ModulDetail() {
   // Columns for Modul
   const modulColumns: DataTableColumn<ModulData>[] = [
     { id: 'no', label: 'No.', minWidth: 50, sortable: false },
-    { id: 'idModul', label: 'Id Modul', minWidth: 150 },
+    // { id: 'idModul', label: 'Id Modul', minWidth: 150 },
     { id: 'sistemLayanan', label: 'Sistem Layanan', minWidth: 150 },
     { id: 'modul', label: 'Modul', minWidth: 300 },
     {

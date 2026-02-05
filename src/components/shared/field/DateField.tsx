@@ -1,4 +1,4 @@
-import  { FC, ReactNode } from "react";
+import { FC, ReactNode } from "react";
 import Label from "@/components/form/Label";
 import DatePicker, { DatePickerProps } from "@/components/form/date-picker";
 
@@ -7,6 +7,7 @@ interface DateFieldProps extends Omit<DatePickerProps, "label"> {
   labelClassName?: string;
   containerClassName?: string;
   htmlFor?: string;
+  view?: "date" | "month";
 }
 
 const DateField: FC<DateFieldProps> = ({

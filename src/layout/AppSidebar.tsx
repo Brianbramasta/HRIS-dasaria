@@ -6,13 +6,14 @@ import {
   CalenderIcon,
   ChevronDownIcon,
   HorizontaLDots,
- 
+
 } from "../icons";
-import { IconPenggajian, IconKaryawan, IconStrukturOrganisasi, IconHakAksesMenu, IconJenisPengajuan }   from '@/icons/components/icons'
+import { IconPenggajian, IconKaryawan, IconStrukturOrganisasi, IconHakAksesMenu, IconJenisPengajuan } from '@/icons/components/icons'
 import { useSidebar } from "../context/SidebarContext";
 // import SidebarWidget from "./SidebarWidget";
 import { useAuthStore } from "../features/auth/stores/AuthStore";
 import { filterMenuByRole } from "../features/auth/config/RolePermissions";
+import { useSpamModalStore } from "../stores/useSpamModalStore";
 
 type NavItem = {
   name: string;
@@ -28,7 +29,7 @@ const navItems: NavItem[] = [
     icon: <CalenderIcon />,
     name: "Dashboard",
     path: "/dashboard",
-  },{
+  }, {
     icon: <> {IconStrukturOrganisasi({ size: 16 })} </>,
     name: "Struktur dan Organisasi",
     path: "/structure-and-organize",
@@ -42,7 +43,7 @@ const navItems: NavItem[] = [
       { name: "Perpanjangan Kontrak", path: "/contract-extension", pro: false },
       { name: "Pengunduran Diri", path: "/resignation", pro: false },
       { name: "Perubahan Organisasi", path: "/organization-history", pro: false },
-    
+
     ],
   },
   {
@@ -55,13 +56,13 @@ const navItems: NavItem[] = [
       { name: "Persetujuan Periode Gajian", path: "/payroll-period-approval", pro: false },
       { name: "Distribusi Gaji", path: "/salary-distribution", pro: false },
       { name: "Kasbon", path: "/cash-advance", pro: false },
-    
+
     ],
-  },{
+  }, {
     icon: <> {IconHakAksesMenu({ size: 16 })} </>,
     name: "Hak Akses",
     path: "/role-management-access",
-  },{
+  }, {
     icon: <> {IconJenisPengajuan({ size: 16 })} </>,
     name: "Jenis Pengajuan",
     path: "/submission-types",
@@ -73,6 +74,7 @@ const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const location = useLocation();
   const role = useAuthStore((s) => s.user?.role);
+  const openModal = useSpamModalStore((s) => s.openModal);
   const mainMenu = filterMenuByRole(role, navItems, "main");
 
   const [openSubmenu, setOpenSubmenu] = useState<{
@@ -135,7 +137,7 @@ const AppSidebar: React.FC = () => {
 
   const handleSubmenuToggle = (
     index: number,
-    menuType: "main" 
+    menuType: "main"
   ) => {
     setOpenSubmenu((prevOpenSubmenu) => {
       if (
@@ -159,15 +161,13 @@ const AppSidebar: React.FC = () => {
           {nav.subItems ? (
             <button
               onClick={() => handleSubmenuToggle(index, menuType)}
-              className={`menu-item group shadow-sidebar ${
-                openSubmenu?.type === menuType && openSubmenu?.index === index
+              className={`menu-item group shadow-sidebar ${openSubmenu?.type === menuType && openSubmenu?.index === index
                   ? "menu-item-active"
                   : "menu-item-inactive"
-              } cursor-pointer ${
-                !isExpanded && !isHovered
+                } cursor-pointer ${!isExpanded && !isHovered
                   ? "lg:justify-center"
                   : "lg:justify-start"
-              }`}
+                }`}
             >
               {(() => {
                 const sectionActive = (
@@ -179,19 +179,18 @@ const AppSidebar: React.FC = () => {
                   nav.name === "Data Master Karyawan"
                     ? IconKaryawan({ size: 16, color })
                     : nav.name === "Penggajian"
-                    ? IconPenggajian({ size: 16, color })
-                    : nav.name === "Struktur dan Organisasi"
-                    ? IconStrukturOrganisasi({ size: 16, color })
-                    : nav.name === "Hak Akses"
-                    ? IconHakAksesMenu({ size: 16, color })
-                    : isValidElement(nav.icon)
-                    ? cloneElement(nav.icon as any, { style: { color } })
-                    : nav.icon;
+                      ? IconPenggajian({ size: 16, color })
+                      : nav.name === "Struktur dan Organisasi"
+                        ? IconStrukturOrganisasi({ size: 16, color })
+                        : nav.name === "Hak Akses"
+                          ? IconHakAksesMenu({ size: 16, color })
+                          : isValidElement(nav.icon)
+                            ? cloneElement(nav.icon as any, { style: { color } })
+                            : nav.icon;
                 return (
                   <span
-                    className={`menu-item-icon-size  ${
-                      sectionActive ? "menu-item-icon-active" : "menu-item-icon-inactive"
-                    }`}
+                    className={`menu-item-icon-size  ${sectionActive ? "menu-item-icon-active" : "menu-item-icon-inactive"
+                      }`}
                   >
                     {iconNode}
                   </span>
@@ -202,12 +201,11 @@ const AppSidebar: React.FC = () => {
               )}
               {(isExpanded || isHovered || isMobileOpen) && (
                 <ChevronDownIcon
-                  className={`ml-auto w-5 h-5 transition-transform duration-200 ${
-                    openSubmenu?.type === menuType &&
-                    openSubmenu?.index === index
+                  className={`ml-auto w-5 h-5 transition-transform duration-200 ${openSubmenu?.type === menuType &&
+                      openSubmenu?.index === index
                       ? "rotate-180 text-brand-500"
                       : ""
-                  }`}
+                    }`}
                 />
               )}
             </button>
@@ -215,9 +213,8 @@ const AppSidebar: React.FC = () => {
             nav.path && (
               <Link
                 to={nav.path}
-                className={`menu-item group shadow-sidebar ${
-                  isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
-                }`}
+                className={`menu-item group shadow-sidebar ${isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
+                  }`}
               >
                 {(() => {
                   const active = isActive(nav.path);
@@ -226,20 +223,19 @@ const AppSidebar: React.FC = () => {
                     nav.name === "Data Master Karyawan"
                       ? IconKaryawan({ size: 16, color })
                       : nav.name === "Penggajian"
-                      ? IconPenggajian({ size: 16, color })
-                      : nav.name === "Struktur dan Organisasi"
-                      ? IconStrukturOrganisasi({ size: 16, color })
-                      : nav.name === "Hak Akses"
-                      ? IconHakAksesMenu({ size: 16, color }):nav.name === "Jenis Pengajuan"
-                      ? IconJenisPengajuan({ size: 16, color })
-                      : isValidElement(nav.icon)
-                      ? cloneElement(nav.icon as any, { style: { color } })
-                      : nav.icon;
+                        ? IconPenggajian({ size: 16, color })
+                        : nav.name === "Struktur dan Organisasi"
+                          ? IconStrukturOrganisasi({ size: 16, color })
+                          : nav.name === "Hak Akses"
+                            ? IconHakAksesMenu({ size: 16, color }) : nav.name === "Jenis Pengajuan"
+                              ? IconJenisPengajuan({ size: 16, color })
+                              : isValidElement(nav.icon)
+                                ? cloneElement(nav.icon as any, { style: { color } })
+                                : nav.icon;
                   return (
                     <span
-                      className={`menu-item-icon-size ${
-                        active ? "menu-item-icon-active" : "menu-item-icon-inactive"
-                      }`}
+                      className={`menu-item-icon-size ${active ? "menu-item-icon-active" : "menu-item-icon-inactive"
+                        }`}
                     >
                       {iconNode}
                     </span>
@@ -269,32 +265,34 @@ const AppSidebar: React.FC = () => {
                   <li key={subItem.name}>
                     <Link
                       to={subItem.path}
-                      className={`menu-dropdown-item ${
-                        isActive(subItem.path)
+                      onClick={() => {
+                        if (nav.name === "Data Master Karyawan") {
+                          openModal();
+                        }
+                      }}
+                      className={`menu-dropdown-item ${isActive(subItem.path)
                           ? "menu-dropdown-item-active"
                           : "menu-dropdown-item-inactive"
-                      }`}
+                        }`}
                     >
                       {subItem.name}
                       <span className="flex items-center gap-1 ml-auto">
                         {subItem.new && (
                           <span
-                            className={`ml-auto ${
-                              isActive(subItem.path)
+                            className={`ml-auto ${isActive(subItem.path)
                                 ? "menu-dropdown-badge-active"
                                 : "menu-dropdown-badge-inactive"
-                            } menu-dropdown-badge`}
+                              } menu-dropdown-badge`}
                           >
                             new
                           </span>
                         )}
                         {subItem.pro && (
                           <span
-                            className={`ml-auto ${
-                              isActive(subItem.path)
+                            className={`ml-auto ${isActive(subItem.path)
                                 ? "menu-dropdown-badge-active"
                                 : "menu-dropdown-badge-inactive"
-                            } menu-dropdown-badge`}
+                              } menu-dropdown-badge`}
                           >
                             pro
                           </span>
@@ -314,10 +312,9 @@ const AppSidebar: React.FC = () => {
   return (
     <aside
       className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
-        ${
-          isExpanded || isMobileOpen
-            ? "w-[290px]"
-            : isHovered
+        ${isExpanded || isMobileOpen
+          ? "w-[290px]"
+          : isHovered
             ? "w-[290px]"
             : "w-[90px]"
         }
@@ -327,9 +324,8 @@ const AppSidebar: React.FC = () => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div
-        className={`py-8 flex ${
-          !isExpanded && !isHovered ? "lg:justify-center" : "justify-center"
-        }`}
+        className={`py-8 flex ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-center"
+          }`}
       >
         <Link to="/dashboard">
           {isExpanded || isHovered || isMobileOpen ? (
@@ -338,15 +334,15 @@ const AppSidebar: React.FC = () => {
                 className="dark:hidden w-full"
                 src="/images/logo/logo.svg"
                 alt="Logo"
-                // width={150}
-                // height={40}
+              // width={150}
+              // height={40}
               />
               <img
                 className="hidden dark:block w-full"
                 src="/images/logo/logo-dark.svg"
                 alt="Logo"
-                // width={150}
-                // height={40}
+              // width={150}
+              // height={40}
               />
             </>
           ) : (
@@ -364,11 +360,10 @@ const AppSidebar: React.FC = () => {
           <div className="flex flex-col gap-4">
             <div>
               <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
-                  !isExpanded && !isHovered
+                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${!isExpanded && !isHovered
                     ? "lg:justify-center"
                     : "justify-start"
-                }`}
+                  }`}
               >
                 {isExpanded || isHovered || isMobileOpen ? (
                   "Menu"
@@ -380,7 +375,7 @@ const AppSidebar: React.FC = () => {
             </div>
           </div>
         </nav>
-       
+
       </div>
     </aside>
   );

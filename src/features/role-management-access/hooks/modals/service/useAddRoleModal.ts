@@ -7,6 +7,7 @@ export interface FormValues {
   departemen: string;
   email: string;
   password: string;
+  passwordPenggajian?: string;
 }
 
 const emptyForm: FormValues = {
@@ -16,6 +17,7 @@ const emptyForm: FormValues = {
   departemen: '',
   email: '',
   password: '',
+  passwordPenggajian: '',
 };
 
 export function useAddRoleModal(

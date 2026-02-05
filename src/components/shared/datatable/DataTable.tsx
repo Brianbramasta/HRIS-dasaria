@@ -32,6 +32,7 @@ export interface DataTableColumn<T = any> {
   isAction?: boolean;
   filterOptions?: ColumnFilterOption[];
   dateRangeFilter?: boolean;
+  filterMaxRows?: number;
 }
 
 export interface DataTableAction<T = any> {
@@ -39,7 +40,7 @@ export interface DataTableAction<T = any> {
   icon?: React.ReactNode;
   onClick: (row: T) => void;
   color?: 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info';
-  variant?: 'text' | 'outline' | 'primary';
+  variant?: 'text' | 'outline' | 'primary' | 'custom';
   condition?: (row: T) => boolean;
   className?: string;
 }
@@ -131,7 +132,7 @@ export function DataTable<T = any>({
   onDateRangeFilterChange,
   dateRangeFilters = {},
 }: DataTableProps<T>) {
-  
+
   // Use custom hook for all business logic
   const {
     page,
@@ -151,7 +152,7 @@ export function DataTable<T = any>({
     getSortIcon,
     setVisibleColumns,
     activeFilterColumn,
-     filterIconRefs,
+    filterIconRefs,
     dateRangeIconRefs,
     filterAnchorEl,
     handleFilterIconClick,
@@ -200,7 +201,7 @@ export function DataTable<T = any>({
     title,
   });
 
-  
+
 
   return (
     <div className={`rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900 ${className}`}>
@@ -221,7 +222,7 @@ export function DataTable<T = any>({
               <>
                 {onExport && (
                   <Button className='bg-success text-white dark:text-white' onClick={() => exportModalHook.setExportModalOpen(true)} variant="outline" size="sm">
-                    <IconExport size={16}  />
+                    <IconExport size={16} />
                     {exportButtonLabel}
                   </Button>
                 )}
@@ -249,7 +250,7 @@ export function DataTable<T = any>({
                   <>
                     {onExport && (
                       <Button className='bg-success text-white dark:text-white' onClick={() => exportModalHook.setExportModalOpen(true)} variant="outline" size="sm">
-                        <IconExport size={16}  />
+                        <IconExport size={16} />
                         {exportButtonLabel}
                       </Button>
                     )}
@@ -276,30 +277,30 @@ export function DataTable<T = any>({
             )}
           </div>
         </div>
-        
+
 
         <div className="flex items-center gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="relative">
-          <input
-            type="text"
-            placeholder={searchPlaceholder}
-            value={searchTerm}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                handleSearchSubmit();
-              }
-            }}
-            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 pl-10 text-sm text-gray-900 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-brand-400"
-          />
+            <input
+              type="text"
+              placeholder={searchPlaceholder}
+              value={searchTerm}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleSearchSubmit();
+                }
+              }}
+              className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 pl-10 text-sm text-gray-900 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:border-brand-400"
+            />
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
               <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
           </div>
-        <div className="flex items-center gap-3">
-            
+          <div className="flex items-center gap-3">
+
             {filterable && (
               <Button onClick={() => filterModalHook.setFilterModalOpen(true)} variant="outline" size="sm">
                 <FilterLineIcon />
@@ -319,9 +320,8 @@ export function DataTable<T = any>({
                 <TableCell
                   isHeader={true}
                   key={column.id}
-                  className={`px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider ${
-                    column.align === 'center' ? 'text-center' : column.align === 'right' ? 'text-right' : 'text-left'
-                  } ${column.sortable !== false ? 'cursor-pointer hover:text-gray-200' : ''}`}
+                  className={`px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider ${column.align === 'center' ? 'text-center' : column.align === 'right' ? 'text-right' : 'text-left'
+                    } ${column.sortable !== false ? 'cursor-pointer hover:text-gray-200' : ''}`}
                   onClick={() => column.sortable !== false && handleSort(column.id)}
                 >
                   <div className={`min-w-max flex items-center gap-1 ${column.align === 'center' ? 'justify-center' : column.align === 'right' ? 'justify-end' : 'justify-start'}`}>
@@ -346,9 +346,9 @@ export function DataTable<T = any>({
                         className="ml-1 cursor-pointer hover:opacity-80"
                         onClick={(e) => handleDateRangeIconClick(column.id, e)}
                       >
-                        <IconCalendarFilter 
-                          size={20} 
-                          color={(dateRangeFilters[column.id]?.startDate) ? '#3B82F6' : '#FFFFFF'} 
+                        <IconCalendarFilter
+                          size={20}
+                          color={(dateRangeFilters[column.id]?.startDate) ? '#3B82F6' : '#FFFFFF'}
                         />
                       </span>
                     )}
@@ -378,9 +378,8 @@ export function DataTable<T = any>({
                   {displayColumns.map((column) => (
                     <TableCell
                       key={column.id}
-                      className={`px-6 py-4 text-sm text-gray-900 dark:text-gray-100 ${
-                        column.align === 'center' ? 'text-center' : column.align === 'right' ? 'text-right' : 'text-left'
-                      }`}
+                      className={`px-6 py-4 text-sm text-gray-900 dark:text-gray-100 ${column.align === 'center' ? 'text-center' : column.align === 'right' ? 'text-right' : 'text-left'
+                        }`}
                     >
                       {column.id === 'no'
                         ? (index + 1)
@@ -400,7 +399,7 @@ export function DataTable<T = any>({
                                 className={action.className}
                                 key={actionIndex}
                                 onClick={() => action.onClick(row)}
-                                variant={action.variant as 'primary' | 'outline' || 'outline'}
+                                variant={action.variant as 'primary' | 'outline' | 'custom' || 'outline'}
                                 size="sm"
                               >
                                 {action.icon && <span className="mr-1">{action.icon}</span>}
@@ -430,7 +429,7 @@ export function DataTable<T = any>({
                                 className={action.className}
                                 key={actionIndex}
                                 onClick={() => action.onClick(row)}
-                                variant={action.variant as 'primary' | 'outline' || 'outline'}
+                                variant={action.variant as 'primary' | 'outline' | 'custom' || 'outline'}
                                 size="sm"
                               >
                                 {action.icon && <span className="mr-1">{action.icon}</span>}
@@ -476,11 +475,11 @@ export function DataTable<T = any>({
           initialPage={page + 1}
           totalPages={totalPages}
           onPageChange={handlePageChange}
-          // showInfo={true}
-          // infoText={`${sortedData.length === 0 ? 0 : page * rowsPerPage + 1}-${Math.min((page + 1) * rowsPerPage, sortedData.length)} of ${sortedData.length}`}
+        // showInfo={true}
+        // infoText={`${sortedData.length === 0 ? 0 : page * rowsPerPage + 1}-${Math.min((page + 1) * rowsPerPage, sortedData.length)} of ${sortedData.length}`}
         />
       </div>
-      
+
       <FilterModal
         isOpen={filterModalHook.isFilterModalOpen}
         onClose={filterModalHook.handleCloseModal}
@@ -512,6 +511,7 @@ export function DataTable<T = any>({
           isOpen={true}
           onClose={handleFilterPopupClose}
           options={columns.find((col) => col.id === activeFilterColumn)?.filterOptions || []}
+          maxRows={columns.find((col) => col.id === activeFilterColumn)?.filterMaxRows}
           selectedValues={columnFilters[activeFilterColumn] || []}
           onApply={(values) => handleColumnFilterApply(activeFilterColumn, values)}
           onReset={() => handleColumnFilterReset(activeFilterColumn)}

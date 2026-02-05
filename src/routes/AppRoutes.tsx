@@ -43,10 +43,15 @@ import PotonganTidakTetapPage from "@/features/payroll/pages/PayrollConfiguratio
 import THRPage from "@/features/payroll/pages/PayrollConfiguration/tab/BonusTHRPage";
 // Dokumentasi: Halaman dan tab Periode Penggajian
 import PeriodePenggajianPage from "@/features/payroll/pages/payroll-period/PayrollPeriodPage";
-import NonAETab from "@/features/payroll/pages/shared/tab/NonAEPages";
-import AETab from "@/features/payroll/pages/shared/tab/AEPages";
+import NonAETab from "@/features/payroll/pages/payroll-period/tab/NonAEPages";
+import AETab from "@/features/payroll/pages/payroll-period/tab/AEPages";
 import PKLTab from "@/features/payroll/pages/shared/tab/PKLPages";
-import THRTab from "@/features/payroll/pages/shared/tab/THRPages";
+import THRTab from "@/features/payroll/pages/payroll-period/tab/THRPages";
+
+// shared tabs
+import SharedNonAETab from "@/features/payroll/pages/shared/tab/NonAEPages";
+import SharedAETab from "@/features/payroll/pages/shared/tab/AEPages";
+import SharedTHRTab from "@/features/payroll/pages/shared/tab/THRPages";
 // Dokumentasi: Import halaman Detail Gaji untuk navigasi dari tabel Periode Penggajian
 // import DetailGajiPage from "@/features/penggajian/pages/periodePenggajian/detail/detailGaji";
 // Dokumentasi: Import halaman Detail Gaji AE dan Non-AE terpisah
@@ -79,7 +84,9 @@ import JenisPengajuanPage from "@/features/submission-type/pages/SubmissionPage"
 
 
 // Auth Feature Pages
-import { LoginPage, ForgotPasswordPage } from "../features/auth/pages/Index";
+import { LoginPage, ForgotPasswordPage, ResetPasswordPage } from "../features/auth/pages/Index";
+
+import SelectServicePage from "../features/auth/pages/SelectServicePage";
 import ProtectedOutlet from "./ProtectedOutlet";
 import FormKasbonPage from "@/features/payroll/pages/cash-advance/form-cash-advance/FormCashAdvancePage";
 import NotFound from "@/pages/OtherPage/NotFound";
@@ -100,7 +107,7 @@ export default function AppRoutes() {
         <Route path="/employee-data/form" element={<FormulirKaryawanPage />} />
         <Route path="/resignation/form" element={<FormResignPage />} />
         {/* Protected routes */}
-        <Route element={<ProtectedOutlet />}> 
+        <Route element={<ProtectedOutlet />}>
           <Route path="/dashboard" element={<DashboardPage />}>
             <Route index element={<Dashboard />} />
             <Route path="notification" element={<Notification />} />
@@ -115,13 +122,13 @@ export default function AppRoutes() {
             <Route path="business-lines/:id" element={<DetailLiniBisnis />} />
             <Route path="companies" element={<CompaniesTab resetKey="companies" />} />
             <Route path="companies/:id" element={<DetailPerusahaan />} />
-          <Route path="offices" element={<OfficesTab resetKey="offices" />} />
+            <Route path="offices" element={<OfficesTab resetKey="offices" />} />
             <Route path="directorates" element={<DirectoratesTab resetKey="directorates" />} />
             <Route path="divisions" element={<DivisionsTab resetKey="divisions" />} />
-          <Route path="departments" element={<DepartmentsTab resetKey="departments" />} />
-          <Route path="units" element={<UnitTab resetKey="units" />} />
-          <Route path="positions" element={<PositionsTab resetKey="positions" />} />
-          <Route path="employee-positions" element={<EmployeePositionsTab resetKey="employee-positions" />} />
+            <Route path="departments" element={<DepartmentsTab resetKey="departments" />} />
+            <Route path="units" element={<UnitTab resetKey="units" />} />
+            <Route path="positions" element={<PositionsTab resetKey="positions" />} />
+            <Route path="employee-positions" element={<EmployeePositionsTab resetKey="employee-positions" />} />
           </Route>
           {/* Penggajian */}
           {/* <Route path="/payroll-period" element={<DaftarPenggajianPage />} /> */}
@@ -143,8 +150,8 @@ export default function AppRoutes() {
 
             <Route path="non-ae" element={<NonAETab />} />
             <Route path="ae" element={<AETab />} />
-            <Route path="internship" element={<PKLTab />} />
-            <Route path="holiday-allowance" element={<THRTab />} />
+            <Route path="pkl" element={<PKLTab />} />
+            <Route path="thr" element={<THRTab />} />
           </Route>
           {/* Dokumentasi: Route Detail Gaji terpisah agar dapat diakses dari tombol Edit */}
           {/* <Route path="/payroll-period/detail/:id" element={<DetailGajiPage />} /> */}
@@ -166,18 +173,18 @@ export default function AppRoutes() {
           <Route path="/payroll-dashboard" element={<DashboardPenggajianPage />} />
           <Route path="/payroll-period-approval" element={<ApprovalPeriodeGajianPage />}>
             {/* Dokumentasi: index default Non-AE untuk /payroll-period-approval */}
-            <Route index element={<NonAETab />} />
-            <Route path="non-ae" element={<NonAETab />} />
-            <Route path="ae" element={<AETab />} />
+            <Route index element={<SharedNonAETab />} />
+            <Route path="non-ae" element={<SharedNonAETab />} />
+            <Route path="ae" element={<SharedAETab />} />
             <Route path="pkl" element={<PKLTab />} />
-            <Route path="thr" element={<THRTab />} />
+            <Route path="thr" element={<SharedTHRTab />} />
             {/* detail approval */}
             <Route path="detail-ae/:id" element={<DetailGajiAEPage />} />
             <Route path="detail-non-ae/:id" element={<DetailGajiNonAEPage />} />
             <Route path="detail-thr/:id" element={<DetailGajiTHRPage />} />
             <Route path="detail-pkl/:id" element={<DetailGajiPKLPage />} />
           </Route>
-          
+
           {/* // Dokumentasi: Nested route untuk Distribusi Gaji dengan tiga tab */}
           <Route path="/salary-distribution" element={<DistribusiGajiPage />}>
             {/* Dokumentasi: index default Non-AE untuk /salary-distribution */}
@@ -186,18 +193,18 @@ export default function AppRoutes() {
             <Route path="ae" element={<AEDistributionTab />} />
             <Route path="thr" element={<THRDistributionTab />} />
           </Route>
-          
+
           <Route path="/employee-data" element={<DataKaryawanIndexPage />} />
           <Route path="/employee-data/:id" element={<DetailKaryawanPage />} />
           <Route path="/employee-data/contract-extension" element={<PerpanjanganKontrak />} />
           <Route path="/employee-data/:id/pelanggaran" element={<PelanggaranRoute />} />
           <Route path="/resignation" element={<PengunduranDiri />} />
-          
+
           <Route path="/resignation/:id" element={<DetailPengunduranDiriPage />} />
           <Route path="/contract-extension" element={<PerpanjanganKontrak />} />
           <Route path="/contract-extension/persetujuan" element={<PersetujuanPerpanjanganKontrak />} />
           <Route path="contract-extension/detail/:id" element={<PerpanjangKontrakEdit />} />
-          
+
           <Route path="/submission-types" element={<JenisPengajuanPage />} />
           <Route path="/organization-history" element={<OrganizationHistoryPage />} />
           <Route path="/organization-history/atasan" element={<OrganizationHistoryAtasanPage />} />
@@ -206,22 +213,25 @@ export default function AppRoutes() {
           <Route path="/role-management-access/service-detail/:layananId" element={<ModulDetail />} />
           <Route path="/role-management-access/feature-detail/:modulId" element={<FeatureDetail />} />
           <Route path="/role-management-access/access-detail/:featureId" element={<AccessDetail />} />
+          <Route path="/role-management-access/add" element={<EditRolePage />} />
           <Route path="/role-management-access/edit/:roleId" element={<EditRolePage />} />
 
-      
-          
+
+
         </Route>
       </Route>
 
-      {/* Export print view tanpa AppLayout */}
+      {/* Export print view tanpa AppLayout dan Halaman Pilih Layanan */}
       <Route element={<ProtectedOutlet />}>
         <Route path="/structure-and-organize/export" element={<ExportPage />} />
         <Route path="/export" element={<ExportPage />} />
+        <Route path="/select-service" element={<SelectServicePage />} />
       </Route>
 
       {/* Auth Layout */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
 
       {/* Fallback Route */}
       <Route path="*" element={<NotFound />} />

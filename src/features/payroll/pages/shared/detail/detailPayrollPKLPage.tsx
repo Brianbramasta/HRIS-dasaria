@@ -29,7 +29,9 @@ export default function DetailGajiPKLPage() {
       { name: "perusahaan", label: "Perusahaan", type: "input", placeholder: "Otomatis", readonly: true },
       { name: "jumlahHariKerja", label: "Jumlah Hari Kerja", type: "input", placeholder: "Otomatis", readonly: true },
     ],
-    // Tidak ada tunjangan/potongan & rekapitulasi untuk PKL sesuai desain awal
+    rekapitulasi: true,
+    catatanKaryawan: true,
+    catatanBOD: true,
   };
 
   return <DetailPayrollContent config={config} />;

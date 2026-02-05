@@ -7,11 +7,15 @@ export const useEditAccessModal = (
   initialData: AccessData | null
 ) => {
   const [akses, setAkses] = useState('');
+  const [code, setCode] = useState('');
+  const [deskripsi, setDeskripsi] = useState('');
   const [fitur, setFitur] = useState('');
 
   useEffect(() => {
     if (isOpen && initialData) {
       setAkses(initialData.akses);
+      setCode(initialData.code || '');
+      setDeskripsi(initialData.deskripsi || '');
       setFitur(initialData.fitur);
     }
   }, [isOpen, initialData]);
@@ -20,21 +24,33 @@ export const useEditAccessModal = (
     setAkses(value);
   }, []);
 
+  const handleCodeChange = useCallback((value: string) => {
+    setCode(value);
+  }, []);
+
+  const handleDeskripsiChange = useCallback((value: string) => {
+    setDeskripsi(value);
+  }, []);
+
   const handleFiturChange = useCallback((value: string) => {
     setFitur(value);
   }, []);
 
   const handleSubmit = useCallback(() => {
     if (!initialData) return;
-    if (!akses.trim() || !fitur.trim()) return;
-    console.log('Updating access:', { ...initialData, akses, fitur });
+    if (!akses.trim() || !code.trim() || !deskripsi.trim()) return;
+    console.log('Updating access:', { ...initialData, akses, code, deskripsi, fitur });
     onClose();
-  }, [initialData, akses, fitur, onClose]);
+  }, [initialData, akses, code, deskripsi, fitur, onClose]);
 
   return {
     akses,
+    code,
+    deskripsi,
     fitur,
     handleAksesChange,
+    handleCodeChange,
+    handleDeskripsiChange,
     handleFiturChange,
     handleSubmit,
   };
