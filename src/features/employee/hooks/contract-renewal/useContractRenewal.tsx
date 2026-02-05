@@ -43,18 +43,15 @@ export function useContractRenewal(): UseContractRenewalReturn {
 
   const getStatusColor = useCallback((status: string) => {
     switch (status.toLowerCase()) {
-      case 'disetujui':
-      case 'diperpanjang':
+      case 'diperpanjang tetap':
+      case 'diperpanjang berubah':
         return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400';
+      case 'sedang di proses':
+        return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400';
+      case 'menunggu diproses':
+        return 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400';
       case 'ditolak':
         return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400';
-      case 'pending':
-        return 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400';
-      case 'negoisasi':
-      case 'menunggu jadwal negoisasi':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400';
-      case 'info':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400';
       default:
         return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400';
     }
@@ -65,6 +62,11 @@ export function useContractRenewal(): UseContractRenewalReturn {
     try {
       console.log('Fetching contract renewals with params:', params);
       // Dummy data for testing
+      // Diperpanjang Tetap
+      // Diperpanjang Berubah
+      // Sedang di Proses
+      // Menunggu diproses
+      // Ditolak
       const dummyData: ContractRenewalListItem[] = [
         {
           id: '1',
@@ -77,7 +79,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
           end_date: '2024-01-15',
           remaining_contract: '2 bulan',
           renewal_status: 1,
-          renewal_status_name: 'Pending',
+          renewal_status_name: 'Menunggu diproses',
           supervisor_approval_status: 1,
           supervisor_approval_status_name: 'Pending',
           contract_submission_detail: 'Detail pengajuan tersedia',
@@ -98,7 +100,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
           end_date: '2024-03-20',
           remaining_contract: '4 bulan',
           renewal_status: 2,
-          renewal_status_name: 'Diperpanjang',
+          renewal_status_name: 'Diperpanjang Tetap',
           supervisor_approval_status: 2,
           supervisor_approval_status_name: 'Disetujui',
           contract_submission_detail: 'Detail pengajuan tersedia',
@@ -119,7 +121,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
           end_date: '2023-12-31',
           remaining_contract: 'Expired',
           renewal_status: 4,
-          renewal_status_name: 'Menunggu Jadwal Negoisasi',
+          renewal_status_name: 'Sedang di Proses',
           supervisor_approval_status: 2,
           supervisor_approval_status_name: 'Disetujui',
           contract_submission_detail: 'Detail pengajuan tersedia',
@@ -140,7 +142,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
           end_date: '2024-08-01',
           remaining_contract: '8 bulan',
           renewal_status: 1,
-          renewal_status_name: 'Pending',
+          renewal_status_name: 'Menunggu diproses',
           supervisor_approval_status: 1,
           supervisor_approval_status_name: 'Pending',
           contract_submission_detail: '-',
@@ -161,7 +163,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
           end_date: '2024-02-15',
           remaining_contract: '3 bulan',
           renewal_status: 5,
-          renewal_status_name: 'Negoisasi',
+          renewal_status_name: 'Diperpanjang Berubah',
           supervisor_approval_status: 2,
           supervisor_approval_status_name: 'Disetujui',
           contract_submission_detail: 'Detail pengajuan tersedia',
@@ -203,7 +205,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
           end_date: '2024-05-05',
           remaining_contract: '6 bulan',
           renewal_status: 2,
-          renewal_status_name: 'Diperpanjang',
+          renewal_status_name: 'Diperpanjang Tetap',
           supervisor_approval_status: 2,
           supervisor_approval_status_name: 'Disetujui',
           contract_submission_detail: 'Detail pengajuan tersedia',
@@ -224,7 +226,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
           end_date: '2024-02-28',
           remaining_contract: '3 bulan',
           renewal_status: 1,
-          renewal_status_name: 'Pending',
+          renewal_status_name: 'Menunggu diproses',
           supervisor_approval_status: 1,
           supervisor_approval_status_name: 'Pending',
           contract_submission_detail: 'Detail pengajuan tersedia',
@@ -245,7 +247,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
           end_date: '2024-06-01',
           remaining_contract: '7 bulan',
           renewal_status: 4,
-          renewal_status_name: 'Menunggu Jadwal Negoisasi',
+          renewal_status_name: 'Sedang di Proses',
           supervisor_approval_status: 2,
           supervisor_approval_status_name: 'Disetujui',
           contract_submission_detail: 'Detail pengajuan tersedia',
@@ -266,7 +268,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
           end_date: '2024-07-20',
           remaining_contract: '8 bulan',
           renewal_status: 2,
-          renewal_status_name: 'Diperpanjang',
+          renewal_status_name: 'Diperpanjang Berubah',
           supervisor_approval_status: 2,
           supervisor_approval_status_name: 'Disetujui',
           contract_submission_detail: 'Detail pengajuan tersedia',
@@ -420,6 +422,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
       ),
       filterOptions: [
         { label: 'Diperpanjang Tetap', value: 'Diperpanjang Tetap' },
+        { label: 'Diperpanjang Berubah', value: 'Diperpanjang Berubah' },
         { label: 'Sedang di Proses', value: 'Sedang di Proses' },
         { label: 'Menunggu diproses', value: 'Menunggu diproses' },
         { label: 'Ditolak', value: 'Ditolak' },
