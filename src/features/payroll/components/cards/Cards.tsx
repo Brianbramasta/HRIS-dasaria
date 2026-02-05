@@ -12,6 +12,7 @@ interface PayrollCardProps {
   desc?: string;
   headerColor?: HeaderColor;
   rightSlot?: React.ReactNode;
+  border?: boolean;
 }
 
 // Dokumentasi: Map warna header agar konsisten pada mode gelap/terang
@@ -30,12 +31,13 @@ const PayrollCard: React.FC<PayrollCardProps> = ({
   className = "",
   desc = "",
   headerColor = "gray",
+  border = true,
   rightSlot,
 }) => {
   return (
     <div
       className={twMerge(
-        "rounded-2xl overflow-hidden border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]",
+        `rounded-2xl overflow-hidden ${border ? 'border border-gray-200 dark:border-gray-800' : ''} bg-white dark:bg-white/[0.03]`,
         className
       )}
     >
