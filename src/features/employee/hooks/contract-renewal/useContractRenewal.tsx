@@ -6,6 +6,7 @@ import { IconFileDetail as Edit } from '@/icons/components/icons';
 // import contractRenewalService from '../../services/ContractRenewalService';
 import { ContractRenewalListItem, ContractRenewalFilterParams } from '../../types/ContractRenewal';
 import { useNotificationStore } from '@/stores/notificationStore';
+import { useContractRenewalStore } from '../../stores/useContractRenewalStore';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 
 interface UseContractRenewalReturn {
@@ -33,6 +34,7 @@ interface UseContractRenewalReturn {
 export function useContractRenewal(): UseContractRenewalReturn {
   const navigate = useNavigate();
   const { addNotification } = useNotificationStore();
+  const { setChangeTypeName } = useContractRenewalStore();
   const [data, setData] = useState<ContractRenewalListItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -43,18 +45,15 @@ export function useContractRenewal(): UseContractRenewalReturn {
 
   const getStatusColor = useCallback((status: string) => {
     switch (status.toLowerCase()) {
-      case 'disetujui':
-      case 'diperpanjang':
+      case 'diperpanjang tetap':
+      case 'diperpanjang berubah':
         return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400';
+      case 'sedang di proses':
+        return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400';
+      case 'menunggu diproses':
+        return 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400';
       case 'ditolak':
         return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400';
-      case 'pending':
-        return 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400';
-      case 'negoisasi':
-      case 'menunggu jadwal negoisasi':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400';
-      case 'info':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400';
       default:
         return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400';
     }
@@ -64,7 +63,12 @@ export function useContractRenewal(): UseContractRenewalReturn {
     setIsLoading(true);
     try {
       console.log('Fetching contract renewals with params:', params);
-      // Dummy data for testing
+      
+      // ============================================
+      // FOR DUMMY SIMULATION DATA
+      // COMMENT OUT DUMMY DATA AND UNCOMMENT THE REAL API CALL BELOW 
+      // AFTER THE API IS READY
+      // ============================================
       const dummyData: ContractRenewalListItem[] = [
         {
           id: '1',
@@ -77,7 +81,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
           end_date: '2024-01-15',
           remaining_contract: '2 bulan',
           renewal_status: 1,
-          renewal_status_name: 'Pending',
+          renewal_status_name: 'Menunggu diproses',
           supervisor_approval_status: 1,
           supervisor_approval_status_name: 'Pending',
           contract_submission_detail: 'Detail pengajuan tersedia',
@@ -98,7 +102,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
           end_date: '2024-03-20',
           remaining_contract: '4 bulan',
           renewal_status: 2,
-          renewal_status_name: 'Diperpanjang',
+          renewal_status_name: 'Diperpanjang Tetap',
           supervisor_approval_status: 2,
           supervisor_approval_status_name: 'Disetujui',
           contract_submission_detail: 'Detail pengajuan tersedia',
@@ -119,7 +123,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
           end_date: '2023-12-31',
           remaining_contract: 'Expired',
           renewal_status: 4,
-          renewal_status_name: 'Menunggu Jadwal Negoisasi',
+          renewal_status_name: 'Sedang di Proses',
           supervisor_approval_status: 2,
           supervisor_approval_status_name: 'Disetujui',
           contract_submission_detail: 'Detail pengajuan tersedia',
@@ -140,7 +144,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
           end_date: '2024-08-01',
           remaining_contract: '8 bulan',
           renewal_status: 1,
-          renewal_status_name: 'Pending',
+          renewal_status_name: 'Menunggu diproses',
           supervisor_approval_status: 1,
           supervisor_approval_status_name: 'Pending',
           contract_submission_detail: '-',
@@ -161,7 +165,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
           end_date: '2024-02-15',
           remaining_contract: '3 bulan',
           renewal_status: 5,
-          renewal_status_name: 'Negoisasi',
+          renewal_status_name: 'Diperpanjang Berubah',
           supervisor_approval_status: 2,
           supervisor_approval_status_name: 'Disetujui',
           contract_submission_detail: 'Detail pengajuan tersedia',
@@ -203,7 +207,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
           end_date: '2024-05-05',
           remaining_contract: '6 bulan',
           renewal_status: 2,
-          renewal_status_name: 'Diperpanjang',
+          renewal_status_name: 'Diperpanjang Tetap',
           supervisor_approval_status: 2,
           supervisor_approval_status_name: 'Disetujui',
           contract_submission_detail: 'Detail pengajuan tersedia',
@@ -224,7 +228,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
           end_date: '2024-02-28',
           remaining_contract: '3 bulan',
           renewal_status: 1,
-          renewal_status_name: 'Pending',
+          renewal_status_name: 'Menunggu diproses',
           supervisor_approval_status: 1,
           supervisor_approval_status_name: 'Pending',
           contract_submission_detail: 'Detail pengajuan tersedia',
@@ -245,7 +249,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
           end_date: '2024-06-01',
           remaining_contract: '7 bulan',
           renewal_status: 4,
-          renewal_status_name: 'Menunggu Jadwal Negoisasi',
+          renewal_status_name: 'Sedang di Proses',
           supervisor_approval_status: 2,
           supervisor_approval_status_name: 'Disetujui',
           contract_submission_detail: 'Detail pengajuan tersedia',
@@ -266,7 +270,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
           end_date: '2024-07-20',
           remaining_contract: '8 bulan',
           renewal_status: 2,
-          renewal_status_name: 'Diperpanjang',
+          renewal_status_name: 'Diperpanjang Berubah',
           supervisor_approval_status: 2,
           supervisor_approval_status_name: 'Disetujui',
           contract_submission_detail: 'Detail pengajuan tersedia',
@@ -288,7 +292,9 @@ export function useContractRenewal(): UseContractRenewalReturn {
       setTotalItems(dummyData.length);
       setPerPage(10);
 
-      // Uncomment below to use real API
+      // ============================================
+      // REAL API CALL (UNCOMMENT WHEN API IS READY)
+      // ============================================
       // const response = await contractRenewalService.getContractRenewals(params);
       // if (response.success && response.data) {
       //   setData(response.data.data);
@@ -320,8 +326,10 @@ export function useContractRenewal(): UseContractRenewalReturn {
   }, [navigate]);
 
   const handleEdit = useCallback((row: ContractRenewalListItem) => {
+    // Dispatch renewal status to store based on status perpanjangan
+    setChangeTypeName(row.renewal_status_name);
     navigate(`/contract-extension/detail/${row.employee_id}`);
-  }, [navigate]);
+  }, [navigate, setChangeTypeName]);
 
   const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
   const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
@@ -407,6 +415,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
       ),
     },
     { id: 'remaining_contract', label: 'Sisa Kontrak', minWidth: 120, sortable: true },
+    { id: 'notes', label: 'Catatan', minWidth: 150, sortable: false },
     {
       id: 'renewal_status_name',
       label: 'Status Perpanjangan',
@@ -418,60 +427,10 @@ export function useContractRenewal(): UseContractRenewalReturn {
         </span>
       ),
       filterOptions: [
-        { label: 'Pending', value: 'Pending' },
-        { label: 'Diperpanjang', value: 'Diperpanjang' },
-        { label: 'Ditolak', value: 'Ditolak' },
-        { label: 'Menunggu Jadwal Negoisasi', value: 'Menunggu Jadwal Negoisasi' },
-        { label: 'Negoisasi', value: 'Negoisasi' },
-      ],
-    },
-    {
-      id: 'supervisor_approval_status_name',
-      label: 'Status Atasan',
-      minWidth: 140,
-      sortable: true,
-      format: (value) => (
-        <span className={`status-styling rounded-full text-xs font-medium ${getStatusColor(value)}`}>
-          {value}
-        </span>
-      ),
-      filterOptions: [
-        { label: 'Pending', value: 'Pending' },
-        { label: 'Disetujui', value: 'Disetujui' },
-        { label: 'Ditolak', value: 'Ditolak' },
-      ],
-    },
-    // {
-    //   id: 'contract_submission_detail',
-    //   label: 'Detail Kontrak Pengajuan',
-    //   minWidth: 180,
-    //   sortable: false,
-    //   align: 'center',
-    //   format: (value) => value === '-' ? value : (
-    //     <FileText size={16} className="inline text-gray-500" />
-    //   ),
-    // },
-    { id: 'negotiation_date', label: 'Tanggal Negoisasi', minWidth: 160, sortable: true, dateRangeFilter: true, format: (value) => (
-      <div className="flex items-center gap-2">
-        <div>{formatDateToIndonesian(value)}</div>
-      </div>
-    ) },
-    { id: 'notes', label: 'Catatan', minWidth: 150, sortable: false },
-    {
-      id: 'employee_status_name',
-      label: 'Status Karyawan',
-      minWidth: 140,
-      sortable: true,
-      format: (value) => (
-        <span className={`status-styling rounded-full text-xs font-medium ${getStatusColor(value)}`}>
-          {value}
-        </span>
-      ),
-      filterOptions: [
-        { label: 'Pending', value: 'Pending' },
-        { label: 'Disetujui', value: 'Disetujui' },
-        { label: 'Negoisasi', value: 'Negoisasi' },
-        { label: 'Info', value: 'Info' },
+        { label: 'Diperpanjang Tetap', value: 'Diperpanjang Tetap' },
+        { label: 'Diperpanjang Berubah', value: 'Diperpanjang Berubah' },
+        { label: 'Sedang di Proses', value: 'Sedang di Proses' },
+        { label: 'Menunggu diproses', value: 'Menunggu diproses' },
         { label: 'Ditolak', value: 'Ditolak' },
       ],
     },
