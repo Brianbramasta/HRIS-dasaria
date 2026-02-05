@@ -3,8 +3,9 @@ import InputField from '@/components/shared/field/InputField';
 import SelectField from '@/components/shared/field/SelectField';
 import TextAreaField from '@/components/shared/field/TextAreaField';
 import DateField from '@/components/shared/field/DateField';
-import LinkPreview from '@/components/shared/form/LinkPreview';
+import FileField from '@/components/shared/field/FIleField';
 import { useContractRenewalStore } from '../../../../../stores/useContractRenewalStore';
+import { useEffect } from 'react';
 
 interface ContractRenewalDetailProps {
   data?: {
@@ -26,18 +27,31 @@ interface ContractRenewalDetailProps {
   };
   isEditing?: boolean;
   onChange?: (field: string, value: any) => void;
+  showLimitedFields?: boolean;
 }
 
 export default function ContractRenewalDetail({
   data = {},
   isEditing = false,
   onChange,
+  showLimitedFields = false,
 }: ContractRenewalDetailProps) {
-  const { shouldShowAllDetailFields } = useContractRenewalStore();
+  const { shouldShowAllDetailFields, setChangeTypeName } = useContractRenewalStore();
+
+  // Auto-update store when renewal status changes
+  useEffect(() => {
+    if (data?.renewal_status_name) {
+      setChangeTypeName(data.renewal_status_name);
+    }
+  }, [data?.renewal_status_name, setChangeTypeName]);
 
   const handleInputChange = (field: string, value: any) => {
     if (onChange) {
       onChange(field, value);
+    }
+    // Auto-update store when renewal status changes
+    if (field === 'renewal_status_name') {
+      setChangeTypeName(value);
     }
   };
 
@@ -110,17 +124,18 @@ export default function ContractRenewalDetail({
           <SelectField
             label="Status Perpanjangan"
             defaultValue={data?.renewal_status_name || ''}
-            disabled={!isEditing}
+            // disabled={!isEditing}
             onChange={(value) => handleInputChange('renewal_status_name', value)}
             containerClassName="space-y-2"
             options={[
               { label: 'Diperpanjang Tetap', value: 'Diperpanjang Tetap' },
+              { label: 'Diperpanjang Berubah', value: 'Diperpanjang Berubah' },
               { label: 'Sedang di Proses', value: 'Sedang di Proses' },
               { label: 'Menunggu diproses', value: 'Menunggu diproses' },
               { label: 'Ditolak', value: 'Ditolak' },
             ]}
           />
-          {shouldShowAllDetailFields() && (
+          {!showLimitedFields && shouldShowAllDetailFields() && (
             <SelectField
               label="Jenis Kontrak"
               defaultValue={data?.contract_type_name || ''}
@@ -138,7 +153,7 @@ export default function ContractRenewalDetail({
         </div>
 
         {/* Row 4: Kontrak Ke, Tanggal TTD Kontrak Baru, Tanggal Berakhir Kontrak Baru */}
-        {shouldShowAllDetailFields() && (
+        {!showLimitedFields && shouldShowAllDetailFields() && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <InputField
               label="Kontrak Ke"
@@ -151,14 +166,14 @@ export default function ContractRenewalDetail({
             <DateField
               label="Tanggal TTD Kontrak Baru"
               defaultDate={data?.new_contract_date || ''}
-              disabled={!isEditing}
+              // disabled={!isEditing}
               onChange={(_dates, dateStr) => handleInputChange('new_contract_date', dateStr)}
               containerClassName="space-y-2"
             />
             <DateField
               label="Tanggal Berakhir Kontrak Baru"
               defaultDate={data?.new_contract_end_date || ''}
-              disabled={!isEditing}
+              // disabled={!isEditing}
               onChange={(_dates, dateStr) => handleInputChange('new_contract_end_date', dateStr)}
               containerClassName="space-y-2"
             />
@@ -166,16 +181,22 @@ export default function ContractRenewalDetail({
         )}
 
         {/* Row 5: Dokumen Kontrak, Dokumen Evaluasi */}
-        {shouldShowAllDetailFields() && (
+        {!showLimitedFields && shouldShowAllDetailFields() && (
           <div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <LinkPreview
-                url={data?.contract_document}
-                label="Lihat Dokumen Kontrak"
+              <FileField
+                label="Dokumen Kontrak"
+                // disabled={!isEditing}
+                onChange={(e) => handleInputChange('contract_document', e.target.files?.[0])}
+                containerClassName="space-y-2"
+                // accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
               />
-              <LinkPreview
-                url={data?.evaluation_document}
-                label="Lihat Dokumen Evaluasi"
+              <FileField
+                label="Dokumen Evaluasi"
+                // disabled={!isEditing}
+                onChange={(e) => handleInputChange('evaluation_document', e.target.files?.[0])}
+                containerClassName="space-y-2"
+                // accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
               />
             </div>
           </div>

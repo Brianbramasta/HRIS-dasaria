@@ -3,6 +3,7 @@ import ContractRenewalDetail from '@/features/employee/components/modals/employe
 import OldContract from '@/features/employee/components/modals/employee-data/contract-renewal/slice-component/OldContract';
 import NewContract from '@/features/employee/components/modals/employee-data/contract-renewal/slice-component/NewContract';
 import useEditContractRenewalStatusModal from '@/features/employee/hooks/modals/employee-data/contract-renewal/useEditContractRenewalStatusModal';
+import { useContractRenewalStore } from '@/features/employee/stores/useContractRenewalStore';
 import { useState, useEffect } from 'react';
 
 interface EditStatusPerpanjanganModalProps {
@@ -38,6 +39,12 @@ export default function EditStatusPerpanjanganModal({
   const [contractRenewalData, setContractRenewalData] = useState<any>(null);
   const [oldContractData, setOldContractData] = useState<any>(null);
   const [newContractData, setNewContractData] = useState<any>(null);
+  
+  const {
+    shouldShowDetailAndOldContract,
+    shouldShowAllComponents,
+    shouldShowOnlyDetail,
+  } = useContractRenewalStore();
 
   useEffect(() => {
     if (isOpen && kontrakData) {
@@ -111,6 +118,71 @@ export default function EditStatusPerpanjanganModal({
     }));
   };
 
+  const renderContent = () => {
+    // Determine which components to show based on renewal status
+    if (shouldShowDetailAndOldContract()) {
+      // Diperpanjang Tetap => Show ContractRenewalDetail + OldContract
+      return (
+        <div className="space-y-6">
+          <ContractRenewalDetail
+            data={contractRenewalData}
+            isEditing={false}
+            onChange={handleContractRenewalChange}
+          />
+          <OldContract
+            data={oldContractData}
+            isEditing={false}
+            onChange={handleOldContractChange}
+          />
+        </div>
+      );
+    }
+
+    if (shouldShowAllComponents()) {
+      // Diperpanjang Berubah => Show ContractRenewalDetail + NewContract
+      return (
+        <div className="space-y-6">
+          <ContractRenewalDetail
+            data={contractRenewalData}
+            isEditing={false}
+            onChange={handleContractRenewalChange}
+          />
+          <NewContract
+            data={newContractData}
+            isEditing={true}
+            onChange={handleNewContractChange}
+          />
+        </div>
+      );
+    }
+
+    if (shouldShowOnlyDetail()) {
+      // Other statuses => Show only ContractRenewalDetail with limited fields
+      return (
+        <div className="space-y-6">
+          <ContractRenewalDetail
+            data={contractRenewalData}
+            isEditing={false}
+            onChange={handleContractRenewalChange}
+            showLimitedFields={true}
+          />
+        </div>
+      );
+    }
+
+    // Default: Show only ContractRenewalDetail
+    return (
+      <div className="space-y-6">
+        <ContractRenewalDetail
+          data={contractRenewalData}
+          isEditing={false}
+          onChange={handleContractRenewalChange}
+          showLimitedFields={true}
+        />
+      </div>
+    );
+  };
+
   return (
     <ModalAddEdit
       title="Edit Status Perpanjangan"
@@ -119,30 +191,7 @@ export default function EditStatusPerpanjanganModal({
       handleSubmit={handleSubmit}
       submitting={submitting}
       maxWidth="max-w-6xl"
-      content={
-        <div className="space-y-6">
-          {/* Contract Renewal Detail Section */}
-            <ContractRenewalDetail
-              data={contractRenewalData}
-              isEditing={false}
-              onChange={handleContractRenewalChange}
-            />
-
-          {/* Old Contract Section */}
-            <OldContract
-              data={oldContractData}
-              isEditing={false}
-              onChange={handleOldContractChange}
-            />
-
-          {/* New Contract Section */}
-            <NewContract
-              data={newContractData}
-              isEditing={true}
-              onChange={handleNewContractChange}
-            />
-        </div>
-      }
+      content={renderContent()}
     />
   );
 }

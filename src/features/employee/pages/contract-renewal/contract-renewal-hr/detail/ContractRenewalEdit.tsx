@@ -68,7 +68,7 @@ export default function PerpanjangKontrakEdit() {
           <div>
             <ContractRenewalDetail
               data={kontrakData?.status_perpanjangan}
-              isEditing={isEditing}
+              isEditing={false}
             />
           </div>
 
@@ -78,14 +78,14 @@ export default function PerpanjangKontrakEdit() {
               <div>
                 <OldContract
                   data={kontrakData?.pengajuan_kontrak}
-                  isEditing={isEditing}
+                  isEditing={false}
                 />
               </div>
 
               <div>
                 <NewContract
                   data={{}}
-                  isEditing={isEditing}
+                  isEditing={false}
                 />
               </div>
             </div>
@@ -96,7 +96,7 @@ export default function PerpanjangKontrakEdit() {
               <div>
                 <OldContract
                   data={kontrakData?.pengajuan_kontrak}
-                  isEditing={isEditing}
+                  isEditing={false}
                 />
               </div>
             </div>
