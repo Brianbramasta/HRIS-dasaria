@@ -407,6 +407,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
       ),
     },
     { id: 'remaining_contract', label: 'Sisa Kontrak', minWidth: 120, sortable: true },
+    { id: 'notes', label: 'Catatan', minWidth: 150, sortable: false },
     {
       id: 'renewal_status_name',
       label: 'Status Perpanjangan',
@@ -418,60 +419,9 @@ export function useContractRenewal(): UseContractRenewalReturn {
         </span>
       ),
       filterOptions: [
-        { label: 'Pending', value: 'Pending' },
-        { label: 'Diperpanjang', value: 'Diperpanjang' },
-        { label: 'Ditolak', value: 'Ditolak' },
-        { label: 'Menunggu Jadwal Negoisasi', value: 'Menunggu Jadwal Negoisasi' },
-        { label: 'Negoisasi', value: 'Negoisasi' },
-      ],
-    },
-    {
-      id: 'supervisor_approval_status_name',
-      label: 'Status Atasan',
-      minWidth: 140,
-      sortable: true,
-      format: (value) => (
-        <span className={`status-styling rounded-full text-xs font-medium ${getStatusColor(value)}`}>
-          {value}
-        </span>
-      ),
-      filterOptions: [
-        { label: 'Pending', value: 'Pending' },
-        { label: 'Disetujui', value: 'Disetujui' },
-        { label: 'Ditolak', value: 'Ditolak' },
-      ],
-    },
-    // {
-    //   id: 'contract_submission_detail',
-    //   label: 'Detail Kontrak Pengajuan',
-    //   minWidth: 180,
-    //   sortable: false,
-    //   align: 'center',
-    //   format: (value) => value === '-' ? value : (
-    //     <FileText size={16} className="inline text-gray-500" />
-    //   ),
-    // },
-    { id: 'negotiation_date', label: 'Tanggal Negoisasi', minWidth: 160, sortable: true, dateRangeFilter: true, format: (value) => (
-      <div className="flex items-center gap-2">
-        <div>{formatDateToIndonesian(value)}</div>
-      </div>
-    ) },
-    { id: 'notes', label: 'Catatan', minWidth: 150, sortable: false },
-    {
-      id: 'employee_status_name',
-      label: 'Status Karyawan',
-      minWidth: 140,
-      sortable: true,
-      format: (value) => (
-        <span className={`status-styling rounded-full text-xs font-medium ${getStatusColor(value)}`}>
-          {value}
-        </span>
-      ),
-      filterOptions: [
-        { label: 'Pending', value: 'Pending' },
-        { label: 'Disetujui', value: 'Disetujui' },
-        { label: 'Negoisasi', value: 'Negoisasi' },
-        { label: 'Info', value: 'Info' },
+        { label: 'Diperpanjang Tetap', value: 'Diperpanjang Tetap' },
+        { label: 'Sedang di Proses', value: 'Sedang di Proses' },
+        { label: 'Menunggu diproses', value: 'Menunggu diproses' },
         { label: 'Ditolak', value: 'Ditolak' },
       ],
     },
