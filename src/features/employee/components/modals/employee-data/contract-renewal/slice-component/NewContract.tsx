@@ -406,7 +406,7 @@ export default function NewContract({
           <InputField
             label="Golongan"
             value={selectedGrade || data?.new_grade || ''}
-            disabled={!isEditing}
+            disabled
             onChange={(e) => handleInputChange('new_grade', e.target.value)}
             containerClassName="space-y-2"
           />

@@ -6,6 +6,7 @@ import { IconFileDetail as Edit } from '@/icons/components/icons';
 // import contractRenewalService from '../../services/ContractRenewalService';
 import { ContractRenewalListItem, ContractRenewalFilterParams } from '../../types/ContractRenewal';
 import { useNotificationStore } from '@/stores/notificationStore';
+import { useContractRenewalStore } from '../../stores/useContractRenewalStore';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 
 interface UseContractRenewalReturn {
@@ -33,6 +34,7 @@ interface UseContractRenewalReturn {
 export function useContractRenewal(): UseContractRenewalReturn {
   const navigate = useNavigate();
   const { addNotification } = useNotificationStore();
+  const { setChangeTypeName } = useContractRenewalStore();
   const [data, setData] = useState<ContractRenewalListItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -61,12 +63,12 @@ export function useContractRenewal(): UseContractRenewalReturn {
     setIsLoading(true);
     try {
       console.log('Fetching contract renewals with params:', params);
-      // Dummy data for testing
-      // Diperpanjang Tetap
-      // Diperpanjang Berubah
-      // Sedang di Proses
-      // Menunggu diproses
-      // Ditolak
+      
+      // ============================================
+      // FOR DUMMY SIMULATION DATA
+      // COMMENT OUT DUMMY DATA AND UNCOMMENT THE REAL API CALL BELOW 
+      // AFTER THE API IS READY
+      // ============================================
       const dummyData: ContractRenewalListItem[] = [
         {
           id: '1',
@@ -290,7 +292,9 @@ export function useContractRenewal(): UseContractRenewalReturn {
       setTotalItems(dummyData.length);
       setPerPage(10);
 
-      // Uncomment below to use real API
+      // ============================================
+      // REAL API CALL (UNCOMMENT WHEN API IS READY)
+      // ============================================
       // const response = await contractRenewalService.getContractRenewals(params);
       // if (response.success && response.data) {
       //   setData(response.data.data);
@@ -322,8 +326,10 @@ export function useContractRenewal(): UseContractRenewalReturn {
   }, [navigate]);
 
   const handleEdit = useCallback((row: ContractRenewalListItem) => {
+    // Dispatch renewal status to store based on status perpanjangan
+    setChangeTypeName(row.renewal_status_name);
     navigate(`/contract-extension/detail/${row.employee_id}`);
-  }, [navigate]);
+  }, [navigate, setChangeTypeName]);
 
   const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
   const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
