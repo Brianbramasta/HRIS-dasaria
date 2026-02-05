@@ -40,7 +40,7 @@ type Params = {
 
 export function useEditOrganizationHistoryModal({ isOpen, initialData }: Params) {
   const [form, setForm] = useState<OrganizationChangeForm>({});
-  const title = useMemo(() => 'Perubahan Organisasi', []);
+  const title = useMemo(() => 'Tambah Perubahan Organisasi', []);
   const { changeTypeOptions, fetchChangeTypeOptions, employeeOptions, fetchEmployeeOptions } = useOrganizationChange({ autoFetch: false });
 
   const [companyOptions, setCompanyOptions] = useState<any[]>([]);

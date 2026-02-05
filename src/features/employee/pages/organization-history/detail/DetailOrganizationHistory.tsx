@@ -25,6 +25,7 @@ const DetailOrganizationHistoryPage: React.FC = () => {
     displayForm,
     currentEmployee,
     handleInput,
+    status,
   } = useOrganizationHistoryDetail({ id });
 
   return (
@@ -260,15 +261,17 @@ const DetailOrganizationHistoryPage: React.FC = () => {
             />
           </div>
           <div className="col-span-1 md:col-span-3 flex justify-end">
-            <Button
-              variant="custom"
-              size="sm"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2"
-              onClick={() => setIsEditModalOpen(true)}
-            >
-              <IconPencil color='white' />
-              Edit
-            </Button>
+            {status === 'Rekomendasi' && (
+              <Button
+                variant="custom"
+                size="sm"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2"
+                onClick={() => setIsEditModalOpen(true)}
+              >
+                <IconPencil color="white" />
+                Edit
+              </Button>
+            )}
           </div>
         </div>
       </PayrollCard>
@@ -277,7 +280,7 @@ const DetailOrganizationHistoryPage: React.FC = () => {
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         initialData={form}
-        onSubmit={(data) => {
+        onSubmit={() => {
           // TODO: Implement update logic
           setIsEditModalOpen(false);
         }}

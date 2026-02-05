@@ -14,6 +14,7 @@ export function useOrganizationHistoryDetail({ id }: Params) {
   const [form, setForm] = useState<OrganizationChangeForm>({});
   const [displayForm, setDisplayForm] = useState<any>({});
   const [currentEmployee, setCurrentEmployee] = useState<Karyawan | null>(null);
+  const [status, setStatus] = useState<string>('');
 
   useEffect(() => {
     const loadDetail = async () => {
@@ -24,55 +25,62 @@ export function useOrganizationHistoryDetail({ id }: Params) {
       
       const mapped: OrganizationChangeForm = {
         id: data.id,
-        employee_id: data.employee_id,
-        nama: raw.employee?.full_name || raw.full_name || '',
-        nip: data.employee_id,
+        employee_id: data.employee_id || data.nip,
+        nama: raw.name || '',
+        nip: data.nip,
         change_type_id: data.change_type_id,
         efektif_date: data.efektif_date,
-        company_id: data.company_id,
-        office_id: data.office_id,
-        directorate_id: data.directorate_id,
-        division_id: data.division_id,
-        department_id: data.department_id,
-        position_id: data.position_id,
-        job_title_id: data.job_title_id,
-        structural_job_id: raw.structural_job_id || '',
-        position_level_id: data.position_level_id,
-        employee_category_id: data.employee_category_id,
+        company_id: data.new_company_id || '',
+        office_id: data.new_office_id || '',
+        directorate_id: data.new_directorate_id || '',
+        division_id: data.new_division_id || '',
+        department_id: data.new_department_id || '',
+        position_id: data.new_position_id || '',
+        job_title_id: data.new_job_title_id || '',
+        structural_job_id: raw.new_structural_job_id || '',
+        position_level_id: data.new_position_level_id || '',
+        employee_category_id: data.new_employee_category_id || '',
         reason: data.reason,
         decree_file: data.decree_file || '',
-        unit_id: raw.unit_id || '',
+        unit_id: raw.new_unit_id || '',
       };
       setForm(mapped);
+      setStatus(data.status);
 
       // Map display values (names) from the response
-      // Assuming the API returns nested objects or name fields
       setDisplayForm({
-        change_type_name: raw.change_type?.name || raw.jenis_perubahan || '-',
-        employee_category_name: raw.employee_category?.name || raw.kategori_karyawan_baru || '-',
-        company_name: raw.company?.name || raw.perusahaan_baru || '-',
-        office_name: raw.office?.name || raw.kantor_baru || '-',
-        directorate_name: raw.directorate?.name || raw.direktorat_baru || '-',
-        division_name: raw.division?.name || raw.divisi_baru || '-',
-        department_name: raw.department?.name || raw.departemen_baru || '-',
-        unit_name: raw.unit?.name || raw.unit_baru || '-',
-        position_name: raw.position?.name || raw.posisi_baru || '-',
-        job_title_name: raw.job_title?.name || raw.jabatan_baru || '-',
-        structural_job_name: raw.structural_job?.name || raw.jabatan_struktural_baru || '-',
-        position_level_name: raw.position_level?.name || raw.jenjang_jabatan_baru || '-',
-        golongan: raw.job_title?.grade || raw.grade || '-',
+        change_type_name: raw.change_type_name || '-',
+        employee_category_name: raw.new_employee_category_name || '-',
+        company_name: raw.new_company_name || '-',
+        office_name: raw.new_office_name || '-',
+        directorate_name: raw.new_directorate_name || '-',
+        division_name: raw.new_division_name || '-',
+        department_name: raw.new_department_name || '-',
+        unit_name: raw.new_unit_name || '-',
+        position_name: raw.new_position_name || '-',
+        job_title_name: raw.new_job_title_name || '-',
+        structural_job_name: raw.new_structural_job_name || '-',
+        position_level_name: raw.new_position_level_name || '-',
+        golongan: '-',
       });
 
-      // Map current employee data if available in response
-      if (raw.employee) {
-          setCurrentEmployee(raw.employee);
-      } else {
-          // Fallback or partial mapping
-          setCurrentEmployee({
-              id: raw.employee_id,
-              full_name: raw.full_name,
-          } as any);
-      }
+      // Map current employee data
+      setCurrentEmployee({
+          id: raw.employee_id || raw.nip,
+          full_name: raw.name,
+          employee_category: raw.previous_employee_category_name || '-',
+          company_name: raw.previous_company_name || '-',
+          office_name: raw.previous_office_name || '-',
+          directorate_name: raw.previous_directorate_name || '-',
+          division_name: raw.previous_division_name || '-',
+          department_name: raw.previous_department_name || '-',
+          unit: raw.previous_unit_name || '-',
+          position_name: raw.previous_position_name || '-',
+          job_title_name: raw.previous_job_title_name || '-',
+          structural_job: raw.previous_structural_job_name || '-',
+          position_level: raw.previous_position_level_name || '-',
+          grade: '-',
+      } as any);
     };
     loadDetail();
   }, [id, getDetail]);
@@ -87,6 +95,7 @@ export function useOrganizationHistoryDetail({ id }: Params) {
     displayForm,
     currentEmployee,
     handleInput,
+    status,
   };
 }
 

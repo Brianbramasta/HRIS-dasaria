@@ -74,7 +74,7 @@ const EditRiwayatOrganisasiModal: React.FC<Props> = ({ isOpen, initialData, onCl
               onSearch={handleEmployeeSearch}
               placeholder="Pilih NIP"
               // comment sementara
-              // disabled={isEditMode || employeeOptions.length === 0}
+              disabled={isEditMode || employeeOptions.length === 0}
             />
           </div>
           <div>
