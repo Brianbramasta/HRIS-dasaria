@@ -26,6 +26,7 @@ export default function PersetujuanPerpanjanganKontrak() {
     handleModalClose,
     handleRejectModalClose,
     handleRejectSubmit,
+    handleUpdateContractRequest,
     handleNavigateToApproval,
     handleNavigateToExtension,
   } = useContractRenewalApproval();

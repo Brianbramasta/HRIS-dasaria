@@ -110,8 +110,16 @@ export default function EditStatusPerpanjanganModal({
             basic_salary: pp.salary,
          });
       }
-    }
-  }, [contractExtensionDetail]);
+
+      setContractRenewalData((prev: any) => ({
+        ...prev,
+        contract_type_id: contractExtensionDetail.contract_type_id,
+        contract_type_name: contractExtensionDetail.contract_type,
+        contract_id: contractExtensionDetail.contract_id,
+        contract_number: String(contractExtensionDetail.contract_sequence),
+      }));
+     }
+   }, [contractExtensionDetail, contractTypeOptions]);
 
   useEffect(() => {
     if (isOpen && kontrakData) {
@@ -215,7 +223,10 @@ export default function EditStatusPerpanjanganModal({
       }
 
       // Contract Type ID
+      console.log(contractRenewalData?.contract_type_id,'test contractRenewalData');
+      // return
       if (contractRenewalData?.contract_type_id) {
+        
         formData.append('contract_type_id', contractRenewalData.contract_type_id);
       }
 

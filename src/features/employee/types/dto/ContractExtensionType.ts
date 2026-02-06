@@ -75,10 +75,11 @@ export interface ContractExtensionDetailResult {
   extension_status: string;
   extension_status_id: string;
   contract_type: string;
-  contract_type_id: string;
+  contract_type_id?: string;
   contract_sequence: number;
   new_contract_signed_date: string | null;
   new_contract_end_date: string | null;
+  contract_id?: string;
   contract_document: string | null;
   evaluation_document: string | null;
   note: string | null;

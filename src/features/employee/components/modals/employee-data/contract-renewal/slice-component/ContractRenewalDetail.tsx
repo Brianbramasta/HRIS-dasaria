@@ -6,6 +6,7 @@ import DateField from '@/components/shared/field/DateField';
 import FileField from '@/components/shared/field/FIleField';
 import { useContractRenewalStore } from '../../../../../stores/useContractRenewalStore';
 import { useEffect } from 'react';
+import { useApiContractExtension } from '@/features/employee/hooks/api/useApiContractExtension';
 
 interface ContractRenewalDetailProps {
   data?: {
@@ -42,6 +43,25 @@ export default function ContractRenewalDetail({
   contractTypeOptions = [],
 }: ContractRenewalDetailProps) {
   const { shouldShowAllDetailFields, setChangeTypeName } = useContractRenewalStore();
+  const { contractTypeOptions: apiContractTypeOptions, fetchContractTypes } = useApiContractExtension();
+
+  useEffect(() => {
+    if (contractTypeOptions.length === 0) {
+      fetchContractTypes();
+    }
+  }, [contractTypeOptions.length, fetchContractTypes]);
+
+  const effectiveContractTypeOptions =
+    contractTypeOptions.length > 0
+      ? contractTypeOptions
+      : apiContractTypeOptions.length > 0
+      ? apiContractTypeOptions
+      : [
+          { label: 'Pilih Jenis Kontrak', value: '' },
+          { label: 'Kontrak Tetap', value: 'Kontrak Tetap' },
+          { label: 'Kontrak Sementara', value: 'Kontrak Sementara' },
+          { label: 'PKWT', value: 'PKWT' },
+        ];
 
   // Auto-update store when renewal status changes
   useEffect(() => {
@@ -151,20 +171,11 @@ export default function ContractRenewalDetail({
           {!showLimitedFields && shouldShowAllDetailFields() && (
             <SelectField
               label="Jenis Kontrak"
-              defaultValue={data?.contract_type_name || ''}
-              disabled={!isEditing}
-              onChange={(value) => handleInputChange('contract_type_name', value)}
+              defaultValue={data?.contract_type_id || ''}
+              // disabled={!isEditing}
+              onChange={(value) => handleInputChange('contract_type_id', value)}
               containerClassName="space-y-2"
-              options={
-                contractTypeOptions.length > 0
-                  ? contractTypeOptions
-                  : [
-                      { label: 'Pilih Jenis Kontrak', value: '' },
-                      { label: 'Kontrak Tetap', value: 'Kontrak Tetap' },
-                      { label: 'Kontrak Sementara', value: 'Kontrak Sementara' },
-                      { label: 'PKWT', value: 'PKWT' },
-                    ]
-              }
+              options={effectiveContractTypeOptions}
             />
           )}
         </div>

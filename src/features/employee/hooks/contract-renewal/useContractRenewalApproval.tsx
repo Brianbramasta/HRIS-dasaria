@@ -516,6 +516,7 @@ export function useContractRenewalApproval(): UseContractRenewalApprovalReturn {
     handleRejectClick,
     handleRejectModalClose,
     handleRejectSubmit,
+    handleUpdateContractRequest,
     handleApprove,
     handleNavigateToApproval,
     handleNavigateToExtension,

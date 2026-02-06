@@ -6,6 +6,7 @@ import {
   ProcessContractExtensionPayload,
 } from '../../types/dto/ContractExtensionType';
 import { contractExtensionsService } from '../../services/ContractExtensionsService';
+import { contractService } from '../../services/detail/ContractService';
 import organizationChangeService from '../../services/OrganizationChangeService';
 
 interface UseApiContractExtensionReturn {
@@ -17,6 +18,7 @@ interface UseApiContractExtensionReturn {
   contractExtensionDetail: ContractExtensionDetailResult | null;
   extensionStatuses: ExtensionStatusItem[];
   changeTypeOptions: { value: string; label: string }[];
+  contractTypeOptions: { value: string; label: string }[];
   pagination: {
     currentPage: number;
     perPage: number;
@@ -28,6 +30,7 @@ interface UseApiContractExtensionReturn {
   fetchContractExtensionDetail: (id: string) => Promise<void>;
   fetchExtensionStatuses: () => Promise<void>;
   fetchChangeTypes: () => Promise<void>;
+  fetchContractTypes: () => Promise<void>;
   processDecision: (id: string, payload: ProcessContractExtensionPayload) => Promise<boolean>;
 
   // Reset
@@ -42,6 +45,7 @@ export const useApiContractExtension = (): UseApiContractExtensionReturn => {
   const [contractExtensionDetail, setContractExtensionDetail] = useState<ContractExtensionDetailResult | null>(null);
   const [extensionStatuses, setExtensionStatuses] = useState<ExtensionStatusItem[]>([]);
   const [changeTypeOptions, setChangeTypeOptions] = useState<{ value: string; label: string }[]>([]);
+  const [contractTypeOptions, setContractTypeOptions] = useState<{ value: string; label: string }[]>([]);
   const [pagination, setPagination] = useState({
     currentPage: 1,
     perPage: 10,
@@ -121,6 +125,22 @@ export const useApiContractExtension = (): UseApiContractExtensionReturn => {
     }
   }, []);
 
+  const fetchContractTypes = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const items = await contractService.getContractTypeDropdown();
+      setContractTypeOptions((items || []).map((i: any) => ({ label: i.name, value: i.id })));
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Failed to fetch contract types';
+      setError(msg);
+      console.error('Error fetching contract types:', err);
+      setContractTypeOptions([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   const processDecision = useCallback(async (id: string, payload: ProcessContractExtensionPayload): Promise<boolean> => {
     setLoading(true);
     setError(null);
@@ -184,11 +204,13 @@ export const useApiContractExtension = (): UseApiContractExtensionReturn => {
     contractExtensionDetail,
     extensionStatuses,
     changeTypeOptions,
+    contractTypeOptions,
     pagination,
     fetchContractExtensions,
     fetchContractExtensionDetail,
     fetchExtensionStatuses,
     fetchChangeTypes,
+    fetchContractTypes,
     processDecision,
     resetDetail,
   };
