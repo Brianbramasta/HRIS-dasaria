@@ -17,6 +17,7 @@ interface ContractRenewalDetailProps {
     end_date?: string;
     remaining_contract?: string;
     renewal_status_name?: string;
+    contract_type_id?: string;
     contract_type_name?: string;
     contract_number?: string;
     new_contract_date?: string;
@@ -29,6 +30,7 @@ interface ContractRenewalDetailProps {
   onChange?: (field: string, value: any) => void;
   showLimitedFields?: boolean;
   statusOptions?: { value: string; label: string }[];
+  contractTypeOptions?: { value: string; label: string }[];
 }
 
 export default function ContractRenewalDetail({
@@ -37,6 +39,7 @@ export default function ContractRenewalDetail({
   onChange,
   showLimitedFields = false,
   statusOptions = [],
+  contractTypeOptions = [],
 }: ContractRenewalDetailProps) {
   const { shouldShowAllDetailFields, setChangeTypeName } = useContractRenewalStore();
 
@@ -152,12 +155,16 @@ export default function ContractRenewalDetail({
               disabled={!isEditing}
               onChange={(value) => handleInputChange('contract_type_name', value)}
               containerClassName="space-y-2"
-              options={[
-                { label: 'Pilih Jenis Kontrak', value: '' },
-                { label: 'Kontrak Tetap', value: 'Kontrak Tetap' },
-                { label: 'Kontrak Sementara', value: 'Kontrak Sementara' },
-                { label: 'PKWT', value: 'PKWT' },
-              ]}
+              options={
+                contractTypeOptions.length > 0
+                  ? contractTypeOptions
+                  : [
+                      { label: 'Pilih Jenis Kontrak', value: '' },
+                      { label: 'Kontrak Tetap', value: 'Kontrak Tetap' },
+                      { label: 'Kontrak Sementara', value: 'Kontrak Sementara' },
+                      { label: 'PKWT', value: 'PKWT' },
+                    ]
+              }
             />
           )}
         </div>

@@ -6,6 +6,7 @@ import {
   ProcessContractExtensionPayload,
 } from '../../types/dto/ContractExtensionType';
 import { contractExtensionsService } from '../../services/ContractExtensionsService';
+import organizationChangeService from '../../services/OrganizationChangeService';
 
 interface UseApiContractExtensionReturn {
   loading: boolean;
@@ -15,6 +16,7 @@ interface UseApiContractExtensionReturn {
   contractExtensions: ContractExtensionListItem[];
   contractExtensionDetail: ContractExtensionDetailResult | null;
   extensionStatuses: ExtensionStatusItem[];
+  changeTypeOptions: { value: string; label: string }[];
   pagination: {
     currentPage: number;
     perPage: number;
@@ -25,6 +27,7 @@ interface UseApiContractExtensionReturn {
   fetchContractExtensions: (params?: any) => Promise<void>;
   fetchContractExtensionDetail: (id: string) => Promise<void>;
   fetchExtensionStatuses: () => Promise<void>;
+  fetchChangeTypes: () => Promise<void>;
   processDecision: (id: string, payload: ProcessContractExtensionPayload) => Promise<boolean>;
 
   // Reset
@@ -38,6 +41,7 @@ export const useApiContractExtension = (): UseApiContractExtensionReturn => {
   const [contractExtensions, setContractExtensions] = useState<ContractExtensionListItem[]>([]);
   const [contractExtensionDetail, setContractExtensionDetail] = useState<ContractExtensionDetailResult | null>(null);
   const [extensionStatuses, setExtensionStatuses] = useState<ExtensionStatusItem[]>([]);
+  const [changeTypeOptions, setChangeTypeOptions] = useState<{ value: string; label: string }[]>([]);
   const [pagination, setPagination] = useState({
     currentPage: 1,
     perPage: 10,
@@ -95,6 +99,23 @@ export const useApiContractExtension = (): UseApiContractExtensionReturn => {
       const msg = err instanceof Error ? err.message : 'Failed to fetch extension statuses';
       setError(msg);
       console.error('Error fetching extension statuses:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchChangeTypes = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const resp = await organizationChangeService.getChangeTypeDropdown();
+      const items = (resp as any)?.data ?? [];
+      setChangeTypeOptions((items || []).map((i: any) => ({ label: i.name, value: i.id })));
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Failed to fetch change types';
+      setError(msg);
+      console.error('Error fetching change types:', err);
+      setChangeTypeOptions([]);
     } finally {
       setLoading(false);
     }
@@ -162,10 +183,12 @@ export const useApiContractExtension = (): UseApiContractExtensionReturn => {
     contractExtensions,
     contractExtensionDetail,
     extensionStatuses,
+    changeTypeOptions,
     pagination,
     fetchContractExtensions,
     fetchContractExtensionDetail,
     fetchExtensionStatuses,
+    fetchChangeTypes,
     processDecision,
     resetDetail,
   };

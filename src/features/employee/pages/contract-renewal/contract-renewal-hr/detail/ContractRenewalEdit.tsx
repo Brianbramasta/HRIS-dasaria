@@ -13,6 +13,7 @@ import { useContractRenewalStore } from '../../../../stores/useContractRenewalSt
 
 export default function PerpanjangKontrakEdit() {
   const {
+    id,
     kontrakData,
     // isLoading,
     isStatusModalOpen,
@@ -102,6 +103,7 @@ export default function PerpanjangKontrakEdit() {
 
   // Map data for Modals
   const modalData = useMemo(() => kontrakData ? {
+    id: id || '',
     idKaryawan: kontrakData.employee_id,
     pengguna: kontrakData.employee_name,
     posisi: kontrakData.current_position,

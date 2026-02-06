@@ -87,6 +87,7 @@ export default function PersetujuanPerpanjanganKontrak() {
           <EditPengajuanKontrakModal
             isOpen={isModalOpen}
             onClose={handleModalClose}
+            onSubmit={handleUpdateContractRequest}
             kontrakData={{
               idKaryawan: selectedKontrak.employee_id,
               pengguna: selectedKontrak.full_name,

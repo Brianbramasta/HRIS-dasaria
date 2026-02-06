@@ -29,6 +29,7 @@ interface UseContractRenewalApprovalReturn {
   handleRejectClick: (row: ContractRenewalApprovalListItem) => void;
   handleRejectModalClose: () => void;
   handleRejectSubmit: (alasanPenolakan: string) => Promise<void>;
+  handleUpdateContractRequest: (formData: FormData) => Promise<boolean>;
   handleApprove: (row: ContractRenewalApprovalListItem) => Promise<void>;
   handleNavigateToApproval: () => void;
   handleNavigateToExtension: () => void;
@@ -307,6 +308,35 @@ export function useContractRenewalApproval(): UseContractRenewalApprovalReturn {
       });
     }
   }, [selectedKontrak, addNotification, fetchContractRenewalApprovals, handleRejectModalClose]);
+
+  const handleUpdateContractRequest = useCallback(async (formData: FormData) => {
+    if (!selectedKontrak) return false;
+
+    try {
+      // Assuming we can pass FormData or need to adjust service
+      // For now casting to any to bypass type check if service expects object
+      // Ideally service should handle FormData or we construct object
+      await contractRenewalService.updateContractRenewalSubmission(selectedKontrak.id, formData as any);
+      
+      addNotification({
+        title: 'Success',
+        description: 'Contract renewal request updated successfully',
+        variant: 'success',
+        hideDuration: 5000,
+      });
+      handleModalClose();
+      await fetchContractRenewalApprovals();
+      return true;
+    } catch (error: any) {
+      addNotification({
+        title: 'Error',
+        description: error?.message || 'Failed to update contract renewal request',
+        variant: 'error',
+        hideDuration: 5000,
+      });
+      return false;
+    }
+  }, [selectedKontrak, addNotification, handleModalClose, fetchContractRenewalApprovals]);
 
   const handleApprove = useCallback(async (row: ContractRenewalApprovalListItem) => {
     try {

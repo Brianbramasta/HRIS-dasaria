@@ -1,5 +1,6 @@
 import PayrollCard from '@/features/payroll/components/cards/Cards';
 import InputField from '@/components/shared/field/InputField';
+import { formatInputCurrency } from '@/utils/formatCurrency';
 
 interface OldContractData {
   change_type_name?: string;
@@ -147,10 +148,13 @@ export default function OldContract({
         <div className="grid grid-cols-1 gap-4">
           <InputField
             label="GAJI BERSIH"
-            type="number"
-            value={data?.basic_salary || ''}
+            type="text"
+            value={formatInputCurrency(String(data?.basic_salary || ''))}
             disabled={!isEditing}
-            onChange={(e) => handleInputChange('basic_salary', e.target.value)}
+            onChange={(e) => {
+              const cleaned = e.target.value.replace(/[^0-9]/g, '');
+              handleInputChange('basic_salary', cleaned);
+            }}
             containerClassName="space-y-2"
           />
         </div>

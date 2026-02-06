@@ -5,11 +5,13 @@ import NewContract from '@/features/employee/components/modals/employee-data/con
 import useEditContractRenewalStatusModal from '@/features/employee/hooks/modals/employee-data/contract-renewal/useEditContractRenewalStatusModal';
 import { useContractRenewalStore } from '@/features/employee/stores/useContractRenewalStore';
 import { useState, useEffect } from 'react';
+import { useApiContractExtension } from '@/features/employee/hooks/api/useApiContractExtension';
 
 interface EditStatusPerpanjanganModalProps {
   isOpen: boolean;
   onClose: () => void;
   kontrakData?: {
+    id: string;
     idKaryawan: string;
     pengguna: string;
     posisi: string;
@@ -26,6 +28,7 @@ interface EditStatusPerpanjanganModalProps {
   onSuccess?: () => void;
   onSubmit: (data: FormData) => Promise<boolean>;
   statusOptions?: { value: string; label: string }[];
+  contractTypeOptions?: { value: string; label: string }[];
 }
 
 export default function EditStatusPerpanjanganModal({
@@ -35,12 +38,15 @@ export default function EditStatusPerpanjanganModal({
   onSuccess,
   onSubmit,
   statusOptions,
+  contractTypeOptions,
 }: EditStatusPerpanjanganModalProps) {
   // We keep using the hook for options if needed, but we handle submission locally
   const {
     // submitting: hookSubmitting,
     // handleSubmit: hookHandleSubmit,
   } = useEditContractRenewalStatusModal({ kontrakData, onClose, onSuccess });
+
+  const { fetchContractExtensionDetail, contractExtensionDetail } = useApiContractExtension();
 
   const [submitting, setSubmitting] = useState(false);
   const [contractRenewalData, setContractRenewalData] = useState<any>(null);
@@ -52,6 +58,60 @@ export default function EditStatusPerpanjanganModal({
     shouldShowAllComponents,
     shouldShowOnlyDetail,
   } = useContractRenewalStore();
+
+  useEffect(() => {
+    if (isOpen && kontrakData?.id) {
+      fetchContractExtensionDetail(kontrakData.id);
+    }
+  }, [isOpen, kontrakData, fetchContractExtensionDetail]);
+
+  useEffect(() => {
+    if (contractExtensionDetail) {
+      // Map contract renewal data from detail if needed, or keep using props
+      // For now we trust props for basic info, but we can update if needed.
+      // Focusing on NewContract data as requested.
+      
+      if (contractExtensionDetail.new_position) {
+        const np = contractExtensionDetail.new_position;
+        setNewContractData({
+          new_change_type_id: np.change_type_id,
+          new_change_type_name: np.change_type,
+          new_employee_category_name: np.employee_category_id,
+          new_company_name: np.company_id,
+          new_office_name: np.office_id,
+          new_directorate_name: np.directorate_id,
+          new_division_name: np.division_id,
+          new_department_name: np.department_id,
+          new_unit_name: np.unit_id || '',
+          new_position_name: np.position_id,
+          new_job_title_name: np.rank_position_id,
+          new_structural_position_name: np.structural_position_id,
+          new_position_level_name: np.position_level_id,
+          new_grade: np.grade,
+          new_basic_salary: np.salary,
+        });
+      }
+
+      if (contractExtensionDetail.previous_position) {
+         const pp = contractExtensionDetail.previous_position;
+         setOldContractData({
+            employee_category_name: pp.employee_category,
+            company_name: pp.company,
+            office_name: pp.office,
+            directorate_name: pp.directorate,
+            division_name: pp.division,
+            department_name: pp.department,
+            unit_name: pp.unit || '',
+            position_name: pp.position,
+            job_title_name: pp.rank_position,
+            structural_position_name: pp.structural_position,
+            position_level_name: pp.position_level,
+            grade: pp.grade,
+            basic_salary: pp.salary,
+         });
+      }
+    }
+  }, [contractExtensionDetail]);
 
   useEffect(() => {
     if (isOpen && kontrakData) {
@@ -70,38 +130,44 @@ export default function EditStatusPerpanjanganModal({
       });
 
       // Initialize old and new contract data (can be extended based on actual data structure)
-      setOldContractData({
-        employee_category_name: kontrakData.pengguna,
-        company_name: '',
-        office_name: '',
-        directorate_name: '',
-        division_name: '',
-        department_name: kontrakData.departemen,
-        unit_name: '',
-        position_name: kontrakData.posisi,
-        job_title_name: '',
-        structural_position_name: '',
-        position_level_name: '',
-        grade: '',
-        basic_salary: 0,
-      });
+      // These are initial fallbacks, they will be overridden by API data if available
+      if (!oldContractData) {
+        setOldContractData({
+          employee_category_name: kontrakData.pengguna, // This seems wrong in original code, likely name used as placeholder
+          company_name: '',
+          office_name: '',
+          directorate_name: '',
+          division_name: '',
+          department_name: kontrakData.departemen,
+          unit_name: '',
+          position_name: kontrakData.posisi,
+          job_title_name: '',
+          structural_position_name: '',
+          position_level_name: '',
+          grade: '',
+          basic_salary: 0,
+        });
+      }
 
-      setNewContractData({
-        new_change_type_name: '',
-        new_employee_category_name: '',
-        new_company_name: '',
-        new_office_name: '',
-        new_directorate_name: '',
-        new_division_name: '',
-        new_department_name: '',
-        new_unit_name: '',
-        new_position_name: '',
-        new_job_title_name: '',
-        new_structural_position_name: '',
-        new_position_level_name: '',
-        new_grade: '',
-        new_basic_salary: 0,
-      });
+      if (!newContractData) {
+        setNewContractData({
+          new_change_type_id: '',
+          new_change_type_name: '',
+          new_employee_category_name: '',
+          new_company_name: '',
+          new_office_name: '',
+          new_directorate_name: '',
+          new_division_name: '',
+          new_department_name: '',
+          new_unit_name: '',
+          new_position_name: '',
+          new_job_title_name: '',
+          new_structural_position_name: '',
+          new_position_level_name: '',
+          new_grade: '',
+          new_basic_salary: 0,
+        });
+      }
     }
   }, [isOpen, kontrakData, statusOptions]);
 
@@ -130,6 +196,7 @@ export default function EditStatusPerpanjanganModal({
     setSubmitting(true);
     try {
       const formData = new FormData();
+      formData.append('_method', 'PATCH');
       
       // Append fields
       // Status ID
@@ -142,12 +209,54 @@ export default function EditStatusPerpanjanganModal({
         formData.append('note', contractRenewalData.notes);
       }
 
+      // Document Evaluasi
+      if (contractRenewalData?.evaluation_document instanceof File) {
+        formData.append('document_evaluasi', contractRenewalData.evaluation_document);
+      }
+
+      // Contract Type ID
+      if (contractRenewalData?.contract_type_id) {
+        formData.append('contract_type_id', contractRenewalData.contract_type_id);
+      }
+
+      // Contract Number
+      if (contractRenewalData?.contract_number) {
+        formData.append('contract_number', contractRenewalData.contract_number);
+      }
+
+      // Sign Date New Contract
+      if (contractRenewalData?.new_contract_date) {
+        formData.append('sign_date_new_contract', contractRenewalData.new_contract_date);
+      }
+
+      // End Date New Contract
+      if (contractRenewalData?.new_contract_end_date) {
+        formData.append('end_date_new_contract', contractRenewalData.new_contract_end_date);
+      }
+
+      // Contract Document
+      if (contractRenewalData?.contract_document instanceof File) {
+        formData.append('contract_document', contractRenewalData.contract_document);
+      }
+
       // New Contract Fields (if visible and populated)
       if (shouldShowAllComponents() && newContractData) {
-        if (newContractData.new_contract_date) formData.append('sign_date_new_contract', newContractData.new_contract_date);
-        if (newContractData.new_contract_end_date) formData.append('end_date_new_contract', newContractData.new_contract_end_date);
-        // Add other fields as necessary based on ProcessContractExtensionPayload
-        // For now we map what we have in UI
+        // Salary
+        if (newContractData.new_basic_salary) formData.append('salary', newContractData.new_basic_salary);
+        
+        // IDs
+        if (newContractData.new_company_name) formData.append('company_id', newContractData.new_company_name);
+        if (newContractData.new_office_name) formData.append('office_id', newContractData.new_office_name);
+        if (newContractData.new_directorate_name) formData.append('directorate_id', newContractData.new_directorate_name);
+        if (newContractData.new_department_name) formData.append('department_id', newContractData.new_department_name);
+        if (newContractData.new_division_name) formData.append('division_id', newContractData.new_division_name);
+        if (newContractData.new_position_name) formData.append('position_id', newContractData.new_position_name);
+        if (newContractData.new_job_title_name) formData.append('job_title_id', newContractData.new_job_title_name);
+        if (newContractData.new_structural_position_name) formData.append('structural_job_id', newContractData.new_structural_position_name);
+        if (newContractData.new_unit_name) formData.append('unit_id', newContractData.new_unit_name);
+        if (newContractData.new_position_level_name) formData.append('position_level_id', newContractData.new_position_level_name);
+        if (newContractData.new_change_type_id) formData.append('change_type_id', newContractData.new_change_type_id);
+        if (newContractData.new_employee_category_name) formData.append('employee_category_id', newContractData.new_employee_category_name);
       }
 
       const success = await onSubmit(formData);
@@ -173,6 +282,7 @@ export default function EditStatusPerpanjanganModal({
             isEditing={false} // Maybe this should be true for status editing?
             onChange={handleContractRenewalChange}
             statusOptions={statusOptions}
+            contractTypeOptions={contractTypeOptions}
           />
           <OldContract
             data={oldContractData}
@@ -192,6 +302,7 @@ export default function EditStatusPerpanjanganModal({
             isEditing={false}
             onChange={handleContractRenewalChange}
             statusOptions={statusOptions}
+            contractTypeOptions={contractTypeOptions}
           />
           <NewContract
             data={newContractData}
@@ -212,6 +323,7 @@ export default function EditStatusPerpanjanganModal({
             onChange={handleContractRenewalChange}
             showLimitedFields={true}
             statusOptions={statusOptions}
+            contractTypeOptions={contractTypeOptions}
           />
         </div>
       );
@@ -226,6 +338,7 @@ export default function EditStatusPerpanjanganModal({
           onChange={handleContractRenewalChange}
           showLimitedFields={true}
           statusOptions={statusOptions}
+          contractTypeOptions={contractTypeOptions}
         />
       </div>
     );

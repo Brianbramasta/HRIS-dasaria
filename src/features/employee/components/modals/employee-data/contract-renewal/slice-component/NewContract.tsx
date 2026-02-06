@@ -3,9 +3,12 @@ import InputField from '@/components/shared/field/InputField';
 import SelectField from '@/components/shared/field/SelectField';
 import { useState, useEffect } from 'react';
 import { employeeMasterDataService } from '@/features/employee/services/EmployeeMasterData.service';
+import { useApiContractExtension } from '@/features/employee/hooks/api/useApiContractExtension';
 import { getEmployeeCategoryDropdownOptions, getPositionLevelDropdownOptions, getStructuralJobDropdownOptions, getUnitDropdownByDepartmentIdOptions } from '@/features/employee/hooks/employee-data/form/useFormulirKaryawan';
+import { formatInputCurrency } from '@/utils/formatCurrency';
 
 interface NewContractData {
+  new_change_type_id?: string;
   new_change_type_name?: string;
   new_employee_category_name?: string;
   new_company_name?: string;
@@ -57,6 +60,8 @@ export default function NewContract({
   const [positionLevelSearch, setPositionLevelSearch] = useState('');
   const [employeeCategorySearch, setEmployeeCategorySearch] = useState('');
 
+  const { changeTypeOptions, fetchChangeTypes } = useApiContractExtension();
+
   const handleInputChange = (field: string, value: any) => {
     if (onChange) {
       onChange(field, value);
@@ -67,6 +72,7 @@ export default function NewContract({
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
+        fetchChangeTypes();
         const kategori = await getEmployeeCategoryDropdownOptions();
         setKategoriKaryawanOptions(kategori);
 
@@ -267,15 +273,13 @@ export default function NewContract({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <SelectField
             label="Jenis Perubahan"
-            defaultValue={data?.new_change_type_name || ''}
+            defaultValue={data?.new_change_type_id || ''}
             disabled={!isEditing}
-            onChange={(value) => handleInputChange('new_change_type_name', value)}
+            onChange={(value) => handleInputChange('new_change_type_id', value)}
             containerClassName="space-y-2"
             options={[
               { label: 'Pilih Jenis Perubahan', value: '' },
-              { label: 'Promosi', value: 'Promosi' },
-              { label: 'Demosi', value: 'Demosi' },
-              { label: 'Transfer', value: 'Transfer' },
+              ...changeTypeOptions
             ]}
           />
           <SelectField
@@ -412,10 +416,13 @@ export default function NewContract({
           />
           <InputField
             label="GAJI BERSIH"
-            type="number"
-            value={data?.new_basic_salary || ''}
+            type="text"
+            value={formatInputCurrency(String(data?.new_basic_salary || ''))}
             disabled={!isEditing}
-            onChange={(e) => handleInputChange('new_basic_salary', e.target.value)}
+            onChange={(e) => {
+              const cleaned = e.target.value.replace(/[^0-9]/g, '');
+              handleInputChange('new_basic_salary', cleaned);
+            }}
             containerClassName="space-y-2"
           />
         </div>

@@ -5,6 +5,7 @@ import { ContractExtensionDetailResult } from '../../types/dto/ContractExtension
 import { useNotificationStore } from '@/stores/notificationStore';
 
 interface UseEditContractRenewalReturn {
+  id?: string;
   kontrakData: ContractExtensionDetailResult | null;
   isLoading: boolean;
   isStatusModalOpen: boolean;
@@ -161,6 +162,7 @@ export function useEditContractRenewal(): UseEditContractRenewalReturn {
   }, [id, fetchContractRenewalDetail, fetchExtensionStatuses]);
 
   return {
+    id,
     kontrakData,
     isLoading,
     isStatusModalOpen,
