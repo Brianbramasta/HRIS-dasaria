@@ -115,6 +115,8 @@ export default function EditStatusPerpanjanganModal({
         ...prev,
         contract_type_id: contractExtensionDetail.contract_type_id,
         contract_type_name: contractExtensionDetail.contract_type,
+        new_contract_date: contractExtensionDetail.new_contract_signed_date,
+        new_contract_end_date: contractExtensionDetail.new_contract_end_date,
         contract_id: contractExtensionDetail.contract_id,
         contract_number: String(contractExtensionDetail.contract_sequence),
       }));
