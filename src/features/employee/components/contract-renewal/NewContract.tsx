@@ -1,6 +1,7 @@
 import PayrollCard from '@/features/payroll/components/cards/Cards';
 import InputField from '@/components/shared/field/InputField';
 import SelectField from '@/components/shared/field/SelectField';
+import { formatInputCurrency } from '@/utils/formatCurrency';
 
 interface NewContractData {
   new_change_type_name?: string;
@@ -169,10 +170,10 @@ export default function NewContract({
           />
           <InputField
             label="GAJI BERSIH"
-            type="number"
-            value={data?.new_basic_salary || ''}
+            type="text"
+            value={formatInputCurrency(String(data?.new_basic_salary || ''))}
             disabled={!isEditing}
-            onChange={(e) => handleInputChange('new_basic_salary', e.target.value)}
+            onChange={(e) => handleInputChange('new_basic_salary', e.target.value.replace(/[^0-9]/g, ''))}
             containerClassName="space-y-2"
           />
         </div>
