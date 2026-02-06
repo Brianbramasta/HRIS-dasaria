@@ -1,10 +1,7 @@
 import PayrollCard from '@/features/payroll/components/cards/Cards';
 import InputField from '@/components/shared/field/InputField';
 import SelectField from '@/components/shared/field/SelectField';
-import { useState, useEffect } from 'react';
-import { employeeMasterDataService } from '@/features/employee/services/EmployeeMasterData.service';
-import { useApiContractExtension } from '@/features/employee/hooks/api/useApiContractExtension';
-import { getEmployeeCategoryDropdownOptions, getPositionLevelDropdownOptions, getStructuralJobDropdownOptions, getUnitDropdownByDepartmentIdOptions } from '@/features/employee/hooks/employee-data/form/useFormulirKaryawan';
+import { useNewContract } from '@/features/employee/hooks/modals/contract-renewal/slice-component/useNewContract';
 import { formatInputCurrency } from '@/utils/formatCurrency';
 
 interface NewContractData {
@@ -37,230 +34,32 @@ export default function NewContract({
   isEditing = false,
   onChange,
 }: NewContractProps) {
-  const [companyOptions, setCompanyOptions] = useState<any[]>([]);
-  const [officeOptions, setOfficeOptions] = useState<any[]>([]);
-  const [directorateOptions, setDirectorateOptions] = useState<any[]>([]);
-  const [divisionOptions, setDivisionOptions] = useState<any[]>([]);
-  const [departmentOptions, setDepartmentOptions] = useState<any[]>([]);
-  const [jobTitleOptions, setJobTitleOptions] = useState<any[]>([]);
-  const [positionOptions, setPositionOptions] = useState<any[]>([]);
-  const [kategoriKaryawanOptions, setKategoriKaryawanOptions] = useState<any[]>([]);
-  const [selectedGrade, setSelectedGrade] = useState<string>('');
-  const [positionLevelOptions, setPositionLevelOptions] = useState<any[]>([]);
-  const [jabatanStrukturalOptions, setJabatanStrukturalOptions] = useState<any[]>([]);
-  const [unitOptions, setUnitOptions] = useState<any[]>([]);
-  const [companySearch, setCompanySearch] = useState('');
-  const [officeSearch, setOfficeSearch] = useState('');
-  const [directorateSearch, setDirectorateSearch] = useState('');
-  const [divisionSearch, setDivisionSearch] = useState('');
-  const [departmentSearch, setDepartmentSearch] = useState('');
-  const [unitSearch, setUnitSearch] = useState('');
-  const [jobTitleSearch, setJobTitleSearch] = useState('');
-  const [positionSearch, setPositionSearch] = useState('');
-  const [positionLevelSearch, setPositionLevelSearch] = useState('');
-  const [employeeCategorySearch, setEmployeeCategorySearch] = useState('');
-
-  const { changeTypeOptions, fetchChangeTypes } = useApiContractExtension();
-
-  const handleInputChange = (field: string, value: any) => {
-    if (onChange) {
-      onChange(field, value);
-    }
-  };
-
-  // Fetch initial data
-  useEffect(() => {
-    const fetchInitialData = async () => {
-      try {
-        fetchChangeTypes();
-        const kategori = await getEmployeeCategoryDropdownOptions();
-        setKategoriKaryawanOptions(kategori);
-
-        const positionLevels = await getPositionLevelDropdownOptions();
-        setPositionLevelOptions(positionLevels);
-      } catch (error) {
-        console.error('Error fetching initial data:', error);
-      }
-    };
-    fetchInitialData();
-  }, []);
-
-  // Company search
-  useEffect(() => {
-    const handler = setTimeout(async () => {
-      try {
-        const companies = await employeeMasterDataService.getCompanyDropdown(companySearch || undefined);
-        setCompanyOptions((companies || []).map((i: any) => ({ label: i.company_name, value: i.id })));
-      } catch {
-        setCompanyOptions([]);
-      }
-    }, 400);
-    return () => clearTimeout(handler);
-  }, [companySearch]);
-
-  // Directorate search
-  useEffect(() => {
-    const handler = setTimeout(async () => {
-      try {
-        const directorates = await employeeMasterDataService.getDirectorateDropdown(directorateSearch || undefined);
-        setDirectorateOptions((directorates || []).map((i: any) => ({ label: i.directorate_name, value: i.id })));
-      } catch {
-        setDirectorateOptions([]);
-      }
-    }, 400);
-    return () => clearTimeout(handler);
-  }, [directorateSearch]);
-
-  // Position search
-  useEffect(() => {
-    const handler = setTimeout(async () => {
-      try {
-        const positions = await employeeMasterDataService.getPositionDropdown(positionSearch || undefined);
-        setPositionOptions((positions || []).map((i: any) => ({ label: i.position_name, value: i.id })));
-      } catch {
-        setPositionOptions([]);
-      }
-    }, 400);
-    return () => clearTimeout(handler);
-  }, [positionSearch]);
-
-  // Job title search
-  useEffect(() => {
-    const handler = setTimeout(async () => {
-      try {
-        const jobTitles = await employeeMasterDataService.getJobTitleDropdown(jobTitleSearch || undefined);
-        setJobTitleOptions((jobTitles || []).map((i: any) => ({ label: i.job_title_name, value: i.id, grade: i.grade })));
-      } catch {
-        setJobTitleOptions([]);
-      }
-    }, 400);
-    return () => clearTimeout(handler);
-  }, [jobTitleSearch]);
-
-  // Employee category search
-  useEffect(() => {
-    const handler = setTimeout(async () => {
-      try {
-        const kategori = await getEmployeeCategoryDropdownOptions(employeeCategorySearch || undefined);
-        setKategoriKaryawanOptions(kategori);
-      } catch {
-        setKategoriKaryawanOptions([]);
-      }
-    }, 400);
-    return () => clearTimeout(handler);
-  }, [employeeCategorySearch]);
-
-  // Position level search
-  useEffect(() => {
-    const handler = setTimeout(async () => {
-      try {
-        const positionLevels = await getPositionLevelDropdownOptions(positionLevelSearch || undefined);
-        setPositionLevelOptions(positionLevels);
-      } catch {
-        setPositionLevelOptions([]);
-      }
-    }, 400);
-    return () => clearTimeout(handler);
-  }, [positionLevelSearch]);
-
-  // Divisions when directorate changes
-  useEffect(() => {
-    const fetchDivisions = async () => {
-      if (!data?.new_directorate_name) {
-        setDivisionOptions([]);
-        return;
-      }
-      try {
-        const items = await employeeMasterDataService.getDivisionsByDirectorate(data.new_directorate_name, divisionSearch || undefined);
-        setDivisionOptions((items || []).map((i: any) => ({ label: i.division_name, value: i.id })));
-      } catch (error) {
-        console.error('Error fetching divisions:', error);
-        setDivisionOptions([]);
-      }
-    };
-    fetchDivisions();
-  }, [data?.new_directorate_name, divisionSearch]);
-
-  // Structural jobs when job title changes
-  useEffect(() => {
-    const fetchStructuralJobs = async () => {
-      if (!data?.new_job_title_name) {
-        setJabatanStrukturalOptions([]);
-        return;
-      }
-      try {
-        const items = await getStructuralJobDropdownOptions(data.new_job_title_name);
-        setJabatanStrukturalOptions(items);
-      } catch (error) {
-        console.error('Error fetching structural jobs:', error);
-        setJabatanStrukturalOptions([]);
-      }
-    };
-    fetchStructuralJobs();
-  }, [data?.new_job_title_name]);
-
-  // Departments when division changes
-  useEffect(() => {
-    const fetchDepartments = async () => {
-      if (!data?.new_division_name) {
-        setDepartmentOptions([]);
-        return;
-      }
-      try {
-        const items = await employeeMasterDataService.getDepartmentsByDivision(data.new_division_name, departmentSearch || undefined);
-        setDepartmentOptions((items || []).map((i: any) => ({ label: i.department_name, value: i.id })));
-      } catch (error) {
-        console.error('Error fetching departments:', error);
-        setDepartmentOptions([]);
-      }
-    };
-    fetchDepartments();
-  }, [data?.new_division_name, departmentSearch]);
-
-  // Units when department changes
-  useEffect(() => {
-    const fetchUnits = async () => {
-      if (!data?.new_department_name) {
-        setUnitOptions([]);
-        return;
-      }
-      try {
-        const items = await getUnitDropdownByDepartmentIdOptions(data.new_department_name, unitSearch || undefined);
-        setUnitOptions(items);
-      } catch (error) {
-        console.error('Error fetching units:', error);
-        setUnitOptions([]);
-      }
-    };
-    fetchUnits();
-  }, [data?.new_department_name, unitSearch]);
-
-  // Offices when company changes
-  useEffect(() => {
-    const fetchOffices = async () => {
-      if (!data?.new_company_name) {
-        setOfficeOptions([]);
-        return;
-      }
-      try {
-        const items = await employeeMasterDataService.getOfficeDropdown(officeSearch || undefined, data.new_company_name);
-        setOfficeOptions((items || []).map((i: any) => ({ label: i.office_name, value: i.id })));
-      } catch (error) {
-        console.error('Error fetching offices:', error);
-        setOfficeOptions([]);
-      }
-    };
-    fetchOffices();
-  }, [data?.new_company_name, officeSearch]);
-
-  // Update selected grade when job title changes
-  useEffect(() => {
-    const selectedJob = jobTitleOptions.find(job => job.value === data?.new_job_title_name);
-    if (selectedJob?.grade) {
-      setSelectedGrade(selectedJob.grade);
-      handleInputChange('new_grade', selectedJob.grade);
-    }
-  }, [jobTitleOptions, data?.new_job_title_name]);
+  const {
+    changeTypeOptions,
+    companyOptions,
+    officeOptions,
+    directorateOptions,
+    divisionOptions,
+    departmentOptions,
+    jobTitleOptions,
+    positionOptions,
+    kategoriKaryawanOptions,
+    selectedGrade,
+    positionLevelOptions,
+    jabatanStrukturalOptions,
+    unitOptions,
+    setCompanySearch,
+    setOfficeSearch,
+    setDirectorateSearch,
+    setDivisionSearch,
+    setDepartmentSearch,
+    setUnitSearch,
+    setJobTitleSearch,
+    setPositionSearch,
+    setPositionLevelSearch,
+    setEmployeeCategorySearch,
+    handleInputChange,
+  } = useNewContract({ data, isEditing, onChange });
 
   return (
     <PayrollCard

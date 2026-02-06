@@ -1,6 +1,7 @@
 import PayrollCard from '@/features/payroll/components/cards/Cards';
 import InputField from '@/components/shared/field/InputField';
 import { formatInputCurrency } from '@/utils/formatCurrency';
+import { useOldContract } from '@/features/employee/hooks/modals/contract-renewal/slice-component/useOldContract';
 
 interface OldContractData {
   change_type_name?: string;
@@ -31,11 +32,7 @@ export default function OldContract({
   isEditing = false,
   onChange,
 }: OldContractProps) {
-  const handleInputChange = (field: string, value: any) => {
-    if (onChange) {
-      onChange(field, value);
-    }
-  };
+  const { handleInputChange } = useOldContract({ data, isEditing, onChange });
 
   return (
     <PayrollCard

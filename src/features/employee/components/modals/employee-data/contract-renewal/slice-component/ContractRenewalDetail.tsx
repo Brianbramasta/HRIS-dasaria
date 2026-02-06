@@ -4,9 +4,7 @@ import SelectField from '@/components/shared/field/SelectField';
 import TextAreaField from '@/components/shared/field/TextAreaField';
 import DateField from '@/components/shared/field/DateField';
 import FileField from '@/components/shared/field/FIleField';
-import { useContractRenewalStore } from '../../../../../stores/useContractRenewalStore';
-import { useEffect } from 'react';
-import { useApiContractExtension } from '@/features/employee/hooks/api/useApiContractExtension';
+import { useContractRenewalDetail } from '@/features/employee/hooks/modals/contract-renewal/slice-component/useContractRenewalDetail';
 
 interface ContractRenewalDetailProps {
   data?: {
@@ -42,47 +40,14 @@ export default function ContractRenewalDetail({
   statusOptions = [],
   contractTypeOptions = [],
 }: ContractRenewalDetailProps) {
-  const { shouldShowAllDetailFields, setChangeTypeName } = useContractRenewalStore();
-  const { contractTypeOptions: apiContractTypeOptions, fetchContractTypes } = useApiContractExtension();
-
-  useEffect(() => {
-    if (contractTypeOptions.length === 0) {
-      fetchContractTypes();
-    }
-  }, [contractTypeOptions.length, fetchContractTypes]);
-
-  const effectiveContractTypeOptions =
-    contractTypeOptions.length > 0
-      ? contractTypeOptions
-      : apiContractTypeOptions.length > 0
-      ? apiContractTypeOptions
-      : [
-          { label: 'Pilih Jenis Kontrak', value: '' },
-          { label: 'Kontrak Tetap', value: 'Kontrak Tetap' },
-          { label: 'Kontrak Sementara', value: 'Kontrak Sementara' },
-          { label: 'PKWT', value: 'PKWT' },
-        ];
-
-  // Auto-update store when renewal status changes
-  useEffect(() => {
-    if (data?.renewal_status_name) {
-      const selectedOption = statusOptions.find((opt) => opt.value === data.renewal_status_name);
-      const label = selectedOption ? selectedOption.label : data.renewal_status_name;
-      setChangeTypeName(label);
-    }
-  }, [data?.renewal_status_name, setChangeTypeName, statusOptions]);
-
-  const handleInputChange = (field: string, value: any) => {
-    if (onChange) {
-      onChange(field, value);
-    }
-    // Auto-update store when renewal status changes
-    if (field === 'renewal_status_name') {
-      const selectedOption = statusOptions.find((opt) => opt.value === value);
-      const label = selectedOption ? selectedOption.label : value;
-      setChangeTypeName(label);
-    }
-  };
+  const { effectiveContractTypeOptions, handleInputChange, showAllDetailFields } = useContractRenewalDetail({
+    data,
+    isEditing,
+    onChange,
+    showLimitedFields,
+    statusOptions,
+    contractTypeOptions,
+  });
 
   return (
     <PayrollCard
@@ -168,7 +133,7 @@ export default function ContractRenewalDetail({
                   ]
             }
           />
-          {!showLimitedFields && shouldShowAllDetailFields() && (
+          {showAllDetailFields && (
             <SelectField
               label="Jenis Kontrak"
               defaultValue={data?.contract_type_id || ''}
@@ -181,7 +146,7 @@ export default function ContractRenewalDetail({
         </div>
 
         {/* Row 4: Kontrak Ke, Tanggal TTD Kontrak Baru, Tanggal Berakhir Kontrak Baru */}
-        {!showLimitedFields && shouldShowAllDetailFields() && (
+        {showAllDetailFields && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <InputField
               label="Kontrak Ke"
@@ -209,7 +174,7 @@ export default function ContractRenewalDetail({
         )}
 
         {/* Row 5: Dokumen Kontrak, Dokumen Evaluasi */}
-        {!showLimitedFields && shouldShowAllDetailFields() && (
+        {showAllDetailFields && (
           <div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <FileField
