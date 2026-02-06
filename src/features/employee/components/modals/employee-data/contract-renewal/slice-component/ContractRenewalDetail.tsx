@@ -28,6 +28,7 @@ interface ContractRenewalDetailProps {
   isEditing?: boolean;
   onChange?: (field: string, value: any) => void;
   showLimitedFields?: boolean;
+  statusOptions?: { value: string; label: string }[];
 }
 
 export default function ContractRenewalDetail({
@@ -35,15 +36,18 @@ export default function ContractRenewalDetail({
   isEditing = false,
   onChange,
   showLimitedFields = false,
+  statusOptions = [],
 }: ContractRenewalDetailProps) {
   const { shouldShowAllDetailFields, setChangeTypeName } = useContractRenewalStore();
 
   // Auto-update store when renewal status changes
   useEffect(() => {
     if (data?.renewal_status_name) {
-      setChangeTypeName(data.renewal_status_name);
+      const selectedOption = statusOptions.find((opt) => opt.value === data.renewal_status_name);
+      const label = selectedOption ? selectedOption.label : data.renewal_status_name;
+      setChangeTypeName(label);
     }
-  }, [data?.renewal_status_name, setChangeTypeName]);
+  }, [data?.renewal_status_name, setChangeTypeName, statusOptions]);
 
   const handleInputChange = (field: string, value: any) => {
     if (onChange) {
@@ -51,7 +55,9 @@ export default function ContractRenewalDetail({
     }
     // Auto-update store when renewal status changes
     if (field === 'renewal_status_name') {
-      setChangeTypeName(value);
+      const selectedOption = statusOptions.find((opt) => opt.value === value);
+      const label = selectedOption ? selectedOption.label : value;
+      setChangeTypeName(label);
     }
   };
 
@@ -127,13 +133,17 @@ export default function ContractRenewalDetail({
             // disabled={!isEditing}
             onChange={(value) => handleInputChange('renewal_status_name', value)}
             containerClassName="space-y-2"
-            options={[
-              { label: 'Diperpanjang Tetap', value: 'Diperpanjang Tetap' },
-              { label: 'Diperpanjang Berubah', value: 'Diperpanjang Berubah' },
-              { label: 'Sedang di Proses', value: 'Sedang di Proses' },
-              { label: 'Menunggu diproses', value: 'Menunggu diproses' },
-              { label: 'Ditolak', value: 'Ditolak' },
-            ]}
+            options={
+              statusOptions.length > 0
+                ? statusOptions
+                : [
+                    { label: 'Diperpanjang Tetap', value: 'Diperpanjang Tetap' },
+                    { label: 'Diperpanjang Berubah', value: 'Diperpanjang Berubah' },
+                    { label: 'Sedang di Proses', value: 'Sedang di Proses' },
+                    { label: 'Menunggu diproses', value: 'Menunggu diproses' },
+                    { label: 'Ditolak', value: 'Ditolak' },
+                  ]
+            }
           />
           {!showLimitedFields && shouldShowAllDetailFields() && (
             <SelectField

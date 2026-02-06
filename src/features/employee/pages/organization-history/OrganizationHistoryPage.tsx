@@ -6,7 +6,7 @@ import { ChevronDown } from 'react-feather';
 import EditRiwayatOrganisasiModal from '@/features/employee/components/modals/organization-history/EditOrganizationHistoryModal';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IconPencil, IconFileDetail } from '@/icons/components/icons';
+import { IconFileDetail } from '@/icons/components/icons';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 
 type OrgHistoryListRow = OrganizationChangeItem & { statusPerubahan: string };

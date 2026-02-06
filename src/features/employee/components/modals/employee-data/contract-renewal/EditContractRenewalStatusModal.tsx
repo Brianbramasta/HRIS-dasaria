@@ -18,11 +18,14 @@ interface EditStatusPerpanjanganModalProps {
     tanggalBerakhir: string;
     sisaKontrak: string;
     statusPerpanjangan: string;
+    statusPerpanjanganId?: string;
     statusAtasan: string;
     statusKaryawan: string;
     catatan: string;
   };
   onSuccess?: () => void;
+  onSubmit: (data: FormData) => Promise<boolean>;
+  statusOptions?: { value: string; label: string }[];
 }
 
 export default function EditStatusPerpanjanganModal({
@@ -30,12 +33,16 @@ export default function EditStatusPerpanjanganModal({
   onClose,
   kontrakData,
   onSuccess,
+  onSubmit,
+  statusOptions,
 }: EditStatusPerpanjanganModalProps) {
+  // We keep using the hook for options if needed, but we handle submission locally
   const {
-    submitting,
-    handleSubmit,
+    // submitting: hookSubmitting,
+    // handleSubmit: hookHandleSubmit,
   } = useEditContractRenewalStatusModal({ kontrakData, onClose, onSuccess });
 
+  const [submitting, setSubmitting] = useState(false);
   const [contractRenewalData, setContractRenewalData] = useState<any>(null);
   const [oldContractData, setOldContractData] = useState<any>(null);
   const [newContractData, setNewContractData] = useState<any>(null);
@@ -57,7 +64,8 @@ export default function EditStatusPerpanjanganModal({
         join_date: kontrakData.tanggalMasuk,
         end_date: kontrakData.tanggalBerakhir,
         remaining_contract: kontrakData.sisaKontrak,
-        renewal_status_name: kontrakData.statusPerpanjangan,
+        // Use ID for renewal_status_name if options are provided (to match Select values), otherwise name
+        renewal_status_name: statusOptions?.length ? (kontrakData.statusPerpanjanganId || kontrakData.statusPerpanjangan) : kontrakData.statusPerpanjangan,
         notes: kontrakData.catatan,
       });
 
@@ -95,7 +103,7 @@ export default function EditStatusPerpanjanganModal({
         new_basic_salary: 0,
       });
     }
-  }, [isOpen, kontrakData]);
+  }, [isOpen, kontrakData, statusOptions]);
 
   const handleContractRenewalChange = (field: string, value: any) => {
     setContractRenewalData((prev: any) => ({
@@ -118,6 +126,42 @@ export default function EditStatusPerpanjanganModal({
     }));
   };
 
+  const handleSubmit = async () => {
+    setSubmitting(true);
+    try {
+      const formData = new FormData();
+      
+      // Append fields
+      // Status ID
+      if (contractRenewalData?.renewal_status_name) {
+        formData.append('extension_status_id', contractRenewalData.renewal_status_name);
+      }
+      
+      // Note
+      if (contractRenewalData?.notes) {
+        formData.append('note', contractRenewalData.notes);
+      }
+
+      // New Contract Fields (if visible and populated)
+      if (shouldShowAllComponents() && newContractData) {
+        if (newContractData.new_contract_date) formData.append('sign_date_new_contract', newContractData.new_contract_date);
+        if (newContractData.new_contract_end_date) formData.append('end_date_new_contract', newContractData.new_contract_end_date);
+        // Add other fields as necessary based on ProcessContractExtensionPayload
+        // For now we map what we have in UI
+      }
+
+      const success = await onSubmit(formData);
+      if (success) {
+        onSuccess?.();
+        onClose();
+      }
+    } catch (error) {
+      console.error('Failed to submit contract renewal status', error);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const renderContent = () => {
     // Determine which components to show based on renewal status
     if (shouldShowDetailAndOldContract()) {
@@ -126,8 +170,9 @@ export default function EditStatusPerpanjanganModal({
         <div className="space-y-6">
           <ContractRenewalDetail
             data={contractRenewalData}
-            isEditing={false}
+            isEditing={false} // Maybe this should be true for status editing?
             onChange={handleContractRenewalChange}
+            statusOptions={statusOptions}
           />
           <OldContract
             data={oldContractData}
@@ -146,6 +191,7 @@ export default function EditStatusPerpanjanganModal({
             data={contractRenewalData}
             isEditing={false}
             onChange={handleContractRenewalChange}
+            statusOptions={statusOptions}
           />
           <NewContract
             data={newContractData}
@@ -165,6 +211,7 @@ export default function EditStatusPerpanjanganModal({
             isEditing={false}
             onChange={handleContractRenewalChange}
             showLimitedFields={true}
+            statusOptions={statusOptions}
           />
         </div>
       );
@@ -178,6 +225,7 @@ export default function EditStatusPerpanjanganModal({
           isEditing={false}
           onChange={handleContractRenewalChange}
           showLimitedFields={true}
+          statusOptions={statusOptions}
         />
       </div>
     );

@@ -1,13 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
-// import { FileText } from 'react-feather';
 import { IconFileDetail as Edit } from '@/icons/components/icons';
-// import contractRenewalService from '../../services/ContractRenewalService';
 import { ContractRenewalListItem, ContractRenewalFilterParams } from '../../types/ContractRenewal';
 import { useNotificationStore } from '@/stores/notificationStore';
 import { useContractRenewalStore } from '../../stores/useContractRenewalStore';
 import { formatDateToIndonesian } from '@/utils/formatDate';
+import { useApiContractExtension } from '../api/useApiContractExtension';
+import { ContractExtensionListItem } from '../../types/dto/ContractExtensionType';
 
 interface UseContractRenewalReturn {
   data: ContractRenewalListItem[];
@@ -29,21 +29,33 @@ interface UseContractRenewalReturn {
   handleEdit: (row: ContractRenewalListItem) => void;
   fetchContractRenewals: (params?: ContractRenewalFilterParams) => Promise<void>;
   getStatusColor: (status: string) => string;
+  handlePageChange: (page: number) => void;
+  handleRowsPerPageChange: (perPage: number) => void;
 }
 
 export function useContractRenewal(): UseContractRenewalReturn {
   const navigate = useNavigate();
   const { addNotification } = useNotificationStore();
   const { setChangeTypeName } = useContractRenewalStore();
+  
+  // Integration with API Hook
+  const { 
+    loading: apiLoading, 
+    error: apiError, 
+    contractExtensions, 
+    pagination, 
+    fetchContractExtensions 
+  } = useApiContractExtension();
+
   const [data, setData] = useState<ContractRenewalListItem[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalItems, setTotalItems] = useState(0);
-  const [perPage, setPerPage] = useState(10);
+  
+  // Filter states
+  const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
+  const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
 
   const getStatusColor = useCallback((status: string) => {
+    if (!status) return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400';
     switch (status.toLowerCase()) {
       case 'diperpanjang tetap':
       case 'diperpanjang berubah':
@@ -59,261 +71,67 @@ export function useContractRenewal(): UseContractRenewalReturn {
     }
   }, []);
 
-  const fetchContractRenewals = useCallback(async (params?: ContractRenewalFilterParams) => {
-    setIsLoading(true);
-    try {
-      console.log('Fetching contract renewals with params:', params);
-      
-      // ============================================
-      // FOR DUMMY SIMULATION DATA
-      // COMMENT OUT DUMMY DATA AND UNCOMMENT THE REAL API CALL BELOW 
-      // AFTER THE API IS READY
-      // ============================================
-      const dummyData: ContractRenewalListItem[] = [
-        {
-          id: '1',
-          employee_id: 'emp001',
-          nip: 'NIP001',
-          full_name: 'Ahmad Fauzi',
-          position_name: 'Senior Developer',
-          department_name: 'IT Development',
-          join_date: '2022-01-15',
-          end_date: '2024-01-15',
-          remaining_contract: '2 bulan',
-          renewal_status: 1,
-          renewal_status_name: 'Menunggu diproses',
-          supervisor_approval_status: 1,
-          supervisor_approval_status_name: 'Pending',
-          contract_submission_detail: 'Detail pengajuan tersedia',
-          negotiation_date: null,
-          notes: 'Menunggu persetujuan atasan',
-          employee_status: 1,
-          employee_status_name: 'Pending',
-          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Ahmad',
-        },
-        {
-          id: '2',
-          employee_id: 'emp002',
-          nip: 'NIP002',
-          full_name: 'Siti Nurhaliza',
-          position_name: 'UI/UX Designer',
-          department_name: 'Design',
-          join_date: '2022-03-20',
-          end_date: '2024-03-20',
-          remaining_contract: '4 bulan',
-          renewal_status: 2,
-          renewal_status_name: 'Diperpanjang Tetap',
-          supervisor_approval_status: 2,
-          supervisor_approval_status_name: 'Disetujui',
-          contract_submission_detail: 'Detail pengajuan tersedia',
-          negotiation_date: '2024-01-10',
-          notes: 'Kontrak diperpanjang 1 tahun',
-          employee_status: 2,
-          employee_status_name: 'Disetujui',
-          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Siti',
-        },
-        {
-          id: '3',
-          employee_id: 'emp003',
-          nip: 'NIP003',
-          full_name: 'Budi Santoso',
-          position_name: 'Project Manager',
-          department_name: 'Project Management',
-          join_date: '2021-06-10',
-          end_date: '2023-12-31',
-          remaining_contract: 'Expired',
-          renewal_status: 4,
-          renewal_status_name: 'Sedang di Proses',
-          supervisor_approval_status: 2,
-          supervisor_approval_status_name: 'Disetujui',
-          contract_submission_detail: 'Detail pengajuan tersedia',
-          negotiation_date: '2024-01-25',
-          notes: 'Jadwal negoisasi sudah ditentukan',
-          employee_status: 3,
-          employee_status_name: 'Negoisasi',
-          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Budi',
-        },
-        {
-          id: '4',
-          employee_id: 'emp004',
-          nip: 'NIP004',
-          full_name: 'Dewi Lestari',
-          position_name: 'HR Specialist',
-          department_name: 'Human Resources',
-          join_date: '2022-08-01',
-          end_date: '2024-08-01',
-          remaining_contract: '8 bulan',
-          renewal_status: 1,
-          renewal_status_name: 'Menunggu diproses',
-          supervisor_approval_status: 1,
-          supervisor_approval_status_name: 'Pending',
-          contract_submission_detail: '-',
-          negotiation_date: null,
-          notes: null,
-          employee_status: 1,
-          employee_status_name: 'Pending',
-          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Dewi',
-        },
-        {
-          id: '5',
-          employee_id: 'emp005',
-          nip: 'NIP005',
-          full_name: 'Rizky Pratama',
-          position_name: 'Backend Developer',
-          department_name: 'IT Development',
-          join_date: '2021-11-15',
-          end_date: '2024-02-15',
-          remaining_contract: '3 bulan',
-          renewal_status: 5,
-          renewal_status_name: 'Diperpanjang Berubah',
-          supervisor_approval_status: 2,
-          supervisor_approval_status_name: 'Disetujui',
-          contract_submission_detail: 'Detail pengajuan tersedia',
-          negotiation_date: '2024-01-20',
-          notes: 'Sedang dalam proses negoisasi gaji',
-          employee_status: 3,
-          employee_status_name: 'Negoisasi',
-          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Rizky',
-        },
-        {
-          id: '6',
-          employee_id: 'emp006',
-          nip: 'NIP006',
-          full_name: 'Maya Anggraini',
-          position_name: 'Marketing Manager',
-          department_name: 'Marketing',
-          join_date: '2022-04-10',
-          end_date: '2024-04-10',
-          remaining_contract: '5 bulan',
-          renewal_status: 3,
-          renewal_status_name: 'Ditolak',
-          supervisor_approval_status: 3,
-          supervisor_approval_status_name: 'Ditolak',
-          contract_submission_detail: 'Detail pengajuan tersedia',
-          negotiation_date: null,
-          notes: 'Tidak memenuhi syarat perpanjangan',
-          employee_status: 5,
-          employee_status_name: 'Ditolak',
-          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Maya',
-        },
-        {
-          id: '7',
-          employee_id: 'emp007',
-          nip: 'NIP007',
-          full_name: 'Andi Wijaya',
-          position_name: 'QA Engineer',
-          department_name: 'Quality Assurance',
-          join_date: '2021-09-05',
-          end_date: '2024-05-05',
-          remaining_contract: '6 bulan',
-          renewal_status: 2,
-          renewal_status_name: 'Diperpanjang Tetap',
-          supervisor_approval_status: 2,
-          supervisor_approval_status_name: 'Disetujui',
-          contract_submission_detail: 'Detail pengajuan tersedia',
-          negotiation_date: '2024-01-05',
-          notes: 'Kontrak diperpanjang 2 tahun',
-          employee_status: 2,
-          employee_status_name: 'Disetujui',
-          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Andi',
-        },
-        {
-          id: '8',
-          employee_id: 'emp008',
-          nip: 'NIP008',
-          full_name: 'Linda Susanti',
-          position_name: 'Finance Analyst',
-          department_name: 'Finance',
-          join_date: '2022-02-28',
-          end_date: '2024-02-28',
-          remaining_contract: '3 bulan',
-          renewal_status: 1,
-          renewal_status_name: 'Menunggu diproses',
-          supervisor_approval_status: 1,
-          supervisor_approval_status_name: 'Pending',
-          contract_submission_detail: 'Detail pengajuan tersedia',
-          negotiation_date: null,
-          notes: 'Sedang direview',
-          employee_status: 4,
-          employee_status_name: 'Info',
-          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Linda',
-        },
-        {
-          id: '9',
-          employee_id: 'emp009',
-          nip: 'NIP009',
-          full_name: 'Hendra Gunawan',
-          position_name: 'DevOps Engineer',
-          department_name: 'IT Infrastructure',
-          join_date: '2021-12-01',
-          end_date: '2024-06-01',
-          remaining_contract: '7 bulan',
-          renewal_status: 4,
-          renewal_status_name: 'Sedang di Proses',
-          supervisor_approval_status: 2,
-          supervisor_approval_status_name: 'Disetujui',
-          contract_submission_detail: 'Detail pengajuan tersedia',
-          negotiation_date: '2024-02-01',
-          notes: 'Menunggu jadwal negoisasi dengan HR',
-          employee_status: 3,
-          employee_status_name: 'Negoisasi',
-          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Hendra',
-        },
-        {
-          id: '10',
-          employee_id: 'emp010',
-          nip: 'NIP010',
-          full_name: 'Ratna Sari',
-          position_name: 'Content Writer',
-          department_name: 'Content & Media',
-          join_date: '2022-07-20',
-          end_date: '2024-07-20',
-          remaining_contract: '8 bulan',
-          renewal_status: 2,
-          renewal_status_name: 'Diperpanjang Berubah',
-          supervisor_approval_status: 2,
-          supervisor_approval_status_name: 'Disetujui',
-          contract_submission_detail: 'Detail pengajuan tersedia',
-          negotiation_date: '2024-01-12',
-          notes: 'Kontrak diperpanjang dengan kenaikan gaji',
-          employee_status: 2,
-          employee_status_name: 'Disetujui',
-          avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Ratna',
-        },
-      ];
+  // Map API data to UI data
+  useEffect(() => {
+    if (contractExtensions) {
+      const mappedData: ContractRenewalListItem[] = contractExtensions.map((item: ContractExtensionListItem) => ({
+        id: item.id,
+        // Use extension ID as employee_id for navigation if that's what detail expects, 
+        // or keep it as empty if we don't have real employee_id but navigation uses row.id
+        employee_id: item.id, 
+        nip: item.nip,
+        full_name: item.employee_name,
+        position_name: '-', // Not available in API list response
+        department_name: item.department_name,
+        join_date: item.current_contract_start,
+        end_date: item.current_contract_end,
+        remaining_contract: `${item.remaining_month} bulan`,
+        renewal_status: 0 as any, // Default/Placeholder
+        renewal_status_name: item.extension_status_name,
+        supervisor_approval_status: 0 as any, // Default/Placeholder
+        supervisor_approval_status_name: '-',
+        contract_submission_detail: null,
+        negotiation_date: null,
+        notes: item.extension_note,
+        employee_status: 0 as any, // Default/Placeholder
+        employee_status_name: '-',
+        avatar: item.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${item.employee_name}`,
+      }));
+      setData(mappedData);
+    }
+  }, [contractExtensions]);
 
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Use dummy data instead of API call
-      setData(dummyData);
-      setCurrentPage(1);
-      setTotalPages(1);
-      setTotalItems(dummyData.length);
-      setPerPage(10);
-
-      // ============================================
-      // REAL API CALL (UNCOMMENT WHEN API IS READY)
-      // ============================================
-      // const response = await contractRenewalService.getContractRenewals(params);
-      // if (response.success && response.data) {
-      //   setData(response.data.data);
-      //   setCurrentPage(response.data.current_page);
-      //   setTotalPages(response.data.last_page);
-      //   setTotalItems(response.data.total);
-      //   setPerPage(response.data.per_page);
-      // }
-    } catch (error: any) {
+  // Show error notification
+  useEffect(() => {
+    if (apiError) {
       addNotification({
         title: 'Error',
-        description: error?.message || 'Failed to fetch contract renewals',
+        description: apiError,
         variant: 'error',
         hideDuration: 5000,
       });
-    } finally {
-      setIsLoading(false);
     }
-  }, [addNotification]);
+  }, [apiError, addNotification]);
+
+  const handleFetchContractRenewals = useCallback(async (params?: ContractRenewalFilterParams) => {
+    // Convert UI filters to API params if needed
+    // For now passing params directly or constructing a basic object
+    const apiParams = {
+      page: params?.page || 1,
+      per_page: params?.per_page || 10,
+      search: params?.search || '',
+      ...params // Spread other params
+    };
+    await fetchContractExtensions(apiParams);
+  }, [fetchContractExtensions]);
+
+  const handlePageChange = useCallback((page: number) => {
+    handleFetchContractRenewals({ page });
+  }, [handleFetchContractRenewals]);
+
+  const handleRowsPerPageChange = useCallback((perPage: number) => {
+    handleFetchContractRenewals({ per_page: perPage, page: 1 });
+  }, [handleFetchContractRenewals]);
 
   const handleNavigateToApproval = useCallback(() => {
     setIsDropdownOpen(false);
@@ -328,19 +146,17 @@ export function useContractRenewal(): UseContractRenewalReturn {
   const handleEdit = useCallback((row: ContractRenewalListItem) => {
     // Dispatch renewal status to store based on status perpanjangan
     setChangeTypeName(row.renewal_status_name);
-    navigate(`/contract-extension/detail/${row.employee_id}`);
+    // Use row.id (Extension ID) for navigation
+    navigate(`/contract-extension/detail/${row.id}`);
   }, [navigate, setChangeTypeName]);
-
-  const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
-  const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
   
   const handleColumnFilterChange = (columnId: string, values: string[]) => {
     setColumnFilters((prev) => ({
       ...prev,
       [columnId]: values,
     }));
-    // TODO: Implement API call with filter parameters when backend is ready
-    console.log('Column filter changed:', columnId, values);
+    // Trigger fetch with new filters
+    handleFetchContractRenewals({ filter_column: { [columnId]: values } } as any);
   };
 
   const handleDateRangeFilterChange = (columnId: string, startDate: string, endDate: string | null) => {
@@ -348,17 +164,16 @@ export function useContractRenewal(): UseContractRenewalReturn {
       ...prev,
       [columnId]: { startDate, endDate },
     }));
-    // Build filter parameters for API
-    const filterParams: any = {};
+    
     if (startDate) {
-      filterParams[`filter_column[${columnId}][range][]`] = [startDate];
-      if (endDate) {
-        filterParams[`filter_column[${columnId}][range][]`].push(endDate);
-      }
+      // Trigger fetch with date range
+      // This is simplified, real implementation depends on backend filter format
+      handleFetchContractRenewals({ 
+        filter_column: { 
+          [columnId]: { range: endDate ? [startDate, endDate] : [startDate] } 
+        } 
+      } as any);
     }
-    // TODO: Implement API call with filter parameters when backend is ready
-    console.log('Date range filter changed:', columnId, { startDate, endDate });
-    console.log('Filter params for API:', filterParams);
   };
 
   const columns: DataTableColumn<ContractRenewalListItem>[] = [
@@ -378,13 +193,13 @@ export function useContractRenewal(): UseContractRenewalReturn {
       format: (value, row) => (
         <div className="flex items-center gap-2">
           <img
-            src={row.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${value}`}
+            src={row.avatar}
             alt={value}
             className="h-8 w-8 rounded-full"
           />
           <div>
             <div className="text-sm font-medium min-w-max">{value}</div>
-            <div className="text-[11px] text-gray-500 min-w-max">{row.position_name || 'Employee'}</div>
+            <div className="text-[11px] text-gray-500 min-w-max">{row.position_name || '-'}</div>
           </div>
         </div>
       ),
@@ -392,7 +207,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
     { id: 'department_name', label: 'Departemen', minWidth: 180, sortable: true },
     { 
       id: 'join_date', 
-      label: 'Tanggal Masuk', 
+      label: 'Mulai Kontrak', 
       minWidth: 140, 
       sortable: true,
       dateRangeFilter: true,
@@ -404,7 +219,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
     },
     { 
       id: 'end_date', 
-      label: 'Tanggal Berakhir', 
+      label: 'Berakhir Kontrak', 
       minWidth: 150, 
       sortable: true,
       dateRangeFilter: true,
@@ -445,18 +260,19 @@ export function useContractRenewal(): UseContractRenewalReturn {
     },
   ];
 
+  // Initial fetch
   useEffect(() => {
-    fetchContractRenewals();
-  }, [fetchContractRenewals]);
+    handleFetchContractRenewals();
+  }, [handleFetchContractRenewals]);
 
   return {
     data,
-    isLoading,
+    isLoading: apiLoading,
     isDropdownOpen,
-    currentPage,
-    totalPages,
-    totalItems,
-    perPage,
+    currentPage: pagination.currentPage,
+    totalPages: Math.ceil(pagination.total / pagination.perPage) || 1,
+    totalItems: pagination.total,
+    perPage: pagination.perPage,
     columns,
     actions,
     columnFilters,
@@ -467,7 +283,9 @@ export function useContractRenewal(): UseContractRenewalReturn {
     handleNavigateToApproval,
     handleNavigateToExtension,
     handleEdit,
-    fetchContractRenewals,
+    fetchContractRenewals: handleFetchContractRenewals,
     getStatusColor,
+    handlePageChange,
+    handleRowsPerPageChange,
   };
 }
