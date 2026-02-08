@@ -20,6 +20,8 @@ import DetailKaryawanPage from "../features/employee/pages/employee-data/detail/
 import FormulirKaryawanPage from "../features/employee/pages/employee-data/EmployeeFormPage";
 import PendaftaranKaryawanBaru from "../features/employee/pages/employee-data/NewEmployeeRegistration";
 import PengunduranDiri from "../features/employee/pages/resignation/ResignationPage";
+import ResignationListPage from "../features/employee/pages/resignation/ResignationListPage";
+import TerminationAdministrationPage from "../features/employee/pages/resignation/tab/TerminationAdministrationPage";
 import FormResignPage from "../features/employee/pages/resignation/form-resign/FormResignPage";
 import DetailPengunduranDiriPage from "../features/employee/pages/resignation/detail/DetailResignationPage";
 import PerpanjanganKontrak from "../features/employee/pages/contract-renewal/contract-renewal-hr/ContractRenewalPage";
@@ -199,7 +201,10 @@ export default function AppRoutes() {
           <Route path="/employee-data/:id" element={<DetailKaryawanPage />} />
           <Route path="/employee-data/contract-extension" element={<PerpanjanganKontrak />} />
           <Route path="/employee-data/:id/pelanggaran" element={<PelanggaranRoute />} />
-          <Route path="/resignation" element={<PengunduranDiri />} />
+          <Route path="/resignation" element={<PengunduranDiri />}>
+            <Route index element={<ResignationListPage />} />
+            <Route path="termination-administration" element={<TerminationAdministrationPage />} />
+          </Route>
 
           <Route path="/resignation/:id" element={<DetailPengunduranDiriPage />} />
           <Route path="/contract-extension" element={<PerpanjanganKontrak />} />
