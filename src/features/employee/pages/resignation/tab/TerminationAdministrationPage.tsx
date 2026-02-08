@@ -3,7 +3,8 @@ import { DataTable, DataTableColumn, DataTableAction } from '../../../../../comp
 import Button from '../../../../../components/ui/button/Button';
 import { ChevronDown } from 'react-feather';
 import { Dropdown } from '../../../../../components/ui/dropdown/Dropdown';
-import { IconPencil } from '@/icons/components/icons';
+import { IconFileDetail, IconPencil } from '@/icons/components/icons';
+import { useNavigate } from 'react-router-dom';
 
 type TerminationItem = {
   id: string;
@@ -21,6 +22,7 @@ export default function TerminationAdministrationPage() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
+  const navigate = useNavigate();
 
   const data: TerminationItem[] = useMemo(
     () => [
@@ -182,10 +184,15 @@ export default function TerminationAdministrationPage() {
 
   const actions: DataTableAction<TerminationItem>[] = [
     {
+      icon: <IconFileDetail />,
+      onClick: (row) => navigate(`/resignation/termination-administration/${row.id}`),
+      condition: (row) => row.statusTerminasi === 'Selesai',
+    },
+    {
       icon: <IconPencil />,
-      onClick: () => {},
-      variant: 'outline',
+      onClick: (row) => navigate(`/resignation/termination-administration/${row.id}`),
       color: 'warning',
+      condition: (row) => row.statusTerminasi === 'Sedang diproses',
     },
   ];
 

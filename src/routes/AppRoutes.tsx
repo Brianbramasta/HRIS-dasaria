@@ -22,6 +22,7 @@ import PendaftaranKaryawanBaru from "../features/employee/pages/employee-data/Ne
 import PengunduranDiri from "../features/employee/pages/resignation/ResignationPage";
 import ResignationListPage from "../features/employee/pages/resignation/ResignationListPage";
 import TerminationAdministrationPage from "../features/employee/pages/resignation/tab/TerminationAdministrationPage";
+import DetailTerminationAdministrationPage from "../features/employee/pages/resignation/detail/DetailTerminationAdministration";
 import FormResignPage from "../features/employee/pages/resignation/form-resign/FormResignPage";
 import DetailPengunduranDiriPage from "../features/employee/pages/resignation/detail/DetailResignationPage";
 import PerpanjanganKontrak from "../features/employee/pages/contract-renewal/contract-renewal-hr/ContractRenewalPage";
@@ -204,6 +205,7 @@ export default function AppRoutes() {
           <Route path="/resignation" element={<PengunduranDiri />}>
             <Route index element={<ResignationListPage />} />
             <Route path="termination-administration" element={<TerminationAdministrationPage />} />
+            <Route path="termination-administration/:id" element={<DetailTerminationAdministrationPage />} />
           </Route>
 
           <Route path="/resignation/:id" element={<DetailPengunduranDiriPage />} />
