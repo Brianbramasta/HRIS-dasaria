@@ -1,8 +1,5 @@
 import { useMemo, useState } from 'react';
 import { DataTable, DataTableColumn, DataTableAction } from '../../../../../components/shared/datatable/DataTable';
-import Button from '../../../../../components/ui/button/Button';
-import { ChevronDown } from 'react-feather';
-import { Dropdown } from '../../../../../components/ui/dropdown/Dropdown';
 import { IconFileDetail, IconPencil } from '@/icons/components/icons';
 import { useNavigate } from 'react-router-dom';
 
@@ -21,7 +18,6 @@ type TerminationItem = {
 export default function TerminationAdministrationPage() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
-  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
   const navigate = useNavigate();
 
   const data: TerminationItem[] = useMemo(
