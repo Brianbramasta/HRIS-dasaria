@@ -53,15 +53,7 @@ export default function AddAccessModal({ isOpen, onClose }: AddAccessModalProps)
               )}
             </div>
           </div>
-          <div>
-            <InputField
-              label="Kode"
-              placeholder="Kode"
-              value={item.code}
-              disabled
-              className="w-full"
-            />
-          </div>
+        
           <TextAreaField
             label="Catatan"
             placeholder="Detail Catatan..."
