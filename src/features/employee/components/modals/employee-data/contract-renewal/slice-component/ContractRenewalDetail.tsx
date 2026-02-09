@@ -119,6 +119,7 @@ export default function ContractRenewalDetail({
             label="Status Perpanjangan"
             defaultValue={data?.renewal_status_name || ''}
             // disabled={!isEditing}
+            required
             onChange={(value) => handleInputChange('renewal_status_name', value)}
             containerClassName="space-y-2"
             options={
@@ -137,6 +138,7 @@ export default function ContractRenewalDetail({
             <SelectField
               label="Jenis Kontrak"
               defaultValue={data?.contract_type_id || ''}
+              required
               // disabled={!isEditing}
               onChange={(value) => handleInputChange('contract_type_id', value)}
               containerClassName="space-y-2"
@@ -159,6 +161,7 @@ export default function ContractRenewalDetail({
             <DateField
               label="Tanggal TTD Kontrak Baru"
               defaultDate={data?.new_contract_date || ''}
+              required
               // disabled={!isEditing}
               onChange={(_dates, dateStr) => handleInputChange('new_contract_date', dateStr)}
               containerClassName="space-y-2"
@@ -166,6 +169,7 @@ export default function ContractRenewalDetail({
             <DateField
               label="Tanggal Berakhir Kontrak Baru"
               defaultDate={data?.new_contract_end_date || ''}
+              required
               // disabled={!isEditing}
               onChange={(_dates, dateStr) => handleInputChange('new_contract_end_date', dateStr)}
               containerClassName="space-y-2"
@@ -180,6 +184,7 @@ export default function ContractRenewalDetail({
               <FileField
                 label="Dokumen Kontrak"
                 // disabled={!isEditing}
+                required
                 onChange={(e) => handleInputChange('contract_document', e.target.files?.[0])}
                 containerClassName="space-y-2"
                 // accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
@@ -187,6 +192,7 @@ export default function ContractRenewalDetail({
               <FileField
                 label="Dokumen Evaluasi"
                 // disabled={!isEditing}
+                required
                 onChange={(e) => handleInputChange('evaluation_document', e.target.files?.[0])}
                 containerClassName="space-y-2"
                 // accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
@@ -201,6 +207,7 @@ export default function ContractRenewalDetail({
             label="Catatan"
             value={data?.notes || ''}
             // disabled={!isEditing}
+            required
             onChange={(value) => handleInputChange('notes', value)}
             containerClassName="space-y-2"
             rows={4}
