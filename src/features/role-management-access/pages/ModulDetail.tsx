@@ -20,6 +20,9 @@ export default function ModulDetail() {
     setIsDeleteModulModalOpen,
     selectedModul,
     onDeleteConfirm,
+    layananId,
+    refreshData,
+    loading,
   } = useModulDetail();
 
   // Columns for Modul
@@ -68,21 +71,26 @@ export default function ModulDetail() {
         searchPlaceholder="Cari berdasarkan kata kunci"
         pageSize={10}
         filterable={true}
+        loading={loading}
       />
       <AddModulModal
         isOpen={isAddModulModalOpen}
         onClose={() => setIsAddModulModalOpen(false)}
+        appsId={layananId}
+        onSuccess={refreshData}
       />
       <EditModulModal
         isOpen={isEditModulModalOpen}
         onClose={() => setIsEditModulModalOpen(false)}
         data={selectedModul}
+        onSuccess={refreshData}
       />
       <DeleteModulModal
         isOpen={isDeleteModulModalOpen}
         onClose={() => setIsDeleteModulModalOpen(false)}
         onDelete={onDeleteConfirm}
         modulName={selectedModul?.modul}
+        isLoading={loading}
       />
     </div>
   );

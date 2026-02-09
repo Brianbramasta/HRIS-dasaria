@@ -6,16 +6,19 @@ import { useAddModulModal } from '../../../hooks/modals/modul/useAddModulModal';
 interface AddModulModalProps {
   isOpen: boolean;
   onClose: () => void;
+  appsId?: string;
+  onSuccess?: () => void;
 }
 
-export default function AddModulModal({ isOpen, onClose }: AddModulModalProps) {
+export default function AddModulModal({ isOpen, onClose, appsId, onSuccess }: AddModulModalProps) {
   const {
     moduls,
     handleAddModul,
     handleRemoveModul,
     handleModulChange,
     handleSubmit,
-  } = useAddModulModal(isOpen, onClose);
+    loading,
+  } = useAddModulModal(isOpen, onClose, appsId, onSuccess);
 
   const content = (
     <div className="space-y-4 px-1">
@@ -61,7 +64,7 @@ export default function AddModulModal({ isOpen, onClose }: AddModulModalProps) {
       onClose={onClose}
       content={content}
       handleSubmit={handleSubmit}
-      submitting={false}
+      submitting={loading}
       maxWidth="max-w-[700px]"
     />
   );
