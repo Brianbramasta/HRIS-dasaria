@@ -35,13 +35,16 @@ export default function HakAksesPage() {
     handleConfirmDeleteRole,
     columnFilters,
     handleColumnFilterChange,
+    fetchApps,
+    appsLoading,
   } = useRoleManagement();
 
   const { appsPerRole, fetchAppsPerRole, loading } = useApiRolesAccess();
 
   useEffect(() => {
     fetchAppsPerRole();
-  }, [fetchAppsPerRole]);
+    fetchApps();
+  }, [fetchAppsPerRole, fetchApps]);
 
   const apiRoleData: RoleData[] = useMemo(() => {
     return appsPerRole.map((item, index) => ({
@@ -163,11 +166,13 @@ export default function HakAksesPage() {
         filterable={true}
         onColumnFilterChange={handleColumnFilterChange}
         columnFilters={columnFilters}
+        loading={appsLoading}
       />
 
       <AddServiceModal
         isOpen={isAddServiceModalOpen}
         onClose={handleCloseAddServiceModal}
+        onSuccess={fetchApps}
       />
       <DeleteServiceModal
         isOpen={isDeleteServiceModalOpen}
@@ -179,6 +184,7 @@ export default function HakAksesPage() {
         isOpen={isEditServiceModalOpen}
         onClose={handleCloseEditServiceModal}
         data={selectedServiceToEdit}
+        onSuccess={fetchApps}
       />
       <DeleteRoleModal
         isOpen={isDeleteRoleModalOpen}

@@ -1,12 +1,14 @@
 import { useState, useCallback, useEffect } from 'react';
+import { useApiApps } from '../../api/useApiApps';
 
 export interface ServiceItem {
   id: number;
   name: string;
 }
 
-export const useAddServiceModal = (isOpen: boolean, onClose: () => void) => {
+export const useAddServiceModal = (isOpen: boolean, onClose: () => void, onSuccess?: () => void) => {
   const [services, setServices] = useState<ServiceItem[]>([{ id: Date.now(), name: '' }]);
+  const { createApp } = useApiApps();
 
   useEffect(() => {
     if (isOpen) {
@@ -29,13 +31,22 @@ export const useAddServiceModal = (isOpen: boolean, onClose: () => void) => {
     );
   }, []);
 
-  const handleSubmit = useCallback(() => {
-    // Filter out empty services before submitting if needed
+  const handleSubmit = useCallback(async () => {
+    // Filter out empty services
     const validServices = services.filter(s => s.name.trim() !== '');
-    console.log('Submitting services:', validServices);
-    // Here you would typically call an API
-    onClose();
-  }, [services, onClose]);
+    if (validServices.length === 0) return;
+
+    const payload = {
+      name: validServices.map(s => s.name)
+    };
+
+    const success = await createApp(payload);
+    
+    if (success) {
+      onSuccess?.();
+      onClose();
+    }
+  }, [services, createApp, onSuccess, onClose]);
 
   return {
     services,
