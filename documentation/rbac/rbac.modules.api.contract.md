@@ -34,9 +34,11 @@ Validation:
 Response (200 OK):
 ```json
 {
-  "status": 200,
-  "message": "Success",
-  "data": ...
+  "meta": {
+    "status": 200,
+    "message": "berhasil membuat module"
+  },
+  "data": {}
 }
 ```
 
@@ -53,14 +55,35 @@ Query Parameters:
 Response (200 OK):
 ```json
 {
-  "status": 200,
-  "data": [
-    ...
-  ],
   "meta": {
-    "page": 1,
+    "status": 200,
+    "message": "berhasil mendapatkan daftar modules"
+  },
+  "data": {
+    "current_page": 1,
+    "data": [
+      {
+        "id": "956f59ed-4d7b-4fab-8ab5-9a34ca064aee",
+        "name": "Module Xyz",
+        "apps_id": "342dbb22-0f84-4996-80a8-750e55c362d2",
+        "apps_code": "App-1",
+        "apps_name": "App A",
+        "created_at": "2026-02-05T13:59:16.000Z",
+        "updated_at": "2026-02-05T07:17:16.000Z"
+      },
+      {
+        "id": "43ed9eea-5ef9-409a-8a80-1612e62b41ec",
+        "name": "Module X",
+        "apps_id": "342dbb22-0f84-4996-80a8-750e55c362d2",
+        "apps_code": "App-1",
+        "apps_name": "App A",
+        "created_at": "2026-02-05T14:18:23.000Z",
+        "updated_at": "2026-02-05T14:18:23.000Z"
+      }
+    ],
     "per_page": 10,
-    "total": ...
+    "to": 2,
+    "total": 2
   }
 }
 ```
@@ -75,11 +98,27 @@ Path Parameters:
 Response (200 OK):
 ```json
 {
-  "status": 200,
+  "meta": {
+    "status": 200,
+    "message": "berhasil mendapatkan detail module"
+  },
   "data": {
-    "id": "...",
-    "name": "...",
-    "apps_id": "..."
+    "id": "956f59ed-4d7b-4fab-8ab5-9a34ca064aee",
+    "name": "Module Xyz",
+    "apps_id": "342dbb22-0f84-4996-80a8-750e55c362d2",
+    "apps_code": "App-1",
+    "apps_name": "App A",
+    "created_at": "2026-02-05T13:59:16.000Z",
+    "updated_at": "2026-02-05T07:17:16.000Z",
+    "features": [
+      {
+        "id": "c954cacf-4d18-46ce-865b-2ad5af758b6c",
+        "name": "Feature Xyz",
+        "modules_id": "956f59ed-4d7b-4fab-8ab5-9a34ca064aee",
+        "created_at": "2026-02-05T14:26:11.000Z",
+        "updated_at": "2026-02-05T14:26:11.000Z"
+      }
+    ]
   }
 }
 ```
@@ -104,8 +143,11 @@ Validation:
 Response (200 OK):
 ```json
 {
-  "status": 200,
-  "data": ...
+  "meta": {
+    "status": 200,
+    "message": "berhasil mengupdate module"
+  },
+  "data": {}
 }
 ```
 
@@ -119,7 +161,10 @@ Path Parameters:
 Response (200 OK):
 ```json
 {
-  "status": 200,
-  "message": "Success"
+  "meta": {
+    "status": 200,
+    "message": "berhasil menghapus module"
+  },
+  "data": {}
 }
 ```
