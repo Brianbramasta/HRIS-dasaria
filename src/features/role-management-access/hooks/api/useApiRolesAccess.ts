@@ -13,11 +13,14 @@ interface UseApiRolesAccessReturn {
   // Data State
   roleAccessDetail: AppRoleAccessItem[];
   appsPerRole: RoleAppItem[];
+  allApps: any[];
 
   // Actions
   createRolesAccess: (payload: CreateRoleAccessPayload) => Promise<boolean>;
   fetchRolesAccess: (id: string) => Promise<void>;
   fetchAppsPerRole: () => Promise<void>;
+  fetchAppDetail: (id: string) => Promise<AppRoleAccessItem | null>;
+  fetchAllApps: () => Promise<void>;
 
   // Reset
   resetDetail: () => void;
@@ -29,6 +32,7 @@ export const useApiRolesAccess = (): UseApiRolesAccessReturn => {
 
   const [roleAccessDetail, setRoleAccessDetail] = useState<AppRoleAccessItem[]>([]);
   const [appsPerRole, setAppsPerRole] = useState<RoleAppItem[]>([]);
+  const [allApps, setAllApps] = useState<any[]>([]);
 
   const createRolesAccess = useCallback(async (payload: CreateRoleAccessPayload): Promise<boolean> => {
     setLoading(true);
@@ -80,6 +84,39 @@ export const useApiRolesAccess = (): UseApiRolesAccessReturn => {
     }
   }, []);
 
+  const fetchAppDetail = useCallback(async (id: string): Promise<AppRoleAccessItem | null> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await rolesAccessService.getAppDetail(id);
+      return response.data || null;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Failed to fetch app detail';
+      setError(msg);
+      console.error('Error fetching app detail:', err);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchAllApps = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await rolesAccessService.getApps();
+      if (response.data && response.data.data) {
+        setAllApps(response.data.data);
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Failed to fetch apps';
+      setError(msg);
+      console.error('Error fetching apps:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   const resetDetail = useCallback(() => {
     setRoleAccessDetail([]);
   }, []);
@@ -89,9 +126,12 @@ export const useApiRolesAccess = (): UseApiRolesAccessReturn => {
     error,
     roleAccessDetail,
     appsPerRole,
+    allApps,
     createRolesAccess,
     fetchRolesAccess,
     fetchAppsPerRole,
+    fetchAppDetail,
+    fetchAllApps,
     resetDetail,
   };
 };

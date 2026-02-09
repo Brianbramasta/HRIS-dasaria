@@ -26,6 +26,22 @@ class RolesAccessService {
   }
 
   /**
+   * Get Apps List
+   * GET /apps/
+   */
+  async getApps(): Promise<ApiResponse<any>> {
+    return apiService.get<any>(`/apps/`);
+  }
+
+  /**
+   * Get App Detail (Full Structure)
+   * GET /apps/{id}
+   */
+  async getAppDetail(id: string): Promise<ApiResponse<AppRoleAccessItem>> {
+    return apiService.get<AppRoleAccessItem>(`/apps/${id}`);
+  }
+
+  /**
    * List Apps Per Role
    * GET /roles-access/app-role
    */

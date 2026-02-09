@@ -1,12 +1,9 @@
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { MenuAccess, Permission, PermissionConfig } from '../components/table/PermissionsTable';
-// uuid import removed
-// Since I cannot guarantee uuid is installed, I will use a simple generator
+import { useApiRolesAccess } from './api/useApiRolesAccess';
+import { AppRoleAccessItem } from '../types/dto/RolesAccessType';
 
-const generateId = () => Math.random().toString(36).substr(2, 9);
-
-// Default configuration for most menus
 export const DEFAULT_PERMISSION_CONFIG: PermissionConfig[] = [
     { key: 'lihat', label: 'Lihat' },
     { key: 'edit', label: 'Edit' },
@@ -14,193 +11,156 @@ export const DEFAULT_PERMISSION_CONFIG: PermissionConfig[] = [
     { key: 'buat', label: 'Tambah' },
 ];
 
-export const getInitialMenuData = (): MenuAccess[] => [
-    {
-        id: '1',
-        namaRole: 'Dashboard',
-        hakAkses: 'Dashboard',
-        permissions: { lihat: true, buat: false, edit: false, hapus: false },
-    },
-    {
-        id: '2',
-        namaRole: 'Struktur Dan Organisasi',
-        hakAkses: 'Struktur Dan Organisasi',
-        permissions: { lihat: false, buat: false, edit: false, hapus: false },
-        subMenus: [
-            {
-                id: '2-1',
-                namaRole: 'Lini Bisnis',
-                hakAkses: 'Lini Bisnis',
-                permissions: { lihat: false, buat: false, edit: false, hapus: false },
-            },
-            {
-                id: '2-2',
-                namaRole: 'Perusahaan',
-                hakAkses: 'Perusahaan',
-                permissions: { lihat: false, buat: false, edit: false, hapus: false },
-            },
-            {
-                id: '2-3',
-                namaRole: 'Kantor',
-                hakAkses: 'Kantor',
-                permissions: { lihat: false, buat: false, edit: false, hapus: false },
-            },
-            {
-                id: '2-4',
-                namaRole: 'Direktorat',
-                hakAkses: 'Direktorat',
-                permissions: { lihat: false, buat: false, edit: false, hapus: false },
-            },
-            {
-                id: '2-5',
-                namaRole: 'Divisi',
-                hakAkses: 'Divisi',
-                permissions: { lihat: false, buat: false, edit: false, hapus: false },
-            },
-            {
-                id: '2-6',
-                namaRole: 'Departemen',
-                hakAkses: 'Departemen',
-                permissions: { lihat: false, buat: false, edit: false, hapus: false },
-            },
-            {
-                id: '2-7',
-                namaRole: 'Jabatan',
-                hakAkses: 'Jabatan',
-                permissions: { lihat: false, buat: false, edit: false, hapus: false },
-            },
-            {
-                id: '2-8',
-                namaRole: 'Posisi',
-                hakAkses: 'Posisi',
-                permissions: { lihat: false, buat: false, edit: false, hapus: false },
-            },
-        ],
-    },
-    {
-        id: '3',
-        namaRole: 'Data Master Karyawan',
-        hakAkses: 'Data Master Karyawan',
-        permissions: { lihat: false, buat: false, edit: false, hapus: false },
-        subMenus: [
-            {
-                id: '3-1',
-                namaRole: 'Data Karyawan',
-                hakAkses: 'Data Karyawan',
-                permissions: { lihat: false, buat: false, edit: false, hapus: false },
-            },
-            {
-                id: '3-2',
-                namaRole: 'Perpanjangan Kontrak',
-                hakAkses: 'Perpanjangan Kontrak',
-                permissions: { lihat: false, buat: false, edit: false, hapus: false },
-            },
-            {
-                id: '3-3',
-                namaRole: 'Pengunduran Diri',
-                hakAkses: 'Pengunduran Diri',
-                permissions: { lihat: false, buat: false, edit: false, hapus: false },
-            },
-            {
-                id: '3-4',
-                namaRole: 'Riwayat Organisasi',
-                hakAkses: 'Riwayat Organisasi',
-                permissions: { lihat: false, buat: false, edit: false, hapus: false },
-            },
-        ],
-    },
-    {
-        id: '4',
-        namaRole: 'Penggajian',
-        hakAkses: 'Penggajian',
-        permissions: { lihat: false, buat: false, edit: false, hapus: false },
-        subMenus: [
-            {
-                id: '4-1',
-                namaRole: 'Dashboard Penggajian',
-                hakAkses: 'Dashboard Penggajian',
-                permissions: { lihat: false, buat: false, edit: false, hapus: false },
-            },
-            {
-                id: '4-2',
-                namaRole: 'Konfigurasi Penggajian',
-                hakAkses: 'Konfigurasi Penggajian',
-                permissions: { lihat: false, buat: false, edit: false, hapus: false },
-            },
-            {
-                id: '4-3',
-                namaRole: 'Periode Gajian',
-                hakAkses: 'Periode Gajian',
-                permissions: { lihat: false, buat: false, edit: false, hapus: false },
-            },
-            {
-                id: '4-4',
-                namaRole: 'Approval Periode Gajian',
-                hakAkses: 'Approval Periode Gajian',
-                permissions: { lihat: false, buat: false, edit: false, hapus: false, persetujuan: false },
-                permissionConfig: [
-                    { key: 'lihat', label: 'Lihat' },
-                    { key: 'edit', label: 'Edit' },
-                    { key: 'hapus', label: 'Delete' },
-                    { key: 'buat', label: 'Tambah' },
-                    { key: 'persetujuan', label: 'Setujui' },
-                ]
-            },
-            {
-                id: '4-5',
-                namaRole: 'Distribusi Gaji',
-                hakAkses: 'Distribusi Gaji',
-                permissions: { lihat: false, buat: false, edit: false, hapus: false },
-            },
-            {
-                id: '4-6',
-                namaRole: 'Kasbon',
-                hakAkses: 'Kasbon',
-                permissions: { lihat: false, buat: false, edit: false, hapus: false },
-            },
-        ],
-    },
-    {
-        id: '5',
-        namaRole: 'Hak Akses',
-        hakAkses: 'Hak Akses',
-        permissions: { lihat: false, buat: false, edit: false, hapus: false },
-    },
-    {
-        id: '6',
-        namaRole: 'Jenis Pengajuan',
-        hakAkses: 'Jenis Pengajuan',
-        permissions: { lihat: false, buat: false, edit: false, hapus: false },
-    },
-];
+export interface ExtendedMenuAccess extends MenuAccess {
+    permissionIds: Record<string, string>;
+}
 
 export interface ServiceBlock {
     id: string;
-    serviceName: string;
-    menuData: MenuAccess[];
+    serviceName: string; // This stores the App ID
+    serviceLabel?: string; // This stores the App Name
+    menuData: ExtendedMenuAccess[];
     expandedRows: Set<string>;
 }
 
+const generateId = () => Math.random().toString(36).substr(2, 9);
+
 export default function useEditRole() {
     const { roleId } = useParams<{ roleId: string }>();
+    const navigate = useNavigate();
+    
+    const { 
+        fetchRolesAccess, 
+        fetchAppDetail, 
+        fetchAllApps, 
+        createRolesAccess,
+        roleAccessDetail, 
+        allApps,
+        loading 
+    } = useApiRolesAccess();
 
-    const [namaRole, setNamaRole] = useState(() => {
-        if (!roleId) return '';
-        if (roleId === '225150207') return 'Super Admin';
-        if (roleId === '225150205') return 'HR Admin';
-        if (roleId === '225150206') return 'Finance Admin';
-        return 'Super Admin';
-    });
-
-    // Initialize with one empty block
+    const [namaRole, setNamaRole] = useState('');
     const [serviceBlocks, setServiceBlocks] = useState<ServiceBlock[]>([
         {
             id: generateId(),
-            serviceName: '', // Default empty as per requirement
-            menuData: getInitialMenuData(),
+            serviceName: '',
+            menuData: [],
             expandedRows: new Set(),
         }
     ]);
+
+    // Fetch all apps on mount to populate options
+    useEffect(() => {
+        fetchAllApps();
+    }, [fetchAllApps]);
+
+    // Fetch role details if in edit mode
+    useEffect(() => {
+        if (roleId) {
+            fetchRolesAccess(roleId);
+            // We assume the role name is not directly available in fetchRolesAccess response (it returns list of apps)
+            // But usually we need to fetch Role Info separately or extract from somewhere.
+            // For now, let's leave namaRole empty or set it if we can find it.
+            // Wait, the API contract for GET /roles-access/{id} returns AppRoleAccessItem[].
+            // It doesn't return the Role Name itself at the top level?
+            // "berhasil mendapatkan daftar roles dengan struktur hierarchy"
+            // The response is an Array of Apps.
+            // Where is the Role Name?
+            // Maybe fetchAppsPerRole returns it?
+            // GET /roles-access/app-role returns { role_id, role_name, list_apps }.
+            // So we might need to find the role name from there.
+        }
+    }, [roleId, fetchRolesAccess]);
+
+    // Handle role name fetching via fetchAppsPerRole if needed
+    // Or maybe we can't get it easily. I'll skip setting namaRole from API for now if it's not in the response.
+
+    // Process roleAccessDetail when it loads (Edit Mode)
+    useEffect(() => {
+        if (roleId && roleAccessDetail.length > 0) {
+            const processRoleData = async () => {
+                const newBlocks: ServiceBlock[] = [];
+
+                // We need to fetch the Full Tree for each App to show unchecked boxes
+                for (const appAccess of roleAccessDetail) {
+                    const fullAppDetail = await fetchAppDetail(appAccess.app_id);
+                    
+                    if (fullAppDetail) {
+                        // Create a Set of Assigned Access IDs for this App
+                        const assignedAccessIds = new Set<string>();
+                        
+                        const traverse = (modules: any[]) => {
+                            modules.forEach((mod: any) => {
+                                mod.features?.forEach((feat: any) => {
+                                    feat.list_access?.forEach((acc: any) => {
+                                        assignedAccessIds.add(acc.access_id);
+                                    });
+                                });
+                            });
+                        };
+                        traverse(appAccess.list_modules);
+
+                        // Map the Full Tree to MenuAccess, marking permissions as true if in assignedAccessIds
+                        const menuData = mapAppDetailToMenuAccess(fullAppDetail, assignedAccessIds);
+                        
+                        newBlocks.push({
+                            id: generateId(),
+                            serviceName: appAccess.app_id,
+                            serviceLabel: appAccess.app_name,
+                            menuData,
+                            expandedRows: new Set(),
+                        });
+                    }
+                }
+                
+                if (newBlocks.length > 0) {
+                    setServiceBlocks(newBlocks);
+                }
+            };
+            processRoleData();
+        }
+    }, [roleAccessDetail, roleId, fetchAppDetail]);
+
+
+    // Helper to map AppDetail to MenuAccess
+    const mapAppDetailToMenuAccess = (appDetail: AppRoleAccessItem, assignedIds: Set<string> = new Set()): ExtendedMenuAccess[] => {
+        return appDetail.list_modules.map(module => {
+            const subMenus = module.features.map(feature => {
+                const permissions: Permission = {};
+                const permissionIds: Record<string, string> = {};
+                const permissionConfig: PermissionConfig[] = [];
+
+                // Sort access list to ensure consistent order if needed (e.g. Lihat, Buat, Edit, Hapus)
+                // For now, we use the order from API
+                feature.list_access.forEach(acc => {
+                    // Use a safe key derived from name
+                    const key = acc.access_name.toLowerCase().replace(/\s+/g, '_'); 
+                    permissionIds[key] = acc.access_id;
+                    permissions[key] = assignedIds.has(acc.access_id);
+                    permissionConfig.push({ key, label: acc.access_name });
+                });
+
+                return {
+                    id: feature.features_id,
+                    namaRole: feature.features_name,
+                    hakAkses: feature.features_name,
+                    permissions,
+                    permissionIds,
+                    permissionConfig // Use dynamic config based on available permissions
+                } as ExtendedMenuAccess;
+            });
+
+            // If module has features, it acts as a parent.
+            return {
+                id: module.modules_id,
+                namaRole: module.modules_name,
+                hakAkses: module.modules_name,
+                permissions: {},
+                permissionIds: {},
+                subMenus
+            } as ExtendedMenuAccess;
+        });
+    };
 
     const addServiceBlock = () => {
         setServiceBlocks(prev => [
@@ -208,7 +168,7 @@ export default function useEditRole() {
             {
                 id: generateId(),
                 serviceName: '',
-                menuData: getInitialMenuData(),
+                menuData: [],
                 expandedRows: new Set(),
             }
         ]);
@@ -218,16 +178,32 @@ export default function useEditRole() {
         setServiceBlocks(prev => prev.filter(b => b.id !== blockId));
     };
 
-    const updateServiceBlockName = (blockId: string, name: string) => {
+    const updateServiceBlockName = async (blockId: string, appId: string) => {
+        // Find app name
+        const app = allApps.find(a => a.id === appId);
+        const appName = app ? app.name : '';
+
+        // Fetch App Detail
+        const appDetail = await fetchAppDetail(appId);
+        let menuData: ExtendedMenuAccess[] = [];
+        
+        if (appDetail) {
+            menuData = mapAppDetailToMenuAccess(appDetail);
+        }
+
         setServiceBlocks(prev => prev.map(block =>
-            block.id === blockId ? { ...block, serviceName: name } : block
+            block.id === blockId ? { 
+                ...block, 
+                serviceName: appId,
+                serviceLabel: appName,
+                menuData 
+            } : block
         ));
     };
 
     const toggleExpand = (blockId: string, rowId: string) => {
         setServiceBlocks(prev => prev.map(block => {
             if (block.id !== blockId) return block;
-
             const newSet = new Set(block.expandedRows);
             if (newSet.has(rowId)) {
                 newSet.delete(rowId);
@@ -250,34 +226,24 @@ export default function useEditRole() {
             if (block.id !== blockId) return block;
 
             const newMenuData = block.menuData.map((item) => {
-                // If updating a parent menu
-                if (!isSubMenu && item.id === id) {
-                    const updatedItem = {
-                        ...item,
-                        permissions: { ...item.permissions, [field]: value },
-                    };
-
-                    // If parent has submenus, update all children with the same permission
-                    if (item.subMenus && item.subMenus.length > 0) {
-                        updatedItem.subMenus = item.subMenus.map((sub) => ({
-                            ...sub,
-                            permissions: { ...sub.permissions, [field]: value },
-                        }));
-                    }
-
-                    return updatedItem;
-                }
-
-                // If updating a submenu
                 if (isSubMenu && item.id === parentId && item.subMenus) {
+                     return {
+                        ...item,
+                        subMenus: item.subMenus.map((sub) => 
+                            sub.id === id 
+                            ? { ...sub, permissions: { ...sub.permissions, [field]: value } }
+                            : sub
+                        )
+                    } as ExtendedMenuAccess;
+                }
+                
+                // If it's a top level item (though in our mapping, top level are Modules which might not have permissions)
+                // But if the structure changes:
+                if (!isSubMenu && item.id === id) {
                     return {
                         ...item,
-                        subMenus: item.subMenus.map((sub) =>
-                            sub.id === id
-                                ? { ...sub, permissions: { ...sub.permissions, [field]: value } }
-                                : sub
-                        ),
-                    };
+                        permissions: { ...item.permissions, [field]: value }
+                    } as ExtendedMenuAccess;
                 }
 
                 return item;
@@ -304,20 +270,6 @@ export default function useEditRole() {
             if (block.id !== blockId) return block;
 
             const newMenuData = block.menuData.map((item) => {
-                if (!isSubMenu && item.id === id) {
-                    const updatedItem = {
-                        ...item,
-                        permissions: { ...item.permissions, ...permissionsUpdate },
-                    };
-                    if (item.subMenus && item.subMenus.length > 0) {
-                        updatedItem.subMenus = item.subMenus.map((sub) => ({
-                            ...sub,
-                            permissions: { ...sub.permissions, ...permissionsUpdate },
-                        }));
-                    }
-                    return updatedItem;
-                }
-
                 if (isSubMenu && item.id === parentId && item.subMenus) {
                     return {
                         ...item,
@@ -326,7 +278,14 @@ export default function useEditRole() {
                                 ? { ...sub, permissions: { ...sub.permissions, ...permissionsUpdate } }
                                 : sub
                         ),
-                    };
+                    } as ExtendedMenuAccess;
+                }
+                
+                if (!isSubMenu && item.id === id) {
+                    return {
+                        ...item,
+                        permissions: { ...item.permissions, ...permissionsUpdate },
+                    } as ExtendedMenuAccess;
                 }
 
                 return item;
@@ -337,13 +296,65 @@ export default function useEditRole() {
     };
 
     const handleTutup = () => {
-        window.history.back();
+        navigate(-1);
     };
 
-    const handleSimpan = () => {
-        console.log('Save role data:', { namaRole, serviceBlocks });
-        // Implement save logic here
+    const handleSimpan = async () => {
+        // Construct payload
+        // We need to aggregate all accessIds from all blocks
+        // For each block (App), we create an Item in the payload?
+        // Wait, the payload is { items: RoleAccessItemPayload[] }
+        // RoleAccessItemPayload = { id, name, apps_id, accessIds }
+        // If we are editing one Role, does it mean we send one item per App?
+        // Yes, "items" array suggests multiple entries.
+        
+        const payloadItems = serviceBlocks.map(block => {
+            const accessIds: string[] = [];
+            
+            const traverse = (menus: ExtendedMenuAccess[]) => {
+                menus.forEach(menu => {
+                    // Check permissions
+                    Object.keys(menu.permissions).forEach(key => {
+                        if (menu.permissions[key] && menu.permissionIds[key]) {
+                            accessIds.push(menu.permissionIds[key]);
+                        }
+                    });
+                    
+                    if (menu.subMenus) {
+                        traverse(menu.subMenus as ExtendedMenuAccess[]);
+                    }
+                });
+            };
+            
+            traverse(block.menuData);
+
+            return {
+                id: roleId || null, // If edit, use roleId? 
+                // Wait, the payload ID seems to be the ID of the Role-App relation? 
+                // Or is it the Role ID?
+                // If it's bulk create/replace, maybe we just send the Role Name and App ID.
+                // If `id` is null, it creates. If `id` is present, it updates?
+                // The documentation says "Create or Replace".
+                // If we use the same Role Name, it might group them?
+                // "id": string (UUID) or null.
+                // If we are editing, we should probably use the Role ID.
+                
+                name: namaRole,
+                apps_id: block.serviceName, // This is the App ID
+                accessIds
+            };
+        });
+
+        const success = await createRolesAccess({ items: payloadItems });
+        if (success) {
+            navigate(-1); // Go back on success
+        }
     };
+
+    const serviceOptions = allApps.map(app => ({
+        label: app.name,
+        value: app.id
+    }));
 
     return {
         namaRole,
@@ -357,6 +368,8 @@ export default function useEditRole() {
         handleSelectAllRow,
         handleTutup,
         handleSimpan,
-        isEditMode: !!roleId
+        isEditMode: !!roleId,
+        serviceOptions, // Expose options
+        loading
     };
 }
