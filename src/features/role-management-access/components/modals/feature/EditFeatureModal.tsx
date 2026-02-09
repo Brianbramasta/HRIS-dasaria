@@ -7,14 +7,16 @@ interface EditFeatureModalProps {
   isOpen: boolean;
   onClose: () => void;
   data: FeatureData | null;
+  onSuccess?: () => void;
 }
 
-export default function EditFeatureModal({ isOpen, onClose, data }: EditFeatureModalProps) {
+export default function EditFeatureModal({ isOpen, onClose, data, onSuccess }: EditFeatureModalProps) {
   const {
     featureName,
     handleFeatureChange,
     handleSubmit,
-  } = useEditFeatureModal(isOpen, onClose, data);
+    loading,
+  } = useEditFeatureModal(isOpen, onClose, data, onSuccess);
 
   const content = (
     <div className="space-y-4 px-1">
@@ -35,7 +37,7 @@ export default function EditFeatureModal({ isOpen, onClose, data }: EditFeatureM
       onClose={onClose}
       content={content}
       handleSubmit={handleSubmit}
-      submitting={false}
+      submitting={loading}
       maxWidth="max-w-[700px]"
     />
   );

@@ -1,12 +1,15 @@
 import { useState, useCallback, useEffect } from 'react';
 import { FeatureData } from '../../../hooks/useFeatureDetail';
+import { useApiFeatures } from '../../api/useApiFeatures';
 
 export const useEditFeatureModal = (
   isOpen: boolean, 
   onClose: () => void,
-  initialData: FeatureData | null
+  initialData: FeatureData | null,
+  onSuccess?: () => void
 ) => {
   const [featureName, setFeatureName] = useState('');
+  const { updateFeature, loading } = useApiFeatures();
 
   useEffect(() => {
     if (isOpen && initialData) {
@@ -18,8 +21,8 @@ export const useEditFeatureModal = (
     setFeatureName(value);
   }, []);
 
-  const handleSubmit = useCallback(() => {
-    if (!initialData) return;
+  const handleSubmit = useCallback(async () => {
+    if (!initialData || !initialData.idFitur) return;
     
     // Validasi sederhana
     if (!featureName.trim()) {
@@ -27,14 +30,20 @@ export const useEditFeatureModal = (
       return;
     }
 
-    console.log('Updating feature:', { ...initialData, fitur: featureName });
-    // Di sini nanti panggil API update
-    onClose();
-  }, [initialData, featureName, onClose]);
+    const success = await updateFeature(initialData.idFitur, {
+      name: featureName,
+    });
+
+    if (success) {
+      if (onSuccess) onSuccess();
+      onClose();
+    }
+  }, [initialData, featureName, onClose, updateFeature, onSuccess]);
 
   return {
     featureName,
     handleFeatureChange,
     handleSubmit,
+    loading,
   };
 };

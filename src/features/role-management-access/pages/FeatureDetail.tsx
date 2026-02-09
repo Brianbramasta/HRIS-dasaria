@@ -20,6 +20,9 @@ export default function FeatureDetail() {
     setIsDeleteFeatureModalOpen,
     selectedFeature,
     onDeleteConfirm,
+    refreshFeatures,
+    loading,
+    modulId,
   } = useFeatureDetail();
 
   // Columns for Feature
@@ -71,17 +74,21 @@ export default function FeatureDetail() {
       <AddFeatureModal
         isOpen={isAddFeatureModalOpen}
         onClose={() => setIsAddFeatureModalOpen(false)}
+        modulId={modulId}
+        onSuccess={refreshFeatures}
       />
       <EditFeatureModal
         isOpen={isEditFeatureModalOpen}
         onClose={() => setIsEditFeatureModalOpen(false)}
         data={selectedFeature}
+        onSuccess={refreshFeatures}
       />
       <DeleteFeatureModal
         isOpen={isDeleteFeatureModalOpen}
         onClose={() => setIsDeleteFeatureModalOpen(false)}
         onDelete={onDeleteConfirm}
         featureName={selectedFeature?.fitur}
+        loading={loading}
       />
     </div>
   );
