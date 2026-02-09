@@ -40,6 +40,8 @@ class ApiService {
       timeout: 30000,
       headers: {
         'Content-Type': 'application/json',
+        // hapus header ini jika tidak diperlukan
+        "ngrok-skip-browser-warning": "true"
       },
     });
 
