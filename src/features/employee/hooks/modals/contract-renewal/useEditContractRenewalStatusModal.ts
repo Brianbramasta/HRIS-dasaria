@@ -40,6 +40,7 @@ export function useEditContractRenewalStatusModal({
     shouldShowDetailAndOldContract,
     shouldShowAllComponents,
     shouldShowOnlyDetail,
+    resetChangeTypeName,
   } = useContractRenewalStore();
 
   const [submitting, setSubmitting] = useState(false);
@@ -102,7 +103,7 @@ export function useEditContractRenewalStatusModal({
         new_contract_date: contractExtensionDetail.new_contract_signed_date,
         new_contract_end_date: contractExtensionDetail.new_contract_end_date,
         contract_id: contractExtensionDetail.contract_id,
-        contract_number: String(contractExtensionDetail.contract_sequence),
+        contract_sequence: String(contractExtensionDetail.contract_sequence),
       }));
     }
   }, [contractExtensionDetail, contractTypeOptions]);
@@ -189,7 +190,7 @@ export function useEditContractRenewalStatusModal({
     try {
       const formData = new FormData();
       formData.append('_method', 'PATCH');
-
+      console.log(contractRenewalData,'contractRenewalData');
       if (contractRenewalData?.renewal_status_name) {
         formData.append('extension_status_id', contractRenewalData.renewal_status_name);
       }
@@ -202,8 +203,8 @@ export function useEditContractRenewalStatusModal({
       if (contractRenewalData?.contract_type_id) {
         formData.append('contract_type_id', contractRenewalData.contract_type_id);
       }
-      if (contractRenewalData?.contract_number) {
-        formData.append('contract_number', contractRenewalData.contract_number);
+      if (contractRenewalData?.contract_sequence) {
+        formData.append('contract_sequence', contractRenewalData.contract_sequence);
       }
       if (contractRenewalData?.new_contract_date) {
         formData.append('sign_date_new_contract', contractRenewalData.new_contract_date);
@@ -234,6 +235,10 @@ export function useEditContractRenewalStatusModal({
       const success = await onSubmit(formData);
       if (success) {
         onSuccess?.();
+        setContractRenewalData(null);
+        setOldContractData(null);
+        setNewContractData(null);
+        resetChangeTypeName();
         onClose();
       }
     } catch (error) {
@@ -242,6 +247,14 @@ export function useEditContractRenewalStatusModal({
       setSubmitting(false);
     }
   }, [contractRenewalData, newContractData, onSubmit, onSuccess, onClose, shouldShowAllComponents]);
+
+  const handleClose = useCallback(() => {
+    setContractRenewalData(null);
+    setOldContractData(null);
+    setNewContractData(null);
+    resetChangeTypeName();
+    onClose();
+  }, [onClose, resetChangeTypeName]);
 
   return {
     submitting,
@@ -252,6 +265,7 @@ export function useEditContractRenewalStatusModal({
     handleOldContractChange,
     handleNewContractChange,
     handleSubmit,
+    handleClose,
     shouldShowDetailAndOldContract,
     shouldShowAllComponents,
     shouldShowOnlyDetail,

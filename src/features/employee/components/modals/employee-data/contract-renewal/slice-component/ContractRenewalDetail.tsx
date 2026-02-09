@@ -18,7 +18,7 @@ interface ContractRenewalDetailProps {
     renewal_status_name?: string;
     contract_type_id?: string;
     contract_type_name?: string;
-    contract_number?: string;
+    contract_sequence?: string;
     new_contract_date?: string;
     new_contract_end_date?: string;
     contract_document?: string;
@@ -151,9 +151,9 @@ export default function ContractRenewalDetail({
             <InputField
               label="Kontrak Ke"
               type="number"
-              value={data?.contract_number || ''}
+              value={data?.contract_sequence || ''}
               disabled={!isEditing}
-              onChange={(e) => handleInputChange('contract_number', e.target.value)}
+              onChange={(e) => handleInputChange('contract_sequence', e.target.value)}
               containerClassName="space-y-2"
             />
             <DateField
@@ -200,7 +200,7 @@ export default function ContractRenewalDetail({
           <TextAreaField
             label="Catatan"
             value={data?.notes || ''}
-            disabled={!isEditing}
+            // disabled={!isEditing}
             onChange={(value) => handleInputChange('notes', value)}
             containerClassName="space-y-2"
             rows={4}

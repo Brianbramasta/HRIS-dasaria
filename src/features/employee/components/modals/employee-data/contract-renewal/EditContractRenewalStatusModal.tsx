@@ -46,6 +46,7 @@ export default function EditStatusPerpanjanganModal({
     handleOldContractChange,
     handleNewContractChange,
     handleSubmit,
+    handleClose,
     shouldShowDetailAndOldContract,
     shouldShowAllComponents,
     shouldShowOnlyDetail,
@@ -137,7 +138,7 @@ export default function EditStatusPerpanjanganModal({
       title="Edit Status Perpanjangan"
       titleAlign='left'
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleClose}
       handleSubmit={handleSubmit}
       submitting={submitting}
       maxWidth="max-w-6xl"

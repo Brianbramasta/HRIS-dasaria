@@ -55,7 +55,7 @@ export default function PerpanjangKontrakEdit() {
     remaining_contract: String(kontrakData.remaining_contract),
     renewal_status_name: kontrakData.extension_status,
     contract_type_name: kontrakData.contract_type,
-    contract_number: String(kontrakData.contract_sequence),
+    contract_sequence: String(kontrakData.contract_sequence),
     new_contract_date: kontrakData.new_contract_signed_date || undefined,
     new_contract_end_date: kontrakData.new_contract_end_date || undefined,
     contract_document: kontrakData.contract_document || undefined,

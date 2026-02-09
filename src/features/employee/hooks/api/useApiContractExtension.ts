@@ -156,7 +156,7 @@ export const useApiContractExtension = (): UseApiContractExtensionReturn => {
 
       // Optional fields
       if (payload.note) formData.append('note', payload.note);
-      if (payload.contract_number) formData.append('contract_number', payload.contract_number);
+      if (payload.contract_number) formData.append('contract_sequence', payload.contract_number);
       if (payload.salary) formData.append('salary', payload.salary);
       
       // IDs

@@ -88,7 +88,7 @@ export function useEditContractRenewal(): UseEditContractRenewalReturn {
       });
       return false;
     }
-
+    console.log(payload,'payload');
     try {
       // Ensure _method is set to PATCH for method spoofing
       if (!payload.has('_method')) {
@@ -96,12 +96,12 @@ export function useEditContractRenewal(): UseEditContractRenewalReturn {
       }
 
       await contractExtensionsService.processRequestDecision(id, payload);
-      addNotification({
-        title: 'Success',
-        description: 'Status updated successfully',
-        variant: 'success',
-        hideDuration: 5000,
-      });
+      // addNotification({
+      //   title: 'Success',
+      //   description: 'Status updated successfully',
+      //   variant: 'success',
+      //   hideDuration: 5000,
+      // });
       setIsStatusModalOpen(false);
       await fetchContractRenewalDetail();
       return true;
@@ -134,12 +134,12 @@ export function useEditContractRenewal(): UseEditContractRenewalReturn {
       }
 
       await contractExtensionsService.processRequestDecision(id, payload);
-      addNotification({
-        title: 'Success',
-        description: 'Pengajuan updated successfully',
-        variant: 'success',
-        hideDuration: 5000,
-      });
+      // addNotification({
+      //   title: 'Success',
+      //   description: 'Pengajuan updated successfully',
+      //   variant: 'success',
+      //   hideDuration: 5000,
+      // });
       setIsPengajuanModalOpen(false);
       await fetchContractRenewalDetail();
       return true;
