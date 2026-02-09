@@ -8,6 +8,7 @@ interface DeleteAccessModalProps {
   onClose: () => void;
   onDelete: () => void;
   data?: AccessData | null;
+  loading?: boolean;
 }
 
 const DeleteAccessModal: React.FC<DeleteAccessModalProps> = ({
@@ -15,6 +16,7 @@ const DeleteAccessModal: React.FC<DeleteAccessModalProps> = ({
   onClose,
   onDelete,
   data,
+  loading = false,
 }) => {
   const { label } = useDeleteAccessModal(data || null);
 
@@ -48,9 +50,14 @@ const DeleteAccessModal: React.FC<DeleteAccessModalProps> = ({
             </button>
             <button
               type="submit"
-              className="rounded-xl bg-error-500 hover:bg-error-600 px-5 py-2 text-white"
+              disabled={loading}
+              className={`rounded-xl px-5 py-2 text-white ${
+                loading 
+                  ? 'bg-error-300 cursor-not-allowed' 
+                  : 'bg-error-500 hover:bg-error-600'
+              }`}
             >
-              Delete
+              {loading ? 'Deleting...' : 'Delete'}
             </button>
           </div>
         </form>

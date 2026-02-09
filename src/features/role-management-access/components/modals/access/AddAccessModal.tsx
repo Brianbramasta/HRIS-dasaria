@@ -7,16 +7,19 @@ import { useAddAccessModal } from '../../../hooks/modals/access/useAddAccessModa
 interface AddAccessModalProps {
   isOpen: boolean;
   onClose: () => void;
+  featureId?: string;
+  onSuccess?: () => void;
 }
 
-export default function AddAccessModal({ isOpen, onClose }: AddAccessModalProps) {
+export default function AddAccessModal({ isOpen, onClose, featureId, onSuccess }: AddAccessModalProps) {
   const {
     items,
+    loading,
     handleAddRow,
     handleRemoveRow,
     handleFieldChange,
     handleSubmit,
-  } = useAddAccessModal(isOpen, onClose);
+  } = useAddAccessModal(isOpen, onClose, featureId, onSuccess);
 
   const content = (
     <div className="space-y-4 px-1">
@@ -74,7 +77,7 @@ export default function AddAccessModal({ isOpen, onClose }: AddAccessModalProps)
       onClose={onClose}
       content={content}
       handleSubmit={handleSubmit}
-      submitting={false}
+      submitting={loading}
       maxWidth="max-w-[700px]"
     />
   );
