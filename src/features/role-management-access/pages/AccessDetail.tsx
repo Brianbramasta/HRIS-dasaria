@@ -9,7 +9,6 @@ export default function AccessDetail() {
   const {
     featureId,
     accessData,
-    loading,
     handleAddAccess,
     handleEditAccess,
     handleDeleteAccess,

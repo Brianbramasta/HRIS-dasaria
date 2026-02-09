@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { MenuAccess, Permission, PermissionConfig } from '../components/table/PermissionsTable';
 import { useApiRolesAccess } from './api/useApiRolesAccess';
@@ -58,26 +58,17 @@ export default function useEditRole() {
     useEffect(() => {
         if (roleId) {
             fetchRolesAccess(roleId);
-            // We assume the role name is not directly available in fetchRolesAccess response (it returns list of apps)
-            // But usually we need to fetch Role Info separately or extract from somewhere.
-            // For now, let's leave namaRole empty or set it if we can find it.
-            // Wait, the API contract for GET /roles-access/{id} returns AppRoleAccessItem[].
-            // It doesn't return the Role Name itself at the top level?
-            // "berhasil mendapatkan daftar roles dengan struktur hierarchy"
-            // The response is an Array of Apps.
-            // Where is the Role Name?
-            // Maybe fetchAppsPerRole returns it?
-            // GET /roles-access/app-role returns { role_id, role_name, list_apps }.
-            // So we might need to find the role name from there.
         }
     }, [roleId, fetchRolesAccess]);
-
-    // Handle role name fetching via fetchAppsPerRole if needed
-    // Or maybe we can't get it easily. I'll skip setting namaRole from API for now if it's not in the response.
 
     // Process roleAccessDetail when it loads (Edit Mode)
     useEffect(() => {
         if (roleId && roleAccessDetail.length > 0) {
+            // Set namaRole from the first item if available
+            if (roleAccessDetail[0].role_name) {
+                setNamaRole(roleAccessDetail[0].role_name);
+            }
+
             const processRoleData = async () => {
                 const newBlocks: ServiceBlock[] = [];
 

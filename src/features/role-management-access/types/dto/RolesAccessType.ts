@@ -41,6 +41,8 @@ export interface ModuleItem {
 }
 
 export interface AppRoleAccessItem {
+  role_id?: string;
+  role_name?: string;
   app_id: string;
   app_name: string;
   list_modules: ModuleItem[];
