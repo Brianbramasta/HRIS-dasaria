@@ -44,7 +44,7 @@ interface UseApiResignationReturn {
   fetchApplications: (params?: any) => Promise<void>;
   fetchApplicationDetail: (id: string) => Promise<void>;
   uploadApplicationDocuments: (id: string, payload: UploadDocumentsPayload) => Promise<boolean>;
-  approveApplication: (id: string) => Promise<boolean>;
+  approveApplication: (id: string, effectiveDate?: string) => Promise<boolean>;
   rejectApplication: (id: string) => Promise<boolean>;
   saveDraftApplication: (id: string) => Promise<boolean>;
 
@@ -147,11 +147,11 @@ export const useApiResignation = (): UseApiResignationReturn => {
     }
   }, []);
 
-  const approveApplication = useCallback(async (id: string): Promise<boolean> => {
+  const approveApplication = useCallback(async (id: string, effectiveDate?: string): Promise<boolean> => {
     setLoading(true);
     setError(null);
     try {
-      await resignationApplicationsService.approve(id);
+      await resignationApplicationsService.approve(id, 'Disetujui', effectiveDate);
       return true;
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Gagal menyetujui pengajuan';

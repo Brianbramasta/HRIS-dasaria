@@ -5,6 +5,7 @@ import Button from '../../../../../components/ui/button/Button';
 import { useEffect, useState } from 'react';
 import { useApiResignation } from '../../../hooks/api/useApiResignation';
 import {  useNavigate } from 'react-router';
+import { formatDateToIndonesian } from '@/utils/formatDate';
 
 export default function TabPendingReview() {
   const {
@@ -53,13 +54,14 @@ export default function TabPendingReview() {
       label: 'Tanggal Pengajuan',
       minWidth: 130,
       sortable: true,
+      format: (value) => formatDateToIndonesian(String(value)),
     },
     {
       id: 'efektif_resign_date',
       label: 'Tanggal Efektif',
       minWidth: 130,
       sortable: false,
-      format: (value) => <span>{value || '-'}</span>,
+      format: (value) => <span>{value ? formatDateToIndonesian(String(value)) : '-'}</span>,
     },
     {
       id: 'position_name',

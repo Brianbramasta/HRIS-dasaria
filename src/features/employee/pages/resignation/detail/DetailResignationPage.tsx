@@ -11,9 +11,13 @@ import EffectiveResignationDateModal from '../../../components/modals/resignatio
 import RejectionConfirmtionResignnationModal from '../../../components/modals/resignation/RejectionConfirmtionResignnationModal';
 import { useApiResignation } from '../../../hooks/api/useApiResignation';
 import { useEffect } from 'react';
+import { formatDateToIndonesian } from '@/utils/formatDate';
+import {  useNavigate } from 'react-router';
+
 
 export default function DetailPengunduranDiriPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const {
     data,
     loading,
@@ -108,7 +112,11 @@ export default function DetailPengunduranDiriPage() {
               <div>
                 <div className="text-sm text-gray-600">Tanggal Pengajuan</div>
                 <div className="font-medium">
-                  {applicationDetail?.resignation_details?.tanggal_pengajuan || data?.tanggalPengajuan}
+                  {(() => {
+                    const raw = applicationDetail?.resignation_details?.tanggal_pengajuan || data?.tanggalPengajuan || '';
+                    const f = formatDateToIndonesian(String(raw));
+                    return f || raw;
+                  })()}
                 </div>
               </div>
               <div>
@@ -263,7 +271,9 @@ export default function DetailPengunduranDiriPage() {
             variant="custom"
             className=" text-[grey]"
             onClick={() => {
-              if (id) saveDraftApplication(id);
+              const resignationId = applicationDetail?.resignation_details?.resignation_id;
+              if (resignationId) saveDraftApplication(resignationId);
+              navigate(`/resignation`);
             }}
           >
             Save  Draft
@@ -278,7 +288,9 @@ export default function DetailPengunduranDiriPage() {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onSubmit={(tgl, desc) => {
-          if (id) approveApplication(id);
+          const resignationId = applicationDetail?.resignation_details?.resignation_id;
+          if (resignationId) approveApplication(resignationId, tgl);
+          navigate(`/resignation`);
         }}
         submitting={isSubmitting}
         nip={applicationDetail?.resignation_details?.NIP || data?.idKaryawan || ''}
@@ -291,8 +303,10 @@ export default function DetailPengunduranDiriPage() {
         isOpen={isRejectModalOpen}
         onClose={closeRejectModal}
         onSubmit={async (note) => {
-          if (id) {
-            await rejectApplication(id);
+          const resignationId = applicationDetail?.resignation_details?.resignation_id;
+          if (resignationId) {
+            await rejectApplication(resignationId);
+            navigate(`/resignation`);
             closeRejectModal();
           }
         }}

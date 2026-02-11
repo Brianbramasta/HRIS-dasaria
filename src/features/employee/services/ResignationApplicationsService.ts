@@ -22,9 +22,12 @@ class ResignationApplicationsService {
     });
   }
 
-  async approve(id: string, statusName: string = 'Disetujui'): Promise<ApiResponse<any>> {
+  async approve(id: string, statusName: string = 'Disetujui', effectiveDate?: string): Promise<ApiResponse<any>> {
     const form = new FormData();
     form.append('status_name', statusName);
+    if (effectiveDate) {
+      form.append('efektif_resign_date', effectiveDate);
+    }
     return apiService.post<any>(`${this.basePath}/${id}/approve`, form, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
