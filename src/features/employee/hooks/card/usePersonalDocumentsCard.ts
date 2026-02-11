@@ -3,7 +3,7 @@ import { useModal } from '@/hooks/useModal';
 import { usePersonalInformation } from '@/features/employee/hooks/employee-data/detail/contract/usePersonalInformation';
 
 export default function usePersonalDocumentsCard(documents: any, employeeId?: string) {
-  const [personalFiles, setPersonalFiles] = useState<Array<{ id: number | string; no: number; namaFile: string; dokumen?: string; jenis_file?: string; fileType?: string; fileUrl?: string }>>([]);
+  const [personalFiles, setPersonalFiles] = useState<Array<{ id: number | string; no: number; namaFile: string; dokumen?: string; jenis_file?: string; description?: string; fileType?: string; fileUrl?: string }>>([]);
   const { isOpen, openModal, closeModal } = useModal(false);
   const { updateEmployeeDocument } = usePersonalInformation(employeeId);
 
@@ -14,6 +14,7 @@ export default function usePersonalDocumentsCard(documents: any, employeeId?: st
       no: idx + 1,
       namaFile: d.name_file || '',
       jenis_file: d?.jenis_file || '',
+      description: d?.description || '',
       fileType: d.file_type || '',
       fileUrl: d.file || '',
     }));

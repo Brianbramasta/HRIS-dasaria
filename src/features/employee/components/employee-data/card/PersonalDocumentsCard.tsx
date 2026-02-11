@@ -32,6 +32,7 @@ export default function PersonalDocumentsCard({ documents, employeeId }: Props) 
             { id: 'no', label: 'No.', align: 'center', render: (_v, _row, idx) => idx + 1 },
             { id: 'fileType', label: 'Tipe File' },
             { id: 'jenis_file', label: 'Jenis File' },
+            { id: 'description', label: 'Deskripsi' },
             { id: 'namaFile', label: 'Nama File' },
           ]}
           actions={[
