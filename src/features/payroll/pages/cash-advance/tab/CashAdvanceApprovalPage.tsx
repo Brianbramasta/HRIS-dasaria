@@ -26,7 +26,7 @@ type KasbonApprovalRow = {
   nominalKasbon: string;
   nominalCicilan: string;
   periodeCicilan: string;
-  statusKasbon: 'Menunggu Persetujuan HR' | 'Disetujui' | 'Ditolak';
+  statusKasbon: 'Menunggu Persetujuan FAT' | 'Disetujui' | 'Ditolak';
   detail?: string;
 };
 
@@ -170,13 +170,13 @@ export default function CashAdvanceApprovalPage() {
       icon: <XCircle size={18} />,
       className: 'text-error-600 hover:text-error-700',
       onClick: (row) => handleRejectOpen((row as any).raw),
-      condition: (row) => row.statusKasbon === 'Menunggu Persetujuan HR',
+      condition: (row) => row.statusKasbon === 'Menunggu Persetujuan FAT',
     },
     {
       icon: <CheckCircle size={18} />,
       className: 'text-success-600 hover:text-success-700',
       onClick: (row) => handleApproveOpen((row as any).raw),
-      condition: (row) => row.statusKasbon === 'Menunggu Persetujuan HR',
+      condition: (row) => row.statusKasbon === 'Menunggu Persetujuan FAT',
     },
     {
       label: 'Disetujui',
