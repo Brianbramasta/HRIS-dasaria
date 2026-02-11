@@ -269,6 +269,30 @@ Menolak pengajuan kasbon.
 }
 ```
 
+<!-- /api/payroll/kasbon/dropdown-loan-type -->
+<!-- {
+    "meta": {
+        "status": 200,
+        "message": "Loan types retrieved successfully"
+    },
+    "data": [
+        {
+            "id": "30f76626-d658-4f7f-a755-ba2b1a1e5664",
+            "name": "Opsional"
+        },
+        {
+            "id": "b69d0bf8-6539-4f6c-88e5-b4e07e929726",
+            "name": "Darurat"
+        },
+        {
+            "id": "fd854227-c6e1-4359-8c42-e9e6a042fec0",
+            "name": "Pribadi"
+        }
+    ]
+} -->
+
+
+
 ---
 
 ## Contoh Request cURL

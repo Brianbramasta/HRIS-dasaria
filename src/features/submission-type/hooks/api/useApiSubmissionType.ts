@@ -1,5 +1,7 @@
 import { useState, useCallback } from 'react';
 import submissionTypeService from '../../services/SubmissionTypeService';
+import { cashAdvanceServices } from '@/features/payroll/services/CashAdvanceServices';
+import { LoanTypeItem } from '@/features/payroll/types/dto/CashAdvanceType';
 import {
   SubmissionItem,
   SubmissionIndexData,
@@ -16,6 +18,7 @@ interface UseApiSubmissionTypeReturn {
   submissions: SubmissionItem[];
   popupDetail: PopupApplicationDetailResult | null;
   loanInstallment: CalculateLoanInstallmentResult | null;
+  loanTypes: LoanTypeItem[];
   pagination: {
     currentPage: number;
     perPage: number;
@@ -25,6 +28,7 @@ interface UseApiSubmissionTypeReturn {
   fetchPopupDetail: (status: PopupStatus) => Promise<void>;
   calculateLoan: (nominal: number | string) => Promise<void>;
   storeSubmission: (payload: StoreSubmissionPayload) => Promise<boolean>;
+  fetchLoanTypes: () => Promise<void>;
   resetDetail: () => void;
 }
 
@@ -34,6 +38,7 @@ export const useApiSubmissionType = (): UseApiSubmissionTypeReturn => {
   const [submissions, setSubmissions] = useState<SubmissionItem[]>([]);
   const [popupDetail, setPopupDetail] = useState<PopupApplicationDetailResult | null>(null);
   const [loanInstallment, setLoanInstallment] = useState<CalculateLoanInstallmentResult | null>(null);
+  const [loanTypes, setLoanTypes] = useState<LoanTypeItem[]>([]);
   const [pagination, setPagination] = useState({
     currentPage: 1,
     perPage: 10,
@@ -94,6 +99,21 @@ export const useApiSubmissionType = (): UseApiSubmissionTypeReturn => {
     }
   }, []);
 
+  const fetchLoanTypes = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await cashAdvanceServices.getLoanTypesDropdown();
+      setLoanTypes(response.data || []);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Gagal mengambil daftar jenis kasbon';
+      setError(msg);
+      setLoanTypes([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   const storeSubmission = useCallback(async (payload: StoreSubmissionPayload): Promise<boolean> => {
     setLoading(true);
     setError(null);
@@ -136,11 +156,13 @@ export const useApiSubmissionType = (): UseApiSubmissionTypeReturn => {
     submissions,
     popupDetail,
     loanInstallment,
+    loanTypes,
     pagination,
     fetchIndex,
     fetchPopupDetail,
     calculateLoan,
     storeSubmission,
+    fetchLoanTypes,
     resetDetail,
   };
 };

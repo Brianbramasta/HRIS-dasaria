@@ -1,4 +1,5 @@
-import { apiService } from '@/services/api';
+import { apiService, ApiResponse } from '@/services/api';
+import { LoanTypeItem } from '@/features/payroll/types/dto/CashAdvanceType';
 
 class CashAdvanceServices {
     private readonly basePath = '/payroll/kasbon';
@@ -39,6 +40,10 @@ class CashAdvanceServices {
     async getActiveAndCompletedLoans(filter?: any): Promise<any> {
         const qs = apiService.buildQueryString(filter || {});
         return apiService.get<any>(`${this.basePath}/active-and-completed-loans${qs ? `?${qs}` : ''}`);
+    }
+
+    async getLoanTypesDropdown(): Promise<ApiResponse<LoanTypeItem[]>> {
+        return apiService.get<LoanTypeItem[]>(`${this.basePath}/dropdown-loan-type`);
     }
 
     /**

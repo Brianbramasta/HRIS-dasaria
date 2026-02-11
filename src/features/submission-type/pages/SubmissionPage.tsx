@@ -14,11 +14,13 @@ import AddPengajuanPengunduranDiriModal from "@/features//submission-type/compon
 import { addNotification } from "@/stores/notificationStore";
 import { useApiSubmissionType } from "@/features/submission-type/hooks/api/useApiSubmissionType";
 import { PopupApplicationDetailResult, PopupStatus } from "@/features/submission-type/types/dto/SubmissionType";
+import { formatDateToIndonesian } from "@/utils/formatDate";
+import { formatUrlFile } from "@/utils/formatUrlFile";
 
 interface RowPengajuan {
   jenisPengajuan: string;
   tanggalPengajuan: string;
-  lampiran: string;
+  lampiran: string | null;
   status: string;
   catatan: string;
 }
@@ -36,20 +38,20 @@ export default function JenisPengajuanPage() {
 
   const allData: RowPengajuan[] = useMemo(
     () => [
-      {
-        jenisPengajuan: "Pengunduran Diri",
-        tanggalPengajuan: "20/11/2025",
-        lampiran: "-",
-        status: "Pending",
-        catatan: "Lorem ipsum dolor sit amet consectetur.",
-      },
-      {
-        jenisPengajuan: "Kasbon",
-        tanggalPengajuan: "20/11/2025",
-        lampiran: "-",
-        status: "Disetujui",
-        catatan: "Lorem ipsum dolor sit amet consectetur.",
-      },
+      // {
+      //   jenisPengajuan: "Pengunduran Diri",
+      //   tanggalPengajuan: "2025-11-20",
+      //   lampiran: null,
+      //   status: "Pending",
+      //   catatan: "Lorem ipsum dolor sit amet consectetur.",
+      // },
+      // {
+      //   jenisPengajuan: "Kasbon",
+      //   tanggalPengajuan: "2025-11-20",
+      //   lampiran: null,
+      //   status: "Disetujui",
+      //   catatan: "Lorem ipsum dolor sit amet consectetur.",
+      // },
     ],
     []
   );
@@ -59,7 +61,7 @@ export default function JenisPengajuanPage() {
       (submissions || []).map((s) => ({
         jenisPengajuan: s.submission_type,
         tanggalPengajuan: s.submission_date,
-        lampiran: s.attachment_document ? "Ada" : "-",
+        lampiran: s.attachment_document,
         status: s.status,
         catatan: s.note ?? "-",
       })),
@@ -68,26 +70,28 @@ export default function JenisPengajuanPage() {
 
   const filteredData = useMemo(() => {
     const source = apiData.length > 0 ? apiData : allData;
-    if (!jenis) return source;
-    return source.filter((d) => d.jenisPengajuan === jenis);
-  }, [allData, apiData, jenis]);
+    return source;
+  }, [allData, apiData]);
 
   const columns = [
     { id: "no", label: "No.", align: "center" as const, sortable: false },
     { id: "jenisPengajuan", label: "Jenis Pengajuan" },
-    { id: "tanggalPengajuan", label: "Tanggal Pengajuan" },
-    { id: "lampiran", label: "Lampiran", align: "center" as const },
+    { id: "tanggalPengajuan", label: "Tanggal Pengajuan", format: (value: RowPengajuan["tanggalPengajuan"]) => formatDateToIndonesian(value) },
+    { id: "lampiran", label: "Lampiran", align: "center" as const, isAction: true, format: (value: RowPengajuan["lampiran"]) => (
+      value ? <a href={formatUrlFile(value)} target="_blank" rel="noopener noreferrer" className="flex justify-center items-center"><FileText  /></a> : "—"
+    ) },
     {
       id: "status",
       label: "Status",
       format: (value: RowPengajuan["status"]) => (
         <span
-          className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${
+          className={`inline-block rounded-full px-3 py-1 text-xs font-medium status-styling ${
             value === "Pending"
               ? "bg-orange-100 text-orange-700"
               : value === "Disetujui"
               ? "bg-green-100 text-green-700"
-              : "bg-red-100 text-red-700"
+              :'bg-orange-100 text-orange-700'
+              // : "bg-red-100 text-red-700"
           }`}
         >
           {value}
@@ -191,6 +195,7 @@ export default function JenisPengajuanPage() {
         isOpen={openKasbonModal}
         onClose={() => setOpenKasbonModal(false)}
         defaultValues={kasbonDefaults ?? undefined}
+        // isFormValid={true}
         onSave={(values) => {
           (async () => {
             const ok = await storeSubmission({

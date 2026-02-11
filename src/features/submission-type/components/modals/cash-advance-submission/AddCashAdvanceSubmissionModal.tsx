@@ -4,7 +4,7 @@
 //   Jenis Kasbon (Select), Nominal Kasbon (maks 25% dari gaji pokok), Periode Cicilan (Select),
 //   Nominal Cicilan (otomatis), Surat Persetujuan Atasan (FileInput), Dokumen Pendukung (FileInput multiple), Keterangan (TextArea)
 // - Validasi: Nominal Kasbon dibatasi 25% dari Gaji Pokok; Nominal Cicilan dihitung otomatis dari periode
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import Input from '@/components/form/input/InputField';
@@ -15,6 +15,8 @@ import TextArea from '@/components/form/input/TextArea';
 import PopupBerhasil from '../../shared/modals/SuccessModal';
 import Alert from '@/components/ui/alert/Alert';
 import { useAddCashAdvanceSubmission, PengajuanKasbonForm } from '@/features/submission-type/hooks/cash-advance-submission/useAddCashAdvanceSubmission';
+import { useApiSubmissionType } from '@/features/submission-type/hooks/api/useApiSubmissionType';
+import { formatCurrency, parseCurrency } from '@/utils/formatCurrency';
 
 interface Props {
   isOpen: boolean;
@@ -26,7 +28,6 @@ interface Props {
 // Dokumentasi: Komponen utama modal pengajuan kasbon dengan state lokal dan perhitungan otomatis
 const AddPengajuanKasbonModal: React.FC<Props> = ({ isOpen, onClose, defaultValues, onSave }) => {
   const {
-    jenisKasbonOptions,
     periodeOptions,
     form,
     submitting,
@@ -36,6 +37,15 @@ const AddPengajuanKasbonModal: React.FC<Props> = ({ isOpen, onClose, defaultValu
     handleSubmit,
     handleCloseSuccessPopup,
   } = useAddCashAdvanceSubmission({ isOpen, onClose, defaultValues, onSave });
+ 
+  const { loanTypes, fetchLoanTypes } = useApiSubmissionType();
+  useEffect(() => {
+    fetchLoanTypes();
+  }, [fetchLoanTypes]);
+  const jenisKasbonOptionsFromApi = useMemo(
+    () => loanTypes.map((t) => ({ value: t.id, label: t.name })),
+    [loanTypes]
+  );
  
   const content = (
     <div className="space-y-6">
@@ -81,18 +91,18 @@ const AddPengajuanKasbonModal: React.FC<Props> = ({ isOpen, onClose, defaultValu
         </div>
         <div>
           <Label>Gaji Pokok</Label>
-          <Input type="number" placeholder="Masukkan gaji pokok" value={form.gajiPokok || ''} onChange={(e) => setField('gajiPokok', parseInt(e.target.value || '0', 10))} disabled/>
+          <Input placeholder="Masukkan gaji pokok" value={formatCurrency(form.gajiPokok || 0)} onChange={(e) => setField('gajiPokok', parseCurrency(e.target.value) || 0)} disabled/>
         </div>
         <div>
           <DatePicker id="tanggal-pengajuan-kasbon" label="Tanggal Pengajuan" placeholder="Pilih tanggal" onChange={(_, dateStr) => setField('tanggalPengajuan', dateStr)} />
         </div>
         <div>
           <Label>Jenis Kasbon</Label>
-          <Select options={jenisKasbonOptions} placeholder="Select" defaultValue={form.jenisKasbon} onChange={(v) => setField('jenisKasbon', v)} />
+          <Select options={jenisKasbonOptionsFromApi} placeholder="Select" defaultValue={form.jenisKasbon} onChange={(v) => setField('jenisKasbon', v)} />
         </div>
         <div>
           <Label>Nominal Kasbon <span className="text-xs text-gray-500">(maksimal 25% dari gaji pokok)</span></Label>
-          <Input type="number" placeholder="Inputan" value={form.nominalKasbon || ''} onChange={(e) => setField('nominalKasbon', parseInt(e.target.value || '0', 10))} />
+          <Input placeholder="Inputan" value={formatCurrency(form.nominalKasbon || 0)} onChange={(e) => setField('nominalKasbon', parseCurrency(e.target.value) || 0)} />
         </div>
         <div>
           <Label>Periode Cicilan</Label>
@@ -100,7 +110,7 @@ const AddPengajuanKasbonModal: React.FC<Props> = ({ isOpen, onClose, defaultValu
         </div>
         <div>
           <Label>Nominal Cicilan</Label>
-          <Input type="number" placeholder="Otomatis" value={form.nominalCicilan || ''} readonly />
+          <Input placeholder="Otomatis" value={formatCurrency(form.nominalCicilan || 0)} readonly />
         </div>
         <div>
           <Label>Surat Persetujuan Atasan</Label>

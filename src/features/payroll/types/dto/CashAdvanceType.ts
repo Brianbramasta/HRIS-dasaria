@@ -87,3 +87,16 @@ export interface CashAdvanceResponse {
     created_at: string | null;
     updated_at: string;
 }
+
+export interface LoanTypeItem {
+    id: string;
+    name: string;
+}
+
+export interface LoanTypesDropdownResponse {
+    meta: {
+        status: number;
+        message: string;
+    };
+    data: LoanTypeItem[];
+}
