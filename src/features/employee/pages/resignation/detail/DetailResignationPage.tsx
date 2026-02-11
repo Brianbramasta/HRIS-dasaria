@@ -154,10 +154,13 @@ export default function DetailPengunduranDiriPage() {
               <div>
                 <Label>Tipe File</Label>
                 <SelectField
-                  options={(documentTypes || []).map((t: any) => ({
-                    value: t.id,
-                    label: t.file_type_name || t.name,
-                  }))}
+                  options={(documentTypes || [])
+                    .filter((t: any) => !((applicationDetail?.resignation_documents || [])
+                      .some((d: any) => d?.document_type_id === t?.id)))
+                    .map((t: any) => ({
+                      value: t.id,
+                      label: t.file_type_name || t.name,
+                    }))}
                   placeholder="Pilih Jenis Dokumen"
                   defaultValue={row.type || ''}
                   onChange={(val) => handleRowTypeChange(row.id, val)}

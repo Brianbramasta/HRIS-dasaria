@@ -49,26 +49,8 @@ export const useDetailResignation = (id: string | undefined) => {
     'Paklaring (jika ada)',
   ];
 
-  // Fetch resignation data
   useEffect(() => {
-    const fetchData = async () => {
-      if (!id) return;
-      setLoading(true);
-      try {
-        const res = await pengunduranDiriService.getPengunduranDiriById(id);
-        setData(res.data as unknown as PengunduranDiri);
-      } catch (err) {
-        errorHandle(err);
-        // addNotification({
-        //   title: 'Gagal memuat data',
-        //   description: 'Tidak dapat mengambil detail pengunduran diri.',
-        //   variant: 'error',
-        // });
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
+    setLoading(false);
   }, [id]);
 
   // Handle open modal

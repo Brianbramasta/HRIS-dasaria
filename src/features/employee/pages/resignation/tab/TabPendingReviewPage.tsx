@@ -4,6 +4,7 @@ import { IconForm, IconPencil } from '@/icons/components/icons';
 import Button from '../../../../../components/ui/button/Button';
 import { useEffect, useState } from 'react';
 import { useApiResignation } from '../../../hooks/api/useApiResignation';
+import {  useNavigate } from 'react-router';
 
 export default function TabPendingReview() {
   const {
@@ -12,6 +13,7 @@ export default function TabPendingReview() {
     error,
     fetchApplications,
   } = useApiResignation();
+  const navigate = useNavigate();
 
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
@@ -105,7 +107,8 @@ export default function TabPendingReview() {
     {
       icon: <IconPencil />,
       onClick: (row) => {
-        window.location.href = `/resignation/${(row as any).application_id}`;
+
+        navigate(`/resignation/${(row as any).application_id}`);
       },
       variant: 'outline',
       color: 'warning',
