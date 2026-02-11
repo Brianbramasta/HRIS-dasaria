@@ -1,9 +1,7 @@
 import { DataTable, DataTableColumn, DataTableAction } from '../../../../../components/shared/datatable/DataTable';
 import { PengunduranDiri } from '../../../types/Resignation';
-import { ChevronDown } from 'react-feather';
 import { IconForm, IconPencil } from '@/icons/components/icons';
 import Button from '../../../../../components/ui/button/Button';
-import { Dropdown } from '../../../../../components/ui/dropdown/Dropdown';
 import { usePendingReview } from '../../../hooks/resignation/usePendingReview';
 
 export default function TabPendingReview() {
@@ -17,7 +15,6 @@ export default function TabPendingReview() {
     showApproveModal,
     showRejectModal,
     tanggalEfektif,
-    isStatusDropdownOpen,
     setTanggalEfektif,
     fetchPengunduranDiri,
     handleSearchChange,
@@ -29,9 +26,6 @@ export default function TabPendingReview() {
     handleCloseRejectModal,
     confirmApprove,
     confirmReject,
-    toggleStatusDropdown,
-    closeStatusDropdown,
-    handleNavigateToView,
   } = usePendingReview();
 
   // Define columns untuk DataTable
@@ -163,39 +157,39 @@ export default function TabPendingReview() {
         // onAdd={onOpenForm}
         // addButtonLabel="Form Pengunduran Diri"
         addButtonIcon={<IconForm />}
-        toolbarRightSlot={
-          <div className="relative">
-            <Button
-              onClick={() => toggleStatusDropdown()}
-              variant="outline"
-              size="sm"
-              className="flex items-center gap-1 dropdown-toggle"
-            >
-              Ditinjau
-              <ChevronDown size={16} />
-            </Button>
-            <Dropdown isOpen={isStatusDropdownOpen} onClose={() => closeStatusDropdown()}>
-              <div className="p-2 w-40">
-                <button
-                  className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100"
-                  onClick={() => {
-                    handleNavigateToView('pending');
-                  }}
-                >
-                  Ditinjau
-                </button>
-                <button
-                  className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100"
-                  onClick={() => {
-                    handleNavigateToView('reviewed');
-                  }}
-                >
-                  Selesai
-                </button>
-              </div>
-            </Dropdown>
-          </div>
-        }
+        // toolbarRightSlot={
+        //   <div className="relative">
+        //     <Button
+        //       onClick={() => toggleStatusDropdown()}
+        //       variant="outline"
+        //       size="sm"
+        //       className="flex items-center gap-1 dropdown-toggle"
+        //     >
+        //       Ditinjau
+        //       <ChevronDown size={16} />
+        //     </Button>
+        //     <Dropdown isOpen={isStatusDropdownOpen} onClose={() => closeStatusDropdown()}>
+        //       <div className="p-2 w-40">
+        //         <button
+        //           className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100"
+        //           onClick={() => {
+        //             handleNavigateToView('pending');
+        //           }}
+        //         >
+        //           Ditinjau
+        //         </button>
+        //         <button
+        //           className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100"
+        //           onClick={() => {
+        //             handleNavigateToView('reviewed');
+        //           }}
+        //         >
+        //           Selesai
+        //         </button>
+        //       </div>
+        //     </Dropdown>
+        //   </div>
+        // }
         loading={loading}
         emptyMessage="Tidak ada data pengunduran diri yang pending"
         onSearchChange={handleSearchChange}

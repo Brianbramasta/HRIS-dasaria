@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { DataTable, DataTableColumn, DataTableAction } from '../../../../../components/shared/datatable/DataTable';
 import { IconFileDetail, IconPencil } from '@/icons/components/icons';
 import { useNavigate } from 'react-router-dom';
+import AddUserTermination, { AddTerminationForm } from '@/features/employee/components/modals/termination/AddUserTermination';
 
 type TerminationItem = {
   id: string;
@@ -19,6 +20,8 @@ export default function TerminationAdministrationPage() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const navigate = useNavigate();
+  const [isAddOpen, setIsAddOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const data: TerminationItem[] = useMemo(
     () => [
@@ -192,6 +195,14 @@ export default function TerminationAdministrationPage() {
     },
   ];
 
+  const handleAddSubmit = (_payload: AddTerminationForm) => {
+    setSubmitting(true);
+    setTimeout(() => {
+      setSubmitting(false);
+      setIsAddOpen(false);
+    }, 600);
+  };
+
   return (
     <div className="space-y-6">
       <DataTable
@@ -205,6 +216,7 @@ export default function TerminationAdministrationPage() {
         pageSizeOptions={[5, 10, 25, 50]}
         filterable
         addButtonLabel="Tambah Terminasi"
+        onAdd={() => setIsAddOpen(true)}
         // toolbarRightSlot={
         //   <div className="relative">
         //     <Button
@@ -226,6 +238,12 @@ export default function TerminationAdministrationPage() {
         // }
         onPageChangeExternal={(p) => setPage(p)}
         onRowsPerPageChangeExternal={(n) => setLimit(n)}
+      />
+      <AddUserTermination
+        isOpen={isAddOpen}
+        onClose={() => setIsAddOpen(false)}
+        onSubmit={handleAddSubmit}
+        submitting={submitting}
       />
     </div>
   );
