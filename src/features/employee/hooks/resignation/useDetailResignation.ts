@@ -24,6 +24,7 @@ export const useDetailResignation = (id: string | undefined) => {
   const [tanggalEfektif, setTanggalEfektif] = useState('');
   const [deskripsi, setDeskripsi] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [docs, setDocs] = useState<DocumentItem[]>([
     { tipeFile: 'Form Exit Discussion', namaFile: 'Form Exit Discussion.pdf' },
@@ -115,8 +116,17 @@ export const useDetailResignation = (id: string | undefined) => {
   };
 
   // Handle reject
-  const handleReject = async () => {
+  const openRejectModal = () => {
+    setIsRejectModalOpen(true);
+  };
+
+  const closeRejectModal = () => {
+    setIsRejectModalOpen(false);
+  };
+
+  const handleReject = async (note?: string) => {
     if (!id) return;
+    setIsSubmitting(true);
     try {
       await pengunduranDiriService.rejectPengunduranDiri(id);
       addNotification({
@@ -124,14 +134,12 @@ export const useDetailResignation = (id: string | undefined) => {
         description: 'Pengunduran diri ditolak.',
         variant: 'info',
       });
+      setIsRejectModalOpen(false);
       navigate('/pengunduran-diri');
     } catch (err) {
       errorHandle(err);
-      // addNotification({
-      //   title: 'Gagal reject',
-      //   description: 'Terjadi kesalahan saat reject.',
-      //   variant: 'error',
-      // });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -204,6 +212,7 @@ export const useDetailResignation = (id: string | undefined) => {
     deskripsi,
     setDeskripsi,
     isModalOpen,
+    isRejectModalOpen,
     isSubmitting,
     docs,
     docTypes,
@@ -211,6 +220,8 @@ export const useDetailResignation = (id: string | undefined) => {
     handleOpenModal,
     handleCloseModal,
     handleApprove,
+    openRejectModal,
+    closeRejectModal,
     handleReject,
     handleAddRow,
     handleRemoveRow,

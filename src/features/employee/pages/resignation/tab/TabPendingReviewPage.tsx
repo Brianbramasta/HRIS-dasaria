@@ -1,35 +1,28 @@
 import { DataTable, DataTableColumn, DataTableAction } from '../../../../../components/shared/datatable/DataTable';
-import { PengunduranDiri } from '../../../types/Resignation';
+import { ResignationApplicationListItem } from '../../../types/dto/ResignationType';
 import { IconForm, IconPencil } from '@/icons/components/icons';
 import Button from '../../../../../components/ui/button/Button';
-import { usePendingReview } from '../../../hooks/resignation/usePendingReview';
+import { useEffect, useState } from 'react';
+import { useApiResignation } from '../../../hooks/api/useApiResignation';
 
 export default function TabPendingReview() {
   const {
-    data,
+    applications,
     loading,
     error,
-    page,
-    limit,
-    selectedItem,
-    showApproveModal,
-    showRejectModal,
-    tanggalEfektif,
-    setTanggalEfektif,
-    fetchPengunduranDiri,
-    handleSearchChange,
-    handleSortChange,
-    handlePageChange,
-    handleRowsPerPageChange,
-    handleNavigateToDetail,
-    handleCloseApproveModal,
-    handleCloseRejectModal,
-    confirmApprove,
-    confirmReject,
-  } = usePendingReview();
+    fetchApplications,
+  } = useApiResignation();
+
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [search, setSearch] = useState<string>('');
+
+  useEffect(() => {
+    fetchApplications({ page, per_page: limit, search });
+  }, [page, limit, search]);
 
   // Define columns untuk DataTable
-  const columns: DataTableColumn<PengunduranDiri>[] = [
+  const columns: DataTableColumn<ResignationApplicationListItem>[] = [
     {
       id: 'no',
       label: 'No.',
@@ -37,48 +30,45 @@ export default function TabPendingReview() {
       align: 'center',
       sortable: false,
       format: (_, row) => {
-        const index = data.indexOf(row) + 1 + (page - 1) * limit;
+        const index = applications.indexOf(row as any) + 1 + (page - 1) * limit;
         return index;
       },
     },
     {
-      id: 'idKaryawan',
+      id: 'employee_id',
       label: 'NIP',
       minWidth: 120,
       sortable: true,
     },
     {
-      id: 'name',
-      label: 'User',
+      id: 'full_name',
+      label: 'Pengguna',
       minWidth: 150,
       sortable: true,
-      format: (value, row) => (
-        <div className="flex items-center gap-2">
-          <img
-            src={row.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${value}`}
-            alt={value}
-            className="h-8 w-8 rounded-full"
-          />
-          <span>{value}</span>
-        </div>
-      ),
     },
     {
-      id: 'tanggalPengajuan',
+      id: 'tanggal_pengajuan',
       label: 'Tanggal Pengajuan',
       minWidth: 130,
       sortable: true,
     },
     {
-      id: 'department',
-      label: 'Departemen',
-      minWidth: 150,
-      sortable: true,
+      id: 'efektif_resign_date',
+      label: 'Tanggal Efektif',
+      minWidth: 130,
+      sortable: false,
+      format: (value) => <span>{value || '-'}</span>,
     },
     {
-      id: 'alasan',
-      label: 'Alasan',
-      minWidth: 200,
+      id: 'position_name',
+      label: 'Posisi',
+      minWidth: 160,
+      sortable: false,
+    },
+    {
+      id: 'note_hr',
+      label: 'Catatan',
+      minWidth: 220,
       sortable: false,
       format: (value) => (
         <span className="line-clamp-2 text-sm text-gray-600">
@@ -87,18 +77,23 @@ export default function TabPendingReview() {
       ),
     },
     {
-      id: 'status',
-      label: 'Status',
+      id: 'status_name',
+      label: 'Status Pengunduran diri',
       minWidth: 130,
       sortable: true,
       format: (value) => {
+        const val = value ?? '-';
         const statusColors: Record<string, string> = {
           'In Progress': 'bg-blue-100 text-blue-800',
           'Pending': 'bg-yellow-100 text-yellow-800',
+          'Dalam peninjauan': 'bg-yellow-100 text-yellow-800',
+          'Menunggu Diproses': 'bg-yellow-100 text-yellow-800',
+          'Disetujui': 'bg-green-100 text-green-800',
+          'Ditolak': 'bg-red-100 text-red-800',
         };
         return (
-          <span className={`status-styling rounded-full text-xs font-medium ${statusColors[value] || 'bg-gray-100 text-gray-800'}`}>
-            {value}
+          <span className={`status-styling rounded-full text-xs font-medium ${statusColors[val] || 'bg-gray-100 text-gray-800'}`}>
+            {val}
           </span>
         );
       },
@@ -106,11 +101,11 @@ export default function TabPendingReview() {
   ];
 
   // Define actions untuk DataTable
-  const actions: DataTableAction<PengunduranDiri>[] = [
+  const actions: DataTableAction<ResignationApplicationListItem>[] = [
     {
       icon: <IconPencil />,
       onClick: (row) => {
-        handleNavigateToDetail(row.id);
+        window.location.href = `/resignation/${(row as any).application_id}`;
       },
       variant: 'outline',
       color: 'warning',
@@ -133,7 +128,7 @@ export default function TabPendingReview() {
     return (
       <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
         <p>Error: {error}</p>
-        <Button onClick={() => fetchPengunduranDiri()} variant="primary" size="sm" className="mt-2">
+        <Button onClick={() => fetchApplications({ page, per_page: limit, search })} variant="primary" size="sm" className="mt-2">
           Coba Lagi
         </Button>
       </div>
@@ -145,7 +140,7 @@ export default function TabPendingReview() {
       {/* Data Table */}
       <DataTable
         title="Pengunduran Diri"
-        data={data}
+        data={applications as any}
         columns={columns}
         actions={actions}
         searchable={true}
@@ -191,11 +186,11 @@ export default function TabPendingReview() {
         //   </div>
         // }
         loading={loading}
-        emptyMessage="Tidak ada data pengunduran diri yang pending"
-        onSearchChange={handleSearchChange}
-        onSortChange={handleSortChange}
-        onPageChangeExternal={handlePageChange}
-        onRowsPerPageChangeExternal={handleRowsPerPageChange}
+        emptyMessage="Tidak ada pengajuan pengunduran diri"
+        onSearchChange={(val) => setSearch(val)}
+        onSortChange={() => {}}
+        onPageChangeExternal={(p) => setPage(p)}
+        onRowsPerPageChangeExternal={(l) => setLimit(l)}
       />
 
       {/* Action Column - Render approve/reject buttons */}
@@ -239,85 +234,7 @@ export default function TabPendingReview() {
         </div>
       )} */}
 
-      {/* Approve Modal */}
-      {showApproveModal && selectedItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="relative w-full max-w-md rounded-lg bg-white p-6 dark:bg-gray-900">
-            <h3 className="mb-4 text-lg font-bold text-gray-900 dark:text-white">Approve Pengunduran Diri</h3>
-            
-            <div className="mb-4 space-y-3">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Nama: <span className="font-semibold text-gray-900 dark:text-white">{selectedItem.name}</span>
-              </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Alasan: <span className="font-semibold text-gray-900 dark:text-white">{selectedItem.alasan}</span>
-              </p>
-              
-              <div>
-                <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Tanggal Efektif <span className="text-red-600">*</span>
-                </label>
-                <input
-                  type="date"
-                  value={tanggalEfektif}
-                  onChange={(e) => setTanggalEfektif(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-                />
-              </div>
-            </div>
-
-            <div className="flex justify-end gap-3">
-              <Button
-                onClick={() => {
-                  handleCloseApproveModal();
-                }}
-                variant="outline"
-              >
-                Batal
-              </Button>
-              <Button
-                onClick={confirmApprove}
-                disabled={!tanggalEfektif}
-                className="bg-green-600 text-white hover:bg-green-700 disabled:opacity-50"
-              >
-                Approve
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Reject Modal */}
-      {showRejectModal && selectedItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="relative w-full max-w-md rounded-lg bg-white p-6 dark:bg-gray-900">
-            <h3 className="mb-4 text-lg font-bold text-gray-900 dark:text-white">Reject Pengunduran Diri</h3>
-            
-            <div className="mb-4 space-y-3">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Apakah Anda yakin ingin me-reject pengunduran diri <span className="font-semibold text-gray-900 dark:text-white">{selectedItem.name}</span>?
-              </p>
-            </div>
-
-            <div className="flex justify-end gap-3">
-              <Button
-                onClick={() => {
-                  handleCloseRejectModal();
-                }}
-                variant="outline"
-              >
-                Batal
-              </Button>
-              <Button
-                onClick={confirmReject}
-                className="bg-red-600 text-white hover:bg-red-700"
-              >
-                Reject
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Approve/Reject modals di halaman ini tidak digunakan pada integrasi API baru */}
     </div>
   );
 }
