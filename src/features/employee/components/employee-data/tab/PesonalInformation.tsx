@@ -33,7 +33,7 @@ export default function PesonalInformationTab({ employeeId }: Props) {
       <EmployeeDataCard data={detail.Employment_Position_Data} employeeId={employeeId || detail?.Personal_Data?.id} />
       {/* <SalaryCard employeeId={employeeId || detail?.Personal_Data?.id} salaryData={detail.Salary_Data} bpjsData={detail.BPJS_Data} /> */}
       <BPJSCard employeeId={employeeId || detail?.Personal_Data?.id} salaryData={detail.Salary_Data} bpjsData={detail.BPJS_Data} />
-      <PersonalDocumentsCard documents={detail.Document_Data} employeeId={employeeId || detail?.Personal_Data?.id} />
+      <PersonalDocumentsCard documents={detail.Document_Data} employeeCategoryId={detail.Employment_Position_Data?.employee_category_id || ''} employeeId={employeeId || detail?.Personal_Data?.id} />
     </div>
   );
 }
