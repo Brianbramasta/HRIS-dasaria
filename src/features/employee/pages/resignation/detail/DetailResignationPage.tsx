@@ -154,6 +154,7 @@ export default function DetailPengunduranDiriPage() {
         </div>
       </div>
 
+      {!(applicationDetail?.resignation_details?.status_name && ['Disetujui', 'Ditolak'].includes(applicationDetail?.resignation_details?.status_name)) && ( <>
       <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
         <div className="font-semibold mb-4">Berkas / Dokumen</div>
         <div className="space-y-3">
@@ -215,6 +216,7 @@ export default function DetailPengunduranDiriPage() {
         </div>
       </div>
 
+      </>)}
       <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
         <div className="overflow-x-auto">
           <Table className='border'>
@@ -243,14 +245,14 @@ export default function DetailPengunduranDiriPage() {
                       size="sm"
                       className="btn-primary"
                       onClick={() => {
-                        const path = (d as any)?.document_path;
-                        if (path) {
-                          const url = `${import.meta.env.VITE_API_URL}/${path}`;
-                          window.open(url, '_blank');
-                        }
+                        // const path = (d as any)?.document_path;
+                        // if (path) {
+                        //   const url = `${import.meta.env.VITE_API_URL}/${path}`;
+                        //   window.open(url, '_blank');
+                        // }
                       }}
                     >
-                      Lihat
+                      <IconHapus  />
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -266,6 +268,7 @@ export default function DetailPengunduranDiriPage() {
           <Label>Tanggal Efektif</Label>
           <Input type="text" placeholder="28 Januari 1999" value={tanggalEfektif} onChange={(e) => setTanggalEfektif(e.target.value)} />
         </div> */}
+        {!(applicationDetail?.resignation_details?.status_name && ['Disetujui', 'Ditolak'].includes(applicationDetail?.resignation_details?.status_name)) && (
         <div className="flex items-center gap-3">
           <Button
             variant="custom"
@@ -281,6 +284,7 @@ export default function DetailPengunduranDiriPage() {
           <Button variant="custom" className="border border-[#DC3545] text-[#DC3545]" onClick={openRejectModal}>Ditolak</Button>
           <Button variant="custom" className="bg-green-500 text-white" onClick={handleOpenModal}>Disetujui</Button>
         </div>
+        )}
       </div>
 
       {/* Modal */}

@@ -88,7 +88,7 @@ const EffectiveResignationDateModal: React.FC<EffectiveResignationDateModalProps
       </div>
 
       <div>
-        <Label htmlFor="deskripsi">Deskripsi</Label>
+        <Label htmlFor="deskripsi">Catatan</Label>
         <TextArea
           placeholder="Deskripsi..."
           rows={4}

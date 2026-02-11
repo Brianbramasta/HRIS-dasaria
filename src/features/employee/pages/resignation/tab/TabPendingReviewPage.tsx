@@ -1,6 +1,6 @@
 import { DataTable, DataTableColumn, DataTableAction } from '../../../../../components/shared/datatable/DataTable';
 import { ResignationApplicationListItem } from '../../../types/dto/ResignationType';
-import { IconForm, IconPencil } from '@/icons/components/icons';
+import { IconFileDetail, IconPencil } from '@/icons/components/icons';
 import Button from '../../../../../components/ui/button/Button';
 import { useEffect, useState } from 'react';
 import { useApiResignation } from '../../../hooks/api/useApiResignation';
@@ -114,6 +114,16 @@ export default function TabPendingReview() {
       },
       variant: 'outline',
       color: 'warning',
+      condition: (row) => !['Disetujui', 'Ditolak'].includes((row as any).status_name),
+    },
+    {
+      icon: <IconFileDetail />,
+      onClick: (row) => {
+        navigate(`/resignation/${(row as any).application_id}`);
+      },
+      variant: 'outline',
+      color: 'info',
+      condition: (row) => ['Disetujui', 'Ditolak'].includes((row as any).status_name),
     },
   ];
 
@@ -156,7 +166,7 @@ export default function TabPendingReview() {
         // comment dulu - revisi ui
         // onAdd={onOpenForm}
         // addButtonLabel="Form Pengunduran Diri"
-        addButtonIcon={<IconForm />}
+        addButtonIcon={<IconFileDetail />}
         // toolbarRightSlot={
         //   <div className="relative">
         //     <Button
