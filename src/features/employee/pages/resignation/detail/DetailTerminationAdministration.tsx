@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Button from '../../../../../components/ui/button/Button';
 import Label from '../../../../../components/form/Label';
@@ -6,6 +6,7 @@ import TextArea from '../../../../../components/form/input/TextArea';
 import FileInput from '../../../../../components/form/input/FileInput';
 import { Table, TableHeader, TableBody, TableRow, TableCell } from '../../../../../components/ui/table';
 import DoneOffBoardingModal from '../../../components/modals/resignation/DoneOffBoardingModal';
+import { useApiResignation } from '@/features/employee/hooks/api/useApiResignation';
 
 type DetailData = {
   name: string;
@@ -24,27 +25,54 @@ type DocRow = { tipeFile: string; namaFile: string };
 export default function DetailTerminationAdministrationPage() {
   const { id } = useParams();
   const [uploadRows, setUploadRows] = useState<UploadRow[]>([{ id: crypto.randomUUID(), type: '' }]);
-  const [docs, setDocs] = useState<DocRow[]>([
-    { tipeFile: 'Form Exit Discussion', namaFile: 'Form Exit Discussion.pdf' },
-    { tipeFile: 'Surat Balasan Pengunduran Diri', namaFile: 'Surat Balasan Pengunduran Diri.pdf' },
-    { tipeFile: 'Berita Acara Serah Terima (BAST)', namaFile: 'BAST.pdf' },
-  ]);
+  const [docs, setDocs] = useState<DocRow[]>([]);
   const [isDoneOpen, setIsDoneOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [comment, setComment] = useState('');
 
-  const data: DetailData | null = useMemo(() => {
-    return {
-      name: 'Budi',
-      idKaryawan: 'DSR999',
-      posisi: 'Direktur Teknologi dan Jaringan',
-      statusBerakhir: 'PHK',
-      tanggalPengajuan: '28 Januari 1999',
-      tanggalEfektif: '28 Februari 1999',
-      catatan: '',
-      avatar:
-        'https://images.unsplash.com/photo-1544511852-3dfd9dcbf5a0?q=80&w=540&auto=format&fit=crop',
-    };
+  const {
+    loading,
+    error,
+    adminDetail,
+    documentTypes,
+    fetchAdministrationDetail,
+    fetchDocumentTypes,
+    uploadAdministrationDocuments,
+    submitAdministration,
+  } = useApiResignation();
+
+  // Fetch detail and document types on mount
+  useEffect(() => {
+    if (id) {
+      fetchAdministrationDetail(id);
+      fetchDocumentTypes();
+    }
   }, [id]);
+
+  // Transform API data to component format
+  const data: DetailData | null = useMemo(() => {
+    if (!adminDetail) return null;
+    return {
+      name: adminDetail.resignation_details?.full_name || '',
+      idKaryawan: adminDetail.resignation_details?.NIP || '',
+      posisi: adminDetail.resignation_details?.position_name || '',
+      statusBerakhir: adminDetail.resignation_details?.end_status || '',
+      tanggalPengajuan: adminDetail.resignation_details?.tanggal_pengajuan_terminasi || '',
+      tanggalEfektif: adminDetail.resignation_details?.tanggal_efektif_terminasi || '',
+      catatan: adminDetail.resignation_details?.id || '',
+      avatar: undefined,
+    };
+  }, [adminDetail]);
+
+  // Transform documents from API
+  useEffect(() => {
+    if (adminDetail?.resignation_documents) {
+      const transformedDocs = adminDetail.resignation_documents.map((doc) => ({
+        tipeFile: doc.file_type_name || '-',
+        namaFile: doc.document_name || '-',
+      }));
+      setDocs(transformedDocs);
+    }
+  }, [adminDetail?.resignation_documents]);
 
   const handleAddRow = () => {
     setUploadRows((rows) => [...rows, { id: crypto.randomUUID(), type: '' }]);
@@ -63,11 +91,23 @@ export default function DetailTerminationAdministrationPage() {
     setUploadRows((rows) => rows.map((r) => (r.id === rowId ? { ...r, file } : r)));
   };
 
-  const handleUploadRows = () => {
-    const newDocs = uploadRows
-      .filter((r) => r.type && r.file)
-      .map((r) => ({ tipeFile: r.type, namaFile: r.file?.name || '' }));
-    if (newDocs.length > 0) {
+  const handleUploadRows = async () => {
+    const filesToUpload = uploadRows.filter((r) => r.type && r.file);
+    if (filesToUpload.length === 0) return;
+
+    const success = await uploadAdministrationDocuments(id!, {
+      document_type_ids: filesToUpload.map((r) => r.type),
+      files: filesToUpload.map((r) => r.file!),
+    });
+
+    if (success) {
+      const newDocs = filesToUpload.map((r) => {
+        const docType = documentTypes.find((dt) => dt.id === r.type);
+        return {
+          tipeFile: docType ? (docType.file_type_name || docType.name || r.type) : r.type,
+          namaFile: r.file?.name || '',
+        };
+      });
       setDocs((prev) => [...prev, ...newDocs]);
       setUploadRows([{ id: crypto.randomUUID(), type: '' }]);
     }
@@ -77,24 +117,45 @@ export default function DetailTerminationAdministrationPage() {
     setDocs((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handlePreviewPDF = () => {};
+  const handlePreviewPDF = () => {
+    // TODO: Implement PDF preview
+  };
+
   const handleOpenDone = () => setIsDoneOpen(true);
   const handleCloseDone = () => setIsDoneOpen(false);
-  const handleConfirmDone = () => {
-    setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+
+  const handleConfirmDone = async () => {
+    if (!id) return;
+    const success = await submitAdministration(id);
+    if (success) {
       setIsDoneOpen(false);
-    }, 800);
+    }
   };
 
   if (!data) {
-    return <div>Data tidak ditemukan.</div>;
+    return (
+      <div className="space-y-6">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Terminasi Administrasi</h1>
+        {loading ? (
+          <div className="text-center py-8">Memuat data...</div>
+        ) : (
+          <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
+            <p>{error || 'Data tidak ditemukan.'}</p>
+          </div>
+        )}
+      </div>
+    );
   }
 
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Terminasi Administrasi</h1>
+
+      {error && (
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
+          <p>Terjadi kesalahan: {error}</p>
+        </div>
+      )}
 
       <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -141,7 +202,12 @@ export default function DetailTerminationAdministrationPage() {
             </div>
             <div className="mt-6">
               <Label>Catatan</Label>
-              <TextArea placeholder="Enter as description ..." value={data.catatan} rows={3} />
+              <TextArea
+                placeholder="Enter as description ..."
+                value={comment}
+                onChange={(value: any) => setComment(typeof value === 'string' ? value : value.target?.value || '')}
+                rows={3}
+              />
             </div>
           </div>
         </div>
@@ -157,17 +223,15 @@ export default function DetailTerminationAdministrationPage() {
                 <select
                   value={row.type}
                   onChange={(e) => handleRowTypeChange(row.id, e.target.value)}
-                  className="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-3 text-sm shadow-theme-xs focus:border-brand-300 focus:outline-hidden focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"
+                  disabled={loading}
+                  className="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-3 text-sm shadow-theme-xs focus:border-brand-300 focus:outline-hidden focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 disabled:opacity-50"
                 >
                   <option value="">Pilih Jenis Dokumen</option>
-                  <option value="Form Exit Discussion">Form Exit Discussion</option>
-                  <option value="Surat Balasan Pengunduran Diri">Surat Balasan Pengunduran Diri</option>
-                  <option value="BAST">Berita Acara Serah Terima (BAST)</option>
-                  <option value="Form Exit Clearance">Form Exit Clearance</option>
-                  <option value="Form Exit Interview">Form Exit Interview</option>
-                  <option value="Form Exit Questionnaire">Form Exit Questionnaire</option>
-                  <option value="Informasi Garden Leave">Informasi Garden Leave</option>
-                  <option value="Pelatihan">Pelatihan</option>
+                  {documentTypes.map((dt) => (
+                    <option key={dt.id} value={dt.id}>
+                      {dt.file_type_name || dt.name || 'Unnamed'}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div>
@@ -178,16 +242,42 @@ export default function DetailTerminationAdministrationPage() {
               </div>
               <div className="self-end md:self-auto">
                 {index === 0 ? (
-                  <Button type="button" size="sm" variant="custom" className="px-3 py-3 rounded-full bg-green-500 text-white w-full md:w-fit" onClick={handleAddRow}>+</Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="custom"
+                    className="px-3 py-3 rounded-full bg-green-500 text-white w-full md:w-fit disabled:opacity-50"
+                    onClick={handleAddRow}
+                    disabled={loading}
+                  >
+                    +
+                  </Button>
                 ) : (
-                  <Button type="button" size="sm" variant="custom" className="px-3 py-3 rounded-full bg-red-500 text-white w-full md:w-fit" onClick={() => handleRemoveRow(row.id)}>−</Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="custom"
+                    className="px-3 py-3 rounded-full bg-red-500 text-white w-full md:w-fit disabled:opacity-50"
+                    onClick={() => handleRemoveRow(row.id)}
+                    disabled={loading}
+                  >
+                    −
+                  </Button>
                 )}
               </div>
             </div>
           ))}
         </div>
         <div className="mt-4 flex justify-end">
-          <Button type="button" size="sm" variant="primary" onClick={handleUploadRows}>Unggah</Button>
+          <Button
+            type="button"
+            size="sm"
+            variant="primary"
+            onClick={handleUploadRows}
+            disabled={loading}
+          >
+            Unggah
+          </Button>
         </div>
       </div>
 
@@ -196,16 +286,26 @@ export default function DetailTerminationAdministrationPage() {
           <Table className="border">
             <TableHeader>
               <TableRow className="bg-[#004969] text-white">
-                <TableCell isHeader className="px-4 py-2">No.</TableCell>
-                <TableCell isHeader className="px-4 py-2 text-start">Tipe File</TableCell>
-                <TableCell isHeader className="px-4 py-2 text-start">Nama File</TableCell>
-                <TableCell isHeader className="px-4 py-2 text-start">Aksi</TableCell>
+                <TableCell isHeader className="px-4 py-2">
+                  No.
+                </TableCell>
+                <TableCell isHeader className="px-4 py-2 text-start">
+                  Tipe File
+                </TableCell>
+                <TableCell isHeader className="px-4 py-2 text-start">
+                  Nama File
+                </TableCell>
+                <TableCell isHeader className="px-4 py-2 text-start">
+                  Aksi
+                </TableCell>
               </TableRow>
             </TableHeader>
             <TableBody>
               {docs.length === 0 && (
                 <TableRow>
-                  <TableCell className="px-4 py-3" colSpan={4}>Belum ada dokumen</TableCell>
+                  <TableCell className="px-4 py-3" colSpan={4}>
+                    Belum ada dokumen
+                  </TableCell>
                 </TableRow>
               )}
               {docs.map((d, i) => (
@@ -214,7 +314,15 @@ export default function DetailTerminationAdministrationPage() {
                   <TableCell className="px-4 py-3">{d.tipeFile}</TableCell>
                   <TableCell className="px-4 py-3">{d.namaFile}</TableCell>
                   <TableCell className="px-4 py-3">
-                    <Button variant="custom" size="sm" className="btn-danger" onClick={() => handleRemoveDocument(i)}>Hapus</Button>
+                    <Button
+                      variant="custom"
+                      size="sm"
+                      className="btn-danger"
+                      onClick={() => handleRemoveDocument(i)}
+                      disabled={loading}
+                    >
+                      Hapus
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -225,8 +333,17 @@ export default function DetailTerminationAdministrationPage() {
 
       <div className="flex items-center justify-end">
         <div className="flex items-center gap-3">
-          <Button variant="custom" className="border border-gray-300">Tutup</Button>
-          <Button variant="custom" className="bg-green-500 text-white" onClick={handleOpenDone}>Selesai</Button>
+          <Button variant="custom" className="border border-gray-300">
+            Tutup
+          </Button>
+          <Button
+            variant="custom"
+            className="bg-green-500 text-white disabled:opacity-50"
+            onClick={handleOpenDone}
+            disabled={loading}
+          >
+            Selesai
+          </Button>
         </div>
       </div>
 
@@ -234,7 +351,7 @@ export default function DetailTerminationAdministrationPage() {
         isOpen={isDoneOpen}
         onClose={handleCloseDone}
         onConfirm={handleConfirmDone}
-        submitting={isSubmitting}
+        submitting={loading}
         employeeName={data.name}
         effectiveDate={data.tanggalEfektif}
       />

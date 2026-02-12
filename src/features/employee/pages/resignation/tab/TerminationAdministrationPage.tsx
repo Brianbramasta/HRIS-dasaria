@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { DataTable, DataTableColumn, DataTableAction } from '../../../../../components/shared/datatable/DataTable';
 import { IconFileDetail, IconPencil } from '@/icons/components/icons';
 import { useNavigate } from 'react-router-dom';
 import AddUserTermination, { AddTerminationForm } from '@/features/employee/components/modals/termination/AddUserTermination';
+import { useApiResignation } from '@/features/employee/hooks/api/useApiResignation';
 
 type TerminationItem = {
   id: string;
@@ -17,127 +18,55 @@ type TerminationItem = {
 };
 
 export default function TerminationAdministrationPage() {
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
   const navigate = useNavigate();
   const [isAddOpen, setIsAddOpen] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
+  const {
+    loading,
+    error,
+    adminList,
+    adminPagination,
+    fetchAdministrationIndex,
+    storeAdministration,
+  } = useApiResignation();
 
+  // Fetch data on mount and when pagination changes
+  useEffect(() => {
+    fetchAdministrationIndex({
+      page: adminPagination.currentPage,
+      per_page: adminPagination.perPage,
+    });
+  }, [adminPagination.currentPage, adminPagination.perPage]);
+
+  // Transform API data to table format
   const data: TerminationItem[] = useMemo(
-    () => [
-      {
-        id: '1',
-        nip: 'DSR999',
-        name: 'Lindsey Curtis',
-        tanggalPengajuan: '15 Jul 2026',
-        tanggalEfektif: '16 Jul 2026',
-        posisi: 'Direktur Teknologi dan Jaringan',
-        catatan: 'Pengajuan Mendadak',
-        statusBerakhir: 'PHK',
-        statusTerminasi: 'Selesai',
-      },
-      {
-        id: '2',
-        nip: 'DSR999',
-        name: 'Bedi Mulyaod',
-        tanggalPengajuan: '15 Jul 2026',
-        tanggalEfektif: '16 Jul 2026',
-        posisi: 'Manajer Teknologi dan Jaringan',
-        catatan: '-',
-        statusBerakhir: 'Kontrak Selesai',
-        statusTerminasi: 'Selesai',
-      },
-      {
-        id: '3',
-        nip: 'DSR999',
-        name: 'Onnan',
-        tanggalPengajuan: '15 Jul 2026',
-        tanggalEfektif: '16 Jul 2026',
-        posisi: 'Fullstack Developer',
-        catatan: '-',
-        statusBerakhir: 'Tidak Lolos Evaluasi',
-        statusTerminasi: 'Selesai',
-      },
-      {
-        id: '4',
-        nip: 'DSR999',
-        name: 'Maguire',
-        tanggalPengajuan: '15 Jul 2026',
-        tanggalEfektif: '16 Jul 2026',
-        posisi: 'Fullstack Developer',
-        catatan: '-',
-        statusBerakhir: 'Tidak Memperpanjang (Evaluasi)',
-        statusTerminasi: 'Selesai',
-      },
-      {
-        id: '5',
-        nip: 'DSR999',
-        name: 'Muhyod',
-        tanggalPengajuan: '15 Jul 2026',
-        tanggalEfektif: '16 Jul 2026',
-        posisi: 'Fullstack Developer',
-        catatan: '-',
-        statusBerakhir: 'Tidak Lolos Evaluasi',
-        statusTerminasi: 'Selesai',
-      },
-      {
-        id: '6',
-        nip: 'DSR999',
-        name: 'Lindsey Curtis',
-        tanggalPengajuan: '15 Jul 2026',
-        tanggalEfektif: '16 Jul 2026',
-        posisi: 'Backend Developer',
-        catatan: '-',
-        statusBerakhir: 'New Child',
-        statusTerminasi: 'Sedang diproses',
-      },
-      {
-        id: '7',
-        nip: 'DSR999',
-        name: 'Kaiya Curtis',
-        tanggalPengajuan: '15 Jul 2026',
-        tanggalEfektif: '16 Jul 2026',
-        posisi: 'Human Resource',
-        catatan: 'New Child',
-        statusBerakhir: '-',
-        statusTerminasi: 'Sedang diproses',
-      },
-      {
-        id: '8',
-        nip: 'DSR999',
-        name: 'Carlo George',
-        tanggalPengajuan: '15 Jul 2026',
-        tanggalEfektif: '16 Jul 2026',
-        posisi: 'Accounting',
-        catatan: '-',
-        statusBerakhir: '-',
-        statusTerminasi: 'Sedang diproses',
-      },
-      {
-        id: '9',
-        nip: 'DSR999',
-        name: 'Abram Schleifer',
-        tanggalPengajuan: '15 Jul 2026',
-        tanggalEfektif: '16 Jul 2026',
-        posisi: 'Front End Developer',
-        catatan: '-',
-        statusBerakhir: '-',
-        statusTerminasi: 'Sedang diproses',
-      },
-      {
-        id: '10',
-        nip: 'DSR999',
-        name: 'Rain Schleifer',
-        tanggalPengajuan: '15 Jul 2026',
-        tanggalEfektif: '16 Jul 2026',
-        posisi: 'Digital Marketer',
-        catatan: '-',
-        statusBerakhir: '-',
-        statusTerminasi: 'Sedang diproses',
-      },
-    ],
-    []
+    () =>
+      adminList.map((item, idx) => ({
+        id: item.id || `${item.NIP}-${idx}`,
+        nip: item.NIP || '',
+        name: item.employee_name || '',
+        tanggalPengajuan: item.tanggal_pengajuan_terminasi || '',
+        tanggalEfektif: item.tanggal_efektif_terminasi || '',
+        posisi: item.position_name || '',
+        catatan: item.description || '-',
+        statusBerakhir: item.end_status || '-',
+        statusTerminasi: (item.status_terminasi === 'Selesai' ? 'Selesai' : 'Sedang diproses') as 'Selesai' | 'Sedang diproses',
+      })),
+    [adminList]
   );
+
+  const actions: DataTableAction<TerminationItem>[] = [
+    {
+      icon: <IconFileDetail />,
+      onClick: (row) => navigate(`/resignation/termination-administration/${row.id}`),
+      condition: (row) => row.statusTerminasi === 'Selesai',
+    },
+    {
+      icon: <IconPencil />,
+      onClick: (row) => navigate(`/resignation/termination-administration/${row.id}`),
+      color: 'warning',
+      condition: (row) => row.statusTerminasi === 'Sedang diproses',
+    },
+  ];
 
   const columns: DataTableColumn<TerminationItem>[] = useMemo(
     () => [
@@ -147,7 +76,7 @@ export default function TerminationAdministrationPage() {
         minWidth: 50,
         align: 'center',
         sortable: false,
-        format: (_, row) => data.indexOf(row) + 1 + (page - 1) * limit,
+        format: (_, row) => data.indexOf(row) + 1 + (adminPagination.currentPage - 1) * adminPagination.perPage,
       },
       { id: 'nip', label: 'NIP', minWidth: 100, sortable: true },
       { id: 'name', label: 'Pengguna', minWidth: 160, sortable: true },
@@ -178,30 +107,37 @@ export default function TerminationAdministrationPage() {
         ),
       },
     ],
-    [data, page, limit]
+    [data, adminPagination]
   );
 
-  const actions: DataTableAction<TerminationItem>[] = [
-    {
-      icon: <IconFileDetail />,
-      onClick: (row) => navigate(`/resignation/termination-administration/${row.id}`),
-      condition: (row) => row.statusTerminasi === 'Selesai',
-    },
-    {
-      icon: <IconPencil />,
-      onClick: (row) => navigate(`/resignation/termination-administration/${row.id}`),
-      color: 'warning',
-      condition: (row) => row.statusTerminasi === 'Sedang diproses',
-    },
-  ];
-
-  const handleAddSubmit = (_payload: AddTerminationForm) => {
-    setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
+  const handleAddSubmit = async (payload: AddTerminationForm) => {
+    // console.log('Submitting termination administration:', payload);
+    // return
+    const storePayload = {
+      employee_id: payload.nip,
+      tanggal_pengajuan_terminasi: payload.tanggalPengajuan || '',
+      tanggal_efektif_terminasi: payload.tanggalEfektif || '',
+      description: payload.catatan || '',
+      document: payload.file as File,
+      end_status_id: payload.statusBerakhir,
+    };
+    const success = await storeAdministration(storePayload);
+    if (success) {
       setIsAddOpen(false);
-    }, 600);
+      await fetchAdministrationIndex({
+        page: adminPagination.currentPage,
+        per_page: adminPagination.perPage,
+      });
+    }
   };
+
+  if (error) {
+    return (
+      <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
+        <p>Terjadi kesalahan: {error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -212,38 +148,33 @@ export default function TerminationAdministrationPage() {
         actions={actions}
         searchable
         searchPlaceholder="Cari berdasarkan kata kunci"
-        pageSize={limit}
+        pageSize={adminPagination.perPage}
         pageSizeOptions={[5, 10, 25, 50]}
         filterable
         addButtonLabel="Tambah Terminasi"
         onAdd={() => setIsAddOpen(true)}
-        // toolbarRightSlot={
-        //   <div className="relative">
-        //     <Button
-        //       onClick={() => setIsStatusDropdownOpen((v) => !v)}
-        //       variant="outline"
-        //       size="sm"
-        //       className="flex items-center gap-1"
-        //     >
-        //       Filter
-        //       <ChevronDown size={16} />
-        //     </Button>
-        //     <Dropdown isOpen={isStatusDropdownOpen} onClose={() => setIsStatusDropdownOpen(false)}>
-        //       <div className="p-2 w-48">
-        //         <button className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100">Selesai</button>
-        //         <button className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100">Sedang diproses</button>
-        //       </div>
-        //     </Dropdown>
-        //   </div>
-        // }
-        onPageChangeExternal={(p) => setPage(p)}
-        onRowsPerPageChangeExternal={(n) => setLimit(n)}
+        loading={loading}
+        onPageChangeExternal={(p) => {
+          // Update pagination and fetch
+          const newPage = p;
+          fetchAdministrationIndex({
+            page: newPage,
+            per_page: adminPagination.perPage,
+          });
+        }}
+        onRowsPerPageChangeExternal={(n) => {
+          // Update pagination and fetch
+          fetchAdministrationIndex({
+            page: 1,
+            per_page: n,
+          });
+        }}
       />
       <AddUserTermination
         isOpen={isAddOpen}
         onClose={() => setIsAddOpen(false)}
         onSubmit={handleAddSubmit}
-        submitting={submitting}
+        submitting={loading}
       />
     </div>
   );

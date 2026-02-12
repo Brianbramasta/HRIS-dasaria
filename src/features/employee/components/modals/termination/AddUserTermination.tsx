@@ -1,10 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import InputField from '@/components/shared/field/InputField';
 import SelectField from '@/components/shared/field/SelectField';
 import DateField from '@/components/shared/field/DateField';
 import FIleField from '@/components/shared/field/FIleField';
 import TextAreaField from '@/components/shared/field/TextAreaField';
+import { useApiResignation } from '@/features/employee/hooks/api/useApiResignation';
 
 export type AddTerminationForm = {
   nip: string;
@@ -35,6 +36,58 @@ const AddUserTermination: React.FC<Props> = ({ isOpen, onClose, onSubmit, submit
   const [file, setFile] = useState<File | undefined>(undefined);
   const [catatan, setCatatan] = useState('');
 
+  const {
+    loading,
+    employeeOptions,
+    contractEndStatusOptions,
+    selectedEmployeeData,
+    fetchEmployeeList,
+    fetchEmployeePersonalData,
+    fetchContractEndStatusList,
+  } = useApiResignation();
+
+  // Fetch employee list and contract end status on mount
+  useEffect(() => {
+    if (isOpen) {
+      fetchEmployeeList();
+      fetchContractEndStatusList();
+    }
+  }, [isOpen]);
+
+  // Handle employee search
+  const handleEmployeeSearch = (search: string) => {
+    fetchEmployeeList(search);
+  };
+
+  // Auto-fill pengguna and posisi when employee is selected
+  useEffect(() => {
+    if (nip && isOpen) {
+      fetchEmployeePersonalData(nip);
+    }
+  }, [nip, isOpen]);
+
+  // Update pengguna dan posisi from selected employee data
+  useEffect(() => {
+    if (selectedEmployeeData?.Personal_Data && selectedEmployeeData?.Employment_Position_Data) {
+      setPengguna(selectedEmployeeData.Personal_Data.full_name || '');
+      setPosisi(selectedEmployeeData.Employment_Position_Data.position_name || '');
+    }
+  }, [selectedEmployeeData]);
+
+  // Reset form when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      setNip('');
+      setPengguna('');
+      setPosisi('');
+      setStatusBerakhir('');
+      setTanggalPengajuan(null);
+      setTanggalEfektif(null);
+      setFile(undefined);
+      setCatatan('');
+    }
+  }, [isOpen]);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
     setFile(f);
@@ -56,38 +109,35 @@ const AddUserTermination: React.FC<Props> = ({ isOpen, onClose, onSubmit, submit
 
   const content = (
     <div className="space-y-6">
-      <InputField
+      <SelectField
         label="NIP"
-        placeholder="Input"
-        value={nip}
-        onChange={(e) => setNip(e.target.value)}
+        required
+        options={employeeOptions.length > 0 ? employeeOptions : [{ label: 'Memuat opsi...', value: '' }]}
+        defaultValue={nip || ''}
+        onChange={(v) => setNip(v)}
+        onSearch={handleEmployeeSearch}
+        placeholder="Pilih NIP"
+        disabled={submitting || loading || employeeOptions.length === 0}
       />
       <InputField
         label="Pengguna"
         placeholder="Otomatis"
         value={pengguna}
-        onChange={(e) => setPengguna(e.target.value)}
-        disabled
+        disabled={true}
       />
       <InputField
         label="Posisi"
         placeholder="Otomatis"
         value={posisi}
-        onChange={(e) => setPosisi(e.target.value)}
-        disabled
+        disabled={true}
       />
       <SelectField
         label="Status Berakhir"
         placeholder="Pilih Status Berakhir"
-        options={[
-          { value: 'PHK', label: 'PHK' },
-          { value: 'Kontrak Selesai', label: 'Kontrak Selesai' },
-          { value: 'Tidak Lolos Evaluasi', label: 'Tidak Lolos Evaluasi' },
-          { value: 'Tidak Memperpanjang (Evaluasi)', label: 'Tidak Memperpanjang (Evaluasi)' },
-          { value: '-', label: '-' },
-        ]}
+        options={contractEndStatusOptions.length > 0 ? contractEndStatusOptions : [{ label: 'Memuat opsi...', value: '' }]}
         onChange={(value) => setStatusBerakhir(value)}
         defaultValue={statusBerakhir}
+        disabled={submitting || loading}
       />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <DateField
@@ -95,12 +145,14 @@ const AddUserTermination: React.FC<Props> = ({ isOpen, onClose, onSubmit, submit
           placeholder="Select a date"
           defaultDate={tanggalPengajuan || undefined}
           onChange={(_dates, dateStr) => setTanggalPengajuan(dateStr || null)}
+          disabled={submitting}
         />
         <DateField
           label="Tanggal Efektif"
           placeholder="Select a date"
           defaultDate={tanggalEfektif || undefined}
           onChange={(_dates, dateStr) => setTanggalEfektif(dateStr || null)}
+          disabled={submitting}
         />
       </div>
       <FIleField
@@ -113,6 +165,7 @@ const AddUserTermination: React.FC<Props> = ({ isOpen, onClose, onSubmit, submit
         value={catatan}
         onChange={(v) => setCatatan(v)}
         rows={4}
+        disabled={submitting}
       />
     </div>
   );
@@ -124,7 +177,7 @@ const AddUserTermination: React.FC<Props> = ({ isOpen, onClose, onSubmit, submit
       onClose={onClose}
       content={content}
       handleSubmit={handleSubmit}
-      submitting={submitting}
+      submitting={submitting || loading}
       maxWidth="max-w-lg"
       titleAlign="center"
     />

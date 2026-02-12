@@ -10,9 +10,14 @@ import {
   AdministrationPopupResult,
   DocumentTypeItem,
   StoreAdministrationPayload,
+  ContractEndStatusItem,
+  PersonalInformationFullData,
 } from '../../types/dto/ResignationType';
 import { resignationApplicationsService } from '../../services/ResignationApplicationsService';
 import { resignationAdministrationService } from '../../services/ResignationAdministrationService';
+import { organizationChangeService } from '../../services/OrganizationChangeService';
+import { personalInformationService } from '../../services/detail/PersonalInformationService';
+import { contractService } from '../../services/detail/ContractService';
 
 interface UseApiResignationReturn {
   loading: boolean;
@@ -37,8 +42,11 @@ interface UseApiResignationReturn {
     total: number;
   };
 
-  // Dropdowns
+  // Dropdowns & Lists
   documentTypes: DocumentTypeItem[];
+  employeeOptions: { label: string; value: string; name: string }[];
+  contractEndStatusOptions: { label: string; value: string }[];
+  selectedEmployeeData: PersonalInformationFullData | null;
 
   // Actions - Applications
   fetchApplications: (params?: any) => Promise<void>;
@@ -57,6 +65,11 @@ interface UseApiResignationReturn {
   uploadAdministrationDocuments: (id: string, payload: UploadDocumentsPayload) => Promise<boolean>;
   submitAdministration: (id: string) => Promise<boolean>;
   fetchDocumentTypes: () => Promise<void>;
+
+  // Employee List & Personal Data
+  fetchEmployeeList: (search?: string) => Promise<void>;
+  fetchEmployeePersonalData: (employeeId: string) => Promise<void>;
+  fetchContractEndStatusList: (search?: string) => Promise<void>;
 
   // Reset
   resetApplicationDetail: () => void;
@@ -88,6 +101,9 @@ export const useApiResignation = (): UseApiResignationReturn => {
 
   // Dropdowns
   const [documentTypes, setDocumentTypes] = useState<DocumentTypeItem[]>([]);
+  const [employeeOptions, setEmployeeOptions] = useState<{ label: string; value: string; name: string }[]>([]);
+  const [contractEndStatusOptions, setContractEndStatusOptions] = useState<{ label: string; value: string }[]>([]);
+  const [selectedEmployeeData, setSelectedEmployeeData] = useState<PersonalInformationFullData | null>(null);
 
   const fetchApplications = useCallback(async (params?: any) => {
     setLoading(true);
@@ -340,6 +356,64 @@ export const useApiResignation = (): UseApiResignationReturn => {
     }
   }, []);
 
+  const fetchEmployeeList = useCallback(async (search?: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const resp = await organizationChangeService.getAllEmployeeDropdown(search);
+      const data = (resp as any)?.data ?? [];
+      const mapped = data.map((i: any) => ({
+        label: `${i.id} - ${i.full_name}`,
+        value: i.id,
+        name: i.full_name,
+      }));
+      setEmployeeOptions(mapped);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Gagal mengambil daftar karyawan';
+      setError(msg);
+      console.error('Error fetchEmployeeList:', err);
+      setEmployeeOptions([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchEmployeePersonalData = useCallback(async (employeeId: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const resp = await personalInformationService.getPersonalInformationData(employeeId);
+      setSelectedEmployeeData(resp.data as PersonalInformationFullData);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Gagal mengambil data personal karyawan';
+      setError(msg);
+      console.error('Error fetchEmployeePersonalData:', err);
+      setSelectedEmployeeData(null);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchContractEndStatusList = useCallback(async (search?: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await contractService.getContractEndStatusDropdown(search);
+      const mapped = data.map((item: ContractEndStatusItem) => ({
+        label: item.name,
+        value: item.id,
+      }));
+      setContractEndStatusOptions(mapped);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Gagal mengambil status akhir kontrak';
+      setError(msg);
+      console.error('Error fetchContractEndStatusList:', err);
+      setContractEndStatusOptions([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   const resetApplicationDetail = useCallback(() => {
     setApplicationDetail(null);
   }, []);
@@ -359,6 +433,9 @@ export const useApiResignation = (): UseApiResignationReturn => {
     adminPopup,
     adminPagination,
     documentTypes,
+    employeeOptions,
+    contractEndStatusOptions,
+    selectedEmployeeData,
     fetchApplications,
     fetchApplicationDetail,
     uploadApplicationDocuments,
@@ -373,6 +450,9 @@ export const useApiResignation = (): UseApiResignationReturn => {
     uploadAdministrationDocuments,
     submitAdministration,
     fetchDocumentTypes,
+    fetchEmployeeList,
+    fetchEmployeePersonalData,
+    fetchContractEndStatusList,
     resetApplicationDetail,
     resetAdministrationDetail,
   };

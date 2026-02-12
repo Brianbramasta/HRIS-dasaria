@@ -8,6 +8,13 @@ export interface ApiResponse<T> {
   data: T;
 }
 
+// Import from PersonalInformationType
+export type {
+  EmploymentPositionData,
+  PersonalDataResponse,
+  PersonalInformationFullData,
+} from './PersonalInformationType';
+
 // --- Applications ---
 export interface ResignationApplicationListItem {
   application_id: string;
@@ -68,6 +75,7 @@ export interface UploadDocumentsPayload {
 
 // --- Administration ---
 export interface ResignationAdministrationListItem {
+  id?: string;
   NIP: string;
   employee_name: string;
   tanggal_pengajuan_terminasi: string;
@@ -87,6 +95,7 @@ export interface ResignationAdministrationListResponse {
 }
 
 export interface ResignationAdministrationDetails {
+  id?: string;
   termination_id: string;
   full_name: string;
   NIP: string;
@@ -105,18 +114,22 @@ export interface ResignationAdministrationDetailResult {
 }
 
 export interface AdministrationPopupResult {
-  nip: string;
-  full_name?: string;
+  employee_id: string;
+  nip?: string;
+  employee_name: string;
   company_name?: string;
   directorate_name?: string;
   department_name?: string;
   division_name?: string;
-  position_name?: string;
+  position_name: string;
 }
 
 export interface DocumentTypeItem {
   id: string;
-  name: string;
+  file_type_name: string;
+  name?: string;
+  created_at?: string | null;
+  updated_at?: string | null;
 }
 
 export interface StoreAdministrationPayload {
@@ -126,4 +139,10 @@ export interface StoreAdministrationPayload {
   description: string;
   document: File;
   end_status_id: string;
+}
+
+// --- Contract End Status ---
+export interface ContractEndStatusItem {
+  id: string;
+  name: string;
 }
