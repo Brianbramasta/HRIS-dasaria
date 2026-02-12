@@ -4,9 +4,11 @@ import { IconFileDetail, IconPencil } from '@/icons/components/icons';
 import { useNavigate } from 'react-router-dom';
 import AddUserTermination, { AddTerminationForm } from '@/features/employee/components/modals/termination/AddUserTermination';
 import { useApiResignation } from '@/features/employee/hooks/api/useApiResignation';
+import { formatDateToIndonesian } from '@/utils/formatDate';
 
 type TerminationItem = {
   id: string;
+  termination_id: string;
   nip: string;
   name: string;
   tanggalPengajuan: string;
@@ -50,6 +52,7 @@ export default function TerminationAdministrationPage() {
         catatan: item.description || '-',
         statusBerakhir: item.end_status || '-',
         statusTerminasi: (item.status_terminasi === 'Selesai' ? 'Selesai' : 'Sedang diproses') as 'Selesai' | 'Sedang diproses',
+        termination_id: item.termination_id || '',
       })),
     [adminList]
   );
@@ -57,12 +60,12 @@ export default function TerminationAdministrationPage() {
   const actions: DataTableAction<TerminationItem>[] = [
     {
       icon: <IconFileDetail />,
-      onClick: (row) => navigate(`/resignation/termination-administration/${row.id}`),
+      onClick: (row) => navigate(`/resignation/termination-administration/${row.termination_id}`),
       condition: (row) => row.statusTerminasi === 'Selesai',
     },
     {
       icon: <IconPencil />,
-      onClick: (row) => navigate(`/resignation/termination-administration/${row.id}`),
+      onClick: (row) => navigate(`/resignation/termination-administration/${row.termination_id}`),
       color: 'warning',
       condition: (row) => row.statusTerminasi === 'Sedang diproses',
     },
@@ -80,8 +83,8 @@ export default function TerminationAdministrationPage() {
       },
       { id: 'nip', label: 'NIP', minWidth: 100, sortable: true },
       { id: 'name', label: 'Pengguna', minWidth: 160, sortable: true },
-      { id: 'tanggalPengajuan', label: 'Tanggal Pengajuan', minWidth: 140, sortable: true },
-      { id: 'tanggalEfektif', label: 'Tanggal Efektif', minWidth: 140, sortable: true },
+      { id: 'tanggalPengajuan', label: 'Tanggal Pengajuan', minWidth: 140, sortable: true, format: (v) => formatDateToIndonesian(v) || v },
+      { id: 'tanggalEfektif', label: 'Tanggal Efektif', minWidth: 140, sortable: true, format: (v) => formatDateToIndonesian(v) || v },
       { id: 'posisi', label: 'Posisi', minWidth: 180, sortable: true },
       {
         id: 'catatan',

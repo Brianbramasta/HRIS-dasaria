@@ -84,6 +84,7 @@ export interface ResignationAdministrationListItem {
   description: string | null;
   end_status: string | null;
   status_terminasi: string;
+  termination_id: string;
 }
 
 export interface ResignationAdministrationListResponse {

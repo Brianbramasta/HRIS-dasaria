@@ -1,12 +1,15 @@
 import { useMemo, useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Button from '../../../../../components/ui/button/Button';
 import Label from '../../../../../components/form/Label';
 import TextArea from '../../../../../components/form/input/TextArea';
 import FileInput from '../../../../../components/form/input/FileInput';
+import SelectField from '../../../../../components/shared/field/SelectField';
 import { Table, TableHeader, TableBody, TableRow, TableCell } from '../../../../../components/ui/table';
+import { IconHapus, IconPlus } from '@/icons/components/icons';
 import DoneOffBoardingModal from '../../../components/modals/resignation/DoneOffBoardingModal';
 import { useApiResignation } from '@/features/employee/hooks/api/useApiResignation';
+import { formatDateToIndonesian } from '@/utils/formatDate';
 
 type DetailData = {
   name: string;
@@ -20,14 +23,13 @@ type DetailData = {
 };
 
 type UploadRow = { id: string; type: string; file?: File | null };
-type DocRow = { tipeFile: string; namaFile: string };
 
 export default function DetailTerminationAdministrationPage() {
   const { id } = useParams();
   const [uploadRows, setUploadRows] = useState<UploadRow[]>([{ id: crypto.randomUUID(), type: '' }]);
-  const [docs, setDocs] = useState<DocRow[]>([]);
   const [isDoneOpen, setIsDoneOpen] = useState(false);
   const [comment, setComment] = useState('');
+  const navigate = useNavigate();
 
   const {
     loading,
@@ -38,6 +40,7 @@ export default function DetailTerminationAdministrationPage() {
     fetchDocumentTypes,
     uploadAdministrationDocuments,
     submitAdministration,
+    deleteDocument,
   } = useApiResignation();
 
   // Fetch detail and document types on mount
@@ -63,17 +66,6 @@ export default function DetailTerminationAdministrationPage() {
     };
   }, [adminDetail]);
 
-  // Transform documents from API
-  useEffect(() => {
-    if (adminDetail?.resignation_documents) {
-      const transformedDocs = adminDetail.resignation_documents.map((doc) => ({
-        tipeFile: doc.file_type_name || '-',
-        namaFile: doc.document_name || '-',
-      }));
-      setDocs(transformedDocs);
-    }
-  }, [adminDetail?.resignation_documents]);
-
   const handleAddRow = () => {
     setUploadRows((rows) => [...rows, { id: crypto.randomUUID(), type: '' }]);
   };
@@ -91,32 +83,6 @@ export default function DetailTerminationAdministrationPage() {
     setUploadRows((rows) => rows.map((r) => (r.id === rowId ? { ...r, file } : r)));
   };
 
-  const handleUploadRows = async () => {
-    const filesToUpload = uploadRows.filter((r) => r.type && r.file);
-    if (filesToUpload.length === 0) return;
-
-    const success = await uploadAdministrationDocuments(id!, {
-      document_type_ids: filesToUpload.map((r) => r.type),
-      files: filesToUpload.map((r) => r.file!),
-    });
-
-    if (success) {
-      const newDocs = filesToUpload.map((r) => {
-        const docType = documentTypes.find((dt) => dt.id === r.type);
-        return {
-          tipeFile: docType ? (docType.file_type_name || docType.name || r.type) : r.type,
-          namaFile: r.file?.name || '',
-        };
-      });
-      setDocs((prev) => [...prev, ...newDocs]);
-      setUploadRows([{ id: crypto.randomUUID(), type: '' }]);
-    }
-  };
-
-  const handleRemoveDocument = (index: number) => {
-    setDocs((prev) => prev.filter((_, i) => i !== index));
-  };
-
   const handlePreviewPDF = () => {
     // TODO: Implement PDF preview
   };
@@ -129,6 +95,7 @@ export default function DetailTerminationAdministrationPage() {
     const success = await submitAdministration(id);
     if (success) {
       setIsDoneOpen(false);
+      navigate(`/resignation/termination-administration`);
     }
   };
 
@@ -193,11 +160,11 @@ export default function DetailTerminationAdministrationPage() {
               </div>
               <div>
                 <div className="text-sm text-gray-600">Tanggal Pengajuan</div>
-                <div className="font-medium">{data.tanggalPengajuan}</div>
+                <div className="font-medium">{formatDateToIndonesian(data.tanggalPengajuan) || data.tanggalPengajuan}</div>
               </div>
               <div>
                 <div className="text-sm text-gray-600">Tanggal Efektif</div>
-                <div className="font-medium">{data.tanggalEfektif}</div>
+                <div className="font-medium">{formatDateToIndonesian(data.tanggalEfektif) || data.tanggalEfektif}</div>
               </div>
             </div>
             <div className="mt-6">
@@ -205,6 +172,7 @@ export default function DetailTerminationAdministrationPage() {
               <TextArea
                 placeholder="Enter as description ..."
                 value={comment}
+                disabled
                 onChange={(value: any) => setComment(typeof value === 'string' ? value : value.target?.value || '')}
                 rows={3}
               />
@@ -213,26 +181,26 @@ export default function DetailTerminationAdministrationPage() {
         </div>
       </div>
 
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+     {(adminDetail?.resignation_details?.status_terminasi !== 'Selesai' ) && ( <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
         <div className="font-semibold mb-4">Berkas / Dokumen</div>
         <div className="space-y-3">
           {uploadRows.map((row, index) => (
             <div key={row.id} className="grid grid-cols-1 items-end gap-3 md:grid-cols-[1fr_1fr_auto]">
               <div>
                 <Label>Tipe File</Label>
-                <select
-                  value={row.type}
-                  onChange={(e) => handleRowTypeChange(row.id, e.target.value)}
-                  disabled={loading}
-                  className="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-3 text-sm shadow-theme-xs focus:border-brand-300 focus:outline-hidden focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 disabled:opacity-50"
-                >
-                  <option value="">Pilih Jenis Dokumen</option>
-                  {documentTypes.map((dt) => (
-                    <option key={dt.id} value={dt.id}>
-                      {dt.file_type_name || dt.name || 'Unnamed'}
-                    </option>
-                  ))}
-                </select>
+                <SelectField
+                  options={(documentTypes || [])
+                    .filter((t: any) => !((adminDetail?.resignation_documents || [])
+                      .some((d: any) => d?.document_type_id === t?.id)))
+                    .map((t: any) => ({
+                      value: t.id,
+                      label: t.file_type_name || t.name,
+                    }))}
+                  placeholder="Pilih Jenis Dokumen"
+                  defaultValue={row.type || ''}
+                  onChange={(val) => handleRowTypeChange(row.id, val)}
+                  className="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-3 text-sm shadow-theme-xs focus:border-brand-300 focus:outline-hidden focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"
+                />
               </div>
               <div>
                 <Label>Upload file</Label>
@@ -242,27 +210,9 @@ export default function DetailTerminationAdministrationPage() {
               </div>
               <div className="self-end md:self-auto">
                 {index === 0 ? (
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="custom"
-                    className="px-3 py-3 rounded-full bg-green-500 text-white w-full md:w-fit disabled:opacity-50"
-                    onClick={handleAddRow}
-                    disabled={loading}
-                  >
-                    +
-                  </Button>
+                  <Button type="button" size="sm" variant="custom" className="px-3 py-3 rounded-full bg-green-500 text-white w-full md:w-fit" onClick={handleAddRow}><IconPlus color='white'/></Button>
                 ) : (
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="custom"
-                    className="px-3 py-3 rounded-full bg-red-500 text-white w-full md:w-fit disabled:opacity-50"
-                    onClick={() => handleRemoveRow(row.id)}
-                    disabled={loading}
-                  >
-                    −
-                  </Button>
+                  <Button type="button" size="sm" variant="custom" className="px-3 py-3 rounded-full bg-red-500 text-white w-full md:w-fit" onClick={() => handleRemoveRow(row.id)}><IconHapus color="white"/></Button>
                 )}
               </div>
             </div>
@@ -273,56 +223,62 @@ export default function DetailTerminationAdministrationPage() {
             type="button"
             size="sm"
             variant="primary"
-            onClick={handleUploadRows}
-            disabled={loading}
+            onClick={async () => {
+              if (!id) return;
+              const rows = uploadRows.filter((r) => r.type && r.file);
+              if (!rows.length) return;
+              const typeIds = rows.map((r) => r.type as string);
+              const files = rows.map((r) => r.file!) as File[];
+              const ok = await uploadAdministrationDocuments(id, { document_type_ids: typeIds, files });
+              if (ok) {
+                await fetchAdministrationDetail(id);
+              }
+            }}
           >
-            Unggah
+            Upload
           </Button>
         </div>
       </div>
+      )}
 
       <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
         <div className="overflow-x-auto">
-          <Table className="border">
+          <Table className='border'>
             <TableHeader>
-              <TableRow className="bg-[#004969] text-white">
-                <TableCell isHeader className="px-4 py-2">
-                  No.
-                </TableCell>
-                <TableCell isHeader className="px-4 py-2 text-start">
-                  Tipe File
-                </TableCell>
-                <TableCell isHeader className="px-4 py-2 text-start">
-                  Nama File
-                </TableCell>
-                <TableCell isHeader className="px-4 py-2 text-start">
-                  Aksi
-                </TableCell>
+              <TableRow className='bg-[#004969] text-white'>
+                <TableCell isHeader className="px-4 py-2 ">No.</TableCell>
+                <TableCell isHeader className="px-4 py-2 text-start ">Tipe File</TableCell>
+                <TableCell isHeader className="px-4 py-2 text-start ">Nama File</TableCell>
+                <TableCell isHeader className="px-4 py-2 text-start ">Action</TableCell>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {docs.length === 0 && (
+              {(adminDetail?.resignation_documents?.length || 0) === 0 && (
                 <TableRow>
-                  <TableCell className="px-4 py-3" colSpan={4}>
-                    Belum ada dokumen
-                  </TableCell>
+                  <TableCell className="px-4 py-3 text-center" colSpan={4}>Belum ada dokumen</TableCell>
                 </TableRow>
               )}
-              {docs.map((d, i) => (
-                <TableRow key={`${d.namaFile}-${i}`} className="border-t border-gray-200 dark:border-gray-800">
+              {(adminDetail?.resignation_documents || []).map((d, i) => (
+                <TableRow key={`${d.id}-${i}`} className="border-t border-gray-200 dark:border-gray-800">
                   <TableCell className="px-4 py-3">{i + 1}</TableCell>
-                  <TableCell className="px-4 py-3">{d.tipeFile}</TableCell>
-                  <TableCell className="px-4 py-3">{d.namaFile}</TableCell>
+                  <TableCell className="px-4 py-3">{(d as any)?.file_type_name}</TableCell>
+                  <TableCell className="px-4 py-3">{(d as any)?.document_name}</TableCell>
                   <TableCell className="px-4 py-3">
-                    <Button
+                    {(adminDetail?.resignation_details?.status_terminasi !== 'Selesai' ) && (
+                      <Button
                       variant="custom"
                       size="sm"
-                      className="btn-danger"
-                      onClick={() => handleRemoveDocument(i)}
-                      disabled={loading}
+                      className="btn-primary"
+                      onClick={() => {
+                        if (id && d.id) {
+                          deleteDocument(id, d.id);
+                          fetchAdministrationDetail(id);
+                        }
+                      }}
                     >
-                      Hapus
+                      <IconHapus  />
                     </Button>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
@@ -330,22 +286,23 @@ export default function DetailTerminationAdministrationPage() {
           </Table>
         </div>
       </div>
-
-      <div className="flex items-center justify-end">
-        <div className="flex items-center gap-3">
-          <Button variant="custom" className="border border-gray-300">
-            Tutup
-          </Button>
-          <Button
-            variant="custom"
-            className="bg-green-500 text-white disabled:opacity-50"
-            onClick={handleOpenDone}
-            disabled={loading}
-          >
-            Selesai
-          </Button>
-        </div>
-      </div>
+              {(adminDetail?.resignation_details?.status_terminasi !== 'Selesai' ) && (
+                <div className="flex items-center justify-end">
+                  <div className="flex items-center gap-3">
+                    <Button variant="custom" className="border border-gray-300">
+                      Tutup
+                    </Button>
+                    <Button
+                      variant="custom"
+                      className="bg-green-500 text-white disabled:opacity-50"
+                      onClick={handleOpenDone}
+                      disabled={loading}
+                    >
+                      Selesai
+                    </Button>
+                  </div>
+                </div>
+                )}
 
       <DoneOffBoardingModal
         isOpen={isDoneOpen}
@@ -353,7 +310,7 @@ export default function DetailTerminationAdministrationPage() {
         onConfirm={handleConfirmDone}
         submitting={loading}
         employeeName={data.name}
-        effectiveDate={data.tanggalEfektif}
+        effectiveDate={formatDateToIndonesian(data.tanggalEfektif) || data.tanggalEfektif}
       />
     </div>
   );
