@@ -47,6 +47,7 @@ interface UseApiResignationReturn {
   approveApplication: (id: string, effectiveDate?: string) => Promise<boolean>;
   rejectApplication: (id: string) => Promise<boolean>;
   saveDraftApplication: (id: string) => Promise<boolean>;
+  deleteDocument: (applicationId: string, documentId: string) => Promise<boolean>;
 
   // Actions - Administration
   fetchAdminPopup: (nip: string) => Promise<void>;
@@ -189,6 +190,21 @@ export const useApiResignation = (): UseApiResignationReturn => {
       const msg = err instanceof Error ? err.message : 'Gagal menyimpan draft pengajuan';
       setError(msg);
       console.error('Error saveDraftApplication:', err);
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+  const deleteDocument = useCallback(async (applicationId: string, documentId: string): Promise<boolean> => {
+    setLoading(true);
+    setError(null);
+    try {
+      await resignationApplicationsService.deleteDocument(applicationId, documentId);
+      return true;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Gagal menghapus dokumen pengajuan';
+      setError(msg);
+      console.error('Error deleteDocument:', err);
       return false;
     } finally {
       setLoading(false);
@@ -349,6 +365,7 @@ export const useApiResignation = (): UseApiResignationReturn => {
     approveApplication,
     rejectApplication,
     saveDraftApplication,
+    deleteDocument,
     fetchAdminPopup,
     storeAdministration,
     fetchAdministrationIndex,

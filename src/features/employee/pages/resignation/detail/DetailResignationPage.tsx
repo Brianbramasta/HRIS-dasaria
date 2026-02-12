@@ -51,6 +51,7 @@ export default function DetailPengunduranDiriPage() {
     uploadApplicationDocuments,
     documentTypes,
     fetchDocumentTypes,
+    deleteDocument,
   } = useApiResignation();
 
   useEffect(() => {
@@ -250,6 +251,14 @@ export default function DetailPengunduranDiriPage() {
                         //   const url = `${import.meta.env.VITE_API_URL}/${path}`;
                         //   window.open(url, '_blank');
                         // }
+                        const resignationId = applicationDetail?.resignation_details?.resignation_id;
+                        if (resignationId && d.id) {
+                          deleteDocument(resignationId, d.id);
+                          fetchApplicationDetail(id as string);
+                        }
+
+                          
+                       
                       }}
                     >
                       <IconHapus  />

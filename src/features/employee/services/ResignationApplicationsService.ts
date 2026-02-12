@@ -48,6 +48,20 @@ class ResignationApplicationsService {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   }
+
+  // /api/employee-master-data/resignation/applications/019c3734-f441-71ce-b45e-abc577c50a45/delete-document/019c4be6-a841-73bd-8c45-f630dc36e09e
+  // _method=DELETE
+  async deleteDocument(applicationId: string, documentId: string): Promise<ApiResponse<any>> {
+    const form = new FormData();
+    form.append('_method', 'DELETE');
+    return apiService.post<any>(
+      `${this.basePath}/${applicationId}/delete-document/${documentId}`,
+      form,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }
+    );
+  }
 }
 
 export const resignationApplicationsService = new ResignationApplicationsService();
