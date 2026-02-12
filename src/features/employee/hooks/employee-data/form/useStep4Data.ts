@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useFormulirKaryawanStore } from '@/features/employee/stores/useFormulirKaryawanStore';
-import { getBankDropdownOptions } from './useFormulirKaryawan';
+import { getBankDropdownOptions, getEmployeeCategoryDropdownOptions } from './useFormulirKaryawan';
 import { useAuthStore } from '@/features/auth/stores/AuthStore';
 import { useApiPayrollPreview } from '../../api/useApiPayrollPreview';
 import { NonFixAllowancePayload, PreviewPayrollQueryParams } from '../../../types/dto/PayrollPreviewType';
@@ -8,6 +8,7 @@ import { NonFixAllowancePayload, PreviewPayrollQueryParams } from '../../../type
 // digunakan di form 4
 export const useStep4Data = (isOpen?: boolean) => {
   const [bankOptions, setBankOptions] = useState<any[]>([]);
+  const [categoriKaryawanOptions, setCategoriKaryawanOptions] = useState<any[]>([]);
   const { formData, updateStep3 } = useFormulirKaryawanStore();
   const step3 = formData.step3;
   const step1 = formData.step1;
@@ -31,6 +32,7 @@ export const useStep4Data = (isOpen?: boolean) => {
     
     let mounted = true;
     getBankDropdownOptions().then((opts:any) => { if (mounted) setBankOptions(opts); }).catch(() => {});
+    getEmployeeCategoryDropdownOptions().then((opts:any) => { if (mounted) setCategoriKaryawanOptions(opts); }).catch(() => {});
     return () => { mounted = false; };
   }, [isOpen]);
 
@@ -100,6 +102,7 @@ export const useStep4Data = (isOpen?: boolean) => {
 
   return { 
     bankOptions,
+    categoriKaryawanOptions,
     step3,
     step1,
     step3Employee,

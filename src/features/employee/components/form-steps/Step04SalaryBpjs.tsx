@@ -9,6 +9,7 @@ import { formatCurrency, parseCurrency } from '@/utils/formatCurrency';
 export const Step04SalaryBpjs: React.FC = () => {
   const {
     bankOptions,
+    categoriKaryawanOptions,
     step3,
     isAuthenticated,
     previewData,
@@ -18,8 +19,24 @@ export const Step04SalaryBpjs: React.FC = () => {
     handleChange,
     addNonFixAllowance,
     removeNonFixAllowance,
-    updateNonFixAllowance
+    updateNonFixAllowance,
+    step3Employee
   } = useStep4Data(true);
+
+  // Get category label based on ID
+  const getCategoryLabel = () => {
+    if (!step3Employee?.kategoriKaryawan || !categoriKaryawanOptions?.length) return null;
+    const category = categoriKaryawanOptions.find((opt: any) => opt.value === step3Employee.kategoriKaryawan);
+    return category?.label || null;
+  };
+
+  // Get salary label based on employee category
+  const getSalaryLabel = () => {
+    const categoryLabel = getCategoryLabel();
+    if (categoryLabel === 'Non-Staff') return 'Uang Saku';
+    if (categoryLabel === 'Mitra') return 'Fee';
+    return 'Gaji Pokok';
+  };
 
   return (
     <div className="space-y-6">
@@ -111,7 +128,7 @@ export const Step04SalaryBpjs: React.FC = () => {
           {isAuthenticated && (
             <div >
               <InputField
-                label="Gaji Pokok"
+                label={getSalaryLabel()}
                 value={formatCurrency(previewData?.basicSalary || 0)}
                 readonly
                 disabled
@@ -126,7 +143,7 @@ export const Step04SalaryBpjs: React.FC = () => {
         </div>
 
         {/* Tunjangan Tetap */}
-        {isAuthenticated && (
+        {/* {isAuthenticated && (
           <div className="mt-6">
             <h6 className="text-md font-medium text-gray-700 dark:text-gray-300 mb-3">Tunjangan Tetap</h6>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -159,7 +176,7 @@ export const Step04SalaryBpjs: React.FC = () => {
                 className="bg-gray-100 dark:bg-gray-800"
               />
               {/* BPJS Allowances */}
-              {previewData?.bpjsAllowanceDetails.map((item: any, index: number) => (
+              {/* {previewData?.bpjsAllowanceDetails.map((item: any, index: number) => (
                 <InputField
                   key={index}
                   label={`Tunjangan ${item.item}`}
@@ -170,16 +187,16 @@ export const Step04SalaryBpjs: React.FC = () => {
                 />
               ))}
             </div>
-          </div>
-        )}
+          </div> */}
+        {/* )} */} 
 
         {/* Potongan Tetap */}
-        {isAuthenticated && (
+        {/* {isAuthenticated && (
           <div className="mt-6">
             <h6 className="text-md font-medium text-gray-700 dark:text-gray-300 mb-3">Potongan Tetap</h6>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4"> */}
                 {/* BPJS Deductions */}
-                {previewData?.bpjsDeductionDetails.map((item: any, index: number) => (
+                {/* {previewData?.bpjsDeductionDetails.map((item: any, index: number) => (
                 <InputField
                   key={index}
                   label={`Potongan ${item.item}`}
@@ -191,7 +208,7 @@ export const Step04SalaryBpjs: React.FC = () => {
               ))}
             </div>
           </div>
-        )}
+        )} */}
 
         {/* Tunjangan Tidak Tetap */}
         {isAuthenticated && (
