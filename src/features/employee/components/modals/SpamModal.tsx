@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal } from "@/components/ui/modal";
 import { useSpamModalStore } from "@/stores/useSpamModalStore";
 import { useNavigate } from "react-router";
+import { useApiEmployee } from "../../hooks/api/useApiEmployee";
 
 interface ContractData {
   id: string;
@@ -16,55 +17,45 @@ interface SpamModalProps {
 }
 
 export const SpamModal: React.FC<SpamModalProps> = ({
-  data = [
-    {
-      id: "1",
-      employeeName: "Lindsey Curtis",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lindsey",
-      contractDuration: "2 Bulan",
-      durationColor: "orange",
-    },
-    {
-      id: "2",
-      employeeName: "Lindsey Curtis",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lindsey2",
-      contractDuration: "2 Minggu",
-      durationColor: "red",
-    },
-    {
-      id: "3",
-      employeeName: "Lindsey Curtis",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lindsey3",
-      contractDuration: "1 Bulan",
-      durationColor: "orange",
-    },
-    {
-      id: "4",
-      employeeName: "Lindsey Curtis",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lindsey4",
-      contractDuration: "2 Bulan",
-      durationColor: "orange",
-    },
-    {
-      id: "5",
-      employeeName: "Lindsey Curtis",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lindsey5",
-      contractDuration: "2 Bulan",
-      durationColor: "orange",
-    }, {
-      id: "6",
-      employeeName: "Lindsey Curtis",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lindsey6",
-      contractDuration: "2 Bulan",
-      durationColor: "orange",
-    },
-  ],
+  data = [],
 }) => {
-  const { isOpen, closeModal } = useSpamModalStore();
+  const { isOpen, openModal, closeModal } = useSpamModalStore();
   const navigate = useNavigate();
   const [selectedEmployees] = useState<Set<string>>(
     new Set()
   );
+  const [displayData, setDisplayData] = useState<ContractData[]>(data);
+  const { employeesNearContractEnd, fetchEmployeesNearContractEnd } = useApiEmployee();
+
+  // Fetch data on component mount
+  useEffect(() => {
+    console.log('SpamModal mounted, fetching data...');
+    fetchEmployeesNearContractEnd();
+  }, []); // Empty dependency - hanya fetch sekali saat mount
+
+  // Map API data to ContractData format and show modal if there's data
+  useEffect(() => {
+    console.log('employeesNearContractEnd changed:', employeesNearContractEnd);
+    
+    if (employeesNearContractEnd && employeesNearContractEnd.length > 0) {
+      const mappedData: ContractData[] = employeesNearContractEnd.map((item, index) => ({
+        id: `${item.employee_name}-${index}`,
+        employeeName: item.employee_name,
+        avatar: item.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${item.employee_name}`,
+        contractDuration: `${item.remaining_month} Bulan`,
+        durationColor: getDurationColor(item.remaining_month),
+      }));
+      setDisplayData(mappedData);
+      console.log('Mapped data:', mappedData);
+      // Only open modal if there's data
+      if (mappedData.length > 0) {
+        console.log('Opening modal with data');
+        openModal();
+      }
+    } else {
+      setDisplayData([]);
+    }
+  }, [employeesNearContractEnd]);
 
 
 
@@ -79,6 +70,15 @@ export const SpamModal: React.FC<SpamModalProps> = ({
       default:
         return "bg-gray-100 text-gray-700";
     }
+  };
+
+  const getDurationColor = (remainingMonth: number): "orange" | "red" | "green" => {
+    if (remainingMonth <= 1) {
+      return "red"; // Less than or equal to 1 month = red
+    } else if (remainingMonth <= 3) {
+      return "orange"; // 2-3 months = orange
+    }
+    return "green"; // More than 3 months = green
   };
 
   const handleProcess = () => {
@@ -128,7 +128,7 @@ export const SpamModal: React.FC<SpamModalProps> = ({
                 </tr>
               </thead>
               <tbody>
-                {data.map((item) => (
+                {displayData.map((item) => (
                   <tr
                     key={item.id}
                     className="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"

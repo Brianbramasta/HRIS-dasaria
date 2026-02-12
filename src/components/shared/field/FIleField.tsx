@@ -1,7 +1,7 @@
 import React, { FC, ReactNode, useRef, useState } from "react";
 import Label from "@/components/form/Label";
 import FileInput from "@/components/form/input/FileInput";
-import { Info } from "react-feather";
+import { IconInfo } from "@/icons/components/icons";
 
 type InnerProps = React.ComponentProps<typeof FileInput>;
 
@@ -73,7 +73,9 @@ const FIleField: FC<FileFieldProps> = ({
                       onMouseEnter={onEnter}
                       onMouseLeave={onLeave}
                     >
-                      <Info size={16} className="text-gray-400" />
+                      <IconInfo size={16} />
+                      
+
                     </span>
                     {visible && (
                       <div

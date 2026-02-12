@@ -292,6 +292,13 @@ class EmployeeMasterDataService {
     return (resp as any)?.data ?? [];
   }
 
+  // /api/employee-master-data/contract-extensions/employees-near-contract-end
+  async getEmployeesNearContractEnd(params?: any): Promise<ApiResponse<ApiPaginatedResponse<any>>> {
+    const queryString = apiService.buildQueryString(params);
+    const url = queryString ? `${this.basePath}/contract-extensions/employees-near-contract-end?${queryString}` : `${this.basePath}/contract-extensions/employees-near-contract-end`;
+    return apiService.get<ApiPaginatedResponse<any>>(url);
+  }
+
  
 }
 
