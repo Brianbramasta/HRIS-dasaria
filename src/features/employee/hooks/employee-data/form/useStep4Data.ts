@@ -73,10 +73,10 @@ export const useStep4Data = (isOpen?: boolean) => {
 
   // Calculate Net Salary Manually
   const netSalary = useMemo(() => {
-    const base = previewData?.salaryAfterDeduction ?? 0;
+    const base = previewData?.salary ?? 0;
     const additional = nonFixAllowances.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
     return base + additional;
-  }, [previewData?.salaryAfterDeduction, nonFixAllowances]);
+  }, [previewData?.salary, nonFixAllowances]);
 
   const handleChange = (field: string, value: string) => {
     updateStep3({ [field]: value } as any);

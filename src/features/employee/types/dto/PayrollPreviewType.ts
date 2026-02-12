@@ -23,6 +23,7 @@ export interface PreviewPayrollApiResponse {
   bpjs_deduction_details: BpjsDetailItem[];
   salary_with_allowance: number;
   salary_after_deduction: number;
+  salary?: number;
 }
 
 export interface PreviewPayrollResult {
@@ -35,6 +36,7 @@ export interface PreviewPayrollResult {
   bpjsDeductionDetails: BpjsDetailItem[];
   salaryWithAllowance: number;
   salaryAfterDeduction: number;
+  salary?: number;
 }
 
 // --- Calculate Gaji Bersih (POST) ---

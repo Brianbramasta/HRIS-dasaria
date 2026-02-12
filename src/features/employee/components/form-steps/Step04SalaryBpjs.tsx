@@ -112,7 +112,7 @@ export const Step04SalaryBpjs: React.FC = () => {
           </div>
 
           {/* PTKP Status */}
-          {isAuthenticated && (
+          {isAuthenticated && getCategoryLabel() === 'Staff' && (
             <div>
               <InputField
                 label="PTKP Status"
@@ -129,7 +129,7 @@ export const Step04SalaryBpjs: React.FC = () => {
             <div >
               <InputField
                 label={getSalaryLabel()}
-                value={formatCurrency(previewData?.basicSalary || 0)}
+                value={formatCurrency(previewData?.basicSalary || 0 )}
                 readonly
                 disabled
                 className="bg-gray-100 dark:bg-gray-800"
@@ -143,7 +143,7 @@ export const Step04SalaryBpjs: React.FC = () => {
         </div>
 
         {/* Tunjangan Tetap */}
-        {/* {isAuthenticated && (
+         {isAuthenticated && getCategoryLabel()=='Staff' && (
           <div className="mt-6">
             <h6 className="text-md font-medium text-gray-700 dark:text-gray-300 mb-3">Tunjangan Tetap</h6>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -154,13 +154,13 @@ export const Step04SalaryBpjs: React.FC = () => {
                 disabled
                 className="bg-gray-100 dark:bg-gray-800"
               />
-              <InputField
+              {/* <InputField
                 label="Tunjangan Transport"
                 value={formatCurrency(0)} 
                 readonly
                 disabled
                 className="bg-gray-100 dark:bg-gray-800"
-              />
+              /> */}
                 <InputField
                 label="Tunjangan Lama Kerja"
                 value={formatCurrency(previewData?.lengthOfServiceAllowance || 0)}
@@ -176,7 +176,7 @@ export const Step04SalaryBpjs: React.FC = () => {
                 className="bg-gray-100 dark:bg-gray-800"
               />
               {/* BPJS Allowances */}
-              {/* {previewData?.bpjsAllowanceDetails.map((item: any, index: number) => (
+              {previewData?.bpjsAllowanceDetails.map((item: any, index: number) => (
                 <InputField
                   key={index}
                   label={`Tunjangan ${item.item}`}
@@ -187,8 +187,8 @@ export const Step04SalaryBpjs: React.FC = () => {
                 />
               ))}
             </div>
-          </div> */}
-        {/* )} */} 
+          </div>
+        )} 
 
         {/* Potongan Tetap */}
         {/* {isAuthenticated && (
