@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import { getFieldDocument } from '@/features/employee/hooks/employee-data/form/useFormulirKaryawan';
-import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
 
 export type DocumentRow = {
   id: number;

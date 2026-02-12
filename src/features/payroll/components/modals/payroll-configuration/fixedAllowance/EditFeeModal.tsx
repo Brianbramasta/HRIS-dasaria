@@ -7,7 +7,7 @@ interface Props {
     isOpen: boolean;
     onClose: () => void;
     defaultValues?: any;
-    onSave: (values: { nominalValue: number }) => void;
+    onSave: (values: { amount: number }) => void;
     isLoading?: boolean;
 }
 

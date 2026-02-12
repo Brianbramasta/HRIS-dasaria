@@ -19,7 +19,7 @@ interface DocumentItem {
 
 export const useDetailResignation = (id: string | undefined) => {
   const navigate = useNavigate();
-  const [data, setData] = useState<PengunduranDiri | null>(null);
+  const [data] = useState<PengunduranDiri | null>(null);
   const [loading, setLoading] = useState(false);
   const [tanggalEfektif, setTanggalEfektif] = useState('');
   const [deskripsi, setDeskripsi] = useState('');
@@ -106,7 +106,7 @@ export const useDetailResignation = (id: string | undefined) => {
     setIsRejectModalOpen(false);
   };
 
-  const handleReject = async (note?: string) => {
+  const handleReject = async () => {
     if (!id) return;
     setIsSubmitting(true);
     try {

@@ -21,25 +21,19 @@ export default function DetailPengunduranDiriPage() {
   const {
     data,
     loading,
-    docs,
-    docTypes,
     uploadRows,
     isModalOpen,
     isRejectModalOpen,
     isSubmitting,
     handleOpenModal,
     handleCloseModal,
-    handleApprove,
     openRejectModal,
     closeRejectModal,
-    handleReject,
+    handlePreviewPDF,
     handleAddRow,
     handleRemoveRow,
     handleRowTypeChange,
     handleRowFileChange,
-    handleUploadRows,
-    handleRemoveDocument,
-    handlePreviewPDF,
   } = useDetailResignation(id);
   const {
     approveApplication,
@@ -300,7 +294,7 @@ export default function DetailPengunduranDiriPage() {
       <EffectiveResignationDateModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        onSubmit={(tgl, desc) => {
+        onSubmit={(tgl) => {
           const resignationId = applicationDetail?.resignation_details?.resignation_id;
           if (resignationId) approveApplication(resignationId, tgl);
           navigate(`/resignation`);
@@ -315,7 +309,7 @@ export default function DetailPengunduranDiriPage() {
       <RejectionConfirmtionResignnationModal
         isOpen={isRejectModalOpen}
         onClose={closeRejectModal}
-        onSubmit={async (note) => {
+        onSubmit={async () => {
           const resignationId = applicationDetail?.resignation_details?.resignation_id;
           if (resignationId) {
             await rejectApplication(resignationId);
