@@ -31,6 +31,8 @@ export type OrganizationChangeForm = {
   decree_file?: string;
   golongan?: string;
   nip?: string;
+  previous_salary?: number;
+  new_salary?: number;
 };
 
 type Params = {

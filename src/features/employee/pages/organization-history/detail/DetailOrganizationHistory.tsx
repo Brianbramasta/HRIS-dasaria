@@ -92,7 +92,12 @@ const DetailOrganizationHistoryPage: React.FC = () => {
             <InputField label="Golongan" placeholder="Otomatis" value={currentEmployee?.grade || ''} disabled />
           </div>
           <div>
-            <InputField label="Gaji Bersih" placeholder="Otomatis" value="" disabled />
+            <InputField 
+              label="Gaji Bersih" 
+              placeholder="Otomatis" 
+              value={form.previous_salary ? new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(form.previous_salary) : ''} 
+              disabled 
+            />
           </div>
         </div>
       </PayrollCard>
@@ -240,7 +245,12 @@ const DetailOrganizationHistoryPage: React.FC = () => {
             />
           </div>
           <div>
-            <InputField label="Gaji Bersih" placeholder="Otomatis" disabled value="" />
+            <InputField 
+              label="Gaji Bersih" 
+              placeholder="Otomatis" 
+              disabled 
+              value={form.new_salary ? new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(form.new_salary) : ''} 
+            />
           </div>
           <div className="col-span-1 md:col-span-3">
             {/* <InputField label="Sk Perubahan" placeholder="Otomatis" disabled value={form.decree_file || ''} /> */}

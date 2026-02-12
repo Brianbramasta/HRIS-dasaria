@@ -43,6 +43,8 @@ export function useOrganizationHistoryDetail({ id }: Params) {
         reason: data.reason,
         decree_file: data.decree_file || '',
         unit_id: raw.new_unit_id || '',
+        previous_salary: raw.previous_salary || 0,
+        new_salary: raw.new_salary || 0,
       };
       setForm(mapped);
       setStatus(data.status);
@@ -62,6 +64,8 @@ export function useOrganizationHistoryDetail({ id }: Params) {
         structural_job_name: raw.new_structural_job_name || '-',
         position_level_name: raw.new_position_level_name || '-',
         golongan: '-',
+        previous_salary: raw.previous_salary || 0,
+        new_salary: raw.new_salary || 0,
       });
 
       // Map current employee data
