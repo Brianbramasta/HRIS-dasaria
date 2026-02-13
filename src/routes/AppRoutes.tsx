@@ -93,6 +93,7 @@ import { LoginPage, ForgotPasswordPage, ResetPasswordPage } from "../features/au
 import SelectServicePage from "../features/auth/pages/SelectServicePage";
 import ProtectedOutlet from "./ProtectedOutlet";
 import FormKasbonPage from "@/features/payroll/pages/cash-advance/form-cash-advance/FormCashAdvancePage";
+import TemporaryApiPage from "@/pages/OtherPage/TemporaryApiPage";
 import NotFound from "@/pages/OtherPage/NotFound";
 
 function PelanggaranRoute() {
@@ -224,7 +225,7 @@ export default function AppRoutes() {
           <Route path="/role-management-access/access-detail/:featureId" element={<AccessDetail />} />
           <Route path="/role-management-access/add" element={<EditRolePage />} />
           <Route path="/role-management-access/edit/:roleId" element={<EditRolePage />} />
-
+          <Route path="/temporary-api" element={<TemporaryApiPage />} />
 
 
         </Route>
