@@ -9,6 +9,8 @@ import { useEditCompensationModal } from '@/features/payroll/hooks/modals/payrol
 
 export type EditKompensasiForm = {
   levelJabatan?: string;
+  jabatanStruktural?: string;
+  categoryCompensationId?: string;
   kategori?: string;
   general?: string;
   junior?: string;
@@ -59,8 +61,8 @@ const EditKompensasiModal: React.FC<Props> = ({ isOpen, initialData, onClose, on
         <SelectField
           label="Kategori"
           options={KATEGORI_OPTIONS}
-          defaultValue={form.kategori || ''}
-          onChange={(v) => handleInput('kategori', v)}
+          defaultValue={form.categoryCompensationId || ''}
+          onChange={(v) => handleInput('categoryCompensationId', v)}
           placeholder="Gaji Pokok / Uang Saku"
 
           required={true}

@@ -43,7 +43,7 @@ export function useAddCashAdvanceSubmission({
     () => [
       { value: '3', label: '3 Bulan' },
       { value: '6', label: '6 Bulan' },
-      { value: '12', label: '12 Bulan' },
+      // { value: '12', label: '12 Bulan' },
     ],
     [],
   );
@@ -91,6 +91,8 @@ export function useAddCashAdvanceSubmission({
   }, [form.gajiPokok, form.nominalKasbon, form.periodeCicilan]);
 
   const isFormValid = useMemo(() => {
+    // be:sesuikan jika api sudah ada/jadi
+    return true
     return (
       !!form.tanggalPengajuan &&
       !!form.jenisKasbon &&

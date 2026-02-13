@@ -6,16 +6,19 @@ import { useAddFeatureModal } from '../../../hooks/modals/feature/useAddFeatureM
 interface AddFeatureModalProps {
   isOpen: boolean;
   onClose: () => void;
+  modulId?: string;
+  onSuccess?: () => void;
 }
 
-export default function AddFeatureModal({ isOpen, onClose }: AddFeatureModalProps) {
+export default function AddFeatureModal({ isOpen, onClose, modulId, onSuccess }: AddFeatureModalProps) {
   const {
     features,
     handleAddFeature,
     handleRemoveFeature,
     handleFeatureChange,
     handleSubmit,
-  } = useAddFeatureModal(isOpen, onClose);
+    loading,
+  } = useAddFeatureModal(isOpen, onClose, modulId, onSuccess);
 
   const content = (
     <div className="space-y-4 px-1">
@@ -61,7 +64,7 @@ export default function AddFeatureModal({ isOpen, onClose }: AddFeatureModalProp
       onClose={onClose}
       content={content}
       handleSubmit={handleSubmit}
-      submitting={false}
+      submitting={loading}
       maxWidth="max-w-[700px]"
     />
   );

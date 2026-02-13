@@ -1,13 +1,14 @@
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
-import Input from '@/components/form/input/InputField';
-import TextArea from '@/components/form/input/TextArea';
-import Select from '@/components/form/Select';
-import useEditContractRenewalStatusModal from '@/features/employee/hooks/modals/employee-data/contract-renewal/useEditContractRenewalStatusModal';
+import ContractRenewalDetail from '@/features/employee/components/modals/employee-data/contract-renewal/slice-component/ContractRenewalDetail';
+import OldContract from '@/features/employee/components/modals/employee-data/contract-renewal/slice-component/OldContract';
+import NewContract from '@/features/employee/components/modals/employee-data/contract-renewal/slice-component/NewContract';
+import { useEditContractRenewalStatusModal } from '@/features/employee/hooks/modals/contract-renewal/useEditContractRenewalStatusModal';
 
 interface EditStatusPerpanjanganModalProps {
   isOpen: boolean;
   onClose: () => void;
   kontrakData?: {
+    id: string;
     idKaryawan: string;
     pengguna: string;
     posisi: string;
@@ -16,11 +17,15 @@ interface EditStatusPerpanjanganModalProps {
     tanggalBerakhir: string;
     sisaKontrak: string;
     statusPerpanjangan: string;
+    statusPerpanjanganId?: string;
     statusAtasan: string;
     statusKaryawan: string;
     catatan: string;
   };
   onSuccess?: () => void;
+  onSubmit: (data: FormData) => Promise<boolean>;
+  statusOptions?: { value: string; label: string }[];
+  contractTypeOptions?: { value: string; label: string }[];
 }
 
 export default function EditStatusPerpanjanganModal({
@@ -28,106 +33,116 @@ export default function EditStatusPerpanjanganModal({
   onClose,
   kontrakData,
   onSuccess,
+  onSubmit,
+  statusOptions,
+  contractTypeOptions,
 }: EditStatusPerpanjanganModalProps) {
   const {
-    statusPerpanjanganOptions,
-    statusAtasanOptions,
-    statusKaryawanOptions,
-    statusPerpanjangan,
-    setStatusPerpanjangan,
-    statusAtasan,
-    setStatusAtasan,
-    statusKaryawan,
-    setStatusKaryawan,
-    catatan,
-    setCatatan,
     submitting,
+    contractRenewalData,
+    oldContractData,
+    newContractData,
+    handleContractRenewalChange,
+    handleOldContractChange,
+    handleNewContractChange,
     handleSubmit,
-  } = useEditContractRenewalStatusModal({ kontrakData, onClose, onSuccess });
+    handleClose,
+    shouldShowDetailAndOldContract,
+    shouldShowAllComponents,
+    shouldShowOnlyDetail,
+  } = useEditContractRenewalStatusModal({
+    isOpen,
+    onClose,
+    onSuccess,
+    onSubmit,
+    kontrakData,
+    statusOptions,
+    contractTypeOptions,
+  });
+
+  const renderContent = () => {
+    // Determine which components to show based on renewal status
+    if (shouldShowDetailAndOldContract()) {
+      // Diperpanjang Tetap => Show ContractRenewalDetail + OldContract
+      return (
+        <div className="space-y-6">
+          <ContractRenewalDetail
+            data={contractRenewalData}
+            isEditing={false} // Maybe this should be true for status editing?
+            onChange={handleContractRenewalChange}
+            statusOptions={statusOptions}
+            contractTypeOptions={contractTypeOptions}
+          />
+          <OldContract
+            data={oldContractData}
+            isEditing={false}
+            onChange={handleOldContractChange}
+          />
+        </div>
+      );
+    }
+
+    if (shouldShowAllComponents()) {
+      // Diperpanjang Berubah => Show ContractRenewalDetail + NewContract
+      return (
+        <div className="space-y-6">
+          <ContractRenewalDetail
+            data={contractRenewalData}
+            isEditing={false}
+            onChange={handleContractRenewalChange}
+            statusOptions={statusOptions}
+            contractTypeOptions={contractTypeOptions}
+          />
+          <NewContract
+            data={newContractData}
+            isEditing={true}
+            onChange={handleNewContractChange}
+          />
+        </div>
+      );
+    }
+
+    if (shouldShowOnlyDetail()) {
+      // Other statuses => Show only ContractRenewalDetail with limited fields
+      return (
+        <div className="space-y-6">
+          <ContractRenewalDetail
+            data={contractRenewalData}
+            isEditing={false}
+            onChange={handleContractRenewalChange}
+            showLimitedFields={true}
+            statusOptions={statusOptions}
+            contractTypeOptions={contractTypeOptions}
+          />
+        </div>
+      );
+    }
+
+    // Default: Show only ContractRenewalDetail
+    return (
+      <div className="space-y-6">
+        <ContractRenewalDetail
+          data={contractRenewalData}
+          isEditing={false}
+          onChange={handleContractRenewalChange}
+          showLimitedFields={true}
+          statusOptions={statusOptions}
+          contractTypeOptions={contractTypeOptions}
+        />
+      </div>
+    );
+  };
 
   return (
     <ModalAddEdit
       title="Edit Status Perpanjangan"
+      titleAlign='left'
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleClose}
       handleSubmit={handleSubmit}
       submitting={submitting}
-      maxWidth="max-w-4xl"
-      content={
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">NIP</label>
-              <Input type="text" value={kontrakData?.idKaryawan} disabled />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Pengguna</label>
-              <Input type="text" value={kontrakData?.pengguna} disabled />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Posisi</label>
-              <Input type="text" value={kontrakData?.posisi} disabled />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Departemen</label>
-              <Input type="text" value={kontrakData?.departemen} disabled />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Tanggal Masuk</label>
-              <Input type="text" value={kontrakData?.tanggalMasuk} disabled />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Tanggal Berakhir</label>
-              <Input type="text" value={kontrakData?.tanggalBerakhir} disabled />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Sisa Kontrak</label>
-              <Input type="text" value={kontrakData?.sisaKontrak} disabled />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Status Perpanjangan</label>
-              <Select
-                options={statusPerpanjanganOptions}
-                defaultValue={statusPerpanjangan}
-                onChange={setStatusPerpanjangan}
-                placeholder="Pilih Status Perpanjangan"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Status Atasan</label>
-              <Select
-                options={statusAtasanOptions}
-                defaultValue={statusAtasan}
-                onChange={setStatusAtasan}
-                placeholder="Pilih Status Atasan"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Status Karyawan</label>
-              <Select
-                options={statusKaryawanOptions}
-                defaultValue={statusKaryawan}
-                onChange={setStatusKaryawan}
-                placeholder="Pilih Status Karyawan"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Catatan</label>
-            <TextArea value={catatan} onChange={setCatatan} placeholder="Detail Catatan ..." />
-          </div>
-        </>
-      }
+      maxWidth="max-w-6xl"
+      content={renderContent()}
     />
   );
 }

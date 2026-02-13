@@ -7,16 +7,17 @@ import { useAddServiceModal } from '../../../hooks/modals/service/useAddServiceM
 interface AddServiceModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
-export default function AddServiceModal({ isOpen, onClose }: AddServiceModalProps) {
+export default function AddServiceModal({ isOpen, onClose, onSuccess }: AddServiceModalProps) {
   const {
     services,
     handleAddService,
     handleRemoveService,
     handleServiceChange,
     handleSubmit,
-  } = useAddServiceModal(isOpen, onClose);
+  } = useAddServiceModal(isOpen, onClose, onSuccess);
 
   return (
     <Modal

@@ -8,20 +8,22 @@ interface EditAccessModalProps {
   isOpen: boolean;
   onClose: () => void;
   data: AccessData | null;
+  onSuccess?: () => void;
 }
 
-export default function EditAccessModal({ isOpen, onClose, data }: EditAccessModalProps) {
+export default function EditAccessModal({ isOpen, onClose, data, onSuccess }: EditAccessModalProps) {
   const {
     akses,
     code,
     deskripsi,
     fitur,
+    loading,
     handleAksesChange,
     handleCodeChange,
     handleDeskripsiChange,
     handleFiturChange,
     handleSubmit,
-  } = useEditAccessModal(isOpen, onClose, data);
+  } = useEditAccessModal(isOpen, onClose, data, onSuccess);
 
   const content = (
     <div className="space-y-4 px-1">
@@ -66,7 +68,7 @@ export default function EditAccessModal({ isOpen, onClose, data }: EditAccessMod
       onClose={onClose}
       content={content}
       handleSubmit={handleSubmit}
-      submitting={false}
+      submitting={loading}
       maxWidth="max-w-[700px]"
     />
   );

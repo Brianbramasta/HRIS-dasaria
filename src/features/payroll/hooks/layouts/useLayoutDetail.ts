@@ -26,6 +26,7 @@ export const useLayoutDetail = (config: SectionConfig) => {
   const [pttValues, setPttValues] = useState<Record<string, string>>(() => config.potonganTidakTetap?.initialValues ?? {});
   const [isTTModalOpen, setIsTTModalOpen] = useState(false);
   const [isPTTModalOpen, setIsPTTModalOpen] = useState(false);
+  const [isRecapModalOpen, setIsRecapModalOpen] = useState(false);
 
   const gridColsInfo = useMemo(() => "grid grid-cols-1 gap-6 md:grid-cols-3", []);
   const gridColsTT = useMemo(() => "grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3", []);
@@ -45,6 +46,8 @@ export const useLayoutDetail = (config: SectionConfig) => {
     setIsTTModalOpen,
     isPTTModalOpen,
     setIsPTTModalOpen,
+    isRecapModalOpen,
+    setIsRecapModalOpen,
     gridColsInfo,
     gridColsTT,
     gridColsPTT,

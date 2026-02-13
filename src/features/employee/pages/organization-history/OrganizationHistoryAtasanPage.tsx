@@ -45,7 +45,7 @@ export default function OrganizationHistoryAtasanPage() {
       { id: 'employee_id', label: 'NIP' },
       {
         id: 'full_name',
-        label: 'Nama',
+        label: 'Pengguna',
         format: (_v, row) => (
           <div className="flex items-center gap-2">
             <img
@@ -59,43 +59,6 @@ export default function OrganizationHistoryAtasanPage() {
       },
       { id: 'change_type', label: 'Jenis Perubahan' },
       { id: 'effective_date', label: 'Tanggal Efektif', dateRangeFilter: true, format: (v: string) => formatDateToIndonesian(v || '') },
-      { id: 'old_company', label: 'Perusahaan Lama' },
-      { id: 'new_company', label: 'Perusahaan Baru' },
-      { id: 'old_directorate', label: 'Direktorat Lama' },
-      { id: 'new_directorate', label: 'Direktorat Baru' },
-      { id: 'old_division', label: 'Divisi Lama' },
-      { id: 'new_division', label: 'Divisi Baru' },
-      { id: 'old_department', label: 'Departemen Lama' },
-      { id: 'new_department', label: 'Departemen Baru' },
-      {
-        id: 'old_unit',
-        label: 'Unit Lama',
-        format: (v: string | undefined) => v || '-',
-      },
-      {
-        id: 'new_unit',
-        label: 'Unit Baru',
-        format: (v: string | undefined) => v || '-',
-      },
-      { id: 'old_position', label: 'Posisi Lama' },
-      { id: 'new_position', label: 'Posisi Baru' },
-      { id: 'old_job_title', label: 'Jabatan Kepangkatan Lama' },
-      { id: 'new_job_title', label: 'Jabatan Kepangkatan Baru' },
-      {
-        id: 'old_structural_job_title',
-        label: 'Jabatan Struktural Lama',
-        format: (v: string | null | undefined) => v || '-',
-      },
-      {
-        id: 'new_structural_job_title',
-        label: 'Jabatan Struktural Baru',
-        format: (v: string | null | undefined) => v || '-',
-      },
-      { id: 'old_position_level', label: 'Jenjang Jabatan Lama' },
-      { id: 'new_position_level', label: 'Jenjang Jabatan Baru' },
-      { id: 'old_employee_category', label: 'Kategori Karyawan Lama' },
-      { id: 'new_employee_category', label: 'Kategori Karyawan Baru' },
-      { id: 'reason', label: 'Alasan Perubahan' },
       {
         id: 'statusPerubahan',
         label: 'Status Perubahan',

@@ -35,3 +35,4 @@ export * from './icons/IconTidakLengkap';
 export * from './icons/IconEmail';
 export * from './icons/IconEyeOpen';
 export * from './icons/IconEyeClose';
+export * from './icons/IconInfo';

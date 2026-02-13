@@ -1,26 +1,149 @@
 import { ChevronLeft } from 'react-feather';
-import PayrollCard from '@/features/payroll/components/cards/Cards';
-import Input from '@/components/form/input/InputField';
-import TextArea from '@/components/form/input/TextArea';
-import Button from '@/components/ui/button/Button';
+import {  useEffect, useMemo } from 'react';
+import ContractRenewalDetail from '@/features/employee/components/contract-renewal/ContractRenewalDetail';
+import OldContract from '@/features/employee/components/contract-renewal/OldContract';
+import NewContract from '@/features/employee/components/contract-renewal/NewContract';
 import EditStatusPerpanjanganModal from '@/features/employee/components/modals/employee-data/contract-renewal/EditContractRenewalStatusModal';
-import EditPengajuanKontrakModal from '@/features/employee/components/modals/employee-data/contract-renewal/EditContractRequestModal';
+// import EditPengajuanKontrakModal from '@/features/employee/components/modals/employee-data/contract-renewal/EditContractRequestModal';
+import Button from '@/components/ui/button/Button';
 import { useEditContractRenewal } from '../../../../hooks/contract-renewal/useEditContractRenewal';
+import { useContractRenewalStore } from '../../../../stores/useContractRenewalStore';
 
 
 
 export default function PerpanjangKontrakEdit() {
   const {
+    id,
     kontrakData,
     // isLoading,
     isStatusModalOpen,
-    isPengajuanModalOpen,
+    // isPengajuanModalOpen,
     setIsStatusModalOpen,
-    setIsPengajuanModalOpen,
+    // setIsPengajuanModalOpen,
     handleGoBack,
     handleUpdateStatus,
-    handleUpdatePengajuan,
+    // handleUpdatePengajuan,
+    fetchContractRenewalDetail,
+    extensionStatusOptions,
   } = useEditContractRenewal();
+
+  const {
+    setChangeTypeName,
+    shouldShowAllComponents,
+    shouldShowDetailAndOldContract,
+  } = useContractRenewalStore();
+
+  // Update store when kontrakData changes
+  useEffect(() => {
+    if (kontrakData?.extension_status) {
+      setChangeTypeName(kontrakData.extension_status);
+    }
+  }, [kontrakData, setChangeTypeName]);
+
+  const handleEditClick = () => {
+    setIsStatusModalOpen(true);
+  };
+
+  // Map data for ContractRenewalDetail
+  const statusPerpanjanganData = useMemo(() => kontrakData ? {
+    employee_id: kontrakData.employee_id,
+    full_name: kontrakData.employee_name,
+    position_name: kontrakData.current_position,
+    department_name: kontrakData.current_department,
+    join_date: kontrakData.start_date,
+    end_date: kontrakData.end_date,
+    remaining_contract: String(kontrakData.remaining_contract),
+    renewal_status_name: kontrakData.extension_status,
+    contract_type_name: kontrakData.contract_type,
+    contract_sequence: String(kontrakData.contract_sequence),
+    new_contract_date: kontrakData.new_contract_signed_date || undefined,
+    new_contract_end_date: kontrakData.new_contract_end_date || undefined,
+    contract_document: kontrakData.contract_document || undefined,
+    evaluation_document: kontrakData.evaluation_document || undefined,
+    notes: kontrakData.note || undefined,
+  } : undefined, [kontrakData]);
+
+  // Map data for OldContract (using previous_position)
+  const oldContractData = useMemo(() => kontrakData?.previous_position ? {
+    change_type_name: undefined,
+    company_name: kontrakData.previous_position.company,
+    office_name: kontrakData.previous_position.office,
+    directorate_name: kontrakData.previous_position.directorate,
+    division_name: kontrakData.previous_position.division,
+    department_name: kontrakData.previous_position.department,
+    unit_name: kontrakData.previous_position.unit || undefined,
+    position_name: kontrakData.previous_position.position,
+    job_title_name: kontrakData.previous_position.rank_position,
+    structural_position_name: kontrakData.previous_position.structural_position,
+    position_level_name: kontrakData.previous_position.position_level,
+    grade: kontrakData.previous_position.grade,
+    basic_salary: kontrakData.previous_position.salary || undefined,
+    employee_category_name: kontrakData.previous_position.employee_category,
+    old_contract_document: undefined,
+  } : undefined, [kontrakData]);
+
+  // Map data for NewContract (using new_position)
+  const newContractData = useMemo(() => kontrakData?.new_position ? {
+    new_change_type_name: kontrakData.new_position.change_type,
+    new_employee_category_name: kontrakData.new_position.employee_category,
+    new_company_name: kontrakData.new_position.company,
+    new_office_name: kontrakData.new_position.office,
+    new_directorate_name: kontrakData.new_position.directorate,
+    new_division_name: kontrakData.new_position.division,
+    new_department_name: kontrakData.new_position.department,
+    new_unit_name: kontrakData.new_position.unit || undefined,
+    new_position_name: kontrakData.new_position.position,
+    new_job_title_name: kontrakData.new_position.rank_position,
+    new_structural_position_name: kontrakData.new_position.structural_position,
+    new_position_level_name: kontrakData.new_position.position_level,
+    new_grade: kontrakData.new_position.grade,
+    new_basic_salary: kontrakData.new_position.salary || undefined,
+    new_contract_document: kontrakData.contract_document || undefined,
+  } : undefined, [kontrakData]);
+
+  // Map data for Modals
+  const modalData = useMemo(() => kontrakData ? {
+    id: id || '',
+    idKaryawan: kontrakData.employee_id,
+    pengguna: kontrakData.employee_name,
+    posisi: kontrakData.current_position,
+    departemen: kontrakData.current_department,
+    tanggalMasuk: kontrakData.start_date,
+    tanggalBerakhir: kontrakData.end_date,
+    sisaKontrak: String(kontrakData.remaining_contract),
+    statusPerpanjangan: kontrakData.extension_status,
+    statusPerpanjanganId: kontrakData.extension_status_id,
+    statusAtasan: '',
+    statusKaryawan: '',
+    catatan: kontrakData.note || '',
+    
+    // For Pengajuan Modal
+    jenisPerubahan: kontrakData.new_position?.change_type || '',
+    jenisPerubahanId: kontrakData.new_position?.change_type_id,
+    perusahaan: kontrakData.new_position?.company || '',
+    perusahaanId: kontrakData.new_position?.company_id,
+    kantor: kontrakData.new_position?.office || '',
+    kantorId: kontrakData.new_position?.office_id,
+    direktorat: kontrakData.new_position?.directorate || '',
+    direktoratId: kontrakData.new_position?.directorate_id,
+    divisi: kontrakData.new_position?.division || '',
+    divisiId: kontrakData.new_position?.division_id,
+    // departemen already mapped, but need ID for new position
+    departemenBaru: kontrakData.new_position?.department || '',
+    departemenBaruId: kontrakData.new_position?.department_id,
+    position: kontrakData.new_position?.position || '',
+    positionId: kontrakData.new_position?.position_id,
+    jabatan: kontrakData.new_position?.rank_position || '',
+    jabatanId: kontrakData.new_position?.rank_position_id, // Assuming rank_position maps to job_title
+    structuralPositionId: kontrakData.new_position?.structural_position_id,
+    golongan: kontrakData.new_position?.grade || '',
+    jenjangJabatan: kontrakData.new_position?.position_level || '',
+    jenjangJabatanId: kontrakData.new_position?.position_level_id,
+    gajiPokok: String(kontrakData.new_position?.salary || ''),
+    kategoriKaryawan: kontrakData.new_position?.employee_category || '',
+    kategoriKaryawanId: kontrakData.new_position?.employee_category_id,
+    unitId: kontrakData.new_position?.unit_id,
+  } : undefined, [kontrakData]);
 
   return (
     <div className="space-y-6">
@@ -35,170 +158,81 @@ export default function PerpanjangKontrakEdit() {
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Detail Perpanjangan Kontrak</h1>
       </div>
 
-      {/* Card 1: Detail Perpanjangan Kontrak */}
-      <PayrollCard
-        title="Status Perpanjangan"
-        headerColor="slate"
+      {/* Combined Card: Status Perpanjangan, Kontrak Lama, dan Kontrak Baru */}
+      <div className="rounded-2xl overflow-hidden border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
        
-      >
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">NIP</label>
-            <Input type="text" value={kontrakData?.employee_id || ''} disabled />
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Pengguna</label>
-            <Input type="text" value={kontrakData?.status_perpanjangan.full_name || ''} disabled />
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Posisi</label>
-            <Input type="text" value={kontrakData?.status_perpanjangan.position_name || ''} disabled />
-          </div>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Departemen</label>
-            <Input type="text" value={kontrakData?.status_perpanjangan.department_name || ''} disabled />
+        {/* Card Content */}
+        <div className="px-6 pb-8 space-y-8">
+          {/* Section 1: Status Perpanjangan - Always Show */}
+          <div>
+            <ContractRenewalDetail
+              data={statusPerpanjanganData}
+              isEditing={false}
+            />
           </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Tanggal Masuk</label>
-            <Input type="text" value={kontrakData?.status_perpanjangan.join_date || ''} disabled />
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Tanggal Berakhir</label>
-            <Input type="text" value={kontrakData?.status_perpanjangan.end_date || ''} disabled />
-          </div>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Sisa Kontrak</label>
-            <Input type="text" value={kontrakData?.status_perpanjangan.remaining_contract || ''} disabled />
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Status Perpanjangan</label>
-            <Input type="text" value={kontrakData?.status_perpanjangan.renewal_status_name || ''} disabled />
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Status Atasan</label>
-            <Input type="text" value={kontrakData?.status_perpanjangan.supervisor_approval_status_name || ''} disabled />
-          </div>
-        </div>
+          {/* Section 2 & 3: Kontrak Lama dan Kontrak Baru - Conditional Rendering */}
+          {shouldShowAllComponents() && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <OldContract
+                  data={oldContractData}
+                  isEditing={false}
+                />
+              </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Status Karyawan</label>
-            <Input type="text" value={kontrakData?.status_perpanjangan.employee_status_name || ''} disabled />
-          </div>
-        </div>
+              <div>
+                <NewContract
+                  data={newContractData}
+                  isEditing={false}
+                />
+              </div>
+            </div>
+          )}
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Catatan</label>
-          <TextArea value={kontrakData?.status_perpanjangan.notes || ''} disabled />
-        </div>
-        <div className='flex justify-end'>
-        <Button
-            onClick={() => setIsStatusModalOpen(true)}
-            variant="primary"
-            size="sm"
-           
-          >
-            Edit
-          </Button>
-        </div>
-      </PayrollCard>
+          {shouldShowDetailAndOldContract() && (
+            <div className="grid grid-cols-1 gap-6">
+              <div>
+                <OldContract
+                  data={oldContractData}
+                  isEditing={false}
+                />
+              </div>
+            </div>
+          )}
 
-      {/* Card 2: Pengajuan Kontrak */}
-      <PayrollCard
-        title="Pengajuan Kontrak"
-        headerColor="green"
-        
-      >
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Jenis Perubahan</label>
-            <Input type="text" value={kontrakData?.pengajuan_kontrak.change_type_name || ''} disabled />
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Perusahaan</label>
-            <Input type="text" value={kontrakData?.pengajuan_kontrak.company_name || ''} disabled />
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Kantor</label>
-            <Input type="text" value={kontrakData?.pengajuan_kontrak.office_name || ''} disabled />
+          {/* Edit Button */}
+          <div className="flex justify-end pt-4 ">
+            <Button
+              onClick={handleEditClick}
+              variant="primary"
+              size="sm"
+            >
+              Edit
+            </Button>
           </div>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Direktorat</label>
-            <Input type="text" value={kontrakData?.pengajuan_kontrak.directorate_name || ''} disabled />
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Divisi</label>
-            <Input type="text" value={kontrakData?.pengajuan_kontrak.division_name || ''} disabled />
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Departemen</label>
-            <Input type="text" value={kontrakData?.pengajuan_kontrak.department_name || ''} disabled />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Position</label>
-            <Input type="text" value={kontrakData?.pengajuan_kontrak.position_name || ''} disabled />
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Jabatan</label>
-            <Input type="text" value={kontrakData?.pengajuan_kontrak.job_title_name || ''} disabled />
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Golongan</label>
-            <Input type="text" value={kontrakData?.pengajuan_kontrak.grade || ''} disabled />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Jenjang Jabatan</label>
-            <Input type="text" value={kontrakData?.pengajuan_kontrak.position_level_name || ''} disabled />
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Gaji Pokok</label>
-            <Input type="text" value={kontrakData?.pengajuan_kontrak.basic_salary?.toString() || ''} disabled />
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Kategori Karyawan</label>
-            <Input type="text" value={kontrakData?.pengajuan_kontrak.employee_category_name || ''} disabled />
-          </div>
-        </div>
-        <div className='flex justify-end'>
-        <Button
-            onClick={() => setIsPengajuanModalOpen(true)}
-            variant="primary"
-            size="sm"
-           
-          >
-            Edit
-          </Button>
-        </div>
-      </PayrollCard>
+      </div>
 
       {/* Modal: Edit Status Perpanjangan */}
       <EditStatusPerpanjanganModal
         isOpen={isStatusModalOpen}
         onClose={() => setIsStatusModalOpen(false)}
-        onSuccess={() => handleUpdateStatus({} as any)}
+        kontrakData={modalData}
+        onSuccess={fetchContractRenewalDetail}
+        onSubmit={handleUpdateStatus}
+        statusOptions={extensionStatusOptions}
       />
 
       {/* Modal: Edit Pengajuan Kontrak */}
-      <EditPengajuanKontrakModal
+      {/* <EditPengajuanKontrakModal
         isOpen={isPengajuanModalOpen}
         onClose={() => setIsPengajuanModalOpen(false)}
-        onSuccess={() => handleUpdatePengajuan({} as any)}
-      />
+        kontrakData={modalData}
+        onSuccess={fetchContractRenewalDetail}
+        onSubmit={handleUpdatePengajuan}
+      /> */}
     </div>
   );
 }

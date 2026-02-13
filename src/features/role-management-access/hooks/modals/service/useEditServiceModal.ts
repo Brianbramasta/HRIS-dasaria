@@ -1,12 +1,15 @@
 import { useState, useCallback, useEffect } from 'react';
 import { LayananData } from '../../useRoleManagement';
+import { useApiApps } from '../../api/useApiApps';
 
 export const useEditServiceModal = (
   isOpen: boolean, 
   onClose: () => void,
-  initialData: LayananData | null
+  initialData: LayananData | null,
+  onSuccess?: () => void
 ) => {
   const [serviceName, setServiceName] = useState('');
+  const { updateApp } = useApiApps();
 
   useEffect(() => {
     if (isOpen && initialData) {
@@ -18,7 +21,7 @@ export const useEditServiceModal = (
     setServiceName(value);
   }, []);
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(async () => {
     if (!initialData) return;
     
     // Validasi sederhana
@@ -27,10 +30,17 @@ export const useEditServiceModal = (
       return;
     }
 
-    console.log('Updating service:', { ...initialData, sistemLayanan: serviceName });
-    // Di sini nanti panggil API update
-    onClose();
-  }, [initialData, serviceName, onClose]);
+    const payload = {
+      name: serviceName
+    };
+
+    const success = await updateApp(initialData.idLayanan, payload);
+
+    if (success) {
+      onSuccess?.();
+      onClose();
+    }
+  }, [initialData, serviceName, updateApp, onSuccess, onClose]);
 
   return {
     serviceName,

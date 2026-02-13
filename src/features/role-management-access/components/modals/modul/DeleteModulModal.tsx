@@ -6,6 +6,7 @@ interface DeleteModulModalProps {
   onClose: () => void;
   onDelete: () => void;
   modulName?: string;
+  isLoading?: boolean;
 }
 
 const DeleteModulModal: React.FC<DeleteModulModalProps> = ({
@@ -13,6 +14,7 @@ const DeleteModulModal: React.FC<DeleteModulModalProps> = ({
   onClose,
   onDelete,
   modulName,
+  isLoading,
 }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="p-6 zoom-75 dark:text-white max-w-md" showCloseButton>
@@ -38,15 +40,17 @@ const DeleteModulModal: React.FC<DeleteModulModalProps> = ({
             <button 
               type="button" 
               onClick={onClose} 
-              className="rounded-xl border px-5 py-2 hover:bg-gray-50 dark:hover:bg-gray-800"
+              disabled={isLoading}
+              className="rounded-xl border px-5 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50"
             >
               Tutup
             </button>
             <button
               type="submit"
-              className="rounded-xl bg-error-500 hover:bg-error-600 px-5 py-2 text-white"
+              disabled={isLoading}
+              className="rounded-xl bg-error-500 hover:bg-error-600 px-5 py-2 text-white disabled:opacity-50 flex items-center gap-2"
             >
-              Delete
+              {isLoading ? 'Deleting...' : 'Delete'}
             </button>
           </div>
         </form>

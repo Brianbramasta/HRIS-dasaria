@@ -1,4 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
+import { useApiAccess } from '../../api/useApiAccess';
+import { CreateAccessPayload } from '../../../types/dto/AccessType';
 
 export interface AccessItem {
   id: number;
@@ -8,7 +10,14 @@ export interface AccessItem {
   fitur: string;
 }
 
-export const useAddAccessModal = (isOpen: boolean, onClose: () => void) => {
+export const useAddAccessModal = (
+  isOpen: boolean, 
+  onClose: () => void,
+  featureId?: string,
+  onSuccess?: () => void
+) => {
+  const { createAccess, loading } = useApiAccess();
+  
   const [items, setItems] = useState<AccessItem[]>([
     { id: Date.now(), akses: '', code: '', deskripsi: '', fitur: '' },
   ]);
@@ -36,14 +45,33 @@ export const useAddAccessModal = (isOpen: boolean, onClose: () => void) => {
     );
   }, []);
 
-  const handleSubmit = useCallback(() => {
-    const valid = items.filter((i) => i.akses.trim() !== '' && i.code.trim() !== '' && i.deskripsi.trim() !== '');
-    console.log('Submitting access items:', valid);
-    onClose();
-  }, [items, onClose]);
+  const handleSubmit = useCallback(async () => {
+    if (!featureId) return;
+
+    const validItems = items.filter((i) => i.akses.trim() !== '');
+    
+    if (validItems.length === 0) return;
+
+    const payload: CreateAccessPayload = {
+      features_id: featureId,
+      items: validItems.map((item) => ({
+        name: item.akses,
+        describe: item.deskripsi,
+      })),
+    };
+
+    const success = await createAccess(payload);
+    if (success) {
+      onClose();
+      if (onSuccess) {
+        onSuccess();
+      }
+    }
+  }, [items, featureId, createAccess, onClose, onSuccess]);
 
   return {
     items,
+    loading,
     handleAddRow,
     handleRemoveRow,
     handleFieldChange,

@@ -10,9 +10,10 @@ import usePersonalDocumentsCard from '@/features/employee/hooks/card/usePersonal
 interface Props {
   documents: any; // API response from employee-master-data
   employeeId: string;
+  employeeCategoryId?: string;
 }
 
-export default function PersonalDocumentsCard({ documents, employeeId }: Props) {
+export default function PersonalDocumentsCard({ documents, employeeId, employeeCategoryId = '' }: Props) {
   const {
     personalFiles,
     isOpen,
@@ -32,6 +33,7 @@ export default function PersonalDocumentsCard({ documents, employeeId }: Props) 
             { id: 'no', label: 'No.', align: 'center', render: (_v, _row, idx) => idx + 1 },
             { id: 'fileType', label: 'Tipe File' },
             { id: 'jenis_file', label: 'Jenis File' },
+            { id: 'description', label: 'Deskripsi' },
             { id: 'namaFile', label: 'Nama File' },
           ]}
           actions={[
@@ -67,6 +69,7 @@ export default function PersonalDocumentsCard({ documents, employeeId }: Props) 
         onClose={closeModal}
         onSubmit={handleSubmit}
         submitting={false}
+        employeeCategoryId={employeeCategoryId}
       />
     </ExpandCard>
   );

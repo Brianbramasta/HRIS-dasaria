@@ -9,11 +9,12 @@ interface Props {
   onClose: () => void;
   onSubmit: (data: PersonalDocumentsForm) => void;
   submitting?: boolean;
+  employeeCategoryId?: string;
 }
 
-const PersonalDocumentsModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSubmit, submitting = false }) => {
+const PersonalDocumentsModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSubmit, submitting = false , employeeCategoryId = '' }) => {
   const { title, loadingFields, personalDocuments, legalDocuments, fileMap, handleFileChange, handleSubmit } =
-    usePersonalDocumentsModal({ isOpen, initialData, onSubmit });
+    usePersonalDocumentsModal({ isOpen, initialData, onSubmit, employeeCategoryId });
 
   const renderDocumentField = (doc: any) => {
     const currentFile = fileMap[doc.id];
@@ -25,11 +26,9 @@ const PersonalDocumentsModal: React.FC<Props> = ({ isOpen, initialData, onClose,
             label={
               <>
                 Upload {doc.document_name}
-                {/* {doc.is_mandatory === 1 ? null : (
-                  <span className="text-gray-400 ml-1 font-normal text-sm">(opsional)</span>
-                )} */}
               </>
             }
+            infoText={doc.description}
             // required={doc.is_mandatory === 1}
             multiple={false}
             // id={`doc-${doc.id}`}

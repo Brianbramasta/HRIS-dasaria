@@ -58,7 +58,8 @@ export default function DetailGajiPage() {
       ModalComponent: TambahPotonganTidakTetapModal,
     },
     rekapitulasi: true,
-    catatan: true,
+    catatanKaryawan: true,
+    catatanBOD: true,
   };
 
   return <DetailPayrollContent config={config} />;

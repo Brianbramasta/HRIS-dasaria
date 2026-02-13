@@ -5,13 +5,15 @@ import ExpandCard from '@/features/structure-and-organize/components/card/Expand
 import { IconFileDetail, IconPencil } from '@/icons/components/icons';
 import EditTunjanganPernikahanModal from '@/features/payroll/components/modals/payroll-configuration/fixedAllowance/EditMarriageAllowanceModal';
 import EditTunjanganLamaKerjaModal from '@/features/payroll/components/modals/payroll-configuration/fixedAllowance/EditLengthOfServiceAllowanceModal';
-import EditTunjanganTransportasiModal from '@/features/payroll/components/modals/payroll-configuration/fixedAllowance/EditTransportationAllowanceModal';
+// import EditFeeModal from '@/features/payroll/components/modals/payroll-configuration/fixedAllowance/EditFeeModal';
+// import EditTunjanganTransportasiModal from '@/features/payroll/components/modals/payroll-configuration/fixedAllowance/EditTransportationAllowanceModal';
 // Dokumentasi: Integrasi modal Edit/Detail Tunjangan Jabatan & BPJS
 import EditDetailTunjanganJabatanDanBpjsModal from '@/features/payroll/components/modals/payroll-configuration/fixedAllowance/EditPositionAndBPJSAllowanceModal';
 import { useMarriageAllowance } from '@/features/payroll/hooks/payroll-configuration/fixed-allowance/useMarriageAllowance';
 import { useLengthOfServiceAllowance } from '@/features/payroll/hooks/payroll-configuration/fixed-allowance/useLengthOfServiceAllowance';
 import { usePositionAllowance } from '@/features/payroll/hooks/payroll-configuration/fixed-allowance/usePositionAllowance';
-import { useTransportationAllowance } from '@/features/payroll/hooks/payroll-configuration/fixed-allowance/useTransportationAllowance';
+// import { useTransportationAllowance } from '@/features/payroll/hooks/payroll-configuration/fixed-allowance/useTransportationAllowance';
+// import { useFeeAllowance } from '@/features/payroll/hooks/payroll-configuration/fixed-allowance/useFeeAllowance';
 import { formatCurrency } from '@/utils/formatCurrency';
 
 export default function TunjanganTetapPage() {
@@ -28,11 +30,11 @@ export default function TunjanganTetapPage() {
   } = usePositionAllowance();
 
   // Dokumentasi: Integrasi hook useMarriageAllowance untuk Tunjangan Pernikahan
-  const { 
-    marriageAllowanceRows, 
-    loading: loadingMarriage, 
-    editModal: editModalMarriage, 
-    handleEditOpen: handleEditOpenMarriage, 
+  const {
+    marriageAllowanceRows,
+    loading: loadingMarriage,
+    editModal: editModalMarriage,
+    handleEditOpen: handleEditOpenMarriage,
     handleUpdate: handleUpdateMarriage,
     selected: selectedMarriage
   } = useMarriageAllowance();
@@ -48,14 +50,23 @@ export default function TunjanganTetapPage() {
   } = useLengthOfServiceAllowance();
 
   // Dokumentasi: Integrasi hook useTransportationAllowance untuk Tunjangan Transportasi
-  const {
-    transportationAllowanceRows,
-    loading: loadingTransportation,
-    editModal: editModalTransportation,
-    handleEditOpen: handleEditOpenTransportation,
-    handleUpdate: handleUpdateTransportation,
-    selected: selectedTransportation,
-  } = useTransportationAllowance();
+  // const {
+  //   transportationAllowanceRows,
+  //   loading: loadingTransportation,
+  //   editModal: editModalTransportation,
+  //   handleEditOpen: handleEditOpenTransportation,
+  //   handleUpdate: handleUpdateTransportation,
+  //   selected: selectedTransportation,
+  // } = useTransportationAllowance();
+
+  // const {
+  //   feeAllowanceRows,
+  //   handleEditOpen: handleEditOpenFee,
+  //   editModal: editModalFee,
+  //   handleUpdate: handleUpdateFee,
+  //   selected: selectedFee,
+  //   loading: loadingFee,
+  // } = useFeeAllowance();
 
   return (
     <div className="space-y-6 p-4">
@@ -67,24 +78,28 @@ export default function TunjanganTetapPage() {
             { id: 'jabatan', label: 'Jabatan' },
             { id: 'presentase', label: 'Presentase', align: 'center' },
             { id: 'nominal', label: 'Nominal', align: 'right', render: (val: any) => formatCurrency(val || 0) },
-            { id: 'detailBpjs', label: 'Detail  BPJS', align: 'center', render: (_v: any, row: any) => (
-              // Dokumentasi: tombol Detail membuka modal Detail Tunjangan Jabatan
-              <button 
-                onClick={() => {
-                  setPositionMode('detail');
-                  handleEditOpenPosition(row);
-                }} 
-                className="flex items-center justify-center w-full"
-              >
-                <IconFileDetail />
-              </button>
-            ) },
+            {
+              id: 'detailBpjs', label: 'Detail  BPJS', align: 'center', render: (_v: any, row: any) => (
+                // Dokumentasi: tombol Detail membuka modal Detail Tunjangan Jabatan
+                <button
+                  onClick={() => {
+                    setPositionMode('detail');
+                    handleEditOpenPosition(row);
+                  }}
+                  className="flex items-center justify-center w-full"
+                >
+                  <IconFileDetail />
+                </button>
+              )
+            },
           ] as any}
           // Dokumentasi: tombol Edit membuka modal Edit Tunjangan Jabatan
-          actions={[{ icon: <IconPencil />, onClick: (row: any) => {
-            setPositionMode('edit');
-            handleEditOpenPosition(row);
-          } }]}
+          actions={[{
+            icon: <IconPencil />, onClick: (row: any) => {
+              setPositionMode('edit');
+              handleEditOpenPosition(row);
+            }
+          }]}
         />
       </ExpandCard>
 
@@ -114,7 +129,19 @@ export default function TunjanganTetapPage() {
         />
       </ExpandCard>
 
-      <ExpandCard title="Tunjangan Transportasi" withHeaderDivider defaultOpen>
+      {/* <ExpandCard title="FEE" withHeaderDivider defaultOpen>
+        <DocumentsTable
+          items={feeAllowanceRows as any}
+          columns={[
+            { id: 'no', label: 'No.', align: 'center', render: (_v: any, _r: any, idx: number) => idx + 1 },
+            { id: 'namaFee', label: 'Nama FEE' },
+            { id: 'nominal', label: 'Nominal', align: 'right', render: (val: any) => formatCurrency(val || 0) },
+          ] as any}
+          actions={[{ icon: <IconPencil />, onClick: (row: any) => handleEditOpenFee(row) }]}
+        />
+      </ExpandCard> */}
+
+      {/* <ExpandCard title="Tunjangan Transportasi" withHeaderDivider defaultOpen>
         <DocumentsTable
           items={transportationAllowanceRows as any}
           columns={[
@@ -125,7 +152,7 @@ export default function TunjanganTetapPage() {
           ] as any}
           actions={[{ icon: <IconPencil />, onClick: (row: any) => handleEditOpenTransportation(row) }]}
         />
-      </ExpandCard>
+      </ExpandCard> */}
 
       {/* Dokumentasi: render tiga modal edit dan handler simpan untuk masing-masing section */}
       <EditTunjanganPernikahanModal
@@ -142,13 +169,20 @@ export default function TunjanganTetapPage() {
         onSave={handleUpdateLengthOfService}
         isLoading={loadingLengthOfService}
       />
-      <EditTunjanganTransportasiModal
+      {/* <EditFeeModal
+        isOpen={editModalFee.isOpen}
+        onClose={editModalFee.closeModal}
+        defaultValues={selectedFee}
+        onSave={handleUpdateFee}
+        isLoading={loadingFee}
+      /> */}
+      {/* <EditTunjanganTransportasiModal
         isOpen={editModalTransportation.isOpen}
         onClose={editModalTransportation.closeModal}
         defaultValues={selectedTransportation}
         onSave={handleUpdateTransportation}
         isLoading={loadingTransportation}
-      />
+      /> */}
       {/* Dokumentasi: render modal Edit/Detail Tunjangan Jabatan & BPJS */}
       <EditDetailTunjanganJabatanDanBpjsModal
         isOpen={editModalPosition.isOpen}

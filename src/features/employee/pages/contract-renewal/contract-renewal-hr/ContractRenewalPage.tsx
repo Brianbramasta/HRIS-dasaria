@@ -1,7 +1,4 @@
 import { DataTable } from '../../../../../components/shared/datatable/DataTable';
-import { ChevronDown } from 'react-feather';
-import Button from '@/components/ui/button/Button';
-import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { useContractRenewal } from '../../../hooks/contract-renewal/useContractRenewal';
 
 
@@ -10,16 +7,12 @@ export default function PerpanjanganKontrak() {
   const {
     data,
     isLoading,
-    isDropdownOpen,
     columns,
     actions,
     columnFilters,
     dateRangeFilters,
     handleColumnFilterChange,
     handleDateRangeFilterChange,
-    setIsDropdownOpen,
-    handleNavigateToApproval,
-    handleNavigateToExtension,
   } = useContractRenewal();
 
   
@@ -41,35 +34,35 @@ export default function PerpanjanganKontrak() {
         columnFilters={columnFilters}
         onDateRangeFilterChange={handleDateRangeFilterChange}
         dateRangeFilters={dateRangeFilters}
-        toolbarRightSlot={
-          <div className="relative">
-            <Button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              variant="outline"
-              size="sm"
-              className="flex items-center gap-1 dropdown-toggle"
-            >
-              Pengajuan & Kelola Kontrak
-              <ChevronDown size={16} />
-            </Button>
-            <Dropdown isOpen={isDropdownOpen} onClose={() => setIsDropdownOpen(false)}>
-              <div className="p-2 w-64">
-                <button
-                  className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-                  onClick={handleNavigateToExtension}
-                >
-                  Pengajuan & Kelola Kontrak
-                </button>
-                <button
-                  className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-                  onClick={handleNavigateToApproval}
-                >
-                  Persetujuan Perpanjangan Kontrak
-                </button>
-              </div>
-            </Dropdown>
-          </div>
-        }
+        // toolbarRightSlot={
+        //   <div className="relative">
+        //     <Button
+        //       onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+        //       variant="outline"
+        //       size="sm"
+        //       className="flex items-center gap-1 dropdown-toggle"
+        //     >
+        //       Pengajuan & Kelola Kontrak
+        //       <ChevronDown size={16} />
+        //     </Button>
+        //     <Dropdown isOpen={isDropdownOpen} onClose={() => setIsDropdownOpen(false)}>
+        //       <div className="p-2 w-64">
+        //         <button
+        //           className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+        //           onClick={handleNavigateToExtension}
+        //         >
+        //           Pengajuan & Kelola Kontrak
+        //         </button>
+        //         <button
+        //           className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+        //           onClick={handleNavigateToApproval}
+        //         >
+        //           Persetujuan Perpanjangan Kontrak
+        //         </button>
+        //       </div>
+        //     </Dropdown>
+        //   </div>
+        // }
       />
     </div>
   );

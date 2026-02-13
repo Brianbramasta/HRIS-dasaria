@@ -24,6 +24,9 @@ export const Step05UploadDocument: React.FC = () => {
                 )} */}
               </>
             }
+            infoText={doc.description}
+            // required={doc.is_mandatory === 1}
+            // multiple={false}
             multiple={false}
             // required={doc.is_mandatory === 1}
             onChange={(e) => handleFileChange(doc.id, e)}

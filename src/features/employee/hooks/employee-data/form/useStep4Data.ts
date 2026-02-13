@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useFormulirKaryawanStore } from '@/features/employee/stores/useFormulirKaryawanStore';
-import { getBankDropdownOptions } from './useFormulirKaryawan';
+import { getBankDropdownOptions, getEmployeeCategoryDropdownOptions } from './useFormulirKaryawan';
 import { useAuthStore } from '@/features/auth/stores/AuthStore';
 import { useApiPayrollPreview } from '../../api/useApiPayrollPreview';
 import { NonFixAllowancePayload, PreviewPayrollQueryParams } from '../../../types/dto/PayrollPreviewType';
@@ -8,6 +8,7 @@ import { NonFixAllowancePayload, PreviewPayrollQueryParams } from '../../../type
 // digunakan di form 4
 export const useStep4Data = (isOpen?: boolean) => {
   const [bankOptions, setBankOptions] = useState<any[]>([]);
+  const [categoriKaryawanOptions, setCategoriKaryawanOptions] = useState<any[]>([]);
   const { formData, updateStep3 } = useFormulirKaryawanStore();
   const step3 = formData.step3;
   const step1 = formData.step1;
@@ -31,6 +32,7 @@ export const useStep4Data = (isOpen?: boolean) => {
     
     let mounted = true;
     getBankDropdownOptions().then((opts:any) => { if (mounted) setBankOptions(opts); }).catch(() => {});
+    getEmployeeCategoryDropdownOptions().then((opts:any) => { if (mounted) setCategoriKaryawanOptions(opts); }).catch(() => {});
     return () => { mounted = false; };
   }, [isOpen]);
 
@@ -71,10 +73,15 @@ export const useStep4Data = (isOpen?: boolean) => {
 
   // Calculate Net Salary Manually
   const netSalary = useMemo(() => {
-    const base = previewData?.salaryAfterDeduction ?? 0;
-    const additional = nonFixAllowances.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+    const base = previewData?.salary ?? 0;
+    console.log('step3Employee.kategoriKaryawan:', step3Employee?.kategoriKaryawan, 'base salary:', base);
+    const category = categoriKaryawanOptions.find((opt: any) => opt.value === step3Employee.kategoriKaryawan);
+    console.log('category:', category);
+
+    const additional = category?.label === 'Staff' ? nonFixAllowances.reduce((sum, item) => sum + (Number(item.amount) || 0), 0) : 0;
+    
     return base + additional;
-  }, [previewData?.salaryAfterDeduction, nonFixAllowances]);
+  }, [previewData?.salary, nonFixAllowances, categoriKaryawanOptions, step3Employee.kategoriKaryawan]);
 
   const handleChange = (field: string, value: string) => {
     updateStep3({ [field]: value } as any);
@@ -100,6 +107,7 @@ export const useStep4Data = (isOpen?: boolean) => {
 
   return { 
     bankOptions,
+    categoriKaryawanOptions,
     step3,
     step1,
     step3Employee,

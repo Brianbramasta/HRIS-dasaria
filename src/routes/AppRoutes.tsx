@@ -20,6 +20,9 @@ import DetailKaryawanPage from "../features/employee/pages/employee-data/detail/
 import FormulirKaryawanPage from "../features/employee/pages/employee-data/EmployeeFormPage";
 import PendaftaranKaryawanBaru from "../features/employee/pages/employee-data/NewEmployeeRegistration";
 import PengunduranDiri from "../features/employee/pages/resignation/ResignationPage";
+import ResignationListPage from "../features/employee/pages/resignation/ResignationListPage";
+import TerminationAdministrationPage from "../features/employee/pages/resignation/tab/TerminationAdministrationPage";
+import DetailTerminationAdministrationPage from "../features/employee/pages/resignation/detail/DetailTerminationAdministration";
 import FormResignPage from "../features/employee/pages/resignation/form-resign/FormResignPage";
 import DetailPengunduranDiriPage from "../features/employee/pages/resignation/detail/DetailResignationPage";
 import PerpanjanganKontrak from "../features/employee/pages/contract-renewal/contract-renewal-hr/ContractRenewalPage";
@@ -28,6 +31,7 @@ import PerpanjangKontrakEdit from "../features/employee/pages/contract-renewal/c
 import DataKaryawanPelanggaran from "../features/employee/components/employee-data/tab/Fraud";
 import OrganizationHistoryPage from "../features/employee/pages/organization-history/OrganizationHistoryPage";
 import OrganizationHistoryAtasanPage from "../features/employee/pages/organization-history/OrganizationHistoryAtasanPage";
+import DetailOrganizationHistoryPage from "../features/employee/pages/organization-history/detail/DetailOrganizationHistory";
 import DashboardPage from "@/features/dashboard/pages/Index";
 import Dashboard from "@/features/dashboard/pages/tab/Dashboard";
 import Notification from "@/features/dashboard/pages/tab/Notification";
@@ -43,10 +47,15 @@ import PotonganTidakTetapPage from "@/features/payroll/pages/PayrollConfiguratio
 import THRPage from "@/features/payroll/pages/PayrollConfiguration/tab/BonusTHRPage";
 // Dokumentasi: Halaman dan tab Periode Penggajian
 import PeriodePenggajianPage from "@/features/payroll/pages/payroll-period/PayrollPeriodPage";
-import NonAETab from "@/features/payroll/pages/shared/tab/NonAEPages";
-import AETab from "@/features/payroll/pages/shared/tab/AEPages";
+import NonAETab from "@/features/payroll/pages/payroll-period/tab/NonAEPages";
+import AETab from "@/features/payroll/pages/payroll-period/tab/AEPages";
 import PKLTab from "@/features/payroll/pages/shared/tab/PKLPages";
-import THRTab from "@/features/payroll/pages/shared/tab/THRPages";
+import THRTab from "@/features/payroll/pages/payroll-period/tab/THRPages";
+
+// shared tabs
+import SharedNonAETab from "@/features/payroll/pages/shared/tab/NonAEPages";
+import SharedAETab from "@/features/payroll/pages/shared/tab/AEPages";
+import SharedTHRTab from "@/features/payroll/pages/shared/tab/THRPages";
 // Dokumentasi: Import halaman Detail Gaji untuk navigasi dari tabel Periode Penggajian
 // import DetailGajiPage from "@/features/penggajian/pages/periodePenggajian/detail/detailGaji";
 // Dokumentasi: Import halaman Detail Gaji AE dan Non-AE terpisah
@@ -84,6 +93,7 @@ import { LoginPage, ForgotPasswordPage, ResetPasswordPage } from "../features/au
 import SelectServicePage from "../features/auth/pages/SelectServicePage";
 import ProtectedOutlet from "./ProtectedOutlet";
 import FormKasbonPage from "@/features/payroll/pages/cash-advance/form-cash-advance/FormCashAdvancePage";
+import TemporaryApiPage from "@/pages/OtherPage/TemporaryApiPage";
 import NotFound from "@/pages/OtherPage/NotFound";
 
 function PelanggaranRoute() {
@@ -145,8 +155,8 @@ export default function AppRoutes() {
 
             <Route path="non-ae" element={<NonAETab />} />
             <Route path="ae" element={<AETab />} />
-            <Route path="internship" element={<PKLTab />} />
-            <Route path="holiday-allowance" element={<THRTab />} />
+            <Route path="pkl" element={<PKLTab />} />
+            <Route path="thr" element={<THRTab />} />
           </Route>
           {/* Dokumentasi: Route Detail Gaji terpisah agar dapat diakses dari tombol Edit */}
           {/* <Route path="/payroll-period/detail/:id" element={<DetailGajiPage />} /> */}
@@ -168,11 +178,11 @@ export default function AppRoutes() {
           <Route path="/payroll-dashboard" element={<DashboardPenggajianPage />} />
           <Route path="/payroll-period-approval" element={<ApprovalPeriodeGajianPage />}>
             {/* Dokumentasi: index default Non-AE untuk /payroll-period-approval */}
-            <Route index element={<NonAETab />} />
-            <Route path="non-ae" element={<NonAETab />} />
-            <Route path="ae" element={<AETab />} />
+            <Route index element={<SharedNonAETab />} />
+            <Route path="non-ae" element={<SharedNonAETab />} />
+            <Route path="ae" element={<SharedAETab />} />
             <Route path="pkl" element={<PKLTab />} />
-            <Route path="thr" element={<THRTab />} />
+            <Route path="thr" element={<SharedTHRTab />} />
             {/* detail approval */}
             <Route path="detail-ae/:id" element={<DetailGajiAEPage />} />
             <Route path="detail-non-ae/:id" element={<DetailGajiNonAEPage />} />
@@ -193,7 +203,11 @@ export default function AppRoutes() {
           <Route path="/employee-data/:id" element={<DetailKaryawanPage />} />
           <Route path="/employee-data/contract-extension" element={<PerpanjanganKontrak />} />
           <Route path="/employee-data/:id/pelanggaran" element={<PelanggaranRoute />} />
-          <Route path="/resignation" element={<PengunduranDiri />} />
+          <Route path="/resignation" element={<PengunduranDiri />}>
+            <Route index element={<ResignationListPage />} />
+            <Route path="termination-administration" element={<TerminationAdministrationPage />} />
+            <Route path="termination-administration/:id" element={<DetailTerminationAdministrationPage />} />
+          </Route>
 
           <Route path="/resignation/:id" element={<DetailPengunduranDiriPage />} />
           <Route path="/contract-extension" element={<PerpanjanganKontrak />} />
@@ -203,6 +217,7 @@ export default function AppRoutes() {
           <Route path="/submission-types" element={<JenisPengajuanPage />} />
           <Route path="/organization-history" element={<OrganizationHistoryPage />} />
           <Route path="/organization-history/atasan" element={<OrganizationHistoryAtasanPage />} />
+          <Route path="/organization-history/detail" element={<DetailOrganizationHistoryPage />} />
           <Route path="/role-management-access" element={<HakAksesPage />} />
           <Route path="/role-management-access/detail/:roleId" element={<DetailHakAksesPages />} />
           <Route path="/role-management-access/service-detail/:layananId" element={<ModulDetail />} />
@@ -210,7 +225,7 @@ export default function AppRoutes() {
           <Route path="/role-management-access/access-detail/:featureId" element={<AccessDetail />} />
           <Route path="/role-management-access/add" element={<EditRolePage />} />
           <Route path="/role-management-access/edit/:roleId" element={<EditRolePage />} />
-
+          <Route path="/temporary-api" element={<TemporaryApiPage />} />
 
 
         </Route>

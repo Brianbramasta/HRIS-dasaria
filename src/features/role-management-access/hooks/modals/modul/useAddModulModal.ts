@@ -1,12 +1,19 @@
 import { useState, useCallback, useEffect } from 'react';
+import { useApiModules } from '../../api/useApiModules';
 
 export interface ModulItem {
   id: number;
   name: string;
 }
 
-export const useAddModulModal = (isOpen: boolean, onClose: () => void) => {
+export const useAddModulModal = (
+  isOpen: boolean, 
+  onClose: () => void,
+  appsId?: string,
+  onSuccess?: () => void
+) => {
   const [moduls, setModuls] = useState<ModulItem[]>([{ id: Date.now(), name: '' }]);
+  const { createModule, loading } = useApiModules();
 
   useEffect(() => {
     if (isOpen) {
@@ -29,13 +36,31 @@ export const useAddModulModal = (isOpen: boolean, onClose: () => void) => {
     );
   }, []);
 
-  const handleSubmit = useCallback(() => {
-    // Filter out empty moduls before submitting if needed
-    const validModuls = moduls.filter(m => m.name.trim() !== '');
-    console.log('Submitting moduls:', validModuls);
-    // Here you would typically call an API
-    onClose();
-  }, [moduls, onClose]);
+  const handleSubmit = useCallback(async () => {
+    if (!appsId) {
+      console.error('Apps ID is missing');
+      return;
+    }
+
+    // Filter out empty moduls before submitting
+    const validModulNames = moduls
+      .map(m => m.name.trim())
+      .filter(name => name !== '');
+      
+    if (validModulNames.length === 0) {
+      return;
+    }
+
+    const success = await createModule({
+      apps_id: appsId,
+      name: validModulNames
+    });
+
+    if (success) {
+      onSuccess?.();
+      onClose();
+    }
+  }, [moduls, appsId, createModule, onSuccess, onClose]);
 
   return {
     moduls,
@@ -43,5 +68,6 @@ export const useAddModulModal = (isOpen: boolean, onClose: () => void) => {
     handleRemoveModul,
     handleModulChange,
     handleSubmit,
+    loading,
   };
 };

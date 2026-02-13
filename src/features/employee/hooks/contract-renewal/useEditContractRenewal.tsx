@@ -1,30 +1,49 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import contractRenewalService from '../../services/ContractRenewalService';
-import { ContractRenewalDetail, UpdateStatusPayload, UpdateSubmissionPayload } from '../../types/ContractRenewal';
+import { contractExtensionsService } from '../../services/ContractExtensionsService';
+import { ContractExtensionDetailResult } from '../../types/dto/ContractExtensionType';
 import { useNotificationStore } from '@/stores/notificationStore';
 
 interface UseEditContractRenewalReturn {
-  kontrakData: ContractRenewalDetail | null;
+  id?: string;
+  kontrakData: ContractExtensionDetailResult | null;
   isLoading: boolean;
   isStatusModalOpen: boolean;
   isPengajuanModalOpen: boolean;
   setIsStatusModalOpen: (value: boolean) => void;
   setIsPengajuanModalOpen: (value: boolean) => void;
   handleGoBack: () => void;
-  handleUpdateStatus: (payload: UpdateStatusPayload) => Promise<boolean>;
-  handleUpdatePengajuan: (payload: UpdateSubmissionPayload) => Promise<boolean>;
+  handleUpdateStatus: (payload: FormData) => Promise<boolean>;
+  handleUpdatePengajuan: (payload: FormData) => Promise<boolean>;
   fetchContractRenewalDetail: () => Promise<void>;
+  extensionStatusOptions: { value: string; label: string }[];
 }
 
 export function useEditContractRenewal(): UseEditContractRenewalReturn {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const { addNotification } = useNotificationStore();
-  const [kontrakData, setKontrakData] = useState<ContractRenewalDetail | null>(null);
+  const [kontrakData, setKontrakData] = useState<ContractExtensionDetailResult | null>(null);
+  const [extensionStatusOptions, setExtensionStatusOptions] = useState<{ value: string; label: string }[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [isPengajuanModalOpen, setIsPengajuanModalOpen] = useState(false);
+
+  const fetchExtensionStatuses = useCallback(async () => {
+    try {
+      const response = await contractExtensionsService.getExtensionStatuses();
+      if (response.meta.status === 200 && response.data) {
+        setExtensionStatusOptions(
+          response.data.map((item) => ({
+            value: item.id,
+            label: item.name,
+          }))
+        );
+      }
+    } catch (error) {
+      console.error('Failed to fetch extension statuses', error);
+    }
+  }, []);
 
   const fetchContractRenewalDetail = useCallback(async () => {
     if (!id) {
@@ -39,7 +58,7 @@ export function useEditContractRenewal(): UseEditContractRenewalReturn {
 
     setIsLoading(true);
     try {
-      const response = await contractRenewalService.getContractRenewalDetail(id);
+      const response = await contractExtensionsService.getContractExtensionDetail(id);
       if (response.meta.status === 200 && response.data) {
         setKontrakData(response.data);
       }
@@ -59,7 +78,7 @@ export function useEditContractRenewal(): UseEditContractRenewalReturn {
     navigate(-1);
   }, [navigate]);
 
-  const handleUpdateStatus = useCallback(async (payload: UpdateStatusPayload): Promise<boolean> => {
+  const handleUpdateStatus = useCallback(async (payload: FormData): Promise<boolean> => {
     if (!id) {
       addNotification({
         title: 'Error',
@@ -69,15 +88,20 @@ export function useEditContractRenewal(): UseEditContractRenewalReturn {
       });
       return false;
     }
-
+    console.log(payload,'payload');
     try {
-      await contractRenewalService.updateContractRenewalStatus(id, payload);
-      addNotification({
-        title: 'Success',
-        description: 'Status updated successfully',
-        variant: 'success',
-        hideDuration: 5000,
-      });
+      // Ensure _method is set to PATCH for method spoofing
+      if (!payload.has('_method')) {
+        payload.append('_method', 'PATCH');
+      }
+
+      await contractExtensionsService.processRequestDecision(id, payload);
+      // addNotification({
+      //   title: 'Success',
+      //   description: 'Status updated successfully',
+      //   variant: 'success',
+      //   hideDuration: 5000,
+      // });
       setIsStatusModalOpen(false);
       await fetchContractRenewalDetail();
       return true;
@@ -92,7 +116,7 @@ export function useEditContractRenewal(): UseEditContractRenewalReturn {
     }
   }, [id, addNotification, fetchContractRenewalDetail]);
 
-  const handleUpdatePengajuan = useCallback(async (payload: UpdateSubmissionPayload): Promise<boolean> => {
+  const handleUpdatePengajuan = useCallback(async (payload: FormData): Promise<boolean> => {
     if (!id) {
       addNotification({
         title: 'Error',
@@ -104,13 +128,18 @@ export function useEditContractRenewal(): UseEditContractRenewalReturn {
     }
 
     try {
-      await contractRenewalService.updateContractRenewalSubmission(id, payload);
-      addNotification({
-        title: 'Success',
-        description: 'Pengajuan updated successfully',
-        variant: 'success',
-        hideDuration: 5000,
-      });
+       // Ensure _method is set to PATCH for method spoofing
+       if (!payload.has('_method')) {
+        payload.append('_method', 'PATCH');
+      }
+
+      await contractExtensionsService.processRequestDecision(id, payload);
+      // addNotification({
+      //   title: 'Success',
+      //   description: 'Pengajuan updated successfully',
+      //   variant: 'success',
+      //   hideDuration: 5000,
+      // });
       setIsPengajuanModalOpen(false);
       await fetchContractRenewalDetail();
       return true;
@@ -128,10 +157,12 @@ export function useEditContractRenewal(): UseEditContractRenewalReturn {
   useEffect(() => {
     if (id) {
       fetchContractRenewalDetail();
+      fetchExtensionStatuses();
     }
-  }, [id, fetchContractRenewalDetail]);
+  }, [id, fetchContractRenewalDetail, fetchExtensionStatuses]);
 
   return {
+    id,
     kontrakData,
     isLoading,
     isStatusModalOpen,
@@ -142,5 +173,6 @@ export function useEditContractRenewal(): UseEditContractRenewalReturn {
     handleUpdateStatus,
     handleUpdatePengajuan,
     fetchContractRenewalDetail,
+    extensionStatusOptions,
   };
 }

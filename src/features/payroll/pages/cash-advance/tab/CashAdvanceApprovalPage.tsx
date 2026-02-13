@@ -1,16 +1,20 @@
-// Dokumentasi: Tabel "Persetujuan Kasbon" dengan kolom aksi tambahan
-import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useMemo } from 'react';
 import { DataTable, type DataTableColumn, type DataTableAction } from '@/components/shared/datatable/DataTable';
 import { IconFileDetail } from '@/icons/components/icons';
 import { CheckCircle, XCircle } from 'react-feather';
 import Button from '@/components/ui/button/Button';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { ChevronDown } from 'react-feather';
+import SearchScheduleAndDiscountModal from '@/features/payroll/components/modals/cash-advance/SearchScheduleAndDiscountModal';
+import RejectCashAdvanceConfirmationModal from '@/features/payroll/components/modals/cash-advance/RejectCashAdvanceConfirmationModal';
+import { formatDateToIndonesian } from '@/utils/formatDate';
+import { formatCurrencyValue, parseCurrency } from '@/utils/formatCurrency';
+import { useCashAdvanceApproval } from '@/features/payroll/hooks/cash-advance/useCashAdvanceApproval';
 
 type KasbonApprovalRow = {
   no?: number;
   idKaryawan: string;
+  loanId: string;
   pengguna: string;
   avatar?: string;
   tanggalPengajuan: string;
@@ -22,30 +26,41 @@ type KasbonApprovalRow = {
   nominalKasbon: string;
   nominalCicilan: string;
   periodeCicilan: string;
-  statusKasbon: 'Menunggu Persetujuan HR' | 'Disetujui' | 'Ditolak';
+  statusKasbon: 'Menunggu Persetujuan FAT' | 'Disetujui' | 'Ditolak';
   detail?: string;
 };
 
 export default function CashAdvanceApprovalPage() {
-  // Dokumentasi: inisialisasi navigate dan state dropdown
-  const navigate = useNavigate();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const {
+    rows,
+    loading,
+    total,
+    page,
+    pageSize,
+    setSearch,
+    setPage,
+    setPageSize,
+    setSort,
 
-  // Dokumentasi: util ekspor CSV sederhana
-  const exportCSV = (filename: string, data: any[]) => {
-    if (!data || data.length === 0) return;
-    const headers = Object.keys(data[0]);
-    const csv = [headers.join(','), ...data.map(r => headers.map(h => JSON.stringify((r as any)[h] ?? '')).join(','))].join('\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', filename);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
+    // Actions & Modals
+    isDropdownOpen,
+    setIsDropdownOpen,
+    searchModal,
+    rejectModal,
+    selected,
+    handleApproveOpen,
+    handleRejectOpen,
+    handleClose,
+    fetchCashAdvances,
+
+    // Filters
+    dateRangeFilters,
+    columnFilters,
+    handleDateRangeFilterChange,
+    handleColumnFilterChange,
+
+    navigate,
+  } = useCashAdvanceApproval();
 
   // Dokumentasi: definisi kolom tabel sesuai kebutuhan UI
   const columns: DataTableColumn<KasbonApprovalRow>[] = [
@@ -54,7 +69,6 @@ export default function CashAdvanceApprovalPage() {
       label: 'No.',
       align: 'center',
       sortable: false,
-      format: (_, row) => rows.indexOf(row) + 1,
     },
     { id: 'idKaryawan', label: 'NIP', sortable: true },
     {
@@ -72,26 +86,67 @@ export default function CashAdvanceApprovalPage() {
         </div>
       ),
     },
-    { id: 'tanggalPengajuan', label: 'Tanggal Pengajuan', sortable: true },
+    {
+      id: 'tanggalPengajuan',
+      label: 'Tanggal Pengajuan',
+      sortable: true,
+      dateRangeFilter: true,
+      format: (val) => formatDateToIndonesian(val) || val
+    },
     { id: 'posisi', label: 'Posisi', sortable: true },
     { id: 'departemen', label: 'Departemen', sortable: true },
-    { id: 'bulanMulaiPotongan', label: 'Bulan Mulai Potongan', sortable: true },
-    { id: 'tanggalPencairan', label: 'Tanggal Pencairan', sortable: true },
+    {
+      id: 'bulanMulaiPotongan',
+      label: 'Bulan Mulai Potongan',
+      sortable: true,
+      dateRangeFilter: true,
+      format: (val) => formatDateToIndonesian(val) || val
+    },
+    {
+      id: 'tanggalPencairan',
+      label: 'Tanggal Pencairan',
+      sortable: true,
+      dateRangeFilter: true,
+      format: (val) => formatDateToIndonesian(val) || val
+    },
     { id: 'jenisKasbon', label: 'Jenis Kasbon', sortable: true },
-    { id: 'nominalKasbon', label: 'Nominal Kasbon', align: 'right', sortable: true },
-    { id: 'nominalCicilan', label: 'Nominal Cicilan', align: 'right', sortable: true },
+    {
+      id: 'nominalKasbon',
+      label: 'Nominal Kasbon',
+      align: 'right',
+      sortable: true,
+      format: (val) => formatCurrencyValue(parseCurrency(val))
+    },
+    {
+      id: 'nominalCicilan',
+      label: 'Nominal Cicilan',
+      align: 'right',
+      sortable: true,
+      format: (val) => formatCurrencyValue(parseCurrency(val))
+    },
     { id: 'periodeCicilan', label: 'Periode Cicilan', sortable: true },
     {
       id: 'statusKasbon',
       label: 'Status Kasbon',
       sortable: true,
+      filterOptions: [
+        { label: 'Menunggu Persetujuan HR', value: 'Menunggu Persetujuan HR' },
+        { label: 'Disetujui', value: 'Disetujui' },
+        { label: 'Ditolak', value: 'Ditolak' },
+      ],
       format: (value: KasbonApprovalRow['statusKasbon']) => {
         const color =
           value === 'Disetujui' ? 'bg-success-100 text-success-700' :
-          value === 'Ditolak' ? 'bg-error-100 text-error-700' :
-          'bg-warning-100 text-warning-700';
+            value === 'Ditolak' ? 'bg-error-100 text-error-700' :
+              'bg-warning-100 text-warning-700';
         return <span className={`rounded-full p-[10px] flex justify-center items-center text-center text-xs font-semibold ${color}`}>{value}</span>;
       },
+    },
+    {
+      id: 'rejectionReason',
+      label: 'Alasan Penolakkan',
+      sortable: true,
+      format: (val) => val || '—'
     },
     {
       id: 'detail',
@@ -99,8 +154,8 @@ export default function CashAdvanceApprovalPage() {
       align: 'center',
       sortable: false,
       format: (_, row) => (
-        <button 
-          onClick={() => navigate(`/cash-advance/detail/${row.idKaryawan}`)}
+        <button
+          onClick={() => navigate(`/cash-advance/detail/${row.loanId}`)}
           className="inline-flex items-center justify-center rounded-md p-2 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-white/[0.06]"
         >
           <IconFileDetail />
@@ -109,82 +164,74 @@ export default function CashAdvanceApprovalPage() {
     },
   ];
 
-  // Dokumentasi: contoh data statis untuk tampilan tabel
-  const rows: KasbonApprovalRow[] = useMemo(() => (
-    [
-      { idKaryawan: '1523409876', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'TA', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '3.000.000', nominalCicilan: '300.000', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Persetujuan HR' },
-      { idKaryawan: '1523409877', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Pribadi', nominalKasbon: '8.000.000', nominalCicilan: '600.000', periodeCicilan: '13 bulan', statusKasbon: 'Disetujui' },
-      { idKaryawan: '1523409878', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '1.200.000', nominalCicilan: '150.000', periodeCicilan: '8 bulan', statusKasbon: 'Ditolak' },
-      { idKaryawan: '1523409879', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Pribadi', nominalKasbon: '5.000.000', nominalCicilan: '500.000', periodeCicilan: '10 bulan', statusKasbon: 'Disetujui' },
-      { idKaryawan: '1523409880', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'LND', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '2.500.000', nominalCicilan: '250.000', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Persetujuan HR' },
-      { idKaryawan: '1523409876', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'TA', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '3.000.000', nominalCicilan: '300.000', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Persetujuan HR' },
-      { idKaryawan: '1523409877', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Pribadi', nominalKasbon: '8.000.000', nominalCicilan: '600.000', periodeCicilan: '13 bulan', statusKasbon: 'Disetujui' },
-      { idKaryawan: '1523409878', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '1.200.000', nominalCicilan: '150.000', periodeCicilan: '8 bulan', statusKasbon: 'Ditolak' },
-      { idKaryawan: '1523409879', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Pribadi', nominalKasbon: '5.000.000', nominalCicilan: '500.000', periodeCicilan: '10 bulan', statusKasbon: 'Disetujui' },
-      { idKaryawan: '1523409880', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'LND', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '2.500.000', nominalCicilan: '250.000', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Persetujuan HR' },
-      { idKaryawan: '1523409876', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'TA', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '3.000.000', nominalCicilan: '300.000', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Persetujuan HR' },
-      { idKaryawan: '1523409877', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Pribadi', nominalKasbon: '8.000.000', nominalCicilan: '600.000', periodeCicilan: '13 bulan', statusKasbon: 'Disetujui' },
-      { idKaryawan: '1523409878', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '1.200.000', nominalCicilan: '150.000', periodeCicilan: '8 bulan', statusKasbon: 'Ditolak' },
-      { idKaryawan: '1523409879', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Pribadi', nominalKasbon: '5.000.000', nominalCicilan: '500.000', periodeCicilan: '10 bulan', statusKasbon: 'Disetujui' },
-      { idKaryawan: '1523409880', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'LND', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '2.500.000', nominalCicilan: '250.000', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Persetujuan HR' },
-      { idKaryawan: '1523409876', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'TA', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '3.000.000', nominalCicilan: '300.000', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Persetujuan HR' },
-      { idKaryawan: '1523409877', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Pribadi', nominalKasbon: '8.000.000', nominalCicilan: '600.000', periodeCicilan: '13 bulan', statusKasbon: 'Disetujui' },
-      { idKaryawan: '1523409878', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '1.200.000', nominalCicilan: '150.000', periodeCicilan: '8 bulan', statusKasbon: 'Ditolak' },
-      { idKaryawan: '1523409879', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Pribadi', nominalKasbon: '5.000.000', nominalCicilan: '500.000', periodeCicilan: '10 bulan', statusKasbon: 'Disetujui' },
-      { idKaryawan: '1523409880', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'LND', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '2.500.000', nominalCicilan: '250.000', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Persetujuan HR' },
-      { idKaryawan: '1523409876', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'TA', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '3.000.000', nominalCicilan: '300.000', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Persetujuan HR' },
-      { idKaryawan: '1523409877', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Pribadi', nominalKasbon: '8.000.000', nominalCicilan: '600.000', periodeCicilan: '13 bulan', statusKasbon: 'Disetujui' },
-      { idKaryawan: '1523409878', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '1.200.000', nominalCicilan: '150.000', periodeCicilan: '8 bulan', statusKasbon: 'Ditolak' },
-      { idKaryawan: '1523409879', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Pribadi', nominalKasbon: '5.000.000', nominalCicilan: '500.000', periodeCicilan: '10 bulan', statusKasbon: 'Disetujui' },
-      { idKaryawan: '1523409880', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'LND', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '2.500.000', nominalCicilan: '250.000', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Persetujuan HR' },
-      { idKaryawan: '1523409876', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'TA', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '3.000.000', nominalCicilan: '300.000', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Persetujuan HR' },
-      { idKaryawan: '1523409877', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Pribadi', nominalKasbon: '8.000.000', nominalCicilan: '600.000', periodeCicilan: '13 bulan', statusKasbon: 'Disetujui' },
-      { idKaryawan: '1523409878', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '1.200.000', nominalCicilan: '150.000', periodeCicilan: '8 bulan', statusKasbon: 'Ditolak' },
-      { idKaryawan: '1523409879', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Pribadi', nominalKasbon: '5.000.000', nominalCicilan: '500.000', periodeCicilan: '10 bulan', statusKasbon: 'Disetujui' },
-      { idKaryawan: '1523409880', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'LND', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '2.500.000', nominalCicilan: '250.000', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Persetujuan HR' },
-      { idKaryawan: '1523409876', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'TA', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '3.000.000', nominalCicilan: '300.000', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Persetujuan HR' },
-      { idKaryawan: '1523409877', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Pribadi', nominalKasbon: '8.000.000', nominalCicilan: '600.000', periodeCicilan: '13 bulan', statusKasbon: 'Disetujui' },
-      { idKaryawan: '1523409878', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '1.200.000', nominalCicilan: '150.000', periodeCicilan: '8 bulan', statusKasbon: 'Ditolak' },
-      { idKaryawan: '1523409879', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Pribadi', nominalKasbon: '5.000.000', nominalCicilan: '500.000', periodeCicilan: '10 bulan', statusKasbon: 'Disetujui' },
-      { idKaryawan: '1523409880', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'LND', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '2.500.000', nominalCicilan: '250.000', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Persetujuan HR' },
-      { idKaryawan: '1523409876', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'TA', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '3.000.000', nominalCicilan: '300.000', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Persetujuan HR' },
-      { idKaryawan: '1523409877', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Pribadi', nominalKasbon: '8.000.000', nominalCicilan: '600.000', periodeCicilan: '13 bulan', statusKasbon: 'Disetujui' },
-      { idKaryawan: '1523409878', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '1.200.000', nominalCicilan: '150.000', periodeCicilan: '8 bulan', statusKasbon: 'Ditolak' },
-      { idKaryawan: '1523409879', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'HEBP', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Pribadi', nominalKasbon: '5.000.000', nominalCicilan: '500.000', periodeCicilan: '10 bulan', statusKasbon: 'Disetujui' },
-      { idKaryawan: '1523409880', pengguna: 'Lindsay Curtis', tanggalPengajuan: '20/10/2025', posisi: 'LND', departemen: 'HR', bulanMulaiPotongan: '—', tanggalPencairan: '20/12/2025', jenisKasbon: 'Operasional', nominalKasbon: '2.500.000', nominalCicilan: '250.000', periodeCicilan: '10 bulan', statusKasbon: 'Menunggu Persetujuan HR' },
-    ]
-  ), []);
-
   // Dokumentasi: definisi aksi untuk approve/reject
   const actions: DataTableAction<KasbonApprovalRow>[] = [
     {
-      icon: <CheckCircle size={18} />,
-      className: 'text-success-600 hover:text-success-700',
-      onClick: (row) => {
-        console.log('Approve kasbon:', row);
-        // Implementasi approve logic
-      },
-    },
-    {
       icon: <XCircle size={18} />,
       className: 'text-error-600 hover:text-error-700',
-      onClick: (row) => {
-        console.log('Reject kasbon:', row);
-        // Implementasi reject logic
-      },
+      onClick: (row) => handleRejectOpen((row as any).raw),
+      condition: (row) => row.statusKasbon === 'Menunggu Persetujuan FAT',
+    },
+    {
+      icon: <CheckCircle size={18} />,
+      className: 'text-success-600 hover:text-success-700',
+      onClick: (row) => handleApproveOpen((row as any).raw),
+      condition: (row) => row.statusKasbon === 'Menunggu Persetujuan FAT',
+    },
+    {
+      label: 'Disetujui',
+      icon: <CheckCircle size={18} />,
+      variant: 'custom',
+      className: 'text-success-600 font-bold flex items-center gap-2 cursor-default pointer-events-none p-0',
+      onClick: () => { },
+      condition: (row) => row.statusKasbon === 'Disetujui',
+    },
+    {
+      label: 'Ditolak',
+      icon: <XCircle size={18} />,
+      variant: 'custom',
+      className: 'text-error-600 font-bold flex items-center gap-2 cursor-default pointer-events-none p-0',
+      onClick: () => { },
+      condition: (row) => row.statusKasbon === 'Ditolak',
     },
   ];
+
+  // Dokumentasi: Stabilkan referensi data modal agar tidak memicu reset pada hook modal
+  const modalData = useMemo(() => {
+    if (!selected) return undefined;
+    return {
+      loanId: selected.loanId,
+      nip: selected.employeeId,
+      namaLengkap: selected.fullName,
+      nama: selected.fullName, // Untuk Reject modal yang menggunakan key 'nama'
+      bulanMulaiPotongan: '', // Gunakan string kosong agar bisa diproses DatePicker
+      tanggalPencairan: selected.disbursedAt || ''
+    };
+  }, [selected]);
 
   return (
     <div className="p-0">
       <DataTable
         title="Persetujuan Kasbon"
-        data={rows}
+        data={rows as any}
         columns={columns}
         actions={actions}
         searchable
         filterable
-        onExport={() => exportCSV('persetujuan-kasbon.csv', rows)}
+        loading={loading}
+        pageSize={pageSize}
+        useExternalPagination
+        externalPage={page}
+        externalTotal={total}
+        onSearchChange={setSearch}
+        onSortChange={setSort}
+        onPageChangeExternal={setPage}
+        onRowsPerPageChangeExternal={setPageSize}
+        onDateRangeFilterChange={handleDateRangeFilterChange}
+        dateRangeFilters={dateRangeFilters}
+        onColumnFilterChange={handleColumnFilterChange}
+        columnFilters={columnFilters}
+        // onExport={() => exportCSV('persetujuan-kasbon.csv', rows)}
         toolbarRightSlot={
           <div className="relative">
             <Button
@@ -221,6 +268,24 @@ export default function CashAdvanceApprovalPage() {
           </div>
         }
       />
+
+      {searchModal.isOpen && (
+        <SearchScheduleAndDiscountModal
+          isOpen={searchModal.isOpen}
+          onClose={handleClose}
+          data={modalData as any}
+          onSuccess={() => fetchCashAdvances()}
+        />
+      )}
+
+      {rejectModal.isOpen && (
+        <RejectCashAdvanceConfirmationModal
+          isOpen={rejectModal.isOpen}
+          onClose={handleClose}
+          data={modalData as any}
+          onSuccess={() => fetchCashAdvances()}
+        />
+      )}
     </div>
   );
 }

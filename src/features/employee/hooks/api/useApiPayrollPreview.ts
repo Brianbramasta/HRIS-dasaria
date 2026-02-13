@@ -41,6 +41,7 @@ const mapToPreviewResult = (data: PreviewPayrollApiResponse): PreviewPayrollResu
   bpjsDeductionDetails: data.bpjs_deduction_details || [],
   salaryWithAllowance: data.salary_with_allowance,
   salaryAfterDeduction: data.salary_after_deduction,
+  salary: data.salary,
 });
 
 const mapToCalculateResult = (data: CalculateNetSalaryApiResponse): CalculateNetSalaryResult => ({

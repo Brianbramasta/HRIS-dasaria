@@ -4,6 +4,7 @@ import {
   CompensationListItem,
   CompensationDetailResponse,
   CompensationUpdatePayload,
+  CompensationCategoryOption,
 } from '../../types/dto/CompensationType';
 import { payrollConfigurationServices } from '../../services/PayrollConfigurationServices';
 import useFilterStore from '../../../../stores/filterStore';
@@ -15,6 +16,7 @@ const mapToCompensationListItem = (item: any): CompensationListItem => ({
   id: item.id,
   jobTitleName: item.job_title_name,
   structuralJobName: item.mt_structural_job_name,
+  categoryCompensationId: item.category_compensation_id,
   categoryCompensation: item.category_compensation,
   amountGeneral: item.amount_general,
   amountJunior: item.amount_junior,
@@ -49,11 +51,13 @@ interface UseApiCompensationReturn {
   sortBy: string;
   sortOrder: 'asc' | 'desc' | null;
   filterValue: string;
+  categories: CompensationCategoryOption[];
 
   // Actions
   fetchCompensations: (filter?: Partial<TableFilter>) => Promise<void>;
   updateCompensation: (id: string, payload: CompensationUpdatePayload) => Promise<CompensationListItem | null>;
   getCompensationDetail: (id: string) => Promise<CompensationDetailResponse | null>;
+  fetchCategories: () => Promise<void>;
   
   // Pagination
   setPage: (page: number) => void;
@@ -66,6 +70,7 @@ interface UseApiCompensationReturn {
 
 export const useApiCompensation = (): UseApiCompensationReturn => {
   const [compensations, setCompensations] = useState<CompensationListItem[]>([]);
+  const [categories, setCategories] = useState<CompensationCategoryOption[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [total, setTotal] = useState<number>(0);
@@ -124,6 +129,22 @@ export const useApiCompensation = (): UseApiCompensationReturn => {
     }
   }, [search, sortBy, sortOrder, page, pageSize, filterValue]);
 
+  const fetchCategories = useCallback(async () => {
+    setLoading(true);
+    try {
+      const resp = await payrollConfigurationServices.getDropdownCompensationCategories();
+      const data = (resp as any)?.data || [];
+      setCategories(data.map((item: any) => ({
+        id: item.id,
+        name: item.name
+      })));
+    } catch (err) {
+      console.error('Error fetching categories:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   const updateCompensation = useCallback(async (id: string, payload: CompensationUpdatePayload): Promise<CompensationListItem | null> => {
     setLoading(true);
     setError(null);
@@ -131,7 +152,7 @@ export const useApiCompensation = (): UseApiCompensationReturn => {
     try {
       const formData = new FormData();
       formData.append('_method', 'PATCH');
-      formData.append('category_compensation', payload.categoryCompensation);
+      formData.append('compensation_category_id', payload.categoryCompensationId);
       
       if (payload.amountGeneral !== undefined && payload.amountGeneral !== null) {
         formData.append('amount_general', String(payload.amountGeneral));
@@ -159,16 +180,7 @@ export const useApiCompensation = (): UseApiCompensationReturn => {
 
       await payrollConfigurationServices.updateCompensation(id, formData);
       
-      // Note: The update response might not return the full list item structure (e.g. job names).
-      // We might need to refetch or merge with existing data.
-      // For now, we return what we can map or null if structure differs too much.
-      // The contract says update response returns `id` and `updated_at`.
-      // So we can't map it to CompensationListItem fully without refetching.
-      // However, typical pattern is to refetch list or return partial.
-      // BusinessLinesService maps the response, but maybe the response there was full.
-      // Here, let's just return null or try to map.
-      
-      return null; // Or fetchCompensations() if we want to auto-refresh
+      return null;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update compensation');
       console.error('Error updating compensation:', err);
@@ -198,6 +210,7 @@ export const useApiCompensation = (): UseApiCompensationReturn => {
               }))
             : []
         },
+        categoryCompensationId: item.category_compensation_id,
         categoryCompensation: item.category_compensation,
         amountGeneral: item.amount_general,
         amountJunior: item.amount_junior,
@@ -246,10 +259,12 @@ export const useApiCompensation = (): UseApiCompensationReturn => {
     sortBy,
     sortOrder,
     filterValue,
+    categories,
     
     fetchCompensations,
     updateCompensation,
     getCompensationDetail,
+    fetchCategories,
     
     setPage: handleSetPage,
     setPageSize: handleSetPageSize,

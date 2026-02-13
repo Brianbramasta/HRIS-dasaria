@@ -23,7 +23,7 @@ interface Props {
 
 const kategoriOptions = [
   { value: 'Umum', label: 'Umum' },
-  { value: 'Personal/Diskresi', label: 'Personal/Diskresi' },
+  { value: 'Diskresi', label: 'Diskresi' },
 ];
 
 const EditTunjanganTidakTetapModal: React.FC<Props> = ({ isOpen, onClose, defaultValues, onSave, title, confirmTitleButton }) => {

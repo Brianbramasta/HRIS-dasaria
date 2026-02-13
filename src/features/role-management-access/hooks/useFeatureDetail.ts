@@ -1,11 +1,12 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useApiFeatures } from './api/useApiFeatures';
 
 export interface FeatureData {
   no: number;
   idFitur: string;
   fitur: string;
-  modul: string;
+  modul: string; // We might leave this empty or redundant if we don't have module name here
 }
 
 export default function useFeatureDetail() {
@@ -13,18 +14,32 @@ export default function useFeatureDetail() {
   const navigate = useNavigate();
   const location = useLocation();
   const { layananId } = location.state || {};
+  
   const [isAddFeatureModalOpen, setIsAddFeatureModalOpen] = useState(false);
   const [isEditFeatureModalOpen, setIsEditFeatureModalOpen] = useState(false);
   const [isDeleteFeatureModalOpen, setIsDeleteFeatureModalOpen] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState<FeatureData | null>(null);
-  
-  // Mock data based on the design
-  const [featureData] = useState<FeatureData[]>([
-    { no: 1, idFitur: 'F001', fitur: 'Data Karyawan', modul: 'Data Master Karyawan' },
-    { no: 2, idFitur: 'F002', fitur: 'Perpanjangan Kontrak', modul: 'Data Master Karyawan' },
-    { no: 3, idFitur: 'F003', fitur: 'Pengunduran Diri', modul: 'Data Master Karyawan' },
-    { no: 4, idFitur: 'F004', fitur: 'Data Master Karyawan', modul: 'Perubahan Organisasi' },
-  ]);
+
+  const {
+    features,
+    fetchFeatures,
+    deleteFeature,
+    loading,
+  } = useApiFeatures();
+
+  useEffect(() => {
+    if (modulId) {
+      fetchFeatures({ modules_id: modulId, per_page: 100 }); // Fetch all for now or implement pagination later
+    }
+  }, [modulId, fetchFeatures]);
+
+  // Map API data to UI data
+  const featureData: FeatureData[] = features.map((item, index) => ({
+    no: index + 1,
+    idFitur: item.id,
+    fitur: item.name,
+    modul: '', // Module name is not provided in list API, and we are in module detail context anyway
+  }));
 
   const handleAddFeature = useCallback(() => {
     setIsAddFeatureModalOpen(true);
@@ -46,11 +61,22 @@ export default function useFeatureDetail() {
     });
   }, [navigate, layananId, modulId]);
 
-  const onDeleteConfirm = useCallback(() => {
-    console.log('Deleting feature:', selectedFeature);
-    setIsDeleteFeatureModalOpen(false);
-    setSelectedFeature(null);
-  }, [selectedFeature]);
+  const refreshFeatures = useCallback(() => {
+    if (modulId) {
+      fetchFeatures({ modules_id: modulId, per_page: 100 });
+    }
+  }, [modulId, fetchFeatures]);
+
+  const onDeleteConfirm = useCallback(async () => {
+    if (selectedFeature?.idFitur) {
+      const success = await deleteFeature(selectedFeature.idFitur);
+      if (success) {
+        setIsDeleteFeatureModalOpen(false);
+        setSelectedFeature(null);
+        refreshFeatures();
+      }
+    }
+  }, [selectedFeature, deleteFeature, refreshFeatures]);
 
   return {
     modulId,
@@ -66,6 +92,8 @@ export default function useFeatureDetail() {
     isDeleteFeatureModalOpen,
     setIsDeleteFeatureModalOpen,
     selectedFeature,
-    onDeleteConfirm
+    onDeleteConfirm,
+    refreshFeatures,
+    loading,
   };
 }

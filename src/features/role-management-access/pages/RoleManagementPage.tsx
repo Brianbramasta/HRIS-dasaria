@@ -1,6 +1,8 @@
 import { DataTable, DataTableColumn, DataTableAction } from '../../../components/shared/datatable/DataTable';
 import { IconFileDetail, IconPencil, IconHapus } from '@/icons/components/icons';
 import useRoleManagement, { RoleData, LayananData } from '../hooks/useRoleManagement';
+import { useApiRolesAccess } from '../hooks/api/useApiRolesAccess';
+import { useEffect, useMemo } from 'react';
 import AddServiceModal from '../components/modals/service/AddServiceModal';
 import EditServiceModal from '../components/modals/service/EditServiceModal';
 import DeleteServiceModal from '../components/modals/service/DeleteServiceModal';
@@ -8,7 +10,7 @@ import DeleteRoleModal from '../components/modals/detail-role/DeleteRoleModal';
 
 export default function HakAksesPage() {
   const {
-    roleData,
+    // roleData, // We will override this
     layananData,
     handleAddRole,
     handleAddLayanan,
@@ -33,7 +35,26 @@ export default function HakAksesPage() {
     handleConfirmDeleteRole,
     columnFilters,
     handleColumnFilterChange,
+    fetchApps,
+    appsLoading,
   } = useRoleManagement();
+
+  const { appsPerRole, fetchAppsPerRole, loading } = useApiRolesAccess();
+
+  useEffect(() => {
+    fetchAppsPerRole();
+    fetchApps();
+  }, [fetchAppsPerRole, fetchApps]);
+
+  const apiRoleData: RoleData[] = useMemo(() => {
+    return appsPerRole.map((item, index) => ({
+      id: item.role_id, // DataTable might need 'id'
+      no: index + 1,
+      idRole: item.role_id,
+      role: item.role_name,
+      sistemLayanan: item.list_apps.map(app => app.app_name).join(', '),
+    }));
+  }, [appsPerRole]);
 
   // Columns for Role Akses
   const roleColumns: DataTableColumn<RoleData>[] = [
@@ -119,7 +140,7 @@ export default function HakAksesPage() {
   return (
     <div className="px-4 space-y-8 pb-8">
       <DataTable
-        data={roleData}
+        data={apiRoleData}
         columns={roleColumns}
         actions={roleActions}
         title="Role Akses"
@@ -130,6 +151,7 @@ export default function HakAksesPage() {
         filterable={true}
         onColumnFilterChange={handleColumnFilterChange}
         columnFilters={columnFilters}
+        loading={loading}
       />
 
       <DataTable
@@ -144,11 +166,13 @@ export default function HakAksesPage() {
         filterable={true}
         onColumnFilterChange={handleColumnFilterChange}
         columnFilters={columnFilters}
+        loading={appsLoading}
       />
 
       <AddServiceModal
         isOpen={isAddServiceModalOpen}
         onClose={handleCloseAddServiceModal}
+        onSuccess={fetchApps}
       />
       <DeleteServiceModal
         isOpen={isDeleteServiceModalOpen}
@@ -160,6 +184,7 @@ export default function HakAksesPage() {
         isOpen={isEditServiceModalOpen}
         onClose={handleCloseEditServiceModal}
         data={selectedServiceToEdit}
+        onSuccess={fetchApps}
       />
       <DeleteRoleModal
         isOpen={isDeleteRoleModalOpen}

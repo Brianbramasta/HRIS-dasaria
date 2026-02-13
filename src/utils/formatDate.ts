@@ -27,19 +27,19 @@ export function formatDate(value: string | Date): string {
  */
 export function formatDateToISO(value: string): string {
   if (!value || typeof value !== "string") return "";
-  
+
   // Match dd/mm/yyyy pattern
   const match = value.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
   if (!match) return "";
-  
+
   const [, dd, mm, yyyy] = match;
-  
+
   // Validate date components
   const day = parseInt(dd, 10);
   const month = parseInt(mm, 10);
-  
+
   if (month < 1 || month > 12 || day < 1 || day > 31) return "";
-  
+
   // Return in yyyy-mm-dd format
   return `${yyyy}-${mm}-${dd}`;
 }
@@ -51,25 +51,25 @@ export function formatDateToISO(value: string): string {
  */
 export function formatDateToIndonesian(value: string): string {
   if (!value || typeof value !== "string") return "";
-  
+
   // Match yyyy-mm-dd pattern
   const match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
   if (!match) return "";
-  
+
   const [, yyyy, mm, dd] = match;
-  
+
   // Validate date components
   const day = parseInt(dd, 10);
   const month = parseInt(mm, 10);
-  
+
   if (month < 1 || month > 12 || day < 1 || day > 31) return "";
-  
+
   // Indonesian month names
   const monthNames = [
     "Januari", "Februari", "Maret", "April", "Mei", "Juni",
     "Juli", "Agustus", "September", "Oktober", "November", "Desember"
   ];
-  
+
   // Return in Indonesian format: DD Month YYYY
   return `${day} ${monthNames[month - 1]} ${yyyy}`;
 }
@@ -81,7 +81,7 @@ export function formatDateToIndonesian(value: string): string {
  */
 export function formatIndonesianToISO(value: string): string {
   if (!value || typeof value !== "string") return "";
-  
+
   // Indonesian month names mapping
   const monthMap: { [key: string]: string } = {
     "Januari": "01",
@@ -97,26 +97,57 @@ export function formatIndonesianToISO(value: string): string {
     "November": "11",
     "Desember": "12"
   };
-  
+
   // Match pattern: DD Month YYYY (e.g., "14 Juni 2003")
   const match = value.match(/^(\d{1,2})\s+(\w+)\s+(\d{4})$/);
   if (!match) return "";
-  
+
   const [, day, monthName, year] = match;
-  
+
   // Get month number from month name
   const month = monthMap[monthName];
   if (!month) return "";
-  
+
   // Validate day
   const dayNum = parseInt(day, 10);
   if (dayNum < 1 || dayNum > 31) return "";
-  
+
   // Pad day with leading zero if needed
   const paddedDay = day.padStart(2, "0");
-  
+
   // Return in yyyy-mm-dd format
   return `${year}-${month}-${paddedDay}`;
+}
+
+/**
+ * Convert date from yyyy-mm-dd format to Indonesian month-year format (Month YYYY)
+ * @param value - Date string in yyyy-mm-dd format
+ * @returns Date string in Indonesian format (e.g., "Juni 2003") or empty string if invalid
+ */
+export function formatMonthYearToIndonesian(value: string | Date): string {
+  if (!value) return "";
+
+  let yyyy: string, mm: string;
+
+  if (value instanceof Date) {
+    yyyy = value.getFullYear().toString();
+    mm = (value.getMonth() + 1).toString().padStart(2, "0");
+  } else {
+    // Match yyyy-mm or yyyy-mm-dd pattern
+    const match = value.match(/^(\d{4})-(\d{2})/);
+    if (!match) return "";
+    [, yyyy, mm] = match;
+  }
+
+  const month = parseInt(mm, 10);
+  if (month < 1 || month > 12) return "";
+
+  const monthNames = [
+    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+  ];
+
+  return `${monthNames[month - 1]} ${yyyy}`;
 }
 
 export default formatDate;

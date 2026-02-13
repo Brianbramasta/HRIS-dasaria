@@ -3,6 +3,7 @@ export interface CompensationListItem {
   jobTitleName: string;
   structuralJobName: string;
   structuralJobs?: { id: string; structuralJobName: string }[];
+  categoryCompensationId: string;
   categoryCompensation: string;
   amountGeneral: number | null;
   amountJunior: number | null;
@@ -14,6 +15,7 @@ export interface CompensationApiItem {
   id: string;
   job_title_name: string;
   mt_structural_job_name: string;
+  category_compensation_id: string;
   category_compensation: string;
   amount_general: number | null;
   amount_junior: number | null;
@@ -33,6 +35,7 @@ export interface CompensationDetailResponse {
       structuralJobName: string;
     }[];
   };
+  categoryCompensationId: string;
   categoryCompensation: string;
   amountGeneral: number | null;
   amountJunior: number | null;
@@ -43,9 +46,14 @@ export interface CompensationDetailResponse {
 }
 
 export interface CompensationUpdatePayload {
-  categoryCompensation: string;
+  categoryCompensationId: string;
   amountGeneral?: string | number | null;
   amountJunior?: string | number | null;
   amountMiddle?: string | number | null;
   amountSenior?: string | number | null;
+}
+
+export interface CompensationCategoryOption {
+  id: string;
+  name: string;
 }

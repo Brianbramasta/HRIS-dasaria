@@ -1,5 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { startLoading, stopLoading } from '../stores/loadingStore';
+import useTemporaryApiStore from '../stores/useTemporaryApiStore';
 import handleApiError from '../utils/errorHandle';
 import { handleApiSuccess } from '../utils/successHandle';
 
@@ -33,13 +34,16 @@ class ApiService {
     // const currentPath = window.location.pathname;
 
     // Tentukan baseURL berdasarkan apakah path termasuk dalam daftar
-    this.baseURL = import.meta.env.VITE_API_URL; 
+    const tempApiUrl = useTemporaryApiStore.getState().apiUrl;
+    this.baseURL = tempApiUrl || import.meta.env.VITE_API_URL; 
     
     this.instance = axios.create({
       baseURL: this.baseURL,
       timeout: 30000,
       headers: {
         'Content-Type': 'application/json',
+        // hapus header ini jika tidak diperlukan
+        "ngrok-skip-browser-warning": "true"
       },
     });
 

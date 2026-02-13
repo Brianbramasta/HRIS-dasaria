@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { formatInputCurrency } from '@/utils/formatCurrency';
+import { useApiCompensation } from '../../../api/useApiCompensation';
 
 export type EditKompensasiForm = {
   levelJabatan?: string;
   jabatanStruktural?: string;
+  categoryCompensationId?: string;
   kategori?: string;
   general?: string;
   junior?: string;
@@ -23,11 +25,6 @@ const LEVEL_JABATAN_OPTIONS = [
   { value: 'Under Staff - PKL', label: 'Under Staff - PKL' },
 ];
 
-const KATEGORI_OPTIONS = [
-  { value: 'Gaji Pokok', label: 'Gaji Pokok' },
-  { value: 'Uang Saku', label: 'Uang Saku' },
-];
-
 export const useEditCompensationModal = (params: {
   isOpen: boolean;
   initialData?: EditKompensasiForm | null;
@@ -35,9 +32,23 @@ export const useEditCompensationModal = (params: {
   onSubmit: (data: EditKompensasiForm) => void;
 }) => {
   const { isOpen, initialData, onClose, onSubmit } = params;
+  const { categories, fetchCategories } = useApiCompensation();
 
   const [form, setForm] = useState<EditKompensasiForm>({});
   const title = useMemo(() => 'Edit Kompensasi', []);
+
+  const KATEGORI_OPTIONS = useMemo(() => {
+    return categories.map((cat) => ({
+      value: cat.id,
+      label: cat.name,
+    }));
+  }, [categories]);
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchCategories();
+    }
+  }, [isOpen, fetchCategories]);
 
   useEffect(() => {
     setForm(initialData || {});

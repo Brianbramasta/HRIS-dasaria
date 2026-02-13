@@ -15,7 +15,7 @@ export default function PeriodePenggajianPage() {
   const tabs = [
     { id: 'non-ae', label: 'Non AE', link: '/payroll-period/non-ae' },
     { id: 'ae', label: 'AE', link: '/payroll-period/ae' },
-    { id: 'pkl', label: 'PKL', link: '/payroll-period/pkl' },
+    // { id: 'pkl', label: 'PKL', link: '/payroll-period/pkl' },
     { id: 'thr', label: 'THR', link: '/payroll-period/thr' },
   ];
 
