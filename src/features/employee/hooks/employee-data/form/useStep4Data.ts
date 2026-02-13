@@ -74,9 +74,14 @@ export const useStep4Data = (isOpen?: boolean) => {
   // Calculate Net Salary Manually
   const netSalary = useMemo(() => {
     const base = previewData?.salary ?? 0;
-    const additional = nonFixAllowances.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+    console.log('step3Employee.kategoriKaryawan:', step3Employee?.kategoriKaryawan, 'base salary:', base);
+    const category = categoriKaryawanOptions.find((opt: any) => opt.value === step3Employee.kategoriKaryawan);
+    console.log('category:', category);
+
+    const additional = category?.label === 'Staff' ? nonFixAllowances.reduce((sum, item) => sum + (Number(item.amount) || 0), 0) : 0;
+    
     return base + additional;
-  }, [previewData?.salary, nonFixAllowances]);
+  }, [previewData?.salary, nonFixAllowances, categoriKaryawanOptions, step3Employee.kategoriKaryawan]);
 
   const handleChange = (field: string, value: string) => {
     updateStep3({ [field]: value } as any);

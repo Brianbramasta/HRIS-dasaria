@@ -211,7 +211,7 @@ export const Step04SalaryBpjs: React.FC = () => {
         )} */}
 
         {/* Tunjangan Tidak Tetap */}
-        {isAuthenticated && (
+        {isAuthenticated && getCategoryLabel() === 'Staff' && (
           <div className="mt-6">
             <h6 className="text-md font-medium text-gray-700 dark:text-gray-300 mb-3">Tunjangan Tidak Tetap</h6>
             <div className="space-y-4">
