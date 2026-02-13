@@ -225,7 +225,6 @@ export default function AppRoutes() {
           <Route path="/role-management-access/access-detail/:featureId" element={<AccessDetail />} />
           <Route path="/role-management-access/add" element={<EditRolePage />} />
           <Route path="/role-management-access/edit/:roleId" element={<EditRolePage />} />
-          <Route path="/temporary-api" element={<TemporaryApiPage />} />
 
 
         </Route>
@@ -242,6 +241,8 @@ export default function AppRoutes() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/reset-password" element={<ResetPasswordPage />} />
+      <Route path="/temporary-api" element={<TemporaryApiPage />} />
+
 
       {/* Fallback Route */}
       <Route path="*" element={<NotFound />} />
