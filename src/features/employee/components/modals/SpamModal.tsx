@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal } from "@/components/ui/modal";
 import { useSpamModalStore } from "@/stores/useSpamModalStore";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { useApiEmployee } from "../../hooks/api/useApiEmployee";
 
 interface ContractData {
@@ -21,17 +21,31 @@ export const SpamModal: React.FC<SpamModalProps> = ({
 }) => {
   const { isOpen, openModal, closeModal } = useSpamModalStore();
   const navigate = useNavigate();
+  const location = useLocation();
   const [selectedEmployees] = useState<Set<string>>(
     new Set()
   );
   const [displayData, setDisplayData] = useState<ContractData[]>(data);
   const { employeesNearContractEnd, fetchEmployeesNearContractEnd } = useApiEmployee();
 
-  // Fetch data on component mount
+  // Check if current page is employee page
+  const isEmployeePage = () => {
+    const employeePages = [
+      '/employee-data',
+      '/contract-extension',
+      '/resignation',
+      '/organization-history'
+    ];
+    return employeePages.some(page => location.pathname.startsWith(page));
+  };
+
+  // Fetch data only when accessing employee pages
   useEffect(() => {
-    console.log('SpamModal mounted, fetching data...');
-    fetchEmployeesNearContractEnd();
-  }, []); // Empty dependency - hanya fetch sekali saat mount
+    if (isEmployeePage()) {
+      console.log('On employee page and modal is open, fetching data...');
+      fetchEmployeesNearContractEnd();
+    }
+  }, [ location.pathname]);
 
   // Map API data to ContractData format and show modal if there's data
   useEffect(() => {
