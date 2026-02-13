@@ -1,106 +1,33 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Modal } from "@/components/ui/modal";
 import { useSpamModalStore } from "@/stores/useSpamModalStore";
 import { useNavigate, useLocation } from "react-router";
-import { useApiEmployee } from "../../hooks/api/useApiEmployee";
-
-interface ContractData {
-  id: string;
-  employeeName: string;
-  avatar: string;
-  contractDuration: string;
-  durationColor: "orange" | "red" | "green"; // orange: bulan, red: minggu, green: normal
-}
 
 interface SpamModalProps {
-  data?: ContractData[];
+  // data?: ContractData[]; // No longer needed as it's in the store
 }
 
-export const SpamModal: React.FC<SpamModalProps> = ({
-  data = [],
-}) => {
-  const { isOpen, openModal, closeModal } = useSpamModalStore();
+export const SpamModal: React.FC<SpamModalProps> = () => {
+  const { 
+    isOpen, 
+    closeModal, 
+    displayData, 
+    fetchEmployeesNearContractEnd, 
+    getDurationBgColor, 
+    isEmployeePage, 
+    handleProcess 
+  } = useSpamModalStore();
+  
   const navigate = useNavigate();
   const location = useLocation();
-  const [selectedEmployees] = useState<Set<string>>(
-    new Set()
-  );
-  const [displayData, setDisplayData] = useState<ContractData[]>(data);
-  const { employeesNearContractEnd, fetchEmployeesNearContractEnd } = useApiEmployee();
-
-  // Check if current page is employee page
-  const isEmployeePage = () => {
-    const employeePages = [
-      '/employee-data',
-      '/contract-extension',
-      '/resignation',
-      '/organization-history'
-    ];
-    return employeePages.some(page => location.pathname.startsWith(page));
-  };
 
   // Fetch data only when accessing employee pages
   useEffect(() => {
-    if (isEmployeePage()) {
-      console.log('On employee page and modal is open, fetching data...');
+    if (isEmployeePage(location.pathname)) {
+      console.log('On employee page, checking for contract end data...');
       fetchEmployeesNearContractEnd();
     }
-  }, [ location.pathname]);
-
-  // Map API data to ContractData format and show modal if there's data
-  useEffect(() => {
-    console.log('employeesNearContractEnd changed:', employeesNearContractEnd);
-    
-    if (employeesNearContractEnd && employeesNearContractEnd.length > 0) {
-      const mappedData: ContractData[] = employeesNearContractEnd.map((item, index) => ({
-        id: `${item.employee_name}-${index}`,
-        employeeName: item.employee_name,
-        avatar: item.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${item.employee_name}`,
-        contractDuration: `${item.remaining_month} Bulan`,
-        durationColor: getDurationColor(item.remaining_month),
-      }));
-      setDisplayData(mappedData);
-      console.log('Mapped data:', mappedData);
-      // Only open modal if there's data
-      if (mappedData.length > 0) {
-        console.log('Opening modal with data');
-        openModal();
-      }
-    } else {
-      setDisplayData([]);
-    }
-  }, [employeesNearContractEnd]);
-
-
-
-  const getDurationBgColor = (color: "orange" | "red" | "green") => {
-    switch (color) {
-      case "orange":
-        return "bg-orange-100 text-orange-700";
-      case "red":
-        return "bg-red-100 text-red-700";
-      case "green":
-        return "bg-green-100 text-green-700";
-      default:
-        return "bg-gray-100 text-gray-700";
-    }
-  };
-
-  const getDurationColor = (remainingMonth: number): "orange" | "red" | "green" => {
-    if (remainingMonth <= 1) {
-      return "red"; // Less than or equal to 1 month = red
-    } else if (remainingMonth <= 3) {
-      return "orange"; // 2-3 months = orange
-    }
-    return "green"; // More than 3 months = green
-  };
-
-  const handleProcess = () => {
-    console.log("Processing selected employees:", Array.from(selectedEmployees));
-    navigate("/contract-extension");
-    // Handle the process here
-    closeModal();
-  };
+  }, [location.pathname]);
 
   return (
     <Modal
@@ -185,7 +112,7 @@ export const SpamModal: React.FC<SpamModalProps> = ({
             Ingatkan Nanti
           </button>
           <button
-            onClick={handleProcess}
+            onClick={() => handleProcess(navigate)}
             className="flex-1 rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white transition-colors hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
           >
             Proses Perpanjangan
