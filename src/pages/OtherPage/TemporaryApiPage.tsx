@@ -1,12 +1,27 @@
 import React from 'react';
 import InputField from '@/components/shared/field/InputField';
 import useTemporaryApiStore from '@/stores/useTemporaryApiStore';
+import { addNotification } from '@/stores/notificationStore';
 
 const TemporaryApiPage: React.FC = () => {
   const { apiUrl, setApiUrl } = useTemporaryApiStore();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setApiUrl(e.target.value);
+  };
+
+  const handleApply = () => {
+    addNotification({
+      title: 'Berhasil',
+      description: 'URL API telah diperbaharui.',
+      variant: 'success',
+    });
+    
+    // Gunakan window.location.href agar halaman melakukan reload total
+    // dan ApiService menginisialisasi ulang baseURL dari localStorage
+    setTimeout(() => {
+      window.location.href = '/dashboard';
+    }, 1000);
   };
 
   return (
@@ -33,10 +48,10 @@ const TemporaryApiPage: React.FC = () => {
       </div>
       
       <button 
-        onClick={() => window.location.reload()}
+        onClick={handleApply}
         className="mt-4 px-4 py-2 bg-brand-500 text-white rounded-lg hover:bg-brand-600 transition-colors text-sm font-medium"
       >
-        Terapkan Perubahan (Reload)
+        Terapkan Perubahan & Ke Dashboard
       </button>
     </div>
   );
