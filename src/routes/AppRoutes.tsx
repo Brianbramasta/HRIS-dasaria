@@ -56,13 +56,11 @@ import THRTab from "@/features/payroll/pages/payroll-period/tab/THRPages";
 import SharedNonAETab from "@/features/payroll/pages/shared/tab/NonAEPages";
 import SharedAETab from "@/features/payroll/pages/shared/tab/AEPages";
 import SharedTHRTab from "@/features/payroll/pages/shared/tab/THRPages";
-// Dokumentasi: Import halaman Detail Gaji untuk navigasi dari tabel Periode Penggajian
-// import DetailGajiPage from "@/features/penggajian/pages/periodePenggajian/detail/detailGaji";
 // Dokumentasi: Import halaman Detail Gaji AE dan Non-AE terpisah
-import DetailGajiAEPage from "@/features/payroll/pages/shared/detail/detailPayrollAEPage";
-import DetailGajiNonAEPage from "@/features/payroll/pages/shared/detail/detailPayrollNonAEPage";
-import DetailGajiTHRPage from "@/features/payroll/pages/shared/detail/detailPayrollTHRPage";
-import DetailGajiPKLPage from "@/features/payroll/pages/shared/detail/detailPayrollPKLPage";
+import DetailGajiAEPage from "@/features/payroll/pages/payroll-period/detail/detailPayrollAEPage";
+import DetailGajiNonAEPage from "@/features/payroll/pages/payroll-period/detail/detailPayrollNonAEPage";
+import DetailGajiTHRPage from "@/features/payroll/pages/payroll-period/detail/detailPayrollTHRPage";
+import DetailGajiPKLPage from "@/features/payroll/pages/payroll-period/detail/detailPayrollPKLPage";
 import HakAksesPage from "@/features/role-management-access/pages/RoleManagementPage";
 import DetailHakAksesPages from "@/features/role-management-access/pages/detail/DetailHakAksesPages";
 import ModulDetail from "@/features/role-management-access/pages/ModulDetail";
