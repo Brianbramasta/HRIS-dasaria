@@ -123,7 +123,6 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
         onClose={() => setShowApprovalModal(false)}
         onConfirm={handleApprovalConfirm}
         submitting={isApproving}
-        payrollPeriodName={title}
         description="Periode gaji yang disahkan akan dikunci dan tidak dapat diubah. Pastikan semua data telah sesuai sebelum melanjutkan proses approval."
       />
     </>

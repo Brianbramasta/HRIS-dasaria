@@ -1,10 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { DataTableColumn } from '@/components/shared/datatable/DataTable';
 import PenggajianTabBase from '../../../components/tabs/PayrollTabBase';
 import Button from '@/components/ui/button/Button';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { ChevronDown } from 'react-feather';
+import { useApiPayrollPeriod } from '../../../hooks/api/useApiPayrollPeriod';
+import { PayrollPeriodListItem } from '../../../types/dto/PayrollPeriodType';
+import { formatCurrency } from '@/utils/formatCurrency';
+import { formatDateToIndonesian } from '@/utils/formatDate';
 
 type NonAERow = {
   no?: number;
@@ -22,11 +26,35 @@ type NonAERow = {
   statusPenggajian: string;
 };
 
+// Mapping helper from PayrollPeriodListItem to NonAERow
+const mapPayrollPeriodToNonAERow = (item: PayrollPeriodListItem, index: number): NonAERow => ({
+  no: index + 1,
+  idKaryawan: item.employeeId,
+  pengguna: item.fullName,
+  tanggalPengajuan: item.periode,
+  jumlahHariKerja: String(item.workingDays),
+  totalGajiBersih: item.netSalary,
+  gajiPokokUangSaku: String(item.basicSalary),
+  potongan: String(item.deductionTotal),
+  tunjanganTetap: String(item.allowanceTotal),
+  tunjanganTidakTetap: String(item.nonFixedAllowanceTotal),
+  kategori: item.employeeCategoryName,
+  perusahaan: item.companyName,
+  statusPenggajian: item.payrollStatusName,
+});
+
 export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [approvalType, setApprovalType] = useState<string>('Persetujuan oleh FAT');
+
+  // Hook untuk fetch data payroll period
+  const {
+    payrollPeriods,
+    fetchPayrollPeriods,
+  } = useApiPayrollPeriod();
+
   // Dokumentasi: Deteksi halaman Approval atau Distribusi untuk set judul
   const isApprovalPage = location.pathname.includes('/payroll-period-approval');
   const isDistribusiPage = location.pathname.includes('/salary-distribution');
@@ -39,25 +67,31 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
   const handleDetailNavigation = (id: string) => {
     navigate(`${detailPathPrefix}/${id}?approvalType=${encodeURIComponent(approvalType)}`);
   };
-  const [rows] = useState<NonAERow[]>([
-    { idKaryawan: '12345678', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', jumlahHariKerja: '20', totalGajiBersih: '7.000.000', gajiPokokUangSaku: '5.000.000', potongan: '250.000', tunjanganTetap: '1.000.000', tunjanganTidakTetap: '750.000', kategori: 'Staff', perusahaan: 'Dasaria', statusPenggajian: 'Draft' },
-    { idKaryawan: '12345679', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', jumlahHariKerja: '20', totalGajiBersih: '7.000.000', gajiPokokUangSaku: '5.000.000', potongan: '250.000', tunjanganTetap: '1.000.000', tunjanganTidakTetap: '750.000', kategori: 'Staff', perusahaan: 'Dasaria', statusPenggajian: 'Pending Draft' },
-  ]);
+
+  // Dokumentasi: Fetch data saat component mount dan reset key berubah
+  useEffect(() => {
+    fetchPayrollPeriods({ page: 1, pageSize: 10 });
+  }, [resetKey, fetchPayrollPeriods]);
+
+  // Map PayrollPeriodListItem to NonAERow
+  const rows: NonAERow[] = payrollPeriods.map((item, index) => mapPayrollPeriodToNonAERow(item, index));
+
   const baseColumns: DataTableColumn<NonAERow>[] = [
     { id: 'no', label: 'No.', align: 'center', sortable: false },
     { id: 'idKaryawan', label: 'NIP' },
     { id: 'pengguna', label: 'Pengguna' },
-    { id: 'tanggalPengajuan', label: 'Tanggal Pengajuan' },
+    { id: 'tanggalPengajuan', label: 'Tanggal Pengajuan', format: (v) => formatDateToIndonesian(String(v)) },
     { id: 'jumlahHariKerja', label: 'Jumlah Hari Kerja' },
-    { id: 'totalGajiBersih', label: 'Total Gaji Bersih', align: 'right' },
-    { id: 'gajiPokokUangSaku', label: 'Gaji Pokok / Uang Saku', align: 'right' },
-    { id: 'potongan', label: 'Potongan', align: 'right' },
-    { id: 'tunjanganTetap', label: 'Tunjangan Tetap', align: 'right' },
-    { id: 'tunjanganTidakTetap', label: 'Tunjangan Tidak Tetap', align: 'right' },
+    { id: 'totalGajiBersih', label: 'Total Gaji Bersih', align: 'right', format: (v) => formatCurrency(Number(v)) },
+    { id: 'gajiPokokUangSaku', label: 'Gaji Pokok / Uang Saku', align: 'right', format: (v) => formatCurrency(Number(v)) },
+    { id: 'potongan', label: 'Potongan', align: 'right', format: (v) => formatCurrency(Number(v)) },
+    { id: 'tunjanganTetap', label: 'Tunjangan Tetap', align: 'right', format: (v) => formatCurrency(Number(v)) },
+    { id: 'tunjanganTidakTetap', label: 'Tunjangan Tidak Tetap', align: 'right', format: (v) => formatCurrency(Number(v)) },
     { id: 'kategori', label: 'Kategori' },
     { id: 'perusahaan', label: 'Perusahaan' },
     { id: 'statusPenggajian', label: 'Status Penggajian', format: (v) => <span className="rounded-full bg-blue-100 p-[10px] flex justify-center text-xs text-blue-700 dark:bg-blue-900/30 dark:text-blue-200">{String(v)}</span> },
   ];
+
   return (
     <PenggajianTabBase
       resetKey={resetKey}
@@ -67,48 +101,50 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
       title={title}
       onDetailNavigation={handleDetailNavigation}
       toolbarRightSlot={
-        isApprovalPage && <div className="relative">
-          <Button
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            variant="outline"
-            size="sm"
-            className="flex items-center gap-1 dropdown-toggle"
-          >
-            {approvalType}
-            <ChevronDown size={16} />
-          </Button>
-          <Dropdown isOpen={isDropdownOpen} onClose={() => setIsDropdownOpen(false)}>
-            <div className="p-2 w-64">
-              <button
-                className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-                onClick={() => {
-                  setApprovalType('Persetujuan oleh FAT');
-                  setIsDropdownOpen(false);
-                }}
-              >
-                Persetujuan oleh FAT
-              </button>
-              <button
-                className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-                onClick={() => {
-                  setApprovalType('Persetujuan oleh Direktur HRGA');
-                  setIsDropdownOpen(false);
-                }}
-              >
-                Persetujuan oleh Direktur HRGA
-              </button>
-              <button
-                className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-                onClick={() => {
-                  setApprovalType('Persetujuan oleh BOD');
-                  setIsDropdownOpen(false);
-                }}
-              >
-                Persetujuan oleh BOD
-              </button>
-            </div>
-          </Dropdown>
-        </div>
+        isApprovalPage && (
+          <div className="relative">
+            <Button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-1 dropdown-toggle"
+            >
+              {approvalType}
+              <ChevronDown size={16} />
+            </Button>
+            <Dropdown isOpen={isDropdownOpen} onClose={() => setIsDropdownOpen(false)}>
+              <div className="p-2 w-64">
+                <button
+                  className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+                  onClick={() => {
+                    setApprovalType('Persetujuan oleh FAT');
+                    setIsDropdownOpen(false);
+                  }}
+                >
+                  Persetujuan oleh FAT
+                </button>
+                <button
+                  className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+                  onClick={() => {
+                    setApprovalType('Persetujuan oleh Direktur HRGA');
+                    setIsDropdownOpen(false);
+                  }}
+                >
+                  Persetujuan oleh Direktur HRGA
+                </button>
+                <button
+                  className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+                  onClick={() => {
+                    setApprovalType('Persetujuan oleh BOD');
+                    setIsDropdownOpen(false);
+                  }}
+                >
+                  Persetujuan oleh BOD
+                </button>
+              </div>
+            </Dropdown>
+          </div>
+        )
       }
     />
   );

@@ -7,7 +7,6 @@ interface ApprovalModalProps {
   onClose: () => void;
   onConfirm: () => void;
   submitting?: boolean;
-  payrollPeriodName?: string;
   periodDate?: string;
   description?: string;
 }
@@ -17,7 +16,6 @@ const ApprovalModal: React.FC<ApprovalModalProps> = ({
   onClose,
   onConfirm,
   submitting = false,
-  payrollPeriodName = 'Periode Gajian',
   periodDate = '',
   description = 'Periode gaji yang disahkan akan dikunci dan tidak dapat diubah. Pastikan semua data telah sesuai sebelum melanjutkan proses approval.',
 }) => {
