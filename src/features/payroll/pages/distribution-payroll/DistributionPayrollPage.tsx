@@ -2,6 +2,7 @@
 import { Outlet, useLocation } from 'react-router-dom';
 // import { useState } from 'react';
 import Tabs from '@/components/shared/Tabs';
+import CardsPayroll, { PayrollCard } from '../../components/cards/CardsPayroll';
 // import NonAEPages from './tab/NonAEPages';
 // import AEPages from './tab/AEPages';
 // import PKLPages from './tab/PKLPages';
@@ -32,10 +33,18 @@ export default function DistribusiGajiPage() {
     { id: 'thr', label: 'THR', link: '/salary-distribution/thr' },
   ];
 
+  const cardsData: PayrollCard[] = [
+    { name: 'Distribusi Dasarata', statusLabel: 'Dalam Proses', statusColor: 'info', remaining: 20, progressCurrent: 80, progressTotal: 100 },
+    { name: 'Distribusi GriyaNet', statusLabel: 'Belum Proses', statusColor: 'error', remaining: 100, progressCurrent: 0, progressTotal: 100 },
+  ];
+
   return (
     <div className="space-y-6">
       <Tabs tabs={tabs} activeTab={activeTab} />
       <div className="py-4">
+        <div className="mb-4">
+          <CardsPayroll items={cardsData} />
+        </div>
         {/* {renderTabContent()} */}
         <Outlet />
       </div>
