@@ -22,11 +22,12 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   defaultValues?: Partial<PengajuanKasbonForm> | null;
-  onSave?: (values: PengajuanKasbonForm) => void;
+  onSave?: (values: PengajuanKasbonForm) => boolean | Promise<boolean>;
+  onSuccessClose?: () => void;
 }
 
 // Dokumentasi: Komponen utama modal pengajuan kasbon dengan state lokal dan perhitungan otomatis
-const AddPengajuanKasbonModal: React.FC<Props> = ({ isOpen, onClose, defaultValues, onSave }) => {
+const AddPengajuanKasbonModal: React.FC<Props> = ({ isOpen, onClose, defaultValues, onSave, onSuccessClose }) => {
   const {
     periodeOptions,
     form,
@@ -144,7 +145,10 @@ const AddPengajuanKasbonModal: React.FC<Props> = ({ isOpen, onClose, defaultValu
       />
       <PopupBerhasil
         isOpen={showSuccessPopup}
-        onClose={handleCloseSuccessPopup}
+        onClose={() => {
+          handleCloseSuccessPopup();
+          onSuccessClose?.();
+        }}
         title="Pengajuan Kasbon Berhasil Dikirim"
         description='"Terima kasih, pengajuan Kasbon Anda telah berhasil dikirim dan kini Menunggu Persetujuan. Jika pengajuan diterima maka akan dikonfirmasi Secepatnya oleh HR."'
       />
