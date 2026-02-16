@@ -7,17 +7,14 @@ import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { ChevronDown } from 'react-feather';
 
 type THRRow = {
-  no?: number;
   idKaryawan: string;
   pengguna: string;
   tanggalPengajuan: string;
   totalTHR: string;
-  gajiPokokUangSaku: string;
-  tunjanganTetap: string;
-  lamaKerja: string;
-  kategori: string;
+  jabatan: string;
   perusahaan: string;
-  statusPenggajian: string;
+  statusTHR: string;
+  alasanDitolak: string;
 };
 
 export default function THRTab({ resetKey = 'thr' }: { resetKey?: string }) {
@@ -38,20 +35,17 @@ export default function THRTab({ resetKey = 'thr' }: { resetKey?: string }) {
     navigate(`${detailPathPrefix}/${id}?approvalType=${encodeURIComponent(approvalType)}`);
   };
   const [rows] = useState<THRRow[]>([
-    { idKaryawan: '32345678', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', totalTHR: '5.000.000', gajiPokokUangSaku: '4.000.000', tunjanganTetap: '1.000.000', lamaKerja: '2 tahun', kategori: 'Staff', perusahaan: 'Dasaria', statusPenggajian: 'Draft' },
+    { idKaryawan: '32345678', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', totalTHR: '5.000.000', jabatan: 'Manager', perusahaan: 'Dasaria', statusTHR: 'Draft', alasanDitolak: '-' },
   ]);
   const baseColumns: DataTableColumn<THRRow>[] = [
-    { id: 'no', label: 'No.', align: 'center', sortable: false },
     { id: 'idKaryawan', label: 'NIP' },
     { id: 'pengguna', label: 'Pengguna' },
     { id: 'tanggalPengajuan', label: 'Tanggal Pengajuan' },
     { id: 'totalTHR', label: 'Total THR', align: 'right' },
-    { id: 'gajiPokokUangSaku', label: 'Gaji Pokok / Uang Saku', align: 'right' },
-    { id: 'tunjanganTetap', label: 'Tunjangan Tetap', align: 'right' },
-    { id: 'lamaKerja', label: 'Lama Kerja' },
-    { id: 'kategori', label: 'Kategori' },
+    { id: 'jabatan', label: 'Jabatan' },
     { id: 'perusahaan', label: 'Perusahaan' },
-    { id: 'statusPenggajian', label: 'Status Penggajian', format: (v) => <span className="rounded-full bg-blue-100 p-[10px] flex justify-center text-xs text-blue-700 dark:bg-blue-900/30 dark:text-blue-200">{String(v)}</span> },
+    { id: 'statusTHR', label: 'Status THR', format: (v) => <span className="rounded-full bg-blue-100 p-[10px] flex justify-center text-xs text-blue-700 dark:bg-blue-900/30 dark:text-blue-200">{String(v)}</span> },
+    { id: 'alasanDitolak', label: 'Alasan Ditolak' },
   ];
   return (
     <PenggajianTabBase
