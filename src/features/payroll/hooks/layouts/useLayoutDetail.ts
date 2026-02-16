@@ -22,6 +22,21 @@ export const useLayoutDetail = (config: SectionConfig) => {
   const isHRGAorBODApproval =
     approvalType === "Persetujuan oleh Direktur HRGA" || approvalType === "Persetujuan oleh BOD";
 
+  const isBODApproval = approvalType === "Persetujuan oleh BOD";
+
+  const canEditInfo = !isApprovalContext ? true : !isBODApproval;
+  const canEditTT = !isApprovalContext
+    ? true
+    : isBODApproval
+      ? false
+      : isFATApproval
+        ? false
+        : isHRGAorBODApproval
+          ? true
+          : false;
+  const canEditPTT = !isApprovalContext ? true : isBODApproval ? false : isFATApproval;
+  const canEditRecap = !isApprovalContext ? true : !isBODApproval;
+
   const [ttValues, setTtValues] = useState<Record<string, string>>(() => config.tunjanganTidakTetap?.initialValues ?? {});
   const [pttValues, setPttValues] = useState<Record<string, string>>(() => config.potonganTidakTetap?.initialValues ?? {});
   const [infoValues, setInfoValues] = useState<Record<string, string>>(() => config.info?.initialValues ?? config.infoModal?.initialValues ?? {});
@@ -58,6 +73,10 @@ export const useLayoutDetail = (config: SectionConfig) => {
     isDistribusiContext,
     isFATApproval,
     isHRGAorBODApproval,
+    canEditInfo,
+    canEditTT,
+    canEditPTT,
+    canEditRecap,
     infoValues,
     setInfoValues,
     isInfoModalOpen,

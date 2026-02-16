@@ -52,14 +52,17 @@ import AETab from "@/features/payroll/pages/payroll-period/tab/AEPages";
 import PKLTab from "@/features/payroll/pages/shared/tab/PKLPages";
 import THRTab from "@/features/payroll/pages/payroll-period/tab/THRPages";
 
-// shared tabs
-import SharedNonAETab from "@/features/payroll/pages/shared/tab/NonAEPages";
-import SharedAETab from "@/features/payroll/pages/shared/tab/AEPages";
-import SharedTHRTab from "@/features/payroll/pages/shared/tab/THRPages";
+import ApprovalNonAETab from "@/features/payroll/pages/payroll-period-approval/tab/NonAEPages";
+import ApprovalAETab from "@/features/payroll/pages/payroll-period-approval/tab/AEPages";
+import ApprovalPKLTab from "@/features/payroll/pages/payroll-period-approval/tab/PKLPages";
+import ApprovalTHRTab from "@/features/payroll/pages/payroll-period-approval/tab/THRPages";
 // Dokumentasi: Import halaman Detail Gaji AE dan Non-AE terpisah
 import DetailGajiAEPage from "@/features/payroll/pages/payroll-period/detail/detailPayrollAEPage";
 import DetailGajiNonAEPage from "@/features/payroll/pages/payroll-period/detail/detailPayrollNonAEPage";
 import DetailGajiTHRPage from "@/features/payroll/pages/payroll-period/detail/detailPayrollTHRPage";
+import DetailGajiAEApprovalPage from "@/features/payroll/pages/payroll-period-approval/detail/detailPayrollAEPage";
+import DetailGajiNonAEApprovalPage from "@/features/payroll/pages/payroll-period-approval/detail/detailPayrollNonAEPage";
+import DetailGajiTHRApprovalPage from "@/features/payroll/pages/payroll-period-approval/detail/detailPayrollTHRPage";
 // import DetailGajiPKLPage from "@/features/payroll/pages/payroll-period/detail/detailPayrollPKLPage";
 import HakAksesPage from "@/features/role-management-access/pages/RoleManagementPage";
 import DetailHakAksesPages from "@/features/role-management-access/pages/detail/DetailHakAksesPages";
@@ -176,15 +179,15 @@ export default function AppRoutes() {
           <Route path="/payroll-dashboard" element={<DashboardPenggajianPage />} />
           <Route path="/payroll-period-approval" element={<ApprovalPeriodeGajianPage />}>
             {/* Dokumentasi: index default Non-AE untuk /payroll-period-approval */}
-            <Route index element={<SharedNonAETab />} />
-            <Route path="non-ae" element={<SharedNonAETab />} />
-            <Route path="ae" element={<SharedAETab />} />
-            <Route path="pkl" element={<PKLTab />} />
-            <Route path="thr" element={<SharedTHRTab />} />
+            <Route index element={<ApprovalNonAETab />} />
+            <Route path="non-ae" element={<ApprovalNonAETab />} />
+            <Route path="ae" element={<ApprovalAETab />} />
+            <Route path="pkl" element={<ApprovalPKLTab />} />
+            <Route path="thr" element={<ApprovalTHRTab />} />
             {/* detail approval */}
-            <Route path="detail-ae/:id" element={<DetailGajiAEPage />} />
-            <Route path="detail-non-ae/:id" element={<DetailGajiNonAEPage />} />
-            <Route path="detail-thr/:id" element={<DetailGajiTHRPage />} />
+            <Route path="detail-ae/:id" element={<DetailGajiAEApprovalPage />} />
+            <Route path="detail-non-ae/:id" element={<DetailGajiNonAEApprovalPage />} />
+            <Route path="detail-thr/:id" element={<DetailGajiTHRApprovalPage />} />
             {/* <Route path="detail-pkl/:id" element={<DetailGajiPKLPage />} /> */}
           </Route>
 

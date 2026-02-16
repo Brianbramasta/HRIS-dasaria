@@ -61,6 +61,11 @@ export type SectionConfig = {
     title?: string;
     headerColor?: HeaderColor;
   };
+  periodeComparison?: {
+    leftTitle?: string;
+    rightTitle?: string;
+    headerColor?: HeaderColor;
+  };
   info?: {
     fields: FieldDescriptor[];
     modalFields?: FieldDescriptor[];
@@ -117,7 +122,7 @@ export type SectionConfig = {
 };
 
 // Dokumentasi: Komponen utama layout detail, menerima konfigurasi section & modal
-export default function DetailPayrollContent({ config }: { config: SectionConfig }) {
+export default function DetailPayrollComparisonContent({ config }: { config: SectionConfig }) {
   const {
     goBack,
     isApprovalContext,
@@ -270,6 +275,150 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
     }
   };
 
+  const periodeHeaderColor = config.periodeComparison?.headerColor ?? "gray";
+  const periodeLeftTitle = config.periodeComparison?.leftTitle ?? "Periode Bulan Kemarin";
+  const periodeRightTitle = config.periodeComparison?.rightTitle ?? "Periode Bulan Ini";
+
+  const renderPayrollSections = ({ hideEdits }: { hideEdits: boolean }) => (
+    <>
+      {/* Tunjangan Tetap */}
+      {config.tunjanganTetap && (
+        <PayrollCard title={tunjanganTetapTitle} headerColor={tunjanganTetapHeaderColor} >
+          <div className={gridColsTT}>
+            {tunjanganTetapFields.map((f) =>
+              renderField({
+                ...f,
+                type: "input",
+                placeholder: f.placeholder ?? "Otomatis",
+                readonly: f.readonly ?? true,
+              })
+            )}
+          </div>
+        </PayrollCard>
+      )}
+
+      {/* Tunjangan Tidak Tetap */}
+      {config.tunjanganTidakTetap && (
+        <PayrollCard title={tunjanganTidakTetapTitle} headerColor={tunjanganTidakTetapHeaderColor} >
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            {config.tunjanganTidakTetap.fields.map((f) => (
+              <InputField
+                key={f.name}
+                label={f.label}
+                placeholder={f.placeholder ?? "Inputan"}
+                value={ttValues[f.name] ?? ""}
+                readonly
+              />
+            ))}
+          </div>
+          {/* Dokumentasi: Tampilkan tombol Edit jika FAT atau HRGA/BOD approval atau Distribusi */}
+          {!hideEdits && canEditTT && (isFATApproval || isHRGAorBODApproval || isDistribusiContext) && (
+            <div className="w-full flex justify-end">
+              <Button
+                size="sm"
+                variant="custom"
+                className="bg-blue-600 text-white"
+                onClick={() => setIsTTModalOpen(true)}
+              >
+                <Edit3 color="white" />
+                Edit
+              </Button>
+            </div>
+          )}
+        </PayrollCard>
+      )}
+
+      {/* Potongan Tetap */}
+      {config.potonganTetap && (
+        <PayrollCard title={potonganTetapTitle} headerColor={potonganTetapHeaderColor} >
+          <div className={gridColsPTT}>
+            {config.potonganTetap.fields.map((f) => (
+              <div key={f.name} className={f.colSpan ? `md:col-span-${f.colSpan}` : ""}>
+                {f.type === "input" ? (
+                  <InputField
+                    label={f.label}
+                    placeholder={f.placeholder ?? "Inputan"}
+                    type={f.inputType ?? "text"}
+                    readonly={f.readonly}
+                  />
+                ) : (
+                  <DateField
+                    label={f.label}
+                    id={f.id ?? f.name}
+                    placeholder={f.placeholder ?? "Pilih tanggal"}
+                  />
+                )}
+              </div>
+            ))}
+          </div>
+        </PayrollCard>
+      )}
+
+      {/* Potongan Tidak Tetap */}
+      {config.potonganTidakTetap && (
+        <PayrollCard title={potonganTidakTetapTitle} headerColor={potonganTidakTetapHeaderColor} >
+          <div className={gridColsPTT}>
+            {config.potonganTidakTetap.fields.map((f) => (
+              <InputField
+                key={f.name}
+                label={f.label}
+                placeholder={f.placeholder ?? "Otomatis"}
+                value={pttValues[f.name] ?? ""}
+                readonly
+              />
+            ))}
+          </div>
+          {/* Dokumentasi: Tampilkan tombol Edit hanya jika FAT approval atau Distribusi */}
+          {!hideEdits && canEditPTT && (isFATApproval || isDistribusiContext) && (
+            <div className="w-full flex justify-end">
+              <Button
+                size="sm"
+                variant="custom"
+                className="bg-blue-600 text-white"
+                onClick={() => setIsPTTModalOpen(true)}
+              >
+                <Edit3 color="white" />
+                Edit
+              </Button>
+            </div>
+          )}
+        </PayrollCard>
+      )}
+
+      {/* REKAPITULASI */}
+      {config.rekapitulasi && (
+        <PayrollCard title={recapTitle} headerColor={recapHeaderColor} >
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            {recapFields.map((f) =>
+              renderField({
+                ...f,
+                value: recapValues[f.name] ?? f.value,
+              })
+            )}
+          </div>
+          <div className="space-y-4 mt-6">
+            {recapCatatanKaryawan && <TextAreaField label="Catatan Karyawan" placeholder="Detail Catatan..." rows={4} />}
+            {recapCatatanBOD && <TextAreaField label="Catatan BOD" placeholder="Detail Catatan..." rows={4} />}
+          </div>
+          {/* Dokumentasi: Tombol Edit di bagian bawah sesuai screenshot */}
+          {!hideEdits && canEditRecap && (
+            <div className="w-full flex justify-end mt-6">
+              <Button
+                size="md"
+                variant="custom"
+                className="bg-blue-600 text-white flex items-center gap-2"
+                onClick={() => setIsRecapModalOpen(true)}
+              >
+                <Edit3 color="white" />
+                Edit
+              </Button>
+            </div>
+          )}
+        </PayrollCard>
+      )}
+    </>
+  );
+
   return (
     <div className="space-y-6">
       {/* Header dan tombol kembali */}
@@ -305,144 +454,17 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
         )}
       </PayrollCard>
 
-      {/* Tunjangan Tetap */}
-      {config.tunjanganTetap && (
-        <PayrollCard title={tunjanganTetapTitle} headerColor={tunjanganTetapHeaderColor}>
-          <div className={gridColsTT}>
-            {tunjanganTetapFields.map((f) =>
-              renderField({
-                ...f,
-                type: "input",
-                placeholder: f.placeholder ?? "Otomatis",
-                readonly: f.readonly ?? true,
-              })
-            )}
-          </div>
-        </PayrollCard>
-      )}
-
-      {/* Tunjangan Tidak Tetap */}
-      {config.tunjanganTidakTetap && (
-        <PayrollCard title={tunjanganTidakTetapTitle} headerColor={tunjanganTidakTetapHeaderColor}>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {config.tunjanganTidakTetap.fields.map((f) => (
-              <InputField
-                key={f.name}
-                label={f.label}
-                placeholder={f.placeholder ?? "Inputan"}
-                value={ttValues[f.name] ?? ""}
-                readonly
-              />
-            ))}
-          </div>
-          {/* Dokumentasi: Tampilkan tombol Edit jika FAT atau HRGA/BOD approval atau Distribusi */}
-          {canEditTT && (isFATApproval || isHRGAorBODApproval || isDistribusiContext) && (
-            <div className="w-full flex justify-end">
-              <Button
-                size="sm"
-                variant="custom"
-                className="bg-blue-600 text-white"
-                onClick={() => setIsTTModalOpen(true)}
-              >
-                <Edit3 color="white" />
-                Edit
-              </Button>
-            </div>
-          )}
-        </PayrollCard>
-      )}
-
-      {/* Potongan Tetap */}
-      {config.potonganTetap && (
-        <PayrollCard title={potonganTetapTitle} headerColor={potonganTetapHeaderColor}>
-          <div className={gridColsPTT}>
-            {config.potonganTetap.fields.map((f) => (
-              <div key={f.name} className={f.colSpan ? `md:col-span-${f.colSpan}` : ""}>
-                {f.type === "input" ? (
-                  <InputField
-                    label={f.label}
-                    placeholder={f.placeholder ?? "Inputan"}
-                    type={f.inputType ?? "text"}
-                    readonly={f.readonly}
-                  />
-                ) : (
-                  <DateField
-                    label={f.label}
-                    id={f.id ?? f.name}
-                    placeholder={f.placeholder ?? "Pilih tanggal"}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-        </PayrollCard>
-      )}
-
-      {/* Potongan Tidak Tetap */}
-      {config.potonganTidakTetap && (
-        <PayrollCard title={potonganTidakTetapTitle} headerColor={potonganTidakTetapHeaderColor}>
-          <div className={gridColsPTT}>
-            {config.potonganTidakTetap.fields.map((f) => (
-              <InputField
-                key={f.name}
-                label={f.label}
-                placeholder={f.placeholder ?? "Otomatis"}
-                value={pttValues[f.name] ?? ""}
-                readonly
-              />
-            ))}
-          </div>
-          {/* Dokumentasi: Tampilkan tombol Edit hanya jika FAT approval atau Distribusi */}
-          {canEditPTT && (isFATApproval || isDistribusiContext) && (
-            <div className="w-full flex justify-end">
-              <Button
-                size="sm"
-                variant="custom"
-                className="bg-blue-600 text-white"
-                onClick={() => setIsPTTModalOpen(true)}
-              >
-                <Edit3 color="white" />
-                Edit
-              </Button>
-            </div>
-          )}
-        </PayrollCard>
-      )}
-
-      {/* REKAPITULASI */}
-      {config.rekapitulasi && (
-        <PayrollCard title={recapTitle} headerColor={recapHeaderColor}>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {recapFields.map((f) =>
-              renderField({
-                ...f,
-                value: recapValues[f.name] ?? f.value,
-              })
-            )}
-          </div>
-          <div className="space-y-4 mt-6">
-            {recapCatatanKaryawan && (
-              <TextAreaField label="Catatan Karyawan" placeholder="Detail Catatan..." rows={4} />
-            )}
-            {recapCatatanBOD && (
-              <TextAreaField label="Catatan BOD" placeholder="Detail Catatan..." rows={4} />
-            )}
-          </div>
-          {/* Dokumentasi: Tombol Edit di bagian bawah sesuai screenshot */}
-          {canEditRecap && (
-            <div className="w-full flex justify-end mt-6">
-              <Button
-                size="md"
-                variant="custom"
-                className="bg-blue-600 text-white flex items-center gap-2"
-                onClick={() => setIsRecapModalOpen(true)}
-              >
-                <Edit3 color="white" />
-                Edit
-              </Button>
-            </div>
-          )}
-        </PayrollCard>
+      {config.periodeComparison ? (
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <PayrollCard title={periodeLeftTitle} headerColor={periodeHeaderColor}>
+            {renderPayrollSections({ hideEdits: true })}
+          </PayrollCard>
+          <PayrollCard title={periodeRightTitle} headerColor={periodeHeaderColor}>
+            {renderPayrollSections({ hideEdits: false })}
+          </PayrollCard>
+        </div>
+      ) : (
+        renderPayrollSections({ hideEdits: false })
       )}
 
 
