@@ -142,15 +142,17 @@ export default function THRPages() {
       },
       {
         id: 'totalGajiBersih',
-        label: 'Total Gaji Bersih',
+        label: 'Total THR',
         minWidth: 140,
         align: 'right',
-        format: (value) =>
-          new Intl.NumberFormat('id-ID', {
-            style: 'currency',
-            currency: 'IDR',
-            minimumFractionDigits: 0,
-          }).format(value),
+        format: (value) => formatCurrency(value),
+      },
+      {
+        id: 'lamaKerja',
+        label: 'Lama Kerja',
+        minWidth: 120,
+        align: 'right',
+        format: (_value, row) => formatCurrency(row.detail?.lamaKerja ?? 0),
       },
       {
         id: 'kategori',
