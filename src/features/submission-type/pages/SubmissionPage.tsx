@@ -117,6 +117,7 @@ export default function JenisPengajuanPage() {
         console.log("Preview pengajuan", row);
       },
       className: "text-gray-600",
+      condition: () => false, // Hanya tampilkan jika ada lampiran
     },
   ];
 

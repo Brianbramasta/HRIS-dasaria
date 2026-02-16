@@ -60,7 +60,7 @@ import SharedTHRTab from "@/features/payroll/pages/shared/tab/THRPages";
 import DetailGajiAEPage from "@/features/payroll/pages/payroll-period/detail/detailPayrollAEPage";
 import DetailGajiNonAEPage from "@/features/payroll/pages/payroll-period/detail/detailPayrollNonAEPage";
 import DetailGajiTHRPage from "@/features/payroll/pages/payroll-period/detail/detailPayrollTHRPage";
-import DetailGajiPKLPage from "@/features/payroll/pages/payroll-period/detail/detailPayrollPKLPage";
+// import DetailGajiPKLPage from "@/features/payroll/pages/payroll-period/detail/detailPayrollPKLPage";
 import HakAksesPage from "@/features/role-management-access/pages/RoleManagementPage";
 import DetailHakAksesPages from "@/features/role-management-access/pages/detail/DetailHakAksesPages";
 import ModulDetail from "@/features/role-management-access/pages/ModulDetail";
@@ -161,7 +161,7 @@ export default function AppRoutes() {
           <Route path="/payroll-period/detail-ae/:id" element={<DetailGajiAEPage />} />
           <Route path="/payroll-period/detail-non-ae/:id" element={<DetailGajiNonAEPage />} />
           <Route path="/payroll-period/detail-thr/:id" element={<DetailGajiTHRPage />} />
-          <Route path="/payroll-period/detail-pkl/:id" element={<DetailGajiPKLPage />} />
+          {/* <Route path="/payroll-period/detail-pkl/:id" element={<DetailGajiPKLPage />} /> */}
           {/* Dokumentasi: Nested route untuk Kasbon dengan tiga tab */}
           <Route path="/cash-advance" element={<KasbonPage />}>
             <Route index element={<RiwayatPengajuanPage />} />
@@ -185,7 +185,7 @@ export default function AppRoutes() {
             <Route path="detail-ae/:id" element={<DetailGajiAEPage />} />
             <Route path="detail-non-ae/:id" element={<DetailGajiNonAEPage />} />
             <Route path="detail-thr/:id" element={<DetailGajiTHRPage />} />
-            <Route path="detail-pkl/:id" element={<DetailGajiPKLPage />} />
+            {/* <Route path="detail-pkl/:id" element={<DetailGajiPKLPage />} /> */}
           </Route>
 
           {/* // Dokumentasi: Nested route untuk Distribusi Gaji dengan tiga tab */}
