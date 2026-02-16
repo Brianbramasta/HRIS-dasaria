@@ -26,10 +26,54 @@ export default function usePayrollTabBase<TRow extends BaseRow>({
   // Dokumentasi: Deteksi halaman Approval & Distribusi untuk mengatur checkbox & toolbar
   const isApprovalPage = location.pathname.includes('/payroll-period-approval');
   const isDistribusiPage = location.pathname.includes('/salary-distribution');
+  const isPayrollPeriodPage = location.pathname.includes('/payroll-period') && !isApprovalPage;
 
   const [selected, setSelected] = useState<Record<string, boolean>>({});
+  const rowKeyMap = useMemo(() => {
+    const map = new Map<TRow, string>();
+    const occurrenceById = new Map<string, number>();
+    rows.forEach((r, index) => {
+      const rawKey = (r as BaseRow).idKaryawan;
+      if (!rawKey) {
+        map.set(r, `__row_${index}`);
+        return;
+      }
+
+      const id = String(rawKey);
+      const occurrence = occurrenceById.get(id) ?? 0;
+      occurrenceById.set(id, occurrence + 1);
+
+      const key = occurrence === 0 ? id : `${id}__${occurrence}`;
+      map.set(r, key);
+    });
+    return map;
+  }, [rows]);
+
+  const getRowKey = (row: TRow) => {
+    const mapped = rowKeyMap.get(row);
+    if (mapped) return mapped;
+
+    const id = String((row as BaseRow).idKaryawan ?? '');
+    const no = (row as BaseRow).no;
+    if (id && no != null) return `${id}__no_${no}`;
+
+    if (!id) return '';
+
+    const indexInRows = rows.findIndex((r) => {
+      if (r === row) return true;
+      return (r as BaseRow).idKaryawan === id && (no == null || (r as BaseRow).no === no);
+    });
+
+    return indexInRows >= 0 ? `${id}__idx_${indexInRows}` : id;
+  };
+
   // Dokumentasi: Hitung status check-all untuk header (semua baris terpilih)
-  const allChecked = rows.length > 0 && rows.every((r) => !!selected[r.idKaryawan]);
+  const allChecked =
+    rows.length > 0 &&
+    rows.every((r) => {
+      const key = getRowKey(r);
+      return !!selected[key];
+    });
   const hasSelection = Object.values(selected).some(Boolean);
 
   // Dokumentasi: state untuk kontrol modal delete dan data baris yang dipilih
@@ -39,7 +83,7 @@ export default function usePayrollTabBase<TRow extends BaseRow>({
   const [showUpload, setShowUpload] = useState(false);
 
   const columns: DataTableColumn<TRow>[] = useMemo(() => {
-    if (!isApprovalPage && !isDistribusiPage) return baseColumns;
+    if (!isApprovalPage && !isDistribusiPage && !isPayrollPeriodPage) return baseColumns;
     // Dokumentasi: Tambahkan kolom aksi 'select' dengan header checkbox untuk check-all
     const selectCol: DataTableColumn<TRow> = {
       id: 'select',
@@ -53,7 +97,7 @@ export default function usePayrollTabBase<TRow extends BaseRow>({
           onChange={(checked) => {
             const next: Record<string, boolean> = {};
             rows.forEach((r) => {
-              next[r.idKaryawan] = checked;
+              next[getRowKey(r)] = checked;
             });
             setSelected(next);
           }}
@@ -61,15 +105,15 @@ export default function usePayrollTabBase<TRow extends BaseRow>({
       ),
       format: (_v, row) => (
         <Checkbox
-          checked={!!selected[(row as BaseRow).idKaryawan]}
+          checked={!!selected[getRowKey(row as TRow)]}
           onChange={(checked) =>
-            setSelected((prev) => ({ ...prev, [(row as BaseRow).idKaryawan]: checked }))
+            setSelected((prev) => ({ ...prev, [getRowKey(row as TRow)]: checked }))
           }
         />
       ),
     };
     return [selectCol, ...baseColumns];
-  }, [isApprovalPage, isDistribusiPage, selected, baseColumns, rows, allChecked]);
+  }, [isApprovalPage, isDistribusiPage, isPayrollPeriodPage, selected, baseColumns, rows, allChecked, rowKeyMap]);
 
   const actions: DataTableAction<TRow>[] = useMemo(() => {
     // Dokumentasi: jika ada custom actions, gunakan itu, jika tidak gunakan default actions

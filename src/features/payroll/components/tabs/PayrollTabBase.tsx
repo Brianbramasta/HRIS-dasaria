@@ -88,7 +88,7 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
             <IconImport size={16} /> Import
           </Button>
           
-          <Button variant="custom" className="w-max bg-[#007BFF] text-white dark:text-white" size="sm" onClick={() => setShowApprovalModal(true)}>
+          <Button variant="custom" className="w-max bg-[#007BFF] text-white dark:text-white" size="sm" disabled={!hasSelection} onClick={() => setShowApprovalModal(true)}>
             Finalisasi Data
           </Button>
         </div>
