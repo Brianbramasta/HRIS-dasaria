@@ -20,6 +20,7 @@ export type FieldDescriptor = {
   options?: { label: string; value: string }[];
   placeholder?: string;
   readonly?: boolean;
+  disabled?: boolean;
   value?: string | any;
   inputType?: string;
   colSpan?: 1 | 2 | 3;
@@ -31,6 +32,7 @@ export type ModalProps = {
   onClose: () => void;
   defaultValues: Record<string, string>;
   onSave: (values: Record<string, string>) => void;
+  fields?: FieldDescriptor[];
 };
 
 export type InfoModalProps = {
@@ -53,13 +55,25 @@ export type RekapModalProps = {
 
 export type SectionConfig = {
   infoFields: FieldDescriptor[];
-  infoModal?: {
+  info?: {
+    fields: FieldDescriptor[];
+    modalFields?: FieldDescriptor[];
     initialValues?: Record<string, string>;
     ModalComponent?: React.ComponentType<InfoModalProps>;
   };
-  tunjanganTetap?: boolean;
+  infoModal?: {
+    initialValues?: Record<string, string>;
+    modalFields?: FieldDescriptor[];
+    ModalComponent?: React.ComponentType<InfoModalProps>;
+  };
+  tunjanganTetap?:
+    | boolean
+    | {
+        fields: FieldDescriptor[];
+      };
   tunjanganTidakTetap?: {
     fields: FieldDescriptor[];
+    modalFields?: FieldDescriptor[];
     initialValues?: Record<string, string>;
     ModalComponent?: React.ComponentType<ModalProps>;
   };
@@ -68,6 +82,7 @@ export type SectionConfig = {
   };
   potonganTidakTetap?: {
     fields: FieldDescriptor[];
+    modalFields?: FieldDescriptor[];
     initialValues?: Record<string, string>;
     ModalComponent?: React.ComponentType<ModalProps>;
   };
@@ -75,8 +90,11 @@ export type SectionConfig = {
     | boolean
     | {
         fields?: FieldDescriptor[];
+        modalFields?: FieldDescriptor[];
         initialValues?: Record<string, string>;
         ModalComponent?: React.ComponentType<RekapModalProps>;
+        catatanKaryawan?: boolean;
+        catatanBOD?: boolean;
       };
   catatanKaryawan?: boolean;
   catatanBOD?: boolean;
@@ -120,7 +138,33 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
       { name: "gajiBersih", label: "Gaji Bersih", type: "input", placeholder: "Otomatis", readonly: true },
     ];
 
+  const recapModalFields: FieldDescriptor[] = recapConfig?.modalFields ?? recapFields;
+
+  const recapCatatanKaryawan = recapConfig?.catatanKaryawan ?? config.catatanKaryawan;
+  const recapCatatanBOD = recapConfig?.catatanBOD ?? config.catatanBOD;
+
   const RekapModalComponent = recapConfig?.ModalComponent ?? RecapModall;
+
+  const infoConfig = config.info;
+  const infoFields = infoConfig?.fields ?? config.infoFields;
+  const InfoModalComponent = infoConfig?.ModalComponent ?? config.infoModal?.ModalComponent;
+  const infoModalFields = infoConfig?.modalFields ?? config.infoModal?.modalFields ?? infoFields;
+
+  const tunjanganTetapConfig =
+    config.tunjanganTetap && typeof config.tunjanganTetap === "object" ? config.tunjanganTetap : undefined;
+
+  const defaultTunjanganTetapFields: FieldDescriptor[] = [
+    { name: "bpjsJkk", label: "BPJS Ketenagakerjaan JKK (0,24%)", type: "input", placeholder: "Otomatis", readonly: true },
+    { name: "bpjsJkm", label: "BPJS Ketenagakerjaan JKM (0,30%)", type: "input", placeholder: "Otomatis", readonly: true },
+    { name: "bpjsJht", label: "BPJS Ketenagakerjaan JHT (3,7%)", type: "input", placeholder: "Otomatis", readonly: true },
+    { name: "bpjsJkn", label: "BPJS Kesehatan JKN (2%)", type: "input", placeholder: "Otomatis", readonly: true },
+    { name: "tunjanganJabatan", label: "Tunjangan Jabatan", type: "input", placeholder: "Otomatis", readonly: true },
+    { name: "tunjanganPernikahan", label: "Tunjangan Pernikahan", type: "input", placeholder: "Otomatis", readonly: true },
+    { name: "tunjanganLamaKerja", label: "Tunjangan Lama Kerja", type: "input", placeholder: "Otomatis", readonly: true },
+    { name: "tunjanganTransportasi", label: "Tunjangan Transportasi", type: "input", placeholder: "Otomatis", readonly: true },
+  ];
+
+  const tunjanganTetapFields: FieldDescriptor[] = tunjanganTetapConfig?.fields ?? defaultTunjanganTetapFields;
 
   const renderField = (field: FieldDescriptor) => {
     const colClass = field.colSpan ? `md:col-span-${field.colSpan}` : "";
@@ -207,9 +251,9 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
       {/* Informasi Karyawan */}
       <PayrollCard title="Informasi Karyawan" headerColor="gray">
         <div className={gridColsInfo}>
-          {config.infoFields.map((f) => renderField({ ...f, value: infoValues[f.name] ?? f.value }))}
+          {infoFields.map((f) => renderField({ ...f, value: infoValues[f.name] ?? f.value }))}
         </div>
-        {!!config.infoModal?.ModalComponent && (
+        {!!InfoModalComponent && (
           <div className="w-full flex justify-end">
             <Button
               size="sm"
@@ -228,14 +272,14 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
       {config.tunjanganTetap && (
         <PayrollCard title="Tunjangan Tetap" headerColor="green">
           <div className={gridColsTT}>
-            <InputField label="BPJS Ketenagakerjaan JKK (0,24%)" placeholder="Otomatis" readonly />
-            <InputField label="BPJS Ketenagakerjaan JKM (0,30%)" placeholder="Otomatis" readonly />
-            <InputField label="BPJS Ketenagakerjaan JHT (3,7%)" placeholder="Otomatis" readonly />
-            <InputField label="BPJS Kesehatan JKN (2%)" placeholder="Otomatis" readonly />
-            <InputField label="Tunjangan Jabatan" placeholder="Otomatis" readonly />
-            <InputField label="Tunjangan Pernikahan" placeholder="Otomatis" readonly />
-            <InputField label="Tunjangan Lama Kerja" placeholder="Otomatis" readonly />
-            <InputField label="Tunjangan Transportasi" placeholder="Otomatis" readonly />
+            {tunjanganTetapFields.map((f) =>
+              renderField({
+                ...f,
+                type: "input",
+                placeholder: f.placeholder ?? "Otomatis",
+                readonly: f.readonly ?? true,
+              })
+            )}
           </div>
         </PayrollCard>
       )}
@@ -340,10 +384,10 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
             )}
           </div>
           <div className="space-y-4 mt-6">
-            {config.catatanKaryawan && (
+            {recapCatatanKaryawan && (
               <TextAreaField label="Catatan Karyawan" placeholder="Detail Catatan..." rows={4} />
             )}
-            {config.catatanBOD && (
+            {recapCatatanBOD && (
               <TextAreaField label="Catatan BOD" placeholder="Detail Catatan..." rows={4} />
             )}
           </div>
@@ -370,20 +414,20 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
           onClose={() => setIsRecapModalOpen(false)}
           defaultValues={recapValues}
           onSave={(values: Record<string, string>) => setRecapValues(values)}
-          fields={recapFields}
-          catatanKaryawan={config.catatanKaryawan}
-          catatanBOD={config.catatanBOD}
+          fields={recapModalFields}
+          catatanKaryawan={recapCatatanKaryawan}
+          catatanBOD={recapCatatanBOD}
         />
       )}
 
       {/* Dokumentasi: Modal Tunjangan Tidak Tetap bila disediakan */}
-      {config.infoModal?.ModalComponent && (
-        <config.infoModal.ModalComponent
+      {InfoModalComponent && (
+        <InfoModalComponent
           isOpen={isInfoModalOpen}
           onClose={() => setIsInfoModalOpen(false)}
           defaultValues={infoValues}
           onSave={(values) => setInfoValues(values)}
-          fields={config.infoFields}
+          fields={infoModalFields}
         />
       )}
       {config.tunjanganTidakTetap?.ModalComponent && (
@@ -392,6 +436,7 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
           onClose={() => setIsTTModalOpen(false)}
           defaultValues={ttValues}
           onSave={(values) => setTtValues(values)}
+          fields={config.tunjanganTidakTetap.modalFields ?? config.tunjanganTidakTetap.fields}
         />
       )}
       {/* Dokumentasi: Modal Potongan Tidak Tetap bila disediakan */}
@@ -401,6 +446,7 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
           onClose={() => setIsPTTModalOpen(false)}
           defaultValues={pttValues}
           onSave={(values) => setPttValues(values)}
+          fields={config.potonganTidakTetap.modalFields ?? config.potonganTidakTetap.fields}
         />
       )}
 

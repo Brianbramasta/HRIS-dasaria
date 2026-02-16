@@ -12,23 +12,25 @@ const TambahTunjanganTidakTetapModal: React.FC<Props> = ({
   onClose,
   defaultValues,
   onSave,
+  fields,
 }) => {
   const { form, setField, handleSubmit } = useAddNonRecurringAllowanceModal(defaultValues as any);
 
   const content = (
     <div className="space-y-5">
-      <div>
-        <Label>Tunjangan PPH 21</Label>
-        <Input placeholder="150.000" value={form.pph21} onChange={(e) => setField('pph21', e.target.value)} />
-      </div>
-      <div>
-        <Label>Tunjangan Pendidikan</Label>
-        <Input placeholder="300.000" value={form.pendidikan} onChange={(e) => setField('pendidikan', e.target.value)} />
-      </div>
-      <div>
-        <Label>Tunjangan Performa</Label>
-        <Input placeholder="1.500.000" value={form.performa} onChange={(e) => setField('performa', e.target.value)} />
-      </div>
+      {(fields ?? []).map((f) => (
+        <div key={f.name}>
+          <Label>{f.label}</Label>
+          <Input
+            type={f.inputType ?? 'text'}
+            placeholder={f.placeholder ?? '0'}
+            value={form?.[f.name] ?? ''}
+            onChange={(e) => setField(f.name, e.target.value)}
+            disabled={f.disabled}
+            readonly={f.readonly}
+          />
+        </div>
+      ))}
     </div>
   );
 

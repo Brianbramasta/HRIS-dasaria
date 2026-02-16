@@ -26,8 +26,8 @@ export default function DetailGajiAEPage() {
     infoFields: [
       { name: "idKaryawan", label: "NIP", type: "input", placeholder: "Input", value: defaultData.idKaryawan, readonly: true },
       { name: "pengguna", label: "Pengguna", type: "input", placeholder: "Otomatis", value: defaultData.pengguna, readonly: true },
-      { name: "tanggalPengajuan", label: "Tanggal Pengajuan", type: "date", id: "ae-tanggal-pengajuan", placeholder: "Pilih tanggal" },
-      { name: "fee", label: "Fee", type: "input", placeholder: "Inputan", inputType: "text" },
+      { name: "tanggalPengajuan", label: "Tanggal Pengajuan", type: "date", id: "ae-tanggal-pengajuan", placeholder: "Pilih tanggal", readonly: true },
+      { name: "fee", label: "Fee", type: "input", placeholder: "Inputan", inputType: "text", readonly: true },
       { name: "kategori", label: "Kategori", type: "input", placeholder: "Otomatis", readonly: true },
       { name: "perusahaan", label: "Perusahaan", type: "input", placeholder: "Otomatis", readonly: true },
       { name: "jumlahHariKerja", label: "Jumlah Hari Kerja", type: "input", placeholder: "Otomatis", readonly: true },
@@ -52,6 +52,13 @@ export default function DetailGajiAEPage() {
         { name: "insentif", label: "Insentif", type: "input" },
         { name: "feeMitraSubnet", label: "Fee Mitra Subnet", type: "input" },
       ],
+      modalFields: [
+        { name: "komisiSales", label: "Komisi Sales", type: "input", placeholder: "150.000" },
+        { name: "komisiSurveySales", label: "Komisi Survey Sales", type: "input", placeholder: "300.000" },
+        { name: "growthReward", label: "Growth Reward", type: "input", placeholder: "1.500.000" },
+        { name: "insentif", label: "Insentif", type: "input", placeholder: "1.500.000" },
+        { name: "feeMitraSubnet", label: "Fee Mitra Subnet", type: "input", placeholder: "1.500.000" },
+      ],
       initialValues: { komisiSales: "", komisiSurveySales: "", growthReward: "", insentif: "", feeMitraSubnet: "" },
       ModalComponent: TambahTunjanganTidakTetapModalAE,
     },
@@ -64,9 +71,12 @@ export default function DetailGajiAEPage() {
       fields: [
         { name: "gajiBersih", label: "Gaji Bersih", type: "input", placeholder: "Otomatis", readonly: true, colSpan: 3 },
       ],
+      modalFields: [
+        { name: "gajiBersih", label: "Gaji Bersih", type: "input", placeholder: "Otomatis", readonly: true, colSpan: 3 },
+      ],
+      catatanKaryawan: true,
+      catatanBOD: true,
     },
-    catatanKaryawan: true,
-    catatanBOD: true,
   };
 
   return <DetailPayrollContent config={config} />;

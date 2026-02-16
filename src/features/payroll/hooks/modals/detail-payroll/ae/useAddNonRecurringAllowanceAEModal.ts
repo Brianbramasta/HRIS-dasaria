@@ -1,13 +1,5 @@
 import { useMemo, useState } from 'react';
 
-export interface AEAllowanceFormValues {
-  komisiSales: string;
-  komisiSurveySales: string;
-  growthReward: string;
-  insentif: string;
-  feeMitraSubnet: string;
-}
-
 const formatRupiah = (val: string) => {
   const cleaned = (val || '').replace(/[^0-9]/g, '');
   if (!cleaned) return '';
@@ -15,22 +7,17 @@ const formatRupiah = (val: string) => {
 };
 
 export const useAddNonRecurringAllowanceAEModal = (
-  defaultValues?: Partial<AEAllowanceFormValues>
+  defaultValues?: Record<string, string>
 ) => {
-  const initial: AEAllowanceFormValues = useMemo(
-    () => ({
-      komisiSales: formatRupiah(defaultValues?.komisiSales ?? ''),
-      komisiSurveySales: formatRupiah(defaultValues?.komisiSurveySales ?? ''),
-      growthReward: formatRupiah(defaultValues?.growthReward ?? ''),
-      insentif: formatRupiah(defaultValues?.insentif ?? ''),
-      feeMitraSubnet: formatRupiah(defaultValues?.feeMitraSubnet ?? ''),
-    }),
-    [defaultValues]
-  );
+  const initial: Record<string, string> = useMemo(() => {
+    return Object.fromEntries(
+      Object.entries(defaultValues ?? {}).map(([key, val]) => [key, formatRupiah(val ?? '')])
+    );
+  }, [defaultValues]);
 
-  const [form, setForm] = useState<AEAllowanceFormValues>(initial);
+  const [form, setForm] = useState<Record<string, string>>(initial);
 
-  const setField = (key: keyof AEAllowanceFormValues, value: string) => {
+  const setField = (key: string, value: string) => {
     setForm((prev) => ({ ...prev, [key]: formatRupiah(value) }));
   };
 
@@ -38,7 +25,7 @@ export const useAddNonRecurringAllowanceAEModal = (
     onSave: (data: Record<string, string>) => void,
     onClose: () => void
   ) => {
-    onSave(form as unknown as Record<string, string>);
+    onSave(form);
     onClose();
   };
 

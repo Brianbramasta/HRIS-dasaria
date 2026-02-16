@@ -12,23 +12,25 @@ const TambahPotonganTidakTetapModal: React.FC<Props> = ({
   onClose,
   defaultValues,
   onSave,
+  fields,
 }) => {
   const { form, setField, handleSubmit } = useAddNonRecurringDeductionModal(defaultValues as any);
 
   const content = (
     <div className="space-y-5">
-      <div>
-        <Label>BPJS Kesehatan JKN (1%)</Label>
-        <Input placeholder="100.000" value={form.jkn1} onChange={(e) => setField('jkn1', e.target.value)} />
-      </div>
-      <div>
-        <Label>BPJS Ketenagakerjaan JHT (2%)</Label>
-        <Input placeholder="200.000" value={form.jht2} onChange={(e) => setField('jht2', e.target.value)} />
-      </div>
-      <div>
-        <Label>Kasbon</Label>
-        <Input placeholder="500.000" value={form.kasbon} onChange={(e) => setField('kasbon', e.target.value)} />
-      </div>
+      {(fields ?? []).map((f) => (
+        <div key={f.name}>
+          <Label>{f.label}</Label>
+          <Input
+            type={f.inputType ?? 'text'}
+            placeholder={f.placeholder ?? '0'}
+            value={form?.[f.name] ?? ''}
+            onChange={(e) => setField(f.name, e.target.value)}
+            disabled={f.disabled}
+            readonly={f.readonly}
+          />
+        </div>
+      ))}
     </div>
   );
 

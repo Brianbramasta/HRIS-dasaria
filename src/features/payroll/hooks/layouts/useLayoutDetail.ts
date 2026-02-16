@@ -24,7 +24,7 @@ export const useLayoutDetail = (config: SectionConfig) => {
 
   const [ttValues, setTtValues] = useState<Record<string, string>>(() => config.tunjanganTidakTetap?.initialValues ?? {});
   const [pttValues, setPttValues] = useState<Record<string, string>>(() => config.potonganTidakTetap?.initialValues ?? {});
-  const [infoValues, setInfoValues] = useState<Record<string, string>>(() => config.infoModal?.initialValues ?? {});
+  const [infoValues, setInfoValues] = useState<Record<string, string>>(() => config.info?.initialValues ?? config.infoModal?.initialValues ?? {});
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const [recapValues, setRecapValues] = useState<Record<string, string>>(() => {
     if (config.rekapitulasi && typeof config.rekapitulasi === "object") {
@@ -37,7 +37,7 @@ export const useLayoutDetail = (config: SectionConfig) => {
   const [isRecapModalOpen, setIsRecapModalOpen] = useState(false);
 
   useEffect(() => {
-    setInfoValues(config.infoModal?.initialValues ?? {});
+    setInfoValues(config.info?.initialValues ?? config.infoModal?.initialValues ?? {});
     setTtValues(config.tunjanganTidakTetap?.initialValues ?? {});
     setPttValues(config.potonganTidakTetap?.initialValues ?? {});
 

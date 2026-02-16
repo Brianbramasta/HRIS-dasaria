@@ -63,7 +63,7 @@ export default function EditInformationEmployeeModal({
 
   const content = useMemo(() => {
     return (
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-1">
         {fields.map((f) => renderField(f))}
       </div>
     );
