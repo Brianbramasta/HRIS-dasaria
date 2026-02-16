@@ -33,9 +33,18 @@ class ResignationApplicationsService {
     });
   }
 
-  async reject(id: string, statusName: string = 'Ditolak'): Promise<ApiResponse<any>> {
+  async reject(
+    id: string,
+    statusName: string = 'Ditolak',
+    payload?: {
+      note_hr?: string;
+    }
+  ): Promise<ApiResponse<any>> {
     const form = new FormData();
     form.append('status_name', statusName);
+    if (payload?.note_hr) {
+      form.append('note_hr', payload.note_hr);
+    }
     return apiService.post<any>(`${this.basePath}/${id}/reject`, form, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });

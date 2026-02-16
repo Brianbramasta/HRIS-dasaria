@@ -53,7 +53,7 @@ interface UseApiResignationReturn {
   fetchApplicationDetail: (id: string) => Promise<void>;
   uploadApplicationDocuments: (id: string, payload: UploadDocumentsPayload) => Promise<boolean>;
   approveApplication: (id: string, effectiveDate?: string) => Promise<boolean>;
-  rejectApplication: (id: string) => Promise<boolean>;
+  rejectApplication: (id: string, payload?: { note_hr?: string }) => Promise<boolean>;
   saveDraftApplication: (id: string) => Promise<boolean>;
   deleteDocument: (applicationId: string, documentId: string) => Promise<boolean>;
 
@@ -180,11 +180,11 @@ export const useApiResignation = (): UseApiResignationReturn => {
     }
   }, []);
 
-  const rejectApplication = useCallback(async (id: string): Promise<boolean> => {
+  const rejectApplication = useCallback(async (id: string, payload?: { note_hr?: string }): Promise<boolean> => {
     setLoading(true);
     setError(null);
     try {
-      await resignationApplicationsService.reject(id);
+      await resignationApplicationsService.reject(id, 'Ditolak', payload);
       return true;
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Gagal menolak pengajuan';

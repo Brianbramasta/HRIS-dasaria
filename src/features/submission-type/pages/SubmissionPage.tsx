@@ -90,8 +90,9 @@ export default function JenisPengajuanPage() {
               ? "bg-orange-100 text-orange-700"
               : value === "Disetujui"
               ? "bg-green-100 text-green-700"
-              :'bg-orange-100 text-orange-700'
-              // : "bg-red-100 text-red-700"
+              : value === "Ditolak"
+              ? "bg-red-100 text-red-700"
+              : "bg-orange-100 text-orange-700"
           }`}
         >
           {value}
