@@ -4,6 +4,7 @@ import { useParams } from "react-router";
 import DetailPayrollContent, { SectionConfig } from "@/features/payroll/components/layouts/LayoutDetail";
 import TambahTunjanganTidakTetapModal from "@/features/payroll/components/modals/detail-payroll/non-ae/AddNonRecurringAllowanceModal";
 import TambahPotonganTidakTetapModal from "@/features/payroll/components/modals/detail-payroll/non-ae/AddNonRecurringDeductionModal";
+import EditInformationEmployeeModal from "@/features/payroll/components/modals/detail-payroll/non-ae/EditInformationEmployeeModal";
 
 // Dokumentasi: Komponen halaman Non-AE yang menyusun config untuk layout dinamis
 export default function DetailGajiPage() {
@@ -31,6 +32,18 @@ export default function DetailGajiPage() {
       { name: "perusahaan", label: "Perusahaan", type: "input", placeholder: "Otomatis", readonly: true },
       { name: "jumlahHariKerja", label: "Jumlah Hari Kerja", type: "input", placeholder: "Otomatis", readonly: true },
     ],
+    infoModal: {
+      initialValues: {
+        idKaryawan: defaultData.idKaryawan,
+        pengguna: defaultData.pengguna,
+        tanggalPengajuan: "",
+        gajiPokokUangSaku: defaultData.gajiPokokUangSaku,
+        kategori: defaultData.kategori,
+        perusahaan: defaultData.perusahaan,
+        jumlahHariKerja: defaultData.jumlahHariKerja,
+      },
+      ModalComponent: EditInformationEmployeeModal,
+    },
     tunjanganTetap: true,
     tunjanganTidakTetap: {
       fields: [
