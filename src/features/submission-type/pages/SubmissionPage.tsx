@@ -99,7 +99,15 @@ export default function JenisPengajuanPage() {
         </span>
       ),
     },
-    { id: "catatan", label: "Catatan" },
+    {
+      id: "catatan",
+      label: "Catatan",
+      format: (value: RowPengajuan["catatan"]) => {
+        if (typeof value !== "string") return value as unknown as string;
+        const formatted = formatDateToIndonesian(value);
+        return formatted || value;
+      },
+    },
   ];
 
   const actions = [
