@@ -53,8 +53,14 @@ export type RekapModalProps = {
   catatanBOD?: boolean;
 };
 
+type HeaderColor = "gray" | "green" | "red" | "slate" | "blue";
+
 export type SectionConfig = {
   infoFields: FieldDescriptor[];
+  infoCard?: {
+    title?: string;
+    headerColor?: HeaderColor;
+  };
   info?: {
     fields: FieldDescriptor[];
     modalFields?: FieldDescriptor[];
@@ -69,18 +75,26 @@ export type SectionConfig = {
   tunjanganTetap?:
     | boolean
     | {
+        title?: string;
+        headerColor?: HeaderColor;
         fields: FieldDescriptor[];
       };
   tunjanganTidakTetap?: {
+    title?: string;
+    headerColor?: HeaderColor;
     fields: FieldDescriptor[];
     modalFields?: FieldDescriptor[];
     initialValues?: Record<string, string>;
     ModalComponent?: React.ComponentType<ModalProps>;
   };
   potonganTetap?: {
+    title?: string;
+    headerColor?: HeaderColor;
     fields: FieldDescriptor[];
   };
   potonganTidakTetap?: {
+    title?: string;
+    headerColor?: HeaderColor;
     fields: FieldDescriptor[];
     modalFields?: FieldDescriptor[];
     initialValues?: Record<string, string>;
@@ -89,6 +103,8 @@ export type SectionConfig = {
   rekapitulasi?:
     | boolean
     | {
+        title?: string;
+        headerColor?: HeaderColor;
         fields?: FieldDescriptor[];
         modalFields?: FieldDescriptor[];
         initialValues?: Record<string, string>;
@@ -129,8 +145,13 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
     gridColsPTT,
   } = useLayoutDetail(config);
 
+  const infoTitle = config.infoCard?.title ?? "Informasi Karyawan";
+  const infoHeaderColor = config.infoCard?.headerColor ?? "gray";
+
   const recapConfig =
     config.rekapitulasi && typeof config.rekapitulasi === "object" ? config.rekapitulasi : undefined;
+  const recapTitle = recapConfig?.title ?? "REKAPITULASI";
+  const recapHeaderColor = recapConfig?.headerColor ?? "slate";
   const recapFields: FieldDescriptor[] =
     recapConfig?.fields ?? [
       { name: "totalPendapatanKotor", label: "Total Pendapatan Kotor", type: "input", placeholder: "Otomatis", readonly: true },
@@ -152,6 +173,18 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
 
   const tunjanganTetapConfig =
     config.tunjanganTetap && typeof config.tunjanganTetap === "object" ? config.tunjanganTetap : undefined;
+
+  const tunjanganTetapTitle = tunjanganTetapConfig?.title ?? "Tunjangan Tetap";
+  const tunjanganTetapHeaderColor = tunjanganTetapConfig?.headerColor ?? "green";
+
+  const tunjanganTidakTetapTitle = config.tunjanganTidakTetap?.title ?? "Tunjangan Tidak Tetap";
+  const tunjanganTidakTetapHeaderColor = config.tunjanganTidakTetap?.headerColor ?? "green";
+
+  const potonganTetapTitle = config.potonganTetap?.title ?? "Potongan Tetap";
+  const potonganTetapHeaderColor = config.potonganTetap?.headerColor ?? "red";
+
+  const potonganTidakTetapTitle = config.potonganTidakTetap?.title ?? "Potongan Tidak Tetap";
+  const potonganTidakTetapHeaderColor = config.potonganTidakTetap?.headerColor ?? "red";
 
   const defaultTunjanganTetapFields: FieldDescriptor[] = [
     { name: "bpjsJkk", label: "BPJS Ketenagakerjaan JKK (0,24%)", type: "input", placeholder: "Otomatis", readonly: true },
@@ -249,7 +282,7 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
 
 
       {/* Informasi Karyawan */}
-      <PayrollCard title="Informasi Karyawan" headerColor="gray">
+      <PayrollCard title={infoTitle} headerColor={infoHeaderColor}>
         <div className={gridColsInfo}>
           {infoFields.map((f) => renderField({ ...f, value: infoValues[f.name] ?? f.value }))}
         </div>
@@ -270,7 +303,7 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
 
       {/* Tunjangan Tetap */}
       {config.tunjanganTetap && (
-        <PayrollCard title="Tunjangan Tetap" headerColor="green">
+        <PayrollCard title={tunjanganTetapTitle} headerColor={tunjanganTetapHeaderColor}>
           <div className={gridColsTT}>
             {tunjanganTetapFields.map((f) =>
               renderField({
@@ -286,7 +319,7 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
 
       {/* Tunjangan Tidak Tetap */}
       {config.tunjanganTidakTetap && (
-        <PayrollCard title="Tunjangan Tidak Tetap" headerColor="green">
+        <PayrollCard title={tunjanganTidakTetapTitle} headerColor={tunjanganTidakTetapHeaderColor}>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {config.tunjanganTidakTetap.fields.map((f) => (
               <InputField
@@ -317,7 +350,7 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
 
       {/* Potongan Tetap */}
       {config.potonganTetap && (
-        <PayrollCard title="Potongan Tetap" headerColor="red">
+        <PayrollCard title={potonganTetapTitle} headerColor={potonganTetapHeaderColor}>
           <div className={gridColsPTT}>
             {config.potonganTetap.fields.map((f) => (
               <div key={f.name} className={f.colSpan ? `md:col-span-${f.colSpan}` : ""}>
@@ -343,7 +376,7 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
 
       {/* Potongan Tidak Tetap */}
       {config.potonganTidakTetap && (
-        <PayrollCard title="Potongan Tidak Tetap" headerColor="red">
+        <PayrollCard title={potonganTidakTetapTitle} headerColor={potonganTidakTetapHeaderColor}>
           <div className={gridColsPTT}>
             {config.potonganTidakTetap.fields.map((f) => (
               <InputField
@@ -374,7 +407,7 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
 
       {/* REKAPITULASI */}
       {config.rekapitulasi && (
-        <PayrollCard title="REKAPITULASI" headerColor="slate">
+        <PayrollCard title={recapTitle} headerColor={recapHeaderColor}>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {recapFields.map((f) =>
               renderField({
