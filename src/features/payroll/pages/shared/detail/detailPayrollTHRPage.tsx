@@ -27,7 +27,13 @@ export default function DetailGajiTHRPage() {
       { name: "kategori", label: "Kategori", type: "input", placeholder: "Otomatis", readonly: true },
       { name: "perusahaan", label: "Perusahaan", type: "input", placeholder: "Otomatis", readonly: true },
     ],
-    tunjanganTetap: true,
+    tunjanganTetap: {
+      fields: [
+        { name: "tunjanganLamaKerja", label: "Tunjangan Lama Kerja", type: "input", placeholder: "Otomatis", readonly: true },
+        { name: "tunjanganJabatan", label: "Tunjangan Jabatan", type: "input", placeholder: "Otomatis", readonly: true },
+        { name: "tunjanganPernikahan", label: "Tunjangan Pernikahan", type: "input", placeholder: "Otomatis", readonly: true },
+      ],
+    },
     rekapitulasi: true,
     catatanKaryawan: true,
     catatanBOD: true,

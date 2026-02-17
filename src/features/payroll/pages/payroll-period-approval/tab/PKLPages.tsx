@@ -6,18 +6,22 @@ import Button from '@/components/ui/button/Button';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { ChevronDown } from 'react-feather';
 
-type THRRow = {
+type PKLRow = {
+  no?: number;
   idKaryawan: string;
   pengguna: string;
   tanggalPengajuan: string;
-  totalTHR: string;
-  jabatan: string;
+  jumlahHariKerja: string;
+  uangSaku: string;
+  kategori: string;
   perusahaan: string;
-  statusTHR: string;
-  alasanDitolak: string;
+  statusPenggajian: string;
+  approvalHrga: string;
+  approvalFat: string;
+  approvalDirekturKeuangan: string;
 };
 
-export default function THRTab({ resetKey = 'thr' }: { resetKey?: string }) {
+export default function PKLTab({ resetKey = 'pkl' }: { resetKey?: string }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -27,25 +31,29 @@ export default function THRTab({ resetKey = 'thr' }: { resetKey?: string }) {
   const isDistribusiPage = location.pathname.includes('/salary-distribution');
   const basePrefix = isApprovalPage ? '/payroll-period-approval' : '/payroll-period';
   // Dokumentasi: Gunakan prefix detail khusus distribusi saat di halaman Distribusi
-  const detailPathPrefix = isDistribusiPage ? '/salary-distribution/detail-thr' : `${basePrefix}/detail-thr`;
+  const detailPathPrefix = isDistribusiPage ? '/salary-distribution/detail-pkl' : `${basePrefix}/detail-pkl`;
   const title = isApprovalPage ? 'Approval Periode Gajian' : isDistribusiPage ? 'Distribusi Slip Gaji' : 'Periode Gajian';
 
   // Dokumentasi: Fungsi untuk navigasi detail dengan approval type sebagai query parameter
   const handleDetailNavigation = (id: string) => {
     navigate(`${detailPathPrefix}/${id}?approvalType=${encodeURIComponent(approvalType)}`);
   };
-  const [rows] = useState<THRRow[]>([
-    { idKaryawan: '32345678', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', totalTHR: '5.000.000', jabatan: 'Manager', perusahaan: 'Dasaria', statusTHR: 'Draft', alasanDitolak: '-' },
+  const [rows] = useState<PKLRow[]>([
+    { idKaryawan: '22345678', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', jumlahHariKerja: '20', uangSaku: '2.000.000', kategori: 'PKL', perusahaan: 'Dasaria', statusPenggajian: 'Draft', approvalHrga: 'Selesai', approvalFat: 'Pending', approvalDirekturKeuangan: 'Selesai' },
   ]);
-  const baseColumns: DataTableColumn<THRRow>[] = [
+  const baseColumns: DataTableColumn<PKLRow>[] = [
+    { id: 'no', label: 'No.', align: 'center', sortable: false },
     { id: 'idKaryawan', label: 'NIP' },
     { id: 'pengguna', label: 'Pengguna' },
     { id: 'tanggalPengajuan', label: 'Tanggal Pengajuan' },
-    { id: 'totalTHR', label: 'Total THR', align: 'right' },
-    { id: 'jabatan', label: 'Jabatan' },
+    { id: 'jumlahHariKerja', label: 'Jumlah Hari Kerja' },
+    { id: 'uangSaku', label: 'Uang Saku', align: 'right' },
+    { id: 'kategori', label: 'Kategori' },
     { id: 'perusahaan', label: 'Perusahaan' },
-    { id: 'statusTHR', label: 'Status THR', format: (v) => <span className="rounded-full bg-blue-100 p-[10px] flex justify-center text-xs text-blue-700 dark:bg-blue-900/30 dark:text-blue-200">{String(v)}</span> },
-    { id: 'alasanDitolak', label: 'Alasan Ditolak' },
+    { id: 'statusPenggajian', label: 'Status Penggajian', format: (v) => <span className=" rounded-full bg-blue-100 p-[10px] flex justify-center text-xs text-blue-700 dark:bg-blue-900/30 dark:text-blue-200">{String(v)}</span> },
+    { id: 'approvalHrga', label: 'Approval Direktur HRGA', format: (v) => <span className=" rounded-full bg-green-100 p-[10px] flex justify-center text-xs text-green-700 dark:bg-green-900/30 dark:text-green-200">{String(v)}</span> },
+    { id: 'approvalFat', label: 'Approval FAT', format: (v) => <span className=" rounded-full bg-yellow-100 p-[10px] flex justify-center text-xs text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-200">{String(v)}</span> },
+    { id: 'approvalDirekturKeuangan', label: 'Approval Direktur Keuangan', format: (v) => <span className=" rounded-full bg-green-100 p-[10px] flex justify-center text-xs text-green-700 dark:bg-green-900/30 dark:text-green-200">{String(v)}</span> },
   ];
   return (
     <PenggajianTabBase

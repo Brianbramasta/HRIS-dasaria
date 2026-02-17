@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import DataTable, { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
 import Button from '@/components/ui/button/Button';
 import { IconDownloadTemplate, IconImport } from '@/icons/components/icons';
 import DeleteDataGajiModal from '@/features/payroll/components/modals/DeletePayrollDataModal';
 import UploadExcelModal from '@/features/payroll/components/modals/UploadExcelModal';
+import ApprovalModal from '@/features/payroll/components/modals/payroll-period/ApprovalModal';
 import usePayrollTabBase, { BaseRow } from '@/features/payroll/hooks/tabs/usePayrollTabBase';
 
 type Props<TRow extends BaseRow> = {
@@ -26,6 +28,9 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
   toolbarRightSlot,
   customActions,
 }: Props<TRow>) {
+  const [showApprovalModal, setShowApprovalModal] = useState(false);
+  const [isApproving, setIsApproving] = useState(false);
+
   const {
     isApprovalPage,
     isDistribusiPage,
@@ -46,6 +51,19 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
     customActions,
   });
 
+  const handleApprovalConfirm = async () => {
+    setIsApproving(true);
+    try {
+      // TODO: Implementasi API call untuk finalisasi data
+      console.log('Finalisasi data payroll');
+      // Simulasi delay untuk demo
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    } finally {
+      setIsApproving(false);
+      setShowApprovalModal(false);
+    }
+  };
+
   const toolbarRightSlotAtas = isApprovalPage
     ? (<>
         <div className="flex items-center gap-3">
@@ -62,13 +80,16 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
       )
     : (
         <div className="flex items-center gap-3">
-          {/* Dokumentasi: tombol Import membuka modal upload */}
+          <Button variant="custom" className="w-max border border-[#007BFF] bg-[white] text-[#007BFF] dark:text-white color-[#007BFF]" size="sm">
+            <IconDownloadTemplate size={16} color="#007BFF" />
+            Template Import Data
+          </Button>
           <Button variant="outline" size="sm" className="bg-success text-white dark:text-white" onClick={() => setShowUpload(true)}>
             <IconImport size={16} /> Import
           </Button>
-          <Button variant="custom" className='w-max bg-[#007BFF] text-white dark:text-white' size="sm">
-            <IconDownloadTemplate size={16} />
-            Template Import Data
+          
+          <Button variant="custom" className="w-max bg-[#007BFF] text-white dark:text-white" size="sm" disabled={!hasSelection} onClick={() => setShowApprovalModal(true)}>
+            Finalisasi Data
           </Button>
         </div>
       );
@@ -96,6 +117,13 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
         isOpen={showUpload}
         onClose={() => setShowUpload(false)}
         onImport={async (_file) => { console.log(_file); setShowUpload(false); }}
+      />
+      <ApprovalModal
+        isOpen={showApprovalModal}
+        onClose={() => setShowApprovalModal(false)}
+        onConfirm={handleApprovalConfirm}
+        submitting={isApproving}
+        description="Periode gaji yang disahkan akan dikunci dan tidak dapat diubah. Pastikan semua data telah sesuai sebelum melanjutkan proses approval."
       />
     </>
   );

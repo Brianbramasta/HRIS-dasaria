@@ -309,10 +309,10 @@ export default function DetailPengunduranDiriPage() {
       <RejectionConfirmtionResignnationModal
         isOpen={isRejectModalOpen}
         onClose={closeRejectModal}
-        onSubmit={async () => {
+        onSubmit={async (note) => {
           const resignationId = applicationDetail?.resignation_details?.resignation_id;
           if (resignationId) {
-            await rejectApplication(resignationId);
+            await rejectApplication(resignationId, { note_hr: note });
             navigate(`/resignation`);
             closeRejectModal();
           }

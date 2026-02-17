@@ -1,9 +1,10 @@
 // Dokumentasi: Halaman Non-AE di-refactor untuk menggunakan komponen dinamis DetailPayrollContent
 import { useMemo } from "react";
 import { useParams } from "react-router";
-import DetailPayrollContent, { SectionConfig } from "@/features/payroll/components/layouts/LayoutDetail";
+import DetailPayrollComparisonContent, { SectionConfig } from "@/features/payroll/components/layouts/LayoutDetailComparison";
 import TambahTunjanganTidakTetapModal from "@/features/payroll/components/modals/detail-payroll/non-ae/AddNonRecurringAllowanceModal";
 import TambahPotonganTidakTetapModal from "@/features/payroll/components/modals/detail-payroll/non-ae/AddNonRecurringDeductionModal";
+import EditInformationEmployeeModal from "@/features/payroll/components/modals/detail-payroll/non-ae/EditInformationEmployeeModal";
 
 // Dokumentasi: Komponen halaman Non-AE yang menyusun config untuk layout dinamis
 export default function DetailGajiPage() {
@@ -23,6 +24,11 @@ export default function DetailGajiPage() {
 
   const config: SectionConfig = {
     infoFields: [],
+    periodeComparison: {
+      leftTitle: "Periode Bulan Kemarin",
+      rightTitle: "Periode Bulan Ini",
+      headerColor: "gray",
+    },
     info: {
       fields: [
         { name: "idKaryawan", label: "NIP", type: "input", placeholder: "Otomatis", value: defaultData.idKaryawan, readonly: true },
@@ -42,6 +48,16 @@ export default function DetailGajiPage() {
         { name: "perusahaan", label: "Perusahaan", type: "input", placeholder: "Otomatis", readonly: true },
         { name: "jumlahHariKerja", label: "Jumlah Hari Kerja", type: "input", placeholder: "Otomatis", readonly: true },
       ],
+      initialValues: {
+        idKaryawan: defaultData.idKaryawan,
+        pengguna: defaultData.pengguna,
+        tanggalPengajuan: "",
+        gajiPokokUangSaku: defaultData.gajiPokokUangSaku,
+        kategori: defaultData.kategori,
+        perusahaan: defaultData.perusahaan,
+        jumlahHariKerja: defaultData.jumlahHariKerja,
+      },
+      ModalComponent: EditInformationEmployeeModal,
     },
     tunjanganTetap: true,
     tunjanganTidakTetap: {
@@ -80,11 +96,16 @@ export default function DetailGajiPage() {
       ModalComponent: TambahPotonganTidakTetapModal,
     },
     rekapitulasi: {
+      modalFields: [
+        { name: "totalPendapatanKotor", label: "Total Pendapatan Kotor", type: "input", placeholder: "Otomatis", readonly: true },
+        { name: "totalPotongan", label: "Total Potongan", type: "input", placeholder: "Otomatis", readonly: true },
+        { name: "gajiBersih", label: "Gaji Bersih", type: "input", placeholder: "Otomatis", readonly: true },
+      ],
       catatanKaryawan: true,
       catatanBOD: true,
     },
   };
 
-  return <DetailPayrollContent config={config} />;
+  return <DetailPayrollComparisonContent config={config} />;
 }
 

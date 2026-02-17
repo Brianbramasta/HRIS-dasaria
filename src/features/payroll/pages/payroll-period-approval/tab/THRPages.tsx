@@ -7,14 +7,14 @@ import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { ChevronDown } from 'react-feather';
 
 type THRRow = {
+  no?: number;
   idKaryawan: string;
   pengguna: string;
   tanggalPengajuan: string;
   totalTHR: string;
-  jabatan: string;
   perusahaan: string;
-  statusTHR: string;
-  alasanDitolak: string;
+  jabatan: string;
+  statusPersetujuan: string;
 };
 
 export default function THRTab({ resetKey = 'thr' }: { resetKey?: string }) {
@@ -35,7 +35,7 @@ export default function THRTab({ resetKey = 'thr' }: { resetKey?: string }) {
     navigate(`${detailPathPrefix}/${id}?approvalType=${encodeURIComponent(approvalType)}`);
   };
   const [rows] = useState<THRRow[]>([
-    { idKaryawan: '32345678', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', totalTHR: '5.000.000', jabatan: 'Manager', perusahaan: 'Dasaria', statusTHR: 'Draft', alasanDitolak: '-' },
+    { idKaryawan: '32345678', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', totalTHR: '5.000.000', jabatan: 'Direktur', perusahaan: 'Dasaria', statusPersetujuan: 'Menunggu diproses' },
   ]);
   const baseColumns: DataTableColumn<THRRow>[] = [
     { id: 'idKaryawan', label: 'NIP' },
@@ -44,8 +44,15 @@ export default function THRTab({ resetKey = 'thr' }: { resetKey?: string }) {
     { id: 'totalTHR', label: 'Total THR', align: 'right' },
     { id: 'jabatan', label: 'Jabatan' },
     { id: 'perusahaan', label: 'Perusahaan' },
-    { id: 'statusTHR', label: 'Status THR', format: (v) => <span className="rounded-full bg-blue-100 p-[10px] flex justify-center text-xs text-blue-700 dark:bg-blue-900/30 dark:text-blue-200">{String(v)}</span> },
-    { id: 'alasanDitolak', label: 'Alasan Ditolak' },
+    {
+      id: 'statusPersetujuan',
+      label: 'Status Persetujuan',
+      format: (v) => (
+        <span className="rounded-full bg-orange-100 p-[10px] flex justify-center text-xs text-orange-700 dark:bg-orange-900/30 dark:text-orange-200">
+          {String(v)}
+        </span>
+      ),
+    },
   ];
   return (
     <PenggajianTabBase

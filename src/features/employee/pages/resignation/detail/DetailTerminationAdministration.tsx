@@ -7,7 +7,7 @@ import FileInput from '../../../../../components/form/input/FileInput';
 import SelectField from '../../../../../components/shared/field/SelectField';
 import { Table, TableHeader, TableBody, TableRow, TableCell } from '../../../../../components/ui/table';
 import { IconHapus, IconPlus } from '@/icons/components/icons';
-import DoneOffBoardingModal from '../../../components/modals/resignation/DoneOffBoardingModal';
+import DoneOffBoardingModal from '../../../components/modals/termination/DoneOffBoardingModal';
 import { useApiResignation } from '@/features/employee/hooks/api/useApiResignation';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 

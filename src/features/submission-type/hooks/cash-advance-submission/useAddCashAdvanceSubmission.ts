@@ -20,7 +20,7 @@ export interface UseAddCashAdvanceSubmissionParams {
   isOpen: boolean;
   onClose: () => void;
   defaultValues?: Partial<PengajuanKasbonForm> | null;
-  onSave?: (values: PengajuanKasbonForm) => void;
+  onSave?: (values: PengajuanKasbonForm) => boolean | Promise<boolean>;
 }
 
 export function useAddCashAdvanceSubmission({
@@ -106,9 +106,11 @@ export function useAddCashAdvanceSubmission({
   const handleSubmit = async () => {
     setSubmitting(true);
     try {
-      if (onSave) onSave(form);
-      onClose();
-      setTimeout(() => setShowSuccessPopup(true), 300);
+      const ok = onSave ? await onSave(form) : false;
+      if (ok) {
+        onClose();
+        setTimeout(() => setShowSuccessPopup(true), 300);
+      }
     } finally {
       setSubmitting(false);
     }

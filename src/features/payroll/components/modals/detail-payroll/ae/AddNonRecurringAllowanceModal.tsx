@@ -12,31 +12,25 @@ const TambahTunjanganTidakTetapModalAE: React.FC<Props> = ({
   onClose,
   defaultValues,
   onSave,
+  fields,
 }) => {
   const { form, setField, handleSubmit } = useAddNonRecurringAllowanceAEModal(defaultValues as any);
 
   const content = (
     <div className="space-y-5">
-      <div>
-        <Label>Komisi Sales</Label>
-        <Input placeholder="150.000" value={form.komisiSales} onChange={(e) => setField('komisiSales', e.target.value)} />
-      </div>
-      <div>
-        <Label>Komisi Survey Sales</Label>
-        <Input placeholder="300.000" value={form.komisiSurveySales} onChange={(e) => setField('komisiSurveySales', e.target.value)} />
-      </div>
-      <div>
-        <Label>Growth Reward</Label>
-        <Input placeholder="1.500.000" value={form.growthReward} onChange={(e) => setField('growthReward', e.target.value)} />
-      </div>
-      <div>
-        <Label>Insentif</Label>
-        <Input placeholder="1.500.000" value={form.insentif} onChange={(e) => setField('insentif', e.target.value)} />
-      </div>
-      <div>
-        <Label>Fee Mitra Subnet</Label>
-        <Input placeholder="1.500.000" value={form.feeMitraSubnet} onChange={(e) => setField('feeMitraSubnet', e.target.value)} />
-      </div>
+      {(fields ?? []).map((f) => (
+        <div key={f.name}>
+          <Label>{f.label}</Label>
+          <Input
+            type={f.inputType ?? 'text'}
+            placeholder={f.placeholder ?? '0'}
+            value={form?.[f.name] ?? ''}
+            onChange={(e) => setField(f.name, e.target.value)}
+            disabled={f.disabled}
+            readonly={f.readonly}
+          />
+        </div>
+      ))}
     </div>
   );
 

@@ -3,6 +3,7 @@
 // Dokumentasi: Halaman induk Periode Penggajian dengan skema Tabs + Outlet (mirip StrukturOrganisasiPage)
 import { Outlet, useLocation } from 'react-router-dom';
 import Tabs from '@/components/shared/Tabs';
+import CardsPayroll, { PayrollCard } from '../../components/cards/CardsPayroll';
 
 export default function PeriodePenggajianPage() {
   const location = useLocation();
@@ -19,6 +20,12 @@ export default function PeriodePenggajianPage() {
     { id: 'thr', label: 'THR', link: '/payroll-period/thr' },
   ];
 
+  const cardsData: PayrollCard[] = [
+    { name: 'Maker', statusLabel: 'Selesai', statusColor: 'success', remaining: 0, progressCurrent: 120, progressTotal: 120 },
+    { name: 'Dasarata', statusLabel: 'Dalam Proses', statusColor: 'info', remaining: 20, progressCurrent: 80, progressTotal: 100 },
+    { name: 'GriyaNet', statusLabel: 'Belum Proses', statusColor: 'error', remaining: 100, progressCurrent: 0, progressTotal: 100 },
+  ];
+
   return (
     <div className="space-y-6">
       {!isDetailPage && (
@@ -27,6 +34,9 @@ export default function PeriodePenggajianPage() {
             <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Periode Gajian</h1>
           </div> */}
           <Tabs tabs={tabs} activeTab={activeTab} />
+          <div className="mt-4">
+            <CardsPayroll items={cardsData} />
+          </div>
         </>
       )}
       <div className="py-4">

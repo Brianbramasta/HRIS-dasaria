@@ -90,15 +90,24 @@ export default function JenisPengajuanPage() {
               ? "bg-orange-100 text-orange-700"
               : value === "Disetujui"
               ? "bg-green-100 text-green-700"
-              :'bg-orange-100 text-orange-700'
-              // : "bg-red-100 text-red-700"
+              : value === "Ditolak"
+              ? "bg-red-100 text-red-700"
+              : "bg-orange-100 text-orange-700"
           }`}
         >
           {value}
         </span>
       ),
     },
-    { id: "catatan", label: "Catatan" },
+    {
+      id: "catatan",
+      label: "Catatan",
+      format: (value: RowPengajuan["catatan"]) => {
+        if (typeof value !== "string") return value as unknown as string;
+        const formatted = formatDateToIndonesian(value);
+        return formatted || value;
+      },
+    },
   ];
 
   const actions = [
@@ -108,6 +117,7 @@ export default function JenisPengajuanPage() {
         console.log("Preview pengajuan", row);
       },
       className: "text-gray-600",
+      condition: () => false, // Hanya tampilkan jika ada lampiran
     },
   ];
 
@@ -182,7 +192,7 @@ export default function JenisPengajuanPage() {
                 // Dokumentasi: Saat memilih Kasbon, buka modal pengajuan kasbon
                 setJenis(v);
                 if (v) {
-                  fetchPopupDetail(v as PopupStatus);
+                  // fetchPopupDetail(v as PopupStatus);
                 }
                 // if (v === "Kasbon") setOpenKasbonModal(true);
               }}
@@ -195,70 +205,51 @@ export default function JenisPengajuanPage() {
         isOpen={openKasbonModal}
         onClose={() => setOpenKasbonModal(false)}
         defaultValues={kasbonDefaults ?? undefined}
+        onSuccessClose={() => fetchIndex()}
         // isFormValid={true}
-        onSave={(values) => {
-          (async () => {
-            const ok = await storeSubmission({
-              submission: "Kasbon",
-              tanggal_pengajuan: values.tanggalPengajuan,
-              loan_type_id: "fd854227-c6e1-4359-8c42-e9e6a042fec0",
-              nominal_loan: values.nominalKasbon,
-              loan_period: values.periodeCicilan,
-              supervisor_approval_file: values.suratPersetujuanAtasan || null,
-              supporting_documents: (values.dokumenPendukung && values.dokumenPendukung.length > 0) ? values.dokumenPendukung[0] : null,
-              loan_description: values.keterangan,
-              nominal_installment: values.nominalCicilan,
-            });
-            if (ok) {
-              addNotification({
-                variant: 'success',
-                title: 'Berhasil menyimpan pengajuan kasbon',
-                hideDuration: 3000,
-              });
-              fetchIndex();
-            } else {
-              addNotification({
-                variant: 'error',
-                title: 'Gagal menyimpan pengajuan kasbon',
-                hideDuration: 4000,
-              });
-            }
-          })();
+        onSave={async (values) => {
+          const ok = await storeSubmission({
+            submission: "Kasbon",
+            tanggal_pengajuan: values.tanggalPengajuan,
+            loan_type_id: "fd854227-c6e1-4359-8c42-e9e6a042fec0",
+            nominal_loan: values.nominalKasbon,
+            loan_period: values.periodeCicilan,
+            supervisor_approval_file: values.suratPersetujuanAtasan || null,
+            supporting_documents:
+              values.dokumenPendukung && values.dokumenPendukung.length > 0
+                ? values.dokumenPendukung[0]
+                : null,
+            loan_description: values.keterangan,
+            nominal_installment: values.nominalCicilan,
+          });
+          if (ok) {
+            fetchIndex();
+          }
+          return ok;
         }}
       />
       <AddPengajuanPengunduranDiriModal
         isOpen={openResignModal}
         onClose={() => setOpenResignModal(false)}
         defaultValues={resignDefaults ?? undefined}
-        onSave={(values) => {
-          (async () => {
-            const ok = await storeSubmission({
-              submission: "Pengunduran Diri",
-              tanggal_pengajuan: values.tanggalPengajuan,
-              document_lampiran: values.suratPengunduranDiri || null,
-              loan_type_id: "",
-              nominal_loan: 0,
-              loan_period: 0,
-              supervisor_approval_file: null,
-              supporting_documents: null,
-              loan_description: values.alasan,
-              nominal_installment: 0,
-            });
-            if (ok) {
-              addNotification({
-                variant: 'success',
-                title: 'Berhasil menyimpan pengajuan pengunduran diri',
-                hideDuration: 3000,
-              });
-              fetchIndex();
-            } else {
-              addNotification({
-                variant: 'error',
-                title: 'Gagal menyimpan pengajuan pengunduran diri',
-                hideDuration: 4000,
-              });
-            }
-          })();
+        onSuccessClose={() => fetchIndex()}
+        onSave={async (values) => {
+          const ok = await storeSubmission({
+            submission: "Pengunduran Diri",
+            tanggal_pengajuan: values.tanggalPengajuan,
+            document_lampiran: values.suratPengunduranDiri || null,
+            loan_type_id: "",
+            nominal_loan: 0,
+            loan_period: 0,
+            supervisor_approval_file: null,
+            supporting_documents: null,
+            loan_description: values.alasan,
+            nominal_installment: 0,
+          });
+          if (ok) {
+            fetchIndex();
+          }
+          return ok;
         }}
       />
     </div>

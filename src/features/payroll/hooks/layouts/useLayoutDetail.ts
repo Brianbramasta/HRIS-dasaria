@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router";
 import useGoBack from "@/hooks/useGoBack";
 import type { SectionConfig } from "@/features/payroll/components/layouts/LayoutDetail";
@@ -22,11 +22,46 @@ export const useLayoutDetail = (config: SectionConfig) => {
   const isHRGAorBODApproval =
     approvalType === "Persetujuan oleh Direktur HRGA" || approvalType === "Persetujuan oleh BOD";
 
+  const isBODApproval = approvalType === "Persetujuan oleh BOD";
+
+  const canEditInfo = !isApprovalContext ? true : !isBODApproval;
+  const canEditTT = !isApprovalContext
+    ? true
+    : isBODApproval
+      ? false
+      : isFATApproval
+        ? false
+        : isHRGAorBODApproval
+          ? true
+          : false;
+  const canEditPTT = !isApprovalContext ? true : isBODApproval ? false : isFATApproval;
+  const canEditRecap = !isApprovalContext ? true : !isBODApproval;
+
   const [ttValues, setTtValues] = useState<Record<string, string>>(() => config.tunjanganTidakTetap?.initialValues ?? {});
   const [pttValues, setPttValues] = useState<Record<string, string>>(() => config.potonganTidakTetap?.initialValues ?? {});
+  const [infoValues, setInfoValues] = useState<Record<string, string>>(() => config.info?.initialValues ?? config.infoModal?.initialValues ?? {});
+  const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
+  const [recapValues, setRecapValues] = useState<Record<string, string>>(() => {
+    if (config.rekapitulasi && typeof config.rekapitulasi === "object") {
+      return config.rekapitulasi.initialValues ?? {};
+    }
+    return {};
+  });
   const [isTTModalOpen, setIsTTModalOpen] = useState(false);
   const [isPTTModalOpen, setIsPTTModalOpen] = useState(false);
   const [isRecapModalOpen, setIsRecapModalOpen] = useState(false);
+
+  useEffect(() => {
+    setInfoValues(config.info?.initialValues ?? config.infoModal?.initialValues ?? {});
+    setTtValues(config.tunjanganTidakTetap?.initialValues ?? {});
+    setPttValues(config.potonganTidakTetap?.initialValues ?? {});
+
+    if (config.rekapitulasi && typeof config.rekapitulasi === "object") {
+      setRecapValues(config.rekapitulasi.initialValues ?? {});
+    } else {
+      setRecapValues({});
+    }
+  }, [location.pathname, location.search]);
 
   const gridColsInfo = useMemo(() => "grid grid-cols-1 gap-6 md:grid-cols-3", []);
   const gridColsTT = useMemo(() => "grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3", []);
@@ -38,6 +73,16 @@ export const useLayoutDetail = (config: SectionConfig) => {
     isDistribusiContext,
     isFATApproval,
     isHRGAorBODApproval,
+    canEditInfo,
+    canEditTT,
+    canEditPTT,
+    canEditRecap,
+    infoValues,
+    setInfoValues,
+    isInfoModalOpen,
+    setIsInfoModalOpen,
+    recapValues,
+    setRecapValues,
     ttValues,
     setTtValues,
     pttValues,
