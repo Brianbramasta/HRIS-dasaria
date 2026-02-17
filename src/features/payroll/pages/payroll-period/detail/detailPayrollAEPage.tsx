@@ -3,7 +3,6 @@ import { useMemo } from "react";
 import { useParams } from "react-router";
 import DetailPayrollContent, { SectionConfig } from "@/features/payroll/components/layouts/LayoutDetail";
 import TambahTunjanganTidakTetapModalAE from "@/features/payroll/components/modals/detail-payroll/ae/AddNonRecurringAllowanceModal";
-import TambahPotonganTidakTetapModalAE from "@/features/payroll/components/modals/detail-payroll/ae/AddNonRecurringDeductionModal";
 import EditInformationEmployeeModal from "@/features/payroll/components/modals/detail-payroll/non-ae/EditInformationEmployeeModal";
 
 // Dokumentasi: Komponen halaman AE yang menyusun config untuk layout dinamis
