@@ -3,7 +3,6 @@ import { useOrganizationHistory, OrganizationChangeItem } from '@/features/emplo
 import Button from '@/components/ui/button/Button';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { ChevronDown } from 'react-feather';
-import EditRiwayatOrganisasiModal from '@/features/employee/components/modals/organization-history/EditOrganizationHistoryModal';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IconFileDetail } from '@/icons/components/icons';
@@ -21,26 +20,17 @@ export default function OrganizationHistoryPage() {
     total,
     page,
     limit,
-    isEditOrgOpen,
     isDropdownOpen,
-    selectedRow,
     handleSearchChange,
     handleSortChange,
     handlePageChange,
     handleRowsPerPageChange,
     handleDateRangeFilterChange,
     dateRangeFilters,
-    handleAddOrganization,
-    handleEditOrganization,
-    handleCloseModal,
-    handleSubmitModal,
     handleDropdownToggle,
     handleDropdownClose,
     handleNavigateToHR,
     handleNavigateToAtasan,
-    // setSelectedRow,
-    // setIsEditOrgOpen,
-    detail,
   } = useOrganizationHistory();
 
   // Define columns
@@ -107,7 +97,7 @@ export default function OrganizationHistoryPage() {
       //   },
       // }
     ],
-    [navigate, handleEditOrganization]
+    [navigate]
   );
 
   return (
@@ -129,7 +119,7 @@ export default function OrganizationHistoryPage() {
         dateRangeFilters={dateRangeFilters}
         emptyMessage="Belum ada perubahan organisasi"
         addButtonLabel="Tambah Organisasi"
-        onAdd={handleAddOrganization}
+        onAdd={() => navigate('/organization-history/detail?mode=add')}
         searchPlaceholder="Cari berdasarkan kata kunci"
         onSearchChange={handleSearchChange}
         onSortChange={handleSortChange}
@@ -162,14 +152,6 @@ export default function OrganizationHistoryPage() {
             </Dropdown>
           </div>
         }
-      />
-
-      <EditRiwayatOrganisasiModal
-        isOpen={isEditOrgOpen}
-        onClose={handleCloseModal}
-        onSubmit={handleSubmitModal}
-        // submitting={isSubmitting}
-        initialData={selectedRow ? detail || undefined : undefined}
       />
     </div>
   );
