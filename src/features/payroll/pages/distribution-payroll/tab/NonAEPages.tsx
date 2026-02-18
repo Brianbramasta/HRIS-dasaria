@@ -137,13 +137,13 @@ export default function NonAEPages() {
         align: 'center',
         format: (value) => {
           const statusMap = {
-            disetujui: { text: 'Disetujui', className: 'bg-green-100 text-green-800' },
-            menunggu: { text: 'Menunggu', className: 'bg-yellow-100 text-yellow-800' },
-            ditolak: { text: 'Ditolak', className: 'bg-red-100 text-red-800' },
+            disetujui: { text: 'Disetujui', className: 'status-styling bg-green-100 text-green-800' },
+            menunggu: { text: 'Menunggu', className: 'status-styling bg-yellow-100 text-yellow-800' },
+            ditolak: { text: 'Ditolak', className: 'status-styling bg-red-100 text-red-800' },
           };
           const status = statusMap[value as keyof typeof statusMap] || {
             text: value,
-            className: 'bg-gray-100 text-gray-800',
+            className: 'status-styling bg-gray-100 text-gray-800',
           };
           return (
             <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${status.className}`}>

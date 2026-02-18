@@ -1,10 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import React from 'react';
 import { ChevronLeft } from 'react-feather';
 import PayrollCard from '@/features/payroll/components/cards/Cards';
 import useOrganizationHistoryDetail from '@/features/employee/hooks/organization-history/useOrganizationHistoryDetail';
-import { useEditOrganizationHistoryModal } from '@/features/employee/hooks/modals/organization-history/useEditOrganizationHistoryModal';
-import { useOrganizationChange } from '@/features/employee/hooks/organization-history/useOrganizationChange';
 import InputField from '@/components/shared/field/InputField';
 import TextAreaField from '@/components/shared/field/TextAreaField';
 import DateField from '@/components/shared/field/DateField';
@@ -16,103 +13,35 @@ import { IconPlus as PlusIcon, IconHapus as TrashBinIcon } from '@/icons/compone
 import { formatCurrency, parseCurrency } from '@/utils/formatCurrency';
 
 const DetailOrganizationHistoryPage: React.FC = () => {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const id = searchParams.get('id') || '';
-  const mode = searchParams.get('mode') || '';
-  const isAddMode = mode === 'add' || !id;
-
-  const [nonFixAllowances, setNonFixAllowances] = useState<Array<{ id: string; amount: number }>>([{ id: '', amount: 0 }]);
-  const [salaryFields, setSalaryFields] = useState({
-    gaji_pokok: '',
-    tunjangan_pernikahan: '',
-    tunjangan_jabatan: '',
-    tunjangan_lama_kerja: '',
-    gaji_bersih: '',
-  });
-
-  useEffect(() => {}, []);
-
-  const detailState = useOrganizationHistoryDetail({ id });
+  const detailState = useOrganizationHistoryDetail();
 
   const {
-    createOrganizationChange,
+    addState,
+    currency,
+    currentEmployee,
+    displayForm,
+    disableAll,
+    diskresiOptions,
+    form,
+    handleInput,
+    handleSubmit,
+    infoSalaryLabel,
+    isAddMode,
+    isNonStaffOrMitraCategory,
+    isNonStaffOrMitraInfoEmployee,
+    isStaffCategory,
+    isStaffCurrentEmployee,
     isSubmitting,
-  } = useOrganizationChange({ autoFetch: false });
-
-  const addState = useEditOrganizationHistoryModal({ isOpen: isAddMode, initialData: null });
-
-  const title = useMemo(() => {
-    return isAddMode ? 'Tambah Organisasi' : detailState.title;
-  }, [isAddMode, detailState.title]);
-
-  const form = isAddMode ? addState.form : detailState.form;
-  const currentEmployee = isAddMode ? addState.currentEmployee : detailState.currentEmployee;
-  const displayForm = isAddMode ? null : detailState.displayForm;
-  const handleInput = isAddMode ? addState.handleInput : detailState.handleInput;
-
-  const disableAll = !isAddMode;
-
-  const currency = (val?: number) =>
-    val ? new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(val) : '';
-
-  const diskresiOptions = useMemo(
-    () => [
-      { label: 'Tunjangan Profesional', value: 'tunjangan_profesional' },
-      { label: 'Tunjangan Tidak Tetap', value: 'tunjangan_tidak_tetap' },
-    ],
-    []
-  );
-
-  const getCategoryLabel = useMemo(() => {
-    if (isAddMode) {
-      if (!(form as any)?.employee_category_id || !addState.kategoriKaryawanOptions?.length) return null;
-      const selected = addState.kategoriKaryawanOptions.find((opt: any) => opt.value === (form as any).employee_category_id);
-      return selected?.label || null;
-    }
-    return (displayForm as any)?.employee_category_name || null;
-  }, [isAddMode, form, addState.kategoriKaryawanOptions, displayForm]);
-
-  const isStaffCategory = getCategoryLabel === 'Staff';
-  const isStaffCurrentEmployee = (currentEmployee as any)?.employee_category === 'Staff';
-
-  const addNonFixAllowance = () => {
-    setNonFixAllowances((prev) => [...prev, { id: '', amount: 0 }]);
-  };
-
-  const removeNonFixAllowance = (index: number) => {
-    setNonFixAllowances((prev) => prev.filter((_v, i) => i !== index));
-  };
-
-  const updateNonFixAllowance = (index: number, key: 'id' | 'amount', value: any) => {
-    setNonFixAllowances((prev) => prev.map((item, i) => (i === index ? { ...item, [key]: value } : item)));
-  };
-
-  const handleSubmit = async () => {
-    if (!isAddMode) return;
-    const payload = {
-      employee_id: form?.employee_id || '',
-      change_type_id: form?.change_type_id || '',
-      efektif_date: form?.efektif_date || '',
-      reason: form?.reason || '',
-      company_id: form?.company_id || '',
-      office_id: form?.office_id || '',
-      directorate_id: form?.directorate_id || '',
-      division_id: form?.division_id || '',
-      department_id: form?.department_id || '',
-      job_title_id: form?.job_title_id || '',
-      structural_job_id: form?.structural_job_id || '',
-      position_id: form?.position_id || '',
-      position_level_id: form?.position_level_id || '',
-      employee_category_id: form?.employee_category_id || '',
-      unit_id: form?.unit_id || '',
-      decree_file: form?.skFile ?? null,
-      approved_by: 'di approve manual tanpa login ',
-      recommended_by: 'di approve manual tanpa login ',
-    };
-    const ok = await createOrganizationChange(null, payload as any);
-    if (ok) navigate(-1);
-  };
+    navigate,
+    nonFixAllowances,
+    removeNonFixAllowance,
+    salaryFields,
+    salaryLabel,
+    setSalaryFields,
+    title,
+    updateNonFixAllowance,
+    addNonFixAllowance,
+  } = detailState;
 
   return (
     <div className="p-6 space-y-6">
@@ -185,17 +114,21 @@ const DetailOrganizationHistoryPage: React.FC = () => {
             </div>
             
             <div>
-              <InputField label="Gaji  Pokok" placeholder="Otomatis" value="" disabled />
+              <InputField label={infoSalaryLabel} placeholder="Otomatis" value="" disabled />
             </div>
-            <div>
-              <InputField label="Tunjangan Pernikahan" placeholder="Otomatis" value="" disabled />
-            </div>
-            <div>
-              <InputField label="Tunjangan Jabatan" placeholder="Otomatis" value="" disabled />
-            </div>
-            <div>
-              <InputField label="Tunjangan Lama Kerja" placeholder="Otomatis" value="" disabled />
-            </div>
+            {!isNonStaffOrMitraInfoEmployee && (
+              <>
+                <div>
+                  <InputField label="Tunjangan Pernikahan" placeholder="Otomatis" value="" disabled />
+                </div>
+                <div>
+                  <InputField label="Tunjangan Jabatan" placeholder="Otomatis" value="" disabled />
+                </div>
+                <div>
+                  <InputField label="Tunjangan Lama Kerja" placeholder="Otomatis" value="" disabled />
+                </div>
+              </>
+            )}
             {isStaffCurrentEmployee && (
               <>
                 <div className="md:col-span-1">
@@ -427,17 +360,21 @@ const DetailOrganizationHistoryPage: React.FC = () => {
             />
           </div>
           <div>
-            <InputField label="Gaji Pokok" placeholder="Input" value={salaryFields.gaji_pokok} disabled={disableAll} onChange={(e) => setSalaryFields((p) => ({ ...p, gaji_pokok: (e as any)?.target?.value ?? (e as any) }))} />
+            <InputField label={salaryLabel} placeholder="Input" value={salaryFields.gaji_pokok} disabled={disableAll} onChange={(e) => setSalaryFields((p) => ({ ...p, gaji_pokok: (e as any)?.target?.value ?? (e as any) }))} />
           </div>
-          <div>
-            <InputField label="Tunjangan Pernikahan" placeholder="Input" value={salaryFields.tunjangan_pernikahan} disabled={disableAll} onChange={(e) => setSalaryFields((p) => ({ ...p, tunjangan_pernikahan: (e as any)?.target?.value ?? (e as any) }))} />
-          </div>
-          <div>
-            <InputField label="Tunjangan Jabatan" placeholder="Input" value={salaryFields.tunjangan_jabatan} disabled={disableAll} onChange={(e) => setSalaryFields((p) => ({ ...p, tunjangan_jabatan: (e as any)?.target?.value ?? (e as any) }))} />
-          </div>
-          <div>
-            <InputField label="Tunjangan Lama Kerja" placeholder="Input" value={salaryFields.tunjangan_lama_kerja} disabled={disableAll} onChange={(e) => setSalaryFields((p) => ({ ...p, tunjangan_lama_kerja: (e as any)?.target?.value ?? (e as any) }))} />
-          </div>
+          {!isNonStaffOrMitraCategory && (
+            <>
+              <div>
+                <InputField label="Tunjangan Pernikahan" placeholder="Input" value={salaryFields.tunjangan_pernikahan} disabled={disableAll} onChange={(e) => setSalaryFields((p) => ({ ...p, tunjangan_pernikahan: (e as any)?.target?.value ?? (e as any) }))} />
+              </div>
+              <div>
+                <InputField label="Tunjangan Jabatan" placeholder="Input" value={salaryFields.tunjangan_jabatan} disabled={disableAll} onChange={(e) => setSalaryFields((p) => ({ ...p, tunjangan_jabatan: (e as any)?.target?.value ?? (e as any) }))} />
+              </div>
+              <div>
+                <InputField label="Tunjangan Lama Kerja" placeholder="Input" value={salaryFields.tunjangan_lama_kerja} disabled={disableAll} onChange={(e) => setSalaryFields((p) => ({ ...p, tunjangan_lama_kerja: (e as any)?.target?.value ?? (e as any) }))} />
+              </div>
+            </>
+          )}
           {isStaffCategory && (
             <div className="md:col-span-2">
               <div className="space-y-4">
