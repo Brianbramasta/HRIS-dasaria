@@ -12,6 +12,68 @@ class PayrollPeriodService {
         const qs = apiService.buildQueryString(filter);
         return apiService.get<any>(`${this.basePath}/index${qs ? `?${qs}` : ''}`);
     }
+
+    /**
+     * Get Payroll Period Detail
+     * @param payrollId - Payroll ID
+     * @returns Promise dengan detail payroll periode
+     */
+    async getPayrollPeriodDetail(payrollId: string): Promise<any> {
+        return apiService.get<any>(`${this.basePath}/${payrollId}/detail`);
+    }
+
+    /**
+     * Update Non Fix Allowance
+     * @param payrollId - Payroll ID
+     * @param formData - FormData yang berisi _method=PATCH dan non_fixed_allowances
+     */
+    async updateNonFixAllowance(payrollId: string, formData: FormData): Promise<any> {
+        return apiService.post<any>(`${this.basePath}/${payrollId}/update-non-fix-allowance`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+    }
+
+    /**
+     * Update Non Fix Deduction
+     * @param payrollId - Payroll ID
+     * @param formData - FormData yang berisi _method=PATCH dan non_fixed_deductions
+     */
+    async updateNonFixDeduction(payrollId: string, formData: FormData): Promise<any> {
+        return apiService.post<any>(`${this.basePath}/${payrollId}/update-non-fix-deduction`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+    }
+
+    /**
+     * Update Working Days
+     * @param payrollId - Payroll ID
+     * @param formData - FormData berisi _method=PATCH dan working_days
+     */
+    async updateWorkingDays(payrollId: string, formData: FormData): Promise<any> {
+        return apiService.post<any>(`${this.basePath}/${payrollId}/update-working-days`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+    }
+
+    /**
+     * Approval HR
+     * @param formData - FormData berisi _method=PATCH dan payroll_id[]
+     */
+    async approvalHr(formData: FormData): Promise<any> {
+        return apiService.post<any>(`${this.basePath}/approval-hr`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+    }
+
+    /**
+     * Process Upload Excel
+     * @param formData - FormData berisi file_excel
+     */
+    async processUpload(formData: FormData): Promise<any> {
+        return apiService.post<any>(`${this.basePath}/process-upload`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+    }
 }
 
 export const payrollPeriodService = new PayrollPeriodService();

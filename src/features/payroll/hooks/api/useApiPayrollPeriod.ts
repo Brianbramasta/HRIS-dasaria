@@ -1,6 +1,13 @@
 import { useState, useCallback } from 'react';
 import { TableFilter } from '@/types/SharedType';
-import { PayrollPeriodListItem } from '../../types/dto/PayrollPeriodType';
+import {
+    PayrollPeriodDetailData,
+    PayrollPeriodListItem,
+    PayrollPeriodUpdateNonFixAllowancePayload,
+    PayrollPeriodUpdateNonFixDeductionPayload,
+    PayrollPeriodUpdateWorkingDaysPayload,
+    PayrollPeriodApprovalHrPayload,
+} from '../../types/dto/PayrollPeriodType';
 import { payrollPeriodService } from '../../services/PayrollPeriodService';
 import useFilterStore from '../../../../stores/filterStore';
 
@@ -36,6 +43,7 @@ const toSortField = (field?: string): string => {
 
 interface UseApiPayrollPeriodReturn {
     payrollPeriods: PayrollPeriodListItem[];
+    payrollPeriodDetail: PayrollPeriodDetailData | null;
     loading: boolean;
     error: string | null;
     total: number;
@@ -49,6 +57,12 @@ interface UseApiPayrollPeriodReturn {
 
     // Actions
     fetchPayrollPeriods: (filter?: Partial<TableFilter>) => Promise<void>;
+    fetchPayrollPeriodDetail: (payrollId: string) => Promise<PayrollPeriodDetailData | null>;
+    updateNonFixAllowance: (payload: PayrollPeriodUpdateNonFixAllowancePayload) => Promise<boolean>;
+    updateNonFixDeduction: (payload: PayrollPeriodUpdateNonFixDeductionPayload) => Promise<boolean>;
+    updateWorkingDays: (payload: PayrollPeriodUpdateWorkingDaysPayload) => Promise<boolean>;
+    approvalHr: (payload: PayrollPeriodApprovalHrPayload) => Promise<boolean>;
+    processUpload: (file: File) => Promise<boolean>;
 
     // Pagination
     setPage: (page: number) => void;
@@ -67,6 +81,7 @@ interface UseApiPayrollPeriodReturn {
 
 export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
     const [payrollPeriods, setPayrollPeriods] = useState<PayrollPeriodListItem[]>([]);
+    const [payrollPeriodDetail, setPayrollPeriodDetail] = useState<PayrollPeriodDetailData | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [total, setTotal] = useState<number>(0);
@@ -156,6 +171,132 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
         [search, sortBy, sortOrder, page, pageSize, filterStatus, columnFilters, dateRangeFilters]
     );
 
+    const fetchPayrollPeriodDetail = useCallback(async (payrollId: string): Promise<PayrollPeriodDetailData | null> => {
+        setLoading(true);
+        setError(null);
+
+        try {
+            const response = await payrollPeriodService.getPayrollPeriodDetail(payrollId);
+            const detail = (response as any)?.data ?? null;
+            setPayrollPeriodDetail(detail);
+            return detail;
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to fetch payroll period detail');
+            console.error('Error fetching payroll period detail:', err);
+            setPayrollPeriodDetail(null);
+            return null;
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    const updateNonFixAllowance = useCallback(async (payload: PayrollPeriodUpdateNonFixAllowancePayload): Promise<boolean> => {
+        setLoading(true);
+        setError(null);
+
+        try {
+            const formData = new FormData();
+            formData.append('_method', 'PATCH');
+            payload.nonFixedAllowances.forEach((item, index) => {
+                formData.append(`non_fixed_allowances[${index}][componen_id]`, item.componenId);
+                formData.append(`non_fixed_allowances[${index}][amount]`, String(item.amount));
+            });
+
+            await payrollPeriodService.updateNonFixAllowance(payload.payrollId, formData);
+            return true;
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to update non fixed allowance');
+            console.error('Error updating non fixed allowance:', err);
+            return false;
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    const updateNonFixDeduction = useCallback(async (payload: PayrollPeriodUpdateNonFixDeductionPayload): Promise<boolean> => {
+        setLoading(true);
+        setError(null);
+
+        try {
+            const formData = new FormData();
+            formData.append('_method', 'PATCH');
+            payload.nonFixedDeductions.forEach((item, index) => {
+                formData.append(`non_fixed_deductions[${index}][componen_id]`, item.componenId);
+                formData.append(`non_fixed_deductions[${index}][amount]`, String(item.amount));
+            });
+
+            await payrollPeriodService.updateNonFixDeduction(payload.payrollId, formData);
+            return true;
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to update non fixed deduction');
+            console.error('Error updating non fixed deduction:', err);
+            return false;
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    const updateWorkingDays = useCallback(async (payload: PayrollPeriodUpdateWorkingDaysPayload): Promise<boolean> => {
+        setLoading(true);
+        setError(null);
+
+        try {
+            const formData = new FormData();
+            formData.append('_method', 'PATCH');
+            formData.append('working_days', String(payload.workingDays));
+
+            await payrollPeriodService.updateWorkingDays(payload.payrollId, formData);
+            return true;
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to update working days');
+            console.error('Error updating working days:', err);
+            return false;
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    const approvalHr = useCallback(async (payload: PayrollPeriodApprovalHrPayload): Promise<boolean> => {
+        setLoading(true);
+        setError(null);
+
+        try {
+            const formData = new FormData();
+            formData.append('_method', 'PATCH');
+            payload.payrollIds.forEach((id, index) => {
+                formData.append(`payroll_id[${index}]`, id);
+            });
+
+            await payrollPeriodService.approvalHr(formData);
+            return true;
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to approval HR');
+            console.error('Error approval HR:', err);
+            return false;
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    const processUpload = useCallback(async (file: File): Promise<boolean> => {
+        setLoading(true);
+        setError(null);
+
+        try {
+            const formData = new FormData();
+            formData.append('file_excel', file);
+
+            await payrollPeriodService.processUpload(formData);
+            return true;
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to upload file');
+            console.error('Error uploading payroll period excel:', err);
+            return false;
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
     const handleSetPage = useCallback((newPage: number) => {
         setPage(newPage);
     }, []);
@@ -188,6 +329,7 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
 
     return {
         payrollPeriods,
+        payrollPeriodDetail,
         loading,
         error,
         total,
@@ -200,6 +342,12 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
         filterStatus,
 
         fetchPayrollPeriods,
+        fetchPayrollPeriodDetail,
+        updateNonFixAllowance,
+        updateNonFixDeduction,
+        updateWorkingDays,
+        approvalHr,
+        processUpload,
 
         setPage: handleSetPage,
         setPageSize: handleSetPageSize,

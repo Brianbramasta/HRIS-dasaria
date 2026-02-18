@@ -12,6 +12,7 @@ import { formatDateToIndonesian } from '@/utils/formatDate';
 
 type NonAERow = {
   no?: number;
+  payrollId: string;
   idKaryawan: string;
   pengguna: string;
   tanggalPengajuan: string;
@@ -29,6 +30,7 @@ type NonAERow = {
 // Mapping helper from PayrollPeriodListItem to NonAERow
 const mapPayrollPeriodToNonAERow = (item: PayrollPeriodListItem, index: number): NonAERow => ({
   no: index + 1,
+  payrollId: item.payrollId,
   idKaryawan: item.employeeId,
   pengguna: item.fullName,
   tanggalPengajuan: item.periode,
@@ -64,8 +66,8 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
   const title = isApprovalPage ? 'Approval Periode Gajian' : isDistribusiPage ? 'Distribusi Slip Gaji' : 'Periode Gajian';
 
   // Dokumentasi: Fungsi untuk navigasi detail dengan approval type sebagai query parameter
-  const handleDetailNavigation = (id: string) => {
-    navigate(`${detailPathPrefix}/${id}?approvalType=${encodeURIComponent(approvalType)}`);
+  const handleDetailNavigation = (payrollId: string) => {
+    navigate(`${detailPathPrefix}/${payrollId}?approvalType=${encodeURIComponent(approvalType)}`);
   };
 
   // Dokumentasi: Fetch data saat component mount dan reset key berubah

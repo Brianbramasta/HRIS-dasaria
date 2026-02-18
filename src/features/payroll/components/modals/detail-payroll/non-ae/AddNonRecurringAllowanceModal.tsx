@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import Input from '@/components/form/input/InputField';
 import type { ModalProps } from '@/features/payroll/components/layouts/LayoutDetail';
 import { useAddNonRecurringAllowanceModal } from '@/features/payroll/hooks/modals/detail-payroll/non-ae/useAddNonRecurringAllowanceModal';
+import { useApiPayrollPeriod } from '@/features/payroll/hooks/api/useApiPayrollPeriod';
+import { useParams } from 'react-router-dom';
 
 type Props = ModalProps;
 
@@ -15,6 +17,34 @@ const TambahTunjanganTidakTetapModal: React.FC<Props> = ({
   fields,
 }) => {
   const { form, setField, handleSubmit } = useAddNonRecurringAllowanceModal(defaultValues as any);
+  const { id: payrollId } = useParams();
+  const { updateNonFixAllowance } = useApiPayrollPeriod();
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmitWithApi = async () => {
+    setSubmitting(true);
+    try {
+      if (payrollId) {
+        const nonFixedAllowances = Object.entries(form ?? {})
+          .map(([key, rawAmount]) => {
+            const match = key.match(/^nfa_(.+)$/);
+            if (!match) return null;
+            const componenId = match[1];
+            const amount = String(rawAmount ?? '').replace(/\./g, '');
+            return { componenId, amount: amount === '' ? '' : amount };
+          })
+          .filter(Boolean) as { componenId: string; amount: string }[];
+
+        const ok = await updateNonFixAllowance({ payrollId, nonFixedAllowances });
+        if (!ok) return;
+      }
+
+      onSave(form ?? {});
+      onClose();
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const content = (
     <div className="space-y-5">
@@ -40,8 +70,8 @@ const TambahTunjanganTidakTetapModal: React.FC<Props> = ({
       isOpen={isOpen}
       onClose={onClose}
       content={content}
-      handleSubmit={() => handleSubmit(onSave, onClose)}
-      submitting={false}
+      handleSubmit={payrollId ? handleSubmitWithApi : () => handleSubmit(onSave, onClose)}
+      submitting={submitting}
       maxWidth="max-w-lg"
       confirmTitleButton="Simpan Perubahan"
       closeTitleButton="Tutup"

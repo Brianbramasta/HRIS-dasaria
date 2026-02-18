@@ -315,6 +315,7 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
                 type: "input",
                 placeholder: f.placeholder ?? "Otomatis",
                 readonly: f.readonly ?? true,
+                value: infoValues[f.name] ?? (f as any).value ?? "",
               })
             )}
           </div>
@@ -362,6 +363,7 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
                   <InputField
                     label={f.label}
                     placeholder={f.placeholder ?? "Inputan"}
+                    value={infoValues[f.name] ?? (f as any).value ?? ""}
                     type={f.inputType ?? "text"}
                     readonly={f.readonly}
                   />

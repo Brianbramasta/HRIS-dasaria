@@ -4,7 +4,7 @@ import { DataTableColumn, DataTableAction } from '@/components/shared/datatable/
 import { IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
 import Checkbox from '@/components/form/input/Checkbox';
 
-export type BaseRow = { idKaryawan: string; no?: number };
+export type BaseRow = { idKaryawan: string; payrollId?: string; no?: number };
 
 export type UsePayrollTabBaseProps<TRow extends BaseRow> = {
   rows: TRow[];
@@ -124,7 +124,8 @@ export default function usePayrollTabBase<TRow extends BaseRow>({
         label: '',
         icon: <Edit />,
         onClick: (row) => {
-          const id = (row as BaseRow).idKaryawan;
+          const baseRow = row as BaseRow;
+          const id = baseRow.payrollId ?? baseRow.idKaryawan;
           if (onDetailNavigation) {
             onDetailNavigation(id);
           } else {

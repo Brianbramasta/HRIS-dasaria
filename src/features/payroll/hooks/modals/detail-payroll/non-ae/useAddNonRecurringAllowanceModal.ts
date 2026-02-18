@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 const formatRupiah = (val: string) => {
   const cleaned = (val || '').replace(/[^0-9]/g, '');
@@ -16,6 +16,10 @@ export const useAddNonRecurringAllowanceModal = (
   }, [defaultValues]);
 
   const [form, setForm] = useState<Record<string, string>>(initial);
+
+  useEffect(() => {
+    setForm(initial);
+  }, [initial]);
 
   const setField = (key: string, value: string) => {
     setForm((prev) => ({ ...prev, [key]: formatRupiah(value) }));

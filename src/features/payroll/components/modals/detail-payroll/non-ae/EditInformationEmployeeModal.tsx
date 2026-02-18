@@ -4,6 +4,8 @@ import InputField from "@/components/shared/field/InputField";
 import DateField from "@/components/shared/field/DateField";
 import ModalAddEdit from "@/components/shared/modal/ModalAddEdit";
 import type { FieldDescriptor, InfoModalProps } from "@/features/payroll/components/layouts/LayoutDetail";
+import { useApiPayrollPeriod } from "@/features/payroll/hooks/api/useApiPayrollPeriod";
+import { useParams } from "react-router-dom";
 
 export default function EditInformationEmployeeModal({
   isOpen,
@@ -14,6 +16,8 @@ export default function EditInformationEmployeeModal({
 }: InfoModalProps) {
   const [submitting, setSubmitting] = useState(false);
   const [values, setValues] = useState<Record<string, string>>({});
+  const { id: payrollId } = useParams();
+  const { updateWorkingDays } = useApiPayrollPeriod();
 
   useEffect(() => {
     if (!isOpen) return;
@@ -72,6 +76,10 @@ export default function EditInformationEmployeeModal({
   const handleSubmit = async () => {
     setSubmitting(true);
     try {
+      if (payrollId) {
+        const ok = await updateWorkingDays({ payrollId, workingDays: values.jumlahHariKerja ?? "" });
+        if (!ok) return;
+      }
       onSave(values);
       onClose();
     } finally {
