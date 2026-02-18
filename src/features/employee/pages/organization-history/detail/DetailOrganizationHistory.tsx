@@ -10,7 +10,7 @@ import TextAreaField from '@/components/shared/field/TextAreaField';
 import DateField from '@/components/shared/field/DateField';
 import FIleField from '@/components/shared/field/FIleField';
 import SelectField from '@/components/shared/field/SelectField';
-import MultiSelectField from '@/components/shared/field/MultiSelectField';
+// import MultiSelectField from '@/components/shared/field/MultiSelectField';
 import Button from '@/components/ui/button/Button';
 import { IconPlus as PlusIcon, IconHapus as TrashBinIcon } from '@/icons/components/icons';
 import { formatCurrency, parseCurrency } from '@/utils/formatCurrency';
@@ -62,11 +62,6 @@ const DetailOrganizationHistoryPage: React.FC = () => {
       { label: 'Tunjangan Tidak Tetap', value: 'tunjangan_tidak_tetap' },
     ],
     []
-  );
-
-  const diskresiOptionsMulti = useMemo(
-    () => diskresiOptions.map((o) => ({ value: o.value, text: o.label })),
-    [diskresiOptions]
   );
 
   const getCategoryLabel = useMemo(() => {
@@ -188,9 +183,7 @@ const DetailOrganizationHistoryPage: React.FC = () => {
             <div>
               <InputField label="Golongan" placeholder="Otomatis" value={currentEmployee?.grade || ''} disabled />
             </div>
-            <div>
-              <InputField label="Gaji Bersih" placeholder="Otomatis" value={currency(form.previous_salary)} disabled />
-            </div>
+            
             <div>
               <InputField label="Gaji  Pokok" placeholder="Otomatis" value="" disabled />
             </div>
@@ -205,20 +198,17 @@ const DetailOrganizationHistoryPage: React.FC = () => {
             </div>
             {isStaffCurrentEmployee && (
               <>
-                <div className="md:col-span-2">
-                  <MultiSelectField
-                    label="Jenis Tunjangan DIskresi"
-                    options={diskresiOptionsMulti}
-                    defaultSelected={[]}
-                    onChange={() => {}}
-                    disabled
-                  />
+                <div className="md:col-span-1">
+                  <InputField label="Jenis Tunjangan DIskresi" placeholder="Otomatis" value="" disabled />
                 </div>
                 <div>
                   <InputField label="Nominal" placeholder="Otomatis" value="" disabled />
                 </div>
               </>
             )}
+            <div className="md:col-span-2">
+              <InputField label="Gaji Bersih" placeholder="Otomatis" value={currency(form.previous_salary)} disabled />
+            </div>
           </div>
         </PayrollCard>
 
