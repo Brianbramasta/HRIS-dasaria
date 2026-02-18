@@ -6,6 +6,7 @@ import type { ModalProps } from '@/features/payroll/components/layouts/LayoutDet
 import { useAddNonRecurringDeductionModal } from '@/features/payroll/hooks/modals/detail-payroll/non-ae/useAddNonRecurringDeductionModal';
 import { useApiPayrollPeriod } from '@/features/payroll/hooks/api/useApiPayrollPeriod';
 import { useParams } from 'react-router-dom';
+import { formatInputCurrency, parseCurrency } from '@/utils/formatCurrency';
 
 type Props = ModalProps;
 
@@ -30,8 +31,8 @@ const TambahPotonganTidakTetapModal: React.FC<Props> = ({
             const match = key.match(/^nfd_(.+)$/);
             if (!match) return null;
             const componenId = match[1];
-            const amount = String(rawAmount ?? '').replace(/\./g, '');
-            return { componenId, amount: amount === '' ? '' : amount };
+            const amount = parseCurrency(String(rawAmount ?? ''));
+            return { componenId, amount: amount === null ? '' : String(amount) };
           })
           .filter(Boolean) as { componenId: string; amount: string }[];
 
@@ -54,8 +55,8 @@ const TambahPotonganTidakTetapModal: React.FC<Props> = ({
           <Input
             type={f.inputType ?? 'text'}
             placeholder={f.placeholder ?? '0'}
-            value={form?.[f.name] ?? ''}
-            onChange={(e) => setField(f.name, e.target.value)}
+            value={formatInputCurrency(form?.[f.name] ?? '')}
+            onChange={(e) => setField(f.name, formatInputCurrency(e.target.value))}
             disabled={f.disabled}
             readonly={f.readonly}
           />

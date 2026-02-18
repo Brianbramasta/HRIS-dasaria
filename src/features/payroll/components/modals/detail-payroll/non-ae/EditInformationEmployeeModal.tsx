@@ -6,6 +6,7 @@ import ModalAddEdit from "@/components/shared/modal/ModalAddEdit";
 import type { FieldDescriptor, InfoModalProps } from "@/features/payroll/components/layouts/LayoutDetail";
 import { useApiPayrollPeriod } from "@/features/payroll/hooks/api/useApiPayrollPeriod";
 import { useParams } from "react-router-dom";
+import { formatInputCurrency } from "@/utils/formatCurrency";
 
 export default function EditInformationEmployeeModal({
   isOpen,
@@ -28,6 +29,22 @@ export default function EditInformationEmployeeModal({
     setValues((prev) => ({ ...prev, [key]: val }));
   };
 
+  const isCurrencyField = (field: FieldDescriptor) => {
+    const name = (field.name ?? "").toLowerCase();
+    return (
+      name.includes("nominal") ||
+      name.includes("amount") ||
+      name.includes("gaji") ||
+      name.includes("tunjangan") ||
+      name.includes("potongan") ||
+      name.includes("total") ||
+      name.includes("fee") ||
+      name.includes("komisi") ||
+      name.includes("insentif") ||
+      name.includes("kasbon")
+    );
+  };
+
   const renderField = (field: FieldDescriptor) => {
     const colClass = field.colSpan ? `md:col-span-${field.colSpan}` : "";
     const currentVal = values[field.name] ?? (field.value as any) ?? "";
@@ -39,11 +56,13 @@ export default function EditInformationEmployeeModal({
             <InputField
               label={field.label}
               placeholder={field.placeholder ?? "Inputan"}
-              value={currentVal}
+              value={isCurrencyField(field) ? formatInputCurrency(String(currentVal ?? "")) : currentVal}
               type={field.inputType ?? "text"}
               readonly={field.readonly}
               disabled={field.readonly}
-              onChange={(e) => setValue(field.name, e.target.value)}
+              onChange={(e) =>
+                setValue(field.name, isCurrencyField(field) ? formatInputCurrency(e.target.value) : e.target.value)
+              }
             />
           </div>
         );

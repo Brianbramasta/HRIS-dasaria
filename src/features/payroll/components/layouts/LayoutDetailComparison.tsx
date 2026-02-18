@@ -11,6 +11,7 @@ import { ChevronLeft } from "react-feather";
 import { IconPencil as Edit3 } from "@/icons/components/icons";
 import { useLayoutDetail } from "@/features/payroll/hooks/layouts/useLayoutDetail";
 import RecapModall from "@/features/payroll/components/modals/detail-payroll/RecapModall";
+import { formatCurrencyValue, parseCurrency } from "@/utils/formatCurrency";
 
 export type FieldType = "input" | "date" | "select" | "multi-select" | "file";
 export type FieldDescriptor = {
@@ -208,6 +209,34 @@ export default function DetailPayrollComparisonContent({ config }: { config: Sec
 
   const tunjanganTetapFields: FieldDescriptor[] = tunjanganTetapConfig?.fields ?? defaultTunjanganTetapFields;
 
+  const isCurrencyField = (field: FieldDescriptor) => {
+    const name = (field.name ?? "").toLowerCase();
+    return (
+      name.includes("gaji") ||
+      name.includes("tunjangan") ||
+      name.includes("bpjs") ||
+      name.includes("potongan") ||
+      name.includes("total") ||
+      name.includes("fee") ||
+      name.includes("komisi") ||
+      name.includes("insentif") ||
+      name.includes("kasbon") ||
+      name.startsWith("nfa_") ||
+      name.startsWith("nfd_")
+    );
+  };
+
+  const formatInputValue = (field: FieldDescriptor) => {
+    if (field.type !== "input") return field.value;
+    if (!isCurrencyField(field)) return field.value;
+
+    if (field.value === null || field.value === undefined || field.value === "") return "-";
+    if (typeof field.value === "number") return formatCurrencyValue(field.value);
+
+    const parsed = parseCurrency(String(field.value));
+    return formatCurrencyValue(parsed);
+  };
+
   const renderField = (field: FieldDescriptor) => {
     const colClass = field.colSpan ? `md:col-span-${field.colSpan}` : "";
 
@@ -218,7 +247,7 @@ export default function DetailPayrollComparisonContent({ config }: { config: Sec
             <InputField
               label={field.label}
               placeholder={field.placeholder ?? "Inputan"}
-              value={field.value}
+              value={formatInputValue(field)}
               type={field.inputType ?? "text"}
               readonly={field.readonly}
             />
@@ -291,6 +320,7 @@ export default function DetailPayrollComparisonContent({ config }: { config: Sec
                 type: "input",
                 placeholder: f.placeholder ?? "Otomatis",
                 readonly: f.readonly ?? true,
+                value: infoValues[f.name] ?? (f as any).value ?? "",
               })
             )}
           </div>
@@ -306,7 +336,7 @@ export default function DetailPayrollComparisonContent({ config }: { config: Sec
                 key={f.name}
                 label={f.label}
                 placeholder={f.placeholder ?? "Inputan"}
-                value={ttValues[f.name] ?? ""}
+                value={formatInputValue({ ...f, value: ttValues[f.name] ?? "" })}
                 readonly
               />
             ))}
@@ -338,6 +368,7 @@ export default function DetailPayrollComparisonContent({ config }: { config: Sec
                   <InputField
                     label={f.label}
                     placeholder={f.placeholder ?? "Inputan"}
+                    value={formatInputValue({ ...f, value: infoValues[f.name] ?? (f as any).value ?? "" })}
                     type={f.inputType ?? "text"}
                     readonly={f.readonly}
                   />
@@ -363,7 +394,7 @@ export default function DetailPayrollComparisonContent({ config }: { config: Sec
                 key={f.name}
                 label={f.label}
                 placeholder={f.placeholder ?? "Otomatis"}
-                value={pttValues[f.name] ?? ""}
+                value={formatInputValue({ ...f, value: pttValues[f.name] ?? "" })}
                 readonly
               />
             ))}

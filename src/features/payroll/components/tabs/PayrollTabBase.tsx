@@ -16,6 +16,7 @@ type Props<TRow extends BaseRow> = {
   onDetailNavigation?: (id: string) => void;
   toolbarRightSlot?: React.ReactNode;
   customActions?: DataTableAction<TRow>[];
+  onFinalize?: (rows: TRow[]) => Promise<boolean>;
 };
 
 export default function PenggajianTabBase<TRow extends BaseRow>({
@@ -27,6 +28,7 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
   onDetailNavigation,
   toolbarRightSlot,
   customActions,
+  onFinalize,
 }: Props<TRow>) {
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [isApproving, setIsApproving] = useState(false);
@@ -35,6 +37,8 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
     isApprovalPage,
     isDistribusiPage,
     hasSelection,
+    selectedRows,
+    clearSelection,
     showDelete,
     setShowDelete,
     rowToDelete,
@@ -54,10 +58,9 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
   const handleApprovalConfirm = async () => {
     setIsApproving(true);
     try {
-      // TODO: Implementasi API call untuk finalisasi data
-      console.log('Finalisasi data payroll');
-      // Simulasi delay untuk demo
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      if (!onFinalize) return;
+      const ok = await onFinalize(selectedRows as TRow[]);
+      if (ok) clearSelection();
     } finally {
       setIsApproving(false);
       setShowApprovalModal(false);

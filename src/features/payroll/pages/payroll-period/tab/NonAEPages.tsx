@@ -55,6 +55,7 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
   const {
     payrollPeriods,
     fetchPayrollPeriods,
+    approvalHr,
   } = useApiPayrollPeriod();
 
   // Dokumentasi: Deteksi halaman Approval atau Distribusi untuk set judul
@@ -102,6 +103,23 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
       detailPathPrefix={detailPathPrefix}
       title={title}
       onDetailNavigation={handleDetailNavigation}
+      onFinalize={async (selectedRows) => {
+        const payrollIds = Array.from(
+          new Set(
+            (selectedRows || [])
+              .map((r) => r.payrollId)
+              .filter((id): id is string => Boolean(id))
+          )
+        );
+
+        if (!payrollIds.length) return false;
+
+        const ok = await approvalHr({ payrollIds });
+        if (ok) {
+          await fetchPayrollPeriods({ page: 1, pageSize: 10 });
+        }
+        return ok;
+      }}
       toolbarRightSlot={
         isApprovalPage && (
           <div className="relative">

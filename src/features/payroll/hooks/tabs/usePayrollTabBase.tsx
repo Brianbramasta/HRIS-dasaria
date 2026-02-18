@@ -76,6 +76,16 @@ export default function usePayrollTabBase<TRow extends BaseRow>({
     });
   const hasSelection = Object.values(selected).some(Boolean);
 
+  const selectedRows = useMemo(() => {
+    if (!rows.length) return [] as TRow[];
+    return rows.filter((r) => {
+      const key = getRowKey(r);
+      return !!selected[key];
+    });
+  }, [rows, selected, rowKeyMap]);
+
+  const clearSelection = () => setSelected({});
+
   // Dokumentasi: state untuk kontrol modal delete dan data baris yang dipilih
   const [showDelete, setShowDelete] = useState(false);
   const [rowToDelete, setRowToDelete] = useState<TRow | null>(null);
@@ -146,6 +156,8 @@ export default function usePayrollTabBase<TRow extends BaseRow>({
     selected,
     setSelected,
     hasSelection,
+    selectedRows,
+    clearSelection,
     showDelete,
     setShowDelete,
     rowToDelete,
