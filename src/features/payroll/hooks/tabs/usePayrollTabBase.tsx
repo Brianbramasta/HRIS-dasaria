@@ -12,6 +12,7 @@ export type UsePayrollTabBaseProps<TRow extends BaseRow> = {
   detailPathPrefix: string;
   onDetailNavigation?: (id: string) => void;
   customActions?: DataTableAction<TRow>[];
+  canEditDelete?: (row: TRow) => boolean;
 };
 
 export default function usePayrollTabBase<TRow extends BaseRow>({
@@ -20,6 +21,7 @@ export default function usePayrollTabBase<TRow extends BaseRow>({
   detailPathPrefix,
   onDetailNavigation,
   customActions,
+  canEditDelete,
 }: UsePayrollTabBaseProps<TRow>) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -129,6 +131,11 @@ export default function usePayrollTabBase<TRow extends BaseRow>({
     // Dokumentasi: jika ada custom actions, gunakan itu, jika tidak gunakan default actions
     if (customActions) return customActions;
 
+    const allowEditDelete = (row: TRow) => {
+      if (!canEditDelete) return true;
+      return !!canEditDelete(row);
+    };
+
     return [
       {
         label: '',
@@ -142,13 +149,14 @@ export default function usePayrollTabBase<TRow extends BaseRow>({
             navigate(`${detailPathPrefix}/${id}`);
           }
         },
+        condition: allowEditDelete,
         variant: 'outline',
         className: 'border-0',
       },
       // Dokumentasi: tombol hapus membuka modal konfirmasi
-      { label: '', icon: <Trash />, onClick: (row) => { setRowToDelete(row as TRow); setShowDelete(true); }, variant: 'outline', className: 'border-0', color: 'error' },
+      { label: '', icon: <Trash />, onClick: (row) => { setRowToDelete(row as TRow); setShowDelete(true); }, condition: allowEditDelete, variant: 'outline', className: 'border-0', color: 'error' },
     ];
-  }, [customActions, navigate, detailPathPrefix, onDetailNavigation]);
+  }, [customActions, canEditDelete, navigate, detailPathPrefix, onDetailNavigation]);
 
   return {
     isApprovalPage,

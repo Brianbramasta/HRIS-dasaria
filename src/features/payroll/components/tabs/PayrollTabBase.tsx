@@ -31,6 +31,8 @@ type Props<TRow extends BaseRow> = {
   columnFilters?: Record<string, string[]>;
   onDateRangeFilterChange?: (columnId: string, startDate: string, endDate: string | null) => void;
   dateRangeFilters?: Record<string, { startDate: string; endDate: string | null }>;
+
+  canEditDelete?: (row: TRow) => boolean;
 };
 
 export default function PenggajianTabBase<TRow extends BaseRow>({
@@ -57,6 +59,8 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
   columnFilters,
   onDateRangeFilterChange,
   dateRangeFilters,
+
+  canEditDelete,
 }: Props<TRow>) {
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [isApproving, setIsApproving] = useState(false);
@@ -81,6 +85,7 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
     detailPathPrefix,
     onDetailNavigation,
     customActions,
+    canEditDelete,
   });
 
   const handleApprovalConfirm = async () => {
