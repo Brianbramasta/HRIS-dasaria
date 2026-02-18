@@ -56,6 +56,21 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
     payrollPeriods,
     fetchPayrollPeriods,
     approvalHr,
+    loading,
+    total,
+    page,
+    pageSize,
+    search,
+    sortBy,
+    sortOrder,
+    columnFilters,
+    dateRangeFilters,
+    setPage,
+    setPageSize,
+    setSearch,
+    setSort,
+    setColumnFilters,
+    setDateRangeFilters,
   } = useApiPayrollPeriod();
 
   // Dokumentasi: Deteksi halaman Approval atau Distribusi untuk set judul
@@ -73,8 +88,17 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
 
   // Dokumentasi: Fetch data saat component mount dan reset key berubah
   useEffect(() => {
-    fetchPayrollPeriods({ page: 1, pageSize: 10 });
-  }, [resetKey, fetchPayrollPeriods]);
+    setPage(1);
+    setPageSize(10);
+    setSearch('');
+    setSort('', 'asc');
+    setColumnFilters({});
+    setDateRangeFilters({});
+  }, [resetKey, setPage, setPageSize, setSearch, setSort, setColumnFilters, setDateRangeFilters]);
+
+  useEffect(() => {
+    fetchPayrollPeriods({ page, pageSize, search, sortBy, sortOrder });
+  }, [page, pageSize, search, sortBy, sortOrder, columnFilters, dateRangeFilters, fetchPayrollPeriods]);
 
   // Map PayrollPeriodListItem to NonAERow
   const rows: NonAERow[] = payrollPeriods.map((item, index) => mapPayrollPeriodToNonAERow(item, index));
@@ -103,6 +127,37 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
       detailPathPrefix={detailPathPrefix}
       title={title}
       onDetailNavigation={handleDetailNavigation}
+      loading={loading}
+      pageSize={pageSize}
+      useExternalPagination={true}
+      externalPage={page}
+      externalTotal={total}
+      onSearchChange={(search) => {
+        setSearch(search);
+      }}
+      onSortChange={(columnId, order) => {
+        setSort(columnId, order);
+      }}
+      onPageChangeExternal={(newPage) => {
+        setPage(newPage);
+      }}
+      onRowsPerPageChangeExternal={(newRowsPerPage) => {
+        setPageSize(newRowsPerPage);
+      }}
+      onColumnFilterChange={(columnId, values) => {
+        setColumnFilters({
+          ...columnFilters,
+          [columnId]: values,
+        });
+      }}
+      columnFilters={columnFilters}
+      onDateRangeFilterChange={(columnId, startDate, endDate) => {
+        setDateRangeFilters({
+          ...dateRangeFilters,
+          [columnId]: { startDate, endDate },
+        });
+      }}
+      dateRangeFilters={dateRangeFilters}
       onFinalize={async (selectedRows) => {
         const payrollIds = Array.from(
           new Set(
@@ -116,7 +171,7 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
 
         const ok = await approvalHr({ payrollIds });
         if (ok) {
-          await fetchPayrollPeriods({ page: 1, pageSize: 10 });
+          await fetchPayrollPeriods({ page, pageSize });
         }
         return ok;
       }}

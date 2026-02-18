@@ -17,6 +17,20 @@ type Props<TRow extends BaseRow> = {
   toolbarRightSlot?: React.ReactNode;
   customActions?: DataTableAction<TRow>[];
   onFinalize?: (rows: TRow[]) => Promise<boolean>;
+
+  loading?: boolean;
+  pageSize?: number;
+  useExternalPagination?: boolean;
+  externalPage?: number;
+  externalTotal?: number;
+  onSearchChange?: (search: string) => void;
+  onSortChange?: (columnId: string, order: 'asc' | 'desc') => void;
+  onPageChangeExternal?: (page: number) => void;
+  onRowsPerPageChangeExternal?: (rowsPerPage: number) => void;
+  onColumnFilterChange?: (columnId: string, values: string[]) => void;
+  columnFilters?: Record<string, string[]>;
+  onDateRangeFilterChange?: (columnId: string, startDate: string, endDate: string | null) => void;
+  dateRangeFilters?: Record<string, { startDate: string; endDate: string | null }>;
 };
 
 export default function PenggajianTabBase<TRow extends BaseRow>({
@@ -29,6 +43,20 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
   toolbarRightSlot,
   customActions,
   onFinalize,
+
+  loading,
+  pageSize,
+  useExternalPagination,
+  externalPage,
+  externalTotal,
+  onSearchChange,
+  onSortChange,
+  onPageChangeExternal,
+  onRowsPerPageChangeExternal,
+  onColumnFilterChange,
+  columnFilters,
+  onDateRangeFilterChange,
+  dateRangeFilters,
 }: Props<TRow>) {
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [isApproving, setIsApproving] = useState(false);
@@ -105,11 +133,25 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
         data={rows}
         columns={columns}
         actions={actions}
+        loading={loading}
+        pageSize={pageSize}
         toolbarRightSlotAtas={toolbarRightSlotAtas}
         appendDefaultToolbarRightAtas={isDistribusiPage}
         onExport={isDistribusiPage ? () => {} : undefined}
         resetKey={resetKey}
         toolbarRightSlot={toolbarRightSlot}
+
+        useExternalPagination={useExternalPagination}
+        externalPage={externalPage}
+        externalTotal={externalTotal}
+        onSearchChange={onSearchChange}
+        onSortChange={onSortChange}
+        onPageChangeExternal={onPageChangeExternal}
+        onRowsPerPageChangeExternal={onRowsPerPageChangeExternal}
+        onColumnFilterChange={onColumnFilterChange}
+        columnFilters={columnFilters}
+        onDateRangeFilterChange={onDateRangeFilterChange}
+        dateRangeFilters={dateRangeFilters}
       />
       <DeleteDataGajiModal
         isOpen={showDelete}
