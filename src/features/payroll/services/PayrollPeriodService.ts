@@ -56,6 +56,28 @@ class PayrollPeriodService {
     }
 
     /**
+     * Update Note
+     * @param payrollId - Payroll ID
+     * @param formData - FormData berisi _method=PATCH dan note_hr/note_bod
+     */
+    async updateNote(payrollId: string, formData: FormData): Promise<any> {
+        return apiService.post<any>(`${this.basePath}/${payrollId}/update-note`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+    }
+
+    /**
+     * Delete Payroll Period
+     * @param payrollId - Payroll ID
+     * @param formData - FormData berisi _method=DELETE
+     */
+    async deletePayrollPeriod(payrollId: string, formData: FormData): Promise<any> {
+        return apiService.post<any>(`${this.basePath}/${payrollId}/delete`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+    }
+
+    /**
      * Approval HR
      * @param formData - FormData berisi _method=PATCH dan payroll_id[]
      */

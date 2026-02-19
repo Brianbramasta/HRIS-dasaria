@@ -7,6 +7,8 @@ import {
     PayrollPeriodUpdateNonFixDeductionPayload,
     PayrollPeriodUpdateWorkingDaysPayload,
     PayrollPeriodApprovalHrPayload,
+    PayrollPeriodUpdateNotePayload,
+    PayrollPeriodDeletePayload,
 } from '../../types/dto/PayrollPeriodType';
 import { payrollPeriodService } from '../../services/PayrollPeriodService';
 import useFilterStore from '../../../../stores/filterStore';
@@ -61,6 +63,8 @@ interface UseApiPayrollPeriodReturn {
     updateNonFixAllowance: (payload: PayrollPeriodUpdateNonFixAllowancePayload) => Promise<boolean>;
     updateNonFixDeduction: (payload: PayrollPeriodUpdateNonFixDeductionPayload) => Promise<boolean>;
     updateWorkingDays: (payload: PayrollPeriodUpdateWorkingDaysPayload) => Promise<boolean>;
+    updateNote: (payload: PayrollPeriodUpdateNotePayload) => Promise<boolean>;
+    deletePayrollPeriod: (payload: PayrollPeriodDeletePayload) => Promise<boolean>;
     approvalHr: (payload: PayrollPeriodApprovalHrPayload) => Promise<boolean>;
     processUpload: (file: File) => Promise<boolean>;
 
@@ -185,6 +189,46 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
             console.error('Error fetching payroll period detail:', err);
             setPayrollPeriodDetail(null);
             return null;
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    const deletePayrollPeriod = useCallback(async (payload: PayrollPeriodDeletePayload): Promise<boolean> => {
+        setLoading(true);
+        setError(null);
+
+        try {
+            const formData = new FormData();
+            formData.append('_method', 'DELETE');
+
+            await payrollPeriodService.deletePayrollPeriod(payload.payrollId, formData);
+            return true;
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to delete payroll period');
+            console.error('Error deleting payroll period:', err);
+            return false;
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    const updateNote = useCallback(async (payload: PayrollPeriodUpdateNotePayload): Promise<boolean> => {
+        setLoading(true);
+        setError(null);
+
+        try {
+            const formData = new FormData();
+            formData.append('_method', 'PATCH');
+            if (payload.noteHr !== undefined) formData.append('note_hr', String(payload.noteHr ?? ''));
+            if (payload.noteBod !== undefined) formData.append('note_bod', String(payload.noteBod ?? ''));
+
+            await payrollPeriodService.updateNote(payload.payrollId, formData);
+            return true;
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to update note');
+            console.error('Error updating note:', err);
+            return false;
         } finally {
             setLoading(false);
         }
@@ -346,6 +390,8 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
         updateNonFixAllowance,
         updateNonFixDeduction,
         updateWorkingDays,
+        updateNote,
+        deletePayrollPeriod,
         approvalHr,
         processUpload,
 

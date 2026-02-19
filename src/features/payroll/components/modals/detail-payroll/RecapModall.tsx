@@ -1,4 +1,5 @@
 import { FC, useEffect, useMemo, useState } from "react";
+import { useParams } from "react-router";
 import ModalAddEdit from "@/components/shared/modal/ModalAddEdit";
 import InputField from "@/components/shared/field/InputField";
 import TextAreaField from "@/components/shared/field/TextAreaField";
@@ -7,6 +8,7 @@ import FIleField from "@/components/shared/field/FIleField";
 import MultiSelectField from "@/components/shared/field/MultiSelectField";
 import SelectField from "@/components/shared/field/SelectField";
 import type { FieldDescriptor, RekapModalProps } from "@/features/payroll/components/layouts/LayoutDetail";
+import { useApiPayrollPeriod } from "@/features/payroll/hooks/api/useApiPayrollPeriod";
 
 const RecapModall: FC<RekapModalProps> = ({
   isOpen,
@@ -17,6 +19,8 @@ const RecapModall: FC<RekapModalProps> = ({
   catatanKaryawan,
   catatanBOD,
 }) => {
+  const { id } = useParams();
+  const { updateNote } = useApiPayrollPeriod();
   const [submitting, setSubmitting] = useState(false);
   const [values, setValues] = useState<Record<string, string>>({});
 
@@ -107,6 +111,8 @@ const RecapModall: FC<RekapModalProps> = ({
             label="Catatan Karyawan"
             placeholder="Detail Catatan..."
             rows={4}
+            value={values.note_hr ?? ""}
+            onChange={(v) => setValue("note_hr", String(v ?? ""))}
           />
         )}
         {catatanBOD && (
@@ -114,6 +120,8 @@ const RecapModall: FC<RekapModalProps> = ({
             label="Catatan BOD"
             placeholder="Detail Catatan..."
             rows={4}
+            value={values.note_bod ?? ""}
+            onChange={(v) => setValue("note_bod", String(v ?? ""))}
           />
         )}
       </div>
@@ -123,6 +131,14 @@ const RecapModall: FC<RekapModalProps> = ({
   const handleSubmit = async () => {
     setSubmitting(true);
     try {
+      if (id) {
+        const ok = await updateNote({
+          payrollId: String(id),
+          noteHr: values.note_hr,
+          noteBod: values.note_bod,
+        });
+        if (!ok) return;
+      }
       onSave(values);
       onClose();
     } finally {

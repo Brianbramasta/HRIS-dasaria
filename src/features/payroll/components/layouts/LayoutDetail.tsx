@@ -464,10 +464,22 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
           </div>
           <div className="space-y-4 mt-6">
             {recapCatatanKaryawan && (
-              <TextAreaField label="Catatan Karyawan" placeholder="Detail Catatan..." rows={4} />
+              <TextAreaField
+                label="Catatan Karyawan"
+                placeholder="Detail Catatan..."
+                rows={4}
+                value={recapValues.note_hr ?? ""}
+                readonly
+              />
             )}
             {recapCatatanBOD && (
-              <TextAreaField label="Catatan BOD" placeholder="Detail Catatan..." rows={4} />
+              <TextAreaField
+                label="Catatan BOD"
+                placeholder="Detail Catatan..."
+                rows={4}
+                value={recapValues.note_bod ?? ""}
+                readonly
+              />
             )}
           </div>
           {/* Dokumentasi: Tombol Edit di bagian bawah sesuai screenshot */}

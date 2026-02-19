@@ -122,6 +122,8 @@ export interface PayrollPeriodGrossCalculation {
     gross_salary: number;
     deduction_total: number;
     net_salary: string;
+    note_hr?: string;
+    note_bod?: string;
 }
 
 export interface PayrollPeriodDetailData {
@@ -164,6 +166,16 @@ export interface PayrollPeriodUpdateWorkingDaysPayload {
 
 export interface PayrollPeriodApprovalHrPayload {
     payrollIds: string[];
+}
+
+export interface PayrollPeriodUpdateNotePayload {
+    payrollId: string;
+    noteHr?: string;
+    noteBod?: string;
+}
+
+export interface PayrollPeriodDeletePayload {
+    payrollId: string;
 }
 
 export interface PayrollPeriodGenericActionResponse<TData = any> {

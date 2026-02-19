@@ -191,9 +191,11 @@ export default function DetailGajiPage() {
         totalPendapatanKotor: String(payrollPeriodDetail?.gross_calculation?.gross_salary ?? ""),
         totalPotongan: String(payrollPeriodDetail?.gross_calculation?.deduction_total ?? ""),
         gajiBersih: String(payrollPeriodDetail?.gross_calculation?.net_salary ?? ""),
+        note_hr: String(payrollPeriodDetail?.gross_calculation?.note_hr ?? ""),
+        note_bod: String(payrollPeriodDetail?.gross_calculation?.note_bod ?? ""),
       },
-      catatanKaryawan: true,
-      catatanBOD: true,
+      catatanKaryawan: !!String(payrollPeriodDetail?.gross_calculation?.note_hr ?? "").trim(),
+      catatanBOD: !!String(payrollPeriodDetail?.gross_calculation?.note_bod ?? "").trim(),
     },
   };
 

@@ -6,6 +6,7 @@ import DeleteDataGajiModal from '@/features/payroll/components/modals/DeletePayr
 import UploadExcelModal from '@/features/payroll/components/modals/UploadExcelModal';
 import ApprovalModal from '@/features/payroll/components/modals/payroll-period/ApprovalModal';
 import usePayrollTabBase, { BaseRow } from '@/features/payroll/hooks/tabs/usePayrollTabBase';
+import { useApiPayrollPeriod } from '@/features/payroll/hooks/api/useApiPayrollPeriod';
 
 type Props<TRow extends BaseRow> = {
   resetKey: string;
@@ -64,6 +65,9 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
 }: Props<TRow>) {
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [isApproving, setIsApproving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const { deletePayrollPeriod } = useApiPayrollPeriod();
 
   const {
     isApprovalPage,
@@ -97,6 +101,24 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
     } finally {
       setIsApproving(false);
       setShowApprovalModal(false);
+    }
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!rowToDelete) return;
+    const baseRow = rowToDelete as BaseRow;
+    const payrollId = baseRow.payrollId ?? baseRow.idKaryawan;
+    if (!payrollId) return;
+
+    setIsDeleting(true);
+    try {
+      const ok = await deletePayrollPeriod({ payrollId: String(payrollId) });
+      if (!ok) return;
+
+      setShowDelete(false);
+      setRowToDelete(null);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -162,6 +184,8 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
         isOpen={showDelete}
         onClose={() => { setShowDelete(false); setRowToDelete(null); }}
         data={rowToDelete ? { idKaryawan: (rowToDelete as BaseRow).idKaryawan, pengguna: (rowToDelete as any)?.pengguna } : null}
+        handleDelete={handleDeleteConfirm}
+        submitting={isDeleting}
       />
       <UploadExcelModal
         isOpen={showUpload}
