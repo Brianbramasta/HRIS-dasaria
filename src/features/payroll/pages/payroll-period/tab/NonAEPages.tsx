@@ -182,6 +182,14 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
       dateRangeFilters={dateRangeFilters}
       onFinalize={async (selectedRows) => {
         const isSelectAll = (selectedRows?.length ?? 0) > 0 && (selectedRows?.length ?? 0) === rows.length;
+        if (isSelectAll) {
+          const ok = await approvalHr({ payrollIds: [], all: true });
+          if (ok) {
+            await fetchPayrollPeriods({ page, pageSize });
+          }
+          return ok;
+        }
+
         const payrollIds = Array.from(
           new Set(
             (selectedRows || [])
@@ -192,7 +200,7 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
 
         if (!payrollIds.length) return false;
 
-        const ok = await approvalHr({ payrollIds, all: isSelectAll });
+        const ok = await approvalHr({ payrollIds });
         if (ok) {
           await fetchPayrollPeriods({ page, pageSize });
         }

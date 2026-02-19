@@ -309,10 +309,11 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
             formData.append('_method', 'PATCH');
             if (payload.all) {
                 formData.append('all', 'true');
+            } else {
+                payload.payrollIds.forEach((id, index) => {
+                    formData.append(`payroll_id[${index}]`, id);
+                });
             }
-            payload.payrollIds.forEach((id, index) => {
-                formData.append(`payroll_id[${index}]`, id);
-            });
 
             await payrollPeriodService.approvalHr(formData);
             return true;
