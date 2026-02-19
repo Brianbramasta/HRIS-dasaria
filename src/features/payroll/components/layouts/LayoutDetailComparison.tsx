@@ -549,7 +549,8 @@ export default function DetailPayrollComparisonContent({ config }: { config: Sec
             Ditolak
           </Button> */}
           <Button size="sm" variant="custom" className="bg-green-600 text-white">
-            Disetujui
+            {/* Disetujui */}
+            Setuju
           </Button>
         </div>
       )}

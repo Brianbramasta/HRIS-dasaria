@@ -126,7 +126,7 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
     ? (<>
         <div className="flex items-center gap-3">
           {/* <Button variant="custom" className="bg-[red] text-white dark:text-white" size="sm" disabled={!hasSelection}>Ditolak</Button> */}
-          <Button variant="custom" className="bg-success text-white dark:text-white" size="sm" disabled={!hasSelection}>Disetujui</Button>
+          <Button variant="custom" className="bg-success text-white dark:text-white" size="sm" disabled={!hasSelection}>Setuju</Button>
         </div>
         </>
       )
