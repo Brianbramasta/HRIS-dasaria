@@ -27,6 +27,7 @@ export default function DetailGajiTHRPage() {
       // { name: "kategori", label: "Kategori", type: "input", placeholder: "Otomatis", readonly: true },
       { name: "perusahaan", label: "Perusahaan", type: "input", placeholder: "Otomatis", readonly: true },
       { name: "jabatan", label: "Jabatan", type: "input", placeholder: "Otomatis", readonly: true },
+      { name: "lamaKerja", label: "Lama Kerja", type: "input", placeholder: "Otomatis", readonly: true },
     ],
     // tunjanganTetap: {
     //   fields: [

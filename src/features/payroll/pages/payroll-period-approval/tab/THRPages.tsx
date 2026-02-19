@@ -12,6 +12,7 @@ type THRRow = {
   pengguna: string;
   tanggalPengajuan: string;
   totalTHR: string;
+  lamaKerja: string;
   perusahaan: string;
   jabatan: string;
   statusPersetujuan: string;
@@ -35,13 +36,14 @@ export default function THRTab({ resetKey = 'thr' }: { resetKey?: string }) {
     navigate(`${detailPathPrefix}/${id}?approvalType=${encodeURIComponent(approvalType)}`);
   };
   const [rows] = useState<THRRow[]>([
-    { idKaryawan: '32345678', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', totalTHR: '5.000.000', jabatan: 'Direktur', perusahaan: 'Dasaria', statusPersetujuan: 'Menunggu diproses' },
+    { idKaryawan: '32345678', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', totalTHR: '5.000.000', lamaKerja: '2 tahun', jabatan: 'Direktur', perusahaan: 'Dasaria', statusPersetujuan: 'Menunggu diproses' },
   ]);
   const baseColumns: DataTableColumn<THRRow>[] = [
     { id: 'idKaryawan', label: 'NIP' },
     { id: 'pengguna', label: 'Pengguna' },
     { id: 'tanggalPengajuan', label: 'Tanggal Pengajuan' },
     { id: 'totalTHR', label: 'Total THR', align: 'right' },
+    { id: 'lamaKerja', label: 'Lama Kerja' },
     { id: 'jabatan', label: 'Jabatan' },
     { id: 'perusahaan', label: 'Perusahaan' },
     {
