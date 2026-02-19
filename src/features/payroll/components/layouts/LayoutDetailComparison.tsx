@@ -545,9 +545,9 @@ export default function DetailPayrollComparisonContent({ config }: { config: Sec
       {/* Dokumentasi: Tombol aksi Approve/Reject hanya saat akses dari Approval Periode Gajian */}
       {isApprovalContext && (
         <div className="w-full flex justify-end gap-3 mt-6">
-          <Button size="sm" variant="custom" className="bg-red-600 text-white">
+          {/* <Button size="sm" variant="custom" className="bg-red-600 text-white">
             Ditolak
-          </Button>
+          </Button> */}
           <Button size="sm" variant="custom" className="bg-green-600 text-white">
             Disetujui
           </Button>

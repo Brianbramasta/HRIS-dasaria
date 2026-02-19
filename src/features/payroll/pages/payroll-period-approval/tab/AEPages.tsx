@@ -44,7 +44,7 @@ export default function AETab({ resetKey = 'ae' }: { resetKey?: string }) {
     { id: 'idKaryawan', label: 'NIP' },
     { id: 'pengguna', label: 'Pengguna' },
     { id: 'tanggalPengajuan', label: 'Tanggal Pengajuan' },
-    { id: 'jumlahHariKerja', label: 'Jumlah Hari Kerja' },
+    // { id: 'jumlahHariKerja', label: 'Jumlah Hari Kerja' },
     { id: 'totalGajiBersih', label: 'Total Gaji Bersih', align: 'right' },
     { id: 'fee', label: 'FEE', align: 'right' },
     { id: 'tunjanganTidakTetap', label: 'Tunjangan Tidak Tetap', align: 'right' },

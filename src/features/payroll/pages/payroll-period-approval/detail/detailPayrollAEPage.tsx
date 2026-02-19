@@ -34,19 +34,19 @@ export default function DetailGajiAEPage() {
       { name: "fee", label: "Fee", type: "input", placeholder: "Inputan", inputType: "text", readonly: true },
       { name: "kategori", label: "Kategori", type: "input", placeholder: "Otomatis", readonly: true },
       { name: "perusahaan", label: "Perusahaan", type: "input", placeholder: "Otomatis", readonly: true },
-      { name: "jumlahHariKerja", label: "Jumlah Hari Kerja", type: "input", placeholder: "Otomatis", readonly: true },
+      // { name: "jumlahHariKerja", label: "Jumlah Hari Kerja", type: "input", placeholder: "Otomatis", readonly: true },
     ],
     infoModal: {
-      initialValues: {
-        idKaryawan: defaultData.idKaryawan || "120000",
-        pengguna: defaultData.pengguna || "Otomatis",
-        tanggalPengajuan: "2026-02-16",
-        fee: defaultData.fee || "300000",
-        kategori: defaultData.kategori || "Otomatis",
-        perusahaan: defaultData.perusahaan || "Otomatis",
-        jumlahHariKerja: defaultData.jumlahHariKerja || "22",
-      },
-      ModalComponent: EditInformationEmployeeModal,
+      // initialValues: {
+      //   idKaryawan: defaultData.idKaryawan || "120000",
+      //   pengguna: defaultData.pengguna || "Otomatis",
+      //   tanggalPengajuan: "2026-02-16",
+      //   fee: defaultData.fee || "300000",
+      //   kategori: defaultData.kategori || "Otomatis",
+      //   perusahaan: defaultData.perusahaan || "Otomatis",
+      //   jumlahHariKerja: defaultData.jumlahHariKerja || "22",
+      // },
+      // ModalComponent: EditInformationEmployeeModal,
     },
     tunjanganTidakTetap: {
       fields: [

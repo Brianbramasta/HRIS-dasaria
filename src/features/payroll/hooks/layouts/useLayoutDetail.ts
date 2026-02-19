@@ -25,15 +25,7 @@ export const useLayoutDetail = (config: SectionConfig) => {
   const isBODApproval = approvalType === "Persetujuan oleh BOD";
 
   const canEditInfo = !isApprovalContext ? true : !isBODApproval;
-  const canEditTT = !isApprovalContext
-    ? true
-    : isBODApproval
-      ? false
-      : isFATApproval
-        ? false
-        : isHRGAorBODApproval
-          ? true
-          : false;
+  const canEditTT = !isApprovalContext ? true : isFATApproval || isHRGAorBODApproval;
   const canEditPTT = !isApprovalContext ? true : isBODApproval ? false : isFATApproval;
   const canEditRecap = !isApprovalContext ? true : !isBODApproval;
 
