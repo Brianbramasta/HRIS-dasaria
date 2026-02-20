@@ -10,6 +10,14 @@ import { PayrollPeriodListItem } from '../../../types/dto/PayrollPeriodType';
 import { formatCurrency } from '@/utils/formatCurrency';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 
+const toPayrollPeriodFilterColumnId = (columnId: string): string => {
+  const map: Record<string, string> = {
+    tanggalPengajuan: 'periode',
+    statusPenggajian: 'payroll_status_name',
+  };
+  return map[columnId] || columnId;
+};
+
 type NonAERow = {
   no?: number;
   payrollId: string;
@@ -113,7 +121,12 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
     { id: 'no', label: 'No.', align: 'center', sortable: false },
     { id: 'idKaryawan', label: 'NIP' },
     { id: 'pengguna', label: 'Pengguna' },
-    { id: 'tanggalPengajuan', label: 'Tanggal Pengajuan', format: (v) => formatDateToIndonesian(String(v)) },
+    {
+      id: 'tanggalPengajuan',
+      label: 'Tanggal Pengajuan',
+      dateRangeFilter: true,
+      format: (v) => formatDateToIndonesian(String(v)),
+    },
     { id: 'jumlahHariKerja', label: 'Jumlah Hari Kerja' },
     { id: 'totalGajiBersih', label: 'Total Gaji Bersih', align: 'right', format: (v) => formatCurrency(Number(v)) },
     { id: 'gajiPokokUangSaku', label: 'Gaji Pokok / Uang Saku', align: 'right', format: (v) => formatCurrency(Number(v)) },
@@ -125,6 +138,13 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
     {
       id: 'statusPenggajian',
       label: 'Status Penggajian',
+      filterOptions: [
+        { label: 'Menunggu Maker', value: 'Menunggu Maker' },
+        { label: 'Menunggu Checker', value: 'Menunggu Checker' },
+        { label: 'Menunggu Approver', value: 'Menunggu Approver' },
+        { label: 'Distribusi', value: 'Distribusi' },
+        { label: 'Selesai', value: 'Selesai' },
+      ],
       format: (v) => {
         const value = String(v ?? '');
         const lowered = value.toLowerCase();
@@ -177,16 +197,18 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
         setPageSize(newRowsPerPage);
       }}
       onColumnFilterChange={(columnId, values) => {
+        const apiColumnId = toPayrollPeriodFilterColumnId(columnId);
         setColumnFilters({
           ...columnFilters,
-          [columnId]: values,
+          [apiColumnId]: values,
         });
       }}
       columnFilters={columnFilters}
       onDateRangeFilterChange={(columnId, startDate, endDate) => {
+        const apiColumnId = toPayrollPeriodFilterColumnId(columnId);
         setDateRangeFilters({
           ...dateRangeFilters,
-          [columnId]: { startDate, endDate },
+          [apiColumnId]: { startDate, endDate },
         });
       }}
       dateRangeFilters={dateRangeFilters}

@@ -178,6 +178,32 @@ export default function usePayrollTabBase<TRow extends BaseRow>({
 
     if (isApprovalPage) return [detailAction];
 
+    if (isPayrollPeriodPage) {
+      return [
+        {
+          label: '',
+          icon: <Edit />,
+          onClick: onDetail,
+          condition: allowEditDelete,
+          variant: 'outline',
+          className: 'border-0',
+        },
+        // Dokumentasi: tombol hapus membuka modal konfirmasi
+        {
+          label: '',
+          icon: <Trash />,
+          onClick: (row) => {
+            setRowToDelete(row as TRow);
+            setShowDelete(true);
+          },
+          condition: allowEditDelete,
+          variant: 'outline',
+          className: 'border-0',
+          color: 'error',
+        },
+      ];
+    }
+
     return [
       detailAction,
       {
@@ -191,7 +217,7 @@ export default function usePayrollTabBase<TRow extends BaseRow>({
       // Dokumentasi: tombol hapus membuka modal konfirmasi
       { label: '', icon: <Trash />, onClick: (row) => { setRowToDelete(row as TRow); setShowDelete(true); }, condition: allowEditDelete, variant: 'outline', className: 'border-0', color: 'error' },
     ];
-  }, [customActions, canEditDelete, navigate, detailPathPrefix, onDetailNavigation, isApprovalPage]);
+  }, [customActions, canEditDelete, navigate, detailPathPrefix, onDetailNavigation, isApprovalPage, isPayrollPeriodPage]);
 
   return {
     isApprovalPage,
