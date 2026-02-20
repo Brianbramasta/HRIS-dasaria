@@ -154,6 +154,7 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
       detailPathPrefix={detailPathPrefix}
       title={title}
       onDetailNavigation={handleDetailNavigation}
+      isRowSelectable={(row) => String(row.statusPenggajian ?? '').toLowerCase().trim() === 'menunggu maker'}
       canEditDelete={(row) => String(row.statusPenggajian ?? '').toLowerCase().trim() === 'menunggu maker'}
       disableImportButton={!!importApprovalStatus?.is_import_pending}
       disableFinalizeButton={!!importApprovalStatus?.is_approval_hr_pending}

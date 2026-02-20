@@ -1,10 +1,33 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { DataTableColumn } from '@/components/shared/datatable/DataTable';
 import PenggajianTabBase from '../../../components/tabs/PayrollTabBase';
 import Button from '@/components/ui/button/Button';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { ChevronDown } from 'react-feather';
+import { useApiPayrollPeriodDirectorHr } from '@/features/payroll/hooks/api/useApiPayrollPeriodDirectorHr';
+
+const toDirectorHrSortKey = (columnId: string): string => {
+  const map: Record<string, string> = {
+    idKaryawan: 'employeeId',
+    pengguna: 'fullName',
+    tanggalPengajuan: 'periode',
+    totalGajiBersih: 'netSalary',
+    statusPersetujuan: 'hrDirectorApprovalStatus',
+  };
+  return map[columnId] || columnId;
+};
+
+const toDirectorHrFilterColumnId = (columnId: string): string => {
+  const map: Record<string, string> = {
+    idKaryawan: 'employee_id',
+    pengguna: 'full_name',
+    tanggalPengajuan: 'periode',
+    totalGajiBersih: 'net_salary',
+    statusPersetujuan: 'hr_director_approval_status',
+  };
+  return map[columnId] || columnId;
+};
 
 type NonAERow = {
   no?: number;
@@ -20,6 +43,7 @@ type NonAERow = {
   kategori: string;
   perusahaan: string;
   statusPersetujuan: string;
+  payrollId?: string;
 };
 
 export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string }) {
@@ -39,10 +63,86 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
   const handleDetailNavigation = (id: string) => {
     navigate(`${detailPathPrefix}/${id}?approvalType=${encodeURIComponent(approvalType)}`);
   };
-  const [rows] = useState<NonAERow[]>([
-    { idKaryawan: '12345678', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', jumlahHariKerja: '20', totalGajiBersih: '7.000.000', gajiPokokUangSaku: '5.000.000', potongan: '250.000', tunjanganTetap: '1.000.000', tunjanganTidakTetap: '750.000', kategori: 'Staff', perusahaan: 'Dasaria', statusPersetujuan: 'Menunggu diproses' },
-    { idKaryawan: '12345679', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', jumlahHariKerja: '20', totalGajiBersih: '7.000.000', gajiPokokUangSaku: '5.000.000', potongan: '250.000', tunjanganTetap: '1.000.000', tunjanganTidakTetap: '750.000', kategori: 'Staff', perusahaan: 'Dasaria', statusPersetujuan: 'Selesai' },
-  ]);
+
+  const isDirectorHrga = approvalType === 'Persetujuan oleh Direktur HRGA';
+
+  const {
+    payrollPeriods: directorRows,
+    loading: directorLoading,
+    total: directorTotal,
+    page: directorPage,
+    pageSize: directorPageSize,
+    columnFilters: directorColumnFilters,
+    dateRangeFilters: directorDateRangeFilters,
+    fetchPayrollPeriods: fetchDirectorRows,
+    setPage: setDirectorPage,
+    setPageSize: setDirectorPageSize,
+    setSearch: setDirectorSearch,
+    setSort: setDirectorSort,
+    setColumnFilters: setDirectorColumnFilters,
+    setDateRangeFilters: setDirectorDateRangeFilters,
+  } = useApiPayrollPeriodDirectorHr();
+
+  useEffect(() => {
+    if (!isApprovalPage) return;
+    if (!isDirectorHrga) return;
+    fetchDirectorRows({ page: 1, pageSize: directorPageSize });
+  }, [isApprovalPage, isDirectorHrga, directorPageSize, fetchDirectorRows]);
+
+  const fallbackRows: NonAERow[] = useMemo(
+    () => [
+      {
+        idKaryawan: '12345678',
+        pengguna: 'Lindsey Curtis',
+        tanggalPengajuan: '20/12/2025',
+        jumlahHariKerja: '20',
+        totalGajiBersih: '7.000.000',
+        gajiPokokUangSaku: '5.000.000',
+        potongan: '250.000',
+        tunjanganTetap: '1.000.000',
+        tunjanganTidakTetap: '750.000',
+        kategori: 'Staff',
+        perusahaan: 'Dasaria',
+        statusPersetujuan: 'Menunggu diproses',
+      },
+      {
+        idKaryawan: '12345679',
+        pengguna: 'Lindsey Curtis',
+        tanggalPengajuan: '20/12/2025',
+        jumlahHariKerja: '20',
+        totalGajiBersih: '7.000.000',
+        gajiPokokUangSaku: '5.000.000',
+        potongan: '250.000',
+        tunjanganTetap: '1.000.000',
+        tunjanganTidakTetap: '750.000',
+        kategori: 'Staff',
+        perusahaan: 'Dasaria',
+        statusPersetujuan: 'Selesai',
+      },
+    ],
+    []
+  );
+
+  const rows: NonAERow[] = useMemo(() => {
+    if (!isDirectorHrga) return fallbackRows;
+    return (directorRows || []).map((r, idx) => ({
+      no: idx + 1 + (directorPage - 1) * directorPageSize,
+      idKaryawan: r.employeeId,
+      pengguna: r.fullName,
+      tanggalPengajuan: r.periode,
+      jumlahHariKerja: String(r.workingDays),
+      totalGajiBersih: r.netSalary,
+      gajiPokokUangSaku: String(r.basicSalary),
+      potongan: String(r.deductionTotal),
+      tunjanganTetap: String(r.allowanceTotal),
+      tunjanganTidakTetap: String(r.nonFixedAllowanceTotal),
+      kategori: r.employeeCategoryName,
+      perusahaan: r.companyName,
+      statusPersetujuan: r.hrDirectorApprovalStatus,
+      payrollId: r.payrollId,
+    }));
+  }, [isDirectorHrga, directorRows, directorPage, directorPageSize, fallbackRows]);
+
   const baseColumns: DataTableColumn<NonAERow>[] = [
     { id: 'idKaryawan', label: 'NIP' },
     { id: 'pengguna', label: 'Pengguna' },
@@ -73,6 +173,43 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
       detailPathPrefix={detailPathPrefix}
       title={title}
       onDetailNavigation={handleDetailNavigation}
+      loading={isDirectorHrga ? directorLoading : false}
+      useExternalPagination={isDirectorHrga}
+      externalPage={isDirectorHrga ? directorPage : undefined}
+      externalTotal={isDirectorHrga ? directorTotal : undefined}
+      pageSize={isDirectorHrga ? directorPageSize : undefined}
+      onSearchChange={isDirectorHrga ? (s) => { setDirectorSearch(s); fetchDirectorRows({ page: 1, search: s }); } : undefined}
+      onSortChange={isDirectorHrga ? (columnId, order) => {
+        const sortKey = toDirectorHrSortKey(columnId);
+        setDirectorSort(sortKey, order);
+        fetchDirectorRows({ page: 1, sortBy: sortKey, sortOrder: order as any });
+      } : undefined}
+      onPageChangeExternal={isDirectorHrga ? (p) => { setDirectorPage(p); fetchDirectorRows({ page: p }); } : undefined}
+      onRowsPerPageChangeExternal={isDirectorHrga ? (rpp) => { setDirectorPageSize(rpp); setDirectorPage(1); fetchDirectorRows({ page: 1, pageSize: rpp }); } : undefined}
+      onColumnFilterChange={
+        isDirectorHrga
+          ? (columnId, values) => {
+              const apiColumnId = toDirectorHrFilterColumnId(columnId);
+              const next = { ...(directorColumnFilters || {}) };
+              next[apiColumnId] = values;
+              setDirectorColumnFilters(next);
+              fetchDirectorRows({ page: 1, columnFilters: next } as any);
+            }
+          : undefined
+      }
+      columnFilters={isDirectorHrga ? directorColumnFilters : undefined}
+      onDateRangeFilterChange={
+        isDirectorHrga
+          ? (columnId, startDate, endDate) => {
+              const apiColumnId = toDirectorHrFilterColumnId(columnId);
+              const next = { ...(directorDateRangeFilters || {}) };
+              next[apiColumnId] = { startDate, endDate };
+              setDirectorDateRangeFilters(next);
+              fetchDirectorRows({ page: 1, dateRangeFilters: next } as any);
+            }
+          : undefined
+      }
+      dateRangeFilters={isDirectorHrga ? directorDateRangeFilters : undefined}
       toolbarRightSlot={
        isApprovalPage && <div className="relative">
           <Button

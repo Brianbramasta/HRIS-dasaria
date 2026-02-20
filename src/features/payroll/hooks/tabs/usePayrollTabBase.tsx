@@ -15,6 +15,7 @@ export type UsePayrollTabBaseProps<TRow extends BaseRow> = {
   canEditDelete?: (row: TRow) => boolean;
   enableSelection?: boolean;
   disableSelection?: boolean;
+  isRowSelectable?: (row: TRow) => boolean;
 };
 
 export default function usePayrollTabBase<TRow extends BaseRow>({
@@ -26,6 +27,7 @@ export default function usePayrollTabBase<TRow extends BaseRow>({
   canEditDelete,
   enableSelection = true,
   disableSelection = false,
+  isRowSelectable,
 }: UsePayrollTabBaseProps<TRow>) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -73,14 +75,19 @@ export default function usePayrollTabBase<TRow extends BaseRow>({
     return indexInRows >= 0 ? `${id}__idx_${indexInRows}` : id;
   };
 
+  const selectableRows = useMemo(() => {
+    if (!isRowSelectable) return rows;
+    return rows.filter((r) => isRowSelectable(r));
+  }, [rows, isRowSelectable]);
+
   // Dokumentasi: Hitung status check-all untuk header (semua baris terpilih)
   const allChecked =
-    rows.length > 0 &&
-    rows.every((r) => {
+    selectableRows.length > 0 &&
+    selectableRows.every((r) => {
       const key = getRowKey(r);
       return !!selected[key];
     });
-  const hasSelection = Object.values(selected).some(Boolean);
+  const hasSelection = selectableRows.some((r) => !!selected[getRowKey(r)]);
 
   const selectedRows = useMemo(() => {
     if (!rows.length) return [] as TRow[];
@@ -111,11 +118,11 @@ export default function usePayrollTabBase<TRow extends BaseRow>({
       headerFormat: () => (
         <Checkbox
           checked={allChecked}
-          disabled={disableSelection}
+          disabled={disableSelection || selectableRows.length === 0}
           onChange={(checked) => {
             if (disableSelection) return;
             const next: Record<string, boolean> = {};
-            rows.forEach((r) => {
+            selectableRows.forEach((r) => {
               next[getRowKey(r)] = checked;
             });
             setSelected(next);
@@ -123,17 +130,23 @@ export default function usePayrollTabBase<TRow extends BaseRow>({
         />
       ),
       format: (_v, row) => (
+        (() => {
+          const rowSelectable = isRowSelectable ? isRowSelectable(row as TRow) : true;
+          const disabled = disableSelection || !rowSelectable;
+          return (
         <Checkbox
           checked={!!selected[getRowKey(row as TRow)]}
-          disabled={disableSelection}
+          disabled={disabled}
           onChange={(checked) =>
-            disableSelection ? undefined : setSelected((prev) => ({ ...prev, [getRowKey(row as TRow)]: checked }))
+            disabled ? undefined : setSelected((prev) => ({ ...prev, [getRowKey(row as TRow)]: checked }))
           }
         />
+          );
+        })()
       ),
     };
     return [selectCol, ...baseColumns];
-  }, [enableSelection, disableSelection, isApprovalPage, isDistribusiPage, isPayrollPeriodPage, selected, baseColumns, rows, allChecked, rowKeyMap]);
+  }, [enableSelection, disableSelection, isApprovalPage, isDistribusiPage, isPayrollPeriodPage, selected, baseColumns, rows, allChecked, rowKeyMap, selectableRows, isRowSelectable]);
 
   const actions: DataTableAction<TRow>[] = useMemo(() => {
     // Dokumentasi: jika ada custom actions, gunakan itu, jika tidak gunakan default actions

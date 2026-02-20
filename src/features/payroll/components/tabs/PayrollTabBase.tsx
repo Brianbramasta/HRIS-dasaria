@@ -21,6 +21,7 @@ type Props<TRow extends BaseRow> = {
 
   enableSelection?: boolean;
   disableSelection?: boolean;
+  isRowSelectable?: (row: TRow) => boolean;
   disableImportButton?: boolean;
   disableFinalizeButton?: boolean;
 
@@ -54,6 +55,7 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
 
   enableSelection = true,
   disableSelection = false,
+  isRowSelectable,
   disableImportButton = false,
   disableFinalizeButton = false,
 
@@ -102,6 +104,7 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
     canEditDelete,
     enableSelection,
     disableSelection,
+    isRowSelectable,
   });
 
   const handleApprovalConfirm = async () => {
