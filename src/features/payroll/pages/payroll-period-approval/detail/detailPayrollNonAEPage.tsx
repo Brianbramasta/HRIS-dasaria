@@ -1,25 +1,40 @@
 // Dokumentasi: Halaman Non-AE di-refactor untuk menggunakan komponen dinamis DetailPayrollContent
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useParams } from "react-router";
 import DetailPayrollComparisonContent, { SectionConfig } from "@/features/payroll/components/layouts/LayoutDetailComparison";
 import TambahTunjanganTidakTetapModal from "@/features/payroll/components/modals/detail-payroll/non-ae/AddNonRecurringAllowanceModal";
 import TambahPotonganTidakTetapModal from "@/features/payroll/components/modals/detail-payroll/non-ae/AddNonRecurringDeductionModal";
 import EditInformationEmployeeModal from "@/features/payroll/components/modals/detail-payroll/non-ae/EditInformationEmployeeModal";
+import { useApiPayrollPeriodDirectorHr } from "@/features/payroll/hooks/api/useApiPayrollPeriodDirectorHr";
 
 // Dokumentasi: Komponen halaman Non-AE yang menyusun config untuk layout dinamis
 export default function DetailGajiPage() {
   const { id } = useParams();
 
+  const { payrollPeriodDetail, fetchPayrollPeriodDetail } = useApiPayrollPeriodDirectorHr();
+
+  useEffect(() => {
+    if (!id) return;
+    fetchPayrollPeriodDetail(id);
+  }, [id, fetchPayrollPeriodDetail]);
+
   const defaultData = useMemo(
     () => ({
-      idKaryawan: id ?? "",
-      pengguna: "Otomatis",
-      gajiPokokUangSaku: "",
-      kategori: "Otomatis",
-      perusahaan: "Otomatis",
-      jumlahHariKerja: "Otomatis",
+      idKaryawan: payrollPeriodDetail?.information_employee?.employee_id ?? id ?? "",
+      pengguna: payrollPeriodDetail?.information_employee?.full_name ?? "Otomatis",
+      tanggalPengajuan: payrollPeriodDetail?.information_employee?.periode ?? "",
+      gajiPokokUangSaku:
+        payrollPeriodDetail?.information_employee?.basic_salary != null
+          ? String(payrollPeriodDetail.information_employee.basic_salary)
+          : "",
+      kategori: payrollPeriodDetail?.information_employee?.employee_category_name ?? "Otomatis",
+      perusahaan: payrollPeriodDetail?.information_employee?.company_name ?? "Otomatis",
+      jumlahHariKerja:
+        payrollPeriodDetail?.information_employee?.working_days != null
+          ? String(payrollPeriodDetail.information_employee.working_days)
+          : "Otomatis",
     }),
-    [id]
+    [id, payrollPeriodDetail]
   );
 
   const config: SectionConfig = {
@@ -33,8 +48,8 @@ export default function DetailGajiPage() {
       fields: [
         { name: "idKaryawan", label: "NIP", type: "input", placeholder: "Otomatis", value: defaultData.idKaryawan, readonly: true },
         { name: "pengguna", label: "Pengguna", type: "input", placeholder: "Otomatis", value: defaultData.pengguna, readonly: true },
-        { name: "tanggalPengajuan", label: "Tanggal Pengajuan", type: "date", id: "tanggal-pengajuan", placeholder: "Pilih tanggal" },
-        { name: "gajiPokokUangSaku", label: "Gaji Pokok/Uang Saku", type: "input", placeholder: "Input", inputType: "text" },
+        { name: "tanggalPengajuan", label: "Tanggal Pengajuan", type: "date", id: "tanggal-pengajuan", placeholder: "Pilih tanggal", value: defaultData.tanggalPengajuan, readonly: true },
+        { name: "gajiPokokUangSaku", label: "Gaji Pokok/Uang Saku", type: "input", placeholder: "Input", inputType: "text", value: defaultData.gajiPokokUangSaku, readonly: true },
         { name: "kategori", label: "Kategori", type: "input", placeholder: "Otomatis", readonly: true },
         { name: "perusahaan", label: "Perusahaan", type: "input", placeholder: "Otomatis", readonly: true },
         { name: "jumlahHariKerja", label: "Jumlah Hari Kerja", type: "input", placeholder: "Otomatis", readonly: true },
@@ -42,8 +57,8 @@ export default function DetailGajiPage() {
       modalFields: [
         { name: "idKaryawan", label: "NIP", type: "input", placeholder: "Otomatis", value: defaultData.idKaryawan, readonly: true },
         { name: "pengguna", label: "Pengguna", type: "input", placeholder: "Otomatis", value: defaultData.pengguna, readonly: true },
-        { name: "tanggalPengajuan", label: "Tanggal Pengajuan", type: "date", id: "tanggal-pengajuan", placeholder: "Pilih tanggal" },
-        { name: "gajiPokokUangSaku", label: "Gaji Pokok/Uang Saku", type: "input", placeholder: "Input", inputType: "text" },
+        { name: "tanggalPengajuan", label: "Tanggal Pengajuan", type: "date", id: "tanggal-pengajuan", placeholder: "Pilih tanggal", value: defaultData.tanggalPengajuan, readonly: true },
+        { name: "gajiPokokUangSaku", label: "Gaji Pokok / Uang Saku", type: "input", placeholder: "Input", inputType: "text", value: defaultData.gajiPokokUangSaku, readonly: true },
         { name: "kategori", label: "Kategori", type: "input", placeholder: "Otomatis", readonly: true },
         { name: "perusahaan", label: "Perusahaan", type: "input", placeholder: "Otomatis", readonly: true },
         { name: "jumlahHariKerja", label: "Jumlah Hari Kerja", type: "input", placeholder: "Otomatis", readonly: true },
@@ -51,7 +66,7 @@ export default function DetailGajiPage() {
       initialValues: {
         idKaryawan: defaultData.idKaryawan,
         pengguna: defaultData.pengguna,
-        tanggalPengajuan: "",
+        tanggalPengajuan: defaultData.tanggalPengajuan,
         gajiPokokUangSaku: defaultData.gajiPokokUangSaku,
         kategori: defaultData.kategori,
         perusahaan: defaultData.perusahaan,
@@ -106,6 +121,11 @@ export default function DetailGajiPage() {
     },
   };
 
-  return <DetailPayrollComparisonContent config={config} />;
+  return (
+    <DetailPayrollComparisonContent
+      key={`${id ?? ''}-${payrollPeriodDetail?.information_employee?.payroll_id ?? 'loading'}`}
+      config={config}
+    />
+  );
 }
 

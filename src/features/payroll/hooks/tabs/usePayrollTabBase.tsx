@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
-import { IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
+import { IconFileDetail, IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
 import Checkbox from '@/components/form/input/Checkbox';
 
 export type BaseRow = { idKaryawan: string; payrollId?: string; no?: number };
@@ -157,19 +157,33 @@ export default function usePayrollTabBase<TRow extends BaseRow>({
       return !!canEditDelete(row);
     };
 
+    const onDetail = (row: TRow) => {
+      const baseRow = row as BaseRow;
+      const id = baseRow.payrollId ?? baseRow.idKaryawan;
+      if (onDetailNavigation) {
+        onDetailNavigation(id);
+      } else {
+        navigate(`${detailPathPrefix}/${id}`);
+      }
+    };
+
+    const detailAction: DataTableAction<TRow> = {
+      label: '',
+      icon: <IconFileDetail />,
+      onClick: onDetail,
+      condition: allowEditDelete,
+      variant: 'outline',
+      className: 'border-0',
+    };
+
+    if (isApprovalPage) return [detailAction];
+
     return [
+      detailAction,
       {
         label: '',
         icon: <Edit />,
-        onClick: (row) => {
-          const baseRow = row as BaseRow;
-          const id = baseRow.payrollId ?? baseRow.idKaryawan;
-          if (onDetailNavigation) {
-            onDetailNavigation(id);
-          } else {
-            navigate(`${detailPathPrefix}/${id}`);
-          }
-        },
+        onClick: onDetail,
         condition: allowEditDelete,
         variant: 'outline',
         className: 'border-0',
@@ -177,7 +191,7 @@ export default function usePayrollTabBase<TRow extends BaseRow>({
       // Dokumentasi: tombol hapus membuka modal konfirmasi
       { label: '', icon: <Trash />, onClick: (row) => { setRowToDelete(row as TRow); setShowDelete(true); }, condition: allowEditDelete, variant: 'outline', className: 'border-0', color: 'error' },
     ];
-  }, [customActions, canEditDelete, navigate, detailPathPrefix, onDetailNavigation]);
+  }, [customActions, canEditDelete, navigate, detailPathPrefix, onDetailNavigation, isApprovalPage]);
 
   return {
     isApprovalPage,

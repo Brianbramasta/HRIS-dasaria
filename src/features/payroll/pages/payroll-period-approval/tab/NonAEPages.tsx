@@ -66,6 +66,22 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
 
   const isDirectorHrga = approvalType === 'Persetujuan oleh Direktur HRGA';
 
+  const isPendingForApprovalType = (status: string): boolean => {
+    const normalize = (s: string) => s.trim().toLowerCase();
+
+    const pendingMap: Record<string, string[]> = {
+      'Persetujuan oleh Direktur HRGA': ['menunggu proses direktur hgra', 'menunggu proses direktur hrga'],
+      'Persetujuan oleh FAT': ['menunggu proses fat', 'menunggu diproses fat'],
+      'Persetujuan oleh BOD': ['menunggu proses bod', 'menunggu diproses bod'],
+    };
+
+    const expectedList = pendingMap[approvalType];
+    if (!expectedList) return true;
+
+    const value = normalize(status);
+    return expectedList.some((expected) => value === expected);
+  };
+
   const {
     payrollPeriods: directorRows,
     loading: directorLoading,
@@ -159,20 +175,38 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
       id: 'statusPersetujuan',
       label: 'Status Persetujuan',
       format: (v) => (
-        <span className="rounded-full bg-orange-100 p-[10px] flex justify-center text-xs text-orange-700 dark:bg-orange-900/30 dark:text-orange-200">
-          {String(v)}
-        </span>
+        (() => {
+          const statusText = String(v);
+          const normalize = (s: string) => s.trim().toLowerCase();
+
+          const pendingMap: Record<string, string> = {
+            'Persetujuan oleh Direktur HRGA': 'menunggu proses direktur hgra',
+            'Persetujuan oleh FAT': 'menunggu proses fat',
+            'Persetujuan oleh BOD': 'menunggu proses bod',
+          };
+
+          const expectedPending = pendingMap[approvalType];
+          const isPending = expectedPending ? normalize(statusText) === expectedPending : true;
+
+          const badgeClass = isPending
+            ? 'rounded-full bg-orange-100 p-[10px] flex justify-center text-xs text-orange-700 dark:bg-orange-900/30 dark:text-orange-200'
+            : 'rounded-full bg-blue-100 p-[10px] flex justify-center text-xs text-blue-700 dark:bg-blue-900/30 dark:text-blue-200';
+
+          return <span className={badgeClass}>{statusText}</span>;
+        })()
       ),
     },
   ];
   return (
     <PenggajianTabBase
+      key={`${resetKey}-${approvalType}`}
       resetKey={resetKey}
       rows={rows}
       baseColumns={baseColumns}
       detailPathPrefix={detailPathPrefix}
       title={title}
       onDetailNavigation={handleDetailNavigation}
+      isRowSelectable={(row) => isPendingForApprovalType(String(row.statusPersetujuan))}
       loading={isDirectorHrga ? directorLoading : false}
       useExternalPagination={isDirectorHrga}
       externalPage={isDirectorHrga ? directorPage : undefined}
