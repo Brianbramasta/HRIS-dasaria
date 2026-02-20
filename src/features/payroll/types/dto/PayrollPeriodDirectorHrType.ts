@@ -17,7 +17,7 @@ export interface PayrollPeriodDirectorHrListItem {
     nonFixedAllowanceTotal: number;
     employeeCategoryName: string;
     companyName: string;
-    hrDirectorApprovalStatus: string;
+    payrollStatusName: string;
 }
 
 export interface PayrollPeriodDirectorHrListResponseItem {
@@ -34,7 +34,7 @@ export interface PayrollPeriodDirectorHrListResponseItem {
     non_fixed_allowance_total: number;
     employee_category_name: string;
     company_name: string;
-    hr_director_approval_status: string;
+    payroll_status_name: string;
 }
 
 export interface PayrollPeriodDirectorHrListResponse {

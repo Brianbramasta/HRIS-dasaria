@@ -13,7 +13,7 @@ const toDirectorHrSortKey = (columnId: string): string => {
     pengguna: 'fullName',
     tanggalPengajuan: 'periode',
     totalGajiBersih: 'netSalary',
-    statusPersetujuan: 'hrDirectorApprovalStatus',
+    statusPersetujuan: 'payrollStatusName',
   };
   return map[columnId] || columnId;
 };
@@ -24,7 +24,7 @@ const toDirectorHrFilterColumnId = (columnId: string): string => {
     pengguna: 'full_name',
     tanggalPengajuan: 'periode',
     totalGajiBersih: 'net_salary',
-    statusPersetujuan: 'hr_director_approval_status',
+    statusPersetujuan: 'payroll_status_name',
   };
   return map[columnId] || columnId;
 };
@@ -138,7 +138,7 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
       tunjanganTidakTetap: String(r.nonFixedAllowanceTotal),
       kategori: r.employeeCategoryName,
       perusahaan: r.companyName,
-      statusPersetujuan: r.hrDirectorApprovalStatus,
+      statusPersetujuan: r.payrollStatusName,
       payrollId: r.payrollId,
     }));
   }, [isDirectorHrga, directorRows, directorPage, directorPageSize, fallbackRows]);

@@ -14,7 +14,7 @@ const toSortField = (field?: string): string => {
         fullName: 'full_name',
         periode: 'periode',
         netSalary: 'net_salary',
-        hrDirectorApprovalStatus: 'hr_director_approval_status',
+        payrollStatusName: 'payroll_status_name',
     };
     return map[field || ''] || field || 'periode';
 };
@@ -33,7 +33,7 @@ const mapToPayrollPeriodDirectorHrListItem = (item: any): PayrollPeriodDirectorH
     nonFixedAllowanceTotal: item.non_fixed_allowance_total,
     employeeCategoryName: item.employee_category_name,
     companyName: item.company_name,
-    hrDirectorApprovalStatus: item.hr_director_approval_status,
+    payrollStatusName: item.payroll_status_name,
 });
 
 interface UseApiPayrollPeriodDirectorHrReturn {
