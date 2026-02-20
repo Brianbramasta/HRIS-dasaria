@@ -19,6 +19,11 @@ type Props<TRow extends BaseRow> = {
   customActions?: DataTableAction<TRow>[];
   onFinalize?: (rows: TRow[]) => Promise<boolean>;
 
+  enableSelection?: boolean;
+  disableSelection?: boolean;
+  disableImportButton?: boolean;
+  disableFinalizeButton?: boolean;
+
   loading?: boolean;
   pageSize?: number;
   useExternalPagination?: boolean;
@@ -46,6 +51,11 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
   toolbarRightSlot,
   customActions,
   onFinalize,
+
+  enableSelection = true,
+  disableSelection = false,
+  disableImportButton = false,
+  disableFinalizeButton = false,
 
   loading,
   pageSize,
@@ -90,6 +100,8 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
     onDetailNavigation,
     customActions,
     canEditDelete,
+    enableSelection,
+    disableSelection,
   });
 
   const handleApprovalConfirm = async () => {
@@ -142,11 +154,24 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
             <IconDownloadTemplate size={16} color="#007BFF" />
             Template Import Data
           </Button>
-          <Button variant="outline" size="sm" className="bg-success text-white dark:text-white" onClick={() => setShowUpload(true)}>
+
+          <Button
+            variant="outline"
+            size="sm"
+            className="bg-success text-white dark:text-white"
+            onClick={() => setShowUpload(true)}
+            disabled={disableImportButton}
+          >
             <IconImport size={16} /> Import
           </Button>
-          
-          <Button variant="custom" className="w-max bg-[#007BFF] text-white dark:text-white" size="sm" disabled={!hasSelection} onClick={() => setShowApprovalModal(true)}>
+
+          <Button
+            variant="custom"
+            className="w-max bg-[#007BFF] text-white dark:text-white"
+            size="sm"
+            disabled={!hasSelection || disableFinalizeButton}
+            onClick={() => setShowApprovalModal(true)}
+          >
             Finalisasi Data
           </Button>
         </div>

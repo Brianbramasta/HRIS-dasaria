@@ -96,6 +96,10 @@ class PayrollPeriodService {
             headers: { 'Content-Type': 'multipart/form-data' },
         });
     }
+
+    async getImportApprovalStatus(): Promise<any> {
+        return apiService.get<any>(`${this.basePath}/import-approval-status`);
+    }
 }
 
 export const payrollPeriodService = new PayrollPeriodService();

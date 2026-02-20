@@ -56,6 +56,8 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
     payrollPeriods,
     fetchPayrollPeriods,
     approvalHr,
+    importApprovalStatus,
+    fetchImportApprovalStatus,
     loading,
     total,
     page,
@@ -99,6 +101,10 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
   useEffect(() => {
     fetchPayrollPeriods({ page, pageSize, search, sortBy, sortOrder });
   }, [page, pageSize, search, sortBy, sortOrder, columnFilters, dateRangeFilters, fetchPayrollPeriods]);
+
+  useEffect(() => {
+    fetchImportApprovalStatus();
+  }, [fetchImportApprovalStatus]);
 
   // Map PayrollPeriodListItem to NonAERow
   const rows: NonAERow[] = payrollPeriods.map((item, index) => mapPayrollPeriodToNonAERow(item, index));
@@ -149,6 +155,9 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
       title={title}
       onDetailNavigation={handleDetailNavigation}
       canEditDelete={(row) => String(row.statusPenggajian ?? '').toLowerCase().trim() === 'menunggu maker'}
+      disableImportButton={!!importApprovalStatus?.is_import_pending}
+      disableFinalizeButton={!!importApprovalStatus?.is_approval_hr_pending}
+      disableSelection={!!importApprovalStatus?.is_approval_hr_pending}
       loading={loading}
       pageSize={pageSize}
       useExternalPagination={true}

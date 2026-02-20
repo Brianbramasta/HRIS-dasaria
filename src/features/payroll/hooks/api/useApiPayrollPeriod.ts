@@ -3,6 +3,7 @@ import { TableFilter } from '@/types/SharedType';
 import {
     PayrollPeriodDetailData,
     PayrollPeriodListItem,
+    PayrollPeriodImportApprovalStatusData,
     PayrollPeriodUpdateNonFixAllowancePayload,
     PayrollPeriodUpdateNonFixDeductionPayload,
     PayrollPeriodUpdateWorkingDaysPayload,
@@ -46,6 +47,7 @@ const toSortField = (field?: string): string => {
 interface UseApiPayrollPeriodReturn {
     payrollPeriods: PayrollPeriodListItem[];
     payrollPeriodDetail: PayrollPeriodDetailData | null;
+    importApprovalStatus: PayrollPeriodImportApprovalStatusData | null;
     loading: boolean;
     error: string | null;
     total: number;
@@ -60,6 +62,7 @@ interface UseApiPayrollPeriodReturn {
     // Actions
     fetchPayrollPeriods: (filter?: Partial<TableFilter>) => Promise<void>;
     fetchPayrollPeriodDetail: (payrollId: string) => Promise<PayrollPeriodDetailData | null>;
+    fetchImportApprovalStatus: () => Promise<PayrollPeriodImportApprovalStatusData | null>;
     updateNonFixAllowance: (payload: PayrollPeriodUpdateNonFixAllowancePayload) => Promise<boolean>;
     updateNonFixDeduction: (payload: PayrollPeriodUpdateNonFixDeductionPayload) => Promise<boolean>;
     updateWorkingDays: (payload: PayrollPeriodUpdateWorkingDaysPayload) => Promise<boolean>;
@@ -86,6 +89,7 @@ interface UseApiPayrollPeriodReturn {
 export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
     const [payrollPeriods, setPayrollPeriods] = useState<PayrollPeriodListItem[]>([]);
     const [payrollPeriodDetail, setPayrollPeriodDetail] = useState<PayrollPeriodDetailData | null>(null);
+    const [importApprovalStatus, setImportApprovalStatus] = useState<PayrollPeriodImportApprovalStatusData | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [total, setTotal] = useState<number>(0);
@@ -188,6 +192,25 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
             setError(err instanceof Error ? err.message : 'Failed to fetch payroll period detail');
             console.error('Error fetching payroll period detail:', err);
             setPayrollPeriodDetail(null);
+            return null;
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    const fetchImportApprovalStatus = useCallback(async (): Promise<PayrollPeriodImportApprovalStatusData | null> => {
+        setLoading(true);
+        setError(null);
+
+        try {
+            const response = await payrollPeriodService.getImportApprovalStatus();
+            const status = (response as any)?.data ?? null;
+            setImportApprovalStatus(status);
+            return status;
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to fetch import approval status');
+            console.error('Error fetching import approval status:', err);
+            setImportApprovalStatus(null);
             return null;
         } finally {
             setLoading(false);
@@ -378,6 +401,7 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
     return {
         payrollPeriods,
         payrollPeriodDetail,
+        importApprovalStatus,
         loading,
         error,
         total,
@@ -391,6 +415,7 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
 
         fetchPayrollPeriods,
         fetchPayrollPeriodDetail,
+        fetchImportApprovalStatus,
         updateNonFixAllowance,
         updateNonFixDeduction,
         updateWorkingDays,

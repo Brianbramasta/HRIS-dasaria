@@ -13,6 +13,8 @@ export type UsePayrollTabBaseProps<TRow extends BaseRow> = {
   onDetailNavigation?: (id: string) => void;
   customActions?: DataTableAction<TRow>[];
   canEditDelete?: (row: TRow) => boolean;
+  enableSelection?: boolean;
+  disableSelection?: boolean;
 };
 
 export default function usePayrollTabBase<TRow extends BaseRow>({
@@ -22,6 +24,8 @@ export default function usePayrollTabBase<TRow extends BaseRow>({
   onDetailNavigation,
   customActions,
   canEditDelete,
+  enableSelection = true,
+  disableSelection = false,
 }: UsePayrollTabBaseProps<TRow>) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -95,6 +99,7 @@ export default function usePayrollTabBase<TRow extends BaseRow>({
   const [showUpload, setShowUpload] = useState(false);
 
   const columns: DataTableColumn<TRow>[] = useMemo(() => {
+    if (!enableSelection) return baseColumns;
     if (!isApprovalPage && !isDistribusiPage && !isPayrollPeriodPage) return baseColumns;
     // Dokumentasi: Tambahkan kolom aksi 'select' dengan header checkbox untuk check-all
     const selectCol: DataTableColumn<TRow> = {
@@ -106,7 +111,9 @@ export default function usePayrollTabBase<TRow extends BaseRow>({
       headerFormat: () => (
         <Checkbox
           checked={allChecked}
+          disabled={disableSelection}
           onChange={(checked) => {
+            if (disableSelection) return;
             const next: Record<string, boolean> = {};
             rows.forEach((r) => {
               next[getRowKey(r)] = checked;
@@ -118,14 +125,15 @@ export default function usePayrollTabBase<TRow extends BaseRow>({
       format: (_v, row) => (
         <Checkbox
           checked={!!selected[getRowKey(row as TRow)]}
+          disabled={disableSelection}
           onChange={(checked) =>
-            setSelected((prev) => ({ ...prev, [getRowKey(row as TRow)]: checked }))
+            disableSelection ? undefined : setSelected((prev) => ({ ...prev, [getRowKey(row as TRow)]: checked }))
           }
         />
       ),
     };
     return [selectCol, ...baseColumns];
-  }, [isApprovalPage, isDistribusiPage, isPayrollPeriodPage, selected, baseColumns, rows, allChecked, rowKeyMap]);
+  }, [enableSelection, disableSelection, isApprovalPage, isDistribusiPage, isPayrollPeriodPage, selected, baseColumns, rows, allChecked, rowKeyMap]);
 
   const actions: DataTableAction<TRow>[] = useMemo(() => {
     // Dokumentasi: jika ada custom actions, gunakan itu, jika tidak gunakan default actions

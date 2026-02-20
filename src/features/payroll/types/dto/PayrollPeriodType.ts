@@ -183,3 +183,13 @@ export interface PayrollPeriodGenericActionResponse<TData = any> {
     meta: PayrollMeta;
     data: TData;
 }
+
+export interface PayrollPeriodImportApprovalStatusData {
+    is_import_pending: boolean;
+    is_approval_hr_pending: boolean;
+}
+
+export interface PayrollPeriodImportApprovalStatusResponse {
+    meta: PayrollMeta;
+    data: PayrollPeriodImportApprovalStatusData;
+}
