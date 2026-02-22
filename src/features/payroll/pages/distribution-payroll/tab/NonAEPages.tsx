@@ -1,12 +1,14 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
 import PayrollTabBase from '@/features/payroll/components/tabs/PayrollTabBase';
 import { IconFileDetail } from '@/icons/components/icons';
 import SlipPayrollModal from '@/features/payroll/components/modals/distribution-payroll/SlipPayrollModal';
 import { formatCurrency } from '@/utils/formatCurrency';
+import { useApiPayrollPeriodDistribution } from '@/features/payroll/hooks/api/useApiPayrollPeriodDistribution';
 
 interface SalaryDistributionData {
   idKaryawan: string;
+  payrollId: string;
   pengguna: string;
   nip: string;
   tanggalPengajuan: string;
@@ -16,55 +18,73 @@ interface SalaryDistributionData {
   totalGajiBersih: number;
   kategori: string;
   perusahaan: string;
-  statusPersetujuan: 'menunggu' | 'disetujui' | 'ditolak';
+  statusPersetujuan: string;
 }
 
-const mockDataNonAE: SalaryDistributionData[] = [
-  {
-    idKaryawan: '1',
-    pengguna: 'Lindsay Curtis',
-    nip: '00001',
-    tanggalPengajuan: '20 November 2025',
-    email: 'Lindsay.Curtis@gmail.com',
-    jenisBank: 'BCA',
-    noRekening: '1234567890',
-    totalGajiBersih: 12_000_000,
-    kategori: 'Kontrak',
-    perusahaan: 'Dasaria',
-    statusPersetujuan: 'disetujui',
-  },
-  {
-    idKaryawan: '2',
-    pengguna: 'John Doe',
-    nip: '00002',
-    tanggalPengajuan: '20 November 2025',
-    email: 'john.doe@gmail.com',
-    jenisBank: 'Mandiri',
-    noRekening: '0987654321',
-    totalGajiBersih: 10_000_000,
-    kategori: 'Kontrak',
-    perusahaan: 'Dasaria',
-    statusPersetujuan: 'menunggu',
-  },
-  {
-    idKaryawan: '3',
-    pengguna: 'Jane Smith',
-    nip: '00003',
-    tanggalPengajuan: '20 November 2025',
-    email: 'jane.smith@gmail.com',
-    jenisBank: 'BNI',
-    noRekening: '1122334455',
-    totalGajiBersih: 15_000_000,
-    kategori: 'Kontrak',
-    perusahaan: 'Dasaria',
-    statusPersetujuan: 'disetujui',
-  },
-];
-
 export default function NonAEPages() {
-  const [data] = useState<SalaryDistributionData[]>(mockDataNonAE);
+  const {
+    payrollPeriods,
+    loading,
+    total,
+    page,
+    pageSize,
+    search,
+    sortBy,
+    sortOrder,
+    columnFilters,
+    dateRangeFilters,
+    fetchPayrollPeriods,
+    sendSlipSalary,
+    setPage,
+    setPageSize,
+    setSearch,
+    setSort,
+    setColumnFilters,
+    setDateRangeFilters,
+  } = useApiPayrollPeriodDistribution();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState<SalaryDistributionData | null>(null);
+
+  useEffect(() => {
+    fetchPayrollPeriods({
+      page,
+      pageSize,
+      search,
+      sortBy,
+      sortOrder: sortOrder ?? undefined,
+      columnFilters,
+      dateRangeFilters,
+    } as any);
+  }, [fetchPayrollPeriods, page, pageSize, search, sortBy, sortOrder, columnFilters, dateRangeFilters]);
+
+  const rows: SalaryDistributionData[] = useMemo(() => {
+    const toNumber = (val: unknown): number => {
+      if (val === null || val === undefined) return 0;
+      if (typeof val === 'number') return val;
+      if (typeof val === 'string') {
+        const cleaned = val.replace(/[^0-9.-]/g, '');
+        const parsed = Number(cleaned);
+        return Number.isFinite(parsed) ? parsed : 0;
+      }
+      return 0;
+    };
+
+    return (payrollPeriods || []).map((item) => ({
+      idKaryawan: item.payrollId,
+      payrollId: item.payrollId,
+      pengguna: item.fullName,
+      nip: item.employeeId,
+      tanggalPengajuan: item.periode,
+      email: item.email,
+      jenisBank: item.bankName,
+      noRekening: String(item.bankAccountNumber ?? '-'),
+      totalGajiBersih: toNumber(item.netSalary),
+      kategori: item.employeeCategoryName,
+      perusahaan: item.companyName,
+      statusPersetujuan: item.payrollStatusName,
+    }));
+  }, [payrollPeriods]);
 
 
 
@@ -111,12 +131,7 @@ export default function NonAEPages() {
         label: 'Total Gaji Bersih',
         minWidth: 140,
         align: 'right',
-        format: (value) =>
-          new Intl.NumberFormat('id-ID', {
-            style: 'currency',
-            currency: 'IDR',
-            minimumFractionDigits: 0,
-          }).format(value),
+        format: (value) => formatCurrency(value),
       },
       {
         id: 'kategori',
@@ -136,15 +151,12 @@ export default function NonAEPages() {
         minWidth: 140,
         align: 'center',
         format: (value) => {
-          const statusMap = {
-            disetujui: { text: 'Disetujui', className: 'status-styling bg-green-100 text-green-800' },
-            menunggu: { text: 'Menunggu', className: 'status-styling bg-yellow-100 text-yellow-800' },
-            ditolak: { text: 'Ditolak', className: 'status-styling bg-red-100 text-red-800' },
-          };
-          const status = statusMap[value as keyof typeof statusMap] || {
-            text: value,
-            className: 'status-styling bg-gray-100 text-gray-800',
-          };
+          const statusLower = String(value ?? '').trim().toLowerCase();
+          const status = statusLower.includes('selesai')
+            ? { text: value, className: 'status-styling bg-green-100 text-green-800' }
+            : statusLower.includes('proses')
+            ? { text: value, className: 'status-styling bg-yellow-100 text-yellow-800' }
+            : { text: value, className: 'status-styling bg-gray-100 text-gray-800' };
           return (
             <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${status.className}`}>
               {status.text}
@@ -155,6 +167,13 @@ export default function NonAEPages() {
     ],
     []
   );
+
+  const isRowSelectable = (row: SalaryDistributionData) => {
+    const value = String(row.statusPersetujuan ?? '')
+      .trim()
+      .toLowerCase();
+    return value === 'proses distribusi';
+  };
 
   // Dokumentasi: Memoisasi data slip gaji dari selectedEmployee untuk dipakai modal dan grid
   const slipData = useMemo(
@@ -230,15 +249,74 @@ export default function NonAEPages() {
     []
   );
 
+  const handleDistribusiSlipGaji = async (selectedRows: SalaryDistributionData[]) => {
+    const payrollIds = Array.from(
+      new Set(
+        (selectedRows || [])
+          .map((r) => r.payrollId || r.idKaryawan)
+          .filter(Boolean)
+          .map(String)
+      )
+    );
+
+    if (payrollIds.length === 0) return false;
+
+    const ok = await sendSlipSalary({ payrollIds });
+    if (ok) {
+      await fetchPayrollPeriods({
+        page,
+        pageSize,
+        search,
+        sortBy,
+        sortOrder: sortOrder ?? undefined,
+        columnFilters,
+        dateRangeFilters,
+      } as any);
+    }
+
+    return ok;
+  };
+
   return (
     <>
       <PayrollTabBase<SalaryDistributionData>
         resetKey="non-ae"
-        rows={data}
+        rows={rows}
         baseColumns={baseColumns}
         detailPathPrefix="/salary-distribution/detail-non-ae"
         title="Distribusi Gaji Non-AE"
         customActions={actions}
+        onFinalize={handleDistribusiSlipGaji}
+        isRowSelectable={isRowSelectable}
+
+        loading={loading}
+        useExternalPagination
+        externalPage={page}
+        externalTotal={total}
+        pageSize={pageSize}
+        onSearchChange={(v) => setSearch(v)}
+        onSortChange={(columnId, order) => setSort(columnId, order)}
+        onPageChangeExternal={(nextPage) => setPage(nextPage)}
+        onRowsPerPageChangeExternal={(nextPageSize) => {
+          setPageSize(nextPageSize);
+          setPage(1);
+        }}
+        onColumnFilterChange={(columnId, values) => {
+          setColumnFilters({
+            ...columnFilters,
+            [columnId]: values,
+          });
+          setPage(1);
+        }}
+        columnFilters={columnFilters}
+        onDateRangeFilterChange={(columnId, startDate, endDate) => {
+          setDateRangeFilters({
+            ...dateRangeFilters,
+            [columnId]: { startDate, endDate },
+          });
+          setPage(1);
+        }}
+        dateRangeFilters={dateRangeFilters}
       />
       <SlipPayrollModal
         isOpen={isModalOpen}
