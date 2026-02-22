@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { DataTableColumn } from '@/components/shared/datatable/DataTable';
 import PenggajianTabBase from '../../../components/tabs/PayrollTabBase';
@@ -6,6 +6,9 @@ import Button from '@/components/ui/button/Button';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { ChevronDown } from 'react-feather';
 import { useApiPayrollPeriodDirectorHr } from '@/features/payroll/hooks/api/useApiPayrollPeriodDirectorHr';
+import { useApiPayrollPeriodFat } from '@/features/payroll/hooks/api/useApiPayrollPeriodFat';
+import { useApiPayrollPeriodBod } from '@/features/payroll/hooks/api/useApiPayrollPeriodBod';
+import { formatCurrencyValue } from '@/utils/formatCurrency';
 
 const toDirectorHrSortKey = (columnId: string): string => {
   const map: Record<string, string> = {
@@ -27,6 +30,59 @@ const toDirectorHrFilterColumnId = (columnId: string): string => {
     statusPersetujuan: 'payroll_status_name',
   };
   return map[columnId] || columnId;
+};
+
+const toFatSortKey = (columnId: string): string => {
+  const map: Record<string, string> = {
+    idKaryawan: 'employeeId',
+    pengguna: 'fullName',
+    tanggalPengajuan: 'periode',
+    totalGajiBersih: 'netSalary',
+    statusPersetujuan: 'payrollStatusName',
+  };
+  return map[columnId] || columnId;
+};
+
+const toFatFilterColumnId = (columnId: string): string => {
+  const map: Record<string, string> = {
+    idKaryawan: 'employee_id',
+    pengguna: 'full_name',
+    tanggalPengajuan: 'periode',
+    totalGajiBersih: 'net_salary',
+    statusPersetujuan: 'payroll_status_name',
+  };
+  return map[columnId] || columnId;
+};
+
+const toBodSortKey = (columnId: string): string => {
+  const map: Record<string, string> = {
+    idKaryawan: 'employeeId',
+    pengguna: 'fullName',
+    tanggalPengajuan: 'periode',
+    totalGajiBersih: 'netSalary',
+    statusPersetujuan: 'payrollStatusName',
+  };
+  return map[columnId] || columnId;
+};
+
+const toBodFilterColumnId = (columnId: string): string => {
+  const map: Record<string, string> = {
+    idKaryawan: 'employee_id',
+    pengguna: 'full_name',
+    tanggalPengajuan: 'periode',
+    totalGajiBersih: 'net_salary',
+    statusPersetujuan: 'payroll_status_name',
+  };
+  return map[columnId] || columnId;
+};
+
+const toNumber = (value: any): number | null => {
+  if (value === null || value === undefined) return null;
+  if (typeof value === 'number') return Number.isFinite(value) ? value : null;
+  const cleaned = String(value).replace(/[^0-9-]/g, '');
+  if (!cleaned) return null;
+  const parsed = Number(cleaned);
+  return Number.isFinite(parsed) ? parsed : null;
 };
 
 type NonAERow = {
@@ -65,6 +121,8 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
   };
 
   const isDirectorHrga = approvalType === 'Persetujuan oleh Direktur HRGA';
+  const isFat = approvalType === 'Persetujuan oleh FAT';
+  const isBod = approvalType === 'Persetujuan oleh BOD';
 
   const isPendingForApprovalType = (status: string): boolean => {
     const normalize = (s: string) => s.trim().toLowerCase();
@@ -91,6 +149,7 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
     columnFilters: directorColumnFilters,
     dateRangeFilters: directorDateRangeFilters,
     fetchPayrollPeriods: fetchDirectorRows,
+    approvalDirectorHr,
     setPage: setDirectorPage,
     setPageSize: setDirectorPageSize,
     setSearch: setDirectorSearch,
@@ -99,11 +158,59 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
     setDateRangeFilters: setDirectorDateRangeFilters,
   } = useApiPayrollPeriodDirectorHr();
 
+  const {
+    payrollPeriods: fatRows,
+    loading: fatLoading,
+    total: fatTotal,
+    page: fatPage,
+    pageSize: fatPageSize,
+    columnFilters: fatColumnFilters,
+    dateRangeFilters: fatDateRangeFilters,
+    fetchPayrollPeriods: fetchFatRows,
+    approvalFat,
+    setPage: setFatPage,
+    setPageSize: setFatPageSize,
+    setSearch: setFatSearch,
+    setSort: setFatSort,
+    setColumnFilters: setFatColumnFilters,
+    setDateRangeFilters: setFatDateRangeFilters,
+  } = useApiPayrollPeriodFat();
+
+  const {
+    payrollPeriods: bodRows,
+    loading: bodLoading,
+    total: bodTotal,
+    page: bodPage,
+    pageSize: bodPageSize,
+    columnFilters: bodColumnFilters,
+    dateRangeFilters: bodDateRangeFilters,
+    fetchPayrollPeriods: fetchBodRows,
+    approvalBod,
+    setPage: setBodPage,
+    setPageSize: setBodPageSize,
+    setSearch: setBodSearch,
+    setSort: setBodSort,
+    setColumnFilters: setBodColumnFilters,
+    setDateRangeFilters: setBodDateRangeFilters,
+  } = useApiPayrollPeriodBod();
+
   useEffect(() => {
     if (!isApprovalPage) return;
     if (!isDirectorHrga) return;
     fetchDirectorRows({ page: 1, pageSize: directorPageSize });
   }, [isApprovalPage, isDirectorHrga, directorPageSize, fetchDirectorRows]);
+
+  useEffect(() => {
+    if (!isApprovalPage) return;
+    if (!isFat) return;
+    fetchFatRows({ page: 1, pageSize: fatPageSize });
+  }, [isApprovalPage, isFat, fatPageSize, fetchFatRows]);
+
+  useEffect(() => {
+    if (!isApprovalPage) return;
+    if (!isBod) return;
+    fetchBodRows({ page: 1, pageSize: bodPageSize });
+  }, [isApprovalPage, isBod, bodPageSize, fetchBodRows]);
 
   const fallbackRows: NonAERow[] = useMemo(
     () => [
@@ -140,24 +247,79 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
   );
 
   const rows: NonAERow[] = useMemo(() => {
-    if (!isDirectorHrga) return fallbackRows;
-    return (directorRows || []).map((r, idx) => ({
-      no: idx + 1 + (directorPage - 1) * directorPageSize,
-      idKaryawan: r.employeeId,
-      pengguna: r.fullName,
-      tanggalPengajuan: r.periode,
-      jumlahHariKerja: String(r.workingDays),
-      totalGajiBersih: r.netSalary,
-      gajiPokokUangSaku: String(r.basicSalary),
-      potongan: String(r.deductionTotal),
-      tunjanganTetap: String(r.allowanceTotal),
-      tunjanganTidakTetap: String(r.nonFixedAllowanceTotal),
-      kategori: r.employeeCategoryName,
-      perusahaan: r.companyName,
-      statusPersetujuan: r.payrollStatusName,
-      payrollId: r.payrollId,
-    }));
-  }, [isDirectorHrga, directorRows, directorPage, directorPageSize, fallbackRows]);
+    if (isDirectorHrga) {
+      return (directorRows || []).map((r, idx) => ({
+        no: idx + 1 + (directorPage - 1) * directorPageSize,
+        idKaryawan: r.employeeId,
+        pengguna: r.fullName,
+        tanggalPengajuan: r.periode,
+        jumlahHariKerja: String(r.workingDays),
+        totalGajiBersih: formatCurrencyValue(toNumber(r.netSalary)),
+        gajiPokokUangSaku: formatCurrencyValue(toNumber(r.basicSalary)),
+        potongan: formatCurrencyValue(toNumber(r.deductionTotal)),
+        tunjanganTetap: formatCurrencyValue(toNumber(r.allowanceTotal)),
+        tunjanganTidakTetap: formatCurrencyValue(toNumber(r.nonFixedAllowanceTotal)),
+        kategori: r.employeeCategoryName,
+        perusahaan: r.companyName,
+        statusPersetujuan: r.payrollStatusName,
+        payrollId: r.payrollId,
+      }));
+    }
+
+    if (isFat) {
+      return (fatRows || []).map((r, idx) => ({
+        no: idx + 1 + (fatPage - 1) * fatPageSize,
+        idKaryawan: r.employeeId,
+        pengguna: r.fullName,
+        tanggalPengajuan: r.periode,
+        jumlahHariKerja: String(r.workingDays),
+        totalGajiBersih: formatCurrencyValue(toNumber(r.netSalary)),
+        gajiPokokUangSaku: formatCurrencyValue(toNumber(r.basicSalary)),
+        potongan: formatCurrencyValue(toNumber(r.deductionTotal)),
+        tunjanganTetap: formatCurrencyValue(toNumber(r.allowanceTotal)),
+        tunjanganTidakTetap: formatCurrencyValue(toNumber(r.nonFixedAllowanceTotal)),
+        kategori: r.employeeCategoryName,
+        perusahaan: r.companyName,
+        statusPersetujuan: r.payrollStatusName,
+        payrollId: r.payrollId,
+      }));
+    }
+
+    if (isBod) {
+      return (bodRows || []).map((r, idx) => ({
+        no: idx + 1 + (bodPage - 1) * bodPageSize,
+        idKaryawan: r.employeeId,
+        pengguna: r.fullName,
+        tanggalPengajuan: r.periode,
+        jumlahHariKerja: String(r.workingDays),
+        totalGajiBersih: formatCurrencyValue(toNumber(r.netSalary)),
+        gajiPokokUangSaku: formatCurrencyValue(toNumber(r.basicSalary)),
+        potongan: formatCurrencyValue(toNumber(r.deductionTotal)),
+        tunjanganTetap: formatCurrencyValue(toNumber(r.allowanceTotal)),
+        tunjanganTidakTetap: formatCurrencyValue(toNumber(r.nonFixedAllowanceTotal)),
+        kategori: r.employeeCategoryName,
+        perusahaan: r.companyName,
+        statusPersetujuan: r.payrollStatusName,
+        payrollId: r.payrollId,
+      }));
+    }
+
+    return fallbackRows;
+  }, [
+    isDirectorHrga,
+    isFat,
+    isBod,
+    directorRows,
+    directorPage,
+    directorPageSize,
+    fatRows,
+    fatPage,
+    fatPageSize,
+    bodRows,
+    bodPage,
+    bodPageSize,
+    fallbackRows,
+  ]);
 
   const baseColumns: DataTableColumn<NonAERow>[] = [
     { id: 'idKaryawan', label: 'NIP' },
@@ -180,23 +342,91 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
           const normalize = (s: string) => s.trim().toLowerCase();
 
           const pendingMap: Record<string, string> = {
-            'Persetujuan oleh Direktur HRGA': 'menunggu proses direktur hgra',
-            'Persetujuan oleh FAT': 'menunggu proses fat',
-            'Persetujuan oleh BOD': 'menunggu proses bod',
+            'Persetujuan oleh Direktur HRGA': 'menunggu diproses direktur hgra',
+            'Persetujuan oleh FAT': 'menunggu diproses fat',
+            'Persetujuan oleh BOD': 'menunggu diproses bod',
           };
 
           const expectedPending = pendingMap[approvalType];
           const isPending = expectedPending ? normalize(statusText) === expectedPending : true;
 
           const badgeClass = isPending
-            ? 'rounded-full bg-orange-100 p-[10px] flex justify-center text-xs text-orange-700 dark:bg-orange-900/30 dark:text-orange-200'
-            : 'rounded-full bg-blue-100 p-[10px] flex justify-center text-xs text-blue-700 dark:bg-blue-900/30 dark:text-blue-200';
+            ? 'status-styling text-center rounded-full bg-orange-100 p-[10px] flex justify-center text-xs text-orange-700 dark:bg-orange-900/30 dark:text-orange-200'
+            : 'status-styling text-center rounded-full bg-blue-100 p-[10px] flex justify-center text-xs text-blue-700 dark:bg-blue-900/30 dark:text-blue-200';
 
           return <span className={badgeClass}>{statusText}</span>;
         })()
       ),
     },
   ];
+
+  const handleFinalize = useCallback(
+    async (selectedRows: NonAERow[]) => {
+      if (!isApprovalPage) return false;
+
+      const isSelectAll = (selectedRows?.length ?? 0) > 0 && (selectedRows?.length ?? 0) === rows.length;
+      if (isSelectAll) {
+        if (isDirectorHrga) {
+          const ok = await approvalDirectorHr({ payrollIds: [], all: true });
+          if (ok) await fetchDirectorRows({ page: 1, pageSize: directorPageSize });
+          return ok;
+        }
+        if (isFat) {
+          const ok = await approvalFat({ payrollIds: [], all: true });
+          if (ok) await fetchFatRows({ page: 1, pageSize: fatPageSize });
+          return ok;
+        }
+        if (isBod) {
+          const ok = await approvalBod({ payrollIds: [], all: true });
+          if (ok) await fetchBodRows({ page: 1, pageSize: bodPageSize });
+          return ok;
+        }
+        return false;
+      }
+
+      const payrollIds = Array.from(
+        new Set((selectedRows || []).map((r) => r.payrollId).filter((id): id is string => Boolean(id)))
+      );
+      if (payrollIds.length === 0) return false;
+
+      if (isDirectorHrga) {
+        const ok = await approvalDirectorHr({ payrollIds });
+        if (ok) await fetchDirectorRows({ page: directorPage, pageSize: directorPageSize });
+        return ok;
+      }
+      if (isFat) {
+        const ok = await approvalFat({ payrollIds });
+        if (ok) await fetchFatRows({ page: fatPage, pageSize: fatPageSize });
+        return ok;
+      }
+      if (isBod) {
+        const ok = await approvalBod({ payrollIds });
+        if (ok) await fetchBodRows({ page: bodPage, pageSize: bodPageSize });
+        return ok;
+      }
+      return false;
+    },
+    [
+      isApprovalPage,
+      rows.length,
+      isDirectorHrga,
+      isFat,
+      isBod,
+      approvalDirectorHr,
+      approvalFat,
+      approvalBod,
+      fetchDirectorRows,
+      fetchFatRows,
+      fetchBodRows,
+      directorPage,
+      directorPageSize,
+      fatPage,
+      fatPageSize,
+      bodPage,
+      bodPageSize,
+    ]
+  );
+
   return (
     <PenggajianTabBase
       key={`${resetKey}-${approvalType}`}
@@ -206,20 +436,109 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
       detailPathPrefix={detailPathPrefix}
       title={title}
       onDetailNavigation={handleDetailNavigation}
+      onFinalize={handleFinalize}
       isRowSelectable={(row) => isPendingForApprovalType(String(row.statusPersetujuan))}
-      loading={isDirectorHrga ? directorLoading : false}
-      useExternalPagination={isDirectorHrga}
-      externalPage={isDirectorHrga ? directorPage : undefined}
-      externalTotal={isDirectorHrga ? directorTotal : undefined}
-      pageSize={isDirectorHrga ? directorPageSize : undefined}
-      onSearchChange={isDirectorHrga ? (s) => { setDirectorSearch(s); fetchDirectorRows({ page: 1, search: s }); } : undefined}
-      onSortChange={isDirectorHrga ? (columnId, order) => {
-        const sortKey = toDirectorHrSortKey(columnId);
-        setDirectorSort(sortKey, order);
-        fetchDirectorRows({ page: 1, sortBy: sortKey, sortOrder: order as any });
-      } : undefined}
-      onPageChangeExternal={isDirectorHrga ? (p) => { setDirectorPage(p); fetchDirectorRows({ page: p }); } : undefined}
-      onRowsPerPageChangeExternal={isDirectorHrga ? (rpp) => { setDirectorPageSize(rpp); setDirectorPage(1); fetchDirectorRows({ page: 1, pageSize: rpp }); } : undefined}
+      loading={
+        isApprovalPage ? (isDirectorHrga ? directorLoading : isFat ? fatLoading : isBod ? bodLoading : false) : false
+      }
+      useExternalPagination={isApprovalPage && (isDirectorHrga || isFat || isBod)}
+      externalPage={
+        isApprovalPage ? (isDirectorHrga ? directorPage : isFat ? fatPage : isBod ? bodPage : undefined) : undefined
+      }
+      externalTotal={
+        isApprovalPage ? (isDirectorHrga ? directorTotal : isFat ? fatTotal : isBod ? bodTotal : undefined) : undefined
+      }
+      pageSize={
+        isApprovalPage
+          ? (isDirectorHrga ? directorPageSize : isFat ? fatPageSize : isBod ? bodPageSize : undefined)
+          : undefined
+      }
+      onSearchChange={
+        !isApprovalPage
+          ? undefined
+          : isDirectorHrga
+            ? (s) => {
+                setDirectorSearch(s);
+                fetchDirectorRows({ page: 1, search: s });
+              }
+            : isFat
+              ? (s) => {
+                  setFatSearch(s);
+                  fetchFatRows({ page: 1, search: s });
+                }
+              : isBod
+                ? (s) => {
+                    setBodSearch(s);
+                    fetchBodRows({ page: 1, search: s });
+                  }
+                : undefined
+      }
+      onSortChange={
+        !isApprovalPage
+          ? undefined
+          : isDirectorHrga
+            ? (columnId, order) => {
+                const sortKey = toDirectorHrSortKey(columnId);
+                setDirectorSort(sortKey, order);
+                fetchDirectorRows({ page: 1, sortBy: sortKey, sortOrder: order as any });
+              }
+            : isFat
+              ? (columnId, order) => {
+                  const sortKey = toFatSortKey(columnId);
+                  setFatSort(sortKey, order);
+                  fetchFatRows({ page: 1, sortBy: sortKey, sortOrder: order as any });
+                }
+              : isBod
+                ? (columnId, order) => {
+                    const sortKey = toBodSortKey(columnId);
+                    setBodSort(sortKey, order);
+                    fetchBodRows({ page: 1, sortBy: sortKey, sortOrder: order as any });
+                  }
+                : undefined
+      }
+      onPageChangeExternal={
+        !isApprovalPage
+          ? undefined
+          : isDirectorHrga
+            ? (p) => {
+                setDirectorPage(p);
+                fetchDirectorRows({ page: p });
+              }
+            : isFat
+              ? (p) => {
+                  setFatPage(p);
+                  fetchFatRows({ page: p });
+                }
+              : isBod
+                ? (p) => {
+                    setBodPage(p);
+                    fetchBodRows({ page: p });
+                  }
+                : undefined
+      }
+      onRowsPerPageChangeExternal={
+        !isApprovalPage
+          ? undefined
+          : isDirectorHrga
+            ? (rpp) => {
+                setDirectorPageSize(rpp);
+                setDirectorPage(1);
+                fetchDirectorRows({ page: 1, pageSize: rpp });
+              }
+            : isFat
+              ? (rpp) => {
+                  setFatPageSize(rpp);
+                  setFatPage(1);
+                  fetchFatRows({ page: 1, pageSize: rpp });
+                }
+              : isBod
+                ? (rpp) => {
+                    setBodPageSize(rpp);
+                    setBodPage(1);
+                    fetchBodRows({ page: 1, pageSize: rpp });
+                  }
+                : undefined
+      }
       onColumnFilterChange={
         isDirectorHrga
           ? (columnId, values) => {
@@ -229,9 +548,25 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
               setDirectorColumnFilters(next);
               fetchDirectorRows({ page: 1, columnFilters: next } as any);
             }
-          : undefined
+          : isFat
+            ? (columnId, values) => {
+                const apiColumnId = toFatFilterColumnId(columnId);
+                const next = { ...(fatColumnFilters || {}) };
+                next[apiColumnId] = values;
+                setFatColumnFilters(next);
+                fetchFatRows({ page: 1, columnFilters: next } as any);
+              }
+            : isBod
+              ? (columnId, values) => {
+                  const apiColumnId = toBodFilterColumnId(columnId);
+                  const next = { ...(bodColumnFilters || {}) };
+                  next[apiColumnId] = values;
+                  setBodColumnFilters(next);
+                  fetchBodRows({ page: 1, columnFilters: next } as any);
+                }
+              : undefined
       }
-      columnFilters={isDirectorHrga ? directorColumnFilters : undefined}
+      columnFilters={isDirectorHrga ? directorColumnFilters : isFat ? fatColumnFilters : isBod ? bodColumnFilters : undefined}
       onDateRangeFilterChange={
         isDirectorHrga
           ? (columnId, startDate, endDate) => {
@@ -241,9 +576,27 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
               setDirectorDateRangeFilters(next);
               fetchDirectorRows({ page: 1, dateRangeFilters: next } as any);
             }
-          : undefined
+          : isFat
+            ? (columnId, startDate, endDate) => {
+                const apiColumnId = toFatFilterColumnId(columnId);
+                const next = { ...(fatDateRangeFilters || {}) };
+                next[apiColumnId] = { startDate, endDate };
+                setFatDateRangeFilters(next);
+                fetchFatRows({ page: 1, dateRangeFilters: next } as any);
+              }
+            : isBod
+              ? (columnId, startDate, endDate) => {
+                  const apiColumnId = toBodFilterColumnId(columnId);
+                  const next = { ...(bodDateRangeFilters || {}) };
+                  next[apiColumnId] = { startDate, endDate };
+                  setBodDateRangeFilters(next);
+                  fetchBodRows({ page: 1, dateRangeFilters: next } as any);
+                }
+              : undefined
       }
-      dateRangeFilters={isDirectorHrga ? directorDateRangeFilters : undefined}
+      dateRangeFilters={
+        isDirectorHrga ? directorDateRangeFilters : isFat ? fatDateRangeFilters : isBod ? bodDateRangeFilters : undefined
+      }
       toolbarRightSlot={
        isApprovalPage && <div className="relative">
           <Button
