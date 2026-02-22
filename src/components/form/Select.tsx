@@ -34,6 +34,7 @@ const Select: React.FC<SelectProps> = ({
   const ref = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [menuStyle, setMenuStyle] = useState<{ left: number; top?: number; bottom?: number; width: number }>({ left: 0, top: 0, width: 0 });
 
   const selectedLabel =
@@ -103,6 +104,13 @@ const Select: React.FC<SelectProps> = ({
     };
   }, [open]);
 
+  useEffect(() => {
+    if (open && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [open]);
+
   const commitChange = (value: string) => {
     setSelectedValue(value);
     onChange(value);
@@ -153,6 +161,7 @@ const Select: React.FC<SelectProps> = ({
             <div className="p-2 border-b border-gray-200 dark:border-gray-800">
               <input
                 type="text"
+                ref={inputRef}
                 value={query}
                 onChange={(e) => {
                   const q = e.target.value;
