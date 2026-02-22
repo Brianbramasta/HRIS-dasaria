@@ -54,7 +54,7 @@ const navItems: NavItem[] = [
       { name: "Konfigurasi Penggajian", path: "/payroll-configuration", pro: false },
       { name: "Periode Gajian", path: "/payroll-period", pro: false },
       { name: "Persetujuan Periode Gajian", path: "/payroll-period-approval", pro: false },
-      { name: "Distribusi Gaji", path: "/salary-distribution", pro: false },
+      { name: "Distribusi Gaji & Slip Gaji", path: "/salary-distribution", pro: false },
       { name: "Kasbon", path: "/cash-advance", pro: false },
 
     ],
