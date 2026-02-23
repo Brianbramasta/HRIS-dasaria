@@ -4,7 +4,16 @@ import PayrollTabBase from '@/features/payroll/components/tabs/PayrollTabBase';
 import { IconFileDetail } from '@/icons/components/icons';
 import SlipPayrollModal from '@/features/payroll/components/modals/distribution-payroll/SlipPayrollModal';
 import { formatCurrency } from '@/utils/formatCurrency';
+import { formatDateToIndonesian } from '@/utils/formatDate';
 import { useApiPayrollPeriodDistribution } from '@/features/payroll/hooks/api/useApiPayrollPeriodDistribution';
+
+const toPayrollDistributionFilterColumnId = (columnId: string): string => {
+  const map: Record<string, string> = {
+    tanggalPengajuan: 'periode',
+    statusPersetujuan: 'payroll_status_name',
+  };
+  return map[columnId] || columnId;
+};
 
 interface SalaryDistributionData {
   idKaryawan: string;
@@ -86,6 +95,11 @@ export default function NonAEPages() {
     }));
   }, [payrollPeriods]);
 
+  const statusFilterOptions = useMemo(() => {
+    const unique = Array.from(new Set((rows || []).map((r) => String(r.statusPersetujuan ?? '')).filter(Boolean)));
+    return unique.map((v) => ({ label: v, value: v }));
+  }, [rows]);
+
 
 
   const baseColumns: DataTableColumn<SalaryDistributionData>[] = useMemo(
@@ -107,6 +121,8 @@ export default function NonAEPages() {
         label: 'Tanggal Pengajuan',
         minWidth: 140,
         align: 'left',
+        dateRangeFilter: true,
+        format: (v) => formatDateToIndonesian(String(v)),
       },
       {
         id: 'email',
@@ -150,6 +166,7 @@ export default function NonAEPages() {
         label: 'Status Persetujuan',
         minWidth: 140,
         align: 'center',
+        filterOptions: statusFilterOptions,
         format: (value) => {
           const statusLower = String(value ?? '').trim().toLowerCase();
           const status = statusLower.includes('selesai')
@@ -165,7 +182,7 @@ export default function NonAEPages() {
         },
       },
     ],
-    []
+    [statusFilterOptions]
   );
 
   const isRowSelectable = (row: SalaryDistributionData) => {
@@ -302,17 +319,19 @@ export default function NonAEPages() {
           setPage(1);
         }}
         onColumnFilterChange={(columnId, values) => {
+          const apiColumnId = toPayrollDistributionFilterColumnId(columnId);
           setColumnFilters({
             ...columnFilters,
-            [columnId]: values,
+            [apiColumnId]: values,
           });
           setPage(1);
         }}
         columnFilters={columnFilters}
         onDateRangeFilterChange={(columnId, startDate, endDate) => {
+          const apiColumnId = toPayrollDistributionFilterColumnId(columnId);
           setDateRangeFilters({
             ...dateRangeFilters,
-            [columnId]: { startDate, endDate },
+            [apiColumnId]: { startDate, endDate },
           });
           setPage(1);
         }}

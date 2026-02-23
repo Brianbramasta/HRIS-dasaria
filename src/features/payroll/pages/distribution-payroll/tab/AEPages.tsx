@@ -4,6 +4,7 @@ import PayrollTabBase from '@/features/payroll/components/tabs/PayrollTabBase';
 import { IconFileDetail } from '@/icons/components/icons';
 import SlipPayrollModal, { SlipPayrollModalProps } from '@/features/payroll/components/modals/distribution-payroll/SlipPayrollModal';
 import { formatCurrency } from '@/utils/formatCurrency';
+import { formatDateToIndonesian } from '@/utils/formatDate';
 
 interface SalaryDistributionData {
   idKaryawan: string;
@@ -107,7 +108,36 @@ export default function AEPages() {
   const [data] = useState<SalaryDistributionData[]>(mockDataAE);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedData, setSelectedData] = useState<SalaryDistributionData | null>(null);
-  
+
+  const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
+  const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
+
+  const filteredRows = useMemo(() => {
+    let result = [...data];
+
+    Object.entries(columnFilters).forEach(([columnId, values]) => {
+      if (!values || values.length === 0) return;
+      result = result.filter((row) => values.includes(String((row as any)[columnId] ?? '')));
+    });
+
+    Object.entries(dateRangeFilters).forEach(([columnId, { startDate, endDate }]) => {
+      if (!startDate) return;
+      const start = new Date(startDate);
+      const end = endDate ? new Date(endDate) : null;
+
+      result = result.filter((row) => {
+        const value = (row as any)[columnId] as string | undefined;
+        if (!value) return false;
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return false;
+        if (date < start) return false;
+        if (end && date > end) return false;
+        return true;
+      });
+    });
+
+    return result;
+  }, [data, columnFilters, dateRangeFilters]);
 
 
   const baseColumns: DataTableColumn<SalaryDistributionData>[] = useMemo(
@@ -129,6 +159,8 @@ export default function AEPages() {
         label: 'Tanggal Pengajuan',
         minWidth: 140,
         align: 'left',
+        dateRangeFilter: true,
+        format: (v) => formatDateToIndonesian(String(v)),
       },
       {
         id: 'email',
@@ -177,6 +209,11 @@ export default function AEPages() {
         label: 'Status Persetujuan',
         minWidth: 140,
         align: 'center',
+        filterOptions: [
+          { label: 'Disetujui', value: 'disetujui' },
+          { label: 'Menunggu', value: 'menunggu' },
+          { label: 'Ditolak', value: 'ditolak' },
+        ],
         format: (value) => {
           const statusMap = {
             disetujui: { text: 'Disetujui', className: 'status-styling bg-green-100 text-green-800' },
@@ -265,11 +302,32 @@ export default function AEPages() {
     <>
       <PayrollTabBase<SalaryDistributionData>
         resetKey="ae"
-        rows={data}
+        rows={filteredRows}
         baseColumns={baseColumns}
         detailPathPrefix="/salary-distribution/detail-ae"
         title="Distribusi Gaji AE"
         customActions={actions}
+        onColumnFilterChange={(columnId, values) => {
+          setColumnFilters((prev) => ({
+            ...prev,
+            [columnId]: values,
+          }));
+        }}
+        columnFilters={columnFilters}
+        onDateRangeFilterChange={(columnId, startDate, endDate) => {
+          setDateRangeFilters((prev) => {
+            if (!startDate) {
+              const next = { ...prev };
+              delete next[columnId];
+              return next;
+            }
+            return {
+              ...prev,
+              [columnId]: { startDate, endDate },
+            };
+          });
+        }}
+        dateRangeFilters={dateRangeFilters}
       />
       <SlipPayrollModal
         isOpen={isModalOpen}
