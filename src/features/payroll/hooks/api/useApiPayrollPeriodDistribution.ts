@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { TableFilter } from '@/types/SharedType';
 import useFilterStore from '../../../../stores/filterStore';
+import useTemporaryApiStore from '../../../../stores/useTemporaryApiStore';
 import {
     PayrollPeriodDistributionListItem,
     PayrollPeriodDistributionSendSlipSalaryPayload,
@@ -53,6 +54,7 @@ interface UseApiPayrollPeriodDistributionReturn {
 
     fetchPayrollPeriods: (filter?: Partial<TableFilter>) => Promise<void>;
     sendSlipSalary: (payload: PayrollPeriodDistributionSendSlipSalaryPayload) => Promise<boolean>;
+    getSlipGajiUrl: (payrollId: string) => string;
 
     setPage: (page: number) => void;
     setPageSize: (pageSize: number) => void;
@@ -193,6 +195,12 @@ export const useApiPayrollPeriodDistribution = (): UseApiPayrollPeriodDistributi
         }
     }, []);
 
+    const getSlipGajiUrl = useCallback((payrollId: string): string => {
+        const tempApiUrl = useTemporaryApiStore.getState().apiUrl;
+        const baseURL = tempApiUrl || import.meta.env.VITE_API_URL;
+        return `${baseURL}/payroll/payroll-periode/${payrollId}/slip-gaji`;
+    }, []);
+
     return {
         payrollPeriods,
         loading,
@@ -210,6 +218,7 @@ export const useApiPayrollPeriodDistribution = (): UseApiPayrollPeriodDistributi
 
         fetchPayrollPeriods,
         sendSlipSalary,
+        getSlipGajiUrl,
         setPage,
         setPageSize,
         setSearch: (v) => {

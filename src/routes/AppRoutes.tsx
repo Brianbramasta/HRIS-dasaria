@@ -238,6 +238,7 @@ export default function AppRoutes() {
         <Route path="/export" element={<ExportPage />} />
         <Route path="/select-service" element={<SelectServicePage />} />
         <Route path="/distribution-payroll/slip" element={<SlipPayrollPage />} />
+        <Route path="/distribution-payroll/slip/:payrollId" element={<SlipPayrollPage />} />
       </Route>
 
       {/* Auth Layout */}

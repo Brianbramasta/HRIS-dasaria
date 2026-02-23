@@ -195,7 +195,8 @@ export default function NonAEPages() {
       {
         icon: <IconFileDetail />,
         onClick: (row) => {
-          navigate('/distribution-payroll/slip', {
+          // Navigate to SlipPayroll page with payrollId parameter
+          navigate(`/distribution-payroll/slip/${row.payrollId}`, {
             state: {
               data: {
                 idKaryawan: row.idKaryawan,
@@ -245,7 +246,7 @@ export default function NonAEPages() {
         color: 'info',
       },
     ],
-    []
+    [navigate]
   );
 
   const handleDistribusiSlipGaji = async (selectedRows: SalaryDistributionData[]) => {

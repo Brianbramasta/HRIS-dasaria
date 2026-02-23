@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useSlipPayrollModal } from '@/features/payroll/hooks/modals/distribution-payroll/useSlipPayrollModal';
+import { useApiPayrollPeriodDistribution } from '@/features/payroll/hooks/api/useApiPayrollPeriodDistribution';
 
 interface SlipPayrollState {
   data?: {
@@ -54,13 +55,22 @@ interface SlipPayrollState {
 export default function SlipPayrollPage() {
   const location = useLocation();
   const navigate = useNavigate();
+  const params = useParams();
   const state = (location.state || {}) as Partial<SlipPayrollState>;
+  const { getSlipGajiUrl } = useApiPayrollPeriodDistribution();
+  
+  const [slipGajiContent, setSlipGajiContent] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Get payrollId from either URL params or location state
+  const payrollId = params.payrollId || state.data?.idKaryawan;
 
   const {
-    takeHomePay,
-    resolvedTitle,
-    resolvedTakeHomePayLabel,
-    formatCurrency,
+    // takeHomePay,
+    // resolvedTitle,
+    // resolvedTakeHomePayLabel,
+    // formatCurrency,
   } = useSlipPayrollModal({ 
     data: state.data, 
     title: state.title, 
@@ -68,48 +78,191 @@ export default function SlipPayrollPage() {
   });
 
   useEffect(() => {
-    // Jika tidak ada data, kembali
-    if (!state.data) {
-      navigate(-1);
-      return;
-    }
-    // Auto open print dialog setelah mount
-    const id = window.setTimeout(() => {
-      window.print();
-    }, 300);
-    return () => window.clearTimeout(id);
-  }, [state.data, navigate]);
+    const fetchSlipGaji = async () => {
+      console.log('fetchSlipGaji called, payrollId:', payrollId);
+      
+      if (!payrollId) {
+        console.log('No payrollId found');
+        setError('Payroll ID tidak ditemukan');
+        setLoading(false);
+        return;
+      }
 
-  if (!state.data) {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        const slipGajiUrl = getSlipGajiUrl(payrollId);
+        console.log('Fetching from URL:', slipGajiUrl);
+        
+        // Fetch the slip-gaji content
+        const response = await fetch(slipGajiUrl, {
+          method: 'GET',
+          headers: {
+            'Accept': 'text/html,application/json',
+            'ngrok-skip-browser-warning': 'true'
+          }
+        });
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
+        
+        if (!response.ok) {
+          throw new Error(`Gagal mengambil slip gaji: ${response.status}`);
+        }
+
+        const contentType = response.headers.get('content-type');
+        console.log('Content type:', contentType);
+        
+        if (contentType && contentType.includes('application/json')) {
+          // If JSON response, get the content from data field
+          const jsonData = await response.json();
+          console.log('JSON response:', jsonData);
+          setSlipGajiContent(jsonData.data || JSON.stringify(jsonData));
+        } else {
+          // If HTML or text response, use directly
+          const htmlContent = await response.text();
+          console.log('HTML response length:', htmlContent.length);
+          console.log('HTML response preview:', htmlContent.substring(0, 200));
+          setSlipGajiContent(htmlContent);
+        }
+      } catch (err) {
+        console.error('Error fetching slip gaji:', err);
+        setError(err instanceof Error ? err.message : 'Gagal mengambil slip gaji');
+        
+        // Fallback to original state data if available
+        if (state.data) {
+          console.log('Falling back to state data');
+          setSlipGajiContent(''); // Clear content to trigger fallback
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSlipGaji();
+  }, [payrollId, getSlipGajiUrl, state.data]);
+
+  useEffect(() => {
+    // Auto print after content is loaded or fallback to state data
+    if (!loading && !error) {
+      console.log('Triggering auto print...');
+      const id = window.setTimeout(() => {
+        window.print();
+      }, 1000); // Increased delay to ensure content is rendered
+      return () => window.clearTimeout(id);
+    }
+  }, [loading, error]);
+
+  // If no payrollId and no state data, go back
+  if (!payrollId && !state.data) {
+    useEffect(() => {
+      navigate(-1);
+    }, [navigate]);
     return null;
   }
 
-  return (
-    <>
-    <style>
-      {`
-        @media print {
-          @page {
-            size: portrait;
-            margin: 10mm;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Mengambil slip gaji...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error && !state.data) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">{error}</p>
+          <button 
+            onClick={() => navigate(-1)}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Kembali
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // If we have slip gaji content from API, embed it
+  if (slipGajiContent) {
+    console.log('Rendering slip gaji content, length:', slipGajiContent.length);
+    return (
+      <>
+        <style>
+          {`
+            @media print {
+              @page {
+                size: portrait;
+                margin: 10mm;
+              }
+              body {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+              }
+            }
+          `}
+        </style>
+        <div dangerouslySetInnerHTML={{ __html: slipGajiContent }} />
+      </>
+    );
+  }
+
+  console.log('No slip gaji content, state.data:', !!state.data, 'loading:', loading, 'error:', error);
+
+  // If no slip gaji content from API and no state data, show error
+  if (!slipGajiContent && !state.data) {
+    console.log('No content and no state data, showing error');
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">Data slip gaji tidak ditemukan</p>
+          <button 
+            onClick={() => navigate(-1)}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Kembali
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // If we have state data but no API content, show fallback
+  if (!slipGajiContent && state.data) {
+    console.log('Rendering fallback component with state data');
+
+    return (
+      <>
+      <style>
+        {`
+          @media print {
+            @page {
+              size: portrait;
+              margin: 10mm;
+            }
+            body {
+              print-color-adjust: exact;
+              -webkit-print-color-adjust: exact;
+            }
           }
-          body {
-            print-color-adjust: exact;
-            -webkit-print-color-adjust: exact;
-          }
-        }
-      `}
-    </style>
-    <div className="p-6 md:p-8 bg-white dark:bg-gray-900 bg-no-repeat bg-center bg-contain print:p-4" style={{backgroundImage: 'url("/images/background/background-modal.png")', zoom: '90%'}} >
+        `}
+      </style>
+      <div className="p-6 md:p-8 text-center bg-white dark:bg-gray-900 bg-no-repeat bg-center bg-contain print:p-4" style={{backgroundImage: 'url("/images/background/background-modal.png")', zoom: '90%'}} >
+      <span>tidak ada data slip gaji</span>
       {/* Header */}
-      <div className="mb-6 ">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1 border-b-3 border-[#000] pb-2">PT Garuda Lintas Cakrawala</h2>
+      {/* <div className="mb-6 "> */}
+        {/* <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1 border-b-3 border-[#000] pb-2">PT Garuda Lintas Cakrawala</h2>
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
           {resolvedTitle}
-        </p>
+        </p> */}
 
         {/* Header Information - 2 columns layout */}
-        <div className="grid grid-cols-2 gap-8 text-sm px-3">
+        {/* <div className="grid grid-cols-2 gap-8 text-sm px-3">
           <div>
             <div className="mb-3 flex justify-between">
               <p className="font-bold text-gray-900 dark:text-white">NIP</p>
@@ -139,10 +292,10 @@ export default function SlipPayrollPage() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Dokumentasi: Konten dinamis dibuat dari data penerimaan dan potongan */}
-      {state.data.penerimaan && (
+      {/* {state.data.penerimaan && (
         <div className={`grid ${state.data.potongan ? 'grid-cols-2' : 'grid-cols-1'}  gap-6 mb-6`}>
           <div>
             <div className="bg-[#525252] text-white px-4 py-3 font-bold text-base mb-4">Penerimaan</div>
@@ -373,20 +526,20 @@ export default function SlipPayrollPage() {
             </div>
           )}
         </div>
-      )}
+      )} */}
 
       {/* Take Home Pay */}
-      <div className="grid grid-cols-2 gap-4 mb-6">
+      {/* <div className="grid grid-cols-2 gap-4 mb-6">
         <div className="bg-[#525252] text-white px-4 py-3 font-bold text-base">
           {resolvedTakeHomePayLabel}
         </div>
         <div className="bg-[#525252] text-white px-4 py-3 font-bold text-lg flex items-center justify-end">
           {formatCurrency(takeHomePay)}
         </div>
-      </div>
+      </div> */}
 
       {/* Ditransfer Ke & Catatan */}
-      <div className={`grid grid-cols-2 gap-6 text-sm px-3`}>
+      {/* <div className={`grid grid-cols-2 gap-6 text-sm px-3`}>
         <div>
           <p className="font-bold text-gray-900 dark:text-white mb-2">Ditransfer Ke :</p>
           <div className="text-gray-700 dark:text-gray-300 space-y-1">
@@ -401,8 +554,9 @@ export default function SlipPayrollPage() {
             {state.data.catatan || 'Mohon tidak menyebarkan slip gaji karena bersifat rahasia.'}
           </p>
         </div>
-      </div>
+      </div> */}
     </div>
     </>
   );
+  }
 }

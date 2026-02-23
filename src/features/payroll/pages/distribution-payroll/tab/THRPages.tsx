@@ -234,7 +234,8 @@ export default function THRPages() {
       {
         icon: <IconFileDetail />,
         onClick: (row) => {
-          navigate('/distribution-payroll/slip', {
+          // Navigate to SlipPayroll page with payrollId parameter
+          navigate(`/distribution-payroll/slip/${row.idKaryawan}`, {
             state: {
               data: {
                 idKaryawan: row.idKaryawan,
@@ -258,7 +259,7 @@ export default function THRPages() {
         color: 'info',
       },
     ],
-    []
+    [navigate]
   );
 
 

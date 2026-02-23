@@ -244,7 +244,8 @@ export default function AEPages() {
       {
         icon: <IconFileDetail />,
         onClick: (row) => {
-          navigate('/distribution-payroll/slip', {
+          // Navigate to SlipPayroll page with payrollId parameter
+          navigate(`/distribution-payroll/slip/${row.idKaryawan}`, {
             state: {
               data: {
                 idKaryawan: row.idKaryawan,
@@ -268,7 +269,7 @@ export default function AEPages() {
         color: 'info',
       },
     ],
-    []
+    [navigate]
   );
 
   return (
