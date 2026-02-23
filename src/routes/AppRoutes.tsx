@@ -4,6 +4,7 @@ import { Routes, Route, useParams } from "react-router";
 import AppLayout from "../layout/AppLayout";
 import StructureAndOrganize from "../features/structure-and-organize/pages/StructureAndOrganizationPage";
 import ExportPage from "../features/structure-and-organize/pages/ExportPage";
+import SlipPayrollPage from "../features/payroll/pages/distribution-payroll/SlipPayroll";
 import BusinessLinesTab from "../features/structure-and-organize/pages/business-line/BusinessLinesTab";
 import CompaniesTab from "../features/structure-and-organize/pages/company/CompaniesTab";
 import OfficesTab from "../features/structure-and-organize/pages/office/OfficesTab";
@@ -236,6 +237,7 @@ export default function AppRoutes() {
         <Route path="/structure-and-organize/export" element={<ExportPage />} />
         <Route path="/export" element={<ExportPage />} />
         <Route path="/select-service" element={<SelectServicePage />} />
+        <Route path="/distribution-payroll/slip" element={<SlipPayrollPage />} />
       </Route>
 
       {/* Auth Layout */}

@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
 import PayrollTabBase from '@/features/payroll/components/tabs/PayrollTabBase';
 import { IconFileDetail } from '@/icons/components/icons';
-import SlipPayrollModal from '@/features/payroll/components/modals/distribution-payroll/SlipPayrollModal';
 import { formatCurrency } from '@/utils/formatCurrency';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 
@@ -98,9 +98,8 @@ const mockDataTHR: SalaryDistributionData[] = [
 
 
 export default function THRPages() {
+  const navigate = useNavigate();
   const [data] = useState<SalaryDistributionData[]>(mockDataTHR);
-  const [selectedData, setSelectedData] = useState<SalaryDistributionData | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
   const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
@@ -233,59 +232,35 @@ export default function THRPages() {
   const actions: DataTableAction<SalaryDistributionData>[] = useMemo(
     () => [
       {
-        label: '',
         icon: <IconFileDetail />,
         onClick: (row) => {
-          setSelectedData(row);
-          setIsModalOpen(true);
+          navigate('/distribution-payroll/slip', {
+            state: {
+              data: {
+                idKaryawan: row.idKaryawan,
+                nip: row.nip,
+                pengguna: row.pengguna,
+                golongan: 'D6', // Mock data as per request/image
+                divisi: 'IT',   // Mock data
+                jabatan: 'Staff', // Mock data
+                departemen: 'HRIS', // Mock data
+                jenisBank: row.jenisBank,
+                noRekening: row.noRekening,
+                takeHomePay: row.totalGajiBersih,
+                penerimaan: row.detail,
+              },
+              title: 'Slip Tunjangan Hari Raya 2025',
+              takeHomePayLabel: 'Tunjangan Hari Raya',
+            },
+          });
         },
         variant: 'outline',
-        className: 'border-0',
+        color: 'info',
       },
     ],
     []
   );
 
-  const detailContent = useMemo(() => {
-    if (!selectedData?.detail) return null;
-    const d = selectedData.detail;
-    return (
-      <div className="mb-6 text-sm">
-        <div className="bg-gray-600 text-white px-4 py-2 font-bold mb-4">Penerimaan</div>
-        <div className="space-y-3 px-4 text-gray-700 dark:text-gray-300">
-          <div className="flex justify-between">
-            <span>Gaji Pokok</span>
-            <span>{formatCurrency(d.gajiPokok)}</span>
-          </div>
-          
-          <div className="font-bold text-gray-900 dark:text-white mt-4">Tunjangan Tetap</div>
-          <div className="pl-4 space-y-3">
-            <div className="flex justify-between">
-              <span>Transport</span>
-              <span>{formatCurrency(d.transport)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Lama Kerja</span>
-              <span>{formatCurrency(d.lamaKerja)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Jabatan</span>
-              <span>{formatCurrency(d.jabatan)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Pernikahan</span>
-              <span>{formatCurrency(d.pernikahan)}</span>
-            </div>
-          </div>
-
-          <div className="flex justify-between font-bold text-gray-900 dark:text-white pt-4 mt-2">
-            <span>Total Penerimaan</span>
-            <span>{formatCurrency(selectedData.totalGajiBersih)}</span>
-          </div>
-        </div>
-      </div>
-    );
-  }, [selectedData]);
 
   return (
     <>
@@ -319,29 +294,6 @@ export default function THRPages() {
         dateRangeFilters={dateRangeFilters}
       />
 
-      <SlipPayrollModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title="Slip Tunjangan Hari Raya 2025"
-        takeHomePayLabel="Tunjangan Hari raya"
-        data={
-          selectedData
-            ? {
-                idKaryawan: selectedData.idKaryawan,
-                nip: selectedData.nip,
-                pengguna: selectedData.pengguna,
-                golongan: 'D6', // Mock data as per request/image
-                divisi: 'IT',   // Mock data
-                jabatan: 'Staff', // Mock data
-                departemen: 'HRIS', // Mock data
-                jenisBank: selectedData.jenisBank,
-                noRekening: selectedData.noRekening,
-                takeHomePay: selectedData.totalGajiBersih,
-              }
-            : undefined
-        }
-        content={detailContent}
-      />
     </>
   );
 }

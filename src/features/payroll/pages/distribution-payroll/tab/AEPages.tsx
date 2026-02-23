@@ -1,9 +1,8 @@
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
 import PayrollTabBase from '@/features/payroll/components/tabs/PayrollTabBase';
 import { IconFileDetail } from '@/icons/components/icons';
-import SlipPayrollModal, { SlipPayrollModalProps } from '@/features/payroll/components/modals/distribution-payroll/SlipPayrollModal';
-import { formatCurrency } from '@/utils/formatCurrency';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 
 interface SalaryDistributionData {
@@ -23,7 +22,14 @@ interface SalaryDistributionData {
   divisi?: string;
   jabatan?: string;
   departemen?: string;
-  penerimaan?: NonNullable<SlipPayrollModalProps['data']>['penerimaan'];
+  penerimaan?: {
+    transport?: number;
+    insentif?: number;
+    performa?: number;
+    komisiSales?: number;
+    komisiSurveySales?: number;
+    growthReward?: number;
+  };
 }
 
 const mockDataAE: SalaryDistributionData[] = [
@@ -105,9 +111,8 @@ const mockDataAE: SalaryDistributionData[] = [
 ];
 
 export default function AEPages() {
+  const navigate = useNavigate();
   const [data] = useState<SalaryDistributionData[]>(mockDataAE);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedData, setSelectedData] = useState<SalaryDistributionData | null>(null);
 
   const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
   const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
@@ -138,7 +143,6 @@ export default function AEPages() {
 
     return result;
   }, [data, columnFilters, dateRangeFilters]);
-
 
   const baseColumns: DataTableColumn<SalaryDistributionData>[] = useMemo(
     () => [
@@ -238,65 +242,34 @@ export default function AEPages() {
   const actions: DataTableAction<SalaryDistributionData>[] = useMemo(
     () => [
       {
-        label: '',
         icon: <IconFileDetail />,
         onClick: (row) => {
-          setSelectedData(row);
-          setIsModalOpen(true);
+          navigate('/distribution-payroll/slip', {
+            state: {
+              data: {
+                idKaryawan: row.idKaryawan,
+                nip: row.nip,
+                pengguna: row.pengguna,
+                golongan: row.golongan || 'D6',
+                divisi: row.divisi || '-',
+                jabatan: row.jabatan || 'AE',
+                departemen: row.departemen || '-',
+                jenisBank: row.jenisBank,
+                noRekening: row.noRekening,
+                takeHomePay: row.totalGajiBersih,
+                penerimaan: row.penerimaan,
+              },
+              title: 'Slip Gaji AE',
+              takeHomePayLabel: 'Take Home Pay',
+            },
+          });
         },
         variant: 'outline',
-        className: 'border-0',
+        color: 'info',
       },
     ],
     []
   );
-
-  const modalContent = useMemo(() => {
-    if (!selectedData?.penerimaan) return null;
-    const { penerimaan } = selectedData;
-    const totalPenerimaan = Object.values(penerimaan).reduce((a: number, b) => a + (b || 0), 0);
-
-    return (
-      <div className="space-y-4 text-sm mb-6">
-        <div className="bg-[#525252] text-white px-4 py-2 font-bold">Penerimaan</div>
-        <div className="px-4 space-y-2">
-          <div className="flex justify-between">
-            <span>Uang Transport</span>
-            <span>{formatCurrency(penerimaan.transport || 0)}</span>
-          </div>
-
-          <div className="font-bold pt-2">Tunjangan Tidak Tetap</div>
-          <div className="pl-4 space-y-2  border-gray-200 ml-1">
-            <div className="flex justify-between">
-              <span>Insentif</span>
-              <span>{formatCurrency(penerimaan.insentif || 0)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Performa</span>
-              <span>{formatCurrency(penerimaan.performa || 0)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Komisi Sales</span>
-              <span>{formatCurrency(penerimaan.komisiSales || 0)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Komisi Survey Sales</span>
-              <span>{formatCurrency(penerimaan.komisiSurveySales || 0)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Growth Reward</span>
-              <span>{formatCurrency(penerimaan.growthReward || 0)}</span>
-            </div>
-          </div>
-
-          <div className="flex justify-between font-bold pt-3 border-gray-300 mt-2">
-            <span>Total Penerimaan</span>
-            <span>{formatCurrency(totalPenerimaan as number)}</span>
-          </div>
-        </div>
-      </div>
-    );
-  }, [selectedData]);
 
   return (
     <>
@@ -328,23 +301,6 @@ export default function AEPages() {
           });
         }}
         dateRangeFilters={dateRangeFilters}
-      />
-      <SlipPayrollModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        data={
-          selectedData
-            ? {
-                ...selectedData,
-                golongan: selectedData.golongan || '-',
-                divisi: selectedData.divisi || '-',
-                jabatan: selectedData.jabatan || '-',
-                departemen: selectedData.departemen || '-',
-                penerimaan: selectedData.penerimaan,
-              }
-            : undefined
-        }
-        content={modalContent}
       />
     </>
   );
