@@ -76,13 +76,18 @@ export default function JenisPengajuanPage() {
   const columns = [
     { id: "no", label: "No.", align: "center" as const, sortable: false },
     { id: "jenisPengajuan", label: "Jenis Pengajuan" },
-    { id: "tanggalPengajuan", label: "Tanggal Pengajuan", format: (value: RowPengajuan["tanggalPengajuan"]) => formatDateToIndonesian(value) },
+    { id: "tanggalPengajuan", label: "Tanggal Pengajuan", dateRangeFilter: true, format: (value: RowPengajuan["tanggalPengajuan"]) => formatDateToIndonesian(value) },
     { id: "lampiran", label: "Lampiran", align: "center" as const, isAction: true, format: (value: RowPengajuan["lampiran"]) => (
       value ? <a href={formatUrlFile(value)} target="_blank" rel="noopener noreferrer" className="flex justify-center items-center"><FileText  /></a> : "—"
     ) },
     {
       id: "status",
       label: "Status",
+      filterOptions: [
+        { label: "Pending", value: "Pending" },
+        { label: "Disetujui", value: "Disetujui" },
+        { label: "Ditolak", value: "Ditolak" },
+      ],
       format: (value: RowPengajuan["status"]) => (
         <span
           className={`inline-block rounded-full px-3 py-1 text-xs font-medium status-styling ${
