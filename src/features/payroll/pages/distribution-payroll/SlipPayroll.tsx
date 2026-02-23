@@ -386,7 +386,7 @@ export default function SlipPayrollPage() {
       </div>
 
       {/* Ditransfer Ke & Catatan */}
-      <div className={`grid ${state.data.potongan ? 'grid-cols-2' : 'grid-cols-1'}  gap-6 text-sm px-3`}>
+      <div className={`grid grid-cols-2 gap-6 text-sm px-3`}>
         <div>
           <p className="font-bold text-gray-900 dark:text-white mb-2">Ditransfer Ke :</p>
           <div className="text-gray-700 dark:text-gray-300 space-y-1">
