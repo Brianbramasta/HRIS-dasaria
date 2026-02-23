@@ -9,6 +9,7 @@ import { useApiPayrollPeriodDirectorHr } from '@/features/payroll/hooks/api/useA
 import { useApiPayrollPeriodFat } from '@/features/payroll/hooks/api/useApiPayrollPeriodFat';
 import { useApiPayrollPeriodBod } from '@/features/payroll/hooks/api/useApiPayrollPeriodBod';
 import { formatCurrencyValue } from '@/utils/formatCurrency';
+import { formatDateToIndonesian } from '@/utils/formatDate';
 
 const toDirectorHrSortKey = (columnId: string): string => {
   const map: Record<string, string> = {
@@ -321,44 +322,57 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
     fallbackRows,
   ]);
 
-  const baseColumns: DataTableColumn<NonAERow>[] = [
-    { id: 'idKaryawan', label: 'NIP' },
-    { id: 'pengguna', label: 'Pengguna' },
-    { id: 'tanggalPengajuan', label: 'Tanggal Pengajuan' },
-    { id: 'jumlahHariKerja', label: 'Jumlah Hari Kerja' },
-    { id: 'totalGajiBersih', label: 'Total Gaji Bersih', align: 'right' },
-    { id: 'gajiPokokUangSaku', label: 'Gaji Pokok / Uang Saku', align: 'right' },
-    { id: 'potongan', label: 'Potongan', align: 'right' },
-    { id: 'tunjanganTetap', label: 'Tunjangan Tetap', align: 'right' },
-    { id: 'tunjanganTidakTetap', label: 'Tunjangan Tidak Tetap', align: 'right' },
-    { id: 'kategori', label: 'Kategori' },
-    { id: 'perusahaan', label: 'Perusahaan' },
-    {
-      id: 'statusPersetujuan',
-      label: 'Status Persetujuan',
-      format: (v) => (
-        (() => {
-          const statusText = String(v);
-          const normalize = (s: string) => s.trim().toLowerCase();
+  const statusFilterOptions = useMemo(() => {
+    const unique = Array.from(new Set((rows || []).map((r) => String(r.statusPersetujuan ?? '')).filter(Boolean)));
+    return unique.map((v) => ({ label: v, value: v }));
+  }, [rows]);
 
-          const pendingMap: Record<string, string> = {
-            'Persetujuan oleh Direktur HRGA': 'menunggu diproses direktur hgra',
-            'Persetujuan oleh FAT': 'menunggu diproses fat',
-            'Persetujuan oleh BOD': 'menunggu diproses bod',
-          };
+  const baseColumns: DataTableColumn<NonAERow>[] = useMemo(
+    () => [
+      { id: 'idKaryawan', label: 'NIP' },
+      { id: 'pengguna', label: 'Pengguna' },
+      {
+        id: 'tanggalPengajuan',
+        label: 'Tanggal Pengajuan',
+        dateRangeFilter: true,
+        format: (v) => formatDateToIndonesian(String(v)),
+      },
+      { id: 'jumlahHariKerja', label: 'Jumlah Hari Kerja' },
+      { id: 'totalGajiBersih', label: 'Total Gaji Bersih', align: 'right' },
+      { id: 'gajiPokokUangSaku', label: 'Gaji Pokok / Uang Saku', align: 'right' },
+      { id: 'potongan', label: 'Potongan', align: 'right' },
+      { id: 'tunjanganTetap', label: 'Tunjangan Tetap', align: 'right' },
+      { id: 'tunjanganTidakTetap', label: 'Tunjangan Tidak Tetap', align: 'right' },
+      { id: 'kategori', label: 'Kategori' },
+      { id: 'perusahaan', label: 'Perusahaan' },
+      {
+        id: 'statusPersetujuan',
+        label: 'Status Persetujuan',
+        filterOptions: statusFilterOptions,
+        format: (v) =>
+          (() => {
+            const statusText = String(v);
+            const normalize = (s: string) => s.trim().toLowerCase();
 
-          const expectedPending = pendingMap[approvalType];
-          const isPending = expectedPending ? normalize(statusText) === expectedPending : true;
+            const pendingMap: Record<string, string> = {
+              'Persetujuan oleh Direktur HRGA': 'menunggu diproses direktur hgra',
+              'Persetujuan oleh FAT': 'menunggu diproses fat',
+              'Persetujuan oleh BOD': 'menunggu diproses bod',
+            };
 
-          const badgeClass = isPending
-            ? 'status-styling text-center rounded-full bg-orange-100 p-[10px] flex justify-center text-xs text-orange-700 dark:bg-orange-900/30 dark:text-orange-200'
-            : 'status-styling text-center rounded-full bg-blue-100 p-[10px] flex justify-center text-xs text-blue-700 dark:bg-blue-900/30 dark:text-blue-200';
+            const expectedPending = pendingMap[approvalType];
+            const isPending = expectedPending ? normalize(statusText) === expectedPending : true;
 
-          return <span className={badgeClass}>{statusText}</span>;
-        })()
-      ),
-    },
-  ];
+            const badgeClass = isPending
+              ? 'status-styling text-center rounded-full bg-orange-100 p-[10px] flex justify-center text-xs text-orange-700 dark:bg-orange-900/30 dark:text-orange-200'
+              : 'status-styling text-center rounded-full bg-blue-100 p-[10px] flex justify-center text-xs text-blue-700 dark:bg-blue-900/30 dark:text-blue-200';
+
+            return <span className={badgeClass}>{statusText}</span>;
+          })(),
+      },
+    ],
+    [approvalType, statusFilterOptions]
+  );
 
   const handleFinalize = useCallback(
     async (selectedRows: NonAERow[]) => {
