@@ -83,8 +83,8 @@ export default function TerminationAdministrationPage() {
       },
       { id: 'nip', label: 'NIP', minWidth: 100, sortable: true },
       { id: 'name', label: 'Pengguna', minWidth: 160, sortable: true },
-      { id: 'tanggalPengajuan', label: 'Tanggal Pengajuan', minWidth: 140, sortable: true, format: (v) => formatDateToIndonesian(v) || v },
-      { id: 'tanggalEfektif', label: 'Tanggal Efektif', minWidth: 140, sortable: true, format: (v) => formatDateToIndonesian(v) || v },
+      { id: 'tanggalPengajuan', label: 'Tanggal Pengajuan', minWidth: 140, sortable: true, dateRangeFilter: true, format: (v) => formatDateToIndonesian(v) || v },
+      { id: 'tanggalEfektif', label: 'Tanggal Efektif', minWidth: 140, sortable: true, dateRangeFilter: true, format: (v) => formatDateToIndonesian(v) || v },
       { id: 'posisi', label: 'Posisi', minWidth: 180, sortable: true },
       {
         id: 'catatan',
@@ -99,6 +99,10 @@ export default function TerminationAdministrationPage() {
         label: 'Status Terminasi',
         minWidth: 160,
         sortable: true,
+        filterOptions: [
+          { label: 'Selesai', value: 'Selesai' },
+          { label: 'Sedang diproses', value: 'Sedang diproses' },
+        ],
         format: (value) => (
           <span
             className={`rounded-full px-3 py-1 text-xs font-medium ${

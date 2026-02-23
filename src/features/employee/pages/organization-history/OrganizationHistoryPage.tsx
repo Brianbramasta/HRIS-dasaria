@@ -58,6 +58,10 @@ export default function OrganizationHistoryPage() {
         id: 'statusPerubahan',
         label: 'Status Perubahan',
         align: 'center',
+        filterOptions: [
+          { label: 'Rekomendasi', value: 'Rekomendasi' },
+          { label: 'Selesai', value: 'Selesai' },
+        ],
         format: (v: string) => {
           const val = (v as string) || '-';
           // Basic styling for different statuses

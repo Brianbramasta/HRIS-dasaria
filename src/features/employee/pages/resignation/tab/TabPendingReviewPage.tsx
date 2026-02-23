@@ -54,6 +54,7 @@ export default function TabPendingReview() {
       label: 'Tanggal Pengajuan',
       minWidth: 130,
       sortable: true,
+      dateRangeFilter: true,
       format: (value) => formatDateToIndonesian(String(value)),
     },
     {
@@ -61,6 +62,7 @@ export default function TabPendingReview() {
       label: 'Tanggal Efektif',
       minWidth: 130,
       sortable: false,
+      dateRangeFilter: true,
       format: (value) => <span>{value ? formatDateToIndonesian(String(value)) : '-'}</span>,
     },
     {
@@ -85,6 +87,14 @@ export default function TabPendingReview() {
       label: 'Status Pengunduran diri',
       minWidth: 130,
       sortable: true,
+      filterOptions: [
+        { label: 'In Progress', value: 'In Progress' },
+        { label: 'Pending', value: 'Pending' },
+        { label: 'Dalam peninjauan', value: 'Dalam peninjauan' },
+        { label: 'Menunggu Diproses', value: 'Menunggu Diproses' },
+        { label: 'Disetujui', value: 'Disetujui' },
+        { label: 'Ditolak', value: 'Ditolak' },
+      ],
       format: (value) => {
         const val = value ?? '-';
         const statusColors: Record<string, string> = {
