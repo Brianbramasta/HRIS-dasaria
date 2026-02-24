@@ -1,4 +1,5 @@
 import { apiService } from '@/services/api';
+// import type { PayrollPeriodDirectorHrDetailResponse } from '@/features/payroll/types/dto/PayrollPeriodDirectorHrType';
 
 class PayrollPeriodDirectorHrService {
     private readonly basePath = '/payroll/payroll-periode';

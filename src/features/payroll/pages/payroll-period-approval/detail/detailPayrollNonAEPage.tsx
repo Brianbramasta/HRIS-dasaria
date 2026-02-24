@@ -11,11 +11,12 @@ import { useApiPayrollPeriodDirectorHr } from "@/features/payroll/hooks/api/useA
 export default function DetailGajiPage() {
   const { id } = useParams();
 
-  const { payrollPeriodDetail, fetchPayrollPeriodDetail } = useApiPayrollPeriodDirectorHr();
+  const { payrollPeriodDetail, fetchPayrollPeriodDetail, loading, error } = useApiPayrollPeriodDirectorHr();
 
   useEffect(() => {
     if (!id) return;
     fetchPayrollPeriodDetail(id);
+    console.log("payrollPeriodDetail", payrollPeriodDetail?.current?.non_fixed_allowance);
   }, [id, fetchPayrollPeriodDetail]);
 
   const defaultData = useMemo(
@@ -33,6 +34,16 @@ export default function DetailGajiPage() {
         payrollPeriodDetail?.information_employee?.working_days != null
           ? String(payrollPeriodDetail.information_employee.working_days)
           : "Otomatis",
+      // Add gross calculation data
+      totalPendapatanKotor: payrollPeriodDetail?.current?.salary_comparison?.gross_salary != null
+        ? String(payrollPeriodDetail.current?.salary_comparison?.gross_salary)
+        : "0",
+      totalPotongan: payrollPeriodDetail?.current?.salary_comparison?.deduction_total != null
+        ? String(payrollPeriodDetail.current?.salary_comparison.deduction_total)
+        : "0",
+      gajiBersih: payrollPeriodDetail?.current?.salary_comparison?.net_salary ?? "0",
+      note_hr: payrollPeriodDetail?.current?.salary_comparison?.note_hr ?? "",
+      note_bod: payrollPeriodDetail?.current?.salary_comparison?.note_bod ?? "",
     }),
     [id, payrollPeriodDetail]
   );
@@ -61,7 +72,7 @@ export default function DetailGajiPage() {
         { name: "gajiPokokUangSaku", label: "Gaji Pokok / Uang Saku", type: "input", placeholder: "Input", inputType: "text", value: defaultData.gajiPokokUangSaku, readonly: true },
         { name: "kategori", label: "Kategori", type: "input", placeholder: "Otomatis", readonly: true },
         { name: "perusahaan", label: "Perusahaan", type: "input", placeholder: "Otomatis", readonly: true },
-        { name: "jumlahHariKerja", label: "Jumlah Hari Kerja", type: "input", placeholder: "Otomatis", readonly: true },
+        { name: "jumlahHariKerja", label: "Jumlah Hari Kerja", type: "input", placeholder: "Otomatis", readonly: false },
       ],
       initialValues: {
         idKaryawan: defaultData.idKaryawan,
@@ -74,52 +85,143 @@ export default function DetailGajiPage() {
       },
       ModalComponent: EditInformationEmployeeModal,
     },
-    tunjanganTetap: true,
+    tunjanganTetap: {
+      title: "Tunjangan Tetap",
+      headerColor: "green",
+      fields: payrollPeriodDetail?.current?.fixed_allowance?.map(item => ({
+        name: item.componen_id,
+        label: item.componen_name,
+        type: "input" as const,
+        value: (item.amount),
+        readonly: true,
+      })) || [],
+      previousFields: payrollPeriodDetail?.previous?.fixed_allowance?.map(item => ({
+        name: item.componen_id,
+        label: item.componen_name,
+        type: "input" as const,
+        value: (item.amount),
+        readonly: true,
+      })) || [],
+    },
     tunjanganTidakTetap: {
-      fields: [
-        { name: "pph21", label: "Tunjangan PPH 21", type: "input" },
-        { name: "pendidikan", label: "Tunjangan Pendidikan", type: "input" },
-        { name: "performa", label: "Tunjangan Performa", type: "input" },
-      ],
-      modalFields: [
-        { name: "pph21", label: "Tunjangan PPH 21", type: "input", placeholder: "150.000" },
-        { name: "pendidikan", label: "Tunjangan Pendidikan", type: "input", placeholder: "300.000" },
-        { name: "performa", label: "Tunjangan Performa", type: "input", placeholder: "1.500.000" },
-      ],
-      initialValues: { pph21: "", pendidikan: "", performa: "" },
+      title: "Tunjangan Tidak Tetap",
+      headerColor: "green",
+      fields: payrollPeriodDetail?.current?.non_fixed_allowance?.map(item => ({
+        name: `nfa_${item.id}`,
+        label: item.componen_name as string,
+        type: "input" as const,
+        value: (item.amount),
+        readonly: true,
+      })) || [],
+      previousFields: payrollPeriodDetail?.previous?.non_fixed_allowance?.map(item => ({
+        name: `nfa_${item.id}`,
+        label: item.componen_name as string,
+        type: "input" as const,
+        value: (item.amount),
+        readonly: true,
+      })) || [],
+      modalFields: payrollPeriodDetail?.current?.non_fixed_allowance?.map(item => ({
+        name: `nfa_${item.id}`,
+        label: item.componen_name as string || `Tunjangan ${item.id}`,
+        type: "input" as const,
+        placeholder: "Input tunjangan",
+      })) || [],
+      initialValues: payrollPeriodDetail?.current?.non_fixed_allowance?.reduce((acc, item) => {
+        acc[`nfa_${item.id}`] = String(item.amount);
+        return acc;
+      }, {} as Record<string, string>) || {},
       ModalComponent: TambahTunjanganTidakTetapModal,
     },
     potonganTetap: {
-      fields: [
-        { name: "jknTetap", label: "BPJS Kesehatan JKN (1%)", type: "input", placeholder: "Otomatis", readonly: true },
-        { name: "jhtTetap", label: "BPJS Ketenagakerjaan JHT (2%)", type: "input", placeholder: "Otomatis", readonly: true },
-        { name: "kasbonTetap", label: "Kasbon", type: "input", placeholder: "Inputan" },
-      ],
+      title: "Potongan Tetap",
+      headerColor: "red",
+      fields: payrollPeriodDetail?.current?.fixed_deduction?.map(item => ({
+        name: item.componen_id,
+        label: item.componen_name,
+        type: "input" as const,
+        value: (item.amount),
+        readonly: true,
+      })) || [],
+      previousFields: payrollPeriodDetail?.previous?.fixed_deduction?.map(item => ({
+        name: item.componen_id,
+        label: item.componen_name,
+        type: "input" as const,
+        value: (item.amount),
+        readonly: true,
+      })) || [],
     },
     potonganTidakTetap: {
-      fields: [
-        { name: "jkn1", label: "BPJS Kesehatan JKN (1%)", type: "input" },
-        { name: "jht2", label: "BPJS Ketenagakerjaan JHT (2%)", type: "input" },
-        { name: "kasbon", label: "Kasbon", type: "input" },
-      ],
-      modalFields: [
-        { name: "jkn1", label: "BPJS Kesehatan JKN (1%)", type: "input", placeholder: "100.000" },
-        { name: "jht2", label: "BPJS Ketenagakerjaan JHT (2%)", type: "input", placeholder: "200.000" },
-        { name: "kasbon", label: "Kasbon", type: "input", placeholder: "500.000" },
-      ],
-      initialValues: { jkn1: "", jht2: "", kasbon: "" },
+      title: "Potongan Tidak Tetap",
+      headerColor: "red",
+      fields: payrollPeriodDetail?.current?.non_fixed_deduction?.map(item => ({
+        name: `nfd_${item.id}`,
+        label: item.componen_name || `Potongan ${item.id}`,
+        type: "input" as const,
+        value: (item.amount),
+        readonly: true,
+      })) || [],
+      previousFields: payrollPeriodDetail?.previous?.non_fixed_deduction?.map(item => ({
+        name: `nfd_${item.id}`,
+        label: item.componen_name || `Potongan ${item.id}`,
+        type: "input" as const,
+        value: (item.amount),
+        readonly: true,
+      })) || [],
+      modalFields: payrollPeriodDetail?.current?.non_fixed_deduction?.map(item => ({
+        name: `nfd_${item.id}`,
+        label: item.componen_name as string || `Potongan ${item.id}`,
+        type: "input" as const,
+        placeholder: "Input potongan",
+      })) || [],
+      initialValues: payrollPeriodDetail?.current?.non_fixed_deduction?.reduce((acc, item) => {
+        acc[`nfd_${item.id}`] = String(item.amount);
+        return acc;
+      }, {} as Record<string, string>) || {},
       ModalComponent: TambahPotonganTidakTetapModal,
     },
     rekapitulasi: {
+      title: "Rekapitulasi",
+      headerColor: "slate",
       modalFields: [
-        { name: "totalPendapatanKotor", label: "Total Pendapatan Kotor", type: "input", placeholder: "Otomatis", readonly: true },
-        { name: "totalPotongan", label: "Total Potongan", type: "input", placeholder: "Otomatis", readonly: true },
-        { name: "gajiBersih", label: "Gaji Bersih", type: "input", placeholder: "Otomatis", readonly: true },
+        { name: "totalPendapatanKotor", label: "Total Pendapatan Kotor", type: "input", placeholder: "Otomatis", readonly: true, value: defaultData.totalPendapatanKotor },
+        { name: "totalPotongan", label: "Total Potongan", type: "input", placeholder: "Otomatis", readonly: true, value: defaultData.totalPotongan },
+        { name: "gajiBersih", label: "Gaji Bersih", type: "input", placeholder: "Otomatis", readonly: true, value: defaultData.gajiBersih },
       ],
       catatanKaryawan: true,
       catatanBOD: true,
+      initialValues: {
+        totalPendapatanKotor: defaultData.totalPendapatanKotor,
+        totalPotongan: defaultData.totalPotongan,
+        gajiBersih: defaultData.gajiBersih,
+        note_hr: defaultData.note_hr,
+        note_bod: defaultData.note_bod,
+      },
+      previousValues: {
+        totalPendapatanKotor: payrollPeriodDetail?.previous ? String(payrollPeriodDetail.previous.salary_comparison.basic_salary + 
+          payrollPeriodDetail.previous.salary_comparison.allowance_total + 
+          payrollPeriodDetail.previous.salary_comparison.non_fixed_allowance_total) : "0",
+        totalPotongan: payrollPeriodDetail?.previous ? String(payrollPeriodDetail.previous.salary_comparison.deduction_total) : "0",
+        gajiBersih: payrollPeriodDetail?.previous?.salary_comparison?.net_salary || "0",
+        note_hr: payrollPeriodDetail?.previous?.salary_comparison?.note_hr || "",
+        note_bod: payrollPeriodDetail?.previous?.salary_comparison?.note_bod || "",
+      },
     },
   };
+
+  // Handle loading state
+  if (loading) {
+    return <div>Loading payroll detail...</div>;
+  }
+
+  // Handle error state
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  // Handle case where payroll detail is not available yet
+  if (!payrollPeriodDetail && id) {
+    return <div>No payroll data available</div>;
+  }
 
   return (
     <DetailPayrollComparisonContent

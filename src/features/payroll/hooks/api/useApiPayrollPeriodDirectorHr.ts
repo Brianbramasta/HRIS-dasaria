@@ -171,7 +171,7 @@ export const useApiPayrollPeriodDirectorHr = (): UseApiPayrollPeriodDirectorHrRe
 
         try {
             const response = await payrollPeriodDirectorHrService.getPayrollPeriodDirectorHrDetail(payrollId);
-            const detail = (response as any)?.data ?? null;
+            const detail = response.data ?? null;
             setPayrollPeriodDetail(detail);
             return detail;
         } catch (err) {

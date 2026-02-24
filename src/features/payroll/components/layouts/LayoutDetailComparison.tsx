@@ -84,11 +84,13 @@ export type SectionConfig = {
         title?: string;
         headerColor?: HeaderColor;
         fields: FieldDescriptor[];
+        previousFields?: FieldDescriptor[];
       };
   tunjanganTidakTetap?: {
     title?: string;
     headerColor?: HeaderColor;
     fields: FieldDescriptor[];
+    previousFields?: FieldDescriptor[];
     modalFields?: FieldDescriptor[];
     initialValues?: Record<string, string>;
     ModalComponent?: React.ComponentType<ModalProps>;
@@ -97,11 +99,13 @@ export type SectionConfig = {
     title?: string;
     headerColor?: HeaderColor;
     fields: FieldDescriptor[];
+    previousFields?: FieldDescriptor[];
   };
   potonganTidakTetap?: {
     title?: string;
     headerColor?: HeaderColor;
     fields: FieldDescriptor[];
+    previousFields?: FieldDescriptor[];
     modalFields?: FieldDescriptor[];
     initialValues?: Record<string, string>;
     ModalComponent?: React.ComponentType<ModalProps>;
@@ -114,6 +118,7 @@ export type SectionConfig = {
         fields?: FieldDescriptor[];
         modalFields?: FieldDescriptor[];
         initialValues?: Record<string, string>;
+        previousValues?: Record<string, string>;
         ModalComponent?: React.ComponentType<RekapModalProps>;
         catatanKaryawan?: boolean;
         catatanBOD?: boolean;
@@ -314,13 +319,13 @@ export default function DetailPayrollComparisonContent({ config }: { config: Sec
       {config.tunjanganTetap && (
         <PayrollCard title={tunjanganTetapTitle} headerColor={tunjanganTetapHeaderColor} >
           <div className={gridColsTT}>
-            {tunjanganTetapFields.map((f) =>
+            {(hideEdits && tunjanganTetapConfig?.previousFields ? tunjanganTetapConfig.previousFields : tunjanganTetapFields).map((f) =>
               renderField({
                 ...f,
                 type: "input",
                 placeholder: f.placeholder ?? "Otomatis",
                 readonly: f.readonly ?? true,
-                value: infoValues[f.name] ?? (f as any).value ?? "",
+                value: formatCurrencyValue(f.value),
               })
             )}
           </div>
@@ -331,12 +336,12 @@ export default function DetailPayrollComparisonContent({ config }: { config: Sec
       {config.tunjanganTidakTetap && (
         <PayrollCard title={tunjanganTidakTetapTitle} headerColor={tunjanganTidakTetapHeaderColor} >
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {config.tunjanganTidakTetap.fields.map((f) => (
+            {(hideEdits && config.tunjanganTidakTetap.previousFields ? config.tunjanganTidakTetap.previousFields : config.tunjanganTidakTetap.fields).map((f) => (
               <InputField
                 key={f.name}
                 label={f.label}
                 placeholder={f.placeholder ?? "Inputan"}
-                value={formatInputValue({ ...f, value: ttValues[f.name] ?? "" })}
+                value={formatCurrencyValue(f.value)}
                 readonly
               />
             ))}
@@ -362,13 +367,13 @@ export default function DetailPayrollComparisonContent({ config }: { config: Sec
       {config.potonganTetap && (
         <PayrollCard title={potonganTetapTitle} headerColor={potonganTetapHeaderColor} >
           <div className={gridColsPTT}>
-            {config.potonganTetap.fields.map((f) => (
+            {(hideEdits && config.potonganTetap.previousFields ? config.potonganTetap.previousFields : config.potonganTetap.fields).map((f) => (
               <div key={f.name} className={f.colSpan ? `md:col-span-${f.colSpan}` : ""}>
                 {f.type === "input" ? (
                   <InputField
                     label={f.label}
                     placeholder={f.placeholder ?? "Inputan"}
-                    value={formatInputValue({ ...f, value: infoValues[f.name] ?? (f as any).value ?? "" })}
+                    value={formatCurrencyValue(f.value)}
                     type={f.inputType ?? "text"}
                     readonly={f.readonly}
                   />
@@ -389,12 +394,12 @@ export default function DetailPayrollComparisonContent({ config }: { config: Sec
       {config.potonganTidakTetap && (
         <PayrollCard title={potonganTidakTetapTitle} headerColor={potonganTidakTetapHeaderColor} >
           <div className={gridColsPTT}>
-            {config.potonganTidakTetap.fields.map((f) => (
+            {(hideEdits && config.potonganTidakTetap.previousFields ? config.potonganTidakTetap.previousFields : config.potonganTidakTetap.fields).map((f) => (
               <InputField
                 key={f.name}
                 label={f.label}
                 placeholder={f.placeholder ?? "Otomatis"}
-                value={formatInputValue({ ...f, value: pttValues[f.name] ?? "" })}
+                value={formatCurrencyValue(f.value)}
                 readonly
               />
             ))}
@@ -423,13 +428,29 @@ export default function DetailPayrollComparisonContent({ config }: { config: Sec
             {recapFields.map((f) =>
               renderField({
                 ...f,
-                value: recapValues[f.name] ?? f.value,
+                value: (hideEdits && recapConfig?.previousValues ? recapConfig.previousValues[f.name] : recapValues[f.name]) ?? f.value,
               })
             )}
           </div>
           <div className="space-y-4 mt-6">
-            {recapCatatanKaryawan && <TextAreaField label="Catatan Karyawan" placeholder="Detail Catatan..." rows={4} />}
-            {recapCatatanBOD && <TextAreaField label="Catatan BOD" placeholder="Detail Catatan..." rows={4} />}
+            {recapCatatanKaryawan && (
+              <TextAreaField 
+                label="Catatan Karyawan" 
+                placeholder="Detail Catatan..." 
+                rows={4}
+                value={hideEdits && recapConfig?.previousValues ? recapConfig.previousValues.note_hr : recapValues.note_hr}
+                readonly
+              />
+            )}
+            {recapCatatanBOD && (
+              <TextAreaField 
+                label="Catatan BOD" 
+                placeholder="Detail Catatan..." 
+                rows={4}
+                value={hideEdits && recapConfig?.previousValues ? recapConfig.previousValues.note_hr : recapValues.note_bod}
+                readonly
+              />
+            )}
           </div>
           {/* Dokumentasi: Tombol Edit di bagian bawah sesuai screenshot */}
           {!hideEdits && canEditRecap && (

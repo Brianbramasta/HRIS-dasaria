@@ -69,6 +69,9 @@ export interface PayrollPeriodDirectorHrSalaryComparisonItem {
     non_fixed_allowance_total: number;
     deduction_total: number;
     net_salary: string;
+    gross_salary: number;
+    note_hr: string | null;
+    note_bod: string | null;
 }
 
 export interface PayrollPeriodDirectorHrSalaryComparison {
@@ -86,6 +89,7 @@ export interface PayrollPeriodDirectorHrPeriodeInformation {
     approval_direktur_bod: string;
     distribute: string;
     closed: string;
+    type: string | null;
     created_at: string;
     updated_at: string;
     status_payroll: string;
@@ -116,18 +120,16 @@ export interface PayrollPeriodDirectorHrGrossCalculation {
 }
 
 export interface PayrollPeriodDirectorHrCurrentData {
+    salary_comparison: PayrollPeriodDirectorHrSalaryComparisonItem;
     periode: PayrollPeriodDirectorHrPeriodeInformation;
-    fixed_allowance_and_deduction: PayrollPeriodDirectorHrFixedAllowanceAndDeductionItem[];
+    fixed_allowance: PayrollPeriodDirectorHrFixedAllowanceAndDeductionItem[];
+    fixed_deduction: PayrollPeriodDirectorHrFixedAllowanceAndDeductionItem[];
     non_fixed_allowance: PayrollPeriodDirectorHrNonFixedAllowanceItem[];
-    non_fixed_deduction: any[];
+    non_fixed_deduction: PayrollPeriodDirectorHrNonFixedAllowanceItem[];
 }
 
 export interface PayrollPeriodDirectorHrDetailData {
     information_employee: PayrollPeriodDirectorHrDetailEmployeeInformation;
-    salary_comparison: {
-        current: PayrollPeriodDirectorHrSalaryComparisonItem;
-        previous: PayrollPeriodDirectorHrSalaryComparisonItem | null;
-    };
     current: PayrollPeriodDirectorHrCurrentData;
     previous: PayrollPeriodDirectorHrCurrentData | null;
     gross_calculation: PayrollPeriodDirectorHrGrossCalculation;
