@@ -53,7 +53,7 @@ const mapPayrollPeriodToNonAERow = (item: PayrollPeriodListItem, index: number):
   statusPenggajian: item.payrollStatusName,
 });
 
-export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string }) {
+export default function NonAETab({ }: { resetKey?: string }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -96,7 +96,7 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
     navigate(`${detailPathPrefix}/${payrollId}?approvalType=${encodeURIComponent(approvalType)}`);
   };
 
-  // Dokumentasi: Fetch data saat component mount dan reset key berubah
+  // Dokumentasi: Fetch data saat component mount
   useEffect(() => {
     setPage(1);
     setPageSize(10);
@@ -104,7 +104,7 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
     setSort('', 'asc');
     setColumnFilters({});
     setDateRangeFilters({});
-  }, [resetKey, setPage, setPageSize, setSearch, setSort, setColumnFilters, setDateRangeFilters]);
+  }, [setPage, setPageSize, setSearch, setSort, setColumnFilters, setDateRangeFilters]);
 
   useEffect(() => {
     fetchPayrollPeriods({ page, pageSize, search, sortBy, sortOrder });
@@ -168,7 +168,7 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
 
   return (
     <PenggajianTabBase
-      resetKey={resetKey}
+      resetKey="payroll-period-non-ae"
       rows={rows}
       baseColumns={baseColumns}
       detailPathPrefix={detailPathPrefix}

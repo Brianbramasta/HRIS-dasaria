@@ -104,7 +104,7 @@ type NonAERow = {
   payrollId?: string;
 };
 
-export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string }) {
+export default function NonAETab({ }: { resetKey?: string }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -469,8 +469,8 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
   return (
     <>
       <PenggajianTabBase
-        key={`${resetKey}-${approvalType}`}
-        resetKey={resetKey}
+        key={`payroll-approval-non-ae-${approvalType}`}
+        resetKey="payroll-approval-non-ae"
         rows={rows}
         baseColumns={baseColumns}
         detailPathPrefix={detailPathPrefix}

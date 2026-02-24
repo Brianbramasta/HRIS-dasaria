@@ -280,7 +280,7 @@ export default function NonAEPages() {
   return (
     <>
       <PayrollTabBase<SalaryDistributionData>
-        resetKey="non-ae"
+        resetKey="distribution-non-ae"
         rows={rows}
         baseColumns={baseColumns}
         detailPathPrefix="/salary-distribution/detail-non-ae"

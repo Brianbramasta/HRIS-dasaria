@@ -19,7 +19,7 @@ type THRRow = {
   statusPersetujuan: string;
 };
 
-export default function THRTab({ resetKey = 'thr' }: { resetKey?: string }) {
+export default function THRTab({ }: { resetKey?: string }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -102,7 +102,7 @@ export default function THRTab({ resetKey = 'thr' }: { resetKey?: string }) {
   ];
   return (
     <PenggajianTabBase
-      resetKey={resetKey}
+      resetKey="payroll-approval-thr"
       rows={filteredRows}
       baseColumns={baseColumns}
       detailPathPrefix={detailPathPrefix}

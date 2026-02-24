@@ -275,7 +275,7 @@ export default function AEPages() {
   return (
     <>
       <PayrollTabBase<SalaryDistributionData>
-        resetKey="ae"
+        resetKey="distribution-ae"
         rows={filteredRows}
         baseColumns={baseColumns}
         detailPathPrefix="/salary-distribution/detail-ae"

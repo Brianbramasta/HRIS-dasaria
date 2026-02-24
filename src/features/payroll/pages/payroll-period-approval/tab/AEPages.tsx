@@ -21,7 +21,7 @@ type AERow = {
   statusPersetujuan: string;
 };
 
-export default function AETab({ resetKey = 'ae' }: { resetKey?: string }) {
+export default function AETab({ }: { resetKey?: string }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -106,7 +106,7 @@ export default function AETab({ resetKey = 'ae' }: { resetKey?: string }) {
   ];
   return (
     <PenggajianTabBase
-      resetKey={resetKey}
+      resetKey="payroll-approval-ae"
       rows={filteredRows}
       baseColumns={baseColumns}
       detailPathPrefix={detailPathPrefix}

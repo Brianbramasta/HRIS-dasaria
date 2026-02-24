@@ -266,7 +266,7 @@ export default function THRPages() {
   return (
     <>
       <PayrollTabBase<SalaryDistributionData>
-        resetKey="THR"
+        resetKey="distribution-thr"
         rows={filteredRows}
         baseColumns={baseColumns}
         detailPathPrefix="/salary-distribution/detail-THR"

@@ -119,9 +119,9 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
     }
   };
 
-  const approvalDescription = isDistribusiPage
-    ? 'Slip gaji akan didistribusikan kepada karyawan yang dipilih. Pastikan data penerima dan nominal sudah sesuai sebelum melanjutkan.'
-    : 'Periode gaji yang disahkan akan dikunci dan tidak dapat diubah. Pastikan semua data telah sesuai sebelum melanjutkan proses approval.';
+  // const approvalDescription = isDistribusiPage
+  //   ? 'Slip gaji akan didistribusikan kepada karyawan yang dipilih. Pastikan data penerima dan nominal sudah sesuai sebelum melanjutkan.'
+  //   : 'Periode gaji yang disahkan akan dikunci dan tidak dapat diubah. Pastikan semua data telah sesuai sebelum melanjutkan proses approval.';
 
   const handleDeleteConfirm = async () => {
     if (!rowToDelete) return;
