@@ -8,6 +8,7 @@ import PayrollApprovalModal from '@/features/payroll/components/modals/payroll-p
 import usePayrollTabBase, { BaseRow } from '@/features/payroll/hooks/tabs/usePayrollTabBase';
 import { useApiPayrollPeriod } from '@/features/payroll/hooks/api/useApiPayrollPeriod';
 import { useTemporaryApiStore } from '@/stores/useTemporaryApiStore';
+import { usePayrollApprovalStore } from '@/features/payroll/store/usePayrollApprovalStore';
 
 type Props<TRow extends BaseRow> = {
   resetKey: string;
@@ -19,6 +20,7 @@ type Props<TRow extends BaseRow> = {
   toolbarRightSlot?: React.ReactNode;
   customActions?: DataTableAction<TRow>[];
   onFinalize?: (rows: TRow[]) => Promise<boolean>;
+  approvalType?: string; // Added for approval page type
 
   enableSelection?: boolean;
   disableSelection?: boolean;
@@ -53,6 +55,7 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
   toolbarRightSlot,
   customActions,
   onFinalize,
+  approvalType,
 
   enableSelection = true,
   disableSelection = false,
@@ -82,6 +85,7 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
 
   const { deletePayrollPeriod, processUpload } = useApiPayrollPeriod();
   const { apiUrl } = useTemporaryApiStore();
+  const approvalStore = usePayrollApprovalStore();
 
   const {
     isApprovalPage,
@@ -151,7 +155,7 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
             variant="custom"
             className="bg-success text-white dark:text-white"
             size="sm"
-            disabled={!hasSelection || !onFinalize}
+            disabled={!hasSelection || !onFinalize || (approvalType ? approvalStore.isApprovalDisabled(approvalType) : false)}
             onClick={() => setShowApprovalModal(true)}
           >
             Setuju
@@ -166,7 +170,7 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
             variant="custom"
             className='w-max bg-[#007BFF] text-white dark:text-white'
             size="sm"
-            disabled={!hasSelection || !onFinalize}
+            disabled={!hasSelection || !onFinalize || approvalStore.isDistributionDisabled()}
             onClick={() => setShowApprovalModal(true)}
           >
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -184,6 +188,7 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
             className="w-max border border-[#007BFF] bg-[white] text-[#007BFF] dark:text-white color-[#007BFF]" 
             size="sm"
             onClick={() => window.open(`${apiUrl}/payroll/payroll-periode/export-template`, '_blank')}
+            disabled={approvalStore.isAllButtonsDisabled()}
           >
             <IconDownloadTemplate size={16} color="#007BFF" />
             Template Import Data
@@ -194,7 +199,7 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
             size="sm"
             className="bg-success text-white dark:text-white"
             onClick={() => setShowUpload(true)}
-            disabled={disableImportButton}
+            disabled={disableImportButton || approvalStore.isImportDisabled()}
           >
             <IconImport size={16} /> Import
           </Button>
@@ -203,7 +208,7 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
             variant="custom"
             className="w-max bg-[#007BFF] text-white dark:text-white"
             size="sm"
-            disabled={!hasSelection || disableFinalizeButton}
+            disabled={!hasSelection || disableFinalizeButton || approvalStore.isFinalizeDisabled()}
             onClick={() => setShowApprovalModal(true)}
           >
             Finalisasi Data

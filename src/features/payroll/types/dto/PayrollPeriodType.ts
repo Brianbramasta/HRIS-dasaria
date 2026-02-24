@@ -180,8 +180,16 @@ export interface PayrollPeriodGenericActionResponse<TData = any> {
 }
 
 export interface PayrollPeriodImportApprovalStatusData {
-    is_import_pending: boolean;
-    is_approval_hr_pending: boolean;
+    id: string;
+    payroll_month: string;
+    allowance_imported_at: string | boolean;
+    approval_hr: string | boolean;
+    approval_direktur_hr: string | boolean;
+    approval_direktur_fat: string | boolean;
+    approval_direktur_bod: string | boolean;
+    distribute: string | boolean;
+    closed: string | boolean;
+    status_payroll: string;
 }
 
 export interface PayrollPeriodImportApprovalStatusResponse {

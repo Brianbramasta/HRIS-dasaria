@@ -11,6 +11,8 @@ import { useApiPayrollPeriodBod } from '@/features/payroll/hooks/api/useApiPayro
 import { formatCurrencyValue } from '@/utils/formatCurrency';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 import PayrollApprovalModal from '../../../components/modals/payroll-period-approval/PayrollApprovalModal';
+import { usePayrollApprovalStore } from '../../../store/usePayrollApprovalStore';
+import { useApiPayrollPeriod } from '../../../hooks/api/useApiPayrollPeriod';
 
 const toDirectorHrSortKey = (columnId: string): string => {
   const map: Record<string, string> = {
@@ -112,6 +114,10 @@ export default function NonAETab({ }: { resetKey?: string }) {
   const [isApprovalModalOpen, setIsApprovalModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedRowsForApproval, setSelectedRowsForApproval] = useState<NonAERow[]>([]);
+  const [approvalStatusFetched, setApprovalStatusFetched] = useState(false);
+  
+  const approvalStore = usePayrollApprovalStore();
+  const { fetchImportApprovalStatus } = useApiPayrollPeriod();
   
   // Ambil approvalType dari URL parameter saat component mount
   useEffect(() => {
@@ -225,6 +231,20 @@ export default function NonAETab({ }: { resetKey?: string }) {
     if (!isBod) return;
     fetchBodRows({ page: 1, pageSize: bodPageSize });
   }, [isApprovalPage, isBod, bodPageSize, fetchBodRows]);
+
+  // Fetch approval status for the store
+  useEffect(() => {
+    if (!approvalStatusFetched) {
+      const fetchStatus = async () => {
+        const status = await fetchImportApprovalStatus();
+        if (status) {
+          approvalStore.setApprovalStatus(status);
+        }
+        setApprovalStatusFetched(true);
+      };
+      fetchStatus();
+    }
+  }, [fetchImportApprovalStatus, approvalStatusFetched]);
 
   const fallbackRows: NonAERow[] = useMemo(
     () => [
@@ -477,6 +497,8 @@ export default function NonAETab({ }: { resetKey?: string }) {
         title={title}
         onDetailNavigation={handleDetailNavigation}
         onFinalize={handleApprovalWithModal}
+        approvalType={approvalType}
+        disableSelection={approvalStore.isSelectionDisabled()}
         isRowSelectable={(row) => isPendingForApprovalType(String(row.statusPersetujuan))}
         loading={
           isApprovalPage ? (isDirectorHrga ? directorLoading : isFat ? fatLoading : isBod ? bodLoading : false) : false

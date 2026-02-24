@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
 import PayrollTabBase from '@/features/payroll/components/tabs/PayrollTabBase';
@@ -6,6 +6,8 @@ import { IconFileDetail } from '@/icons/components/icons';
 import { formatCurrency } from '@/utils/formatCurrency';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 import { useApiPayrollPeriodDistribution } from '@/features/payroll/hooks/api/useApiPayrollPeriodDistribution';
+import { usePayrollApprovalStore } from '@/features/payroll/store/usePayrollApprovalStore';
+import { useApiPayrollPeriod } from '@/features/payroll/hooks/api/useApiPayrollPeriod';
 
 const toPayrollDistributionFilterColumnId = (columnId: string): string => {
   const map: Record<string, string> = {
@@ -32,6 +34,11 @@ interface SalaryDistributionData {
 
 export default function NonAEPages() {
   const navigate = useNavigate();
+  const [approvalStatusFetched, setApprovalStatusFetched] = useState(false);
+  
+  const approvalStore = usePayrollApprovalStore();
+  const { fetchImportApprovalStatus } = useApiPayrollPeriod();
+  
   const {
     payrollPeriods,
     loading,
@@ -64,6 +71,20 @@ export default function NonAEPages() {
       dateRangeFilters,
     } as any);
   }, [fetchPayrollPeriods, page, pageSize, search, sortBy, sortOrder, columnFilters, dateRangeFilters]);
+
+  // Fetch approval status for the store
+  useEffect(() => {
+    if (!approvalStatusFetched) {
+      const fetchStatus = async () => {
+        const status = await fetchImportApprovalStatus();
+        if (status) {
+          approvalStore.setApprovalStatus(status);
+        }
+        setApprovalStatusFetched(true);
+      };
+      fetchStatus();
+    }
+  }, [fetchImportApprovalStatus, approvalStatusFetched]);
 
   const rows: SalaryDistributionData[] = useMemo(() => {
     const toNumber = (val: unknown): number => {
@@ -287,6 +308,7 @@ export default function NonAEPages() {
         title="Distribusi Gaji Non-AE"
         customActions={actions}
         onFinalize={handleDistribusiSlipGaji}
+        disableSelection={approvalStore.isSelectionDisabled()}
         isRowSelectable={isRowSelectable}
 
         loading={loading}

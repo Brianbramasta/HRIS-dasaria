@@ -9,6 +9,7 @@ import { useApiPayrollPeriod } from '../../../hooks/api/useApiPayrollPeriod';
 import { PayrollPeriodListItem } from '../../../types/dto/PayrollPeriodType';
 import { formatCurrency } from '@/utils/formatCurrency';
 import { formatDateToIndonesian } from '@/utils/formatDate';
+import { usePayrollApprovalStore } from '../../../store/usePayrollApprovalStore';
 
 const toPayrollPeriodFilterColumnId = (columnId: string): string => {
   const map: Record<string, string> = {
@@ -58,13 +59,15 @@ export default function NonAETab({ }: { resetKey?: string }) {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [approvalType, setApprovalType] = useState<string>('Persetujuan oleh FAT');
+  const [approvalStatusFetched, setApprovalStatusFetched] = useState(false);
+  
+  const approvalStore = usePayrollApprovalStore();
 
   // Hook untuk fetch data payroll period
   const {
     payrollPeriods,
     fetchPayrollPeriods,
     approvalHr,
-    importApprovalStatus,
     fetchImportApprovalStatus,
     loading,
     total,
@@ -111,8 +114,17 @@ export default function NonAETab({ }: { resetKey?: string }) {
   }, [page, pageSize, search, sortBy, sortOrder, columnFilters, dateRangeFilters, fetchPayrollPeriods]);
 
   useEffect(() => {
-    fetchImportApprovalStatus();
-  }, [fetchImportApprovalStatus]);
+    if (!approvalStatusFetched) {
+      const fetchStatus = async () => {
+        const status = await fetchImportApprovalStatus();
+        if (status) {
+          approvalStore.setApprovalStatus(status);
+        }
+        setApprovalStatusFetched(true);
+      };
+      fetchStatus();
+    }
+  }, [fetchImportApprovalStatus, approvalStatusFetched]);
 
   // Map PayrollPeriodListItem to NonAERow
   const rows: NonAERow[] = payrollPeriods.map((item, index) => mapPayrollPeriodToNonAERow(item, index));
@@ -176,9 +188,9 @@ export default function NonAETab({ }: { resetKey?: string }) {
       onDetailNavigation={handleDetailNavigation}
       isRowSelectable={(row) => String(row.statusPenggajian ?? '').toLowerCase().trim() === 'menunggu maker'}
       canEditDelete={(row) => String(row.statusPenggajian ?? '').toLowerCase().trim() === 'menunggu maker'}
-      disableImportButton={!!importApprovalStatus?.is_import_pending}
-      disableFinalizeButton={!!importApprovalStatus?.is_approval_hr_pending}
-      disableSelection={!!importApprovalStatus?.is_approval_hr_pending}
+      disableImportButton={approvalStore.isImportDisabled()}
+      disableFinalizeButton={approvalStore.isFinalizeDisabled()}
+      disableSelection={approvalStore.isSelectionDisabled()}
       loading={loading}
       pageSize={pageSize}
       useExternalPagination={true}
