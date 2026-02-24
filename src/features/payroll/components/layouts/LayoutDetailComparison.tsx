@@ -399,8 +399,8 @@ export default function DetailPayrollComparisonContent({ config, payrollData }: 
               />
             ))}
           </div>
-          {/* Dokumentasi: Tampilkan tombol Edit jika FAT atau HRGA/BOD approval atau Distribusi */}
-          {!hideEdits && canEditTT && (isFATApproval || isHRGAorBODApproval || isDistribusiContext) && (
+          {/* Dokumentasi: Tampilkan tombol Edit jika HRGA/BOD approval atau Distribusi (FAT tidak bisa edit Tunjangan Tidak Tetap) */}
+          {!hideEdits && canEditTT && (isHRGAorBODApproval || isDistribusiContext) && (
             <div className="w-full flex justify-end">
               <Button
                 size="sm"
