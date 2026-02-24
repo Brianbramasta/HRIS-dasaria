@@ -106,11 +106,6 @@ export interface PayrollPeriodEmployeeNonFixedAllowanceItem {
     amount: number;
 }
 
-export interface PayrollPeriodNonFixedAllowanceSection {
-    non_fixed_allowance: PayrollPeriodNonFixedAllowanceMasterItem[];
-    employee_non_fixed_allowance: PayrollPeriodEmployeeNonFixedAllowanceItem[];
-}
-
 export interface PayrollPeriodNonFixedDeductionItem {
     id: string;
     deduction_name: string;
@@ -129,7 +124,7 @@ export interface PayrollPeriodGrossCalculation {
 export interface PayrollPeriodDetailData {
     information_employee: PayrollPeriodDetailEmployeeInformation;
     fixed_allowance_and_deduction: PayrollPeriodFixedAllowanceAndDeductionSection;
-    non_fixed_allowance: PayrollPeriodNonFixedAllowanceSection;
+    non_fixed_allowance: PayrollPeriodNonFixedAllowanceMasterItem[];
     non_fixed_deduction: PayrollPeriodNonFixedDeductionItem[];
     gross_calculation: PayrollPeriodGrossCalculation;
 }

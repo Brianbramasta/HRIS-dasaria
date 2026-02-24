@@ -6,6 +6,7 @@ import TambahTunjanganTidakTetapModal from "@/features/payroll/components/modals
 import TambahPotonganTidakTetapModal from "@/features/payroll/components/modals/detail-payroll/non-ae/AddNonRecurringDeductionModal";
 import EditInformationEmployeeModal from "@/features/payroll/components/modals/detail-payroll/non-ae/EditInformationEmployeeModal";
 import { useApiPayrollPeriod } from "@/features/payroll/hooks/api/useApiPayrollPeriod";
+import { PayrollPeriodNonFixedAllowanceMasterItem } from "@/features/payroll/types/dto/PayrollPeriodType";
 
 // Dokumentasi: Komponen halaman Non-AE yang menyusun config untuk layout dinamis
 export default function DetailGajiPage() {
@@ -42,7 +43,7 @@ export default function DetailGajiPage() {
   );
 
   const nonFixedAllowanceEmployeeItems = useMemo(
-    () => payrollPeriodDetail?.non_fixed_allowance?.employee_non_fixed_allowance ?? [],
+    () => payrollPeriodDetail?.non_fixed_allowance as PayrollPeriodNonFixedAllowanceMasterItem[] ?? [],
     [payrollPeriodDetail]
   );
 
@@ -91,7 +92,7 @@ export default function DetailGajiPage() {
 
   const tunjanganTidakTetapFields = useMemo(
     () =>
-      nonFixedAllowanceEmployeeItems.map((x) => ({
+      nonFixedAllowanceEmployeeItems.map((x: PayrollPeriodNonFixedAllowanceMasterItem) => ({
         name: `nfa_${x.id}`,
         label: x.allowance_name,
         type: "input" as const,
@@ -163,7 +164,7 @@ export default function DetailGajiPage() {
     tunjanganTidakTetap: {
       fields: tunjanganTidakTetapFields,
       modalFields: tunjanganTidakTetapFields,
-      initialValues: nonFixedAllowanceEmployeeItems.reduce<Record<string, string>>((acc, x) => {
+      initialValues: nonFixedAllowanceEmployeeItems.reduce<Record<string, string>>((acc, x: PayrollPeriodNonFixedAllowanceMasterItem) => {
         acc[`nfa_${x.id}`] = String(x.amount ?? "");
         return acc;
       }, {}),

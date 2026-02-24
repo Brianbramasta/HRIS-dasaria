@@ -10,6 +10,7 @@ interface PayrollApprovalModalProps {
   statusPersetujuan?: string;
   periodDate?: string;
   approvalType?: string; // Tambah approval type
+  isDistributionPage?: boolean; // Tambah prop untuk distribusi page
 }
 
 const PayrollApprovalModal: React.FC<PayrollApprovalModalProps> = ({
@@ -20,8 +21,17 @@ const PayrollApprovalModal: React.FC<PayrollApprovalModalProps> = ({
   statusPersetujuan = '',
   periodDate = '',
   approvalType = '',
+  isDistributionPage = false,
 }) => {
   const getModalContent = () => {
+    // Jika ini adalah halaman distribusi, tampilkan konten distribusi
+    if (isDistributionPage) {
+      return {
+        label: "Distribusikan Slip Gaji?",
+        description: "Sistem akan segera mengirimkan slip gaji ke email masing-masing karyawan yang terdaftar. Proses distribusi ini tidak dapat dibatalkan."
+      };
+    }
+    
     // Gunakan approvalType untuk menentukan konten modal
     const cleanApprovalType = approvalType.trim();
     

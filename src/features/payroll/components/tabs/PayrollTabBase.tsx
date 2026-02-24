@@ -264,6 +264,7 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
         submitting={isApproving}
         statusPersetujuan={selectedRows.length > 0 ? (selectedRows[0] as any).statusPersetujuan : ''}
         periodDate={selectedRows.length > 0 ? (selectedRows[0] as any).tanggalPengajuan : ''}
+        isDistributionPage={isDistribusiPage}
       />
     </>
   );
