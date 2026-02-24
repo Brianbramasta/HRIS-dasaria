@@ -21,7 +21,7 @@ const UploadExcelModal: React.FC<Props> = ({ isOpen, onClose, onImport, submitti
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="text-center space-y-2">
           <h2 className="text-2xl font-bold">Import Data Penggajian</h2>
-          <p className="text-sm text-gray-600 dark:text-gray-300">Upload file CSV untuk mengimpor data penggajian ke sistem</p>
+          <p className="text-sm text-gray-600 dark:text-gray-300">Upload file Excel untuk mengimpor data penggajian ke sistem</p>
         </div>
 
         <div
@@ -39,7 +39,7 @@ const UploadExcelModal: React.FC<Props> = ({ isOpen, onClose, onImport, submitti
                 <path d="M20 16v1a2 2 0 01-2 2H6a2 2 0 01-2-2v-1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
               </svg>
             </div>
-            <p className="text-lg font-semibold">Drag CSV di sini</p>
+            <p className="text-lg font-semibold">Drag Excel di sini</p>
             <p className="text-sm text-gray-600 dark:text-gray-300">Atau klik untuk memilih (10MB maks)</p>
             {file && (
               <div className="mt-2 inline-flex items-center gap-2 rounded-lg bg-gray-100 px-3 py-1 text-sm dark:bg-gray-800">

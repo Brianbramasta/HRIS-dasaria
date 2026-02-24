@@ -7,6 +7,7 @@ import UploadExcelModal from '@/features/payroll/components/modals/UploadExcelMo
 import PayrollApprovalModal from '@/features/payroll/components/modals/payroll-period-approval/PayrollApprovalModal';
 import usePayrollTabBase, { BaseRow } from '@/features/payroll/hooks/tabs/usePayrollTabBase';
 import { useApiPayrollPeriod } from '@/features/payroll/hooks/api/useApiPayrollPeriod';
+import { useTemporaryApiStore } from '@/stores/useTemporaryApiStore';
 
 type Props<TRow extends BaseRow> = {
   resetKey: string;
@@ -79,7 +80,8 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
   const [isApproving, setIsApproving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const { deletePayrollPeriod } = useApiPayrollPeriod();
+  const { deletePayrollPeriod, processUpload } = useApiPayrollPeriod();
+  const { apiUrl } = useTemporaryApiStore();
 
   const {
     isApprovalPage,
@@ -177,7 +179,12 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
       )
     : (
         <div className="flex items-center gap-3">
-          <Button variant="custom" className="w-max border border-[#007BFF] bg-[white] text-[#007BFF] dark:text-white color-[#007BFF]" size="sm">
+          <Button 
+            variant="custom" 
+            className="w-max border border-[#007BFF] bg-[white] text-[#007BFF] dark:text-white color-[#007BFF]" 
+            size="sm"
+            onClick={() => window.open(`${apiUrl}/payroll/payroll-periode/export-template`, '_blank')}
+          >
             <IconDownloadTemplate size={16} color="#007BFF" />
             Template Import Data
           </Button>
@@ -242,7 +249,13 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
       <UploadExcelModal
         isOpen={showUpload}
         onClose={() => setShowUpload(false)}
-        onImport={async (_file) => { console.log(_file); setShowUpload(false); }}
+        onImport={async (file) => {
+          const success = await processUpload(file);
+          if (success) {
+            setShowUpload(false);
+            // Optionally refresh data or show success message
+          }
+        }}
       />
       <PayrollApprovalModal
         isOpen={showApprovalModal}
