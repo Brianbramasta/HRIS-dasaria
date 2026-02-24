@@ -3,7 +3,7 @@ import { useLocation } from "react-router";
 import useGoBack from "@/hooks/useGoBack";
 import type { SectionConfig } from "@/features/payroll/components/layouts/LayoutDetail";
 
-export const useLayoutDetail = (config: SectionConfig) => {
+export const useLayoutDetail = (config: SectionConfig, payrollData?: any) => {
   const goBack = useGoBack();
   const location = useLocation();
 
@@ -24,10 +24,30 @@ export const useLayoutDetail = (config: SectionConfig) => {
 
   const isBODApproval = approvalType === "Persetujuan oleh BOD";
 
-  const canEditInfo = !isApprovalContext ? true : !isBODApproval;
-  const canEditTT = !isApprovalContext ? true : isFATApproval || isHRGAorBODApproval;
-  const canEditPTT = !isApprovalContext ? true : isBODApproval ? false : isFATApproval;
-  const canEditRecap = !isApprovalContext ? true : !isBODApproval;
+  // Dokumentasi: Check if payroll status matches expected approval stage
+  const isCorrectApprovalStage = useMemo(() => {
+    if (!isApprovalContext || !payrollData?.information_employee?.payroll_status_name) return true;
+    
+    const currentStatus = payrollData.information_employee.payroll_status_name;
+    
+    console.log("currentStatus", currentStatus);
+    console.log("approvalType", approvalType);
+    switch (approvalType) {
+      case "Persetujuan oleh Direktur HRGA":
+        return currentStatus.toLowerCase() === "menunggu diproses direktur hrga";
+      case "Persetujuan oleh FAT":
+        return currentStatus.toLowerCase() === "menunggu diproses fat";
+      case "Persetujuan oleh BOD":
+        return currentStatus.toLowerCase() === "menunggu diproses bod";
+      default:
+        return true;
+    }
+  }, [isApprovalContext, payrollData, approvalType]);
+
+  const canEditInfo = !isApprovalContext ? true : !isBODApproval && isCorrectApprovalStage;
+  const canEditTT = !isApprovalContext ? true : (isFATApproval || isHRGAorBODApproval) && isCorrectApprovalStage;
+  const canEditPTT = !isApprovalContext ? true : (isFATApproval && !isBODApproval) && isCorrectApprovalStage;
+  const canEditRecap = !isApprovalContext ? true : !isBODApproval && isCorrectApprovalStage;
 
   const [ttValues, setTtValues] = useState<Record<string, string>>(() => config.tunjanganTidakTetap?.initialValues ?? {});
   const [pttValues, setPttValues] = useState<Record<string, string>>(() => config.potonganTidakTetap?.initialValues ?? {});
@@ -69,6 +89,7 @@ export const useLayoutDetail = (config: SectionConfig) => {
     canEditTT,
     canEditPTT,
     canEditRecap,
+    canShowApprovalButton: isCorrectApprovalStage,
     infoValues,
     setInfoValues,
     isInfoModalOpen,

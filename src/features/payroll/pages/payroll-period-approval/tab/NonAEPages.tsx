@@ -10,6 +10,7 @@ import { useApiPayrollPeriodFat } from '@/features/payroll/hooks/api/useApiPayro
 import { useApiPayrollPeriodBod } from '@/features/payroll/hooks/api/useApiPayrollPeriodBod';
 import { formatCurrencyValue } from '@/utils/formatCurrency';
 import { formatDateToIndonesian } from '@/utils/formatDate';
+import PayrollApprovalModal from '../../../components/modals/payroll-period-approval/PayrollApprovalModal';
 
 const toDirectorHrSortKey = (columnId: string): string => {
   const map: Record<string, string> = {
@@ -108,6 +109,18 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [approvalType, setApprovalType] = useState<string>('Persetujuan oleh FAT');
+  const [isApprovalModalOpen, setIsApprovalModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedRowsForApproval, setSelectedRowsForApproval] = useState<NonAERow[]>([]);
+  
+  // Ambil approvalType dari URL parameter saat component mount
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const urlApprovalType = searchParams.get("approvalType");
+    if (urlApprovalType) {
+      setApprovalType(urlApprovalType);
+    }
+  }, [location.search]);
   // Dokumentasi: Deteksi halaman Approval atau Distribusi untuk set judul
   const isApprovalPage = location.pathname.includes('/payroll-period-approval');
   const isDistribusiPage = location.pathname.includes('/salary-distribution');
@@ -128,17 +141,17 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
   const isPendingForApprovalType = (status: string): boolean => {
     const normalize = (s: string) => s.trim().toLowerCase();
 
-    const pendingMap: Record<string, string[]> = {
-      'Persetujuan oleh Direktur HRGA': ['menunggu proses direktur hgra', 'menunggu proses direktur hrga'],
-      'Persetujuan oleh FAT': ['menunggu proses fat', 'menunggu diproses fat'],
-      'Persetujuan oleh BOD': ['menunggu proses bod', 'menunggu diproses bod'],
+    const pendingMap: Record<string, string> = {
+      'Persetujuan oleh Direktur HRGA': 'menunggu diproses direktur hrga',
+      'Persetujuan oleh FAT': 'menunggu diproses fat',
+      'Persetujuan oleh BOD': 'menunggu diproses bod',
     };
 
-    const expectedList = pendingMap[approvalType];
-    if (!expectedList) return true;
+    const expectedPending = pendingMap[approvalType];
+    if (!expectedPending) return true;
 
     const value = normalize(status);
-    return expectedList.some((expected) => value === expected);
+    return value === expectedPending;
   };
 
   const {
@@ -355,7 +368,7 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
             const normalize = (s: string) => s.trim().toLowerCase();
 
             const pendingMap: Record<string, string> = {
-              'Persetujuan oleh Direktur HRGA': 'menunggu diproses direktur hgra',
+              'Persetujuan oleh Direktur HRGA': 'menunggu diproses direktur hrga',
               'Persetujuan oleh FAT': 'menunggu diproses fat',
               'Persetujuan oleh BOD': 'menunggu diproses bod',
             };
@@ -374,177 +387,190 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
     [approvalType, statusFilterOptions]
   );
 
-  const handleFinalize = useCallback(
+  // Dokumentasi: Fungsi untuk menangani approval dengan modal konfirmasi
+  const handleApprovalWithModal = useCallback(
     async (selectedRows: NonAERow[]) => {
       if (!isApprovalPage) return false;
 
       const isSelectAll = (selectedRows?.length ?? 0) > 0 && (selectedRows?.length ?? 0) === rows.length;
-      if (isSelectAll) {
-        if (isDirectorHrga) {
-          const ok = await approvalDirectorHr({ payrollIds: [], all: true });
-          if (ok) await fetchDirectorRows({ page: 1, pageSize: directorPageSize });
-          return ok;
-        }
-        if (isFat) {
-          const ok = await approvalFat({ payrollIds: [], all: true });
-          if (ok) await fetchFatRows({ page: 1, pageSize: fatPageSize });
-          return ok;
-        }
-        if (isBod) {
-          const ok = await approvalBod({ payrollIds: [], all: true });
-          if (ok) await fetchBodRows({ page: 1, pageSize: bodPageSize });
-          return ok;
-        }
-        return false;
+      let payrollIds: string[] = [];
+
+      if (!isSelectAll) {
+        payrollIds = Array.from(
+          new Set((selectedRows || []).map((r) => r.payrollId).filter((id): id is string => Boolean(id)))
+        );
+        if (payrollIds.length === 0) return false;
       }
 
-      const payrollIds = Array.from(
-        new Set((selectedRows || []).map((r) => r.payrollId).filter((id): id is string => Boolean(id)))
-      );
-      if (payrollIds.length === 0) return false;
-
-      if (isDirectorHrga) {
-        const ok = await approvalDirectorHr({ payrollIds });
-        if (ok) await fetchDirectorRows({ page: directorPage, pageSize: directorPageSize });
-        return ok;
-      }
-      if (isFat) {
-        const ok = await approvalFat({ payrollIds });
-        if (ok) await fetchFatRows({ page: fatPage, pageSize: fatPageSize });
-        return ok;
-      }
-      if (isBod) {
-        const ok = await approvalBod({ payrollIds });
-        if (ok) await fetchBodRows({ page: bodPage, pageSize: bodPageSize });
-        return ok;
-      }
-      return false;
+      // Simpan selected rows untuk digunakan di modal
+      setSelectedRowsForApproval(selectedRows);
+      
+      // Tampilkan modal konfirmasi
+      setIsApprovalModalOpen(true);
+      return true; // Return true untuk menandakan modal akan ditampilkan
     },
-    [
-      isApprovalPage,
-      rows.length,
-      isDirectorHrga,
-      isFat,
-      isBod,
-      approvalDirectorHr,
-      approvalFat,
-      approvalBod,
-      fetchDirectorRows,
-      fetchFatRows,
-      fetchBodRows,
-      directorPage,
-      directorPageSize,
-      fatPage,
-      fatPageSize,
-      bodPage,
-      bodPageSize,
-    ]
+    [isApprovalPage, rows.length]
   );
 
+  const handleApprovalConfirm = async () => {
+    setIsSubmitting(true);
+    try {
+      let result = false;
+      const currentSelectedRows = selectedRowsForApproval;
+      const isSelectAll = currentSelectedRows.length > 0 && currentSelectedRows.length === rows.length;
+
+      if (isSelectAll) {
+        if (isDirectorHrga) {
+          result = await approvalDirectorHr({ payrollIds: [], all: true });
+          if (result) await fetchDirectorRows({ page: 1, pageSize: directorPageSize });
+        } else if (isFat) {
+          result = await approvalFat({ payrollIds: [], all: true });
+          if (result) await fetchFatRows({ page: 1, pageSize: fatPageSize });
+        } else if (isBod) {
+          result = await approvalBod({ payrollIds: [], all: true });
+          if (result) await fetchBodRows({ page: 1, pageSize: bodPageSize });
+        }
+      } else {
+        const payrollIds = Array.from(
+          new Set(currentSelectedRows.map((r: NonAERow) => r.payrollId).filter((id): id is string => Boolean(id)))
+        );
+
+        if (isDirectorHrga) {
+          result = await approvalDirectorHr({ payrollIds });
+          if (result) await fetchDirectorRows({ page: directorPage, pageSize: directorPageSize });
+        } else if (isFat) {
+          result = await approvalFat({ payrollIds });
+          if (result) await fetchFatRows({ page: fatPage, pageSize: fatPageSize });
+        } else if (isBod) {
+          result = await approvalBod({ payrollIds });
+          if (result) await fetchBodRows({ page: bodPage, pageSize: bodPageSize });
+        }
+      }
+
+      if (result) {
+        setIsApprovalModalOpen(false);
+        setSelectedRowsForApproval([]);
+        // Clear selection after successful approval
+        clearSelection();
+      }
+    } catch (error) {
+      console.error('Approval failed:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Fungsi untuk clear selection (simulasi karena tidak ada akses ke DataTable)
+  const clearSelection = () => {
+    // Ini akan ditangani oleh DataTable component secara internal
+    console.log('Selection cleared');
+  };
+
   return (
-    <PenggajianTabBase
-      key={`${resetKey}-${approvalType}`}
-      resetKey={resetKey}
-      rows={rows}
-      baseColumns={baseColumns}
-      detailPathPrefix={detailPathPrefix}
-      title={title}
-      onDetailNavigation={handleDetailNavigation}
-      onFinalize={handleFinalize}
-      isRowSelectable={(row) => isPendingForApprovalType(String(row.statusPersetujuan))}
-      loading={
-        isApprovalPage ? (isDirectorHrga ? directorLoading : isFat ? fatLoading : isBod ? bodLoading : false) : false
-      }
-      useExternalPagination={isApprovalPage && (isDirectorHrga || isFat || isBod)}
-      externalPage={
-        isApprovalPage ? (isDirectorHrga ? directorPage : isFat ? fatPage : isBod ? bodPage : undefined) : undefined
-      }
-      externalTotal={
-        isApprovalPage ? (isDirectorHrga ? directorTotal : isFat ? fatTotal : isBod ? bodTotal : undefined) : undefined
-      }
-      pageSize={
-        isApprovalPage
-          ? (isDirectorHrga ? directorPageSize : isFat ? fatPageSize : isBod ? bodPageSize : undefined)
-          : undefined
-      }
-      onSearchChange={
-        !isApprovalPage
-          ? undefined
-          : isDirectorHrga
-            ? (s) => {
-                setDirectorSearch(s);
-                fetchDirectorRows({ page: 1, search: s });
-              }
-            : isFat
+    <>
+      <PenggajianTabBase
+        key={`${resetKey}-${approvalType}`}
+        resetKey={resetKey}
+        rows={rows}
+        baseColumns={baseColumns}
+        detailPathPrefix={detailPathPrefix}
+        title={title}
+        onDetailNavigation={handleDetailNavigation}
+        onFinalize={handleApprovalWithModal}
+        isRowSelectable={(row) => isPendingForApprovalType(String(row.statusPersetujuan))}
+        loading={
+          isApprovalPage ? (isDirectorHrga ? directorLoading : isFat ? fatLoading : isBod ? bodLoading : false) : false
+        }
+        useExternalPagination={isApprovalPage && (isDirectorHrga || isFat || isBod)}
+        externalPage={
+          isApprovalPage ? (isDirectorHrga ? directorPage : isFat ? fatPage : isBod ? bodPage : undefined) : undefined
+        }
+        externalTotal={
+          isApprovalPage ? (isDirectorHrga ? directorTotal : isFat ? fatTotal : isBod ? bodTotal : undefined) : undefined
+        }
+        pageSize={
+          isApprovalPage
+            ? (isDirectorHrga ? directorPageSize : isFat ? fatPageSize : isBod ? bodPageSize : undefined)
+            : undefined
+        }
+        onSearchChange={
+          !isApprovalPage
+            ? undefined
+            : isDirectorHrga
               ? (s) => {
-                  setFatSearch(s);
-                  fetchFatRows({ page: 1, search: s });
+                  setDirectorSearch(s);
+                  fetchDirectorRows({ page: 1, search: s });
                 }
-              : isBod
+              : isFat
                 ? (s) => {
-                    setBodSearch(s);
-                    fetchBodRows({ page: 1, search: s });
+                    setFatSearch(s);
+                    fetchFatRows({ page: 1, search: s });
                   }
-                : undefined
-      }
-      onSortChange={
-        !isApprovalPage
-          ? undefined
-          : isDirectorHrga
-            ? (columnId, order) => {
-                const sortKey = toDirectorHrSortKey(columnId);
-                setDirectorSort(sortKey, order);
-                fetchDirectorRows({ page: 1, sortBy: sortKey, sortOrder: order as any });
-              }
-            : isFat
+                : isBod
+                  ? (s) => {
+                      setBodSearch(s);
+                      fetchBodRows({ page: 1, search: s });
+                    }
+                  : undefined
+        }
+        onSortChange={
+          !isApprovalPage
+            ? undefined
+            : isDirectorHrga
               ? (columnId, order) => {
-                  const sortKey = toFatSortKey(columnId);
-                  setFatSort(sortKey, order);
-                  fetchFatRows({ page: 1, sortBy: sortKey, sortOrder: order as any });
+                  const sortKey = toDirectorHrSortKey(columnId);
+                  setDirectorSort(sortKey, order);
+                  fetchDirectorRows({ page: 1, sortBy: sortKey, sortOrder: order as any });
                 }
-              : isBod
+              : isFat
                 ? (columnId, order) => {
-                    const sortKey = toBodSortKey(columnId);
-                    setBodSort(sortKey, order);
-                    fetchBodRows({ page: 1, sortBy: sortKey, sortOrder: order as any });
+                    const sortKey = toFatSortKey(columnId);
+                    setFatSort(sortKey, order);
+                    fetchFatRows({ page: 1, sortBy: sortKey, sortOrder: order as any });
                   }
-                : undefined
-      }
-      onPageChangeExternal={
-        !isApprovalPage
-          ? undefined
-          : isDirectorHrga
-            ? (p) => {
-                setDirectorPage(p);
-                fetchDirectorRows({ page: p });
-              }
-            : isFat
+                : isBod
+                  ? (columnId, order) => {
+                      const sortKey = toBodSortKey(columnId);
+                      setBodSort(sortKey, order);
+                      fetchBodRows({ page: 1, sortBy: sortKey, sortOrder: order as any });
+                    }
+                  : undefined
+        }
+        onPageChangeExternal={
+          !isApprovalPage
+            ? undefined
+            : isDirectorHrga
               ? (p) => {
-                  setFatPage(p);
-                  fetchFatRows({ page: p });
+                  setDirectorPage(p);
+                  fetchDirectorRows({ page: p });
                 }
+              : isFat
+                ? (p) => {
+                    setFatPage(p);
+                    fetchFatRows({ page: p });
+                  }
               : isBod
                 ? (p) => {
                     setBodPage(p);
                     fetchBodRows({ page: p });
                   }
                 : undefined
-      }
-      onRowsPerPageChangeExternal={
-        !isApprovalPage
-          ? undefined
-          : isDirectorHrga
-            ? (rpp) => {
-                setDirectorPageSize(rpp);
-                setDirectorPage(1);
-                fetchDirectorRows({ page: 1, pageSize: rpp });
-              }
-            : isFat
+        }
+        onRowsPerPageChangeExternal={
+          !isApprovalPage
+            ? undefined
+            : isDirectorHrga
               ? (rpp) => {
-                  setFatPageSize(rpp);
-                  setFatPage(1);
-                  fetchFatRows({ page: 1, pageSize: rpp });
+                  setDirectorPageSize(rpp);
+                  setDirectorPage(1);
+                  fetchDirectorRows({ page: 1, pageSize: rpp });
                 }
+              : isFat
+                ? (rpp) => {
+                    setFatPageSize(rpp);
+                    setFatPage(1);
+                    fetchFatRows({ page: 1, pageSize: rpp });
+                  }
               : isBod
                 ? (rpp) => {
                     setBodPageSize(rpp);
@@ -552,109 +578,124 @@ export default function NonAETab({ resetKey = 'non-ae' }: { resetKey?: string })
                     fetchBodRows({ page: 1, pageSize: rpp });
                   }
                 : undefined
-      }
-      onColumnFilterChange={
-        isDirectorHrga
-          ? (columnId, values) => {
-              const apiColumnId = toDirectorHrFilterColumnId(columnId);
-              const next = { ...(directorColumnFilters || {}) };
-              next[apiColumnId] = values;
-              setDirectorColumnFilters(next);
-              fetchDirectorRows({ page: 1, columnFilters: next } as any);
-            }
-          : isFat
+        }
+        onColumnFilterChange={
+          isDirectorHrga
             ? (columnId, values) => {
-                const apiColumnId = toFatFilterColumnId(columnId);
-                const next = { ...(fatColumnFilters || {}) };
+                const apiColumnId = toDirectorHrFilterColumnId(columnId);
+                const next = { ...(directorColumnFilters || {}) };
                 next[apiColumnId] = values;
-                setFatColumnFilters(next);
-                fetchFatRows({ page: 1, columnFilters: next } as any);
+                setDirectorColumnFilters(next);
+                fetchDirectorRows({ page: 1, columnFilters: next } as any);
               }
-            : isBod
+            : isFat
               ? (columnId, values) => {
-                  const apiColumnId = toBodFilterColumnId(columnId);
-                  const next = { ...(bodColumnFilters || {}) };
+                  const apiColumnId = toFatFilterColumnId(columnId);
+                  const next = { ...(fatColumnFilters || {}) };
                   next[apiColumnId] = values;
-                  setBodColumnFilters(next);
-                  fetchBodRows({ page: 1, columnFilters: next } as any);
+                  setFatColumnFilters(next);
+                  fetchFatRows({ page: 1, columnFilters: next } as any);
                 }
+              : isBod
+                ? (columnId, values) => {
+                    const apiColumnId = toBodFilterColumnId(columnId);
+                    const next = { ...(bodColumnFilters || {}) };
+                    next[apiColumnId] = values;
+                    setBodColumnFilters(next);
+                    fetchBodRows({ page: 1, columnFilters: next } as any);
+                  }
               : undefined
-      }
-      columnFilters={isDirectorHrga ? directorColumnFilters : isFat ? fatColumnFilters : isBod ? bodColumnFilters : undefined}
-      onDateRangeFilterChange={
-        isDirectorHrga
-          ? (columnId, startDate, endDate) => {
-              const apiColumnId = toDirectorHrFilterColumnId(columnId);
-              const next = { ...(directorDateRangeFilters || {}) };
-              next[apiColumnId] = { startDate, endDate };
-              setDirectorDateRangeFilters(next);
-              fetchDirectorRows({ page: 1, dateRangeFilters: next } as any);
-            }
-          : isFat
+        }
+        columnFilters={isDirectorHrga ? directorColumnFilters : isFat ? fatColumnFilters : isBod ? bodColumnFilters : undefined}
+        onDateRangeFilterChange={
+          isDirectorHrga
             ? (columnId, startDate, endDate) => {
-                const apiColumnId = toFatFilterColumnId(columnId);
-                const next = { ...(fatDateRangeFilters || {}) };
+                const apiColumnId = toDirectorHrFilterColumnId(columnId);
+                const next = { ...(directorDateRangeFilters || {}) };
                 next[apiColumnId] = { startDate, endDate };
-                setFatDateRangeFilters(next);
-                fetchFatRows({ page: 1, dateRangeFilters: next } as any);
+                setDirectorDateRangeFilters(next);
+                fetchDirectorRows({ page: 1, dateRangeFilters: next } as any);
               }
-            : isBod
+            : isFat
               ? (columnId, startDate, endDate) => {
-                  const apiColumnId = toBodFilterColumnId(columnId);
-                  const next = { ...(bodDateRangeFilters || {}) };
+                  const apiColumnId = toFatFilterColumnId(columnId);
+                  const next = { ...(fatDateRangeFilters || {}) };
                   next[apiColumnId] = { startDate, endDate };
-                  setBodDateRangeFilters(next);
-                  fetchBodRows({ page: 1, dateRangeFilters: next } as any);
+                  setFatDateRangeFilters(next);
+                  fetchFatRows({ page: 1, dateRangeFilters: next } as any);
                 }
-              : undefined
-      }
-      dateRangeFilters={
-        isDirectorHrga ? directorDateRangeFilters : isFat ? fatDateRangeFilters : isBod ? bodDateRangeFilters : undefined
-      }
-      toolbarRightSlot={
-       isApprovalPage && <div className="relative">
-          <Button
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            variant="outline"
-            size="sm"
-            className="flex items-center gap-1 dropdown-toggle"
-          >
-            {approvalType}
-            <ChevronDown size={16} />
-          </Button>
-          <Dropdown isOpen={isDropdownOpen} onClose={() => setIsDropdownOpen(false)}>
-            <div className="p-2 w-64">
-              <button
-                className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-                onClick={() => {
-                  setApprovalType('Persetujuan oleh FAT');
-                  setIsDropdownOpen(false);
-                }}
-              >
-                Persetujuan oleh FAT
-              </button>
-              <button
-                className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-                onClick={() => {
-                  setApprovalType('Persetujuan oleh Direktur HRGA');
-                  setIsDropdownOpen(false);
-                }}
-              >
-                Persetujuan oleh Direktur HRGA
-              </button>
-              <button
-                className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-                onClick={() => {
-                  setApprovalType('Persetujuan oleh BOD');
-                  setIsDropdownOpen(false);
-                }}
-              >
-                Persetujuan oleh BOD
-              </button>
-            </div>
-          </Dropdown>
-        </div>
-      }
-    />
+              : isBod
+                ? (columnId, startDate, endDate) => {
+                    const apiColumnId = toBodFilterColumnId(columnId);
+                    const next = { ...(bodDateRangeFilters || {}) };
+                    next[apiColumnId] = { startDate, endDate };
+                    setBodDateRangeFilters(next);
+                    fetchBodRows({ page: 1, dateRangeFilters: next } as any);
+                  }
+                : undefined
+        }
+        dateRangeFilters={
+          isDirectorHrga ? directorDateRangeFilters : isFat ? fatDateRangeFilters : isBod ? bodDateRangeFilters : undefined
+        }
+        toolbarRightSlot={
+         isApprovalPage && <div className="relative">
+            <Button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-1 dropdown-toggle"
+            >
+              {approvalType}
+              <ChevronDown size={16} />
+            </Button>
+            <Dropdown isOpen={isDropdownOpen} onClose={() => setIsDropdownOpen(false)}>
+              <div className="p-2 w-64">
+                <button
+                  className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+                  onClick={() => {
+                    setApprovalType('Persetujuan oleh FAT');
+                    setIsDropdownOpen(false);
+                  }}
+                >
+                  Persetujuan oleh FAT
+                </button>
+                <button
+                  className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+                  onClick={() => {
+                    setApprovalType('Persetujuan oleh Direktur HRGA');
+                    setIsDropdownOpen(false);
+                  }}
+                >
+                  Persetujuan oleh Direktur HRGA
+                </button>
+                <button
+                  className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+                  onClick={() => {
+                    setApprovalType('Persetujuan oleh BOD');
+                    setIsDropdownOpen(false);
+                  }}
+                >
+                  Persetujuan oleh BOD
+                </button>
+              </div>
+            </Dropdown>
+          </div>
+        }
+      />
+      
+      {/* Payroll Approval Modal */}
+      <PayrollApprovalModal
+        isOpen={isApprovalModalOpen}
+        onClose={() => {
+          setIsApprovalModalOpen(false);
+          setSelectedRowsForApproval([]);
+        }}
+        onConfirm={handleApprovalConfirm}
+        submitting={isSubmitting}
+        statusPersetujuan={selectedRowsForApproval.length > 0 ? selectedRowsForApproval[0].statusPersetujuan : ''}
+        periodDate={selectedRowsForApproval.length > 0 ? selectedRowsForApproval[0].tanggalPengajuan : ''}
+        approvalType={approvalType}
+      />
+    </>
   );
 }

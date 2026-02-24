@@ -1,4 +1,6 @@
 // Dokumentasi: Komponen dinamis layout halaman Detail Gaji untuk berbagai tipe (AE, Non-AE, PKL, THR)
+import { useState } from "react";
+import { useLocation } from "react-router";
 import PayrollCard from "@/features/payroll/components/cards/Cards";
 import InputField from "@/components/shared/field/InputField";
 import DateField from "@/components/shared/field/DateField";
@@ -12,6 +14,10 @@ import { IconPencil as Edit3 } from "@/icons/components/icons";
 import { useLayoutDetail } from "@/features/payroll/hooks/layouts/useLayoutDetail";
 import RecapModall from "@/features/payroll/components/modals/detail-payroll/RecapModall";
 import { formatCurrencyValue, parseCurrency } from "@/utils/formatCurrency";
+import PayrollApprovalModal from "../modals/payroll-period-approval/PayrollApprovalModal";
+import { useApiPayrollPeriodDirectorHr } from "@/features/payroll/hooks/api/useApiPayrollPeriodDirectorHr";
+import { useApiPayrollPeriodFat } from "@/features/payroll/hooks/api/useApiPayrollPeriodFat";
+import { useApiPayrollPeriodBod } from "@/features/payroll/hooks/api/useApiPayrollPeriodBod";
 
 export type FieldType = "input" | "date" | "select" | "multi-select" | "file";
 export type FieldDescriptor = {
@@ -128,7 +134,8 @@ export type SectionConfig = {
 };
 
 // Dokumentasi: Komponen utama layout detail, menerima konfigurasi section & modal
-export default function DetailPayrollComparisonContent({ config }: { config: SectionConfig }) {
+export default function DetailPayrollComparisonContent({ config, payrollData }: { config: SectionConfig; payrollData?: any }) {
+  const location = useLocation();
   const {
     goBack,
     isApprovalContext,
@@ -139,6 +146,7 @@ export default function DetailPayrollComparisonContent({ config }: { config: Sec
     canEditTT,
     canEditPTT,
     canEditRecap,
+    canShowApprovalButton,
     infoValues,
     setInfoValues,
     isInfoModalOpen,
@@ -158,7 +166,52 @@ export default function DetailPayrollComparisonContent({ config }: { config: Sec
     gridColsInfo,
     gridColsTT,
     gridColsPTT,
-  } = useLayoutDetail(config);
+  } = useLayoutDetail(config, payrollData);
+
+  // Ambil approvalType dari URL query parameter
+  const searchParams = new URLSearchParams(location.search);
+  const approvalType = searchParams.get("approvalType") || "";
+
+  // Approval hooks
+  const { approvalDirectorHr } = useApiPayrollPeriodDirectorHr();
+  const { approvalFat } = useApiPayrollPeriodFat();
+  const { approvalBod } = useApiPayrollPeriodBod();
+
+  // Approval modal state
+  const [isApprovalModalOpen, setIsApprovalModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleApproval = async () => {
+    if (!payrollData?.information_employee?.payroll_id) return;
+    
+    setIsSubmitting(true);
+    try {
+      let result = false;
+      const payrollId = payrollData.information_employee.payroll_id;
+
+      if (isFATApproval) {
+        result = await approvalFat({ payrollIds: [payrollId] });
+      } else if (isHRGAorBODApproval) {
+        // Check if it's HRGA or BOD based on current status
+        const currentStatus = payrollData?.information_employee?.payroll_status_name?.toLowerCase() || '';
+        if (currentStatus.includes('direktur hrga')) {
+          result = await approvalDirectorHr({ payrollIds: [payrollId] });
+        } else if (currentStatus.includes('bod')) {
+          result = await approvalBod({ payrollIds: [payrollId] });
+        }
+      }
+
+      if (result) {
+        setIsApprovalModalOpen(false);
+        // You might want to refresh the data or redirect here
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error('Approval failed:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const infoTitle = config.infoCard?.title ?? "Informasi Karyawan";
   const infoHeaderColor = config.infoCard?.headerColor ?? "gray";
@@ -508,9 +561,20 @@ export default function DetailPayrollComparisonContent({ config }: { config: Sec
 
       {config.periodeComparison ? (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <PayrollCard title={periodeLeftTitle} headerColor={periodeHeaderColor}>
-            {renderPayrollSections({ hideEdits: true })}
-          </PayrollCard>
+          {/* Periode Bulan Kemarin - Cek apakah data previous ada */}
+          {payrollData?.previous ? (
+            <PayrollCard title={periodeLeftTitle} headerColor={periodeHeaderColor}>
+              {renderPayrollSections({ hideEdits: true })}
+            </PayrollCard>
+          ) : (
+            <PayrollCard title={periodeLeftTitle} headerColor={periodeHeaderColor}>
+              <div className="flex items-center justify-center h-full min-h-[200px]">
+                <p className="text-gray-500 dark:text-gray-400 text-center">Tidak ada Periode.</p>
+              </div>
+            </PayrollCard>
+          )}
+          
+          {/* Periode Bulan Ini */}
           <PayrollCard title={periodeRightTitle} headerColor={periodeHeaderColor}>
             {renderPayrollSections({ hideEdits: false })}
           </PayrollCard>
@@ -563,18 +627,34 @@ export default function DetailPayrollComparisonContent({ config }: { config: Sec
         />
       )}
 
-      {/* Dokumentasi: Tombol aksi Approve/Reject hanya saat akses dari Approval Periode Gajian */}
-      {isApprovalContext && (
+      {/* Dokumentasi: Tombol aksi Approve/Reject hanya saat akses dari Approval Periode Gajian dan status sesuai */}
+      {isApprovalContext && canShowApprovalButton && (
         <div className="w-full flex justify-end gap-3 mt-6">
           {/* <Button size="sm" variant="custom" className="bg-red-600 text-white">
             Ditolak
           </Button> */}
-          <Button size="sm" variant="custom" className="bg-green-600 text-white">
+          <Button 
+            size="sm" 
+            variant="custom" 
+            className="bg-green-600 text-white"
+            onClick={() => setIsApprovalModalOpen(true)}
+          >
             {/* Disetujui */}
             Setuju
           </Button>
         </div>
       )}
+
+      {/* Approval Modal */}
+      <PayrollApprovalModal
+        isOpen={isApprovalModalOpen}
+        onClose={() => setIsApprovalModalOpen(false)}
+        onConfirm={handleApproval}
+        submitting={isSubmitting}
+        statusPersetujuan={payrollData?.current?.periode?.status_payroll || ''}
+        periodDate={payrollData?.information_employee?.periode || ''}
+        approvalType={approvalType}
+      />
     </div>
   );
 }

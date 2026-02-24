@@ -4,7 +4,7 @@ import Button from '@/components/ui/button/Button';
 import { IconDownloadTemplate, IconImport } from '@/icons/components/icons';
 import DeleteDataGajiModal from '@/features/payroll/components/modals/DeletePayrollDataModal';
 import UploadExcelModal from '@/features/payroll/components/modals/UploadExcelModal';
-import ApprovalModal from '@/features/payroll/components/modals/payroll-period/ApprovalModal';
+import PayrollApprovalModal from '@/features/payroll/components/modals/payroll-period-approval/PayrollApprovalModal';
 import usePayrollTabBase, { BaseRow } from '@/features/payroll/hooks/tabs/usePayrollTabBase';
 import { useApiPayrollPeriod } from '@/features/payroll/hooks/api/useApiPayrollPeriod';
 
@@ -244,12 +244,13 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
         onClose={() => setShowUpload(false)}
         onImport={async (_file) => { console.log(_file); setShowUpload(false); }}
       />
-      <ApprovalModal
+      <PayrollApprovalModal
         isOpen={showApprovalModal}
         onClose={() => setShowApprovalModal(false)}
         onConfirm={handleApprovalConfirm}
         submitting={isApproving}
-        description={approvalDescription}
+        statusPersetujuan={selectedRows.length > 0 ? (selectedRows[0] as any).statusPersetujuan : ''}
+        periodDate={selectedRows.length > 0 ? (selectedRows[0] as any).tanggalPengajuan : ''}
       />
     </>
   );
