@@ -110,7 +110,7 @@ export default function NonAETab({ }: { resetKey?: string }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [approvalType, setApprovalType] = useState<string>('Persetujuan oleh FAT');
+  const [approvalType, setApprovalType] = useState<string>('Persetujuan oleh Direktur HRGA');
   const [isApprovalModalOpen, setIsApprovalModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedRowsForApproval, setSelectedRowsForApproval] = useState<NonAERow[]>([]);
@@ -675,20 +675,20 @@ export default function NonAETab({ }: { resetKey?: string }) {
                 <button
                   className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
                   onClick={() => {
-                    setApprovalType('Persetujuan oleh FAT');
-                    setIsDropdownOpen(false);
-                  }}
-                >
-                  Persetujuan oleh FAT
-                </button>
-                <button
-                  className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-                  onClick={() => {
                     setApprovalType('Persetujuan oleh Direktur HRGA');
                     setIsDropdownOpen(false);
                   }}
                 >
                   Persetujuan oleh Direktur HRGA
+                </button>
+                <button
+                  className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+                  onClick={() => {
+                    setApprovalType('Persetujuan oleh FAT');
+                    setIsDropdownOpen(false);
+                  }}
+                >
+                  Persetujuan oleh FAT
                 </button>
                 <button
                   className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
