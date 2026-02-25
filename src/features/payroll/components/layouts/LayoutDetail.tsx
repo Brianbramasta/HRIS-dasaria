@@ -34,6 +34,7 @@ export type ModalProps = {
   defaultValues: Record<string, string>;
   onSave: (values: Record<string, string>) => void;
   fields?: FieldDescriptor[];
+  onRefresh?: () => void;
 };
 
 export type InfoModalProps = {
@@ -42,6 +43,7 @@ export type InfoModalProps = {
   defaultValues: Record<string, string>;
   onSave: (values: Record<string, string>) => void;
   fields: FieldDescriptor[];
+  onRefresh?: () => void;
 };
 
 export type RekapModalProps = {
@@ -118,7 +120,7 @@ export type SectionConfig = {
 };
 
 // Dokumentasi: Komponen utama layout detail, menerima konfigurasi section & modal
-export default function DetailPayrollContent({ config }: { config: SectionConfig }) {
+export default function DetailPayrollContent({ config, onRefresh }: { config: SectionConfig; onRefresh?: () => void }) {
   const {
     goBack,
     isApprovalContext,
@@ -521,6 +523,7 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
           defaultValues={infoValues}
           onSave={(values) => setInfoValues(values)}
           fields={infoModalFields}
+          onRefresh={onRefresh}
         />
       )}
       {config.tunjanganTidakTetap?.ModalComponent && (
@@ -530,6 +533,7 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
           defaultValues={ttValues}
           onSave={(values) => setTtValues(values)}
           fields={config.tunjanganTidakTetap.modalFields ?? config.tunjanganTidakTetap.fields}
+          onRefresh={onRefresh}
         />
       )}
       {/* Dokumentasi: Modal Potongan Tidak Tetap bila disediakan */}
@@ -540,6 +544,7 @@ export default function DetailPayrollContent({ config }: { config: SectionConfig
           defaultValues={pttValues}
           onSave={(values) => setPttValues(values)}
           fields={config.potonganTidakTetap.modalFields ?? config.potonganTidakTetap.fields}
+          onRefresh={onRefresh}
         />
       )}
 

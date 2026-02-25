@@ -266,6 +266,7 @@ export default function DetailGajiPage() {
         key={`${id ?? ''}-${payrollPeriodDetail?.information_employee?.payroll_id ?? 'loading'}`}
         config={config}
         payrollData={payrollPeriodDetail}
+        onRefresh={() => fetchPayrollPeriodDetail(id ?? '')}
       />
       
       {/* Payroll Approval Modal */}

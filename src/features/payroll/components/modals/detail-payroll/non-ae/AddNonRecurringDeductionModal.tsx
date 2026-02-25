@@ -8,7 +8,9 @@ import { useApiPayrollPeriod } from '@/features/payroll/hooks/api/useApiPayrollP
 import { useParams } from 'react-router-dom';
 import { formatInputCurrency, parseCurrency } from '@/utils/formatCurrency';
 
-type Props = ModalProps;
+type Props = ModalProps & {
+  onRefresh?: () => void;
+};
 
 const TambahPotonganTidakTetapModal: React.FC<Props> = ({
   isOpen,
@@ -16,6 +18,7 @@ const TambahPotonganTidakTetapModal: React.FC<Props> = ({
   defaultValues,
   onSave,
   fields,
+  onRefresh,
 }) => {
   const { form, setField, handleSubmit } = useAddNonRecurringDeductionModal(defaultValues as any);
   const { id: payrollId } = useParams();
@@ -30,7 +33,7 @@ const TambahPotonganTidakTetapModal: React.FC<Props> = ({
           .map(([key, rawAmount]) => {
             const match = key.match(/^nfd_(.+)$/);
             if (!match) return null;
-            const componenId = match[1];
+             const componenId = match[1];
             const amount = parseCurrency(String(rawAmount ?? ''));
             return { componenId, amount: amount === null ? '' : String(amount) };
           })
@@ -42,6 +45,8 @@ const TambahPotonganTidakTetapModal: React.FC<Props> = ({
 
       onSave(form ?? {});
       onClose();
+      // Refresh payroll detail data
+      onRefresh?.();
     } finally {
       setSubmitting(false);
     }

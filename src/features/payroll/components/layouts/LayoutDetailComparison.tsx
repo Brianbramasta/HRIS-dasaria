@@ -40,6 +40,7 @@ export type ModalProps = {
   defaultValues: Record<string, string>;
   onSave: (values: Record<string, string>) => void;
   fields?: FieldDescriptor[];
+  onRefresh?: () => void;
 };
 
 export type InfoModalProps = {
@@ -48,6 +49,7 @@ export type InfoModalProps = {
   defaultValues: Record<string, string>;
   onSave: (values: Record<string, string>) => void;
   fields: FieldDescriptor[];
+  onRefresh?: () => void;
 };
 
 export type RekapModalProps = {
@@ -134,7 +136,7 @@ export type SectionConfig = {
 };
 
 // Dokumentasi: Komponen utama layout detail, menerima konfigurasi section & modal
-export default function DetailPayrollComparisonContent({ config, payrollData }: { config: SectionConfig; payrollData?: any }) {
+export default function DetailPayrollComparisonContent({ config, payrollData, onRefresh }: { config: SectionConfig; payrollData?: any; onRefresh?: () => void }) {
   const location = useLocation();
   const {
     goBack,
@@ -605,6 +607,7 @@ export default function DetailPayrollComparisonContent({ config, payrollData }: 
           defaultValues={infoValues}
           onSave={(values) => setInfoValues(values)}
           fields={infoModalFields}
+          onRefresh={onRefresh}
         />
       )}
       {config.tunjanganTidakTetap?.ModalComponent && (
@@ -614,6 +617,7 @@ export default function DetailPayrollComparisonContent({ config, payrollData }: 
           defaultValues={ttValues}
           onSave={(values) => setTtValues(values)}
           fields={config.tunjanganTidakTetap.modalFields ?? config.tunjanganTidakTetap.fields}
+          onRefresh={onRefresh}
         />
       )}
       {/* Dokumentasi: Modal Potongan Tidak Tetap bila disediakan */}
@@ -624,6 +628,7 @@ export default function DetailPayrollComparisonContent({ config, payrollData }: 
           defaultValues={pttValues}
           onSave={(values) => setPttValues(values)}
           fields={config.potonganTidakTetap.modalFields ?? config.potonganTidakTetap.fields}
+          onRefresh={onRefresh}
         />
       )}
 

@@ -14,7 +14,8 @@ export default function EditInformationEmployeeModal({
   defaultValues,
   onSave,
   fields,
-}: InfoModalProps) {
+  onRefresh,
+}: InfoModalProps & { onRefresh?: () => void }) {
   const [submitting, setSubmitting] = useState(false);
   const [values, setValues] = useState<Record<string, string>>({});
   const { id: payrollId } = useParams();
@@ -101,6 +102,8 @@ export default function EditInformationEmployeeModal({
       }
       onSave(values);
       onClose();
+      // Refresh payroll detail data
+      onRefresh?.();
     } finally {
       setSubmitting(false);
     }
