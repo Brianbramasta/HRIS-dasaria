@@ -6,7 +6,7 @@ import { useStoryPayrollTab } from '@/features/employee/hooks/tab/useStoryPayrol
 import { formatCurrency } from '@/utils/formatCurrency';
 import Button from '@/components/ui/button/Button';
 import { Edit2 } from 'react-feather';
-import EditStoryPayrollModal from '@/features/employee/components/modals/story-payroll/EditStoryPayrollModal';
+import EditStoryPayrollModal from '@/features/employee/components/modals/employee-data/story-payroll/EditStoryPayrollModal';
 
 interface Props {
   employeeId?: string;

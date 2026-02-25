@@ -169,16 +169,22 @@ const EditStoryPayrollModal: FC<EditStoryPayrollModalProps> = (props) => {
             <div className="bg-green-700 px-4 py-2 rounded-t-lg flex justify-between items-center">
               <span className="font-semibold text-white">Tunjangan Tidak Tetap</span>
             </div>
-            <div className="p-4 bg-gray-50 dark:bg-gray-800/50 space-y-3">
+            <div className="p-4  dark:bg-gray-800/50 space-y-3">
               {nonFixAllowances.map((item, index) => (
                 <div key={index} className="flex items-end gap-3">
                   <div className="flex-1">
                     <SelectField
                       label="Jenis Tunjangan"
-                      options={allowanceOptions}
+                      options={item.tr_id
+                        ? allowanceOptions.filter(option => option.value === item.id)
+                        : allowanceOptions.filter(option => 
+                            !nonFixAllowances.some(allowance => allowance.id === option.value && allowance.id !== item.id)
+                          )
+                      }
                       defaultValue={item.id}
                       onChange={(val) => handleChangeAllowance(index, 'id', val)}
                       placeholder="Pilih Tunjangan"
+                      disabled={!!item.tr_id}
                     />
                   </div>
                   <div className="flex-1">

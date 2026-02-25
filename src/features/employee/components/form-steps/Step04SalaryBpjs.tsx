@@ -220,7 +220,14 @@ export const Step04SalaryBpjs: React.FC = () => {
                   <div className="md:col-span-6">
                     <SelectField
                       label="Jenis Tunjangan"
-                      options={nonFixAllowanceOptions.map((opt: any) => ({ value: opt.id, label: opt.allowance_name }))}
+                      options={nonFixAllowanceOptions
+                        .map((opt: any) => ({ value: opt.id, label: opt.allowance_name }))
+                        .filter(option => 
+                          !nonFixAllowances.some((otherAllowance, otherIndex) => 
+                            otherAllowance.id === option.value && otherIndex !== index
+                          )
+                        )
+                      }
                       defaultValue={allowance.id}
                       onChange={(value) => updateNonFixAllowance(index, 'id', value)}
                       placeholder="Pilih Tunjangan Tidak Tetap"
