@@ -75,7 +75,20 @@ export function useEditDetailCompanyModal(params: {
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files && e.target.files[0];
-    if (f) setLogoFile(f);
+    if (f) {
+      const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+      if (!allowedTypes.includes(f.type)) {
+        addNotification({
+          variant: 'error',
+          title: 'Format file tidak didukung',
+          description: 'Hanya file PNG, JPG, dan JPEG yang diperbolehkan untuk logo.',
+        });
+        // Clear the file input
+        e.target.value = '';
+        return;
+      }
+      setLogoFile(f);
+    }
   };
 
   const handleSave = async () => {

@@ -172,7 +172,7 @@ export const Step01PersonalData: React.FC = () => {
           </div>
           {/* Upload Foto Profil */}
         <div className="">
-          <FIleField label="Upload Foto Profil" onChange={handleFileChange} required />
+          <FIleField label="Upload Foto Profil" onChange={handleFileChange} acceptedFormats={['image/png', 'image/jpeg', 'image/jpg']} required />
         </div>
         {/* Alamat KTP */}
           <div>

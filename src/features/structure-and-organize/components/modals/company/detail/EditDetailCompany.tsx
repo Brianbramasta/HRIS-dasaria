@@ -70,6 +70,7 @@ const EditDetailCompany: React.FC<EditDetailCompanyProps> = ({ isOpen, onClose, 
               label="Upload Logo"
               onChange={handleFile}
               required
+              acceptedFormats={['image/png', 'image/jpeg', 'image/jpg']}
               // isLabel={false}
             />
 
