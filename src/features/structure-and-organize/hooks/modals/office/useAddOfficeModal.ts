@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useFileStore } from '@/stores/fileStore';
+import { useEffect, useState, useCallback } from 'react';
+import { useFileStore, clearSkFile } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
 import { useApiOffices } from '../../api/useApiOffices';
 import { useApiCompanies } from '../../api/useApiCompanies';
@@ -16,8 +16,30 @@ export function useAddOfficeModal(isOpen: boolean, onClose: () => void, onSucces
   const { createOffice } = useApiOffices();
   const { getDropdown: getCompanyDropdown } = useApiCompanies();
 
+  const handleFileChange = () => {};
+
+  const clearForm = useCallback(() => {
+    setName('');
+    setCompanyIds([]);
+    setCompanySearch('');
+    setCompanyOptions([]);
+    setMemoNumber('');
+    setDescription('');
+    clearSkFile();
+  }, []);
+
+  const handleClose = useCallback(() => {
+    clearForm();
+    onClose();
+  }, [clearForm, onClose]);
+
+  // Handle modal open/close - clear when closed, initialize when opened
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {
+      clearForm();
+      return;
+    }
+    // Initialize company options when modal opens
     const handler = setTimeout(async () => {
       try {
         const res = await getCompanyDropdown(companySearch || undefined);
@@ -27,9 +49,7 @@ export function useAddOfficeModal(isOpen: boolean, onClose: () => void, onSucces
       }
     }, 400);
     return () => clearTimeout(handler);
-  }, [isOpen, companySearch, getCompanyDropdown]);
-
-  const handleFileChange = () => {};
+  }, [isOpen, companySearch, getCompanyDropdown, clearForm]);
 
   const handleCompanySearch = (value: string) => {
     setCompanySearch(value);
@@ -65,11 +85,7 @@ export function useAddOfficeModal(isOpen: boolean, onClose: () => void, onSucces
         skFile: skFile?.file || undefined,
       });
       onSuccess?.();
-      setName('');
-      setCompanyIds([]);
-      setMemoNumber('');
-      setDescription('');
-      useFileStore.getState().clearSkFile();
+      clearForm();
       onClose();
     } catch {
       addNotification({
@@ -98,5 +114,6 @@ export function useAddOfficeModal(isOpen: boolean, onClose: () => void, onSucces
     submitting,
     handleSubmit,
     handleFileChange,
+    handleClose,
   };
 }
