@@ -37,15 +37,15 @@ import DashboardPage from "@/features/dashboard/pages/Index";
 import Dashboard from "@/features/dashboard/pages/tab/Dashboard";
 import Notification from "@/features/dashboard/pages/tab/Notification";
 // import DaftarPenggajianPage from "@/features/penggajian/pages/daftarPenggajianPage";
-import KonfigurasiPenggajianPage from "@/features/payroll/pages/PayrollConfiguration/PayrollConfigurationPage";
+import KonfigurasiPenggajianPage from "@/features/payroll/pages/payroll-configuration/PayrollConfigurationPage";
 // Dokumentasi: Import tab untuk Konfigurasi Penggajian
-import KompensasiPage from "@/features/payroll/pages/PayrollConfiguration/tab/CompensationPage";
-import BpjsPage from "@/features/payroll/pages/PayrollConfiguration/tab/BPJSPage";
-import AcuanPotonganPage from "@/features/payroll/pages/PayrollConfiguration/tab/DeductionReferencePage";
-import TunjanganTetapPage from "@/features/payroll/pages/PayrollConfiguration/tab/FixedAllowancePage";
-import TunjanganTidakTetapPage from "@/features/payroll/pages/PayrollConfiguration/tab/NonRecurringAllowancePage";
-import PotonganTidakTetapPage from "@/features/payroll/pages/PayrollConfiguration/tab/NonRecurringDeductionPage";
-import THRPage from "@/features/payroll/pages/PayrollConfiguration/tab/BonusTHRPage";
+import KompensasiPage from "@/features/payroll/pages/payroll-configuration/tab/CompensationPage";
+import BpjsPage from "@/features/payroll/pages/payroll-configuration/tab/BPJSPage";
+import AcuanPotonganPage from "@/features/payroll/pages/payroll-configuration/tab/DeductionReferencePage";
+import TunjanganTetapPage from "@/features/payroll/pages/payroll-configuration/tab/FixedAllowancePage";
+import TunjanganTidakTetapPage from "@/features/payroll/pages/payroll-configuration/tab/NonRecurringAllowancePage";
+import PotonganTidakTetapPage from "@/features/payroll/pages/payroll-configuration/tab/NonRecurringDeductionPage";
+import THRPage from "@/features/payroll/pages/payroll-configuration/tab/BonusTHRPage";
 // Dokumentasi: Halaman dan tab Periode Penggajian
 import PeriodePenggajianPage from "@/features/payroll/pages/payroll-period/PayrollPeriodPage";
 import NonAETab from "@/features/payroll/pages/payroll-period/tab/NonAEPages";
