@@ -60,7 +60,7 @@ export const useLogin = () => {
         updatedAt: response.account.updated_at || new Date().toISOString(),
       };
 
-      setAuth({ user, accessToken: response.token });
+      setAuth({ user, accessToken: response.token, rememberMe: data.rememberMe });
 
       console.log('Login successful:', response);
 
