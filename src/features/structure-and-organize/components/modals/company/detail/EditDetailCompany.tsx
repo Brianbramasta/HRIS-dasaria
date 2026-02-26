@@ -96,7 +96,7 @@ const EditDetailCompany: React.FC<EditDetailCompanyProps> = ({ isOpen, onClose, 
               required
             />
             <InputField
-              label="Gmail"
+              label="Email"
               type="email"
               value={form.email}
               onChange={(e:any) => handleChange('email', e.target.value)}
