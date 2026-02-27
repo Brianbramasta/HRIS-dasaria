@@ -57,7 +57,7 @@ export const Step04SalaryBpjs: React.FC = () => {
               options={bankOptions}
               defaultValue={step3.bank}
               onChange={(value) => handleChange('bank', value)}
-              placeholder="Select"
+              placeholder="Pilih"
               required
             />
           </div>)}
@@ -69,7 +69,7 @@ export const Step04SalaryBpjs: React.FC = () => {
               options={bankOptions}
               defaultValue={step3.bank}
               onChange={(value) => handleChange('bank', value)}
-              placeholder="Select"
+              placeholder="Pilih"
               required
             />
           </div>)}
@@ -309,7 +309,7 @@ export const Step04SalaryBpjs: React.FC = () => {
               options={BPJS_TK_STATUS_OPTIONS}
               defaultValue={step3.statusBpjsKetenagakerjaan}
               onChange={(value) => handleChange('statusBpjsKetenagakerjaan', value)}
-              placeholder="Select"
+              placeholder="Pilih"
               
             />
           </div>
@@ -334,7 +334,7 @@ export const Step04SalaryBpjs: React.FC = () => {
               options={BPJS_STATUS_OPTIONS}
               defaultValue={step3.statusBpjsKesehatan}
               onChange={(value) => handleChange('statusBpjsKesehatan', value)}
-              placeholder="Select"
+              placeholder="Pilih"
               
             />
           </div>

@@ -98,7 +98,7 @@ export const Step02EducationalBackground: React.FC = () => {
                         options={pendidikanTerakhir}
                         defaultValue={edu.jenjang}
                         onChange={(value) => updateEducationField(index, 'jenjang', value)}
-                        placeholder="Select"
+                        
                         required
                       />
                     </div>
@@ -116,7 +116,7 @@ export const Step02EducationalBackground: React.FC = () => {
                       <InputField
                         id={`gelar-${index}`}
                         label="Gelar"
-                        placeholder="Masukkan gelar"
+                        placeholder="Masukkan deskripsi"
                         value={edu.gelar}
                         onChange={(e) => updateEducationField(index, 'gelar', e.target.value)}
                       />
