@@ -12,6 +12,12 @@ interface InputFieldProps extends InnerProps {
   suffix?: ReactNode;
 }
 
+const generatePlaceholder = (label?: ReactNode): string => {
+  if (!label) return "Masukkan nilai";
+  const labelStr = String(label).replace("*", "").trim();
+  return `Masukkan ${labelStr.toLowerCase()}`;
+};
+
 const InputField: FC<InputFieldProps> = ({
   label,
   labelClassName,
@@ -21,9 +27,11 @@ const InputField: FC<InputFieldProps> = ({
   required,
   suffix,
   className,
+  placeholder,
   ...rest
 }) => {
   const controlId = htmlFor ?? id;
+  const defaultPlaceholder = placeholder || generatePlaceholder(label);
 
   return (
     <div className={containerClassName}>
@@ -36,7 +44,7 @@ const InputField: FC<InputFieldProps> = ({
         </Label>
       )}
       <div className="relative">
-        <Input id={controlId} required={required} className={`${className || ""} ${suffix ? "pr-10" : ""}`} {...rest} />
+        <Input id={controlId} required={required} className={`${className || ""} ${suffix ? "pr-10" : ""}`} placeholder={defaultPlaceholder} {...rest} />
         {suffix && (
           <div className="absolute right-3 top-1/2 -translate-y-1/2 z-10 flex">
             {suffix}
