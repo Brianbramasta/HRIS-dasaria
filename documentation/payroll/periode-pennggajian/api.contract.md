@@ -23,6 +23,7 @@ Query Parameters (opsional):
 - `per_page` (integer)
 - `search` (string)
 - `status` (string)
+- `type` (string) - nilai: `mitra` | `staff`
 - `column` (string)
 - `sort` (`asc` | `desc`)
 - `filter_column[<column>][in][]` (string, multiple)
@@ -30,6 +31,7 @@ Query Parameters (opsional):
 
 Response (200 OK):
 ```json
+// response data if type staff
 {
     "meta": {
         "status": 200,
@@ -39,161 +41,161 @@ Response (200 OK):
         "current_page": 1,
         "data": [
             {
-                "payroll_id": "019c69c6-1a2f-7033-9138-f27b3d9b2c23",
-                "employee_id": "DSR042",
+                "payroll_id": "019c75f4-9bb7-710e-b1e1-cc57bdded9ff",
+                "employee_id": "DSR035",
                 "avatar": null,
-                "full_name": "kita tes",
-                "periode": "2026-02-17",
+                "full_name": "tes direktur",
+                "periode": "2026-02-19",
                 "working_days": 24,
-                "net_salary": "6341000",
+                "net_salary": 10984000,
                 "basic_salary": 5000000,
                 "deduction_total": 141000,
                 "allowance_total": 1000000,
-                "non_fixed_allowance_total": 6000,
+                "non_fixed_allowance_total": 5125000,
                 "employee_category_name": "Staff",
                 "company_name": "Dasaria",
-                "payroll_status_name": "Menunggu Maker"
+                "payroll_status_name": "Selesai"
             },
             {
-                "payroll_id": "019c69c6-cb03-706a-9cb8-5837841724f7",
-                "employee_id": "DSR042",
+                "payroll_id": "019c7a5e-2404-7125-8652-1a7903a7cafc",
+                "employee_id": "DSR038",
                 "avatar": null,
-                "full_name": "kita tes",
-                "periode": "2026-02-17",
+                "full_name": "tes direktur",
+                "periode": "2026-02-20",
                 "working_days": 24,
-                "net_salary": "6341000",
+                "net_salary": 10302000,
                 "basic_salary": 5000000,
-                "deduction_total": 141000,
+                "deduction_total": 1141000,
                 "allowance_total": 1000000,
-                "non_fixed_allowance_total": 6000,
+                "non_fixed_allowance_total": 5443000,
                 "employee_category_name": "Staff",
                 "company_name": "Dasaria",
-                "payroll_status_name": "Menunggu Maker"
+                "payroll_status_name": "Selesai"
             },
             {
-                "payroll_id": "019c69c6-55e0-70c9-8e0e-591abd25321d",
-                "employee_id": "DSR042",
-                "avatar": null,
-                "full_name": "kita tes",
-                "periode": "2026-02-17",
+                "payroll_id": "019c7a5e-23b5-7158-a4a7-c40ac5e222ad",
+                "employee_id": "DSR036",
+                "avatar": "EmployeeMasterData/Avatar/a8a4bd5b-6caa-4ce2-ad92-4a162ea526cb.jpeg",
+                "full_name": "tes direktur",
+                "periode": "2026-02-20",
                 "working_days": 24,
-                "net_salary": "6341000",
+                "net_salary": 11299000,
                 "basic_salary": 5000000,
                 "deduction_total": 141000,
                 "allowance_total": 1000000,
-                "non_fixed_allowance_total": 6000,
+                "non_fixed_allowance_total": 5440000,
                 "employee_category_name": "Staff",
                 "company_name": "Dasaria",
-                "payroll_status_name": "Menunggu Maker"
+                "payroll_status_name": "Selesai"
             },
             {
-                "payroll_id": "019c69c7-bb14-73e1-ba64-078110cf6d73",
-                "employee_id": "DSR042",
+                "payroll_id": "019c7a5e-2363-713c-9972-eea47f2abcf3",
+                "employee_id": "DSR035",
                 "avatar": null,
-                "full_name": "kita tes",
-                "periode": "2026-02-17",
+                "full_name": "tes direktur",
+                "periode": "2026-02-20",
                 "working_days": 24,
-                "net_salary": "6341000",
+                "net_salary": 10984000,
                 "basic_salary": 5000000,
                 "deduction_total": 141000,
                 "allowance_total": 1000000,
-                "non_fixed_allowance_total": 6000,
+                "non_fixed_allowance_total": 5125000,
                 "employee_category_name": "Staff",
                 "company_name": "Dasaria",
-                "payroll_status_name": "Menunggu Maker"
+                "payroll_status_name": "Selesai"
             },
             {
-                "payroll_id": "019c69c7-f392-72c5-9c2a-ca246f4dfd5a",
+                "payroll_id": "019c75f4-9e9a-7044-a88d-ec18722a8f16",
                 "employee_id": "DSR042",
                 "avatar": null,
                 "full_name": "kita tes",
-                "periode": "2026-02-17",
+                "periode": "2026-02-19",
                 "working_days": 24,
-                "net_salary": "6341000",
+                "net_salary": 6168022,
                 "basic_salary": 5000000,
                 "deduction_total": 141000,
                 "allowance_total": 1000000,
-                "non_fixed_allowance_total": 6000,
+                "non_fixed_allowance_total": 309022,
                 "employee_category_name": "Staff",
                 "company_name": "Dasaria",
-                "payroll_status_name": "Menunggu Maker"
+                "payroll_status_name": "Proses distribusi"
             },
             {
-                "payroll_id": "019c69c8-2ef2-71b2-9666-8d45597795c9",
-                "employee_id": "DSR042",
+                "payroll_id": "019c75f4-9dec-716f-82eb-ac05ee4b41df",
+                "employee_id": "DSR041",
                 "avatar": null,
-                "full_name": "kita tes",
-                "periode": "2026-02-17",
+                "full_name": "semoga tidak double",
+                "periode": "2026-02-19",
                 "working_days": 24,
-                "net_salary": "6341000",
+                "net_salary": 16888921,
                 "basic_salary": 5000000,
                 "deduction_total": 141000,
                 "allowance_total": 1000000,
-                "non_fixed_allowance_total": 6000,
+                "non_fixed_allowance_total": 11029921,
                 "employee_category_name": "Staff",
                 "company_name": "Dasaria",
-                "payroll_status_name": "Menunggu Maker"
+                "payroll_status_name": "Menunggu diproses BOD"
             },
             {
-                "payroll_id": "019c69c5-e062-706f-aa8e-d19fc7cb00b1",
-                "employee_id": "DSR042",
+                "payroll_id": "019c75f4-9d94-7124-bebc-302ecc9ba904",
+                "employee_id": "DSR040",
                 "avatar": null,
-                "full_name": "kita tes",
-                "periode": "2026-02-17",
-                "working_days": 24,
-                "net_salary": "6341000",
+                "full_name": "tes bpjs",
+                "periode": "2026-02-19",
+                "working_days": 25,
+                "net_salary": 16454349,
                 "basic_salary": 5000000,
                 "deduction_total": 141000,
                 "allowance_total": 1000000,
-                "non_fixed_allowance_total": 6000,
+                "non_fixed_allowance_total": 9279001,
                 "employee_category_name": "Staff",
                 "company_name": "Dasaria",
-                "payroll_status_name": "Menunggu Maker"
+                "payroll_status_name": "Menunggu diproses Direktur HRGA"
             },
             {
-                "payroll_id": "019c69c6-8f5f-72b0-88e7-abad461d6b54",
-                "employee_id": "DSR042",
+                "payroll_id": "019c75f4-9c9d-7379-8317-cda58066bf7b",
+                "employee_id": "DSR038",
                 "avatar": null,
-                "full_name": "kita tes",
-                "periode": "2026-02-17",
+                "full_name": "tes direktur",
+                "periode": "2026-02-19",
                 "working_days": 24,
-                "net_salary": "6341000",
+                "net_salary": 21831001,
                 "basic_salary": 5000000,
-                "deduction_total": 141000,
+                "deduction_total": 5000,
                 "allowance_total": 1000000,
-                "non_fixed_allowance_total": 6000,
+                "non_fixed_allowance_total": 15836001,
                 "employee_category_name": "Staff",
                 "company_name": "Dasaria",
-                "payroll_status_name": "Menunggu Maker"
+                "payroll_status_name": "Menunggu diproses Direktur HRGA"
             },
             {
-                "payroll_id": "019c69c7-7b55-71f2-985e-8d79ba1cf45b",
-                "employee_id": "DSR042",
-                "avatar": null,
-                "full_name": "kita tes",
-                "periode": "2026-02-17",
+                "payroll_id": "019c75f4-9c10-735e-aa56-78e790a2c2ef",
+                "employee_id": "DSR036",
+                "avatar": "EmployeeMasterData/Avatar/a8a4bd5b-6caa-4ce2-ad92-4a162ea526cb.jpeg",
+                "full_name": "tes direktur",
+                "periode": "2026-02-19",
                 "working_days": 24,
-                "net_salary": "6341000",
+                "net_salary": 11299000,
                 "basic_salary": 5000000,
                 "deduction_total": 141000,
                 "allowance_total": 1000000,
-                "non_fixed_allowance_total": 6000,
+                "non_fixed_allowance_total": 5440000,
                 "employee_category_name": "Staff",
                 "company_name": "Dasaria",
-                "payroll_status_name": "Menunggu Maker"
+                "payroll_status_name": "Selesai"
             },
             {
-                "payroll_id": "019c69c7-400e-719d-b2aa-ceb777cda9ff",
-                "employee_id": "DSR042",
+                "payroll_id": "019cad74-3da2-7053-ade7-a35a01c5bedd",
+                "employee_id": "DSR041",
                 "avatar": null,
-                "full_name": "kita tes",
-                "periode": "2026-02-17",
-                "working_days": 24,
-                "net_salary": "6341000",
+                "full_name": "semoga tidak double",
+                "periode": "2026-03-02",
+                "working_days": 26,
+                "net_salary": 6338000,
                 "basic_salary": 5000000,
                 "deduction_total": 141000,
                 "allowance_total": 1000000,
-                "non_fixed_allowance_total": 6000,
+                "non_fixed_allowance_total": 3000,
                 "employee_category_name": "Staff",
                 "company_name": "Dasaria",
                 "payroll_status_name": "Menunggu Maker"
@@ -201,9 +203,170 @@ Response (200 OK):
         ],
         "per_page": 10,
         "to": 10,
-        "total": 12666
+        "total": 73
     }
 }
+
+//response data if type mitra
+{
+    "meta": {
+        "status": 200,
+        "message": "Data payroll periode retrieved successfully"
+    },
+    "data": {
+        "current_page": 1,
+        "data": [
+            {
+                "payroll_id": "019c8f06-ed56-709f-8d73-12008b45d83a",
+                "employee_id": "DSR037",
+                "avatar": "EmployeeMasterData/Avatar/34515eda-b1ec-48e5-8125-3e685ee9b685.jpg",
+                "full_name": "Brian Bramasta",
+                "periode": "2026-02-24",
+                "working_days": null,
+                "net_salary": 4600,
+                "basic_salary": 100,
+                "deduction_total": 0,
+                "allowance_total": 0,
+                "non_fixed_allowance_total": 4500,
+                "employee_category_name": "Mitra",
+                "company_name": "Dasaria",
+                "payroll_status_name": "Selesai"
+            },
+            {
+                "payroll_id": "019cad78-d028-71a2-a1cc-27633f26afee",
+                "employee_id": "DSR037",
+                "avatar": "EmployeeMasterData/Avatar/34515eda-b1ec-48e5-8125-3e685ee9b685.jpg",
+                "full_name": "Brian Bramasta",
+                "periode": "2026-03-02",
+                "working_days": null,
+                "net_salary": 100,
+                "basic_salary": 100,
+                "deduction_total": 0,
+                "allowance_total": 0,
+                "non_fixed_allowance_total": 0,
+                "employee_category_name": "Mitra",
+                "company_name": "Dasaria",
+                "payroll_status_name": "Menunggu Maker"
+            },
+            {
+                "payroll_id": "019cad74-3ea7-71d9-b7b6-54599b47c8c4",
+                "employee_id": "DSR037",
+                "avatar": "EmployeeMasterData/Avatar/34515eda-b1ec-48e5-8125-3e685ee9b685.jpg",
+                "full_name": "Brian Bramasta",
+                "periode": "2026-03-02",
+                "working_days": null,
+                "net_salary": 100,
+                "basic_salary": 100,
+                "deduction_total": 0,
+                "allowance_total": 0,
+                "non_fixed_allowance_total": 0,
+                "employee_category_name": "Mitra",
+                "company_name": "Dasaria",
+                "payroll_status_name": "Menunggu Maker"
+            },
+            {
+                "payroll_id": "019cad25-90ec-71c9-b1c2-bd2cb203bfbf",
+                "employee_id": "DSR037",
+                "avatar": "EmployeeMasterData/Avatar/34515eda-b1ec-48e5-8125-3e685ee9b685.jpg",
+                "full_name": "Brian Bramasta",
+                "periode": "2026-03-02",
+                "working_days": null,
+                "net_salary": 100,
+                "basic_salary": 100,
+                "deduction_total": 0,
+                "allowance_total": 0,
+                "non_fixed_allowance_total": 0,
+                "employee_category_name": "Mitra",
+                "company_name": "Dasaria",
+                "payroll_status_name": "Menunggu Maker"
+            },
+            {
+                "payroll_id": "019cace7-3dc6-7059-ad8c-d21e01c05e1d",
+                "employee_id": "DSR037",
+                "avatar": "EmployeeMasterData/Avatar/34515eda-b1ec-48e5-8125-3e685ee9b685.jpg",
+                "full_name": "Brian Bramasta",
+                "periode": "2026-03-02",
+                "working_days": null,
+                "net_salary": 100,
+                "basic_salary": 100,
+                "deduction_total": 0,
+                "allowance_total": 0,
+                "non_fixed_allowance_total": 0,
+                "employee_category_name": "Mitra",
+                "company_name": "Dasaria",
+                "payroll_status_name": "Menunggu Maker"
+            },
+            {
+                "payroll_id": "019cace6-52c2-71b4-bd24-cd4d295341a4",
+                "employee_id": "DSR037",
+                "avatar": "EmployeeMasterData/Avatar/34515eda-b1ec-48e5-8125-3e685ee9b685.jpg",
+                "full_name": "Brian Bramasta",
+                "periode": "2026-03-02",
+                "working_days": null,
+                "net_salary": 100,
+                "basic_salary": 100,
+                "deduction_total": 0,
+                "allowance_total": 0,
+                "non_fixed_allowance_total": 0,
+                "employee_category_name": "Mitra",
+                "company_name": "Dasaria",
+                "payroll_status_name": "Menunggu Maker"
+            },
+            {
+                "payroll_id": "019cace5-682e-71ba-94b3-0305ce2a55be",
+                "employee_id": "DSR037",
+                "avatar": "EmployeeMasterData/Avatar/34515eda-b1ec-48e5-8125-3e685ee9b685.jpg",
+                "full_name": "Brian Bramasta",
+                "periode": "2026-03-02",
+                "working_days": null,
+                "net_salary": 100,
+                "basic_salary": 100,
+                "deduction_total": 0,
+                "allowance_total": 0,
+                "non_fixed_allowance_total": 0,
+                "employee_category_name": "Mitra",
+                "company_name": "Dasaria",
+                "payroll_status_name": "Menunggu Maker"
+            },
+            {
+                "payroll_id": "019cace4-83de-7100-9630-ad32b2f5cc60",
+                "employee_id": "DSR037",
+                "avatar": "EmployeeMasterData/Avatar/34515eda-b1ec-48e5-8125-3e685ee9b685.jpg",
+                "full_name": "Brian Bramasta",
+                "periode": "2026-03-02",
+                "working_days": null,
+                "net_salary": 100,
+                "basic_salary": 100,
+                "deduction_total": 0,
+                "allowance_total": 0,
+                "non_fixed_allowance_total": 0,
+                "employee_category_name": "Mitra",
+                "company_name": "Dasaria",
+                "payroll_status_name": "Menunggu Maker"
+            },
+            {
+                "payroll_id": "019cacdc-4822-71e6-855c-e55b90edc7bd",
+                "employee_id": "DSR037",
+                "avatar": "EmployeeMasterData/Avatar/34515eda-b1ec-48e5-8125-3e685ee9b685.jpg",
+                "full_name": "Brian Bramasta",
+                "periode": "2026-03-02",
+                "working_days": null,
+                "net_salary": 100,
+                "basic_salary": 100,
+                "deduction_total": 0,
+                "allowance_total": 0,
+                "non_fixed_allowance_total": 0,
+                "employee_category_name": "Mitra",
+                "company_name": "Dasaria",
+                "payroll_status_name": "Menunggu Maker"
+            }
+        ],
+        "per_page": 10,
+        "to": 9,
+        "total": 9
+    }
+}
+
 ```
 
 Status: `200 OK`
@@ -219,6 +382,9 @@ Path Parameters:
 
 Response (200 OK):
 ```json
+
+// if response type staff
+
 {
     "meta": {
         "status": 200,
@@ -226,215 +392,236 @@ Response (200 OK):
     },
     "data": {
         "information_employee": {
-            "payroll_id": "019c6b53-77b0-7204-b86c-ebbf8cd62af6",
-            "employee_id": "DSR040",
-            "full_name": "tes bpjs",
-            "working_days": 24,
-            "basic_salary": 5000000,
-            "employee_category_name": "Staff",
-            "company_name": "Dasaria"
+            "payroll_id": "019c8f06-ed56-709f-8d73-12008b45d83a",
+            "employee_id": "DSR037",
+            "full_name": "Brian Bramasta",
+            "working_days": null,
+            "basic_salary": 100,
+            "periode": "2026-02-24",
+            "employee_category_name": "Mitra",
+            "company_name": "Dasaria",
+            "payroll_status_name": "Selesai"
         },
         "fixed_allowance_and_deduction": {
-            "fixed_allowance_and_deduction": [
-                {
-                    "id": "019c6b53-77b8-70a9-9199-b121fd9168b0",
-                    "payroll_id": "019c6b53-77b0-7204-b86c-ebbf8cd62af6",
-                    "componen_id": "935190b2-fb3a-11f0-ac6d-54e1ad857d3e",
-                    "componen_name": "Tunjangan Jabatan",
-                    "amount": "1000000.00"
-                },
-                {
-                    "id": "019c6b53-77c2-7317-9456-d991baaf08b8",
-                    "payroll_id": "019c6b53-77b0-7204-b86c-ebbf8cd62af6",
-                    "componen_id": "019be556-2d43-7252-bd2c-ef105cf0d5f1",
-                    "componen_name": "test",
-                    "amount": "3000.00"
-                },
-                {
-                    "id": "019c6b53-77c9-70a1-a37c-5355cc00c454",
-                    "payroll_id": "019c6b53-77b0-7204-b86c-ebbf8cd62af6",
-                    "componen_id": "019be8bd-dda9-73f3-aa86-cff4c5bcd07e",
-                    "componen_name": "test",
-                    "amount": "3000.00"
-                },
-                {
-                    "id": "019c6b53-77d0-7231-b5ba-42da77892a2b",
-                    "payroll_id": "019c6b53-77b0-7204-b86c-ebbf8cd62af6",
-                    "componen_id": "9664bdbb-0c83-43ab-9234-bc0a5cd0bfc7",
-                    "componen_name": "Tunjangan BPJS Kesehatan - BPJS Kesehatan",
-                    "amount": "164000.00"
-                },
-                {
-                    "id": "019c6b53-77e0-71d9-8cb5-ff93cadaf798",
-                    "payroll_id": "019c6b53-77b0-7204-b86c-ebbf8cd62af6",
-                    "componen_id": "c8892409-0393-460a-b918-b1fd5065b989",
-                    "componen_name": "Potongan BPJS Kesehatan - BPJS Kesehatan",
-                    "amount": "41000.00"
-                },
-                {
-                    "id": "019c6b53-77ea-715e-a972-a58b304d8785",
-                    "payroll_id": "019c6b53-77b0-7204-b86c-ebbf8cd62af6",
-                    "componen_id": "42a3c8bd-6cab-4f82-b07d-686eb9225038",
-                    "componen_name": "Tunjangan BPJS Ketenagakerjaan - BPJS Kematian",
-                    "amount": "15000.00"
-                },
-                {
-                    "id": "019c6b53-77fd-7251-9b52-dc0f1b1873dc",
-                    "payroll_id": "019c6b53-77b0-7204-b86c-ebbf8cd62af6",
-                    "componen_id": "987d9fbb-5192-433f-8809-67ee98471179",
-                    "componen_name": "Tunjangan BPJS Ketenagakerjaan - BPJS Kecelakaan Kerja",
-                    "amount": "12000.00"
-                },
-                {
-                    "id": "019c6b53-7812-7389-a32e-96f0a4c996d4",
-                    "payroll_id": "019c6b53-77b0-7204-b86c-ebbf8cd62af6",
-                    "componen_id": "de0e1fee-0709-4777-953a-1605a5b24914",
-                    "componen_name": "Tunjangan BPJS Ketenagakerjaan - BPJS Hari Tua",
-                    "amount": "185000.00"
-                },
-                {
-                    "id": "019c6b53-7819-7194-8570-a9f628134bb4",
-                    "payroll_id": "019c6b53-77b0-7204-b86c-ebbf8cd62af6",
-                    "componen_id": "fc89e069-1d5b-4a84-b874-d1ceb339e282",
-                    "componen_name": "Tunjangan BPJS Ketenagakerjaan - BPJS Pensiun",
-                    "amount": "100000.00"
-                },
-                {
-                    "id": "019c6b53-7820-73ab-9328-ab5a6b5f5a81",
-                    "payroll_id": "019c6b53-77b0-7204-b86c-ebbf8cd62af6",
-                    "componen_id": "86229e8a-976c-46fe-8afd-365a88e18385",
-                    "componen_name": "Potongan BPJS Ketenagakerjaan - BPJS Pensiun",
-                    "amount": "50000.00"
-                },
-                {
-                    "id": "019c6b53-7827-73a7-b2f0-b49ec4c65277",
-                    "payroll_id": "019c6b53-77b0-7204-b86c-ebbf8cd62af6",
-                    "componen_id": "cb26a194-85f8-47bd-85bf-1293e4a12e5e",
-                    "componen_name": "Potongan BPJS Ketenagakerjaan - BPJS Hari Tua",
-                    "amount": "50000.00"
-                }
-            ],
-            "employee_loan": [
-                {
-                    "id": "969021bf-0102-11f1-95c5-54e1ad857d3e",
-                    "application_id": null,
-                    "employee_id": "DSR040",
-                    "application_date": "2026-02-03",
-                    "deduction_start_period": "2026-02-01 00:00:00",
-                    "disbursed_at": "2026-02-03",
-                    "loan_type_id": "b69d0bf8-6539-4f6c-88e5-b4e07e929726",
-                    "nominal_loan": 5000000,
-                    "nominal_installment": 700,
-                    "loan_period": 4,
-                    "loan_status_id": "4e6a7a39-3b7a-4d30-85ee-abbd04a8a98b",
-                    "supervisor_approval_file": "anggap ada",
-                    "supporting_documents": "anggap ada",
-                    "loan_description": "ini untuk istri saya ",
-                    "rejection_reason": null,
-                    "created_at": null,
-                    "updated_at": "2026-02-16T04:20:03.000000Z"
-                }
-            ]
+            "fixed_allowance_and_deduction": [],
+            "employee_loan": []
         },
         "non_fixed_allowance": {
             "non_fixed_allowance": [
                 {
-                    "id": "019be536-1eeb-72fd-9524-ca1ed8920a0d",
+                    "componen_id": "019be2d6-5f13-729d-b0e8-3441d3a0b52d",
                     "allowance_name": "tes",
                     "category_sub": "Umum",
                     "amount": null
                 },
                 {
-                    "id": "019bfc07-51e4-715a-9f18-925ec9c896bc",
+                    "componen_id": "019be536-1eeb-72fd-9524-ca1ed8920a0d",
+                    "allowance_name": "tes",
+                    "category_sub": "Umum",
+                    "amount": null
+                },
+                {
+                    "componen_id": "019be543-f736-73f3-adde-58b4dfe5cecc",
+                    "allowance_name": "test",
+                    "category_sub": "Umum",
+                    "amount": null
+                },
+                {
+                    "componen_id": "019bfc07-51e4-715a-9f18-925ec9c896bc",
                     "allowance_name": "tes aja",
                     "category_sub": "Umum",
                     "amount": null
                 },
                 {
-                    "id": "019c6eb7-fa2c-7371-8279-541f3a94e521",
+                    "componen_id": "019c6eb7-fa2c-7371-8279-541f3a94e521",
                     "allowance_name": "Tunjangan PPh 21",
                     "category_sub": "Umum",
-                    "amount": 450000
+                    "amount": null
                 },
                 {
-                    "id": "019c6eb8-d148-71ae-a954-5a62349218bb",
+                    "componen_id": "019c6eb8-d148-71ae-a954-5a62349218bb",
                     "allowance_name": "Tunjangan Pendidikan",
                     "category_sub": "Umum",
-                    "amount": 1000000
+                    "amount": null
                 },
                 {
-                    "id": "019c6eba-29ac-71a4-8ae4-9b94e6dca3a6",
+                    "componen_id": "019c6eba-29ac-71a4-8ae4-9b94e6dca3a6",
                     "allowance_name": "Insentif",
                     "category_sub": "Umum",
-                    "amount": 180000
+                    "amount": 500
                 },
                 {
-                    "id": "019c6eba-86a0-71ea-8a82-016db6f8409b",
+                    "componen_id": "019c6eba-86a0-71ea-8a82-016db6f8409b",
                     "allowance_name": "Overtime",
                     "category_sub": "Umum",
-                    "amount": 140000
+                    "amount": 500
                 },
                 {
-                    "id": "019c6eba-e49a-7315-8e94-bce16246d549",
+                    "componen_id": "019c6eba-e49a-7315-8e94-bce16246d549",
                     "allowance_name": "Komisi Sales",
                     "category_sub": "Umum",
-                    "amount": 290000
+                    "amount": 500
                 },
                 {
-                    "id": "019c6ebb-357e-71ef-92bd-d27272bd7fcc",
+                    "componen_id": "019c6ebb-357e-71ef-92bd-d27272bd7fcc",
                     "allowance_name": "Komisi Survey Sales",
                     "category_sub": "Umum",
-                    "amount": 95000
+                    "amount": 500
                 },
                 {
-                    "id": "019c6ebb-689c-7373-8213-a53565db82e1",
+                    "componen_id": "019c6ebb-689c-7373-8213-a53565db82e1",
                     "allowance_name": "Growth Reward",
                     "category_sub": "Umum",
-                    "amount": 45000
+                    "amount": 500
                 },
                 {
-                    "id": "019c6ebc-d813-70f9-840a-d8a5be8456fb",
+                    "componen_id": "019c6ebc-d813-70f9-840a-d8a5be8456fb",
                     "allowance_name": "Fee Mitra Subnet",
                     "category_sub": "Umum",
-                    "amount": 70000
+                    "amount": 500
                 },
                 {
-                    "id": "019c6ebd-1752-72d6-9894-d702fd60224c",
+                    "componen_id": "019c6ebd-1752-72d6-9894-d702fd60224c",
                     "allowance_name": "Uang Saku PKL/Internship",
                     "category_sub": "Umum",
-                    "amount": 1700000
-                }
-            ],
-            "employee_non_fixed_allowance": [
-                {
-                    "id": "019be556-2d43-7252-bd2c-ef105cf0d5f1",
-                    "allowance_name": "test",
-                    "category_sub": "Diskresi",
-                    "amount": 3000
+                    "amount": 500
                 },
                 {
-                    "id": "019be8bd-dda9-73f3-aa86-cff4c5bcd07e",
-                    "allowance_name": "test",
-                    "category_sub": "Diskresi",
-                    "amount": 3000
+                    "componen_id": "019c9f57-03f2-7290-b22a-c87337de3be6",
+                    "allowance_name": "Tunjangan Pendidikan",
+                    "category_sub": "Umum",
+                    "amount": 500
                 }
             ]
         },
-        "non_fixed_deduction": [
-            {
-                "id": "019be54d-7d04-72cb-ac68-b7dd95c4adc3",
-                "deduction_name": "tes oke",
-                "category": "notfixed",
-                "amount": 5000
-            }
-        ],
+        "non_fixed_deduction": [],
         "gross_calculation": {
-            "gross_salary": 10626000,
-            "deduction_total": 141000,
-            "net_salary": "10485000"
+            "gross_salary": 4600,
+            "deduction_total": 0,
+            "net_salary": 4600,
+            "note_hr": "tes",
+            "note_bod": "tes"
         }
     }
 }
+
+// if response type mitra
+
+{
+    "meta": {
+        "status": 200,
+        "message": "Payroll periode detail retrieved successfully"
+    },
+    "data": {
+        "information_employee": {
+            "payroll_id": "019c8f06-ed56-709f-8d73-12008b45d83a",
+            "employee_id": "DSR037",
+            "full_name": "Brian Bramasta",
+            "working_days": null,
+            "basic_salary": 100,
+            "periode": "2026-02-24",
+            "employee_category_name": "Mitra",
+            "company_name": "Dasaria",
+            "payroll_status_name": "Selesai"
+        },
+        "non_fixed_allowance": {
+            "non_fixed_allowance": [
+                {
+                    "componen_id": "019be2d6-5f13-729d-b0e8-3441d3a0b52d",
+                    "allowance_name": "tes",
+                    "category_sub": "Umum",
+                    "amount": null
+                },
+                {
+                    "componen_id": "019be536-1eeb-72fd-9524-ca1ed8920a0d",
+                    "allowance_name": "tes",
+                    "category_sub": "Umum",
+                    "amount": null
+                },
+                {
+                    "componen_id": "019be543-f736-73f3-adde-58b4dfe5cecc",
+                    "allowance_name": "test",
+                    "category_sub": "Umum",
+                    "amount": null
+                },
+                {
+                    "componen_id": "019bfc07-51e4-715a-9f18-925ec9c896bc",
+                    "allowance_name": "tes aja",
+                    "category_sub": "Umum",
+                    "amount": null
+                },
+                {
+                    "componen_id": "019c6eb7-fa2c-7371-8279-541f3a94e521",
+                    "allowance_name": "Tunjangan PPh 21",
+                    "category_sub": "Umum",
+                    "amount": null
+                },
+                {
+                    "componen_id": "019c6eb8-d148-71ae-a954-5a62349218bb",
+                    "allowance_name": "Tunjangan Pendidikan",
+                    "category_sub": "Umum",
+                    "amount": null
+                },
+                {
+                    "componen_id": "019c6eba-29ac-71a4-8ae4-9b94e6dca3a6",
+                    "allowance_name": "Insentif",
+                    "category_sub": "Umum",
+                    "amount": 500
+                },
+                {
+                    "componen_id": "019c6eba-86a0-71ea-8a82-016db6f8409b",
+                    "allowance_name": "Overtime",
+                    "category_sub": "Umum",
+                    "amount": 500
+                },
+                {
+                    "componen_id": "019c6eba-e49a-7315-8e94-bce16246d549",
+                    "allowance_name": "Komisi Sales",
+                    "category_sub": "Umum",
+                    "amount": 500
+                },
+                {
+                    "componen_id": "019c6ebb-357e-71ef-92bd-d27272bd7fcc",
+                    "allowance_name": "Komisi Survey Sales",
+                    "category_sub": "Umum",
+                    "amount": 500
+                },
+                {
+                    "componen_id": "019c6ebb-689c-7373-8213-a53565db82e1",
+                    "allowance_name": "Growth Reward",
+                    "category_sub": "Umum",
+                    "amount": 500
+                },
+                {
+                    "componen_id": "019c6ebc-d813-70f9-840a-d8a5be8456fb",
+                    "allowance_name": "Fee Mitra Subnet",
+                    "category_sub": "Umum",
+                    "amount": 500
+                },
+                {
+                    "componen_id": "019c6ebd-1752-72d6-9894-d702fd60224c",
+                    "allowance_name": "Uang Saku PKL/Internship",
+                    "category_sub": "Umum",
+                    "amount": 500
+                },
+                {
+                    "componen_id": "019c9f57-03f2-7290-b22a-c87337de3be6",
+                    "allowance_name": "Tunjangan Pendidikan",
+                    "category_sub": "Umum",
+                    "amount": 500
+                }
+            ]
+        },
+        "gross_calculation": {
+            "gross_salary": 4600,
+            "deduction_total": 0,
+            "net_salary": 4600,
+            "note_hr": "tes",
+            "note_bod": "tes"
+        }
+    }
+}
+
 ```
 
 Status: `200 OK`

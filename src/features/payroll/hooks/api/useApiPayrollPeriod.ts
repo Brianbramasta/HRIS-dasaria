@@ -58,6 +58,7 @@ interface UseApiPayrollPeriodReturn {
     sortBy: string;
     sortOrder: 'asc' | 'desc' | null;
     filterStatus: string;
+    type: string;
 
     // Actions
     fetchPayrollPeriods: (filter?: Partial<TableFilter>) => Promise<void>;
@@ -80,6 +81,7 @@ interface UseApiPayrollPeriodReturn {
     setSort: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
     setColumnFilters: (filters: Record<string, string[]>) => void;
     setDateRangeFilters: (filters: Record<string, { startDate: string; endDate: string | null }>) => void;
+    setType: (type: string) => void;
 
     // Column filters
     columnFilters: Record<string, string[]>;
@@ -99,6 +101,7 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
     const [search, setSearch] = useState<string>('');
     const [sortBy, setSortBy] = useState<string>('');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
+    const [type, setType] = useState<string>('');
     const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
     const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
 
@@ -116,10 +119,12 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
                 const effectiveSortBy = filter?.sortBy ?? sortBy;
                 const effectiveSortOrder = filter?.sortOrder ?? sortOrder;
                 const effectiveStatus = filter?.filter ?? filterStatus;
+                const effectiveType = filter?.type ?? type;
 
                 const params: any = { page: effectivePage, per_page: effectivePageSize };
                 if (effectiveSearch) params.search = effectiveSearch;
                 if (effectiveStatus) params.status = effectiveStatus;
+                if (effectiveType) params.type = effectiveType;
                 if (effectiveSortBy) {
                     params.column = toSortField(effectiveSortBy);
                     if (effectiveSortOrder) params.sort = effectiveSortOrder;
@@ -160,6 +165,8 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
                 const perPage = payload?.per_page ?? filter?.pageSize ?? pageSize;
                 const totalPagesCalc = perPage ? Math.ceil(totalCount / perPage) : 1;
 
+                console.log(items,' items');
+
                 setPayrollPeriods((items || []).map(mapToPayrollPeriodListItem));
                 setTotal(totalCount);
                 setTotalPages(totalPagesCalc);
@@ -176,7 +183,7 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
                 setLoading(false);
             }
         },
-        [search, sortBy, sortOrder, page, pageSize, filterStatus, columnFilters, dateRangeFilters]
+        [search, sortBy, sortOrder, page, pageSize, filterStatus, type, columnFilters, dateRangeFilters]
     );
 
     const fetchPayrollPeriodDetail = useCallback(async (payrollId: string): Promise<PayrollPeriodDetailData | null> => {
@@ -412,6 +419,7 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
         sortBy,
         sortOrder,
         filterStatus,
+        type,
 
         fetchPayrollPeriods,
         fetchPayrollPeriodDetail,
@@ -430,6 +438,7 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
         setSort: handleSetSort,
         setColumnFilters: handleSetColumnFilters,
         setDateRangeFilters: handleSetDateRangeFilters,
+        setType,
 
         columnFilters,
         dateRangeFilters,

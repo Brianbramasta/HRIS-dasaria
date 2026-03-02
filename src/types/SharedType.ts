@@ -20,6 +20,7 @@ export interface TableFilter {
   sortOrder?: 'asc' | 'desc' | null;
   page: number;
   pageSize: number;
+  type?: string;
 }
 
 export interface ApiPagination {

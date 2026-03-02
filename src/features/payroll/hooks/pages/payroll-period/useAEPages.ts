@@ -5,7 +5,6 @@ import { useApiPayrollPeriod } from '../../api/useApiPayrollPeriod';
 import { PayrollPeriodListItem } from '../../../types/dto/PayrollPeriodType';
 import { formatCurrency } from '@/utils/formatCurrency';
 import { formatDateToIndonesian } from '@/utils/formatDate';
-import { usePayrollApprovalStore } from '../../../store/usePayrollApprovalStore';
 
 const toPayrollPeriodFilterColumnId = (columnId: string): string => {
   const map: Record<string, string> = {
@@ -15,7 +14,7 @@ const toPayrollPeriodFilterColumnId = (columnId: string): string => {
   return map[columnId] || columnId;
 };
 
-export type NonAERow = {
+export type AERow = {
   no?: number;
   payrollId: string;
   idKaryawan: string;
@@ -23,52 +22,45 @@ export type NonAERow = {
   tanggalPengajuan: string;
   jumlahHariKerja: string;
   totalGajiBersih: string;
-  gajiPokokUangSaku: string;
+  uangTransportasi: string;
   potongan: string;
-  tunjanganTetap: string;
   tunjanganTidakTetap: string;
   kategori: string;
   perusahaan: string;
   statusPenggajian: string;
 };
 
-// Mapping helper from PayrollPeriodListItem to NonAERow
-const mapPayrollPeriodToNonAERow = (item: PayrollPeriodListItem, index: number): NonAERow => ({
+// Mapping helper from PayrollPeriodListItem to AERow
+const mapPayrollPeriodToAERow = (item: PayrollPeriodListItem, index: number): AERow => ({
   no: index + 1,
   payrollId: item.payrollId,
   idKaryawan: item.employeeId,
   pengguna: item.fullName,
   tanggalPengajuan: item.periode,
-  jumlahHariKerja: String(item.workingDays),
+  jumlahHariKerja: item.workingDays ? String(item.workingDays) : '-',
   totalGajiBersih: item.netSalary,
-  gajiPokokUangSaku: String(item.basicSalary),
+  uangTransportasi: String(item.allowanceTotal),
   potongan: String(item.deductionTotal),
-  tunjanganTetap: String(item.allowanceTotal),
   tunjanganTidakTetap: String(item.nonFixedAllowanceTotal),
   kategori: item.employeeCategoryName,
   perusahaan: item.companyName,
   statusPenggajian: item.payrollStatusName,
 });
 
-export interface UseNonAEPagesOptions {
+export interface UseAEPagesOptions {
   resetKey?: string;
 }
 
-export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
+export function useAEPages(_options: UseAEPagesOptions = {}) {
   const location = useLocation();
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [approvalType, setApprovalType] = useState<string>('Persetujuan oleh FAT');
-  const [approvalStatusFetched, setApprovalStatusFetched] = useState(false);
-  
-  const approvalStore = usePayrollApprovalStore();
 
   // Hook untuk fetch data payroll period
   const {
     payrollPeriods,
     fetchPayrollPeriods,
-    approvalHr,
-    fetchImportApprovalStatus,
     loading,
     total,
     page,
@@ -87,12 +79,17 @@ export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
     setType,
   } = useApiPayrollPeriod();
 
+  // Set type to 'mitra' when component mounts
+  useEffect(() => {
+    setType('Mitra');
+  }, [setType]);
+
   // Dokumentasi: Deteksi halaman Approval atau Distribusi untuk set judul
   const isApprovalPage = location.pathname.includes('/payroll-period-approval');
   const isDistribusiPage = location.pathname.includes('/salary-distribution');
   const basePrefix = isApprovalPage ? '/payroll-period-approval' : '/payroll-period';
   // Dokumentasi: Gunakan prefix detail khusus distribusi saat di halaman Distribusi
-  const detailPathPrefix = isDistribusiPage ? '/salary-distribution/detail-non-ae' : `${basePrefix}/detail-non-ae`;
+  const detailPathPrefix = isDistribusiPage ? '/salary-distribution/detail-ae' : `${basePrefix}/detail-ae`;
   const title = isApprovalPage ? 'Approval Periode Gajian' : isDistribusiPage ? 'Distribusi Slip Gaji' : 'Periode Gajian';
 
   // Dokumentasi: Fungsi untuk navigasi detail dengan approval type sebagai query parameter
@@ -100,38 +97,24 @@ export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
     navigate(`${detailPathPrefix}/${payrollId}?approvalType=${encodeURIComponent(approvalType)}`);
   };
 
-  // Set type to 'staff' when component mounts
+  // Dokumentasi: Fetch data saat component mount
   useEffect(() => {
-    setType('Staff');
     setPage(1);
     setPageSize(10);
     setSearch('');
     setSort('', 'asc');
     setColumnFilters({});
     setDateRangeFilters({});
-  }, [setType, setPage, setPageSize, setSearch, setSort, setColumnFilters, setDateRangeFilters]);
+  }, [setPage, setPageSize, setSearch, setSort, setColumnFilters, setDateRangeFilters]);
 
   useEffect(() => {
-    fetchPayrollPeriods({ page, pageSize, search, sortBy, sortOrder, type: 'Staff' });
+    fetchPayrollPeriods({ page, pageSize, search, sortBy, sortOrder, type: 'Mitra' });
   }, [page, pageSize, search, sortBy, sortOrder, columnFilters, dateRangeFilters, fetchPayrollPeriods]);
 
-  useEffect(() => {
-    if (!approvalStatusFetched) {
-      const fetchStatus = async () => {
-        const status = await fetchImportApprovalStatus();
-        if (status) {
-          approvalStore.setApprovalStatus(status);
-        }
-        setApprovalStatusFetched(true);
-      };
-      fetchStatus();
-    }
-  }, [fetchImportApprovalStatus, approvalStatusFetched]);
+  // Map PayrollPeriodListItem to AERow
+  const rows: AERow[] = payrollPeriods.map((item, index) => mapPayrollPeriodToAERow(item, index));
 
-  // Map PayrollPeriodListItem to NonAERow
-  const rows: NonAERow[] = payrollPeriods.map((item, index) => mapPayrollPeriodToNonAERow(item, index));
-
-  const baseColumns: DataTableColumn<NonAERow>[] = [
+  const baseColumns: DataTableColumn<AERow>[] = [
     { id: 'no', label: 'No.', align: 'center', sortable: false },
     { id: 'idKaryawan', label: 'NIP' },
     { id: 'pengguna', label: 'Pengguna' },
@@ -143,9 +126,8 @@ export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
     },
     { id: 'jumlahHariKerja', label: 'Jumlah Hari Kerja' },
     { id: 'totalGajiBersih', label: 'Total Gaji Bersih', align: 'right', format: (v) => formatCurrency(Number(v)) },
-    { id: 'gajiPokokUangSaku', label: 'Gaji Pokok / Uang Saku', align: 'right', format: (v) => formatCurrency(Number(v)) },
+    { id: 'uangTransportasi', label: 'Uang Transportasi', align: 'right', format: (v) => formatCurrency(Number(v)) },
     { id: 'potongan', label: 'Potongan', align: 'right', format: (v) => formatCurrency(Number(v)) },
-    { id: 'tunjanganTetap', label: 'Tunjangan Tetap', align: 'right', format: (v) => formatCurrency(Number(v)) },
     { id: 'tunjanganTidakTetap', label: 'Tunjangan Tidak Tetap', align: 'right', format: (v) => formatCurrency(Number(v)) },
     { id: 'kategori', label: 'Kategori' },
     { id: 'perusahaan', label: 'Perusahaan' },
@@ -194,33 +176,6 @@ export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
     });
   };
 
-  const handleFinalize = async (selectedRows: NonAERow[]) => {
-    const isSelectAll = (selectedRows?.length ?? 0) > 0 && (selectedRows?.length ?? 0) === rows.length;
-    if (isSelectAll) {
-      const ok = await approvalHr({ payrollIds: [], all: true });
-      if (ok) {
-        await fetchPayrollPeriods({ page, pageSize });
-      }
-      return ok;
-    }
-
-    const payrollIds = Array.from(
-      new Set(
-        (selectedRows || [])
-          .map((r) => r.payrollId)
-          .filter((id): id is string => Boolean(id))
-      )
-    );
-
-    if (!payrollIds.length) return false;
-
-    const ok = await approvalHr({ payrollIds });
-    if (ok) {
-      await fetchPayrollPeriods({ page, pageSize });
-    }
-    return ok;
-  };
-
   const handleApprovalTypeChange = (type: string) => {
     setApprovalType(type);
     setIsDropdownOpen(false);
@@ -244,9 +199,6 @@ export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
     isDropdownOpen,
     approvalType,
     
-    // Store
-    approvalStore,
-    
     // Handlers
     handleDetailNavigation,
     handleSearchChange,
@@ -255,16 +207,15 @@ export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
     handleRowsPerPageChange,
     handleColumnFilterChange,
     handleDateRangeFilterChange,
-    handleFinalize,
     
     // Dropdown handlers
     setIsDropdownOpen,
     handleApprovalTypeChange,
     
-    // Selection logic
-    isRowSelectable: (row: NonAERow) => String(row.statusPenggajian ?? '').toLowerCase().trim() === 'menunggu maker',
-    canEditDelete: (row: NonAERow) => String(row.statusPenggajian ?? '').toLowerCase().trim() === 'menunggu maker',
+    // Selection logic - for mitra, no selection allowed
+    isRowSelectable: () => false,
+    canEditDelete: () => false,
   };
 }
 
-export default useNonAEPages;
+export default useAEPages;
