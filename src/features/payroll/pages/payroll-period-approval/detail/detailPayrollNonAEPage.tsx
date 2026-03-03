@@ -52,7 +52,7 @@ export default function DetailGajiPage() {
 
   useEffect(() => {
     if (!id) return;
-    fetchPayrollPeriodDetail(id);
+    fetchPayrollPeriodDetail(id, 'Staff');
     console.log("payrollPeriodDetail", payrollPeriodDetail?.current?.non_fixed_allowance);
   }, [id, fetchPayrollPeriodDetail]);
 

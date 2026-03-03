@@ -48,12 +48,13 @@ interface UseApiPayrollPeriodDirectorHrReturn {
     search: string;
     sortBy: string;
     sortOrder: 'asc' | 'desc' | null;
+    type: string;
 
     columnFilters: Record<string, string[]>;
     dateRangeFilters: Record<string, { startDate: string; endDate: string | null }>;
 
     fetchPayrollPeriods: (filter?: Partial<TableFilter>) => Promise<void>;
-    fetchPayrollPeriodDetail: (payrollId: string) => Promise<PayrollPeriodDirectorHrDetailData | null>;
+    fetchPayrollPeriodDetail: (payrollId: string, type?: string) => Promise<PayrollPeriodDirectorHrDetailData | null>;
     approvalDirectorHr: (payload: PayrollPeriodDirectorHrApprovalPayload) => Promise<boolean>;
 
     setPage: (page: number) => void;
@@ -62,6 +63,7 @@ interface UseApiPayrollPeriodDirectorHrReturn {
     setSort: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
     setColumnFilters: (filters: Record<string, string[]>) => void;
     setDateRangeFilters: (filters: Record<string, { startDate: string; endDate: string | null }>) => void;
+    setType: (type: string) => void;
 }
 
 export const useApiPayrollPeriodDirectorHr = (): UseApiPayrollPeriodDirectorHrReturn => {
@@ -79,6 +81,7 @@ export const useApiPayrollPeriodDirectorHr = (): UseApiPayrollPeriodDirectorHrRe
 
     const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
     const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
+    const [type, setType] = useState<string>('');
 
     const filterStatus = useFilterStore((s) => s.filters['PayrollPeriodStatus'] ?? '');
 
@@ -106,6 +109,7 @@ export const useApiPayrollPeriodDirectorHr = (): UseApiPayrollPeriodDirectorHrRe
                 const params: any = { page: effectivePage, per_page: effectivePageSize };
                 if (effectiveSearch) params.search = effectiveSearch;
                 if (effectiveStatus) params.status = effectiveStatus;
+                if (type) params.type = type;
                 if (effectiveSortBy) {
                     params.column = toSortField(effectiveSortBy);
                     if (effectiveSortOrder) params.sort = effectiveSortOrder;
@@ -162,15 +166,18 @@ export const useApiPayrollPeriodDirectorHr = (): UseApiPayrollPeriodDirectorHrRe
                 setLoading(false);
             }
         },
-        [page, pageSize, search, sortBy, sortOrder, filterStatus, columnFilters, dateRangeFilters]
+        [type, page, pageSize, search, sortBy, sortOrder, filterStatus, columnFilters, dateRangeFilters]
     );
 
-    const fetchPayrollPeriodDetail = useCallback(async (payrollId: string): Promise<PayrollPeriodDirectorHrDetailData | null> => {
+    const fetchPayrollPeriodDetail = useCallback(async (payrollId: string, typeParam?: string): Promise<PayrollPeriodDirectorHrDetailData | null> => {
         setLoading(true);
         setError(null);
 
         try {
-            const response = await payrollPeriodDirectorHrService.getPayrollPeriodDirectorHrDetail(payrollId);
+            const params: any = {};
+            const effectiveType = typeParam || type;
+            if (effectiveType) params.type = effectiveType;
+            const response = await payrollPeriodDirectorHrService.getPayrollPeriodDirectorHrDetail(payrollId, params);
             const detail = response.data ?? null;
             setPayrollPeriodDetail(detail);
             return detail;
@@ -182,7 +189,7 @@ export const useApiPayrollPeriodDirectorHr = (): UseApiPayrollPeriodDirectorHrRe
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [type]);
 
     const approvalDirectorHr = useCallback(async (payload: PayrollPeriodDirectorHrApprovalPayload): Promise<boolean> => {
         setLoading(true);
@@ -222,6 +229,7 @@ export const useApiPayrollPeriodDirectorHr = (): UseApiPayrollPeriodDirectorHrRe
         search,
         sortBy,
         sortOrder,
+        type,
 
         columnFilters,
         dateRangeFilters,
@@ -241,5 +249,6 @@ export const useApiPayrollPeriodDirectorHr = (): UseApiPayrollPeriodDirectorHrRe
         },
         setColumnFilters,
         setDateRangeFilters,
+        setType,
     };
 };

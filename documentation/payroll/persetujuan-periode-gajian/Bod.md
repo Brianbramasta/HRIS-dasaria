@@ -17,6 +17,9 @@
  ### Daftar Periode Gajian (Antrian Approval BOD)
  
  Endpoint: `GET /api/payroll/payroll-periode/index-BOD`
+
+Query Parameters:
+- `type` (string, opsional) – nilai: `Mitra` | `Staff`
  
  Response (200 OK):
  ```json
@@ -134,18 +137,21 @@
  
  Status: `200 OK`
  
- ---
+---
  
- ### Detail Periode Gajian (BOD)
+### Detail Periode Gajian (BOD)
  
- Endpoint: `GET /api/payroll/payroll-periode/{payroll_id}/detail-bod`
+Endpoint: `GET /api/payroll/payroll-periode/{payroll_id}/detail-bod`
+
+Path Parameters:
+- `payroll_id` (string, required) – ID payroll (UUID)
+
+Query Parameters:
+- `type` (string, opsional) – nilai: `Mitra` | `Staff`
  
- Path Parameters:
- - `payroll_id` (string, required) – ID payroll (UUID)
- 
- Response (200 OK):
- ```json
- {
+Response (200 OK):
+```json
+{
     "meta": {
         "status": 200,
         "message": "Payroll periode detail for approval retrieved successfully"

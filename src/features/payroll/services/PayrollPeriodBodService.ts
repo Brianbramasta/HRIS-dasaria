@@ -8,8 +8,9 @@ class PayrollPeriodBodService {
         return apiService.get<any>(`${this.basePath}/index-BOD${qs ? `?${qs}` : ''}`);
     }
 
-    async getPayrollPeriodBodDetail(payrollId: string): Promise<any> {
-        return apiService.get<any>(`${this.basePath}/${payrollId}/detail-bod`);
+    async getPayrollPeriodBodDetail(payrollId: string, params?: any): Promise<any> {
+        const qs = params ? apiService.buildQueryString(params) : '';
+        return apiService.get<any>(`${this.basePath}/${payrollId}/detail-bod${qs ? `?${qs}` : ''}`);
     }
 
     async approvalBod(formData: FormData): Promise<any> {

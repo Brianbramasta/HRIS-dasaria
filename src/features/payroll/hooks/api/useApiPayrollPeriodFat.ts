@@ -48,12 +48,13 @@ interface UseApiPayrollPeriodFatReturn {
     search: string;
     sortBy: string;
     sortOrder: 'asc' | 'desc' | null;
+    type: string;
 
     columnFilters: Record<string, string[]>;
     dateRangeFilters: Record<string, { startDate: string; endDate: string | null }>;
 
     fetchPayrollPeriods: (filter?: Partial<TableFilter>) => Promise<void>;
-    fetchPayrollPeriodDetail: (payrollId: string) => Promise<PayrollPeriodFatDetailData | null>;
+    fetchPayrollPeriodDetail: (payrollId: string, type?: string) => Promise<PayrollPeriodFatDetailData | null>;
     approvalFat: (payload: PayrollPeriodFatApprovalPayload) => Promise<boolean>;
 
     setPage: (page: number) => void;
@@ -62,6 +63,7 @@ interface UseApiPayrollPeriodFatReturn {
     setSort: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
     setColumnFilters: (filters: Record<string, string[]>) => void;
     setDateRangeFilters: (filters: Record<string, { startDate: string; endDate: string | null }>) => void;
+    setType: (type: string) => void;
 }
 
 export const useApiPayrollPeriodFat = (): UseApiPayrollPeriodFatReturn => {
@@ -79,6 +81,7 @@ export const useApiPayrollPeriodFat = (): UseApiPayrollPeriodFatReturn => {
 
     const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
     const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
+    const [type, setType] = useState<string>('');
 
     const filterStatus = useFilterStore((s) => s.filters['PayrollPeriodStatus'] ?? '');
 
@@ -106,6 +109,7 @@ export const useApiPayrollPeriodFat = (): UseApiPayrollPeriodFatReturn => {
                 const params: any = { page: effectivePage, per_page: effectivePageSize };
                 if (effectiveSearch) params.search = effectiveSearch;
                 if (effectiveStatus) params.status = effectiveStatus;
+                if (type) params.type = type;
                 if (effectiveSortBy) {
                     params.column = toSortField(effectiveSortBy);
                     if (effectiveSortOrder) params.sort = effectiveSortOrder;
@@ -162,16 +166,19 @@ export const useApiPayrollPeriodFat = (): UseApiPayrollPeriodFatReturn => {
                 setLoading(false);
             }
         },
-        [page, pageSize, search, sortBy, sortOrder, filterStatus, columnFilters, dateRangeFilters]
+        [type, page, pageSize, search, sortBy, sortOrder, filterStatus, columnFilters, dateRangeFilters]
     );
 
-    const fetchPayrollPeriodDetail = useCallback(async (payrollId: string): Promise<PayrollPeriodFatDetailData | null> => {
+    const fetchPayrollPeriodDetail = useCallback(async (payrollId: string, typeParam?: string): Promise<PayrollPeriodFatDetailData | null> => {
         setLoading(true);
         setError(null);
 
         try {
-            const response = await payrollPeriodFatService.getPayrollPeriodFatDetail(payrollId);
-            const detail = (response as any)?.data ?? null;
+            const params: any = {};
+            const effectiveType = typeParam || type;
+            if (effectiveType) params.type = effectiveType;
+            const response = await payrollPeriodFatService.getPayrollPeriodFatDetail(payrollId, params);
+            const detail = response.data ?? null;
             setPayrollPeriodDetail(detail);
             return detail;
         } catch (err) {
@@ -182,7 +189,7 @@ export const useApiPayrollPeriodFat = (): UseApiPayrollPeriodFatReturn => {
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [type]);
 
     const approvalFat = useCallback(async (payload: PayrollPeriodFatApprovalPayload): Promise<boolean> => {
         setLoading(true);
@@ -222,6 +229,7 @@ export const useApiPayrollPeriodFat = (): UseApiPayrollPeriodFatReturn => {
         search,
         sortBy,
         sortOrder,
+        type,
 
         columnFilters,
         dateRangeFilters,
@@ -241,5 +249,6 @@ export const useApiPayrollPeriodFat = (): UseApiPayrollPeriodFatReturn => {
         },
         setColumnFilters,
         setDateRangeFilters,
+        setType,
     };
 };

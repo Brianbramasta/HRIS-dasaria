@@ -8,8 +8,9 @@ class PayrollPeriodFatService {
         return apiService.get<any>(`${this.basePath}/index-FAT${qs ? `?${qs}` : ''}`);
     }
 
-    async getPayrollPeriodFatDetail(payrollId: string): Promise<any> {
-        return apiService.get<any>(`${this.basePath}/${payrollId}/detail-fat`);
+    async getPayrollPeriodFatDetail(payrollId: string, params?: any): Promise<any> {
+        const qs = params ? apiService.buildQueryString(params) : '';
+        return apiService.get<any>(`${this.basePath}/${payrollId}/detail-fat${qs ? `?${qs}` : ''}`);
     }
 
     async approvalFat(formData: FormData): Promise<any> {

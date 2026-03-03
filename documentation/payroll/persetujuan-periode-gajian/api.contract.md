@@ -17,6 +17,9 @@
  ### Daftar Periode Gajian (Antrian Approval HR Direktur)
  
  Endpoint: `GET /api/payroll/payroll-periode/index-Directur-HR`
+
+Query Parameters:
+- `type` (string, opsional) – nilai: `Mitra` | `Staff`
  
  Response (200 OK):
  ```json
@@ -155,9 +158,12 @@
  ### Detail Periode Gajian (HR Direktur)
  
  Endpoint: `GET /api/payroll/payroll-periode/{payroll_id}/detail-directur-hr`
- 
- Path Parameters:
- - `payroll_id` (string, required) – ID payroll (UUID)
+
+Path Parameters:
+- `payroll_id` (string, required) – ID payroll (UUID)
+
+Query Parameters:
+- `type` (string, opsional) – nilai: `Mitra` | `Staff`
  
  Response (200 OK):
  ```json

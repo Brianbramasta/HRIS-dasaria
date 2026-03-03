@@ -9,8 +9,9 @@ class PayrollPeriodDirectorHrService {
         return apiService.get<any>(`${this.basePath}/index-Directur-HR${qs ? `?${qs}` : ''}`);
     }
 
-    async getPayrollPeriodDirectorHrDetail(payrollId: string): Promise<any> {
-        return apiService.get<any>(`${this.basePath}/${payrollId}/detail-directur-hr`);
+    async getPayrollPeriodDirectorHrDetail(payrollId: string, params?: any): Promise<any> {
+        const qs = params ? apiService.buildQueryString(params) : '';
+        return apiService.get<any>(`${this.basePath}/${payrollId}/detail-directur-hr${qs ? `?${qs}` : ''}`);
     }
 
     async approvalDirectorHr(formData: FormData): Promise<any> {
