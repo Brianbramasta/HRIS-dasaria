@@ -27,6 +27,7 @@ Query Parameters:
 - `sort` (`asc` | `desc`, opsional)
 - `filter_column[<column>][in][]` (string[], opsional)
 - `filter_column[<column>][range][]` (string[], opsional) – start/end date
+- `type` (string, opsional) – nilai: `Mitra` | `Staff`
 
 Response (200 OK):
 ```json
@@ -146,6 +147,7 @@ Request Body (form-data):
 - `payroll_id[1]` (text, opsional) – ulangi sesuai jumlah data yang diproses
 - `all` (text, opsional) – nilai: `true` (jika ingin proses semua data)
 - `payroll_periode_id` (text, opsional) – ID payroll periode (dipakai pada Postman sample)
+- `type` (string, opsional) – nilai: `Mitra` | `Staff`
 
 Catatan:
 - Jika `all=true`, `payroll_id[n]` biasanya tidak diperlukan.
@@ -175,6 +177,7 @@ Endpoint: `GET /api/payroll/payroll-periode/{payroll_id}/slip-gaji`
 
 Path Parameters:
 - `payroll_id` (string, required) – ID payroll (UUID)
+- `type` (string, opsional) – nilai: `Mitra` | `Staff`
 
 <!-- Response (200 OK):
 ```json
@@ -197,7 +200,8 @@ Status: `200 OK` -->
 ```bash
 curl -X GET \
   "http://localhost:3000/api/payroll/payroll-periode/index-distribution" \
-  -H "Authorization: Bearer <token>"
+  -H "Authorization: Bearer <token>" \
+  -G -d "type=Mitra"
 ```
 
 ### Kirim Slip Gaji (Distribusi)
@@ -209,12 +213,14 @@ curl -X POST \
   -F "payroll_id[0]=019c7a5e-2363-713c-9972-eea47f2abcf3" \
   -F "payroll_id[1]=019c7a5e-23b5-7158-a4a7-c40ac5e222ad" \
   -F "all=true" \
-  -F "payroll_periode_id=019c7a5e-22bd-71ab-a5ae-a7238e5104b6"
+  -F "payroll_periode_id=019c7a5e-22bd-71ab-a5ae-a7238e5104b6" \
+  -F "type=Mitra"
 ```
 
 ### Ambil Slip Gaji
 ```bash
 curl -X GET \
   "http://localhost:3000/api/payroll/payroll-periode/019c75f4-9bb7-710e-b1e1-cc57bdded9ff/slip-gaji" \
-  -H "Authorization: Bearer <token>"
+  -H "Authorization: Bearer <token>" \
+  -G -d "type=Mitra"
 ```
