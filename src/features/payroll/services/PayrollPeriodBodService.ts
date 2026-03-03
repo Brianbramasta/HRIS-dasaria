@@ -13,8 +13,9 @@ class PayrollPeriodBodService {
         return apiService.get<any>(`${this.basePath}/${payrollId}/detail-bod${qs ? `?${qs}` : ''}`);
     }
 
-    async approvalBod(formData: FormData): Promise<any> {
-        return apiService.post<any>(`${this.basePath}/approval-bod`, formData, {
+    async approvalBod(formData: FormData, type?: string): Promise<any> {
+        const url = type ? `${this.basePath}/approval-bod?type=${type}` : `${this.basePath}/approval-bod`;
+        return apiService.post<any>(url, formData, {
             headers: { 'Content-Type': 'multipart/form-data' },
         });
     }

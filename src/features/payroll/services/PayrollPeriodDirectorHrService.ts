@@ -14,8 +14,9 @@ class PayrollPeriodDirectorHrService {
         return apiService.get<any>(`${this.basePath}/${payrollId}/detail-directur-hr${qs ? `?${qs}` : ''}`);
     }
 
-    async approvalDirectorHr(formData: FormData): Promise<any> {
-        return apiService.post<any>(`${this.basePath}/approval-hr-directur`, formData, {
+    async approvalDirectorHr(formData: FormData, type?: string): Promise<any> {
+        const url = type ? `${this.basePath}/approval-hr-directur?type=${type}` : `${this.basePath}/approval-hr-directur`;
+        return apiService.post<any>(url, formData, {
             headers: { 'Content-Type': 'multipart/form-data' },
         });
     }

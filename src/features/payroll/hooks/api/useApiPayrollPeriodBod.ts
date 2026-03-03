@@ -55,7 +55,7 @@ interface UseApiPayrollPeriodBodReturn {
 
     fetchPayrollPeriods: (filter?: Partial<TableFilter>) => Promise<void>;
     fetchPayrollPeriodDetail: (payrollId: string, type?: string) => Promise<PayrollPeriodBodDetailData | null>;
-    approvalBod: (payload: PayrollPeriodBodApprovalPayload) => Promise<boolean>;
+    approvalBod: (payload: PayrollPeriodBodApprovalPayload, type?: string) => Promise<boolean>;
 
     setPage: (page: number) => void;
     setPageSize: (pageSize: number) => void;
@@ -191,13 +191,16 @@ export const useApiPayrollPeriodBod = (): UseApiPayrollPeriodBodReturn => {
         }
     }, [type]);
 
-    const approvalBod = useCallback(async (payload: PayrollPeriodBodApprovalPayload): Promise<boolean> => {
+    const approvalBod = useCallback(async (payload: PayrollPeriodBodApprovalPayload, type?: string): Promise<boolean> => {
         setLoading(true);
         setError(null);
 
         try {
             const formData = new FormData();
             formData.append('_method', 'PATCH');
+            if (type) {
+                formData.append('type', type);
+            }
             if (payload.all) {
                 formData.append('all', 'true');
             } else {
@@ -206,7 +209,7 @@ export const useApiPayrollPeriodBod = (): UseApiPayrollPeriodBodReturn => {
                 });
             }
 
-            await payrollPeriodBodService.approvalBod(formData);
+            await payrollPeriodBodService.approvalBod(formData, type);
             return true;
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to approval BOD');

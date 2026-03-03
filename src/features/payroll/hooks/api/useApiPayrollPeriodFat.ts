@@ -55,7 +55,7 @@ interface UseApiPayrollPeriodFatReturn {
 
     fetchPayrollPeriods: (filter?: Partial<TableFilter>) => Promise<void>;
     fetchPayrollPeriodDetail: (payrollId: string, type?: string) => Promise<PayrollPeriodFatDetailData | null>;
-    approvalFat: (payload: PayrollPeriodFatApprovalPayload) => Promise<boolean>;
+    approvalFat: (payload: PayrollPeriodFatApprovalPayload, type?: string) => Promise<boolean>;
 
     setPage: (page: number) => void;
     setPageSize: (pageSize: number) => void;
@@ -191,13 +191,16 @@ export const useApiPayrollPeriodFat = (): UseApiPayrollPeriodFatReturn => {
         }
     }, [type]);
 
-    const approvalFat = useCallback(async (payload: PayrollPeriodFatApprovalPayload): Promise<boolean> => {
+    const approvalFat = useCallback(async (payload: PayrollPeriodFatApprovalPayload, type?: string): Promise<boolean> => {
         setLoading(true);
         setError(null);
 
         try {
             const formData = new FormData();
             formData.append('_method', 'PATCH');
+            if (type) {
+                formData.append('type', type);
+            }
             if (payload.all) {
                 formData.append('all', 'true');
             } else {
@@ -206,7 +209,7 @@ export const useApiPayrollPeriodFat = (): UseApiPayrollPeriodFatReturn => {
                 });
             }
 
-            await payrollPeriodFatService.approvalFat(formData);
+            await payrollPeriodFatService.approvalFat(formData, type);
             return true;
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to approval FAT');

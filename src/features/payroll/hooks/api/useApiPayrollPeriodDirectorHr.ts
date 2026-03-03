@@ -55,7 +55,7 @@ interface UseApiPayrollPeriodDirectorHrReturn {
 
     fetchPayrollPeriods: (filter?: Partial<TableFilter>) => Promise<void>;
     fetchPayrollPeriodDetail: (payrollId: string, type?: string) => Promise<PayrollPeriodDirectorHrDetailData | null>;
-    approvalDirectorHr: (payload: PayrollPeriodDirectorHrApprovalPayload) => Promise<boolean>;
+    approvalDirectorHr: (payload: PayrollPeriodDirectorHrApprovalPayload, type?: string) => Promise<boolean>;
 
     setPage: (page: number) => void;
     setPageSize: (pageSize: number) => void;
@@ -191,13 +191,16 @@ export const useApiPayrollPeriodDirectorHr = (): UseApiPayrollPeriodDirectorHrRe
         }
     }, [type]);
 
-    const approvalDirectorHr = useCallback(async (payload: PayrollPeriodDirectorHrApprovalPayload): Promise<boolean> => {
+    const approvalDirectorHr = useCallback(async (payload: PayrollPeriodDirectorHrApprovalPayload, type?: string): Promise<boolean> => {
         setLoading(true);
         setError(null);
 
         try {
             const formData = new FormData();
             formData.append('_method', 'PATCH');
+            if (type) {
+                formData.append('type', type);
+            }
             if (payload.all) {
                 formData.append('all', 'true');
             } else {
@@ -206,7 +209,7 @@ export const useApiPayrollPeriodDirectorHr = (): UseApiPayrollPeriodDirectorHrRe
                 });
             }
 
-            await payrollPeriodDirectorHrService.approvalDirectorHr(formData);
+            await payrollPeriodDirectorHrService.approvalDirectorHr(formData, type);
             return true;
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to approval Director HR');

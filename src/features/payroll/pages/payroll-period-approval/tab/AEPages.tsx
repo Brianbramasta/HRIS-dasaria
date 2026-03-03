@@ -549,13 +549,13 @@ export default function AETab({ }: { resetKey?: string }) {
 
       if (isSelectAll) {
         if (isDirectorHrga) {
-          result = await approvalDirectorHr({ payrollIds: [], all: true });
+          result = await approvalDirectorHr({ payrollIds: [], all: true }, employeeType);
           if (result) await fetchDirectorRows({ page: 1, pageSize: 10, type: employeeType });
         } else if (isFat) {
-          result = await approvalFat({ payrollIds: [], all: true });
+          result = await approvalFat({ payrollIds: [], all: true }, employeeType);
           if (result) await fetchFatRows({ page: 1, pageSize: 10, type: employeeType });
         } else if (isBod) {
-          result = await approvalBod({ payrollIds: [], all: true });
+          result = await approvalBod({ payrollIds: [], all: true }, employeeType);
           if (result) await fetchBodRows({ page: 1, pageSize: 10, type: employeeType });
         }
       } else {
@@ -564,13 +564,13 @@ export default function AETab({ }: { resetKey?: string }) {
         );
 
         if (isDirectorHrga) {
-          result = await approvalDirectorHr({ payrollIds });
+          result = await approvalDirectorHr({ payrollIds }, employeeType);
           if (result) await fetchDirectorRows({ page: directorPage, pageSize: 10, type: employeeType });
         } else if (isFat) {
-          result = await approvalFat({ payrollIds });
+          result = await approvalFat({ payrollIds }, employeeType);
           if (result) await fetchFatRows({ page: fatPage, pageSize: 10, type: employeeType });
         } else if (isBod) {
-          result = await approvalBod({ payrollIds });
+          result = await approvalBod({ payrollIds }, employeeType);
           if (result) await fetchBodRows({ page: bodPage, pageSize: 10, type: employeeType });
         }
       }

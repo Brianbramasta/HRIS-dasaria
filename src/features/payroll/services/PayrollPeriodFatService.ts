@@ -13,8 +13,9 @@ class PayrollPeriodFatService {
         return apiService.get<any>(`${this.basePath}/${payrollId}/detail-fat${qs ? `?${qs}` : ''}`);
     }
 
-    async approvalFat(formData: FormData): Promise<any> {
-        return apiService.post<any>(`${this.basePath}/approval-fat`, formData, {
+    async approvalFat(formData: FormData, type?: string): Promise<any> {
+        const url = type ? `${this.basePath}/approval-fat?type=${type}` : `${this.basePath}/approval-fat`;
+        return apiService.post<any>(url, formData, {
             headers: { 'Content-Type': 'multipart/form-data' },
         });
     }
