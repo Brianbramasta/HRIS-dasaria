@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { DataTableColumn } from '@/components/shared/datatable/DataTable';
 import { useApiPayrollPeriod } from '../../api/useApiPayrollPeriod';
+import { usePayrollApprovalStore } from '../../../store/usePayrollApprovalStore';
 import { PayrollPeriodListItem } from '../../../types/dto/PayrollPeriodType';
 import { formatCurrency } from '@/utils/formatCurrency';
 import { formatDateToIndonesian } from '@/utils/formatDate';
@@ -22,7 +23,7 @@ export type AERow = {
   tanggalPengajuan: string;
   jumlahHariKerja: string;
   totalGajiBersih: string;
-  uangTransportasi: string;
+  fee: string;
   potongan: string;
   tunjanganTidakTetap: string;
   kategori: string;
@@ -39,7 +40,7 @@ const mapPayrollPeriodToAERow = (item: PayrollPeriodListItem, index: number): AE
   tanggalPengajuan: item.periode,
   jumlahHariKerja: item.workingDays ? String(item.workingDays) : '-',
   totalGajiBersih: item.netSalary,
-  uangTransportasi: String(item.allowanceTotal),
+  fee: item.netSalary,
   potongan: String(item.deductionTotal),
   tunjanganTidakTetap: String(item.nonFixedAllowanceTotal),
   kategori: item.employeeCategoryName,
@@ -56,11 +57,16 @@ export function useAEPages(_options: UseAEPagesOptions = {}) {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [approvalType, setApprovalType] = useState<string>('Persetujuan oleh FAT');
+  const [approvalStatusFetched, setApprovalStatusFetched] = useState(false);
+  
+  const approvalStore = usePayrollApprovalStore();
 
   // Hook untuk fetch data payroll period
   const {
     payrollPeriods,
     fetchPayrollPeriods,
+    approvalHr,
+    fetchImportApprovalStatus,
     loading,
     total,
     page,
@@ -79,7 +85,7 @@ export function useAEPages(_options: UseAEPagesOptions = {}) {
     setType,
   } = useApiPayrollPeriod();
 
-  // Set type to 'mitra' when component mounts
+  // Set type to 'Mitra' when component mounts
   useEffect(() => {
     setType('Mitra');
   }, [setType]);
@@ -108,6 +114,19 @@ export function useAEPages(_options: UseAEPagesOptions = {}) {
   }, [setPage, setPageSize, setSearch, setSort, setColumnFilters, setDateRangeFilters]);
 
   useEffect(() => {
+    if (!approvalStatusFetched) {
+      const fetchStatus = async () => {
+        const status = await fetchImportApprovalStatus();
+        if (status) {
+          approvalStore.setApprovalStatus(status);
+        }
+        setApprovalStatusFetched(true);
+      };
+      fetchStatus();
+    }
+  }, [fetchImportApprovalStatus, approvalStatusFetched]);
+
+  useEffect(() => {
     fetchPayrollPeriods({ page, pageSize, search, sortBy, sortOrder, type: 'Mitra' });
   }, [page, pageSize, search, sortBy, sortOrder, columnFilters, dateRangeFilters, fetchPayrollPeriods]);
 
@@ -126,7 +145,7 @@ export function useAEPages(_options: UseAEPagesOptions = {}) {
     },
     { id: 'jumlahHariKerja', label: 'Jumlah Hari Kerja' },
     { id: 'totalGajiBersih', label: 'Total Gaji Bersih', align: 'right', format: (v) => formatCurrency(Number(v)) },
-    { id: 'uangTransportasi', label: 'Uang Transportasi', align: 'right', format: (v) => formatCurrency(Number(v)) },
+    { id: 'fee', label: 'Fee', align: 'right', format: (v) => formatCurrency(Number(v)) },
     { id: 'potongan', label: 'Potongan', align: 'right', format: (v) => formatCurrency(Number(v)) },
     { id: 'tunjanganTidakTetap', label: 'Tunjangan Tidak Tetap', align: 'right', format: (v) => formatCurrency(Number(v)) },
     { id: 'kategori', label: 'Kategori' },
@@ -176,6 +195,33 @@ export function useAEPages(_options: UseAEPagesOptions = {}) {
     });
   };
 
+  const handleFinalize = async (selectedRows: AERow[]) => {
+    const isSelectAll = (selectedRows?.length ?? 0) > 0 && (selectedRows?.length ?? 0) === rows.length;
+    if (isSelectAll) {
+      const ok = await approvalHr({ payrollIds: [], all: true });
+      if (ok) {
+        await fetchPayrollPeriods({ page, pageSize });
+      }
+      return ok;
+    }
+
+    const payrollIds = Array.from(
+      new Set(
+        (selectedRows || [])
+          .map((r) => r.payrollId)
+          .filter((id): id is string => Boolean(id))
+      )
+    );
+
+    if (!payrollIds.length) return false;
+
+    const ok = await approvalHr({ payrollIds });
+    if (ok) {
+      await fetchPayrollPeriods({ page, pageSize });
+    }
+    return ok;
+  };
+
   const handleApprovalTypeChange = (type: string) => {
     setApprovalType(type);
     setIsDropdownOpen(false);
@@ -199,6 +245,9 @@ export function useAEPages(_options: UseAEPagesOptions = {}) {
     isDropdownOpen,
     approvalType,
     
+    // Store
+    approvalStore,
+    
     // Handlers
     handleDetailNavigation,
     handleSearchChange,
@@ -207,14 +256,21 @@ export function useAEPages(_options: UseAEPagesOptions = {}) {
     handleRowsPerPageChange,
     handleColumnFilterChange,
     handleDateRangeFilterChange,
+    handleFinalize,
     
     // Dropdown handlers
     setIsDropdownOpen,
     handleApprovalTypeChange,
     
-    // Selection logic - for mitra, no selection allowed
-    isRowSelectable: () => false,
-    canEditDelete: () => false,
+    // Selection logic - for mitra, allow selection based on status
+    isRowSelectable: (row: AERow) => {
+      const selectableStatuses = ['Menunggu Maker', 'Menunggu Checker', 'Menunggu Approver'];
+      return selectableStatuses.includes(row.statusPenggajian);
+    },
+    canEditDelete: (row: AERow) => {
+      const editableStatuses = ['Menunggu Maker', 'Menunggu Checker'];
+      return editableStatuses.includes(row.statusPenggajian);
+    },
   };
 }
 

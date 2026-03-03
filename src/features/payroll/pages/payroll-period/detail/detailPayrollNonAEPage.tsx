@@ -43,7 +43,7 @@ export default function DetailGajiPage() {
   );
 
   const nonFixedAllowanceEmployeeItems = useMemo(
-    () => payrollPeriodDetail?.non_fixed_allowance as PayrollPeriodNonFixedAllowanceMasterItem[] ?? [],
+    () => payrollPeriodDetail?.non_fixed_allowance?.non_fixed_allowance ?? [],
     [payrollPeriodDetail]
   );
 

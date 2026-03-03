@@ -27,6 +27,7 @@ type Props<TRow extends BaseRow> = {
   isRowSelectable?: (row: TRow) => boolean;
   disableImportButton?: boolean;
   disableFinalizeButton?: boolean;
+  templateType?: 'Mitra' | 'Staff';
 
   loading?: boolean;
   pageSize?: number;
@@ -62,6 +63,7 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
   isRowSelectable,
   disableImportButton = false,
   disableFinalizeButton = false,
+  templateType,
 
   loading,
   pageSize,
@@ -187,7 +189,7 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
             variant="custom" 
             className="w-max border border-[#007BFF] bg-[white] text-[#007BFF] dark:text-white color-[#007BFF]" 
             size="sm"
-            onClick={() => window.open(`${apiUrl}/payroll/payroll-periode/export-template`, '_blank')}
+            onClick={() => window.open(`${apiUrl}/payroll/payroll-periode/export-template${templateType ? `?type=${templateType.toLowerCase()}` : ''}`, '_blank')}
             disabled={approvalStore.isAllButtonsDisabled()}
           >
             <IconDownloadTemplate size={16} color="#007BFF" />

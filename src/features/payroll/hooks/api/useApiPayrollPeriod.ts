@@ -101,7 +101,7 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
     const [search, setSearch] = useState<string>('');
     const [sortBy, setSortBy] = useState<string>('');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
-    const [type, setType] = useState<string>('');
+    const [type, setType] = useState<string>('Mitra');
     const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
     const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
 

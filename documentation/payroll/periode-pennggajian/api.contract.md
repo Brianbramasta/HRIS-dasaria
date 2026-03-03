@@ -23,7 +23,7 @@ Query Parameters (opsional):
 - `per_page` (integer)
 - `search` (string)
 - `status` (string)
-- `type` (string) - nilai: `mitra` | `staff`
+- `type` (string) - nilai: `Mitra` | `Staff`
 - `column` (string)
 - `sort` (`asc` | `desc`)
 - `filter_column[<column>][in][]` (string, multiple)
@@ -31,7 +31,7 @@ Query Parameters (opsional):
 
 Response (200 OK):
 ```json
-// response data if type staff
+// response data if type Staff
 {
     "meta": {
         "status": 200,
@@ -207,7 +207,7 @@ Response (200 OK):
     }
 }
 
-//response data if type mitra
+//response data if type Mitra
 {
     "meta": {
         "status": 200,
@@ -377,13 +377,16 @@ Status: `200 OK`
 
 Endpoint: `GET /api/payroll/payroll-periode/{payroll_id}/detail`
 
+Query Parameters (opsional):
+- `type` (string) - nilai: `Mitra` | `Staff`
+
 Path Parameters:
 - `payroll_id` (string, required) – ID payroll (UUID)
 
 Response (200 OK):
 ```json
 
-// if response type staff
+// if response type Staff
 
 {
     "meta": {
@@ -505,7 +508,7 @@ Response (200 OK):
     }
 }
 
-// if response type mitra
+// if response type Mitra
 
 {
     "meta": {
@@ -636,6 +639,9 @@ Endpoint: `POST /api/payroll/payroll-periode/{payroll_id}/update-non-fix-allowan
 
 Method Spoofing: gunakan `_method: PATCH` pada form data
 
+Query Parameters (opsional):
+- `type` (string) - nilai: `Mitra` | `Staff`
+
 Path Parameters:
 - `payroll_id` (string, required) – ID payroll (UUID)
 
@@ -668,6 +674,9 @@ Status: `200 OK`
 Endpoint: `POST /api/payroll/payroll-periode/{payroll_id}/update-non-fix-deduction`
 
 Method Spoofing: gunakan `_method: PATCH` pada form data
+
+Query Parameters (opsional):
+- `type` (string) - nilai: `Mitra` | `Staff`
 
 Path Parameters:
 - `payroll_id` (string, required) – ID payroll (UUID)
@@ -702,6 +711,9 @@ Endpoint: `POST /api/payroll/payroll-periode/{payroll_id}/update-working-days`
 
 Method Spoofing: gunakan `_method: PATCH` pada form data
 
+Query Parameters (opsional):
+- `type` (string) - nilai: `Mitra` | `Staff`
+
 Path Parameters:
 - `payroll_id` (string, required) – ID payroll (UUID)
 
@@ -733,6 +745,9 @@ Endpoint: `POST /api/payroll/payroll-periode/approval-hr`
 
 Method Spoofing: gunakan `_method: PATCH` pada form data
 
+Query Parameters (opsional):
+- `type` (string) - nilai: `Mitra` | `Staff`
+
 Request Body (form-data):
 - `_method` (text, required) – nilai: `PATCH`
 - `payroll_id[0]` (text, required) – ID payroll yang akan di-approve
@@ -758,6 +773,9 @@ Status: `200 OK`
 ### Import Excel Payroll Periode
 
 Endpoint: `POST /api/payroll/payroll-periode/process-upload`
+
+Query Parameters (opsional):
+- `type` (string) - nilai: `Mitra` | `Staff`
 
 Request Body (form-data):
 - `file_excel` (file, required) – file excel sesuai template import payroll

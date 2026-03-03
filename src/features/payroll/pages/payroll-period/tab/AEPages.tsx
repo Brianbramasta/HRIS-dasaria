@@ -30,6 +30,10 @@ export default function AETab({ }: { resetKey?: string }) {
     handleDateRangeFilterChange,
     setIsDropdownOpen,
     handleApprovalTypeChange,
+    isRowSelectable,
+    canEditDelete,
+    approvalStore,
+    handleFinalize,
   } = useAEPages();
 
   // Add format function for status column
@@ -68,9 +72,11 @@ export default function AETab({ }: { resetKey?: string }) {
       detailPathPrefix={detailPathPrefix}
       title={title}
       onDetailNavigation={handleDetailNavigation}
-      disableImportButton={true}
-      disableFinalizeButton={true}
-      disableSelection={true}
+      isRowSelectable={isRowSelectable}
+      canEditDelete={canEditDelete}
+      disableImportButton={approvalStore.isImportDisabled()}
+      disableFinalizeButton={approvalStore.isFinalizeDisabled()}
+      disableSelection={approvalStore.isSelectionDisabled()}
       loading={loading}
       pageSize={pageSize}
       useExternalPagination={true}
@@ -84,6 +90,8 @@ export default function AETab({ }: { resetKey?: string }) {
       columnFilters={columnFilters}
       onDateRangeFilterChange={handleDateRangeFilterChange}
       dateRangeFilters={dateRangeFilters}
+      onFinalize={handleFinalize}
+      templateType="Mitra"
       toolbarRightSlot={
         isApprovalPage && (
           <div className="relative">

@@ -92,6 +92,7 @@ export default function NonAETab({ }: { resetKey?: string }) {
       onDateRangeFilterChange={handleDateRangeFilterChange}
       dateRangeFilters={dateRangeFilters}
       onFinalize={handleFinalize}
+      templateType="Staff"
       toolbarRightSlot={
         isApprovalPage && (
           <div className="relative">

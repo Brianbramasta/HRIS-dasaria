@@ -124,7 +124,9 @@ export interface PayrollPeriodGrossCalculation {
 export interface PayrollPeriodDetailData {
     information_employee: PayrollPeriodDetailEmployeeInformation;
     fixed_allowance_and_deduction: PayrollPeriodFixedAllowanceAndDeductionSection;
-    non_fixed_allowance: PayrollPeriodNonFixedAllowanceMasterItem[];
+    non_fixed_allowance: {
+        non_fixed_allowance: PayrollPeriodNonFixedAllowanceMasterItem[];
+    };
     non_fixed_deduction: PayrollPeriodNonFixedDeductionItem[];
     gross_calculation: PayrollPeriodGrossCalculation;
 }
