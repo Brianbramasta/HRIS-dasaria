@@ -93,7 +93,7 @@ export interface PayrollPeriodFixedAllowanceAndDeductionSection {
 }
 
 export interface PayrollPeriodNonFixedAllowanceMasterItem {
-    id: string;
+    componen_id: string;
     allowance_name: string;
     category_sub: string;
     amount: number | null;

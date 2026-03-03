@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import Input from '@/components/form/input/InputField';
 import type { ModalProps } from '@/features/payroll/components/layouts/LayoutDetail';
 import { useAddNonRecurringAllowanceAEModal } from '@/features/payroll/hooks/modals/detail-payroll/ae/useAddNonRecurringAllowanceAEModal';
+import { useApiPayrollPeriod } from '@/features/payroll/hooks/api/useApiPayrollPeriod';
+import { useParams } from 'react-router-dom';
+import { parseCurrency } from '@/utils/formatCurrency';
 
-type Props = ModalProps;
+type Props = ModalProps & {
+  onRefresh?: () => void;
+};
 
 const TambahTunjanganTidakTetapModalAE: React.FC<Props> = ({
   isOpen,
@@ -13,8 +18,39 @@ const TambahTunjanganTidakTetapModalAE: React.FC<Props> = ({
   defaultValues,
   onSave,
   fields,
+  onRefresh,
 }) => {
-  const { form, setField, handleSubmit } = useAddNonRecurringAllowanceAEModal(defaultValues as any);
+  const { form, setField } = useAddNonRecurringAllowanceAEModal(defaultValues as any);
+  const { id: payrollId } = useParams();
+  const { updateNonFixAllowance } = useApiPayrollPeriod();
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmitWithApi = async () => {
+    setSubmitting(true);
+    try {
+      if (payrollId) {
+        const nonFixedAllowances = Object.entries(form ?? {})
+          .map(([key, rawAmount]) => {
+            const match = key.match(/^nfa_(.+)$/);
+            if (!match) return null;
+            const componenId = match[1];
+            const amount = parseCurrency(String(rawAmount ?? ''));
+            return { componenId, amount: amount === null ? '' : String(amount) };
+          })
+          .filter(Boolean) as { componenId: string; amount: string }[];
+
+        const ok = await updateNonFixAllowance({ payrollId, nonFixedAllowances });
+        if (!ok) return;
+      }
+
+      onSave(form ?? {});
+      onClose();
+      // Refresh payroll detail data
+      onRefresh?.();
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const content = (
     <div className="space-y-5">
@@ -40,8 +76,8 @@ const TambahTunjanganTidakTetapModalAE: React.FC<Props> = ({
       isOpen={isOpen}
       onClose={onClose}
       content={content}
-      handleSubmit={() => handleSubmit(onSave, onClose)}
-      submitting={false}
+      handleSubmit={handleSubmitWithApi}
+      submitting={submitting}
       maxWidth="max-w-lg"
       confirmTitleButton="Simpan Perubahan"
       closeTitleButton="Tutup"

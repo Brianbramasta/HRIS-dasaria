@@ -62,7 +62,7 @@ interface UseApiPayrollPeriodReturn {
 
     // Actions
     fetchPayrollPeriods: (filter?: Partial<TableFilter>) => Promise<void>;
-    fetchPayrollPeriodDetail: (payrollId: string) => Promise<PayrollPeriodDetailData | null>;
+    fetchPayrollPeriodDetail: (payrollId: string, type?: 'Mitra' | 'Staff') => Promise<PayrollPeriodDetailData | null>;
     fetchImportApprovalStatus: () => Promise<PayrollPeriodImportApprovalStatusData | null>;
     updateNonFixAllowance: (payload: PayrollPeriodUpdateNonFixAllowancePayload) => Promise<boolean>;
     updateNonFixDeduction: (payload: PayrollPeriodUpdateNonFixDeductionPayload) => Promise<boolean>;
@@ -186,12 +186,12 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
         [search, sortBy, sortOrder, page, pageSize, filterStatus, type, columnFilters, dateRangeFilters]
     );
 
-    const fetchPayrollPeriodDetail = useCallback(async (payrollId: string): Promise<PayrollPeriodDetailData | null> => {
+    const fetchPayrollPeriodDetail = useCallback(async (payrollId: string, type?: 'Mitra' | 'Staff'): Promise<PayrollPeriodDetailData | null> => {
         setLoading(true);
         setError(null);
 
         try {
-            const response = await payrollPeriodService.getPayrollPeriodDetail(payrollId);
+            const response = await payrollPeriodService.getPayrollPeriodDetail(payrollId, type);
             const detail = (response as any)?.data ?? null;
             setPayrollPeriodDetail(detail);
             return detail;
@@ -443,4 +443,4 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
         columnFilters,
         dateRangeFilters,
     };
-};
+}

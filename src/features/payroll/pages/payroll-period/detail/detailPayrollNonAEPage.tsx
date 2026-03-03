@@ -16,7 +16,7 @@ export default function DetailGajiPage() {
 
   useEffect(() => {
     if (!id) return;
-    fetchPayrollPeriodDetail(id);
+    fetchPayrollPeriodDetail(id, 'Staff');
   }, [id, fetchPayrollPeriodDetail]);
 
   const defaultData = useMemo(
@@ -90,16 +90,6 @@ export default function DetailGajiPage() {
     return [...fromFixed, ...fromLoan];
   }, [fixedItems, loanItems]);
 
-  const tunjanganTidakTetapFields = useMemo(
-    () =>
-      nonFixedAllowanceEmployeeItems.map((x: PayrollPeriodNonFixedAllowanceMasterItem) => ({
-        name: `nfa_${x.id}`,
-        label: x.allowance_name,
-        type: "input" as const,
-      })),
-    [nonFixedAllowanceEmployeeItems]
-  );
-
   const potonganTidakTetapFields = useMemo(
     () =>
       nonFixedDeductionItems.map((x) => ({
@@ -162,10 +152,18 @@ export default function DetailGajiPage() {
       fields: tunjanganTetapFields,
     },
     tunjanganTidakTetap: {
-      fields: tunjanganTidakTetapFields,
-      modalFields: tunjanganTidakTetapFields,
+      fields: nonFixedAllowanceEmployeeItems.map((x: PayrollPeriodNonFixedAllowanceMasterItem) => ({
+        name: `nfa_${x.componen_id}`,
+        label: x.allowance_name,
+        type: "input" as const,
+      })),
+      modalFields: nonFixedAllowanceEmployeeItems.map((x: PayrollPeriodNonFixedAllowanceMasterItem) => ({
+        name: `nfa_${x.componen_id}`,
+        label: x.allowance_name,
+        type: "input" as const,
+      })),
       initialValues: nonFixedAllowanceEmployeeItems.reduce<Record<string, string>>((acc, x: PayrollPeriodNonFixedAllowanceMasterItem) => {
-        acc[`nfa_${x.id}`] = String(x.amount ?? "");
+        acc[`nfa_${x.componen_id}`] = String(x.amount ?? "");
         return acc;
       }, {}),
       ModalComponent: TambahTunjanganTidakTetapModal,

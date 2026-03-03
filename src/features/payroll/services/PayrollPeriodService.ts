@@ -16,10 +16,12 @@ class PayrollPeriodService {
     /**
      * Get Payroll Period Detail
      * @param payrollId - Payroll ID
+     * @param type - Type parameter (Mitra | Staff)
      * @returns Promise dengan detail payroll periode
      */
-    async getPayrollPeriodDetail(payrollId: string): Promise<any> {
-        return apiService.get<any>(`${this.basePath}/${payrollId}/detail`);
+    async getPayrollPeriodDetail(payrollId: string, type?: 'Mitra' | 'Staff'): Promise<any> {
+        const typeParam = type ? `?type=${type}` : '';
+        return apiService.get<any>(`${this.basePath}/${payrollId}/detail${typeParam}`);
     }
 
     /**
