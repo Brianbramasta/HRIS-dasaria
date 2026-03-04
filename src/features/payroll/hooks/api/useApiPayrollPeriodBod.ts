@@ -81,7 +81,7 @@ export const useApiPayrollPeriodBod = (): UseApiPayrollPeriodBodReturn => {
 
     const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
     const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
-    const [type, setType] = useState<'Mitra' | 'Staff' | 'Thr'>('Mitra');
+    const [type, setType] = useState<'Mitra' | 'Staff' | 'Thr'>('Staff');
 
     const filterStatus = useFilterStore((s) => s.filters['PayrollPeriodStatus'] ?? '');
 

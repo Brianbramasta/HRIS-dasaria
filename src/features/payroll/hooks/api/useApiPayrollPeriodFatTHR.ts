@@ -36,7 +36,7 @@ const mapToPayrollPeriodFatListItem = (item: any): PayrollPeriodFatListItem => (
     payrollStatusName: item.payroll_status_name,
 });
 
-interface UseApiPayrollPeriodFatReturn {
+interface UseApiPayrollPeriodFatTHRReturn {
     payrollPeriods: PayrollPeriodFatListItem[];
     payrollPeriodDetail: PayrollPeriodFatDetailData | null;
     loading: boolean;
@@ -66,7 +66,7 @@ interface UseApiPayrollPeriodFatReturn {
     setType: (type: 'Mitra' | 'Staff' | 'Thr') => void;
 }
 
-export const useApiPayrollPeriodFat = (): UseApiPayrollPeriodFatReturn => {
+export const useApiPayrollPeriodFatTHR = (): UseApiPayrollPeriodFatTHRReturn => {
     const [payrollPeriods, setPayrollPeriods] = useState<PayrollPeriodFatListItem[]>([]);
     const [payrollPeriodDetail, setPayrollPeriodDetail] = useState<PayrollPeriodFatDetailData | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
@@ -81,7 +81,7 @@ export const useApiPayrollPeriodFat = (): UseApiPayrollPeriodFatReturn => {
 
     const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
     const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
-    const [type, setType] = useState<'Mitra' | 'Staff' | 'Thr'>('Staff');
+    const [type, setType] = useState<'Mitra' | 'Staff' | 'Thr'>('Thr'); // Default to 'Thr' for THR pages
 
     const filterStatus = useFilterStore((s) => s.filters['PayrollPeriodStatus'] ?? '');
 

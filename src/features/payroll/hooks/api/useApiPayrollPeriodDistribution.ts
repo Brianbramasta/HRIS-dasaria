@@ -31,7 +31,7 @@ const mapToPayrollPeriodDistributionListItem = (item: any): PayrollPeriodDistrib
     email: item.email,
     bankName: item.bank_name,
     bankAccountNumber: item.bank_account_number,
-    netSalary: item.net_salary,
+    netSalary: item.basic_salary || item.net_salary, // Use basic_salary from API response
     employeeCategoryName: item.employee_category_name,
     companyName: item.company_name,
     payrollStatusName: item.payroll_status_name,

@@ -12,7 +12,7 @@ export interface PayrollPeriodDistributionListItem {
     email: string;
     bankName: string;
     bankAccountNumber: number;
-    netSalary: string;
+    netSalary: number; // Changed to number to match basic_salary from API
     employeeCategoryName: string;
     companyName: string;
     payrollStatusName: string;
@@ -27,10 +27,12 @@ export interface PayrollPeriodDistributionListResponseItem {
     email: string;
     bank_name: string;
     bank_account_number: number;
-    net_salary: string;
+    net_salary: number;
+    basic_salary: number; // Added basic_salary field from API response
     employee_category_name: string;
     company_name: string;
     payroll_status_name: string;
+    job_title_name: string; // Added job_title_name field from API response
 }
 
 export interface PayrollPeriodDistributionListResponse {

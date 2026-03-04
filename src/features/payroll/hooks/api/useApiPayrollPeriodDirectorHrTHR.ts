@@ -2,11 +2,11 @@ import { useCallback, useState } from 'react';
 import { TableFilter } from '@/types/SharedType';
 import useFilterStore from '../../../../stores/filterStore';
 import {
-    PayrollPeriodFatApprovalPayload,
-    PayrollPeriodFatDetailData,
-    PayrollPeriodFatListItem,
-} from '../../types/dto/PayrollPeriodFatType';
-import { payrollPeriodFatService } from '../../services/PayrollPeriodFatService';
+    PayrollPeriodDirectorHrApprovalPayload,
+    PayrollPeriodDirectorHrDetailData,
+    PayrollPeriodDirectorHrListItem,
+} from '../../types/dto/PayrollPeriodDirectorHrType';
+import { payrollPeriodDirectorHrService } from '../../services/PayrollPeriodDirectorHrService';
 
 const toSortField = (field?: string): string => {
     const map: Record<string, string> = {
@@ -19,7 +19,7 @@ const toSortField = (field?: string): string => {
     return map[field || ''] || field || 'periode';
 };
 
-const mapToPayrollPeriodFatListItem = (item: any): PayrollPeriodFatListItem => ({
+const mapToPayrollPeriodDirectorHrListItem = (item: any): PayrollPeriodDirectorHrListItem => ({
     payrollId: item.payroll_id,
     employeeId: item.employee_id,
     avatar: item.avatar,
@@ -36,9 +36,9 @@ const mapToPayrollPeriodFatListItem = (item: any): PayrollPeriodFatListItem => (
     payrollStatusName: item.payroll_status_name,
 });
 
-interface UseApiPayrollPeriodFatReturn {
-    payrollPeriods: PayrollPeriodFatListItem[];
-    payrollPeriodDetail: PayrollPeriodFatDetailData | null;
+interface UseApiPayrollPeriodDirectorHrTHRReturn {
+    payrollPeriods: PayrollPeriodDirectorHrListItem[];
+    payrollPeriodDetail: PayrollPeriodDirectorHrDetailData | null;
     loading: boolean;
     error: string | null;
     total: number;
@@ -54,8 +54,8 @@ interface UseApiPayrollPeriodFatReturn {
     dateRangeFilters: Record<string, { startDate: string; endDate: string | null }>;
 
     fetchPayrollPeriods: (filter?: Partial<TableFilter>) => Promise<void>;
-    fetchPayrollPeriodDetail: (payrollId: string, type?: 'Mitra' | 'Staff' | 'Thr') => Promise<PayrollPeriodFatDetailData | null>;
-    approvalFat: (payload: PayrollPeriodFatApprovalPayload, type?: 'Mitra' | 'Staff' | 'Thr') => Promise<boolean>;
+    fetchPayrollPeriodDetail: (payrollId: string, type?: 'Mitra' | 'Staff' | 'Thr') => Promise<PayrollPeriodDirectorHrDetailData | null>;
+    approvalDirectorHr: (payload: PayrollPeriodDirectorHrApprovalPayload, type?: 'Mitra' | 'Staff' | 'Thr') => Promise<boolean>;
 
     setPage: (page: number) => void;
     setPageSize: (pageSize: number) => void;
@@ -66,9 +66,9 @@ interface UseApiPayrollPeriodFatReturn {
     setType: (type: 'Mitra' | 'Staff' | 'Thr') => void;
 }
 
-export const useApiPayrollPeriodFat = (): UseApiPayrollPeriodFatReturn => {
-    const [payrollPeriods, setPayrollPeriods] = useState<PayrollPeriodFatListItem[]>([]);
-    const [payrollPeriodDetail, setPayrollPeriodDetail] = useState<PayrollPeriodFatDetailData | null>(null);
+export const useApiPayrollPeriodDirectorHrTHR = (): UseApiPayrollPeriodDirectorHrTHRReturn => {
+    const [payrollPeriods, setPayrollPeriods] = useState<PayrollPeriodDirectorHrListItem[]>([]);
+    const [payrollPeriodDetail, setPayrollPeriodDetail] = useState<PayrollPeriodDirectorHrDetailData | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [total, setTotal] = useState<number>(0);
@@ -81,7 +81,7 @@ export const useApiPayrollPeriodFat = (): UseApiPayrollPeriodFatReturn => {
 
     const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
     const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
-    const [type, setType] = useState<'Mitra' | 'Staff' | 'Thr'>('Staff');
+    const [type, setType] = useState<'Mitra' | 'Staff' | 'Thr'>('Thr'); // Default to 'Thr' for THR pages
 
     const filterStatus = useFilterStore((s) => s.filters['PayrollPeriodStatus'] ?? '');
 
@@ -140,7 +140,7 @@ export const useApiPayrollPeriodFat = (): UseApiPayrollPeriodFatReturn => {
                     }
                 });
 
-                const response = await payrollPeriodFatService.getPayrollPeriodFatList(params);
+                const response = await payrollPeriodDirectorHrService.getPayrollPeriodPendingDirectorHrList(params);
 
                 const payload = (response as any)?.data ?? {};
                 const items = payload?.data ?? [];
@@ -148,7 +148,7 @@ export const useApiPayrollPeriodFat = (): UseApiPayrollPeriodFatReturn => {
                 const perPage = payload?.per_page ?? filter?.pageSize ?? pageSize;
                 const totalPagesCalc = perPage ? Math.ceil(totalCount / perPage) : 1;
 
-                setPayrollPeriods((items || []).map(mapToPayrollPeriodFatListItem));
+                setPayrollPeriods((items || []).map(mapToPayrollPeriodDirectorHrListItem));
                 setTotal(totalCount);
                 setTotalPages(totalPagesCalc);
 
@@ -160,8 +160,8 @@ export const useApiPayrollPeriodFat = (): UseApiPayrollPeriodFatReturn => {
                 if (overrideColumnFilters) setColumnFilters(overrideColumnFilters);
                 if (overrideDateRangeFilters) setDateRangeFilters(overrideDateRangeFilters);
             } catch (err) {
-                setError(err instanceof Error ? err.message : 'Failed to fetch payroll periods (FAT)');
-                console.error('Error fetching payroll periods (FAT):', err);
+                setError(err instanceof Error ? err.message : 'Failed to fetch payroll periods (Director HR)');
+                console.error('Error fetching payroll periods (Director HR):', err);
             } finally {
                 setLoading(false);
             }
@@ -169,7 +169,7 @@ export const useApiPayrollPeriodFat = (): UseApiPayrollPeriodFatReturn => {
         [type, page, pageSize, search, sortBy, sortOrder, filterStatus, columnFilters, dateRangeFilters]
     );
 
-    const fetchPayrollPeriodDetail = useCallback(async (payrollId: string, typeParam?: 'Mitra' | 'Staff' | 'Thr'): Promise<PayrollPeriodFatDetailData | null> => {
+    const fetchPayrollPeriodDetail = useCallback(async (payrollId: string, typeParam?: 'Mitra' | 'Staff' | 'Thr'): Promise<PayrollPeriodDirectorHrDetailData | null> => {
         setLoading(true);
         setError(null);
 
@@ -177,13 +177,13 @@ export const useApiPayrollPeriodFat = (): UseApiPayrollPeriodFatReturn => {
             const params: any = {};
             const effectiveType = typeParam || type;
             if (effectiveType) params.type = effectiveType;
-            const response = await payrollPeriodFatService.getPayrollPeriodFatDetail(payrollId, params);
+            const response = await payrollPeriodDirectorHrService.getPayrollPeriodDirectorHrDetail(payrollId, params);
             const detail = response.data ?? null;
             setPayrollPeriodDetail(detail);
             return detail;
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'Failed to fetch payroll period detail (FAT)');
-            console.error('Error fetching payroll period detail (FAT):', err);
+            setError(err instanceof Error ? err.message : 'Failed to fetch payroll period detail (Director HR)');
+            console.error('Error fetching payroll period detail (Director HR):', err);
             setPayrollPeriodDetail(null);
             return null;
         } finally {
@@ -191,7 +191,7 @@ export const useApiPayrollPeriodFat = (): UseApiPayrollPeriodFatReturn => {
         }
     }, [type]);
 
-    const approvalFat = useCallback(async (payload: PayrollPeriodFatApprovalPayload, type?: 'Mitra' | 'Staff' | 'Thr'): Promise<boolean> => {
+    const approvalDirectorHr = useCallback(async (payload: PayrollPeriodDirectorHrApprovalPayload, type?: 'Mitra' | 'Staff' | 'Thr'): Promise<boolean> => {
         setLoading(true);
         setError(null);
 
@@ -209,11 +209,11 @@ export const useApiPayrollPeriodFat = (): UseApiPayrollPeriodFatReturn => {
                 });
             }
 
-            await payrollPeriodFatService.approvalFat(formData, type);
+            await payrollPeriodDirectorHrService.approvalDirectorHr(formData, type);
             return true;
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'Failed to approval FAT');
-            console.error('Error approval FAT:', err);
+            setError(err instanceof Error ? err.message : 'Failed to approval Director HR');
+            console.error('Error approval Director HR:', err);
             return false;
         } finally {
             setLoading(false);
@@ -239,7 +239,7 @@ export const useApiPayrollPeriodFat = (): UseApiPayrollPeriodFatReturn => {
 
         fetchPayrollPeriods,
         fetchPayrollPeriodDetail,
-        approvalFat,
+        approvalDirectorHr,
         setPage,
         setPageSize,
         setSearch: (v) => {
