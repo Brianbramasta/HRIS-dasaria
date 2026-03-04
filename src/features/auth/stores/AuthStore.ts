@@ -25,7 +25,7 @@ export const useAuthStore = create<AuthStoreState>((set) => ({
     
     // Extract employee ID and NIP from nested structure
     const employeeId = user?.employee?.employee?.id || user?.employee?.id || user?.id;
-    const employeeNip = user?.account?.employee_nip || user?.employee?.employee_nip || user?.employee_nip || user?.employee?.employee?.id;
+    const employeeNip = user?.account?.employee_nip || user?.employee?.employee_nip || user?.employee?.employee?.id;
     
     // Create enhanced user object with employee ID and NIP
     const enhancedUser = {

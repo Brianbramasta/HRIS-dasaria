@@ -48,14 +48,14 @@ export const usePayrollApprovalStore = create<PayrollApprovalStore>((set, get) =
     const status = get().approvalStatus;
     if (!status) return false;
     const toBoolean = get().toBoolean;
-    return toBoolean(status.allowance_imported_at) || toBoolean(status.closed) || status.status_payroll === 'close';
+    return toBoolean(status.statusAll.allowance_imported_at) || toBoolean(status.statusAll.closed) || status.statusAll.status_payroll === 'close';
   },
 
   isFinalizeDisabled: () => {
     const status = get().approvalStatus;
     if (!status) return false;
     const toBoolean = get().toBoolean;
-    return toBoolean(status.approval_hr) || toBoolean(status.closed) || status.status_payroll === 'close';
+    return toBoolean(status.statusAll.approval_hr) || toBoolean(status.statusAll.closed) || status.statusAll.status_payroll === 'close';
   },
 
   isApprovalDisabled: (approvalType) => {
@@ -65,16 +65,16 @@ export const usePayrollApprovalStore = create<PayrollApprovalStore>((set, get) =
     const toBoolean = get().toBoolean;
     
     // Base conditions - disable if closed or payroll is closed
-    if (toBoolean(status.closed) || status.status_payroll === 'close') return true;
+    if (toBoolean(status.statusAll.closed) || status.statusAll.status_payroll === 'close') return true;
     
     // Specific approval type conditions
     switch (approvalType) {
       case 'Persetujuan oleh Direktur HRGA':
-        return toBoolean(status.approval_direktur_hr);
+        return toBoolean(status.statusAll.approval_direktur_hr);
       case 'Persetujuan oleh FAT':
-        return toBoolean(status.approval_direktur_fat);
+        return toBoolean(status.statusAll.approval_direktur_fat);
       case 'Persetujuan oleh BOD':
-        return toBoolean(status.approval_direktur_bod);
+        return toBoolean(status.statusAll.approval_direktur_bod);
       default:
         return false;
     }
@@ -84,20 +84,20 @@ export const usePayrollApprovalStore = create<PayrollApprovalStore>((set, get) =
     const status = get().approvalStatus;
     if (!status) return false;
     const toBoolean = get().toBoolean;
-    return toBoolean(status.distribute) || toBoolean(status.closed) || status.status_payroll === 'close';
+    return toBoolean(status.statusAll.distribute) || toBoolean(status.statusAll.closed) || status.statusAll.status_payroll === 'close';
   },
 
   isSelectionDisabled: () => {
     const status = get().approvalStatus;
     if (!status) return false;
     const toBoolean = get().toBoolean;
-    return toBoolean(status.closed) || status.status_payroll === 'close';
+    return toBoolean(status.statusAll.closed) || status.statusAll.status_payroll === 'close';
   },
 
   isAllButtonsDisabled: () => {
     const status = get().approvalStatus;
     if (!status) return false;
     const toBoolean = get().toBoolean;
-    return toBoolean(status.closed) || status.status_payroll === 'close';
+    return toBoolean(status.statusAll.closed) || status.statusAll.status_payroll === 'close';
   },
 }));
