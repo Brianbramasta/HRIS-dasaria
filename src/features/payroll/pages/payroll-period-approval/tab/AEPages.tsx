@@ -179,7 +179,7 @@ export default function AETab({ }: { resetKey?: string }) {
     setColumnFilters: setDirectorColumnFilters,
     setDateRangeFilters: setDirectorDateRangeFilters,
     setType: setDirectorType,
-  } = useApiPayrollPeriodDirectorHr();
+  } = useApiPayrollPeriodDirectorHr({ initialType: 'Mitra' });
 
   const {
     payrollPeriods: fatRows,

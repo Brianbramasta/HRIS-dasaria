@@ -36,6 +36,10 @@ const mapToPayrollPeriodDirectorHrListItem = (item: any): PayrollPeriodDirectorH
     payrollStatusName: item.payroll_status_name,
 });
 
+interface UseApiPayrollPeriodDirectorHrOptions {
+    initialType?: 'Mitra' | 'Staff' | 'Thr';
+}
+
 interface UseApiPayrollPeriodDirectorHrReturn {
     payrollPeriods: PayrollPeriodDirectorHrListItem[];
     payrollPeriodDetail: PayrollPeriodDirectorHrDetailData | null;
@@ -66,7 +70,7 @@ interface UseApiPayrollPeriodDirectorHrReturn {
     setType: (type: 'Mitra' | 'Staff' | 'Thr') => void;
 }
 
-export const useApiPayrollPeriodDirectorHr = (): UseApiPayrollPeriodDirectorHrReturn => {
+export const useApiPayrollPeriodDirectorHr = (options: UseApiPayrollPeriodDirectorHrOptions = {}): UseApiPayrollPeriodDirectorHrReturn => {
     const [payrollPeriods, setPayrollPeriods] = useState<PayrollPeriodDirectorHrListItem[]>([]);
     const [payrollPeriodDetail, setPayrollPeriodDetail] = useState<PayrollPeriodDirectorHrDetailData | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
@@ -81,7 +85,7 @@ export const useApiPayrollPeriodDirectorHr = (): UseApiPayrollPeriodDirectorHrRe
 
     const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
     const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
-    const [type, setType] = useState<'Mitra' | 'Staff' | 'Thr'>('Mitra');
+    const [type, setType] = useState<'Mitra' | 'Staff' | 'Thr'>(options.initialType ?? 'Staff');
 
     const filterStatus = useFilterStore((s) => s.filters['PayrollPeriodStatus'] ?? '');
 

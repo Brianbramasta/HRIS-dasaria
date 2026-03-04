@@ -177,7 +177,7 @@ export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
     setColumnFilters: setDirectorColumnFilters,
     setDateRangeFilters: setDirectorDateRangeFilters,
     setType: setDirectorType,
-  } = useApiPayrollPeriodDirectorHr();
+  } = useApiPayrollPeriodDirectorHr({ initialType: 'Staff' });
 
   const {
     payrollPeriods: fatRows,
