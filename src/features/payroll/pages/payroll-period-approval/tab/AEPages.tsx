@@ -39,6 +39,7 @@ export default function AETab({ }: { resetKey?: string }) {
   const [selectedRowsForApproval, setSelectedRowsForApproval] = useState<AERow[]>([]);
   const [approvalStatusFetched, setApprovalStatusFetched] = useState(false);
   const [employeeType, setEmployeeType] = useState<'Mitra' | 'Staff' | 'Thr'>('Mitra');
+  const [initialDataFetched, setInitialDataFetched] = useState(false);
   
   const approvalStore = usePayrollApprovalStore();
   const { fetchImportApprovalStatus } = useApiPayrollPeriod();
@@ -218,27 +219,23 @@ export default function AETab({ }: { resetKey?: string }) {
     setType: setBodType,
   } = useApiPayrollPeriodBod();
 
-  // Fetch data on component mount and type change
+  // Fetch data on component mount - only once
   useEffect(() => {
-    if (!isApprovalPage) return;
-    if (!isDirectorHrga) return;
-    setDirectorType(employeeType);
-    fetchDirectorRows({ page: 1, pageSize: 10, type: employeeType });
-  }, [isApprovalPage, isDirectorHrga, fetchDirectorRows, employeeType, setDirectorType]);
-
-  useEffect(() => {
-    if (!isApprovalPage) return;
-    if (!isFat) return;
-    setFatType(employeeType);
-    fetchFatRows({ page: 1, pageSize: 10, type: employeeType });
-  }, [isApprovalPage, isFat, fetchFatRows, employeeType, setFatType]);
-
-  useEffect(() => {
-    if (!isApprovalPage) return;
-    if (!isBod) return;
-    setBodType(employeeType);
-    fetchBodRows({ page: 1, pageSize: 10, type: employeeType });
-  }, [isApprovalPage, isBod, fetchBodRows, employeeType, setBodType]);
+    if (!isApprovalPage || initialDataFetched) return;
+    
+    if (isDirectorHrga) {
+      setDirectorType('Mitra');
+      fetchDirectorRows({ page: 1, pageSize: 10, type: 'Mitra' });
+    } else if (isFat) {
+      setFatType('Mitra');
+      fetchFatRows({ page: 1, pageSize: 10, type: 'Mitra' });
+    } else if (isBod) {
+      setBodType('Mitra');
+      fetchBodRows({ page: 1, pageSize: 10, type: 'Mitra' });
+    }
+    
+    setInitialDataFetched(true);
+  }, [isApprovalPage, isDirectorHrga, isFat, isBod, fetchDirectorRows, fetchFatRows, fetchBodRows, setDirectorType, setFatType, setBodType, initialDataFetched]);
 
   // Fetch approval status for the store
   useEffect(() => {
@@ -256,7 +253,9 @@ export default function AETab({ }: { resetKey?: string }) {
 
   // Auto-set employee type to Mitra on component mount
   useEffect(() => {
-    handleEmployeeTypeChange('Mitra');
+    if (employeeType !== 'Mitra') {
+      handleEmployeeTypeChange('Mitra');
+    }
   }, []);
 
   // Data processing
@@ -594,6 +593,18 @@ export default function AETab({ }: { resetKey?: string }) {
   const handleApprovalTypeChange = (type: string) => {
     setApprovalType(type);
     setIsApprovalTypeDropdownOpen(false);
+    
+    // Fetch data with new approval type using Mitra type
+    if (isDirectorHrga) {
+      setDirectorType('Mitra');
+      fetchDirectorRows({ page: 1, pageSize: 10, type: 'Mitra' });
+    } else if (isFat) {
+      setFatType('Mitra');
+      fetchFatRows({ page: 1, pageSize: 10, type: 'Mitra' });
+    } else if (isBod) {
+      setBodType('Mitra');
+      fetchBodRows({ page: 1, pageSize: 10, type: 'Mitra' });
+    }
   };
 
   const handleEmployeeTypeChange = (type: 'Mitra' | 'Staff' | 'Thr') => {

@@ -55,7 +55,7 @@ import THRTab from "@/features/payroll/pages/payroll-period/tab/THRPages";
 
 import ApprovalNonAETab from "@/features/payroll/pages/payroll-period-approval/tab/NonAEPages";
 import ApprovalAETab from "@/features/payroll/pages/payroll-period-approval/tab/AEPages";
-import ApprovalPKLTab from "@/features/payroll/pages/payroll-period-approval/tab/PKLPages";
+// import ApprovalPKLTab from "@/features/payroll/pages/payroll-period-approval/tab/PKLPages";
 import ApprovalTHRTab from "@/features/payroll/pages/payroll-period-approval/tab/THRPages";
 // Dokumentasi: Import halaman Detail Gaji AE dan Non-AE terpisah
 import DetailGajiAEPage from "@/features/payroll/pages/payroll-period/detail/detailPayrollAEPage";
@@ -183,7 +183,7 @@ export default function AppRoutes() {
             <Route index element={<ApprovalNonAETab />} />
             <Route path="non-ae" element={<ApprovalNonAETab />} />
             <Route path="ae" element={<ApprovalAETab />} />
-            <Route path="pkl" element={<ApprovalPKLTab />} />
+            {/* <Route path="pkl" element={<ApprovalPKLTab />} /> */}
             <Route path="thr" element={<ApprovalTHRTab />} />
             {/* detail approval */}
             <Route path="detail-ae/:id" element={<DetailGajiAEApprovalPage />} />
