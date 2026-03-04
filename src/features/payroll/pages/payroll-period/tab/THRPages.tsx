@@ -8,6 +8,7 @@ import { ChevronDown } from 'react-feather';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 import { formatCurrency } from '@/utils/formatCurrency';
 import { useApiPayrollPeriod } from '../../../hooks/api/useApiPayrollPeriod';
+import { usePayrollApprovalStore } from '../../../store/usePayrollApprovalStore';
 
 type THRRow = {
   idKaryawan: string;
@@ -26,6 +27,9 @@ export default function THRTab({ }: { resetKey?: string }) {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [approvalType, setApprovalType] = useState<string>('Persetujuan oleh FAT');
+  const [approvalStatusFetched, setApprovalStatusFetched] = useState(false);
+  
+  const approvalStore = usePayrollApprovalStore();
   
   const {
     payrollPeriods,
@@ -39,6 +43,8 @@ export default function THRTab({ }: { resetKey?: string }) {
     columnFilters,
     dateRangeFilters,
     fetchPayrollPeriods,
+    approvalHr,
+    fetchImportApprovalStatus,
     setPage,
     setPageSize,
     setSearch,
@@ -64,6 +70,20 @@ export default function THRTab({ }: { resetKey?: string }) {
       type: 'Thr'
     });
   }, [fetchPayrollPeriods, page, pageSize, search, sortBy, sortOrder]);
+
+  // Fetch approval status when component mounts
+  useEffect(() => {
+    if (!approvalStatusFetched) {
+      const fetchStatus = async () => {
+        const status = await fetchImportApprovalStatus();
+        if (status) {
+          approvalStore.setApprovalStatus(status);
+        }
+        setApprovalStatusFetched(true);
+      };
+      fetchStatus();
+    }
+  }, [fetchImportApprovalStatus, approvalStatusFetched, approvalStore]);
   
   // Dokumentasi: Deteksi halaman Approval atau Distribusi untuk set judul
   const isApprovalPage = location.pathname.includes('/payroll-period-approval');
@@ -76,6 +96,38 @@ export default function THRTab({ }: { resetKey?: string }) {
   // Dokumentasi: Fungsi untuk navigasi detail dengan approval type sebagai query parameter
   const handleDetailNavigation = (id: string) => {
     navigate(`${detailPathPrefix}/${id}?approvalType=${encodeURIComponent(approvalType)}`);
+  };
+
+  const handleApprovalTypeChange = (type: string) => {
+    setApprovalType(type);
+    setIsDropdownOpen(false);
+  };
+
+  const handleFinalize = async (selectedRows: THRRow[]) => {
+    const isSelectAll = (selectedRows?.length ?? 0) > 0 && (selectedRows?.length ?? 0) === filteredRows.length;
+    if (isSelectAll) {
+      const ok = await approvalHr({ payrollIds: [], all: true });
+      if (ok) {
+        await fetchPayrollPeriods({ page, pageSize });
+      }
+      return ok;
+    }
+
+    const payrollIds = Array.from(
+      new Set(
+        (selectedRows || [])
+          .map((r) => r.idKaryawan)
+          .filter((id): id is string => Boolean(id))
+      )
+    );
+
+    if (!payrollIds.length) return false;
+
+    const ok = await approvalHr({ payrollIds });
+    if (ok) {
+      await fetchPayrollPeriods({ page, pageSize });
+    }
+    return ok;
   };
   
   const filteredRows = useMemo(() => {
@@ -143,6 +195,17 @@ export default function THRTab({ }: { resetKey?: string }) {
       detailPathPrefix={detailPathPrefix}
       title={title}
       onDetailNavigation={handleDetailNavigation}
+      isRowSelectable={(row: THRRow) => {
+        const selectableStatuses = ['Menunggu Maker', 'Menunggu Checker', 'Menunggu Approver'];
+        return selectableStatuses.includes(row.statusTHR);
+      }}
+      canEditDelete={(row: THRRow) => {
+        const editableStatuses = ['Menunggu Maker', 'Menunggu Checker'];
+        return editableStatuses.includes(row.statusTHR);
+      }}
+      disableImportButton={approvalStore.isImportDisabled()}
+      disableFinalizeButton={approvalStore.isFinalizeDisabled()}
+      disableSelection={approvalStore.isSelectionDisabled()}
       loading={loading}
       useExternalPagination={true}
       externalPage={page}
@@ -168,6 +231,7 @@ export default function THRTab({ }: { resetKey?: string }) {
         setDateRangeFilters(newFilters);
       }}
       dateRangeFilters={dateRangeFilters}
+      onFinalize={handleFinalize}
       toolbarRightSlot={
         isApprovalPage && <div className="relative">
           <Button
@@ -183,28 +247,19 @@ export default function THRTab({ }: { resetKey?: string }) {
             <div className="p-2 w-64">
               <button
                 className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-                onClick={() => {
-                  setApprovalType('Persetujuan oleh FAT');
-                  setIsDropdownOpen(false);
-                }}
+                onClick={() => handleApprovalTypeChange('Persetujuan oleh FAT')}
               >
                 Persetujuan oleh FAT
               </button>
               <button
                 className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-                onClick={() => {
-                  setApprovalType('Persetujuan oleh Direktur HRGA');
-                  setIsDropdownOpen(false);
-                }}
+                onClick={() => handleApprovalTypeChange('Persetujuan oleh Direktur HRGA')}
               >
                 Persetujuan oleh Direktur HRGA
               </button>
               <button
                 className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-                onClick={() => {
-                  setApprovalType('Persetujuan oleh BOD');
-                  setIsDropdownOpen(false);
-                }}
+                onClick={() => handleApprovalTypeChange('Persetujuan oleh BOD')}
               >
                 Persetujuan oleh BOD
               </button>
