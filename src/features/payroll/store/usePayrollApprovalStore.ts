@@ -46,21 +46,21 @@ export const usePayrollApprovalStore = create<PayrollApprovalStore>((set, get) =
   // Computed states
   isImportDisabled: () => {
     const status = get().approvalStatus;
-    if (!status) return false;
+    if (!status || !status.statusAll) return false;
     const toBoolean = get().toBoolean;
     return toBoolean(status.statusAll.allowance_imported_at) || toBoolean(status.statusAll.closed) || status.statusAll.status_payroll === 'close';
   },
 
   isFinalizeDisabled: () => {
     const status = get().approvalStatus;
-    if (!status) return false;
+    if (!status || !status.statusAll) return false;
     const toBoolean = get().toBoolean;
     return toBoolean(status.statusAll.approval_hr) || toBoolean(status.statusAll.closed) || status.statusAll.status_payroll === 'close';
   },
 
   isApprovalDisabled: (approvalType) => {
     const status = get().approvalStatus;
-    if (!status) return false;
+    if (!status || !status.statusAll) return false;
     
     const toBoolean = get().toBoolean;
     
@@ -82,21 +82,21 @@ export const usePayrollApprovalStore = create<PayrollApprovalStore>((set, get) =
 
   isDistributionDisabled: () => {
     const status = get().approvalStatus;
-    if (!status) return false;
+    if (!status || !status.statusAll) return false;
     const toBoolean = get().toBoolean;
     return toBoolean(status.statusAll.distribute) || toBoolean(status.statusAll.closed) || status.statusAll.status_payroll === 'close';
   },
 
   isSelectionDisabled: () => {
     const status = get().approvalStatus;
-    if (!status) return false;
+    if (!status || !status.statusAll) return false;
     const toBoolean = get().toBoolean;
     return toBoolean(status.statusAll.closed) || status.statusAll.status_payroll === 'close';
   },
 
   isAllButtonsDisabled: () => {
     const status = get().approvalStatus;
-    if (!status) return false;
+    if (!status || !status.statusAll) return false;
     const toBoolean = get().toBoolean;
     return toBoolean(status.statusAll.closed) || status.statusAll.status_payroll === 'close';
   },
