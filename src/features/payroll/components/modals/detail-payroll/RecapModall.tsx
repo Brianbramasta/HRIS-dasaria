@@ -1,5 +1,5 @@
 import { FC, useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router";
+import { useParams, useLocation } from "react-router";
 import ModalAddEdit from "@/components/shared/modal/ModalAddEdit";
 import InputField from "@/components/shared/field/InputField";
 import TextAreaField from "@/components/shared/field/TextAreaField";
@@ -20,9 +20,13 @@ const RecapModall: FC<RekapModalProps> = ({
   catatanBOD,
 }) => {
   const { id } = useParams();
+  const location = useLocation();
   const { updateNote } = useApiPayrollPeriod();
   const [submitting, setSubmitting] = useState(false);
   const [values, setValues] = useState<Record<string, string>>({});
+
+  // Detect if this is THR page by checking the pathname
+  const isTHRPage = location.pathname.includes('detail-thr');
 
   useEffect(() => {
     if (!isOpen) return;
@@ -131,12 +135,28 @@ const RecapModall: FC<RekapModalProps> = ({
   const handleSubmit = async () => {
     setSubmitting(true);
     try {
+      console.log('Current pathname:', location.pathname);
+      console.log('isTHRPage:', isTHRPage);
+      console.log('Form values:', values);
+      
       if (id) {
-        const ok = await updateNote({
+        const updatePayload: any = {
           payrollId: String(id),
           noteHr: values.note_hr,
           noteBod: values.note_bod,
-        });
+        };
+
+        // Add THR-specific parameters if this is THR page
+        if (isTHRPage) {
+          console.log("isTHRPage is true. Adding THR specific parameters.");
+          console.log("totalTunjanganHariRaya value:", values.totalTunjanganHariRaya);
+          updatePayload.type = 'Thr';
+          // Get the totalTunjanganHariRaya value from the form values
+          updatePayload.holiday_allowance = values.totalTunjanganHariRaya || '';
+        }
+
+        console.log('Final updatePayload:', updatePayload);
+        const ok = await updateNote(updatePayload);
         if (!ok) return;
       }
       onSave(values);

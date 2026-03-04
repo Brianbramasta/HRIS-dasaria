@@ -252,6 +252,8 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
             formData.append('_method', 'PATCH');
             if (payload.noteHr !== undefined) formData.append('note_hr', String(payload.noteHr ?? ''));
             if (payload.noteBod !== undefined) formData.append('note_bod', String(payload.noteBod ?? ''));
+            if (payload.type !== undefined) formData.append('type', String(payload.type ?? ''));
+            if (payload.holiday_allowance !== undefined) formData.append('holiday_allowance', String(payload.holiday_allowance ?? ''));
 
             await payrollPeriodService.updateNote(payload.payrollId, formData);
             return true;

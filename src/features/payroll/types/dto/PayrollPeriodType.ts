@@ -52,11 +52,10 @@ export interface PayrollPeriodDetailEmployeeInformation {
     payroll_id: string;
     employee_id: string;
     full_name: string;
-    working_days: number;
-    basic_salary: number;
-    employee_category_name: string;
     company_name: string;
-    periode: string;
+    job_title_name?: string;
+    length_of_service?: string;
+    payroll_status_name?: string;
 }
 
 export interface PayrollPeriodFixedAllowanceAndDeductionItem {
@@ -121,14 +120,22 @@ export interface PayrollPeriodGrossCalculation {
     note_bod?: string;
 }
 
+export interface HolidayCalculation {
+    basic_salary: number;
+    net_salary: number;
+    note_hr?: string;
+    note_bod?: string;
+}
+
 export interface PayrollPeriodDetailData {
     information_employee: PayrollPeriodDetailEmployeeInformation;
-    fixed_allowance_and_deduction: PayrollPeriodFixedAllowanceAndDeductionSection;
-    non_fixed_allowance: {
+    fixed_allowance_and_deduction?: PayrollPeriodFixedAllowanceAndDeductionSection;
+    non_fixed_allowance?: {
         non_fixed_allowance: PayrollPeriodNonFixedAllowanceMasterItem[];
     };
-    non_fixed_deduction: PayrollPeriodNonFixedDeductionItem[];
-    gross_calculation: PayrollPeriodGrossCalculation;
+    non_fixed_deduction?: PayrollPeriodNonFixedDeductionItem[];
+    gross_calculation?: PayrollPeriodGrossCalculation;
+    holiday_calculation?: HolidayCalculation;
 }
 
 export interface PayrollPeriodDetailResponse {
@@ -170,6 +177,8 @@ export interface PayrollPeriodUpdateNotePayload {
     payrollId: string;
     noteHr?: string;
     noteBod?: string;
+    type?: string;
+    holiday_allowance?: string;
 }
 
 export interface PayrollPeriodDeletePayload {

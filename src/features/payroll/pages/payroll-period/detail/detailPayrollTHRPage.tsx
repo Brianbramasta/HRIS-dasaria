@@ -19,43 +19,45 @@ export default function DetailGajiTHRPage() {
     () => ({
       idKaryawan: payrollPeriodDetail?.information_employee?.employee_id ?? id ?? "",
       pengguna: payrollPeriodDetail?.information_employee?.full_name ?? "Otomatis",
-      gajiPokokUangSaku: String(payrollPeriodDetail?.information_employee?.basic_salary ?? ""),
-      kategori: payrollPeriodDetail?.information_employee?.employee_category_name ?? "Otomatis",
       perusahaan: payrollPeriodDetail?.information_employee?.company_name ?? "Otomatis",
+      jabatan: payrollPeriodDetail?.information_employee?.job_title_name ?? "Otomatis",
+      lamaKerja: payrollPeriodDetail?.information_employee?.length_of_service ?? "Otomatis",
+      statusPayroll: payrollPeriodDetail?.information_employee?.payroll_status_name ?? "Otomatis",
+      gajiPokok: String(payrollPeriodDetail?.holiday_calculation?.basic_salary ?? ""),
+      gajiBersih: String(payrollPeriodDetail?.holiday_calculation?.net_salary ?? ""),
+      catatanHR: payrollPeriodDetail?.holiday_calculation?.note_hr ?? "",
+      catatanBOD: payrollPeriodDetail?.holiday_calculation?.note_bod ?? "",
     }),
     [payrollPeriodDetail, id]
   );
+  // console.log(defaultData, 'defaultData');
 
   const config: SectionConfig = {
     infoFields: [
       { name: "idKaryawan", label: "NIP", type: "input", placeholder: "Input", value: defaultData.idKaryawan, readonly: true },
       { name: "pengguna", label: "Pengguna", type: "input", placeholder: "Otomatis", value: defaultData.pengguna, readonly: true },
       { name: "tanggalPengajuan", label: "Tanggal Pengajuan", type: "date", id: "thr-tanggal-pengajuan", placeholder: "Pilih tanggal" },
-      // { name: "gajiPokokUangSaku", label: "Gaji Pokok/Uang Saku", type: "input", placeholder: "Otomatis", readonly: true },
-      // { name: "kategori", label: "Kategori", type: "input", placeholder: "Otomatis", readonly: true },
-      { name: "perusahaan", label: "Perusahaan", type: "input", placeholder: "Otomatis", readonly: true },
-      { name: "jabatan", label: "Jabatan", type: "input", placeholder: "Otomatis", readonly: true },
-      { name: "lamaKerja", label: "Lama Kerja", type: "input", placeholder: "Otomatis", readonly: true },
+      { name: "perusahaan", label: "Perusahaan", type: "input", placeholder: "Otomatis", value: defaultData.perusahaan, readonly: true },
+      { name: "jabatan", label: "Jabatan", type: "input", placeholder: "Otomatis", value: defaultData.jabatan, readonly: true },
+      { name: "lamaKerja", label: "Lama Kerja", type: "input", placeholder: "Otomatis", value: defaultData.lamaKerja, readonly: true },
+      { name: "statusPayroll", label: "Status Payroll", type: "input", placeholder: "Otomatis", value: defaultData.statusPayroll, readonly: true },
     ],
-    // tunjanganTetap: {
-    //   fields: [
-    //     { name: "tunjanganLamaKerja", label: "Tunjangan Lama Kerja", type: "input", placeholder: "Otomatis", readonly: true },
-    //     { name: "tunjanganJabatan", label: "Tunjangan Jabatan", type: "input", placeholder: "Otomatis", readonly: true },
-    //     { name: "tunjanganPernikahan", label: "Tunjangan Pernikahan", type: "input", placeholder: "Otomatis", readonly: true },
-    //     // { name: "tunjanganTransportasi", label: "Tunjangan Transportasi", type: "input", placeholder: "Otomatis", readonly: true },
-    //   ],
-    // },
     rekapitulasi: {
       title: "Pengajuan Tunjangan Hari Raya",
       headerColor: "green",
       fields: [
-        { name: "totalTunjanganHariRaya", label: "Total Tunjangan Hari Raya", type: "input", placeholder: "Otomatis", readonly: true, colSpan: 3 },
+        { name: "totalTunjanganHariRaya", label: "Total Tunjangan Hari Raya", type: "input", placeholder: "Otomatis", readonly: false, colSpan: 3, value: defaultData.gajiBersih },
       ],
       modalFields: [
-        { name: "totalTunjanganHariRaya", label: "Total Tunjangan Hari Raya", type: "input", placeholder: "Otomatis", readonly: true, colSpan: 3 },
+        { name: "totalTunjanganHariRaya", label: "Total Tunjangan Hari Raya", type: "input", placeholder: "Otomatis", readonly: false, colSpan: 3, value: defaultData.gajiBersih },
       ],
       catatanKaryawan: true,
       catatanBOD: true,
+      initialValues: {
+        totalTunjanganHariRaya: String(payrollPeriodDetail?.holiday_calculation?.net_salary ?? ""),
+        note_hr: String(payrollPeriodDetail?.holiday_calculation?.note_hr ?? ""),
+        note_bod: String(payrollPeriodDetail?.holiday_calculation?.note_bod ?? ""),
+      },
     },
   };
 

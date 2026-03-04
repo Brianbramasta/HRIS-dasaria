@@ -73,7 +73,7 @@ export const useLayoutDetail = (config: SectionConfig, payrollData?: any) => {
     } else {
       setRecapValues({});
     }
-  }, [location.pathname, location.search]);
+  }, [location.pathname, location.search, config]);
 
   const gridColsInfo = useMemo(() => "grid grid-cols-1 gap-6 md:grid-cols-3", []);
   const gridColsTT = useMemo(() => "grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3", []);
