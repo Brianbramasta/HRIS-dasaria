@@ -9,6 +9,7 @@ export default function DetailGajiTHRPage() {
   const { id } = useParams();
 
   const { fetchPayrollPeriodDetail, payrollPeriodDetail, loading, error } = useApiPayrollPeriodDirectorHrTHR();
+  console.log("payrollPeriodDetail", payrollPeriodDetail);
 
   useEffect(() => {
     if (!id) return;
@@ -35,7 +36,7 @@ export default function DetailGajiTHRPage() {
     infoFields: [
       { name: "idKaryawan", label: "NIP", type: "input", placeholder: "Input", value: defaultData.idKaryawan, readonly: true },
       { name: "pengguna", label: "Pengguna", type: "input", placeholder: "Otomatis", value: defaultData.pengguna, readonly: true },
-      { name: "tanggalPengajuan", label: "Tanggal Pengajuan", type: "date", id: "thr-tanggal-pengajuan", placeholder: "Pilih tanggal" },
+      { name: "tanggalPengajuan", label: "Tanggal Pengajuan", type: "date", id: "thr-tanggal-pengajuan", placeholder: "Pilih tanggal", value: (payrollPeriodDetail as any)?.information_employee?.periode, readonly: true },
       { name: "perusahaan", label: "Perusahaan", type: "input", placeholder: "Otomatis", value: defaultData.perusahaan, readonly: true },
       { name: "jabatan", label: "Jabatan", type: "input", placeholder: "Otomatis", value: defaultData.jabatan, readonly: true },
       { name: "lamaKerja", label: "Lama Kerja", type: "input", placeholder: "Otomatis", value: defaultData.lamaKerja, readonly: true },
@@ -45,7 +46,7 @@ export default function DetailGajiTHRPage() {
       title: "Pengajuan Tunjangan Hari Raya",
       headerColor: "green",
       fields: [
-        { name: "totalTunjanganHariRaya", label: "Total Tunjangan Hari Raya", type: "input", placeholder: "Otomatis", readonly: false, colSpan: 3, value: defaultData.gajiBersih },
+        { name: "totalTunjanganHariRaya", label: "Total Tunjangan Hari Raya", type: "input", placeholder: "Otomatis", readonly: true, colSpan: 3, value: defaultData.gajiBersih },
       ],
       modalFields: [
         { name: "totalTunjanganHariRaya", label: "Total Tunjangan Hari Raya", type: "input", placeholder: "Otomatis", readonly: false, colSpan: 3, value: defaultData.gajiBersih },
@@ -66,10 +67,16 @@ export default function DetailGajiTHRPage() {
     }
   };
 
-  if (!id) return null;
-  if (loading && !payrollPeriodDetail) return null;
-  if (error && !payrollPeriodDetail) return null;
-
-  const readyKey = payrollPeriodDetail ? "ready" : "loading";
-  return <DetailPayrollContent key={`${id}-${readyKey}`} config={config} onRefresh={handleRefresh} />;
+  return (
+    <>
+      {loading && <div>Loading...</div>}
+      {error && <div>Error: {error}</div>}
+      <DetailPayrollContent 
+        key={`${id ?? ''}-${payrollPeriodDetail?.information_employee?.payroll_id ?? 'loading'}`}
+        config={config}
+        payrollData={payrollPeriodDetail}
+        onRefresh={handleRefresh}
+      />
+    </>
+  );
 }

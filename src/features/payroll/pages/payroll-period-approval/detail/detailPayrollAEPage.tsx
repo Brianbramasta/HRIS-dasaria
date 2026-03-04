@@ -1,51 +1,15 @@
 // Dokumentasi: Halaman AE di-refactor untuk menggunakan komponen dinamis DetailPayrollContent
-import { useMemo, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router";
 import DetailPayrollComparisonContent, { SectionConfig } from "@/features/payroll/components/layouts/LayoutDetailComparison";
 import TambahTunjanganTidakTetapModalAE from "@/features/payroll/components/modals/detail-payroll/ae/AddNonRecurringAllowanceModal";
 import { useApiPayrollPeriodDirectorHr } from "@/features/payroll/hooks/api/useApiPayrollPeriodDirectorHr";
-import { useApiPayrollPeriodFat } from "@/features/payroll/hooks/api/useApiPayrollPeriodFat";
-import { useApiPayrollPeriodBod } from "@/features/payroll/hooks/api/useApiPayrollPeriodBod";
-import PayrollApprovalModal from "@/features/payroll/components/modals/payroll-period-approval/PayrollApprovalModal";
 
 // Dokumentasi: Komponen halaman AE yang menyusun config untuk layout dinamis
 export default function DetailGajiAEPage() {
   const { id } = useParams();
-  const [isApprovalModalOpen, setIsApprovalModalOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { payrollPeriodDetail, fetchPayrollPeriodDetail, loading, error } = useApiPayrollPeriodDirectorHr();
-  const { approvalDirectorHr } = useApiPayrollPeriodDirectorHr();
-  const { approvalFat } = useApiPayrollPeriodFat();
-  const { approvalBod } = useApiPayrollPeriodBod();
-
-  const handleApproval = async () => {
-    if (!payrollPeriodDetail?.information_employee?.payroll_id) return;
-    
-    setIsSubmitting(true);
-    try {
-      let result = false;
-      const payrollId = payrollPeriodDetail.information_employee.payroll_id;
-      const currentStatus = payrollPeriodDetail?.current?.periode?.status_payroll?.toLowerCase() || '';
-
-      if (currentStatus.includes('direktur hrga')) {
-        result = await approvalDirectorHr({ payrollIds: [payrollId] });
-      } else if (currentStatus.includes('fat')) {
-        result = await approvalFat({ payrollIds: [payrollId] });
-      } else if (currentStatus.includes('bod')) {
-        result = await approvalBod({ payrollIds: [payrollId] });
-      }
-
-      if (result) {
-        setIsApprovalModalOpen(false);
-        window.location.reload();
-      }
-    } catch (error) {
-      console.error('Approval failed:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   useEffect(() => {
     if (!id) return;
@@ -144,17 +108,6 @@ export default function DetailGajiAEPage() {
         config={config}
         payrollData={payrollPeriodDetail}
         onRefresh={() => fetchPayrollPeriodDetail(id ?? '', 'Mitra')}
-      />
-      
-      {/* Payroll Approval Modal */}
-      <PayrollApprovalModal
-        isOpen={isApprovalModalOpen}
-        onClose={() => setIsApprovalModalOpen(false)}
-        onConfirm={handleApproval}
-        submitting={isSubmitting}
-        statusPersetujuan={payrollPeriodDetail?.current?.periode?.status_payroll || ''}
-        periodDate={payrollPeriodDetail?.current?.periode?.payroll_month || ''}
-        approvalType="Approval AE"
       />
     </>
   );

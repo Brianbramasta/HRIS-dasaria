@@ -1,4 +1,5 @@
 // Dokumentasi: Komponen dinamis layout halaman Detail Gaji untuk berbagai tipe (AE, Non-AE, PKL, THR)
+import { useState } from "react";
 import PayrollCard from "@/features/payroll/components/cards/Cards";
 import InputField from "@/components/shared/field/InputField";
 import DateField from "@/components/shared/field/DateField";
@@ -12,6 +13,10 @@ import { IconPencil as Edit3 } from "@/icons/components/icons";
 import { useLayoutDetail } from "@/features/payroll/hooks/layouts/useLayoutDetail";
 import RecapModall from "@/features/payroll/components/modals/detail-payroll/RecapModall";
 import { formatCurrencyValue, parseCurrency } from "@/utils/formatCurrency";
+import PayrollApprovalModal from "../modals/payroll-period-approval/PayrollApprovalModal";
+import { useApiPayrollPeriodDirectorHr } from "@/features/payroll/hooks/api/useApiPayrollPeriodDirectorHr";
+import { useApiPayrollPeriodFat } from "@/features/payroll/hooks/api/useApiPayrollPeriodFat";
+import { useApiPayrollPeriodBod } from "@/features/payroll/hooks/api/useApiPayrollPeriodBod";
 
 export type FieldType = "input" | "date" | "select" | "multi-select" | "file";
 export type FieldDescriptor = {
@@ -121,7 +126,7 @@ export type SectionConfig = {
 };
 
 // Dokumentasi: Komponen utama layout detail, menerima konfigurasi section & modal
-export default function DetailPayrollContent({ config, onRefresh }: { config: SectionConfig; onRefresh?: () => void }) {
+export default function DetailPayrollContent({ config, onRefresh, payrollData }: { config: SectionConfig; onRefresh?: () => void; payrollData?: any }) {
   const {
     goBack,
     isApprovalContext,
@@ -132,6 +137,7 @@ export default function DetailPayrollContent({ config, onRefresh }: { config: Se
     canEditTT,
     canEditPTT,
     canEditRecap,
+    canShowApprovalButton,
     infoValues,
     setInfoValues,
     isInfoModalOpen,
@@ -151,7 +157,47 @@ export default function DetailPayrollContent({ config, onRefresh }: { config: Se
     gridColsInfo,
     gridColsTT,
     gridColsPTT,
-  } = useLayoutDetail(config);
+  } = useLayoutDetail(config, payrollData);
+  console.log("payrollData", payrollData);
+  // Approval hooks
+  const { approvalDirectorHr } = useApiPayrollPeriodDirectorHr();
+  const { approvalFat } = useApiPayrollPeriodFat();
+  const { approvalBod } = useApiPayrollPeriodBod();
+
+  // Approval modal state
+  const [isApprovalModalOpen, setIsApprovalModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleApproval = async () => {
+    if (!payrollData?.information_employee?.payroll_id) return;
+    
+    setIsSubmitting(true);
+    try {
+      let result = false;
+      const payrollId = payrollData.information_employee.payroll_id;
+
+      if (isFATApproval) {
+        result = await approvalFat({ payrollIds: [payrollId] });
+      } else if (isHRGAorBODApproval) {
+        // Check if it's HRGA or BOD based on current status
+        const currentStatus = payrollData?.information_employee?.payroll_status_name?.toLowerCase() || '';
+        if (currentStatus.includes('direktur hrga')) {
+          result = await approvalDirectorHr({ payrollIds: [payrollId] });
+        } else if (currentStatus.includes('bod')) {
+          result = await approvalBod({ payrollIds: [payrollId] });
+        }
+      }
+
+      if (result) {
+        setIsApprovalModalOpen(false);
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error('Approval failed:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const infoTitle = config.infoCard?.title ?? "Informasi Karyawan";
   const infoHeaderColor = config.infoCard?.headerColor ?? "gray";
@@ -374,8 +420,8 @@ export default function DetailPayrollContent({ config, onRefresh }: { config: Se
               />
             ))}
           </div>
-          {/* Dokumentasi: Tampilkan tombol Edit jika FAT atau HRGA/BOD approval atau Distribusi */}
-          {canEditTT && (isFATApproval || isHRGAorBODApproval || isDistribusiContext) && (
+          {/* Dokumentasi: Tampilkan tombol Edit jika HRGA/BOD approval atau Distribusi (FAT tidak bisa edit Tunjangan Tidak Tetap) */}
+          {canEditTT && (isHRGAorBODApproval || isDistribusiContext) && (
             <div className="w-full flex justify-end">
               <Button
                 size="sm"
@@ -550,17 +596,33 @@ export default function DetailPayrollContent({ config, onRefresh }: { config: Se
         />
       )}
 
-      {/* Dokumentasi: Tombol aksi Approve/Reject hanya saat akses dari Approval Periode Gajian */}
-      {isApprovalContext && (
+      {/* Dokumentasi: Tombol aksi Approve/Reject hanya saat akses dari Approval Periode Gajian dan status sesuai */}
+      {isApprovalContext && canShowApprovalButton && (
         <div className="w-full flex justify-end gap-3 mt-6">
-          <Button size="sm" variant="custom" className="bg-red-600 text-white">
+          {/* <Button size="sm" variant="custom" className="bg-red-600 text-white">
             Ditolak
-          </Button>
-          <Button size="sm" variant="custom" className="bg-green-600 text-white">
-            Disetujui
+          </Button> */}
+          <Button 
+            size="sm" 
+            variant="custom" 
+            className="bg-green-600 text-white"
+            onClick={() => setIsApprovalModalOpen(true)}
+          >
+            {/* Disetujui */}
+            Setuju
           </Button>
         </div>
       )}
+
+      {/* Approval Modal */}
+      <PayrollApprovalModal
+        isOpen={isApprovalModalOpen}
+        onClose={() => setIsApprovalModalOpen(false)}
+        onConfirm={handleApproval}
+        submitting={isSubmitting}
+        statusPersetujuan={payrollData?.current?.periode?.status_payroll || ''}
+        periodDate={payrollData?.information_employee?.periode || ''}
+      />
     </div>
   );
 }
