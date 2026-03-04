@@ -54,9 +54,9 @@ export default function ApprovalPeriodeGajianPage() {
   // Map tab to type
   const getTabType = (tab: string): 'Staff' | 'Mitra' | 'Thr' => {
     switch (tab) {
-      case 'ae': return 'Staff';
+      case 'ae': return 'Mitra';
       case 'thr': return 'Thr';
-      default: return 'Mitra';
+      default: return 'Staff';
     }
   };
 
