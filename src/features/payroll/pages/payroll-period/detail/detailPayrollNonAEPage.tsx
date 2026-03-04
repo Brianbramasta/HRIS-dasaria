@@ -24,10 +24,10 @@ export default function DetailGajiPage() {
       idKaryawan: payrollPeriodDetail?.information_employee?.employee_id ?? "",
       pengguna: payrollPeriodDetail?.information_employee?.full_name ?? "",
       periode: (payrollPeriodDetail as any)?.information_employee?.periode ?? "",
-      gajiPokokUangSaku: String(payrollPeriodDetail?.information_employee?.basic_salary ?? ""),
-      kategori: payrollPeriodDetail?.information_employee?.employee_category_name ?? "",
+      gajiPokokUangSaku: String((payrollPeriodDetail as any)?.information_employee?.basic_salary ?? ""),
+      kategori: (payrollPeriodDetail as any)?.information_employee?.employee_category_name ?? "",
       perusahaan: payrollPeriodDetail?.information_employee?.company_name ?? "",
-      jumlahHariKerja: String(payrollPeriodDetail?.information_employee?.working_days ?? ""),
+      jumlahHariKerja: String((payrollPeriodDetail as any)?.information_employee?.working_days ?? ""),
     }),
     [payrollPeriodDetail]
   );

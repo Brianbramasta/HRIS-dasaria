@@ -54,6 +54,7 @@ export type RekapModalProps = {
   fields: FieldDescriptor[];
   catatanKaryawan?: boolean;
   catatanBOD?: boolean;
+  onRefresh?: () => void;
 };
 
 type HeaderColor = "gray" | "green" | "red" | "slate" | "blue";
@@ -512,6 +513,7 @@ export default function DetailPayrollContent({ config, onRefresh }: { config: Se
           fields={recapModalFields}
           catatanKaryawan={recapCatatanKaryawan}
           catatanBOD={recapCatatanBOD}
+          onRefresh={onRefresh}
         />
       )}
 

@@ -18,6 +18,7 @@ const RecapModall: FC<RekapModalProps> = ({
   fields,
   catatanKaryawan,
   catatanBOD,
+  onRefresh,
 }) => {
   const { id } = useParams();
   const location = useLocation();
@@ -158,6 +159,11 @@ const RecapModall: FC<RekapModalProps> = ({
         console.log('Final updatePayload:', updatePayload);
         const ok = await updateNote(updatePayload);
         if (!ok) return;
+        
+        // Refresh data setelah berhasil menyimpan
+        if (onRefresh) {
+          onRefresh();
+        }
       }
       onSave(values);
       onClose();

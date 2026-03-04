@@ -8,7 +8,7 @@ import { useApiPayrollPeriod } from "@/features/payroll/hooks/api/useApiPayrollP
 export default function DetailGajiTHRPage() {
   const { id } = useParams();
 
-  const { fetchPayrollPeriodDetail, payrollPeriodDetail, loading, error } = useApiPayrollPeriod();
+  const { fetchPayrollPeriodDetail, payrollPeriodDetail } = useApiPayrollPeriod();
 
   useEffect(() => {
     if (!id) return;
@@ -61,6 +61,12 @@ export default function DetailGajiTHRPage() {
     },
   };
 
-  return <DetailPayrollContent config={config} />;
+  const handleRefresh = () => {
+    if (id) {
+      fetchPayrollPeriodDetail(id, 'Thr');
+    }
+  };
+
+  return <DetailPayrollContent config={config} onRefresh={handleRefresh} />;
 }
 

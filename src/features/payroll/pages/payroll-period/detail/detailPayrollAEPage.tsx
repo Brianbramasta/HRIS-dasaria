@@ -20,10 +20,10 @@ export default function DetailGajiAEPage() {
     () => ({
       idKaryawan: payrollPeriodDetail?.information_employee?.employee_id ?? id ?? "",
       pengguna: payrollPeriodDetail?.information_employee?.full_name ?? "Otomatis",
-      fee: String(payrollPeriodDetail?.information_employee?.basic_salary ?? ""),
-      kategori: payrollPeriodDetail?.information_employee?.employee_category_name ?? "Otomatis",
+      fee: String((payrollPeriodDetail as any)?.information_employee?.basic_salary ?? ""),
+      kategori: (payrollPeriodDetail as any)?.information_employee?.employee_category_name ?? "Otomatis",
       perusahaan: payrollPeriodDetail?.information_employee?.company_name ?? "Otomatis",
-      jumlahHariKerja: String(payrollPeriodDetail?.information_employee?.working_days ?? ""),
+      jumlahHariKerja: String((payrollPeriodDetail as any)?.information_employee?.working_days ?? ""),
     }),
     [payrollPeriodDetail, id]
   );
@@ -37,7 +37,7 @@ export default function DetailGajiAEPage() {
     infoFields: [
       { name: "idKaryawan", label: "NIP", type: "input", placeholder: "Otomatis", value: defaultData.idKaryawan, readonly: true },
       { name: "pengguna", label: "Pengguna", type: "input", placeholder: "Otomatis", value: defaultData.pengguna, readonly: true },
-      { name: "tanggalPengajuan", label: "Tanggal Pengajuan", type: "date", id: "ae-tanggal-pengajuan", placeholder: "Pilih tanggal", readonly: true, value: payrollPeriodDetail?.information_employee?.periode },
+      { name: "tanggalPengajuan", label: "Tanggal Pengajuan", type: "date", id: "ae-tanggal-pengajuan", placeholder: "Pilih tanggal", readonly: true, value: (payrollPeriodDetail as any)?.information_employee?.periode },
       { name: "fee", label: "Fee", type: "input", placeholder: "Inputan", inputType: "text", readonly: true, value: defaultData.fee },
       { name: "kategori", label: "Kategori", type: "input", placeholder: "Otomatis", readonly: true, value: defaultData.kategori },
       { name: "perusahaan", label: "Perusahaan", type: "input", placeholder: "Otomatis", readonly: true, value: defaultData.perusahaan },
@@ -73,8 +73,8 @@ export default function DetailGajiAEPage() {
         note_hr: String(payrollPeriodDetail?.gross_calculation?.note_hr ?? ""),
         note_bod: String(payrollPeriodDetail?.gross_calculation?.note_bod ?? ""),
       },
-      catatanKaryawan: true,
-      catatanBOD: true,
+      catatanKaryawan: !!String(payrollPeriodDetail?.gross_calculation?.note_hr ?? "").trim(),
+      catatanBOD: !!String(payrollPeriodDetail?.gross_calculation?.note_bod ?? "").trim(),
     },
   };
 
