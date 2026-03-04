@@ -1,11 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { DataTableColumn } from '@/components/shared/datatable/DataTable';
+import { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
 import { useApiPayrollPeriod } from '../../api/useApiPayrollPeriod';
 import { PayrollPeriodListItem } from '../../../types/dto/PayrollPeriodType';
 import { formatCurrency } from '@/utils/formatCurrency';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 import { usePayrollApprovalStore } from '../../../store/usePayrollApprovalStore';
+import { IconFileDetail } from '@/icons/components/icons';
+import React from 'react';
 
 const toPayrollPeriodFilterColumnId = (columnId: string): string => {
   const map: Record<string, string> = {
@@ -226,6 +228,20 @@ export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
     setIsDropdownOpen(false);
   };
 
+  const actions: DataTableAction<NonAERow>[] = useMemo(
+    () => [
+      {
+        icon: React.createElement(IconFileDetail),
+        onClick: (row) => {
+          navigate(`${detailPathPrefix}/${row.payrollId}?approvalType=${encodeURIComponent(approvalType)}`);
+        },
+        variant: 'outline',
+        color: 'info',
+      },
+    ],
+    [navigate, detailPathPrefix, approvalType]
+  );
+
   return {
     // Data and state
     rows,
@@ -260,6 +276,9 @@ export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
     // Dropdown handlers
     setIsDropdownOpen,
     handleApprovalTypeChange,
+    
+    // Actions
+    customActions: actions,
     
     // Selection logic
     isRowSelectable: (row: NonAERow) => String(row.statusPenggajian ?? '').toLowerCase().trim() === 'menunggu maker',

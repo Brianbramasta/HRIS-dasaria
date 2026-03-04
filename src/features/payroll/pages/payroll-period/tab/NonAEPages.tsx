@@ -35,6 +35,7 @@ export default function NonAETab({ }: { resetKey?: string }) {
     handleApprovalTypeChange,
     isRowSelectable,
     canEditDelete,
+    customActions,
   } = useNonAEPages();
 
   // Add format function for status column
@@ -92,6 +93,7 @@ export default function NonAETab({ }: { resetKey?: string }) {
       onDateRangeFilterChange={handleDateRangeFilterChange}
       dateRangeFilters={dateRangeFilters}
       onFinalize={handleFinalize}
+      customActions={customActions}
       templateType="Staff"
       toolbarRightSlot={
         isApprovalPage && (

@@ -34,6 +34,7 @@ export default function AETab({ }: { resetKey?: string }) {
     canEditDelete,
     approvalStore,
     handleFinalize,
+    customActions,
   } = useAEPages();
 
   // Add format function for status column
@@ -91,6 +92,7 @@ export default function AETab({ }: { resetKey?: string }) {
       onDateRangeFilterChange={handleDateRangeFilterChange}
       dateRangeFilters={dateRangeFilters}
       onFinalize={handleFinalize}
+      customActions={customActions}
       templateType="Mitra"
       toolbarRightSlot={
         isApprovalPage && (

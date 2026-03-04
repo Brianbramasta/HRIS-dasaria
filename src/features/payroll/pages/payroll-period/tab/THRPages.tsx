@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { DataTableColumn } from '@/components/shared/datatable/DataTable';
+import { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
 import PenggajianTabBase from '../../../components/tabs/PayrollTabBase';
 import Button from '@/components/ui/button/Button';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
@@ -9,8 +9,11 @@ import { formatDateToIndonesian } from '@/utils/formatDate';
 import { formatCurrency } from '@/utils/formatCurrency';
 import { useApiPayrollPeriod } from '../../../hooks/api/useApiPayrollPeriod';
 import { usePayrollApprovalStore } from '../../../store/usePayrollApprovalStore';
+import { IconFileDetail } from '@/icons/components/icons';
+import React from 'react';
 
 type THRRow = {
+  payrollId: string;
   idKaryawan: string;
   pengguna: string;
   tanggalPengajuan: string;
@@ -103,6 +106,20 @@ export default function THRTab({ }: { resetKey?: string }) {
     setIsDropdownOpen(false);
   };
 
+  const customActions: DataTableAction<THRRow>[] = useMemo(
+    () => [
+      {
+        icon: React.createElement(IconFileDetail),
+        onClick: (row) => {
+          navigate(`${detailPathPrefix}/${row.payrollId}?approvalType=${encodeURIComponent(approvalType)}`);
+        },
+        variant: 'outline',
+        color: 'info',
+      },
+    ],
+    [navigate, detailPathPrefix, approvalType]
+  );
+
   const handleFinalize = async (selectedRows: THRRow[]) => {
     const isSelectAll = (selectedRows?.length ?? 0) > 0 && (selectedRows?.length ?? 0) === filteredRows.length;
     if (isSelectAll) {
@@ -116,7 +133,7 @@ export default function THRTab({ }: { resetKey?: string }) {
     const payrollIds = Array.from(
       new Set(
         (selectedRows || [])
-          .map((r) => r.idKaryawan)
+          .map((r) => r.payrollId)
           .filter((id): id is string => Boolean(id))
       )
     );
@@ -131,16 +148,18 @@ export default function THRTab({ }: { resetKey?: string }) {
   };
   
   const filteredRows = useMemo(() => {
+    console.log('payrollPeriods', payrollPeriods);
     return payrollPeriods.map((item: any) => ({
+      payrollId: item.payrollId,
       idKaryawan: item.employeeId,
       pengguna: item.fullName,
       tanggalPengajuan: item.periode || '-',
       totalTHR: formatCurrency(item.basicSalary || 0),
-      lamaKerja: '2 tahun', // Will be populated from API response
-      jabatan: item.jobTitleName || 'Manager',
-      perusahaan: item.companyName || '',
-      statusTHR: item.payrollStatusName || 'Menunggu Maker',
-      alasanDitolak: '-', // Will be populated from API response
+      lamaKerja: '-', // No work duration field in API response
+      jabatan: item.jobTitleName || '-',
+      perusahaan: item.companyName || '-',
+      statusTHR: item.payrollStatusName || '-',
+      alasanDitolak: '-', // No rejection reason field in API response
     }));
   }, [payrollPeriods]);
   const baseColumns: DataTableColumn<THRRow>[] = [
@@ -232,6 +251,7 @@ export default function THRTab({ }: { resetKey?: string }) {
       }}
       dateRangeFilters={dateRangeFilters}
       onFinalize={handleFinalize}
+      customActions={customActions}
       toolbarRightSlot={
         isApprovalPage && <div className="relative">
           <Button

@@ -1,21 +1,29 @@
 // Dokumentasi: Halaman THR di-refactor untuk menggunakan komponen dinamis DetailPayrollContent
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useParams } from "react-router";
 import DetailPayrollContent, { SectionConfig } from "@/features/payroll/components/layouts/LayoutDetail";
+import { useApiPayrollPeriod } from "@/features/payroll/hooks/api/useApiPayrollPeriod";
 
 // Dokumentasi: Komponen halaman THR yang menyusun config untuk layout dinamis
 export default function DetailGajiTHRPage() {
   const { id } = useParams();
 
+  const { fetchPayrollPeriodDetail, payrollPeriodDetail, loading, error } = useApiPayrollPeriod();
+
+  useEffect(() => {
+    if (!id) return;
+    fetchPayrollPeriodDetail(id, 'Thr');
+  }, [id, fetchPayrollPeriodDetail]);
+
   const defaultData = useMemo(
     () => ({
-      idKaryawan: id ?? "",
-      pengguna: "Otomatis",
-      gajiPokokUangSaku: "",
-      kategori: "Otomatis",
-      perusahaan: "Otomatis",
+      idKaryawan: payrollPeriodDetail?.information_employee?.employee_id ?? id ?? "",
+      pengguna: payrollPeriodDetail?.information_employee?.full_name ?? "Otomatis",
+      gajiPokokUangSaku: String(payrollPeriodDetail?.information_employee?.basic_salary ?? ""),
+      kategori: payrollPeriodDetail?.information_employee?.employee_category_name ?? "Otomatis",
+      perusahaan: payrollPeriodDetail?.information_employee?.company_name ?? "Otomatis",
     }),
-    [id]
+    [payrollPeriodDetail, id]
   );
 
   const config: SectionConfig = {
