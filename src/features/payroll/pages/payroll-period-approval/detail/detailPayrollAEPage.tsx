@@ -52,18 +52,7 @@ export default function DetailGajiAEPage() {
     fetchPayrollPeriodDetail(id, 'Mitra');
   }, [id, fetchPayrollPeriodDetail]);
 
-  const defaultData = useMemo(
-    () => ({
-      idKaryawan: id ?? "",
-      pengguna: "Otomatis",
-      fee: "",
-      kategori: "Otomatis",
-      perusahaan: "Otomatis",
-      jumlahHariKerja: "Otomatis",
-    }),
-    [id]
-  );
-
+  
   const config: SectionConfig = {
     periodeComparison: {
       leftTitle: "Periode Bulan Kemarin",

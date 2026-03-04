@@ -48,20 +48,20 @@ interface UseApiPayrollPeriodDistributionReturn {
     search: string;
     sortBy: string;
     sortOrder: 'asc' | 'desc' | null;
-    type: 'Mitra' | 'Staff' | null;
+    type: 'Mitra' | 'Staff' | 'Thr' | null;
 
     columnFilters: Record<string, string[]>;
     dateRangeFilters: Record<string, { startDate: string; endDate: string | null }>;
 
     fetchPayrollPeriods: (filter?: Partial<TableFilter>) => Promise<void>;
     sendSlipSalary: (payload: PayrollPeriodDistributionSendSlipSalaryPayload) => Promise<boolean>;
-    getSlipGajiUrl: (payrollId: string, type?: 'Mitra' | 'Staff') => string;
+    getSlipGajiUrl: (payrollId: string, type?: 'Mitra' | 'Staff' | 'Thr') => string;
 
     setPage: (page: number) => void;
     setPageSize: (pageSize: number) => void;
     setSearch: (search: string) => void;
     setSort: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
-    setType: (type: 'Mitra' | 'Staff' | null) => void;
+    setType: (type: 'Mitra' | 'Staff' | 'Thr' | null) => void;
     setColumnFilters: (filters: Record<string, string[]>) => void;
     setDateRangeFilters: (filters: Record<string, { startDate: string; endDate: string | null }>) => void;
 }
@@ -77,7 +77,7 @@ export const useApiPayrollPeriodDistribution = (): UseApiPayrollPeriodDistributi
     const [search, setSearch] = useState<string>('');
     const [sortBy, setSortBy] = useState<string>('');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
-    const [type, setType] = useState<'Mitra' | 'Staff' | null>(null);
+    const [type, setType] = useState<'Mitra' | 'Staff' | 'Thr' | null>(null);
 
     const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
     const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
@@ -204,7 +204,7 @@ export const useApiPayrollPeriodDistribution = (): UseApiPayrollPeriodDistributi
         }
     }, []);
 
-    const getSlipGajiUrl = useCallback((payrollId: string, type?: 'Mitra' | 'Staff'): string => {
+    const getSlipGajiUrl = useCallback((payrollId: string, type?: 'Mitra' | 'Staff' | 'Thr'): string => {
         const tempApiUrl = useTemporaryApiStore.getState().apiUrl;
         const baseURL = tempApiUrl || import.meta.env.VITE_API_URL;
         const url = `${baseURL}/payroll/payroll-periode/${payrollId}/slip-gaji`;

@@ -62,7 +62,7 @@ interface UseApiPayrollPeriodReturn {
 
     // Actions
     fetchPayrollPeriods: (filter?: Partial<TableFilter>) => Promise<void>;
-    fetchPayrollPeriodDetail: (payrollId: string, type?: 'Mitra' | 'Staff') => Promise<PayrollPeriodDetailData | null>;
+    fetchPayrollPeriodDetail: (payrollId: string, type?: 'Mitra' | 'Staff' | 'Thr') => Promise<PayrollPeriodDetailData | null>;
     fetchImportApprovalStatus: () => Promise<PayrollPeriodImportApprovalStatusData | null>;
     updateNonFixAllowance: (payload: PayrollPeriodUpdateNonFixAllowancePayload) => Promise<boolean>;
     updateNonFixDeduction: (payload: PayrollPeriodUpdateNonFixDeductionPayload) => Promise<boolean>;
@@ -186,7 +186,7 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
         [search, sortBy, sortOrder, page, pageSize, filterStatus, type, columnFilters, dateRangeFilters]
     );
 
-    const fetchPayrollPeriodDetail = useCallback(async (payrollId: string, type?: 'Mitra' | 'Staff'): Promise<PayrollPeriodDetailData | null> => {
+    const fetchPayrollPeriodDetail = useCallback(async (payrollId: string, type?: 'Mitra' | 'Staff' | 'Thr'): Promise<PayrollPeriodDetailData | null> => {
         setLoading(true);
         setError(null);
 

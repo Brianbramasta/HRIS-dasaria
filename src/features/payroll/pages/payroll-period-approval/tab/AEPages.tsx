@@ -38,7 +38,7 @@ export default function AETab({ }: { resetKey?: string }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedRowsForApproval, setSelectedRowsForApproval] = useState<AERow[]>([]);
   const [approvalStatusFetched, setApprovalStatusFetched] = useState(false);
-  const [employeeType, setEmployeeType] = useState<string>('Mitra');
+  const [employeeType, setEmployeeType] = useState<'Mitra' | 'Staff' | 'Thr'>('Mitra');
   
   const approvalStore = usePayrollApprovalStore();
   const { fetchImportApprovalStatus } = useApiPayrollPeriod();
@@ -596,7 +596,7 @@ export default function AETab({ }: { resetKey?: string }) {
     setIsApprovalTypeDropdownOpen(false);
   };
 
-  const handleEmployeeTypeChange = (type: string) => {
+  const handleEmployeeTypeChange = (type: 'Mitra' | 'Staff' | 'Thr') => {
     setEmployeeType(type);
   };
 

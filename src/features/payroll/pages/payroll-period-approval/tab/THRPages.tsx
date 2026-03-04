@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { DataTableColumn } from '@/components/shared/datatable/DataTable';
 import PenggajianTabBase from '../../../components/tabs/PayrollTabBase';
@@ -6,6 +6,10 @@ import Button from '@/components/ui/button/Button';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { ChevronDown } from 'react-feather';
 import { formatDateToIndonesian } from '@/utils/formatDate';
+import { formatCurrency } from '@/utils/formatCurrency';
+import { useApiPayrollPeriodBod } from '../../../hooks/api/useApiPayrollPeriodBod';
+import { useApiPayrollPeriodDirectorHr } from '../../../hooks/api/useApiPayrollPeriodDirectorHr';
+import { useApiPayrollPeriodFat } from '../../../hooks/api/useApiPayrollPeriodFat';
 
 type THRRow = {
   no?: number;
@@ -24,6 +28,54 @@ export default function THRTab({ }: { resetKey?: string }) {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [approvalType, setApprovalType] = useState<string>('Persetujuan oleh Direktur HRGA');
+  
+  // API hooks based on approval type
+  const bodApi = useApiPayrollPeriodBod();
+  const directorHrApi = useApiPayrollPeriodDirectorHr();
+  const fatApi = useApiPayrollPeriodFat();
+  
+  // Select appropriate API based on approval type
+  const currentApi = approvalType.includes('BOD') ? bodApi : 
+                     approvalType.includes('Direktur HRGA') ? directorHrApi : fatApi;
+  
+  const {
+    payrollPeriods,
+    loading,
+    total,
+    page,
+    pageSize,
+    search,
+    sortBy,
+    sortOrder,
+    columnFilters,
+    dateRangeFilters,
+    fetchPayrollPeriods,
+    setPage,
+    setPageSize,
+    setSearch,
+    setSort,
+    setColumnFilters,
+    setDateRangeFilters,
+    setType
+  } = currentApi;
+
+  // Set type to 'Thr' when component mounts or approval type changes
+  useEffect(() => {
+    setType('Thr');
+  }, [setType, approvalType]);
+
+  // Fetch data when component mounts or filters change
+  useEffect(() => {
+    fetchPayrollPeriods({
+      page,
+      pageSize,
+      search,
+      sortBy,
+      sortOrder,
+      type: 'Thr'
+    });
+  }, [fetchPayrollPeriods, page, pageSize, search, sortBy, sortOrder]);
+  
   // Dokumentasi: Deteksi halaman Approval atau Distribusi untuk set judul
   const isApprovalPage = location.pathname.includes('/payroll-period-approval');
   const isDistribusiPage = location.pathname.includes('/salary-distribution');
@@ -36,39 +88,20 @@ export default function THRTab({ }: { resetKey?: string }) {
   const handleDetailNavigation = (id: string) => {
     navigate(`${detailPathPrefix}/${id}?approvalType=${encodeURIComponent(approvalType)}`);
   };
-  const [rows] = useState<THRRow[]>([
-    { idKaryawan: '32345678', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', totalTHR: '5.000.000', lamaKerja: '2 tahun', jabatan: 'Direktur', perusahaan: 'Dasaria', statusPersetujuan: 'Menunggu diproses' },
-  ]);
-
-  const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
-  const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
-
+  
   const filteredRows = useMemo(() => {
-    let result = [...rows];
-
-    Object.entries(columnFilters).forEach(([columnId, values]) => {
-      if (!values || values.length === 0) return;
-      result = result.filter((row) => values.includes(String((row as any)[columnId] ?? '')));
-    });
-
-    Object.entries(dateRangeFilters).forEach(([columnId, { startDate, endDate }]) => {
-      if (!startDate) return;
-      const start = new Date(startDate);
-      const end = endDate ? new Date(endDate) : null;
-
-      result = result.filter((row) => {
-        const value = (row as any)[columnId] as string | undefined;
-        if (!value) return false;
-        const date = new Date(value);
-        if (Number.isNaN(date.getTime())) return false;
-        if (date < start) return false;
-        if (end && date > end) return false;
-        return true;
-      });
-    });
-
-    return result;
-  }, [rows, columnFilters, dateRangeFilters]);
+    console.log('payrollPeriods data:', payrollPeriods);
+    return payrollPeriods.map((item: any) => ({
+      idKaryawan: item.payroll_id || item.employee_id || '',
+      pengguna: item.full_name || '',
+      tanggalPengajuan: item.periode || '24 Februari 2026', // Use default date if periode is missing
+      totalTHR: formatCurrency(item.basic_salary || 0),
+      lamaKerja: '2 tahun', // Will be populated from API response
+      perusahaan: item.company_name || '',
+      jabatan: item.job_title_name || 'Direktur',
+      statusPersetujuan: item.payroll_status_name || 'Menunggu diproses',
+    }));
+  }, [payrollPeriods]);
 
   const baseColumns: DataTableColumn<THRRow>[] = [
     { id: 'idKaryawan', label: 'NIP' },
@@ -108,25 +141,29 @@ export default function THRTab({ }: { resetKey?: string }) {
       detailPathPrefix={detailPathPrefix}
       title={title}
       onDetailNavigation={handleDetailNavigation}
+      loading={loading}
+      useExternalPagination={true}
+      externalPage={page}
+      externalTotal={total}
+      pageSize={pageSize}
+      onPageChangeExternal={setPage}
+      onRowsPerPageChangeExternal={setPageSize}
+      onSearchChange={setSearch}
+      onSortChange={setSort}
       onColumnFilterChange={(columnId, values) => {
-        setColumnFilters((prev) => ({
-          ...prev,
-          [columnId]: values,
-        }));
+        const newFilters = { ...columnFilters };
+        newFilters[columnId] = values;
+        setColumnFilters(newFilters);
       }}
       columnFilters={columnFilters}
       onDateRangeFilterChange={(columnId, startDate, endDate) => {
-        setDateRangeFilters((prev) => {
-          if (!startDate) {
-            const next = { ...prev };
-            delete next[columnId];
-            return next;
-          }
-          return {
-            ...prev,
-            [columnId]: { startDate, endDate },
-          };
-        });
+        const newFilters = { ...dateRangeFilters };
+        if (!startDate) {
+          delete newFilters[columnId];
+        } else {
+          newFilters[columnId] = { startDate, endDate };
+        }
+        setDateRangeFilters(newFilters);
       }}
       dateRangeFilters={dateRangeFilters}
       toolbarRightSlot={

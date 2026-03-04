@@ -1,10 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
 import PayrollTabBase from '@/features/payroll/components/tabs/PayrollTabBase';
 import { IconFileDetail } from '@/icons/components/icons';
 import { formatCurrency } from '@/utils/formatCurrency';
 import { formatDateToIndonesian } from '@/utils/formatDate';
+import { useApiPayrollPeriodDistribution } from '../../../hooks/api/useApiPayrollPeriodDistribution';
 
 interface SalaryDistributionData {
   idKaryawan: string;
@@ -17,7 +18,7 @@ interface SalaryDistributionData {
   totalGajiBersih: number;
   kategori: string;
   perusahaan: string;
-  statusPersetujuan: 'menunggu' | 'disetujui' | 'ditolak';
+  statusPersetujuan: 'menunggu' | 'disetujui' | 'ditolak' | 'Selesai';
   // Detail components for THR
   detail?: {
     gajiPokok: number;
@@ -29,107 +30,71 @@ interface SalaryDistributionData {
   };
 }
 
-const mockDataTHR: SalaryDistributionData[] = [
-  {
-    idKaryawan: '1',
-    pengguna: 'Eka Prasetya',
-    nip: '00201',
-    tanggalPengajuan: '20 November 2025',
-    email: 'eka.prasetya@gmail.com',
-    jenisBank: 'BCA',
-    noRekening: '1234567890',
-    totalGajiBersih: 5_000_000,
-    kategori: 'Internship',
-    perusahaan: 'Dasaria',
-    statusPersetujuan: 'disetujui',
-    detail: {
-      gajiPokok: 1_500_000,
-      tunjanganTetap: 0, // Header placeholder
-      transport: 1_500_000,
-      lamaKerja: 1_500_000,
-      jabatan: 1_500_000,
-      pernikahan: 1_500_000,
-    },
-  },
-  {
-    idKaryawan: '2',
-    pengguna: 'Putri Handayani',
-    nip: '00202',
-    tanggalPengajuan: '20 November 2025',
-    email: 'putri.handayani@gmail.com',
-    jenisBank: 'Mandiri',
-    noRekening: '0987654321',
-    totalGajiBersih: 3_500_000,
-    kategori: 'Internship',
-    perusahaan: 'Dasaria',
-    statusPersetujuan: 'disetujui',
-    detail: {
-      gajiPokok: 1_000_000,
-      tunjanganTetap: 0,
-      transport: 1_000_000,
-      lamaKerja: 500_000,
-      jabatan: 500_000,
-      pernikahan: 500_000,
-    },
-  },
-  {
-    idKaryawan: '3',
-    pengguna: 'Rendi Wijaya',
-    nip: '00203',
-    tanggalPengajuan: '20 November 2025',
-    email: 'rendi.wijaya@gmail.com',
-    jenisBank: 'BNI',
-    noRekening: '1122334455',
-    totalGajiBersih: 2_500_000,
-    kategori: 'Internship',
-    perusahaan: 'Dasaria',
-    statusPersetujuan: 'menunggu',
-    detail: {
-      gajiPokok: 1_000_000,
-      tunjanganTetap: 0,
-      transport: 500_000,
-      lamaKerja: 500_000,
-      jabatan: 250_000,
-      pernikahan: 250_000,
-    },
-  },
-];
-
-
 
 export default function THRPages() {
   const navigate = useNavigate();
-  const [data] = useState<SalaryDistributionData[]>(mockDataTHR);
+  const {
+    payrollPeriods,
+    loading,
+    total,
+    page,
+    pageSize,
+    search,
+    sortBy,
+    sortOrder,
+    columnFilters,
+    dateRangeFilters,
+    fetchPayrollPeriods,
+    getSlipGajiUrl,
+    setPage,
+    setPageSize,
+    setSearch,
+    setSort,
+    setColumnFilters,
+    setDateRangeFilters,
+    setType
+  } = useApiPayrollPeriodDistribution();
 
-  const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
-  const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
+  // Set type to 'Thr' when component mounts
+  useEffect(() => {
+    setType('Thr');
+  }, [setType]);
+
+  // Fetch data when component mounts or filters change
+  useEffect(() => {
+    fetchPayrollPeriods({
+      page,
+      pageSize,
+      search,
+      sortBy,
+      sortOrder,
+      type: 'Thr'
+    });
+  }, [fetchPayrollPeriods, page, pageSize, search, sortBy, sortOrder]);
 
   const filteredRows = useMemo(() => {
-    let result = [...data];
-
-    Object.entries(columnFilters).forEach(([columnId, values]) => {
-      if (!values || values.length === 0) return;
-      result = result.filter((row) => values.includes(String((row as any)[columnId] ?? '')));
-    });
-
-    Object.entries(dateRangeFilters).forEach(([columnId, { startDate, endDate }]) => {
-      if (!startDate) return;
-      const start = new Date(startDate);
-      const end = endDate ? new Date(endDate) : null;
-
-      result = result.filter((row) => {
-        const value = (row as any)[columnId] as string | undefined;
-        if (!value) return false;
-        const date = new Date(value);
-        if (Number.isNaN(date.getTime())) return false;
-        if (date < start) return false;
-        if (end && date > end) return false;
-        return true;
-      });
-    });
-
-    return result;
-  }, [data, columnFilters, dateRangeFilters]);
+    return payrollPeriods.map((item: any) => ({
+      idKaryawan: item.payroll_id,
+      pengguna: item.full_name,
+      nip: item.employee_id,
+      tanggalPengajuan: item.periode || '-',
+      email: item.email || '',
+      jenisBank: item.bank_name || '',
+      noRekening: item.bank_account_number || '',
+      totalGajiBersih: item.basic_salary || 0,
+      kategori: item.employee_category_name || '',
+      perusahaan: item.company_name || '',
+      statusPersetujuan: item.payroll_status_name || 'menunggu',
+      detail: {
+        gajiPokok: item.basic_salary || 0,
+        tunjanganTetap: 0,
+        transport: 0,
+        lamaKerja: 0,
+        jabatan: 0,
+        pernikahan: 0,
+      },
+    }));
+  }, [payrollPeriods]);
 
 
   const baseColumns: DataTableColumn<SalaryDistributionData>[] = useMemo(
@@ -207,12 +172,14 @@ export default function THRPages() {
           { label: 'Disetujui', value: 'disetujui' },
           { label: 'Menunggu', value: 'menunggu' },
           { label: 'Ditolak', value: 'ditolak' },
+          { label: 'Selesai', value: 'Selesai' },
         ],
         format: (value) => {
           const statusMap = {
             disetujui: { text: 'Disetujui', className: 'status-styling bg-green-100 text-green-800' },
             menunggu: { text: 'Menunggu', className: 'status-styling bg-yellow-100 text-yellow-800' },
             ditolak: { text: 'Ditolak', className: 'status-styling bg-red-100 text-red-800' },
+            Selesai: { text: 'Selesai', className: 'status-styling bg-blue-100 text-blue-800' },
           };
           const status = statusMap[value as keyof typeof statusMap] || {
             text: value,
@@ -235,25 +202,8 @@ export default function THRPages() {
         icon: <IconFileDetail />,
         onClick: (row) => {
           // Navigate to SlipPayroll page with payrollId parameter
-          navigate(`/distribution-payroll/slip/${row.idKaryawan}`, {
-            state: {
-              data: {
-                idKaryawan: row.idKaryawan,
-                nip: row.nip,
-                pengguna: row.pengguna,
-                golongan: 'D6', // Mock data as per request/image
-                divisi: 'IT',   // Mock data
-                jabatan: 'Staff', // Mock data
-                departemen: 'HRIS', // Mock data
-                jenisBank: row.jenisBank,
-                noRekening: row.noRekening,
-                takeHomePay: row.totalGajiBersih,
-                penerimaan: row.detail,
-              },
-              title: 'Slip Tunjangan Hari Raya 2025',
-              takeHomePayLabel: 'Tunjangan Hari Raya',
-            },
-          });
+          const slipUrl = getSlipGajiUrl(row.idKaryawan, 'Thr');
+          window.open(slipUrl, '_blank');
         },
         variant: 'outline',
         color: 'info',
@@ -272,25 +222,29 @@ export default function THRPages() {
         detailPathPrefix="/salary-distribution/detail-THR"
         title="Distribusi Gaji THR"
         customActions={actions}
+        loading={loading}
+        useExternalPagination={true}
+        externalPage={page}
+        externalTotal={total}
+        pageSize={pageSize}
+        onPageChangeExternal={setPage}
+        onRowsPerPageChangeExternal={setPageSize}
+        onSearchChange={setSearch}
+        onSortChange={setSort}
         onColumnFilterChange={(columnId, values) => {
-          setColumnFilters((prev) => ({
-            ...prev,
-            [columnId]: values,
-          }));
+          const newFilters = { ...columnFilters };
+          newFilters[columnId] = values;
+          setColumnFilters(newFilters);
         }}
         columnFilters={columnFilters}
         onDateRangeFilterChange={(columnId, startDate, endDate) => {
-          setDateRangeFilters((prev) => {
-            if (!startDate) {
-              const next = { ...prev };
-              delete next[columnId];
-              return next;
-            }
-            return {
-              ...prev,
-              [columnId]: { startDate, endDate },
-            };
-          });
+          const newFilters = { ...dateRangeFilters };
+          if (!startDate) {
+            delete newFilters[columnId];
+          } else {
+            newFilters[columnId] = { startDate, endDate };
+          }
+          setDateRangeFilters(newFilters);
         }}
         dateRangeFilters={dateRangeFilters}
       />

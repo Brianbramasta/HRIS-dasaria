@@ -48,14 +48,14 @@ interface UseApiPayrollPeriodBodReturn {
     search: string;
     sortBy: string;
     sortOrder: 'asc' | 'desc' | null;
-    type: string;
+    type: 'Mitra' | 'Staff' | 'Thr';
 
     columnFilters: Record<string, string[]>;
     dateRangeFilters: Record<string, { startDate: string; endDate: string | null }>;
 
     fetchPayrollPeriods: (filter?: Partial<TableFilter>) => Promise<void>;
-    fetchPayrollPeriodDetail: (payrollId: string, type?: string) => Promise<PayrollPeriodBodDetailData | null>;
-    approvalBod: (payload: PayrollPeriodBodApprovalPayload, type?: string) => Promise<boolean>;
+    fetchPayrollPeriodDetail: (payrollId: string, type?: 'Mitra' | 'Staff' | 'Thr') => Promise<PayrollPeriodBodDetailData | null>;
+    approvalBod: (payload: PayrollPeriodBodApprovalPayload, type?: 'Mitra' | 'Staff' | 'Thr') => Promise<boolean>;
 
     setPage: (page: number) => void;
     setPageSize: (pageSize: number) => void;
@@ -63,7 +63,7 @@ interface UseApiPayrollPeriodBodReturn {
     setSort: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
     setColumnFilters: (filters: Record<string, string[]>) => void;
     setDateRangeFilters: (filters: Record<string, { startDate: string; endDate: string | null }>) => void;
-    setType: (type: string) => void;
+    setType: (type: 'Mitra' | 'Staff' | 'Thr') => void;
 }
 
 export const useApiPayrollPeriodBod = (): UseApiPayrollPeriodBodReturn => {
@@ -81,7 +81,7 @@ export const useApiPayrollPeriodBod = (): UseApiPayrollPeriodBodReturn => {
 
     const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
     const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
-    const [type, setType] = useState<string>('');
+    const [type, setType] = useState<'Mitra' | 'Staff' | 'Thr'>('Mitra');
 
     const filterStatus = useFilterStore((s) => s.filters['PayrollPeriodStatus'] ?? '');
 
@@ -169,7 +169,7 @@ export const useApiPayrollPeriodBod = (): UseApiPayrollPeriodBodReturn => {
         [page, pageSize, search, sortBy, sortOrder, filterStatus, columnFilters, dateRangeFilters, type]
     );
 
-    const fetchPayrollPeriodDetail = useCallback(async (payrollId: string, typeParam?: string): Promise<PayrollPeriodBodDetailData | null> => {
+    const fetchPayrollPeriodDetail = useCallback(async (payrollId: string, typeParam?: 'Mitra' | 'Staff' | 'Thr'): Promise<PayrollPeriodBodDetailData | null> => {
         setLoading(true);
         setError(null);
 
@@ -191,7 +191,7 @@ export const useApiPayrollPeriodBod = (): UseApiPayrollPeriodBodReturn => {
         }
     }, [type]);
 
-    const approvalBod = useCallback(async (payload: PayrollPeriodBodApprovalPayload, type?: string): Promise<boolean> => {
+    const approvalBod = useCallback(async (payload: PayrollPeriodBodApprovalPayload, type?: 'Mitra' | 'Staff' | 'Thr'): Promise<boolean> => {
         setLoading(true);
         setError(null);
 

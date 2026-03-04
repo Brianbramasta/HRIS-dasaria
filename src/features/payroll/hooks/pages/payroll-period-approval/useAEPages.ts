@@ -113,7 +113,7 @@ export function useAEPages(_options: UseAEPagesOptions = {}) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedRowsForApproval, setSelectedRowsForApproval] = useState<AERow[]>([]);
   const [approvalStatusFetched, setApprovalStatusFetched] = useState(false);
-  const [employeeType, setEmployeeType] = useState<string>('');
+  const [employeeType, setEmployeeType] = useState<'Mitra' | 'Staff' | 'Thr'>('Mitra');
   
   const approvalStore = usePayrollApprovalStore();
   const { fetchImportApprovalStatus } = useApiPayrollPeriod();
@@ -580,7 +580,7 @@ export function useAEPages(_options: UseAEPagesOptions = {}) {
     setIsApprovalTypeDropdownOpen(false);
   };
 
-  const handleEmployeeTypeChange = (type: string) => {
+  const handleEmployeeTypeChange = (type: 'Mitra' | 'Staff' | 'Thr') => {
     setEmployeeType(type);
     setIsEmployeeTypeDropdownOpen(false);
   };

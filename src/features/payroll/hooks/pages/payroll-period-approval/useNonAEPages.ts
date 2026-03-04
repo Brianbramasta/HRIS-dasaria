@@ -176,6 +176,7 @@ export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
     setSort: setDirectorSort,
     setColumnFilters: setDirectorColumnFilters,
     setDateRangeFilters: setDirectorDateRangeFilters,
+    setType: setDirectorType,
   } = useApiPayrollPeriodDirectorHr();
 
   const {
@@ -194,6 +195,7 @@ export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
     setSort: setFatSort,
     setColumnFilters: setFatColumnFilters,
     setDateRangeFilters: setFatDateRangeFilters,
+    setType: setFatType,
   } = useApiPayrollPeriodFat();
 
   const {
@@ -212,25 +214,29 @@ export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
     setSort: setBodSort,
     setColumnFilters: setBodColumnFilters,
     setDateRangeFilters: setBodDateRangeFilters,
+    setType: setBodType,
   } = useApiPayrollPeriodBod();
 
   useEffect(() => {
     if (!isApprovalPage) return;
     if (!isDirectorHrga) return;
-    fetchDirectorRows({ page: 1, pageSize: directorPageSize });
-  }, [isApprovalPage, isDirectorHrga, directorPageSize, fetchDirectorRows]);
+    setDirectorType('Staff');
+    fetchDirectorRows({ page: 1, pageSize: directorPageSize, type: 'Staff' });
+  }, [isApprovalPage, isDirectorHrga, directorPageSize, fetchDirectorRows, setDirectorType]);
 
   useEffect(() => {
     if (!isApprovalPage) return;
     if (!isFat) return;
-    fetchFatRows({ page: 1, pageSize: fatPageSize });
-  }, [isApprovalPage, isFat, fatPageSize, fetchFatRows]);
+    setFatType('Staff');
+    fetchFatRows({ page: 1, pageSize: fatPageSize, type: 'Staff' });
+  }, [isApprovalPage, isFat, fatPageSize, fetchFatRows, setFatType]);
 
   useEffect(() => {
     if (!isApprovalPage) return;
     if (!isBod) return;
-    fetchBodRows({ page: 1, pageSize: bodPageSize });
-  }, [isApprovalPage, isBod, bodPageSize, fetchBodRows]);
+    setBodType('Staff');
+    fetchBodRows({ page: 1, pageSize: bodPageSize, type: 'Staff' });
+  }, [isApprovalPage, isBod, bodPageSize, fetchBodRows, setBodType]);
 
   // Fetch approval status for the store
   useEffect(() => {
