@@ -21,6 +21,19 @@ export const useAuthStore = create<AuthStoreState>((set) => ({
   setAuth: ({ user, accessToken, refreshToken, rememberMe = false }) => {
     const storage = rememberMe ? localStorage : sessionStorage;
     
+    console.log('user', user);
+    
+    // Extract employee ID and NIP from nested structure
+    const employeeId = user?.employee?.employee?.id || user?.employee?.id || user?.id;
+    const employeeNip = user?.account?.employee_nip || user?.employee?.employee_nip || user?.employee_nip || user?.employee?.employee?.id;
+    
+    // Create enhanced user object with employee ID and NIP
+    const enhancedUser = {
+      ...user,
+      employeeId: employeeId,
+      employeeNip: employeeNip
+    };
+    
     // Clear both storage types first
     localStorage.removeItem('user');
     localStorage.removeItem('access_token');
@@ -30,11 +43,11 @@ export const useAuthStore = create<AuthStoreState>((set) => ({
     sessionStorage.removeItem('refresh_token');
     
     // Store in the appropriate storage
-    storage.setItem('user', JSON.stringify(user));
+    storage.setItem('user', JSON.stringify(enhancedUser));
     storage.setItem('access_token', accessToken);
     if (refreshToken) storage.setItem('refresh_token', refreshToken);
     
-    set({ user, accessToken, refreshToken: refreshToken || null, isAuthenticated: true, rememberMe });
+    set({ user: enhancedUser, accessToken, refreshToken: refreshToken || null, isAuthenticated: true, rememberMe });
   },
   logout: () => {
     // Clear both storage types

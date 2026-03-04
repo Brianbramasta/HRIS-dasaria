@@ -191,16 +191,29 @@ export interface PayrollPeriodGenericActionResponse<TData = any> {
 }
 
 export interface PayrollPeriodImportApprovalStatusData {
-    id: string;
-    payroll_month: string;
-    allowance_imported_at: string | boolean;
-    approval_hr: string | boolean;
-    approval_direktur_hr: string | boolean;
-    approval_direktur_fat: string | boolean;
-    approval_direktur_bod: string | boolean;
-    distribute: string | boolean;
-    closed: string | boolean;
-    status_payroll: string;
+    statusAll: {
+        id: string;
+        payroll_month: string;
+        allowance_imported_at: string;
+        approval_hr: string;
+        approval_direktur_hr: string;
+        approval_direktur_fat: string;
+        approval_direktur_bod: string;
+        distribute: string;
+        closed: string;
+        type: string;
+        created_at: string;
+        updated_at: string;
+        status_payroll: string;
+    };
+    summary: Array<{
+        card: Array<{
+            label: string;
+            remaining: number;
+            progress: number;
+            total: number;
+        }>;
+    }>;
 }
 
 export interface PayrollPeriodImportApprovalStatusResponse {

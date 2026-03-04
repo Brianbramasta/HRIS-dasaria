@@ -99,8 +99,27 @@ class PayrollPeriodService {
         });
     }
 
-    async getImportApprovalStatus(): Promise<any> {
-        return apiService.get<any>(`${this.basePath}/import-approval-status`);
+    async getImportApprovalStatus(params?: {
+        type?: string;
+        periodeSalary?: boolean;
+        HRGA?: boolean;
+        FAT?: boolean;
+        BOD?: boolean;
+        distribution?: boolean;
+    }): Promise<any> {
+        const queryParams = new URLSearchParams();
+        
+        if (params?.type) queryParams.append('type', params.type);
+        if (params?.periodeSalary !== undefined) queryParams.append('periodeSalary', params.periodeSalary.toString());
+        if (params?.HRGA !== undefined) queryParams.append('HRGA', params.HRGA.toString());
+        if (params?.FAT !== undefined) queryParams.append('FAT', params.FAT.toString());
+        if (params?.BOD !== undefined) queryParams.append('BOD', params.BOD.toString());
+        if (params?.distribution !== undefined) queryParams.append('distribution', params.distribution.toString());
+        
+        const queryString = queryParams.toString();
+        const url = queryString ? `${this.basePath}/import-approval-status?${queryString}` : `${this.basePath}/import-approval-status`;
+        
+        return apiService.get<any>(url);
     }
 }
 

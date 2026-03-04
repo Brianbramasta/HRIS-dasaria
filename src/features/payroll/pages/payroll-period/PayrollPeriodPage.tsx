@@ -2,8 +2,10 @@
 
 // Dokumentasi: Halaman induk Periode Penggajian dengan skema Tabs + Outlet (mirip StrukturOrganisasiPage)
 import { Outlet, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import Tabs from '@/components/shared/Tabs';
 import CardsPayroll, { PayrollCard } from '../../components/cards/CardsPayroll';
+import { useApiPayrollPeriod } from '../../hooks/api/useApiPayrollPeriod';
 
 export default function PeriodePenggajianPage() {
   const location = useLocation();
@@ -20,11 +22,70 @@ export default function PeriodePenggajianPage() {
     { id: 'thr', label: 'THR', link: '/payroll-period/thr' },
   ];
 
-  const cardsData: PayrollCard[] = [
-    { name: 'Maker', statusLabel: 'Selesai', statusColor: 'success', remaining: 0, progressCurrent: 120, progressTotal: 120 },
-    { name: 'Dasarata', statusLabel: 'Dalam Proses', statusColor: 'info', remaining: 20, progressCurrent: 80, progressTotal: 100 },
-    { name: 'GriyaNet', statusLabel: 'Belum Proses', statusColor: 'error', remaining: 100, progressCurrent: 0, progressTotal: 100 },
-  ];
+  // Helper function to transform API response to PayrollCard format
+  const transformApiDataToCards = (apiData: any): PayrollCard[] => {
+    if (!apiData?.summary?.[0]?.card) return [];
+    
+    return apiData.summary[0].card.map((card: any) => {
+      let statusColor: 'success' | 'info' | 'error' = 'error';
+      let statusLabel = 'Belum Proses';
+      
+      if (card.remaining === 0) {
+        statusColor = 'success';
+        statusLabel = 'Selesai';
+      } else if (card.progress > 0) {
+        statusColor = 'info';
+        statusLabel = 'Dalam Proses';
+      }
+      
+      return {
+        name: card.label,
+        statusLabel,
+        statusColor,
+        remaining: card.remaining,
+        progressCurrent: card.progress,
+        progressTotal: card.total
+      };
+    });
+  };
+
+  const [cardsData, setCardsData] = useState<PayrollCard[]>([]);
+  const { fetchImportApprovalStatus } = useApiPayrollPeriod();
+
+  // Map tab to type
+  const getTabType = (tab: string): 'Staff' | 'Mitra' | 'Thr' => {
+    switch (tab) {
+      case 'ae': return 'Staff';
+      case 'thr': return 'Thr';
+      default: return 'Mitra';
+    }
+  };
+
+  // Fetch card data when tab changes
+  useEffect(() => {
+    const loadCardData = async () => {
+      try {
+        const type = getTabType(activeTab);
+        const result = await fetchImportApprovalStatus({
+          type,
+          periodeSalary: true
+        });
+        
+        if (result) {
+          const transformedData = transformApiDataToCards(result);
+          setCardsData(transformedData);
+        }
+      } catch (error) {
+        console.error('Error fetching card data:', error);
+        // Fallback to empty array on error
+        setCardsData([]);
+      }
+    };
+
+    if (!isDetailPage) {
+      loadCardData();
+    }
+  }, [activeTab, isDetailPage, fetchImportApprovalStatus]);
 
   return (
     <div className="space-y-6">

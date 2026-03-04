@@ -58,6 +58,9 @@ export const useLogin = () => {
         isActive: true,
         createdAt: response.account.created_at || new Date().toISOString(),
         updatedAt: response.account.updated_at || new Date().toISOString(),
+        // Add account and employee data for NIP extraction
+        account: response.account,
+        employee: response.employee,
       };
 
       setAuth({ user, accessToken: response.token, rememberMe: data.rememberMe });

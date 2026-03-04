@@ -63,7 +63,14 @@ interface UseApiPayrollPeriodReturn {
     // Actions
     fetchPayrollPeriods: (filter?: Partial<TableFilter>) => Promise<void>;
     fetchPayrollPeriodDetail: (payrollId: string, type?: 'Mitra' | 'Staff' | 'Thr') => Promise<PayrollPeriodDetailData | null>;
-    fetchImportApprovalStatus: () => Promise<PayrollPeriodImportApprovalStatusData | null>;
+    fetchImportApprovalStatus: (params?: {
+        type?: string;
+        periodeSalary?: boolean;
+        HRGA?: boolean;
+        FAT?: boolean;
+        BOD?: boolean;
+        distribution?: boolean;
+    }) => Promise<PayrollPeriodImportApprovalStatusData | null>;
     updateNonFixAllowance: (payload: PayrollPeriodUpdateNonFixAllowancePayload) => Promise<boolean>;
     updateNonFixDeduction: (payload: PayrollPeriodUpdateNonFixDeductionPayload) => Promise<boolean>;
     updateWorkingDays: (payload: PayrollPeriodUpdateWorkingDaysPayload) => Promise<boolean>;
@@ -205,13 +212,22 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
         }
     }, []);
 
-    const fetchImportApprovalStatus = useCallback(async (): Promise<PayrollPeriodImportApprovalStatusData | null> => {
+    const fetchImportApprovalStatus = useCallback(async (
+        params?: {
+            type?: string;
+            periodeSalary?: boolean;
+            HRGA?: boolean;
+            FAT?: boolean;
+            BOD?: boolean;
+            distribution?: boolean;
+        }
+    ): Promise<PayrollPeriodImportApprovalStatusData | null> => {
         setLoading(true);
         setError(null);
 
         try {
-            const response = await payrollPeriodService.getImportApprovalStatus();
-            const status = (response as any)?.data ?? null;
+            const response = await payrollPeriodService.getImportApprovalStatus(params);
+            const status = response?.data ?? null;
             setImportApprovalStatus(status);
             return status;
         } catch (err) {
