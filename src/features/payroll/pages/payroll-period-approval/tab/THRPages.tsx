@@ -35,6 +35,8 @@ export default function THRTab({ }: { resetKey?: string }) {
     handleColumnFilterChange,
     handleDateRangeFilterChange,
     handleApprovalTypeChange,
+    handleApprovalWithModal,
+    handleApprovalConfirm,
     setIsDropdownOpen,
     isPendingForApprovalType,
     approvalStore,
@@ -70,36 +72,36 @@ export default function THRTab({ }: { resetKey?: string }) {
   });
 
   // Approval handlers
-  const handleApprovalWithModal = useCallback(
+  const handleApprovalWithModalWrapper = useCallback(
     async (selectedRows: THRRow[]) => {
       if (!isApprovalPage) return false;
 
-      const isSelectAll = (selectedRows?.length ?? 0) > 0 && (selectedRows?.length ?? 0) === rows.length;
-      let payrollIds: string[] = [];
+      const result = await handleApprovalWithModal(selectedRows);
+      if (!result) return false;
 
-      if (!isSelectAll) {
-        payrollIds = Array.from(
-          new Set((selectedRows || []).map((r) => r.payrollId).filter((id): id is string => Boolean(id)))
-        );
-        if (payrollIds.length === 0) return false;
-      }
-
-      setSelectedRowsForApproval(selectedRows);
+      setSelectedRowsForApproval(result.selectedRows);
       setIsApprovalModalOpen(true);
       return true;
     },
-    [isApprovalPage, rows.length]
+    [isApprovalPage, handleApprovalWithModal]
   );
 
-  const handleApprovalConfirm = async () => {
+  const handleApprovalConfirmWrapper = async () => {
     setIsSubmitting(true);
     try {
-      // TODO: Implement approval logic for THR
-      console.log('THR Approval confirmed', selectedRowsForApproval);
+      const currentSelectedRows = selectedRowsForApproval;
+      const isSelectAll = currentSelectedRows.length > 0 && currentSelectedRows.length === rows.length;
+      const payrollIds = Array.from(
+        new Set(currentSelectedRows.map((r: THRRow) => r.payrollId).filter((id): id is string => Boolean(id)))
+      );
+
+      const result = await handleApprovalConfirm(currentSelectedRows, isSelectAll, payrollIds);
       
-      setIsApprovalModalOpen(false);
-      setSelectedRowsForApproval([]);
-      clearSelection();
+      if (result) {
+        setIsApprovalModalOpen(false);
+        setSelectedRowsForApproval([]);
+        clearSelection();
+      }
     } catch (error) {
       console.error('Approval failed:', error);
     } finally {
@@ -120,7 +122,7 @@ export default function THRTab({ }: { resetKey?: string }) {
         detailPathPrefix={detailPathPrefix}
         title={title}
         onDetailNavigation={handleDetailNavigation}
-        onFinalize={handleApprovalWithModal}
+        onFinalize={handleApprovalWithModalWrapper}
         approvalType={approvalType}
         disableSelection={approvalStore.isSelectionDisabled()}
         isRowSelectable={(row) => isPendingForApprovalType(String(row.statusPersetujuan))}
@@ -186,7 +188,7 @@ export default function THRTab({ }: { resetKey?: string }) {
           setIsApprovalModalOpen(false);
           setSelectedRowsForApproval([]);
         }}
-        onConfirm={handleApprovalConfirm}
+        onConfirm={handleApprovalConfirmWrapper}
         submitting={isSubmitting}
         statusPersetujuan={selectedRowsForApproval.length > 0 ? selectedRowsForApproval[0].statusPersetujuan : ''}
         periodDate={selectedRowsForApproval.length > 0 ? selectedRowsForApproval[0].tanggalPengajuan : ''}

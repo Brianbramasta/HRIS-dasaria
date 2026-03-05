@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { DataTableColumn } from '@/components/shared/datatable/DataTable';
 import { useApiPayrollPeriodDirectorHrTHR } from '../../api/useApiPayrollPeriodDirectorHrTHR';
@@ -162,6 +162,7 @@ export function useTHRPages(_options: UseTHRPagesOptions = {}) {
     columnFilters: directorColumnFilters,
     dateRangeFilters: directorDateRangeFilters,
     fetchPayrollPeriods: fetchDirectorRows,
+    approvalDirectorHr,
     setPage: setDirectorPage,
     setPageSize: setDirectorPageSize,
     setSearch: setDirectorSearch,
@@ -180,6 +181,7 @@ export function useTHRPages(_options: UseTHRPagesOptions = {}) {
     columnFilters: fatColumnFilters,
     dateRangeFilters: fatDateRangeFilters,
     fetchPayrollPeriods: fetchFatRows,
+    approvalFat,
     setPage: setFatPage,
     setPageSize: setFatPageSize,
     setSearch: setFatSearch,
@@ -198,6 +200,7 @@ export function useTHRPages(_options: UseTHRPagesOptions = {}) {
     columnFilters: bodColumnFilters,
     dateRangeFilters: bodDateRangeFilters,
     fetchPayrollPeriods: fetchBodRows,
+    approvalBod,
     setPage: setBodPage,
     setPageSize: setBodPageSize,
     setSearch: setBodSearch,
@@ -329,6 +332,62 @@ export function useTHRPages(_options: UseTHRPagesOptions = {}) {
   const handleApprovalTypeChange = (type: string) => {
     setApprovalType(type);
     setIsDropdownOpen(false);
+  };
+
+  // Approval handlers
+  const handleApprovalWithModal = useCallback(
+    async (selectedRows: THRRow[]) => {
+      if (!isApprovalPage) return false;
+
+      const isSelectAll = (selectedRows?.length ?? 0) > 0 && (selectedRows?.length ?? 0) === rows.length;
+      let payrollIds: string[] = [];
+
+      if (!isSelectAll) {
+        payrollIds = Array.from(
+          new Set((selectedRows || []).map((r) => r.payrollId).filter((id): id is string => Boolean(id)))
+        );
+        if (payrollIds.length === 0) return false;
+      }
+
+      // Return selected rows for modal handling
+      return { selectedRows, isSelectAll, payrollIds };
+    },
+    [isApprovalPage, rows.length]
+  );
+
+  const handleApprovalConfirm = async (_selectedRows: THRRow[], isSelectAll: boolean, payrollIds: string[]) => {
+    try {
+      let result = false;
+
+      if (isSelectAll) {
+        if (isDirectorHrga) {
+          result = await approvalDirectorHr({ payrollIds: [], all: true }, 'Thr');
+          if (result) await fetchDirectorRows({ page: 1, pageSize: directorPageSize, type: 'Thr' });
+        } else if (isFat) {
+          result = await approvalFat({ payrollIds: [], all: true }, 'Thr');
+          if (result) await fetchFatRows({ page: 1, pageSize: fatPageSize, type: 'Thr' });
+        } else if (isBod) {
+          result = await approvalBod({ payrollIds: [], all: true }, 'Thr');
+          if (result) await fetchBodRows({ page: 1, pageSize: bodPageSize, type: 'Thr' });
+        }
+      } else {
+        if (isDirectorHrga) {
+          result = await approvalDirectorHr({ payrollIds }, 'Thr');
+          if (result) await fetchDirectorRows({ page: directorPage, pageSize: directorPageSize, type: 'Thr' });
+        } else if (isFat) {
+          result = await approvalFat({ payrollIds }, 'Thr');
+          if (result) await fetchFatRows({ page: fatPage, pageSize: fatPageSize, type: 'Thr' });
+        } else if (isBod) {
+          result = await approvalBod({ payrollIds }, 'Thr');
+          if (result) await fetchBodRows({ page: bodPage, pageSize: bodPageSize, type: 'Thr' });
+        }
+      }
+
+      return result;
+    } catch (error) {
+      console.error('Approval failed:', error);
+      return false;
+    }
   };
 
   // Event handlers
@@ -486,6 +545,8 @@ export function useTHRPages(_options: UseTHRPagesOptions = {}) {
     
     // Handlers
     handleDetailNavigation,
+    handleApprovalWithModal,
+    handleApprovalConfirm,
     handleSearchChange,
     handleSortChange,
     handlePageChange,
