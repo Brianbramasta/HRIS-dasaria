@@ -1,254 +1,72 @@
-import { useMemo, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
 import PayrollTabBase from '@/features/payroll/components/tabs/PayrollTabBase';
-import { IconFileDetail } from '@/icons/components/icons';
-import { formatCurrency } from '@/utils/formatCurrency';
-import { formatDateToIndonesian } from '@/utils/formatDate';
-import { useApiPayrollPeriodDistribution } from '../../../hooks/api/useApiPayrollPeriodDistribution';
+import useTHRPages from '@/features/payroll/hooks/pages/distribution-payroll/useTHRPages';
+import { SalaryDistributionData } from '@/features/payroll/hooks/pages/distribution-payroll/useTHRPages';
 
-interface SalaryDistributionData {
-  idKaryawan: string;
-  pengguna: string;
-  nip: string;
-  tanggalPengajuan: string;
-  email: string;
-  jenisBank: string;
-  noRekening: string;
-  totalGajiBersih: number;
-  kategori: string;
-  perusahaan: string;
-  statusPersetujuan: 'menunggu' | 'disetujui' | 'ditolak' | 'Selesai';
-  // Detail components for THR
-  detail?: {
-    gajiPokok: number;
-    tunjanganTetap: number; // This might be a sum or a header placeholder
-    transport: number;
-    lamaKerja: number;
-    jabatan: number;
-    pernikahan: number;
+const toPayrollDistributionFilterColumnId = (columnId: string): string => {
+  const map: Record<string, string> = {
+    tanggalPengajuan: 'periode',
+    statusPersetujuan: 'payroll_status_name',
   };
-}
-
+  return map[columnId] || columnId;
+};
 
 export default function THRPages() {
-  const navigate = useNavigate();
   const {
-    payrollPeriods,
+    rows,
+    baseColumns,
     loading,
-    total,
-    page,
     pageSize,
-    search,
-    sortBy,
-    sortOrder,
+    page,
+    total,
     columnFilters,
     dateRangeFilters,
-    fetchPayrollPeriods,
-    getSlipGajiUrl,
-    setPage,
-    setPageSize,
-    setSearch,
-    setSort,
-    setColumnFilters,
-    setDateRangeFilters,
-    setType
-  } = useApiPayrollPeriodDistribution();
-
-  // Set type to 'Thr' when component mounts
-  useEffect(() => {
-    setType('Thr');
-  }, [setType]);
-
-  // Fetch data when component mounts or filters change
-  useEffect(() => {
-    fetchPayrollPeriods({
-      page,
-      pageSize,
-      search,
-      sortBy,
-      sortOrder,
-      type: 'Thr'
-    });
-  }, [fetchPayrollPeriods, page, pageSize, search, sortBy, sortOrder]);
-
-  const filteredRows = useMemo(() => {
-    return payrollPeriods.map((item: any) => ({
-      idKaryawan: item.payrollId,
-      pengguna: item.fullName,
-      nip: item.employeeId,
-      tanggalPengajuan: item.periode || '-',
-      email: item.email || '',
-      jenisBank: item.bankName || '',
-      noRekening: item.bankAccountNumber?.toString() || '',
-      totalGajiBersih: item.netSalary || 0,
-      kategori: item.employeeCategoryName || '',
-      perusahaan: item.companyName || '',
-      statusPersetujuan: item.payrollStatusName || 'menunggu',
-      detail: {
-        gajiPokok: item.netSalary || 0,
-        tunjanganTetap: 0,
-        transport: 0,
-        lamaKerja: 0,
-        jabatan: 0,
-        pernikahan: 0,
-      },
-    }));
-  }, [payrollPeriods]);
-
-
-  const baseColumns: DataTableColumn<SalaryDistributionData>[] = useMemo(
-    () => [
-      {
-        id: 'nip',
-        label: 'NIP',
-        minWidth: 100,
-        align: 'left',
-      },
-      {
-        id: 'pengguna',
-        label: 'Pengguna',
-        minWidth: 150,
-        align: 'left',
-      },
-      {
-        id: 'tanggalPengajuan',
-        label: 'Tanggal Pengajuan',
-        minWidth: 140,
-        align: 'left',
-        dateRangeFilter: true,
-        format: (v) => formatDateToIndonesian(String(v)),
-      },
-      {
-        id: 'email',
-        label: 'Email',
-        minWidth: 180,
-        align: 'left',
-      },
-      {
-        id: 'jenisBank',
-        label: 'Jenis Bank',
-        minWidth: 120,
-        align: 'left',
-      },
-      {
-        id: 'noRekening',
-        label: 'No. Rekening',
-        minWidth: 130,
-        align: 'left',
-      },
-      {
-        id: 'totalGajiBersih',
-        label: 'Total THR',
-        minWidth: 140,
-        align: 'right',
-        format: (value) => formatCurrency(value),
-      },
-      {
-        id: 'lamaKerja',
-        label: 'Lama Kerja',
-        minWidth: 120,
-        align: 'right',
-        format: (_value, row) => formatCurrency(row.detail?.lamaKerja ?? 0),
-      },
-      {
-        id: 'kategori',
-        label: 'Kategori',
-        minWidth: 110,
-        align: 'left',
-      },
-      {
-        id: 'perusahaan',
-        label: 'Perusahaan',
-        minWidth: 120,
-        align: 'left',
-      },
-      {
-        id: 'statusPersetujuan',
-        label: 'Status Persetujuan',
-        minWidth: 140,
-        align: 'center',
-        filterOptions: [
-          { label: 'Disetujui', value: 'disetujui' },
-          { label: 'Menunggu', value: 'menunggu' },
-          { label: 'Ditolak', value: 'ditolak' },
-          { label: 'Selesai', value: 'Selesai' },
-        ],
-        format: (value) => {
-          const statusMap = {
-            disetujui: { text: 'Disetujui', className: 'status-styling bg-green-100 text-green-800' },
-            menunggu: { text: 'Menunggu', className: 'status-styling bg-yellow-100 text-yellow-800' },
-            ditolak: { text: 'Ditolak', className: 'status-styling bg-red-100 text-red-800' },
-            Selesai: { text: 'Selesai', className: 'status-styling bg-blue-100 text-blue-800' },
-          };
-          const status = statusMap[value as keyof typeof statusMap] || {
-            text: value,
-            className: 'status-styling bg-gray-100 text-gray-800',
-          };
-          return (
-            <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${status.className}`}>
-              {status.text}
-            </span>
-          );
-        },
-      },
-    ],
-    []
-  );
-
-  const actions: DataTableAction<SalaryDistributionData>[] = useMemo(
-    () => [
-      {
-        icon: <IconFileDetail />,
-        onClick: (row) => {
-          // Navigate to SlipPayroll page with payrollId parameter
-          const slipUrl = getSlipGajiUrl(row.idKaryawan, 'Thr');
-          window.open(slipUrl, '_blank');
-        },
-        variant: 'outline',
-        color: 'info',
-      },
-    ],
-    [navigate]
-  );
-
+    title,
+    detailPathPrefix,
+    approvalStore,
+    customActions,
+    handleDistribusiSlipGaji,
+    handleSearchChange,
+    handleSortChange,
+    handlePageChange,
+    handleRowsPerPageChange,
+    handleColumnFilterChange,
+    handleDateRangeFilterChange,
+    isRowSelectable,
+  } = useTHRPages();
 
   return (
     <>
       <PayrollTabBase<SalaryDistributionData>
         resetKey="distribution-thr"
-        rows={filteredRows}
+        rows={rows}
         baseColumns={baseColumns}
-        detailPathPrefix="/salary-distribution/detail-THR"
-        title="Distribusi Gaji THR"
-        customActions={actions}
+        detailPathPrefix={detailPathPrefix}
+        title={title}
+        customActions={customActions}
+        onFinalize={handleDistribusiSlipGaji}
+        disableSelection={approvalStore.isSelectionDisabled()}
+        isRowSelectable={isRowSelectable}
+
         loading={loading}
-        useExternalPagination={true}
+        useExternalPagination
         externalPage={page}
         externalTotal={total}
         pageSize={pageSize}
-        onPageChangeExternal={setPage}
-        onRowsPerPageChangeExternal={setPageSize}
-        onSearchChange={setSearch}
-        onSortChange={setSort}
+        onSearchChange={handleSearchChange}
+        onSortChange={handleSortChange}
+        onPageChangeExternal={handlePageChange}
+        onRowsPerPageChangeExternal={handleRowsPerPageChange}
         onColumnFilterChange={(columnId, values) => {
-          const newFilters = { ...columnFilters };
-          newFilters[columnId] = values;
-          setColumnFilters(newFilters);
+          const apiColumnId = toPayrollDistributionFilterColumnId(columnId);
+          handleColumnFilterChange(apiColumnId, values);
         }}
         columnFilters={columnFilters}
         onDateRangeFilterChange={(columnId, startDate, endDate) => {
-          const newFilters = { ...dateRangeFilters };
-          if (!startDate) {
-            delete newFilters[columnId];
-          } else {
-            newFilters[columnId] = { startDate, endDate };
-          }
-          setDateRangeFilters(newFilters);
+          const apiColumnId = toPayrollDistributionFilterColumnId(columnId);
+          handleDateRangeFilterChange(apiColumnId, startDate, endDate);
         }}
         dateRangeFilters={dateRangeFilters}
       />
-
     </>
   );
 }

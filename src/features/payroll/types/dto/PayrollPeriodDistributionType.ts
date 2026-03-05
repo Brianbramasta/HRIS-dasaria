@@ -50,7 +50,7 @@ export interface PayrollPeriodDistributionSendSlipSalaryPayload {
     payrollIds: string[];
     all?: boolean;
     payrollPeriodeId?: string;
-    type?: 'Mitra' | 'Staff';
+    type?: 'Mitra' | 'Staff' | 'Thr';
 }
 
 export interface PayrollPeriodDistributionGenericActionResponse<TData = any> {
