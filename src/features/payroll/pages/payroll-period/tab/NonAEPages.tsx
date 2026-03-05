@@ -2,6 +2,9 @@ import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
 import PenggajianTabBase from '../../../components/tabs/PayrollTabBase';
+import Button from '@/components/ui/button/Button';
+import { Dropdown } from '@/components/ui/dropdown/Dropdown';
+import { ChevronDown } from 'react-feather';
 import useNonAEPages from '../../../hooks/pages/payroll-period/useNonAEPages';
 import { NonAERow } from '../../../hooks/pages/payroll-period/useNonAEPages';
 import { IconFileDetail, IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
@@ -10,6 +13,8 @@ import React from 'react';
 
 export default function NonAETab({ }: { resetKey?: string }) {
   const navigate = useNavigate();
+  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
+  const [approvalType, setApprovalType] = React.useState('Persetujuan oleh Direktur HRGA');
   const {
     rows,
     baseColumns: baseColumnsFromHook,
@@ -21,6 +26,7 @@ export default function NonAETab({ }: { resetKey?: string }) {
     dateRangeFilters,
     title,
     detailPathPrefix,
+    isApprovalPage,
     approvalStore,
     handleDetailNavigation,
     handleSearchChange,
@@ -33,6 +39,11 @@ export default function NonAETab({ }: { resetKey?: string }) {
     isRowSelectable,
     canEditDelete,
   } = useNonAEPages();
+
+  const handleApprovalTypeChange = (type: string) => {
+    setApprovalType(type);
+    setIsDropdownOpen(false);
+  };
 
   // Add format function for status column
   const baseColumns: DataTableColumn<NonAERow>[] = baseColumnsFromHook.map(col => {
@@ -67,7 +78,7 @@ export default function NonAETab({ }: { resetKey?: string }) {
       {
         icon: React.createElement(IconFileDetail),
         onClick: (row) => {
-          navigate(`${detailPathPrefix}/${row.payrollId}?approvalType=${encodeURIComponent('Persetujuan oleh Direktur HRGA')}`);
+          navigate(`${detailPathPrefix}/${row.payrollId}?approvalType=${encodeURIComponent(approvalType)}`);
         },
         variant: 'outline',
         color: 'info',
@@ -100,7 +111,7 @@ export default function NonAETab({ }: { resetKey?: string }) {
         color: 'error',
       },
     ],
-    [navigate, detailPathPrefix]
+    [navigate, detailPathPrefix, approvalType]
   );
 
   return (
@@ -132,6 +143,43 @@ export default function NonAETab({ }: { resetKey?: string }) {
       dateRangeFilters={dateRangeFilters}
       onFinalize={handleFinalize}
       templateType="Staff"
+      toolbarRightSlot={
+        isApprovalPage && (
+          <div className="relative">
+            <Button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-1 dropdown-toggle"
+            >
+              {approvalType}
+              <ChevronDown size={16} />
+            </Button>
+            <Dropdown isOpen={isDropdownOpen} onClose={() => setIsDropdownOpen(false)}>
+              <div className="p-2 w-64">
+                <button
+                  className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+                  onClick={() => handleApprovalTypeChange('Persetujuan oleh FAT')}
+                >
+                  Persetujuan oleh FAT
+                </button>
+                <button
+                  className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+                  onClick={() => handleApprovalTypeChange('Persetujuan oleh Direktur HRGA')}
+                >
+                  Persetujuan oleh Direktur HRGA
+                </button>
+                <button
+                  className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+                  onClick={() => handleApprovalTypeChange('Persetujuan oleh BOD')}
+                >
+                  Persetujuan oleh BOD
+                </button>
+              </div>
+            </Dropdown>
+          </div>
+        )
+      }
     />
   );
 }

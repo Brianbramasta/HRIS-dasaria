@@ -249,7 +249,7 @@ export default function THRTab({ }: { resetKey?: string }) {
         const editableStatuses = ['Menunggu Maker'];
         return editableStatuses.includes(row.statusTHR);
       }}
-      disableImportButton={true}
+      disableImportButton={approvalStore.isImportDisabled()}
       disableTemplateButton={true}
       disableFinalizeButton={approvalStore.isFinalizeDisabled()}
       disableSelection={approvalStore.isSelectionDisabled()}

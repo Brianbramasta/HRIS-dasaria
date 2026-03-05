@@ -218,6 +218,7 @@ export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
     // Navigation and UI state
     title,
     detailPathPrefix,
+    isApprovalPage,
     
     // Store
     approvalStore,
