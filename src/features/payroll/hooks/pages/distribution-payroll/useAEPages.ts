@@ -84,18 +84,18 @@ export function useAEPages(_options: UseAEPagesOptions = {}) {
   }, [fetchPayrollPeriods, page, pageSize, search, sortBy, sortOrder, columnFilters, dateRangeFilters]);
 
   // Fetch approval status for the store
-  useEffect(() => {
-    if (!approvalStatusFetched) {
-      const fetchStatus = async () => {
-        const status = await fetchImportApprovalStatus();
-        if (status) {
-          approvalStore.setApprovalStatus(status);
-        }
-        setApprovalStatusFetched(true);
-      };
-      fetchStatus();
-    }
-  }, [fetchImportApprovalStatus, approvalStatusFetched]);
+  // useEffect(() => {
+  //   if (!approvalStatusFetched) {
+  //     const fetchStatus = async () => {
+  //       const status = await fetchImportApprovalStatus();
+  //       if (status) {
+  //         approvalStore.setApprovalStatus(status);
+  //       }
+  //       setApprovalStatusFetched(true);
+  //     };
+  //     fetchStatus();
+  //   }
+  // }, [fetchImportApprovalStatus, approvalStatusFetched]);
 
   const rows: SalaryDistributionData[] = useMemo(() => {
     const toNumber = (val: unknown): number => {

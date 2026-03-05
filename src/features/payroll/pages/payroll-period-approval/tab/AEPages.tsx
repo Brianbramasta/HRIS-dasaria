@@ -238,18 +238,18 @@ export default function AETab({ }: { resetKey?: string }) {
   }, [isApprovalPage, isDirectorHrga, isFat, isBod, fetchDirectorRows, fetchFatRows, fetchBodRows, setDirectorType, setFatType, setBodType, initialDataFetched]);
 
   // Fetch approval status for the store
-  useEffect(() => {
-    if (!approvalStatusFetched) {
-      const fetchStatus = async () => {
-        const status = await fetchImportApprovalStatus();
-        if (status) {
-          approvalStore.setApprovalStatus(status);
-        }
-        setApprovalStatusFetched(true);
-      };
-      fetchStatus();
-    }
-  }, [fetchImportApprovalStatus, approvalStatusFetched]);
+  // useEffect(() => {
+  //   if (!approvalStatusFetched) {
+  //     const fetchStatus = async () => {
+  //       const status = await fetchImportApprovalStatus();
+  //       if (status) {
+  //         approvalStore.setApprovalStatus(status);
+  //       }
+  //       setApprovalStatusFetched(true);
+  //     };
+  //     fetchStatus();
+  //   }
+  // }, [fetchImportApprovalStatus, approvalStatusFetched]);
 
   // Auto-set employee type to Mitra on component mount
   useEffect(() => {

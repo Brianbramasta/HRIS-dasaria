@@ -116,9 +116,20 @@ export function useAEPages(_options: UseAEPagesOptions = {}) {
   useEffect(() => {
     if (!approvalStatusFetched) {
       const fetchStatus = async () => {
-        const status = await fetchImportApprovalStatus();
+        // Add required parameters to get complete status
+        const status = await fetchImportApprovalStatus({
+          type: 'Mitra',
+          periodeSalary: true,
+          HRGA: true,
+          FAT: true,
+          BOD: true,
+          distribution: true
+        });
         if (status) {
-          approvalStore.setApprovalStatus(status);
+          // Store is now automatically updated in the API hook
+          console.log('Status fetched and store updated:', status);
+        } else {
+          console.log('API returned null status');
         }
         setApprovalStatusFetched(true);
       };

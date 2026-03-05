@@ -13,6 +13,7 @@ import {
 } from '../../types/dto/PayrollPeriodType';
 import { payrollPeriodService } from '../../services/PayrollPeriodService';
 import useFilterStore from '../../../../stores/filterStore';
+import { usePayrollApprovalStore } from '../../store/usePayrollApprovalStore';
 
 // Mapping helpers
 const mapToPayrollPeriodListItem = (item: any): PayrollPeriodListItem => ({
@@ -229,6 +230,14 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
             const response = await payrollPeriodService.getImportApprovalStatus(params);
             const status = response?.data ?? null;
             setImportApprovalStatus(status);
+            
+            // Update approval store with the status
+            if (status) {
+                const approvalStore = usePayrollApprovalStore.getState();
+                approvalStore.setApprovalStatus(status);
+            }
+            
+            console.log(status, 'status 1');
             return status;
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to fetch import approval status');

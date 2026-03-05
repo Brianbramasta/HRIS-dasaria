@@ -74,18 +74,18 @@ export default function THRTab({ }: { resetKey?: string }) {
   }, [fetchPayrollPeriods, page, pageSize, search, sortBy, sortOrder]);
 
   // Fetch approval status when component mounts
-  useEffect(() => {
-    if (!approvalStatusFetched) {
-      const fetchStatus = async () => {
-        const status = await fetchImportApprovalStatus();
-        if (status) {
-          approvalStore.setApprovalStatus(status);
-        }
-        setApprovalStatusFetched(true);
-      };
-      fetchStatus();
-    }
-  }, [fetchImportApprovalStatus, approvalStatusFetched, approvalStore]);
+  // useEffect(() => {
+  //   if (!approvalStatusFetched) {
+  //     const fetchStatus = async () => {
+  //       const status = await fetchImportApprovalStatus();
+  //       if (status) {
+  //         approvalStore.setApprovalStatus(status);
+  //       }
+  //       setApprovalStatusFetched(true);
+  //     };
+  //     fetchStatus();
+  //   }
+  // }, [fetchImportApprovalStatus, approvalStatusFetched, approvalStore]);
   
   // Dokumentasi: Deteksi halaman Approval atau Distribusi untuk set judul
   const isApprovalPage = location.pathname.includes('/payroll-period-approval');
