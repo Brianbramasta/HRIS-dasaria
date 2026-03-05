@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
 import PenggajianTabBase from '../../../components/tabs/PayrollTabBase';
@@ -9,8 +9,7 @@ import { formatDateToIndonesian } from '@/utils/formatDate';
 import { formatCurrency } from '@/utils/formatCurrency';
 import { useApiPayrollPeriod } from '../../../hooks/api/useApiPayrollPeriod';
 import { usePayrollApprovalStore } from '../../../store/usePayrollApprovalStore';
-import { IconFileDetail } from '@/icons/components/icons';
-import React from 'react';
+import { IconFileDetail, IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
 
 type THRRow = {
   payrollId: string;
@@ -106,20 +105,6 @@ export default function THRTab({ }: { resetKey?: string }) {
     setIsDropdownOpen(false);
   };
 
-  const customActions: DataTableAction<THRRow>[] = useMemo(
-    () => [
-      {
-        icon: React.createElement(IconFileDetail),
-        onClick: (row) => {
-          navigate(`${detailPathPrefix}/${row.payrollId}?approvalType=${encodeURIComponent(approvalType)}`);
-        },
-        variant: 'outline',
-        color: 'info',
-      },
-    ],
-    [navigate, detailPathPrefix, approvalType]
-  );
-
   const handleFinalize = async (selectedRows: THRRow[]) => {
     const isSelectAll = (selectedRows?.length ?? 0) > 0 && (selectedRows?.length ?? 0) === filteredRows.length;
     if (isSelectAll) {
@@ -206,6 +191,47 @@ export default function THRTab({ }: { resetKey?: string }) {
     },
     { id: 'alasanDitolak', label: 'Alasan Ditolak' },
   ];
+
+  const actions: DataTableAction<THRRow>[] = useMemo(
+    () => [
+      {
+        icon: React.createElement(IconFileDetail),
+        onClick: (row) => {
+          navigate(`${detailPathPrefix}/${row.payrollId}?approvalType=${encodeURIComponent(approvalType)}`);
+        },
+        variant: 'outline',
+        color: 'info',
+        condition: (row) => !row.statusTHR.toLowerCase().includes('menunggu maker'),
+      },
+      {
+        icon: <Edit />,
+        onClick: (row) => {
+          navigate(`${detailPathPrefix}/${row.payrollId}`);
+        },
+        condition: (row) => {
+          const editableStatuses = ['Menunggu Maker'];
+          return editableStatuses.includes(row.statusTHR);
+        },
+        variant: 'outline',
+        className: 'border-0',
+      },
+      {
+        icon: <Trash />,
+        onClick: (row) => {
+          // This would need to be handled by the parent component
+          console.log('Delete action for:', row);
+        },
+        condition: (row) => {
+          const editableStatuses = ['Menunggu Maker'];
+          return editableStatuses.includes(row.statusTHR);
+        },
+        variant: 'outline',
+        className: 'border-0',
+        color: 'error',
+      },
+    ],
+    [navigate, detailPathPrefix, approvalType]
+  );
   return (
     <PenggajianTabBase
       resetKey="payroll-period-thr"
@@ -214,15 +240,17 @@ export default function THRTab({ }: { resetKey?: string }) {
       detailPathPrefix={detailPathPrefix}
       title={title}
       onDetailNavigation={handleDetailNavigation}
+      customActions={actions}
       isRowSelectable={(row: THRRow) => {
         const selectableStatuses = ['Menunggu Maker', 'Menunggu Checker', 'Menunggu Approver'];
         return selectableStatuses.includes(row.statusTHR);
       }}
       canEditDelete={(row: THRRow) => {
-        const editableStatuses = ['Menunggu Maker', 'Menunggu Checker'];
+        const editableStatuses = ['Menunggu Maker'];
         return editableStatuses.includes(row.statusTHR);
       }}
-      disableImportButton={approvalStore.isImportDisabled()}
+      disableImportButton={true}
+      disableTemplateButton={true}
       disableFinalizeButton={approvalStore.isFinalizeDisabled()}
       disableSelection={approvalStore.isSelectionDisabled()}
       loading={loading}
@@ -251,7 +279,6 @@ export default function THRTab({ }: { resetKey?: string }) {
       }}
       dateRangeFilters={dateRangeFilters}
       onFinalize={handleFinalize}
-      customActions={customActions}
       templateType="Thr"
       toolbarRightSlot={
         isApprovalPage && <div className="relative">

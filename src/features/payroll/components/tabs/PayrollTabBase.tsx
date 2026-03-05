@@ -27,6 +27,7 @@ type Props<TRow extends BaseRow> = {
   isRowSelectable?: (row: TRow) => boolean;
   disableImportButton?: boolean;
   disableFinalizeButton?: boolean;
+  disableTemplateButton?: boolean;
   templateType?: 'Mitra' | 'Staff' | 'Thr';
 
   loading?: boolean;
@@ -63,6 +64,7 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
   isRowSelectable,
   disableImportButton = false,
   disableFinalizeButton = false,
+  disableTemplateButton = false,
   templateType,
 
   loading,
@@ -185,7 +187,7 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
       )
     : (
         <div className="flex items-center gap-3">
-          <Button 
+          {!disableTemplateButton && <Button 
             variant="custom" 
             className="w-max border border-[#007BFF] bg-[white] text-[#007BFF] dark:text-white color-[#007BFF]" 
             size="sm"
@@ -194,9 +196,9 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
           >
             <IconDownloadTemplate size={16} color="#007BFF" />
             Template Import Data
-          </Button>
+          </Button>}
 
-          <Button
+          {!disableImportButton && <Button
             variant="outline"
             size="sm"
             className="bg-success text-white dark:text-white"
@@ -204,7 +206,7 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
             disabled={disableImportButton || approvalStore.isImportDisabled()}
           >
             <IconImport size={16} /> Import
-          </Button>
+          </Button>}
 
           <Button
             variant="custom"

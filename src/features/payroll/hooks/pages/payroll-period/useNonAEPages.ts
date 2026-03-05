@@ -1,13 +1,11 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
+import { DataTableColumn } from '@/components/shared/datatable/DataTable';
 import { useApiPayrollPeriod } from '../../api/useApiPayrollPeriod';
 import { PayrollPeriodListItem } from '../../../types/dto/PayrollPeriodType';
 import { formatCurrency } from '@/utils/formatCurrency';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 import { usePayrollApprovalStore } from '../../../store/usePayrollApprovalStore';
-import { IconFileDetail } from '@/icons/components/icons';
-import React from 'react';
 
 const toPayrollPeriodFilterColumnId = (columnId: string): string => {
   const map: Record<string, string> = {
@@ -59,9 +57,6 @@ export interface UseNonAEPagesOptions {
 export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
   const location = useLocation();
   const navigate = useNavigate();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [approvalType, setApprovalType] = useState<string>('Persetujuan oleh FAT');
-  const [approvalStatusFetched, setApprovalStatusFetched] = useState(false);
   
   const approvalStore = usePayrollApprovalStore();
 
@@ -70,7 +65,6 @@ export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
     payrollPeriods,
     fetchPayrollPeriods,
     approvalHr,
-    fetchImportApprovalStatus,
     loading,
     total,
     page,
@@ -99,7 +93,7 @@ export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
 
   // Dokumentasi: Fungsi untuk navigasi detail dengan approval type sebagai query parameter
   const handleDetailNavigation = (payrollId: string) => {
-    navigate(`${detailPathPrefix}/${payrollId}?approvalType=${encodeURIComponent(approvalType)}`);
+    navigate(`${detailPathPrefix}/${payrollId}`);
   };
 
   // Set type to 'staff' when component mounts
@@ -116,19 +110,6 @@ export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
   useEffect(() => {
     fetchPayrollPeriods({ page, pageSize, search, sortBy, sortOrder, type: 'Staff' });
   }, [page, pageSize, search, sortBy, sortOrder, columnFilters, dateRangeFilters, fetchPayrollPeriods]);
-
-  useEffect(() => {
-    if (!approvalStatusFetched) {
-      const fetchStatus = async () => {
-        const status = await fetchImportApprovalStatus();
-        if (status) {
-          approvalStore.setApprovalStatus(status);
-        }
-        setApprovalStatusFetched(true);
-      };
-      fetchStatus();
-    }
-  }, [fetchImportApprovalStatus, approvalStatusFetched]);
 
   // Map PayrollPeriodListItem to NonAERow
   const rows: NonAERow[] = payrollPeriods.map((item, index) => mapPayrollPeriodToNonAERow(item, index));
@@ -223,25 +204,6 @@ export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
     return ok;
   };
 
-  const handleApprovalTypeChange = (type: string) => {
-    setApprovalType(type);
-    setIsDropdownOpen(false);
-  };
-
-  const actions: DataTableAction<NonAERow>[] = useMemo(
-    () => [
-      {
-        icon: React.createElement(IconFileDetail),
-        onClick: (row) => {
-          navigate(`${detailPathPrefix}/${row.payrollId}?approvalType=${encodeURIComponent(approvalType)}`);
-        },
-        variant: 'outline',
-        color: 'info',
-      },
-    ],
-    [navigate, detailPathPrefix, approvalType]
-  );
-
   return {
     // Data and state
     rows,
@@ -256,9 +218,6 @@ export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
     // Navigation and UI state
     title,
     detailPathPrefix,
-    isApprovalPage,
-    isDropdownOpen,
-    approvalType,
     
     // Store
     approvalStore,
@@ -273,17 +232,14 @@ export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
     handleDateRangeFilterChange,
     handleFinalize,
     
-    // Dropdown handlers
-    setIsDropdownOpen,
-    handleApprovalTypeChange,
-    
     // Actions
-    customActions: actions,
+    // customActions: actions,
+    
+    // Dropdown handlers
     
     // Selection logic
-    isRowSelectable: (row: NonAERow) => String(row.statusPenggajian ?? '').toLowerCase().trim() === 'menunggu maker',
+    isRowSelectable: (row: NonAERow) => String(row.statusPenggajian ?? '').toLowerCase().trim() === 'menunggu maker' || String(row.statusPenggajian ?? '').toLowerCase().trim() === 'menunggu checker',
     canEditDelete: (row: NonAERow) => String(row.statusPenggajian ?? '').toLowerCase().trim() === 'menunggu maker',
   };
 }
-
 export default useNonAEPages;

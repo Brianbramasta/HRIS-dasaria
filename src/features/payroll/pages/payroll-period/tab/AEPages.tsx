@@ -1,12 +1,17 @@
-import { DataTableColumn } from '@/components/shared/datatable/DataTable';
+import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
 import PenggajianTabBase from '../../../components/tabs/PayrollTabBase';
 import Button from '@/components/ui/button/Button';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { ChevronDown } from 'react-feather';
 import useAEPages from '../../../hooks/pages/payroll-period/useAEPages';
 import { AERow } from '../../../hooks/pages/payroll-period/useAEPages';
+import { IconFileDetail, IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
+import React from 'react';
 
 export default function AETab({ }: { resetKey?: string }) {
+  const navigate = useNavigate();
   const {
     rows,
     baseColumns,
@@ -34,7 +39,6 @@ export default function AETab({ }: { resetKey?: string }) {
     canEditDelete,
     approvalStore,
     handleFinalize,
-    customActions,
   } = useAEPages();
 
   // Add format function for status column
@@ -65,6 +69,47 @@ export default function AETab({ }: { resetKey?: string }) {
     return col;
   });
 
+  const actions: DataTableAction<AERow>[] = useMemo(
+    () => [
+      {
+        icon: React.createElement(IconFileDetail),
+        onClick: (row) => {
+          navigate(`${detailPathPrefix}/${row.payrollId}?approvalType=${encodeURIComponent(approvalType)}`);
+        },
+        variant: 'outline',
+        color: 'info',
+        condition: (row) => !row.statusPenggajian.toLowerCase().includes('menunggu maker'),
+      },
+      {
+        icon: <Edit />,
+        onClick: (row) => {
+          navigate(`${detailPathPrefix}/${row.payrollId}`);
+        },
+        condition: (row) => {
+          const editableStatuses = ['Menunggu Maker'];
+          return editableStatuses.includes(row.statusPenggajian);
+        },
+        variant: 'outline',
+        className: 'border-0',
+      },
+      {
+        icon: <Trash />,
+        onClick: (row) => {
+          // This would need to be handled by the parent component
+          console.log('Delete action for:', row);
+        },
+        condition: (row) => {
+          const editableStatuses = ['Menunggu Maker'];
+          return editableStatuses.includes(row.statusPenggajian);
+        },
+        variant: 'outline',
+        className: 'border-0',
+        color: 'error',
+      },
+    ],
+    [navigate, detailPathPrefix, approvalType]
+  );
+
   return (
     <PenggajianTabBase
       resetKey="payroll-period-ae"
@@ -73,6 +118,7 @@ export default function AETab({ }: { resetKey?: string }) {
       detailPathPrefix={detailPathPrefix}
       title={title}
       onDetailNavigation={handleDetailNavigation}
+      customActions={actions}
       isRowSelectable={isRowSelectable}
       canEditDelete={canEditDelete}
       disableImportButton={approvalStore.isImportDisabled()}
@@ -92,7 +138,6 @@ export default function AETab({ }: { resetKey?: string }) {
       onDateRangeFilterChange={handleDateRangeFilterChange}
       dateRangeFilters={dateRangeFilters}
       onFinalize={handleFinalize}
-      customActions={customActions}
       templateType="Mitra"
       toolbarRightSlot={
         isApprovalPage && (
