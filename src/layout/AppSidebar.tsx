@@ -267,7 +267,11 @@ const AppSidebar: React.FC = () => {
                       to={subItem.path}
                       onClick={() => {
                         if (nav.name === "Data Master Karyawan") {
-                          openModal();
+                          // Don't open modal for contract extension pages
+                          const excludedPaths = ['/contract-extension', '/employee-data/contract-extension'];
+                          if (!excludedPaths.some(path => subItem.path.startsWith(path))) {
+                            openModal();
+                          }
                         }
                       }}
                       className={`menu-dropdown-item ${isActive(subItem.path)

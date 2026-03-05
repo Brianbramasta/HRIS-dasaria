@@ -15,6 +15,8 @@ interface SpamModalState {
   selectedEmployees: Set<string>;
   loading: boolean;
   error: string | null;
+  hasBeenClosed: boolean; // Track if modal was closed for current page
+  currentPage: string; // Track current page
   openModal: () => void;
   closeModal: () => void;
   setOpen: (isOpen: boolean) => void;
@@ -23,6 +25,7 @@ interface SpamModalState {
   getDurationColor: (remainingMonth: number) => "orange" | "red" | "green";
   isEmployeePage: (pathname: string) => boolean;
   handleProcess: (navigate: (path: string) => void) => void;
+  resetModalState: () => void; // Reset state when page changes
 }
 
 export const useSpamModalStore = create<SpamModalState>((set, get) => ({
@@ -31,9 +34,12 @@ export const useSpamModalStore = create<SpamModalState>((set, get) => ({
   selectedEmployees: new Set(),
   loading: false,
   error: null,
+  hasBeenClosed: false,
+  currentPage: '',
   openModal: () => set({ isOpen: true }),
-  closeModal: () => set({ isOpen: false }),
+  closeModal: () => set({ isOpen: false, hasBeenClosed: true }),
   setOpen: (isOpen: boolean) => set({ isOpen }),
+  resetModalState: () => set({ hasBeenClosed: false, isOpen: false }),
 
   fetchEmployeesNearContractEnd: async () => {
     set({ loading: true, error: null });
@@ -59,7 +65,8 @@ export const useSpamModalStore = create<SpamModalState>((set, get) => ({
 
         set({ displayData: mappedData });
         
-        if (mappedData.length > 0) {
+        // Only open modal if it hasn't been closed for current page and there's data
+        if (mappedData.length > 0 && !get().hasBeenClosed) {
           set({ isOpen: true });
         }
       }
@@ -96,10 +103,19 @@ export const useSpamModalStore = create<SpamModalState>((set, get) => ({
   isEmployeePage: (pathname: string) => {
     const employeePages = [
       '/employee-data',
-      '/contract-extension',
       '/resignation',
       '/organization-history'
     ];
+    const excludedPages = [
+      '/contract-extension',
+      '/employee-data/contract-extension'
+    ];
+    
+    // Exclude contract extension pages
+    if (excludedPages.some(page => pathname.startsWith(page))) {
+      return false;
+    }
+    
     return employeePages.some(page => pathname.startsWith(page));
   },
 

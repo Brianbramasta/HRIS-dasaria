@@ -15,19 +15,33 @@ export const SpamModal: React.FC<SpamModalProps> = () => {
     fetchEmployeesNearContractEnd, 
     getDurationBgColor, 
     isEmployeePage, 
-    handleProcess 
+    handleProcess,
+    resetModalState
   } = useSpamModalStore();
   
   const navigate = useNavigate();
   const location = useLocation();
+  const [prevPathname, setPrevPathname] = React.useState(location.pathname);
 
-  // Fetch data only when accessing employee pages
+  // Fetch data only when accessing employee pages and reset state on page change
   useEffect(() => {
+    // Reset state if page has changed
+    if (prevPathname !== location.pathname) {
+      resetModalState();
+      setPrevPathname(location.pathname);
+    }
+    
     if (isEmployeePage(location.pathname)) {
       console.log('On employee page, checking for contract end data...');
       fetchEmployeesNearContractEnd();
+    } else {
+      // Close modal and reset state if not on employee page
+      if (isOpen) {
+        closeModal();
+      }
+      resetModalState();
     }
-  }, [location.pathname]);
+  }, [location.pathname, prevPathname, isOpen, closeModal, fetchEmployeesNearContractEnd, isEmployeePage, resetModalState]);
 
   return (
     <Modal
