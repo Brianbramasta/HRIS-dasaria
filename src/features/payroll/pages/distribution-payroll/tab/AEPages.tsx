@@ -22,7 +22,6 @@ export default function AEPages() {
     dateRangeFilters,
     title,
     detailPathPrefix,
-    approvalStore,
     customActions,
     handleDistribusiSlipGaji,
     handleSearchChange,
@@ -44,7 +43,7 @@ export default function AEPages() {
         title={title}
         customActions={customActions}
         onFinalize={handleDistribusiSlipGaji}
-        disableSelection={approvalStore.isSelectionDisabled()}
+        disableSelection={false}
         isRowSelectable={isRowSelectable}
 
         loading={loading}

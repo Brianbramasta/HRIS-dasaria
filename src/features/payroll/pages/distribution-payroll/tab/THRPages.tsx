@@ -22,7 +22,6 @@ export default function THRPages() {
     dateRangeFilters,
     title,
     detailPathPrefix,
-    approvalStore,
     customActions,
     handleDistribusiSlipGaji,
     handleSearchChange,
@@ -44,7 +43,7 @@ export default function THRPages() {
         title={title}
         customActions={customActions}
         onFinalize={handleDistribusiSlipGaji}
-        disableSelection={approvalStore.isSelectionDisabled()}
+        disableSelection={false}
         isRowSelectable={isRowSelectable}
 
         loading={loading}

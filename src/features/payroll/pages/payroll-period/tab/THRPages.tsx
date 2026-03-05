@@ -42,7 +42,6 @@ export default function THRTab({ }: { resetKey?: string }) {
     dateRangeFilters,
     fetchPayrollPeriods,
     approvalHr,
-    fetchImportApprovalStatus,
     setPage,
     setPageSize,
     setSearch,

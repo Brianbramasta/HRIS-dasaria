@@ -10,11 +10,11 @@ import { NonAERow } from '../../../hooks/pages/payroll-period/useNonAEPages';
 import { IconFileDetail, IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
 import React from 'react';
 
-
 export default function NonAETab({ }: { resetKey?: string }) {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
   const [approvalType, setApprovalType] = React.useState('Persetujuan oleh Direktur HRGA');
+
   const {
     rows,
     baseColumns: baseColumnsFromHook,
@@ -27,7 +27,6 @@ export default function NonAETab({ }: { resetKey?: string }) {
     title,
     detailPathPrefix,
     isApprovalPage,
-    approvalStore,
     handleDetailNavigation,
     handleSearchChange,
     handleSortChange,
@@ -125,9 +124,9 @@ export default function NonAETab({ }: { resetKey?: string }) {
       customActions={actions}
       isRowSelectable={isRowSelectable}
       canEditDelete={canEditDelete}
-      disableImportButton={approvalStore.isImportDisabled()}
-      disableFinalizeButton={approvalStore.isFinalizeDisabled()}
-      disableSelection={approvalStore.isSelectionDisabled()}
+      disableImportButton={false}
+      disableFinalizeButton={false}
+      disableSelection={false}
       loading={loading}
       pageSize={pageSize}
       useExternalPagination={true}

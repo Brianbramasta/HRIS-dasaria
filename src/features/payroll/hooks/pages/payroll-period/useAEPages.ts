@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { DataTableColumn } from '@/components/shared/datatable/DataTable';
 import { useApiPayrollPeriod } from '../../api/useApiPayrollPeriod';
-import { usePayrollApprovalStore } from '../../../store/usePayrollApprovalStore';
 import { PayrollPeriodListItem } from '../../../types/dto/PayrollPeriodType';
 import { formatCurrency } from '@/utils/formatCurrency';
 import { formatDateToIndonesian } from '@/utils/formatDate';
@@ -57,16 +56,12 @@ export function useAEPages(_options: UseAEPagesOptions = {}) {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [approvalType, setApprovalType] = useState<string>('Persetujuan oleh FAT');
-  const [approvalStatusFetched, setApprovalStatusFetched] = useState(false);
   
-  const approvalStore = usePayrollApprovalStore();
-
   // Hook untuk fetch data payroll period
   const {
     payrollPeriods,
     fetchPayrollPeriods,
     approvalHr,
-    fetchImportApprovalStatus,
     loading,
     total,
     page,
@@ -112,30 +107,6 @@ export function useAEPages(_options: UseAEPagesOptions = {}) {
     setColumnFilters({});
     setDateRangeFilters({});
   }, [setPage, setPageSize, setSearch, setSort, setColumnFilters, setDateRangeFilters]);
-
-  useEffect(() => {
-    if (!approvalStatusFetched) {
-      const fetchStatus = async () => {
-        // Add required parameters to get complete status
-        const status = await fetchImportApprovalStatus({
-          type: 'Mitra',
-          periodeSalary: true,
-          HRGA: true,
-          FAT: true,
-          BOD: true,
-          distribution: true
-        });
-        if (status) {
-          // Store is now automatically updated in the API hook
-          console.log('Status fetched and store updated:', status);
-        } else {
-          console.log('API returned null status');
-        }
-        setApprovalStatusFetched(true);
-      };
-      fetchStatus();
-    }
-  }, [fetchImportApprovalStatus, approvalStatusFetched]);
 
   useEffect(() => {
     fetchPayrollPeriods({ page, pageSize, search, sortBy, sortOrder, type: 'Mitra' });
@@ -255,9 +226,6 @@ export function useAEPages(_options: UseAEPagesOptions = {}) {
     isApprovalPage,
     isDropdownOpen,
     approvalType,
-    
-    // Store
-    approvalStore,
     
     // Handlers
     handleDetailNavigation,

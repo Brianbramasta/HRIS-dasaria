@@ -1,12 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
 import { IconFileDetail } from '@/icons/components/icons';
 import { formatCurrency } from '@/utils/formatCurrency';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 import { useApiPayrollPeriodDistribution } from '../../api/useApiPayrollPeriodDistribution';
-import { usePayrollApprovalStore } from '../../../store/usePayrollApprovalStore';
-import { useApiPayrollPeriod } from '../../api/useApiPayrollPeriod';
 import React from 'react';
 
 const toPayrollDistributionFilterColumnId = (columnId: string): string => {
@@ -38,11 +36,7 @@ export interface UseAEPagesOptions {
 
 export function useAEPages(_options: UseAEPagesOptions = {}) {
   const navigate = useNavigate();
-  const [approvalStatusFetched, setApprovalStatusFetched] = useState(false);
-  
-  const approvalStore = usePayrollApprovalStore();
-  const { fetchImportApprovalStatus } = useApiPayrollPeriod();
-  
+    
   const {
     payrollPeriods,
     loading,
@@ -363,9 +357,6 @@ export function useAEPages(_options: UseAEPagesOptions = {}) {
     // Constants
     title: 'Distribusi Gaji AE',
     detailPathPrefix: '/salary-distribution/detail-ae',
-    
-    // Store
-    approvalStore,
     
     // Actions
     customActions: actions,

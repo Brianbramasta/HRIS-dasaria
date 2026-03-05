@@ -37,7 +37,6 @@ export default function AETab({ }: { resetKey?: string }) {
     handleApprovalTypeChange,
     isRowSelectable,
     canEditDelete,
-    approvalStore,
     handleFinalize,
   } = useAEPages();
 
@@ -121,9 +120,9 @@ export default function AETab({ }: { resetKey?: string }) {
       customActions={actions}
       isRowSelectable={isRowSelectable}
       canEditDelete={canEditDelete}
-      disableImportButton={approvalStore.isImportDisabled()}
-      disableFinalizeButton={approvalStore.isFinalizeDisabled()}
-      disableSelection={approvalStore.isSelectionDisabled()}
+      disableImportButton={false}
+      disableFinalizeButton={false}
+      disableSelection={false}
       loading={loading}
       pageSize={pageSize}
       useExternalPagination={true}
