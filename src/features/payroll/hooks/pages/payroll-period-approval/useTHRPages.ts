@@ -6,8 +6,6 @@ import { useApiPayrollPeriodFatTHR } from '../../api/useApiPayrollPeriodFatTHR';
 import { useApiPayrollPeriodBodTHR } from '../../api/useApiPayrollPeriodBodTHR';
 import { formatCurrencyValue } from '@/utils/formatCurrency';
 import { formatDateToIndonesian } from '@/utils/formatDate';
-import { usePayrollApprovalStore } from '../../../store/usePayrollApprovalStore';
-import { useApiPayrollPeriod } from '../../api/useApiPayrollPeriod';
 
 const toDirectorHrSortKey = (columnId: string): string => {
   const map: Record<string, string> = {
@@ -106,11 +104,7 @@ export function useTHRPages(_options: UseTHRPagesOptions = {}) {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [approvalType, setApprovalType] = useState<string>('Persetujuan oleh Direktur HRGA');
-  const [approvalStatusFetched, setApprovalStatusFetched] = useState(false);
-  
-  const approvalStore = usePayrollApprovalStore();
-  const { fetchImportApprovalStatus } = useApiPayrollPeriod();
-  
+    
   // Ambil approvalType dari URL parameter saat component mount
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -534,9 +528,6 @@ export function useTHRPages(_options: UseTHRPagesOptions = {}) {
     isApprovalPage,
     isDropdownOpen,
     approvalType,
-    
-    // Store
-    approvalStore,
     
     // Approval type checks
     isDirectorHrga,

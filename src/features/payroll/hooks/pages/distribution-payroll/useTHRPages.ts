@@ -1,12 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
 import { IconFileDetail } from '@/icons/components/icons';
 import { formatCurrency } from '@/utils/formatCurrency';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 import { useApiPayrollPeriodDistribution } from '../../api/useApiPayrollPeriodDistribution';
-import { usePayrollApprovalStore } from '../../../store/usePayrollApprovalStore';
-import { useApiPayrollPeriod } from '../../api/useApiPayrollPeriod';
 import React from 'react';
 
 const toPayrollDistributionFilterColumnId = (columnId: string): string => {
@@ -47,11 +45,7 @@ export interface UseTHRPagesOptions {
 
 export function useTHRPages(_options: UseTHRPagesOptions = {}) {
   const navigate = useNavigate();
-  const [approvalStatusFetched, setApprovalStatusFetched] = useState(false);
-  
-  const approvalStore = usePayrollApprovalStore();
-  const { fetchImportApprovalStatus } = useApiPayrollPeriod();
-  
+    
   const {
     payrollPeriods,
     loading,
@@ -388,9 +382,6 @@ export function useTHRPages(_options: UseTHRPagesOptions = {}) {
     // Constants
     title: 'Distribusi Gaji THR',
     detailPathPrefix: '/salary-distribution/detail-THR',
-    
-    // Store
-    approvalStore,
     
     // Actions
     customActions: actions,

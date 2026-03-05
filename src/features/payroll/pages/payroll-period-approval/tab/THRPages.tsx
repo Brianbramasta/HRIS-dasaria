@@ -39,7 +39,6 @@ export default function THRTab({ }: { resetKey?: string }) {
     handleApprovalConfirm,
     setIsDropdownOpen,
     isPendingForApprovalType,
-    approvalStore,
   } = useTHRPages();
 
   // Add format function for status column
@@ -124,7 +123,7 @@ export default function THRTab({ }: { resetKey?: string }) {
         onDetailNavigation={handleDetailNavigation}
         onFinalize={handleApprovalWithModalWrapper}
         approvalType={approvalType}
-        disableSelection={approvalStore.isSelectionDisabled()}
+        disableSelection={false}
         isRowSelectable={(row) => isPendingForApprovalType(String(row.statusPersetujuan))}
         loading={loading}
         useExternalPagination={true}

@@ -11,8 +11,6 @@ import { useApiPayrollPeriodFat } from '../../../hooks/api/useApiPayrollPeriodFa
 import { useApiPayrollPeriodBod } from '../../../hooks/api/useApiPayrollPeriodBod';
 import { formatCurrencyValue } from '@/utils/formatCurrency';
 import { formatDateToIndonesian } from '@/utils/formatDate';
-import { usePayrollApprovalStore } from '../../../store/usePayrollApprovalStore';
-import { useApiPayrollPeriod } from '../../../hooks/api/useApiPayrollPeriod';
 
 type AERow = {
   no?: number;
@@ -37,13 +35,9 @@ export default function AETab({ }: { resetKey?: string }) {
   const [isApprovalModalOpen, setIsApprovalModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedRowsForApproval, setSelectedRowsForApproval] = useState<AERow[]>([]);
-  const [approvalStatusFetched, setApprovalStatusFetched] = useState(false);
   const [employeeType, setEmployeeType] = useState<'Mitra' | 'Staff' | 'Thr'>('Mitra');
   const [initialDataFetched, setInitialDataFetched] = useState(false);
-  
-  const approvalStore = usePayrollApprovalStore();
-  const { fetchImportApprovalStatus } = useApiPayrollPeriod();
-  
+    
   // Ambil approvalType dari URL parameter saat component mount
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -622,7 +616,7 @@ export default function AETab({ }: { resetKey?: string }) {
         onDetailNavigation={handleDetailNavigation}
         onFinalize={handleApprovalWithModal}
         approvalType={approvalType}
-        disableSelection={approvalStore.isSelectionDisabled()}
+        disableSelection={false}
         isRowSelectable={(row) => isPendingForApprovalType(String(row.statusPersetujuan))}
         loading={isApprovalPage ? (isDirectorHrga ? directorLoading : isFat ? fatLoading : isBod ? bodLoading : false) : false}
         useExternalPagination={isApprovalPage && (isDirectorHrga || isFat || isBod)}

@@ -26,7 +26,6 @@ export default function NonAETab({ }: { resetKey?: string }) {
     isApprovalModalOpen,
     isSubmitting,
     selectedRowsForApproval,
-    approvalStore,
     isDirectorHrga,
     isFat,
     isBod,
@@ -87,7 +86,7 @@ export default function NonAETab({ }: { resetKey?: string }) {
         onDetailNavigation={handleDetailNavigation}
         onFinalize={handleApprovalWithModal}
         approvalType={approvalType}
-        disableSelection={approvalStore.isSelectionDisabled()}
+        disableSelection={false}
         isRowSelectable={(row) => isPendingForApprovalType(String(row.statusPersetujuan))}
         loading={loading}
         useExternalPagination={isApprovalPage && (isDirectorHrga || isFat || isBod)}

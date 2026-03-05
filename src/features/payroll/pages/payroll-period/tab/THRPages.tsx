@@ -8,7 +8,6 @@ import { ChevronDown } from 'react-feather';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 import { formatCurrency } from '@/utils/formatCurrency';
 import { useApiPayrollPeriod } from '../../../hooks/api/useApiPayrollPeriod';
-import { usePayrollApprovalStore } from '../../../store/usePayrollApprovalStore';
 import { IconFileDetail, IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
 
 type THRRow = {
@@ -29,10 +28,7 @@ export default function THRTab({ }: { resetKey?: string }) {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [approvalType, setApprovalType] = useState<string>('Persetujuan oleh FAT');
-  const [approvalStatusFetched, setApprovalStatusFetched] = useState(false);
-  
-  const approvalStore = usePayrollApprovalStore();
-  
+    
   const {
     payrollPeriods,
     loading,
@@ -249,10 +245,10 @@ export default function THRTab({ }: { resetKey?: string }) {
         const editableStatuses = ['Menunggu Maker'];
         return editableStatuses.includes(row.statusTHR);
       }}
-      disableImportButton={approvalStore.isImportDisabled()}
+      disableImportButton={false}
       disableTemplateButton={true}
-      disableFinalizeButton={approvalStore.isFinalizeDisabled()}
-      disableSelection={approvalStore.isSelectionDisabled()}
+      disableFinalizeButton={false}
+      disableSelection={false}
       loading={loading}
       useExternalPagination={true}
       externalPage={page}

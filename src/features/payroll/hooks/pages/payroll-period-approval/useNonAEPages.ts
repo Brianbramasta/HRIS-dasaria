@@ -6,8 +6,6 @@ import { useApiPayrollPeriodFat } from '../../api/useApiPayrollPeriodFat';
 import { useApiPayrollPeriodBod } from '../../api/useApiPayrollPeriodBod';
 import { formatCurrencyValue } from '@/utils/formatCurrency';
 import { formatDateToIndonesian } from '@/utils/formatDate';
-import { usePayrollApprovalStore } from '../../../store/usePayrollApprovalStore';
-import { useApiPayrollPeriod } from '../../api/useApiPayrollPeriod';
 
 const toDirectorHrSortKey = (columnId: string): string => {
   const map: Record<string, string> = {
@@ -113,11 +111,7 @@ export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
   const [isApprovalModalOpen, setIsApprovalModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedRowsForApproval, setSelectedRowsForApproval] = useState<NonAERow[]>([]);
-  const [approvalStatusFetched, setApprovalStatusFetched] = useState(false);
-  
-  const approvalStore = usePayrollApprovalStore();
-  const { fetchImportApprovalStatus } = useApiPayrollPeriod();
-  
+    
   // Ambil approvalType dari URL parameter saat component mount
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -618,9 +612,6 @@ export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
     isApprovalModalOpen,
     isSubmitting,
     selectedRowsForApproval,
-    
-    // Store
-    approvalStore,
     
     // Approval type checks
     isDirectorHrga,
