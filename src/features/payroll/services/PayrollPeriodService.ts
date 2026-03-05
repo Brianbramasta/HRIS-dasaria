@@ -82,9 +82,11 @@ class PayrollPeriodService {
     /**
      * Approval HR
      * @param formData - FormData berisi _method=PATCH dan payroll_id[]
+     * @param typeParam - Type parameter untuk URL (e.g. "?type=Mitra")
      */
-    async approvalHr(formData: FormData): Promise<any> {
-        return apiService.post<any>(`${this.basePath}/approval-hr`, formData, {
+    async approvalHr(formData: FormData, typeParam?: string): Promise<any> {
+        const url = `${this.basePath}/approval-hr${typeParam || ''}`;
+        return apiService.post<any>(url, formData, {
             headers: { 'Content-Type': 'multipart/form-data' },
         });
     }
@@ -92,9 +94,11 @@ class PayrollPeriodService {
     /**
      * Process Upload Excel
      * @param formData - FormData berisi file_excel
+     * @param typeParam - Type parameter untuk URL (e.g. "?type=Mitra")
      */
-    async processUpload(formData: FormData): Promise<any> {
-        return apiService.post<any>(`${this.basePath}/process-upload`, formData, {
+    async processUpload(formData: FormData, typeParam?: string): Promise<any> {
+        const url = `${this.basePath}/process-upload${typeParam || ''}`;
+        return apiService.post<any>(url, formData, {
             headers: { 'Content-Type': 'multipart/form-data' },
         });
     }

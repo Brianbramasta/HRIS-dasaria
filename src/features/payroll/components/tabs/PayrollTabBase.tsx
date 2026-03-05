@@ -27,7 +27,7 @@ type Props<TRow extends BaseRow> = {
   isRowSelectable?: (row: TRow) => boolean;
   disableImportButton?: boolean;
   disableFinalizeButton?: boolean;
-  templateType?: 'Mitra' | 'Staff';
+  templateType?: 'Mitra' | 'Staff' | 'Thr';
 
   loading?: boolean;
   pageSize?: number;
@@ -257,7 +257,7 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
         isOpen={showUpload}
         onClose={() => setShowUpload(false)}
         onImport={async (file) => {
-          const success = await processUpload(file);
+          const success = await processUpload(file, templateType);
           if (success) {
             setShowUpload(false);
             // Optionally refresh data or show success message

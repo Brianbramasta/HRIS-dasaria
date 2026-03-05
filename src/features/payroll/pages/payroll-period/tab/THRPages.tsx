@@ -123,7 +123,7 @@ export default function THRTab({ }: { resetKey?: string }) {
   const handleFinalize = async (selectedRows: THRRow[]) => {
     const isSelectAll = (selectedRows?.length ?? 0) > 0 && (selectedRows?.length ?? 0) === filteredRows.length;
     if (isSelectAll) {
-      const ok = await approvalHr({ payrollIds: [], all: true });
+      const ok = await approvalHr({ payrollIds: [], all: true, type: 'Thr' });
       if (ok) {
         await fetchPayrollPeriods({ page, pageSize });
       }
@@ -140,7 +140,7 @@ export default function THRTab({ }: { resetKey?: string }) {
 
     if (!payrollIds.length) return false;
 
-    const ok = await approvalHr({ payrollIds });
+    const ok = await approvalHr({ payrollIds, type: 'Thr' });
     if (ok) {
       await fetchPayrollPeriods({ page, pageSize });
     }
@@ -172,7 +172,7 @@ export default function THRTab({ }: { resetKey?: string }) {
       format: (v) => formatDateToIndonesian(String(v)),
     },
     { id: 'totalTHR', label: 'Total THR', align: 'right' },
-    { id: 'lamaKerja', label: 'Lama Karja', align: 'right' },
+    { id: 'lamaKerja', label: 'Lama Kerja', align: 'right' },
     { id: 'jabatan', label: 'Jabatan' },
     { id: 'perusahaan', label: 'Perusahaan' },
     {
@@ -252,6 +252,7 @@ export default function THRTab({ }: { resetKey?: string }) {
       dateRangeFilters={dateRangeFilters}
       onFinalize={handleFinalize}
       customActions={customActions}
+      templateType="Thr"
       toolbarRightSlot={
         isApprovalPage && <div className="relative">
           <Button

@@ -77,7 +77,7 @@ interface UseApiPayrollPeriodReturn {
     updateNote: (payload: PayrollPeriodUpdateNotePayload) => Promise<boolean>;
     deletePayrollPeriod: (payload: PayrollPeriodDeletePayload) => Promise<boolean>;
     approvalHr: (payload: PayrollPeriodApprovalHrPayload) => Promise<boolean>;
-    processUpload: (file: File) => Promise<boolean>;
+    processUpload: (file: File, type?: string) => Promise<boolean>;
 
     // Pagination
     setPage: (page: number) => void;
@@ -362,8 +362,9 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
                     formData.append(`payroll_id[${index}]`, id);
                 });
             }
-
-            await payrollPeriodService.approvalHr(formData);
+            console.log(payload,'payload')
+            const typeParam = payload.type ? `?type=${payload.type}` : '';
+            await payrollPeriodService.approvalHr(formData, typeParam);
             return true;
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to approval HR');
@@ -374,7 +375,7 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
         }
     }, []);
 
-    const processUpload = useCallback(async (file: File): Promise<boolean> => {
+    const processUpload = useCallback(async (file: File, type?: string): Promise<boolean> => {
         setLoading(true);
         setError(null);
 
@@ -382,7 +383,8 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
             const formData = new FormData();
             formData.append('file_excel', file);
 
-            await payrollPeriodService.processUpload(formData);
+            const typeParam = type ? `?type=${type}` : '';
+            await payrollPeriodService.processUpload(formData, typeParam);
             return true;
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to upload file');

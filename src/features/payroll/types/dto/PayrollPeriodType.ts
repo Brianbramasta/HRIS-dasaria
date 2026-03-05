@@ -171,6 +171,7 @@ export interface PayrollPeriodUpdateWorkingDaysPayload {
 export interface PayrollPeriodApprovalHrPayload {
     payrollIds: string[];
     all?: boolean;
+    type: string;
 }
 
 export interface PayrollPeriodUpdateNotePayload {

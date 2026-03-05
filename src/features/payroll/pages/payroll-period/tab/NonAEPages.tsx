@@ -94,7 +94,7 @@ export default function NonAETab({ }: { resetKey?: string }) {
       dateRangeFilters={dateRangeFilters}
       onFinalize={handleFinalize}
       customActions={customActions}
-      templateType="Staff"
+      templateType="Mitra"
       toolbarRightSlot={
         isApprovalPage && (
           <div className="relative">

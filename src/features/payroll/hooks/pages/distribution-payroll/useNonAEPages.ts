@@ -284,7 +284,10 @@ export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
 
     if (payrollIds.length === 0) return false;
 
-    const ok = await sendSlipSalary({ payrollIds });
+    const ok = await sendSlipSalary({ 
+      payrollIds,
+      type: 'Staff'
+    });
     if (ok) {
       await fetchPayrollPeriods({
         page,

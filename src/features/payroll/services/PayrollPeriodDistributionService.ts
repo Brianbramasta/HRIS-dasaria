@@ -8,8 +8,9 @@ class PayrollPeriodDistributionService {
         return apiService.get<any>(`${this.basePath}/index-distribution${qs ? `?${qs}` : ''}`);
     }
 
-    async sendSlipSalary(formData: FormData): Promise<any> {
-        return apiService.post<any>(`${this.basePath}/send-slip-salary`, formData, {
+    async sendSlipSalary(formData: FormData, typeParam?: string): Promise<any> {
+        const url = `${this.basePath}/send-slip-salary${typeParam || ''}`;
+        return apiService.post<any>(url, formData, {
             headers: { 'Content-Type': 'multipart/form-data' },
         });
     }

@@ -200,7 +200,7 @@ export function useAEPages(_options: UseAEPagesOptions = {}) {
   const handleFinalize = async (selectedRows: AERow[]) => {
     const isSelectAll = (selectedRows?.length ?? 0) > 0 && (selectedRows?.length ?? 0) === rows.length;
     if (isSelectAll) {
-      const ok = await approvalHr({ payrollIds: [], all: true });
+      const ok = await approvalHr({ payrollIds: [], all: true , type:"Mitra"});
       if (ok) {
         await fetchPayrollPeriods({ page, pageSize });
       }
@@ -217,7 +217,7 @@ export function useAEPages(_options: UseAEPagesOptions = {}) {
 
     if (!payrollIds.length) return false;
 
-    const ok = await approvalHr({ payrollIds });
+    const ok = await approvalHr({ payrollIds, type: "Mitra" });
     if (ok) {
       await fetchPayrollPeriods({ page, pageSize });
     }

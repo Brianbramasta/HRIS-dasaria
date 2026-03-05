@@ -193,7 +193,8 @@ export const useApiPayrollPeriodDistribution = (): UseApiPayrollPeriodDistributi
                 formData.append('type', payload.type);
             }
 
-            await payrollPeriodDistributionService.sendSlipSalary(formData);
+            const typeParam = payload.type ? `?type=${payload.type}` : '';
+            await payrollPeriodDistributionService.sendSlipSalary(formData, typeParam);
             return true;
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to send slip salary');

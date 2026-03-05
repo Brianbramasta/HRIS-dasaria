@@ -199,7 +199,7 @@ export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
   const handleFinalize = async (selectedRows: NonAERow[]) => {
     const isSelectAll = (selectedRows?.length ?? 0) > 0 && (selectedRows?.length ?? 0) === rows.length;
     if (isSelectAll) {
-      const ok = await approvalHr({ payrollIds: [], all: true });
+      const ok = await approvalHr({ payrollIds: [], all: true, type: 'Staff' });
       if (ok) {
         await fetchPayrollPeriods({ page, pageSize });
       }
@@ -216,7 +216,7 @@ export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
 
     if (!payrollIds.length) return false;
 
-    const ok = await approvalHr({ payrollIds });
+    const ok = await approvalHr({ payrollIds, type: 'Staff' });
     if (ok) {
       await fetchPayrollPeriods({ page, pageSize });
     }
