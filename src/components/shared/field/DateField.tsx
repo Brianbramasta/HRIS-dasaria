@@ -8,6 +8,8 @@ interface DateFieldProps extends Omit<DatePickerProps, "label"> {
   containerClassName?: string;
   htmlFor?: string;
   view?: "date" | "month";
+  minDate?: Date | string;
+  maxDate?: Date | string;
 }
 
 const generatePlaceholder = (label?: ReactNode): string => {
@@ -24,6 +26,8 @@ const DateField: FC<DateFieldProps> = ({
   id,
   required,
   placeholder,
+  minDate,
+  maxDate,
   ...rest
 }) => {
   const controlId = htmlFor ?? id;
@@ -39,7 +43,14 @@ const DateField: FC<DateFieldProps> = ({
           </>
         </Label>
       )}
-      <DatePicker id={controlId} required={required} placeholder={defaultPlaceholder} {...rest} />
+      <DatePicker 
+        id={controlId} 
+        required={required} 
+        placeholder={defaultPlaceholder} 
+        minDate={minDate}
+        maxDate={maxDate}
+        {...rest} 
+      />
     </div>
   );
 };

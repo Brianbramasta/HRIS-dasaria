@@ -37,6 +37,9 @@ export type DatePickerProps = {
   className?: string;
   required?: boolean;
   view?: "date" | "month";
+  // Date constraints
+  minDate?: Date | string;
+  maxDate?: Date | string;
 };
 
 // Util: konversi ke string ISO yyyy-mm-dd
@@ -60,6 +63,20 @@ function parseISOToDate(iso?: string): Date | null {
   if (!iso) return null;
   const d = new Date(iso);
   return isNaN(d.getTime()) ? null : d;
+}
+
+// Util: check if date is within min/max constraints
+function isDateAllowed(dateStr: string, minDate?: Date | string, maxDate?: Date | string): boolean {
+  const date = parseISOToDate(dateStr);
+  if (!date) return false;
+  
+  const min = minDate ? (minDate instanceof Date ? minDate : parseISOToDate(toISO(minDate))) : null;
+  const max = maxDate ? (maxDate instanceof Date ? maxDate : parseISOToDate(toISO(maxDate))) : null;
+  
+  if (min && date < min) return false;
+  if (max && date > max) return false;
+  
+  return true;
 }
 
 // Util kalender: format yyyy-mm-dd dari (y, mIndex, d)
@@ -95,6 +112,8 @@ export default function DatePicker({
   className,
   required = false,
   view = "date",
+  minDate,
+  maxDate,
 }: DatePickerProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
@@ -360,6 +379,12 @@ export default function DatePicker({
   // Klik hari pada kalender
   const handleDateClick = (year: number, month: number, day: number) => {
     const selected = fmtYMD(year, month, day);
+    
+    // Check if date is allowed based on constraints
+    if (!isDateAllowed(selected, minDate, maxDate)) {
+      return; // Don't allow selection if date is outside constraints
+    }
+    
     if (activeMode === "single") {
       setSingleDate(selected);
       setCurrentMonth(new Date(year, month));
@@ -466,10 +491,13 @@ export default function DatePicker({
       days.push(<div key={`empty-${i}`} className="h-8"></div>);
     }
     for (let day = 1; day <= daysInMonth; day++) {
+      const dateStr = fmtYMD(year, month, day);
+      const isDateDisabled = !isDateAllowed(dateStr, minDate, maxDate);
+      
       const isStartDate = activeMode === "range" && isSameDate(rangeStart, year, month, day);
       const isEndDate = activeMode === "range" && isSameDate(rangeEnd, year, month, day);
       const inRange = activeMode === "range" && isInRange(year, month, day);
-      const isMultiSelected = activeMode === "multiple" && multipleDates.has(fmtYMD(year, month, day));
+      const isMultiSelected = activeMode === "multiple" && multipleDates.has(dateStr);
       const isSingleSelected = activeMode === "single" && isSameDate(singleDate, year, month, day);
       const active = isStartDate || isEndDate || isMultiSelected || isSingleSelected;
 
@@ -478,11 +506,13 @@ export default function DatePicker({
           key={day}
           type="button"
           onClick={() => handleDateClick(year, month, day)}
+          disabled={isDateDisabled}
           className={`
             h-8 w-8 rounded-full text-sm flex items-center justify-center
             ${active ? "bg-[#004969] text-white font-medium" : ""}
             ${inRange && !isStartDate && !isEndDate ? "bg-blue-100 text-blue-900 dark:bg-blue-900/30" : ""}
-            ${!active && !inRange ? "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300" : ""}
+            ${isDateDisabled ? "text-gray-300 dark:text-gray-600 cursor-not-allowed opacity-50" : ""}
+            ${!active && !inRange && !isDateDisabled ? "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300" : ""}
           `}
         >
           {day}

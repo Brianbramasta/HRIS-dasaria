@@ -137,27 +137,38 @@ const AddUserTermination: React.FC<Props> = ({ isOpen, onClose, onSubmit, submit
         options={contractEndStatusOptions.length > 0 ? contractEndStatusOptions : [{ label: 'Memuat opsi...', value: '' }]}
         onChange={(value) => setStatusBerakhir(value)}
         defaultValue={statusBerakhir}
+        required
         disabled={submitting || loading}
       />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <DateField
           label="Tanggal Pengajuan"
-          placeholder="Select a date"
+          // placeholder="Select a date"
           defaultDate={tanggalPengajuan || undefined}
-          onChange={(_dates, dateStr) => setTanggalPengajuan(dateStr || null)}
+          onChange={(_dates, dateStr) => {
+            setTanggalPengajuan(dateStr || null);
+            // Auto-reset Tanggal Efektif if new Tanggal Pengajuan is later than current Tanggal Efektif
+            if (dateStr && tanggalEfektif && dateStr > tanggalEfektif) {
+              setTanggalEfektif(null);
+            }
+          }}
           disabled={submitting}
+          required
         />
         <DateField
           label="Tanggal Efektif"
-          placeholder="Select a date"
+          // placeholder="Select a date"
           defaultDate={tanggalEfektif || undefined}
           onChange={(_dates, dateStr) => setTanggalEfektif(dateStr || null)}
           disabled={submitting}
+          required
+          minDate={tanggalPengajuan || undefined}
         />
       </div>
       <FIleField
         label="Upload Dokumen"
         onChange={handleFileChange}
+        required
       />
       <TextAreaField
         label="Catatan"
