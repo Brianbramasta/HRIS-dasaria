@@ -1,16 +1,18 @@
 import React, { FC, ReactNode, useRef, useState } from "react";
 import Label from "@/components/form/Label";
-import FileInput from "@/components/form/input/FileInput";
 import { IconInfo } from "@/icons/components/icons";
 
-type InnerProps = React.ComponentProps<typeof FileInput>;
-
-interface FileFieldProps extends InnerProps {
+interface FileFieldProps {
   label?: ReactNode;
   labelClassName?: string;
   containerClassName?: string;
   htmlFor?: string;
   infoText?: string;
+  required?: boolean;
+  multiple?: boolean;
+  acceptedFormats?: string[];
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  className?: string;
 }
 
 const FIleField: FC<FileFieldProps> = ({
@@ -20,8 +22,43 @@ const FIleField: FC<FileFieldProps> = ({
   htmlFor,
   required,
   infoText,
-  ...rest
+  multiple = false,
+  acceptedFormats = ['application/pdf'],
+  onChange,
+  className = "",
 }) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [fileName, setFileName] = useState<string>("");
+  const [fileCount, setFileCount] = useState<number>(0);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      if (multiple) {
+        setFileCount(files.length);
+        setFileName(`${files.length} file dipilih`);
+      } else {
+        setFileName(files[0].name);
+        setFileCount(1);
+      }
+    } else {
+      setFileName("");
+      setFileCount(0);
+    }
+    onChange?.(e);
+  };
+
+  const handleClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleClick();
+    }
+  };
+
   return (
     <div className={containerClassName}>
       {label && (
@@ -74,8 +111,6 @@ const FIleField: FC<FileFieldProps> = ({
                       onMouseLeave={onLeave}
                     >
                       <IconInfo size={16} />
-                      
-
                     </span>
                     {visible && (
                       <div
@@ -107,7 +142,36 @@ const FIleField: FC<FileFieldProps> = ({
           </>
         </Label>
       )}
-      <FileInput required={required} {...rest} />
+      {/* Hidden file input */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        multiple={multiple}
+        required={required}
+        accept={acceptedFormats.join(',')}
+        onChange={handleFileChange}
+        className="hidden"
+        id={htmlFor}
+      />
+      
+      {/* Custom file input UI */}
+      <div 
+        className={`h-11 w-full rounded-lg border border-gray-300 bg-transparent text-sm text-gray-500 shadow-theme-xs transition-colors dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400 ${className}`}
+        onClick={handleClick}
+        onKeyDown={handleKeyDown}
+        tabIndex={0}
+        role="button"
+        aria-label="Pilih file"
+      >
+        <div className="flex h-full items-center">
+          <div className="file:mr-5 file:border-collapse file:cursor-pointer file:rounded-l-lg file:border-0 file:border-r file:border-solid file:border-gray-200 file:bg-gray-50 file:py-3 file:pl-3.5 file:pr-3 file:text-sm file:text-gray-700 hover:file:bg-gray-100 dark:file:border-gray-800 dark:file:bg-white/[0.03] dark:file:text-gray-400 px-3 py-2.5 border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-white/[0.03] hover:bg-gray-100 dark:hover:bg-white/[0.05] cursor-pointer rounded-l-lg">
+            <span className="text-sm text-gray-700 dark:text-gray-400">Pilih File</span>
+          </div>
+          <div className="flex-1 px-3 text-sm text-gray-500 dark:text-gray-400 truncate">
+            {fileName || "Tidak ada file yang dipilih"}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
