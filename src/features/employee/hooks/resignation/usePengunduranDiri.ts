@@ -20,7 +20,7 @@ export function usePengunduranDiri(options: UsePengunduranDiriOptions = {}) {
   const [page, setPage] = useState(initialPage);
   const [limit, setLimit] = useState(initialLimit);
   const [currentStatus, setCurrentStatus] = useState<ResignStatus | 'all'>(status);
-  const filterValue = useFilterStore((s) => s.filters['global'] ?? '');
+  const filterValue = useFilterStore((s) => (s.filters['global'] ?? []).join(','));
 
   const fetchPengunduranDiri = useCallback(
     async (params?: PengunduranDiriFilterParams) => {

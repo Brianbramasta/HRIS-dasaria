@@ -68,7 +68,7 @@ export const useApiDepartments = (): UseDepartmentsReturn => {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
-  const filterValue = useFilterStore((s) => s.filters['Departemen'] ?? '');
+  const filterValue = useFilterStore((s) => (s.filters['Departemen'] ?? []).join(','));
 
   const fetchDepartments = useCallback(async (filter?: TableFilter) => {
     setLoading(true);

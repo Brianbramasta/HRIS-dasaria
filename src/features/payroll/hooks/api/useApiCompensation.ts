@@ -82,7 +82,7 @@ export const useApiCompensation = (): UseApiCompensationReturn => {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
   // Assuming filterStore is global and has keys for features. 
   // If 'Compensation' filter key exists use it, otherwise empty.
-  const filterValue = useFilterStore((s) => s.filters['Compensation'] ?? '');
+  const filterValue = useFilterStore((s) => (s.filters['Compensation'] ?? []).join(','));
 
   const fetchCompensations = useCallback(async (filter?: Partial<TableFilter>) => {
     setLoading(true);

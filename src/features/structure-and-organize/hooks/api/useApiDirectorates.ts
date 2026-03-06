@@ -66,7 +66,7 @@ export const useApiDirectorates = (): UseDirectoratesReturn => {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
-  const filterValue = useFilterStore((s) => s.filters['Direktorat'] ?? '');
+  const filterValue = useFilterStore((s) => (s.filters['Direktorat'] ?? []).join(','));
 
   const fetchDirectorates = useCallback(async (filter?: TableFilter) => {
     setLoading(true);

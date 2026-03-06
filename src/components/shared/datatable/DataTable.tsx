@@ -499,7 +499,6 @@ export function DataTable<T = any>({
         onRemoveFilterItem={filterModalHook.handleRemoveFilterItem}
         onApplyFilter={() => filterModalHook.handleApplyFilter(setVisibleColumns)}
         onResetFilter={() => filterModalHook.handleResetFilter(setVisibleColumns)}
-        isFilterActive={filterModalHook.isFilterActive}
       />
 
       <ExportModal

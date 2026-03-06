@@ -76,7 +76,7 @@ export const useApiBusinessLines = (): UseApiBusinessLinesReturn => {
   const [search, setSearch] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
-  const filterValue = useFilterStore((s) => s.filters['Lini Bisnis'] ?? '');
+  const filterValue = useFilterStore((s) => (s.filters['Lini Bisnis'] ?? []).join(','));
 
   const fetchBusinessLines = useCallback(async (filter?: Partial<TableFilter>) => {
     setLoading(true);

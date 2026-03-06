@@ -70,7 +70,7 @@ export const useApiDeduction = (): UseApiDeductionReturn => {
   const [sortBy, setSortBy] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
   // Assuming filterStore is global and has keys for features. 
-  const filterValue = useFilterStore((s) => s.filters['Deduction'] ?? '');
+  const filterValue = useFilterStore((s) => (s.filters['Deduction'] ?? []).join(','));
 
   const fetchDeductions = useCallback(async (filter?: Partial<TableFilter>) => {
     setLoading(true);

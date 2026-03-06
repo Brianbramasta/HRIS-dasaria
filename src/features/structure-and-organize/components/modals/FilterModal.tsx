@@ -17,7 +17,6 @@ interface FilterModalProps<T> {
   onRemoveFilterItem: (item: string) => void;
   onApplyFilter: () => void;
   onResetFilter: () => void;
-  isFilterActive?: boolean;
 }
 
 export function FilterModal<T>({
@@ -34,7 +33,6 @@ export function FilterModal<T>({
   onRemoveFilterItem,
   onApplyFilter,
   onResetFilter,
-  isFilterActive = false,
 }: FilterModalProps<T>) {
   return (
     <Modal 

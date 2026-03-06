@@ -67,7 +67,7 @@ export const useApiOffices = (): UseOfficesReturn => {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
-  const filterValue = useFilterStore((s) => s.filters['Kantor'] ?? '');
+  const filterValue = useFilterStore((s) => (s.filters['Kantor'] ?? []).join(','));
 
   const fetchOffices = useCallback(async (filter?: TableFilter) => {
     setLoading(true);

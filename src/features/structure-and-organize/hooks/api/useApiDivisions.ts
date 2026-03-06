@@ -70,7 +70,7 @@ export const useApiDivisions = (): UseDivisionsReturn => {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
-  const filterValue = useFilterStore((s) => s.filters['Divisi'] ?? '');
+  const filterValue = useFilterStore((s) => (s.filters['Divisi'] ?? []).join(','));
 
   const fetchDivisions = useCallback(async (filter?: TableFilter) => {
     setLoading(true);

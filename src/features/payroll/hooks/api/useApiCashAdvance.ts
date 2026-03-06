@@ -112,7 +112,7 @@ export const useApiCashAdvance = (): UseApiCashAdvanceReturn => {
     const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
     const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
 
-    const filterStatus = useFilterStore((s) => s.filters['CashAdvanceStatus'] ?? '');
+    const filterStatus = useFilterStore((s) => (s.filters['CashAdvanceStatus'] ?? []).join(','));
 
     const fetchCashAdvances = useCallback(async (filter?: Partial<TableFilter>) => {
         setLoading(true);
