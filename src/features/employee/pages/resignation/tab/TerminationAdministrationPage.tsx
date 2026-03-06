@@ -24,7 +24,6 @@ export default function TerminationAdministrationPage() {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const {
     loading,
-    error,
     adminList,
     adminPagination,
     fetchAdministrationIndex,

@@ -29,21 +29,17 @@ const FIleField: FC<FileFieldProps> = ({
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState<string>("");
-  const [fileCount, setFileCount] = useState<number>(0);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
       if (multiple) {
-        setFileCount(files.length);
         setFileName(`${files.length} file dipilih`);
       } else {
         setFileName(files[0].name);
-        setFileCount(1);
       }
     } else {
       setFileName("");
-      setFileCount(0);
     }
     onChange?.(e);
   };

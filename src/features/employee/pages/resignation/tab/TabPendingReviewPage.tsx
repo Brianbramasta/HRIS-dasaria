@@ -1,7 +1,6 @@
 import { DataTable, DataTableColumn, DataTableAction } from '../../../../../components/shared/datatable/DataTable';
 import { ResignationApplicationListItem } from '../../../types/dto/ResignationType';
 import { IconFileDetail, IconPencil } from '@/icons/components/icons';
-import Button from '../../../../../components/ui/button/Button';
 import { useEffect } from 'react';
 import { useApiResignation } from '../../../hooks/api/useApiResignation';
 import {  useNavigate } from 'react-router';
@@ -11,7 +10,6 @@ export default function TabPendingReview() {
   const {
     applications,
     loading,
-    error,
     appPagination,
     fetchApplications,
     columnFilters,
