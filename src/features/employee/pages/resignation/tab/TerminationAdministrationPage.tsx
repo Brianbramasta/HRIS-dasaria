@@ -29,14 +29,25 @@ export default function TerminationAdministrationPage() {
     adminPagination,
     fetchAdministrationIndex,
     storeAdministration,
+    adminColumnFilters,
+    adminDateRangeFilters,
+    handleAdminColumnFilterChange,
+    handleAdminDateRangeFilterChange,
   } = useApiResignation();
 
-  // Fetch data on mount and when pagination changes
+  // Initial data fetch
   useEffect(() => {
-    fetchAdministrationIndex({
-      page: adminPagination.currentPage,
-      per_page: adminPagination.perPage,
-    });
+    fetchAdministrationIndex();
+  }, []);
+
+  // Auto-fetch when filters change
+  useEffect(() => {
+    fetchAdministrationIndex();
+  }, [adminColumnFilters, adminDateRangeFilters, fetchAdministrationIndex]);
+
+  // Auto-fetch when pagination changes
+  useEffect(() => {
+    fetchAdministrationIndex();
   }, [adminPagination.currentPage, adminPagination.perPage]);
 
   // Transform API data to table format
@@ -90,7 +101,7 @@ export default function TerminationAdministrationPage() {
         id: 'catatan',
         label: 'Catatan',
         minWidth: 180,
-        sortable: false,
+        sortable: true,
         format: (v) => <span className="text-sm text-gray-600">{v}</span>,
       },
       { id: 'statusBerakhir', label: 'Status Berakhir', minWidth: 160, sortable: true },
@@ -131,20 +142,17 @@ export default function TerminationAdministrationPage() {
     const success = await storeAdministration(storePayload);
     if (success) {
       setIsAddOpen(false);
-      await fetchAdministrationIndex({
-        page: adminPagination.currentPage,
-        per_page: adminPagination.perPage,
-      });
+      await fetchAdministrationIndex();
     }
   };
 
-  if (error) {
-    return (
-      <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
-        <p>Terjadi kesalahan: {error}</p>
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
+  //       <p>Terjadi kesalahan: {error}</p>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="space-y-6">
@@ -161,21 +169,18 @@ export default function TerminationAdministrationPage() {
         addButtonLabel="Tambah Terminasi"
         onAdd={() => setIsAddOpen(true)}
         loading={loading}
-        onPageChangeExternal={(p) => {
-          // Update pagination and fetch
-          const newPage = p;
-          fetchAdministrationIndex({
-            page: newPage,
-            per_page: adminPagination.perPage,
-          });
-        }}
-        onRowsPerPageChangeExternal={(n) => {
-          // Update pagination and fetch
-          fetchAdministrationIndex({
-            page: 1,
-            per_page: n,
-          });
-        }}
+        onSearchChange={(search) => fetchAdministrationIndex({ search })}
+        onSortChange={(sortBy, sortOrder) => fetchAdministrationIndex({ sortBy, sortOrder })}
+        onPageChangeExternal={(page) => fetchAdministrationIndex({ page })}
+        onRowsPerPageChangeExternal={(perPage) => fetchAdministrationIndex({ page: 1, pageSize: perPage })}
+        useExternalPagination={true}
+        externalPage={adminPagination.currentPage}
+        externalTotal={adminPagination.total}
+        onColumnFilterChange={handleAdminColumnFilterChange}
+        columnFilters={adminColumnFilters}
+        onDateRangeFilterChange={handleAdminDateRangeFilterChange}
+        dateRangeFilters={adminDateRangeFilters}
+        resetKey="Terminasi Administrasi"
       />
       <AddUserTermination
         isOpen={isAddOpen}

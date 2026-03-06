@@ -4,6 +4,7 @@ import Button from '../../../../../components/ui/button/Button';
 import { ChevronDown } from 'react-feather';
 import { Dropdown } from '../../../../../components/ui/dropdown/Dropdown';
 import { useReviewed } from '../../../hooks/resignation/useReviewed';
+import { useEffect } from 'react';
 
 export default function TabReviewed() {
   const {
@@ -22,6 +23,11 @@ export default function TabReviewed() {
     closeStatusDropdown,
     handleNavigateToView,
   } = useReviewed();
+
+  // Initial data fetch
+  useEffect(() => {
+    fetchPengunduranDiri();
+  }, []);
 
   // Define columns untuk DataTable
   const columns: DataTableColumn<PengunduranDiri>[] = [

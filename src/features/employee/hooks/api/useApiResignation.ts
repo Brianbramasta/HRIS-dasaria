@@ -1,4 +1,6 @@
 import { useState, useCallback } from 'react';
+import { TableFilter } from '../../../../types/SharedType';
+import useFilterStore from '../../../../stores/filterStore';
 import {
   ResignationApplicationListItem,
   ResignationApplicationDetailResult,
@@ -48,8 +50,14 @@ interface UseApiResignationReturn {
   contractEndStatusOptions: { label: string; value: string }[];
   selectedEmployeeData: PersonalInformationFullData | null;
 
+  // Server-side filtering states
+  columnFilters: Record<string, string[]>;
+  dateRangeFilters: Record<string, { startDate: string; endDate: string | null }>;
+  adminColumnFilters: Record<string, string[]>;
+  adminDateRangeFilters: Record<string, { startDate: string; endDate: string | null }>;
+
   // Actions - Applications
-  fetchApplications: (params?: any) => Promise<void>;
+  fetchApplications: (params?: Partial<TableFilter>) => Promise<void>;
   fetchApplicationDetail: (id: string) => Promise<void>;
   uploadApplicationDocuments: (id: string, payload: UploadDocumentsPayload) => Promise<boolean>;
   approveApplication: (id: string, effectiveDate?: string) => Promise<boolean>;
@@ -60,7 +68,7 @@ interface UseApiResignationReturn {
   // Actions - Administration
   fetchAdminPopup: (nip: string) => Promise<void>;
   storeAdministration: (payload: StoreAdministrationPayload) => Promise<boolean>;
-  fetchAdministrationIndex: (params?: any) => Promise<void>;
+  fetchAdministrationIndex: (params?: Partial<TableFilter>) => Promise<void>;
   fetchAdministrationDetail: (id: string) => Promise<void>;
   uploadAdministrationDocuments: (id: string, payload: UploadDocumentsPayload) => Promise<boolean>;
   submitAdministration: (id: string) => Promise<boolean>;
@@ -70,6 +78,12 @@ interface UseApiResignationReturn {
   fetchEmployeeList: (search?: string) => Promise<void>;
   fetchEmployeePersonalData: (employeeId: string) => Promise<void>;
   fetchContractEndStatusList: (search?: string) => Promise<void>;
+
+  // Filter handlers
+  handleApplicationColumnFilterChange: (columnId: string, values: string[]) => void;
+  handleApplicationDateRangeFilterChange: (columnId: string, startDate: string, endDate: string | null) => void;
+  handleAdminColumnFilterChange: (columnId: string, values: string[]) => void;
+  handleAdminDateRangeFilterChange: (columnId: string, startDate: string, endDate: string | null) => void;
 
   // Reset
   resetApplicationDetail: () => void;
@@ -105,11 +119,64 @@ export const useApiResignation = (): UseApiResignationReturn => {
   const [contractEndStatusOptions, setContractEndStatusOptions] = useState<{ label: string; value: string }[]>([]);
   const [selectedEmployeeData, setSelectedEmployeeData] = useState<PersonalInformationFullData | null>(null);
 
-  const fetchApplications = useCallback(async (params?: any) => {
+  // Server-side filtering states
+  const [applicationColumnFilters, setApplicationColumnFilters] = useState<Record<string, string[]>>({});
+  const [applicationDateRangeFilters, setApplicationDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
+  const [adminColumnFilters, setAdminColumnFilters] = useState<Record<string, string[]>>({});
+  const [adminDateRangeFilters, setAdminDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
+
+  // Filter values from store
+  const applicationFilterValue = useFilterStore((s) => s.filters['Pengunduran Diri'] ?? '');
+  const adminFilterValue = useFilterStore((s) => s.filters['Terminasi Administrasi'] ?? '');
+
+  const fetchApplications = useCallback(async (params?: Partial<TableFilter>) => {
     setLoading(true);
     setError(null);
     try {
-      const resp = await resignationApplicationsService.getApplications(params);
+      // Build query params
+      const queryParams: any = {
+        page: appPagination.currentPage,
+        per_page: appPagination.perPage,
+      };
+
+      if (params?.search) queryParams.search = params.search;
+      if (params?.sortBy) queryParams.column = params.sortBy;
+      if (params?.sortOrder) queryParams.sort = params.sortOrder;
+      
+      // Handle filter - convert to array if needed
+      const filterParam = params?.filter ?? applicationFilterValue;
+      if (filterParam) {
+        queryParams.filter = Array.isArray(filterParam) ? filterParam : [filterParam];
+      }
+
+      // Add column filters - format: filter_column[column_name][in][]=value
+      Object.entries(applicationColumnFilters).forEach(([columnId, values]) => {
+        if (values && values.length > 0) {
+          values.forEach((value) => {
+            const key = `filter_column[${columnId}][in][]`;
+            if (!queryParams[key]) {
+              queryParams[key] = [];
+            }
+            queryParams[key].push(value);
+          });
+        }
+      });
+
+      // Add date range filters - format: filter_column[column_name][range][]=start_date & filter_column[column_name][range][]=end_date
+      Object.entries(applicationDateRangeFilters).forEach(([columnId, dateRange]) => {
+        if (dateRange && dateRange.startDate) {
+          const key = `filter_column[${columnId}][range][]`;
+          if (!queryParams[key]) {
+            queryParams[key] = [];
+          }
+          queryParams[key].push(dateRange.startDate);
+          if (dateRange.endDate) {
+            queryParams[key].push(dateRange.endDate);
+          }
+        }
+      });
+
+      const resp = await resignationApplicationsService.getApplications(queryParams);
       const data = resp.data as ResignationApplicationListResponse;
       setApplications(data?.data || []);
       setAppPagination({
@@ -124,7 +191,7 @@ export const useApiResignation = (): UseApiResignationReturn => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [appPagination.currentPage, appPagination.perPage, applicationFilterValue, applicationColumnFilters, applicationDateRangeFilters]);
 
   const fetchApplicationDetail = useCallback(async (id: string) => {
     setLoading(true);
@@ -265,11 +332,54 @@ export const useApiResignation = (): UseApiResignationReturn => {
     }
   }, []);
 
-  const fetchAdministrationIndex = useCallback(async (params?: any) => {
+  const fetchAdministrationIndex = useCallback(async (params?: Partial<TableFilter>) => {
     setLoading(true);
     setError(null);
     try {
-      const resp = await resignationAdministrationService.getIndex(params);
+      // Build query params
+      const queryParams: any = {
+        page: adminPagination.currentPage,
+        per_page: adminPagination.perPage,
+      };
+
+      if (params?.search) queryParams.search = params.search;
+      if (params?.sortBy) queryParams.column = params.sortBy;
+      if (params?.sortOrder) queryParams.sort = params.sortOrder;
+      
+      // Handle filter - convert to array if needed
+      const filterParam = params?.filter ?? adminFilterValue;
+      if (filterParam) {
+        queryParams.filter = Array.isArray(filterParam) ? filterParam : [filterParam];
+      }
+
+      // Add column filters - format: filter_column[column_name][in][]=value
+      Object.entries(adminColumnFilters).forEach(([columnId, values]) => {
+        if (values && values.length > 0) {
+          values.forEach((value) => {
+            const key = `filter_column[${columnId}][in][]`;
+            if (!queryParams[key]) {
+              queryParams[key] = [];
+            }
+            queryParams[key].push(value);
+          });
+        }
+      });
+
+      // Add date range filters - format: filter_column[column_name][range][]=start_date & filter_column[column_name][range][]=end_date
+      Object.entries(adminDateRangeFilters).forEach(([columnId, dateRange]) => {
+        if (dateRange && dateRange.startDate) {
+          const key = `filter_column[${columnId}][range][]`;
+          if (!queryParams[key]) {
+            queryParams[key] = [];
+          }
+          queryParams[key].push(dateRange.startDate);
+          if (dateRange.endDate) {
+            queryParams[key].push(dateRange.endDate);
+          }
+        }
+      });
+
+      const resp = await resignationAdministrationService.getIndex(queryParams);
       const data = resp.data as ResignationAdministrationListResponse;
       setAdminList(data?.data || []);
       setAdminPagination({
@@ -284,7 +394,7 @@ export const useApiResignation = (): UseApiResignationReturn => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [adminPagination.currentPage, adminPagination.perPage, adminFilterValue, adminColumnFilters, adminDateRangeFilters]);
 
   const fetchAdministrationDetail = useCallback(async (id: string) => {
     setLoading(true);
@@ -422,6 +532,36 @@ export const useApiResignation = (): UseApiResignationReturn => {
     setAdminDetail(null);
   }, []);
 
+  // Filter handlers for applications
+  const handleApplicationColumnFilterChange = useCallback((columnId: string, values: string[]) => {
+    setApplicationColumnFilters((prev) => ({
+      ...prev,
+      [columnId]: values,
+    }));
+  }, []);
+
+  const handleApplicationDateRangeFilterChange = useCallback((columnId: string, startDate: string, endDate: string | null) => {
+    setApplicationDateRangeFilters((prev) => ({
+      ...prev,
+      [columnId]: { startDate, endDate },
+    }));
+  }, []);
+
+  // Filter handlers for administration
+  const handleAdminColumnFilterChange = useCallback((columnId: string, values: string[]) => {
+    setAdminColumnFilters((prev) => ({
+      ...prev,
+      [columnId]: values,
+    }));
+  }, []);
+
+  const handleAdminDateRangeFilterChange = useCallback((columnId: string, startDate: string, endDate: string | null) => {
+    setAdminDateRangeFilters((prev) => ({
+      ...prev,
+      [columnId]: { startDate, endDate },
+    }));
+  }, []);
+
   return {
     loading,
     error,
@@ -436,6 +576,11 @@ export const useApiResignation = (): UseApiResignationReturn => {
     employeeOptions,
     contractEndStatusOptions,
     selectedEmployeeData,
+    // Server-side filtering states
+    columnFilters: applicationColumnFilters,
+    dateRangeFilters: applicationDateRangeFilters,
+    adminColumnFilters,
+    adminDateRangeFilters,
     fetchApplications,
     fetchApplicationDetail,
     uploadApplicationDocuments,
@@ -453,6 +598,11 @@ export const useApiResignation = (): UseApiResignationReturn => {
     fetchEmployeeList,
     fetchEmployeePersonalData,
     fetchContractEndStatusList,
+    // Filter handlers
+    handleApplicationColumnFilterChange,
+    handleApplicationDateRangeFilterChange,
+    handleAdminColumnFilterChange,
+    handleAdminDateRangeFilterChange,
     resetApplicationDetail,
     resetAdministrationDetail,
   };

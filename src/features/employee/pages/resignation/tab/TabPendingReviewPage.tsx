@@ -2,7 +2,7 @@ import { DataTable, DataTableColumn, DataTableAction } from '../../../../../comp
 import { ResignationApplicationListItem } from '../../../types/dto/ResignationType';
 import { IconFileDetail, IconPencil } from '@/icons/components/icons';
 import Button from '../../../../../components/ui/button/Button';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useApiResignation } from '../../../hooks/api/useApiResignation';
 import {  useNavigate } from 'react-router';
 import { formatDateToIndonesian } from '@/utils/formatDate';
@@ -12,17 +12,29 @@ export default function TabPendingReview() {
     applications,
     loading,
     error,
+    appPagination,
     fetchApplications,
+    columnFilters,
+    dateRangeFilters,
+    handleApplicationColumnFilterChange,
+    handleApplicationDateRangeFilterChange,
   } = useApiResignation();
   const navigate = useNavigate();
 
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
-  const [search, setSearch] = useState<string>('');
-
+  // Initial data fetch
   useEffect(() => {
-    fetchApplications({ page, per_page: limit, search });
-  }, [page, limit, search]);
+    fetchApplications();
+  }, []);
+
+  // Auto-fetch when filters change
+  useEffect(() => {
+    fetchApplications();
+  }, [columnFilters, dateRangeFilters, fetchApplications]);
+
+  // Auto-fetch when pagination changes
+  useEffect(() => {
+    fetchApplications();
+  }, [appPagination.currentPage, appPagination.perPage]);
 
   // Define columns untuk DataTable
   const columns: DataTableColumn<ResignationApplicationListItem>[] = [
@@ -33,7 +45,7 @@ export default function TabPendingReview() {
       align: 'center',
       sortable: false,
       format: (_, row) => {
-        const index = applications.indexOf(row as any) + 1 + (page - 1) * limit;
+        const index = applications.indexOf(row as any) + 1 + (appPagination.currentPage - 1) * appPagination.perPage;
         return index;
       },
     },
@@ -61,7 +73,7 @@ export default function TabPendingReview() {
       id: 'efektif_resign_date',
       label: 'Tanggal Efektif',
       minWidth: 130,
-      sortable: false,
+      sortable: true,
       dateRangeFilter: true,
       format: (value) => <span>{value ? formatDateToIndonesian(String(value)) : '-'}</span>,
     },
@@ -69,13 +81,13 @@ export default function TabPendingReview() {
       id: 'position_name',
       label: 'Posisi',
       minWidth: 160,
-      sortable: false,
+      sortable: true,
     },
     {
       id: 'note_hr',
       label: 'Catatan',
       minWidth: 220,
-      sortable: false,
+      sortable: true,
       format: (value) => (
         <span className="line-clamp-2 text-sm text-gray-600">
           {value}
@@ -149,16 +161,16 @@ export default function TabPendingReview() {
 
   // Unused functions - moved to hook
 
-  if (error) {
-    return (
-      <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
-        <p>Error: {error}</p>
-        <Button onClick={() => fetchApplications({ page, per_page: limit, search })} variant="primary" size="sm" className="mt-2">
-          Coba Lagi
-        </Button>
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
+  //       <p>Error: {error}</p>
+  //       <Button onClick={() => fetchApplications()} variant="primary" size="sm" className="mt-2">
+  //         Coba Lagi
+  //       </Button>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="space-y-6">
@@ -170,7 +182,7 @@ export default function TabPendingReview() {
         actions={actions}
         searchable={true}
         searchPlaceholder="Cari berdasarkan kata kunci"
-        pageSize={limit}
+        pageSize={appPagination.perPage}
         pageSizeOptions={[5, 10, 25, 50]}
         filterable={true}
         // comment dulu - revisi ui
@@ -212,10 +224,18 @@ export default function TabPendingReview() {
         // }
         loading={loading}
         emptyMessage="Tidak ada pengajuan pengunduran diri"
-        onSearchChange={(val) => setSearch(val)}
-        onSortChange={() => {}}
-        onPageChangeExternal={(p) => setPage(p)}
-        onRowsPerPageChangeExternal={(l) => setLimit(l)}
+        onSearchChange={(search) => fetchApplications({ search })}
+        onSortChange={(sortBy, sortOrder) => fetchApplications({ sortBy, sortOrder })}
+        onPageChangeExternal={(page) => fetchApplications({ page })}
+        onRowsPerPageChangeExternal={(perPage) => fetchApplications({ page: 1, pageSize: perPage })}
+        useExternalPagination={true}
+        externalPage={appPagination.currentPage}
+        externalTotal={appPagination.total}
+        onColumnFilterChange={handleApplicationColumnFilterChange}
+        columnFilters={columnFilters}
+        onDateRangeFilterChange={handleApplicationDateRangeFilterChange}
+        dateRangeFilters={dateRangeFilters}
+        resetKey="Pengunduran Diri"
       />
 
       {/* Action Column - Render approve/reject buttons */}
