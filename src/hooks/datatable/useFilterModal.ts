@@ -33,7 +33,7 @@ export function useFilterModal<T>({
       const { terms } = loadPageFilters(pageKey);
       const existing = terms.length 
         ? terms 
-        : (getFilterFor(title ?? 'global') || '').split(',').map((v) => v.trim()).filter((v) => v.length > 0);
+        : (getFilterFor(title ?? 'global') || []);
       const items = existing;
       setModalFilterItems(items);
     }
@@ -46,8 +46,8 @@ export function useFilterModal<T>({
       setModalFilterItems(terms);
     } else {
       const existing = getFilterFor(title ?? 'global');
-      if (existing) {
-        const items = existing.split(',').map((v) => v.trim()).filter((v) => v.length > 0);
+      if (existing && existing.length > 0) {
+        const items = existing;
         setModalFilterItems(items);
       }
     }
@@ -87,8 +87,8 @@ export function useFilterModal<T>({
     const terms = modalFilterItems.length > 0 
       ? modalFilterItems 
       : (modalFilterTerm.trim() ? [modalFilterTerm.trim()] : []);
-    const value = terms.join(',');
-    setFilterFor(title ?? 'global', value);
+    console.log(terms,'filter terms array')
+    setFilterFor(title ?? 'global', terms);
     persistPageFilters(pageKey, terms, tempVisibleColumns);
     setVisibleColumns(tempVisibleColumns);
     onColumnVisibilityChange?.(tempVisibleColumns);

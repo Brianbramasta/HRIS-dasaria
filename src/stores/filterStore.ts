@@ -1,16 +1,16 @@
 import create from 'zustand';
 
 interface FilterState {
-  filters: Record<string, string>;
-  setFilterFor: (key: string, value: string) => void;
+  filters: Record<string, string[]>;
+  setFilterFor: (key: string, value: string[]) => void;
   clearFilterFor: (key: string) => void;
-  getFilterFor: (key: string) => string;
+  getFilterFor: (key: string) => string[];
   clearAll: () => void;
 }
 
 export const useFilterStore = create<FilterState>((set, get) => ({
   filters: {},
-  setFilterFor: (key: string, value: string) => {
+  setFilterFor: (key: string, value: string[]) => {
     set((s) => ({ filters: { ...s.filters, [key]: value } }));
   },
   clearFilterFor: (key: string) => {
@@ -18,11 +18,11 @@ export const useFilterStore = create<FilterState>((set, get) => ({
     delete next[key];
     set({ filters: next });
   },
-  getFilterFor: (key: string) => get().filters[key] ?? '',
+  getFilterFor: (key: string) => get().filters[key] ?? [],
   clearAll: () => set({ filters: {} }),
 }));
 
-export const setFilterFor = (key: string, value: string) =>
+export const setFilterFor = (key: string, value: string[]) =>
   useFilterStore.getState().setFilterFor(key, value);
 
 export const clearFilterFor = (key: string) =>
