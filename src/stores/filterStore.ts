@@ -41,19 +41,22 @@ const parseArray = (str: string | null): string[] | null => {
   }
 };
 
-export const persistPageFilters = (pageKey: string, terms: string[], columns: string[]) => {
+export const persistPageFilters = (pageKey: string, terms: string[], columns: string[], isFilterActive: boolean = false) => {
   if (typeof window === 'undefined') return;
   window.localStorage.setItem(`datatable_filters_${pageKey}`, JSON.stringify(terms));
   window.localStorage.setItem(`datatable_cols_${pageKey}`, JSON.stringify(columns));
+  window.localStorage.setItem(`datatable_filter_active_${pageKey}`, JSON.stringify(isFilterActive));
 };
 
 export const loadPageFilters = (
   pageKey: string
-): { terms: string[]; columns: string[] | null } => {
-  if (typeof window === 'undefined') return { terms: [], columns: null };
+): { terms: string[]; columns: string[] | null; isFilterActive: boolean } => {
+  if (typeof window === 'undefined') return { terms: [], columns: null, isFilterActive: false };
   const t = parseArray(window.localStorage.getItem(`datatable_filters_${pageKey}`)) ?? [];
   const c = parseArray(window.localStorage.getItem(`datatable_cols_${pageKey}`));
-  return { terms: t, columns: c };
+  const active = window.localStorage.getItem(`datatable_filter_active_${pageKey}`);
+  const isFilterActive = active ? JSON.parse(active) : false;
+  return { terms: t, columns: c, isFilterActive };
 };
 
 export const clearAllFilterPersistence = () => {
@@ -61,7 +64,7 @@ export const clearAllFilterPersistence = () => {
   const keys: string[] = [];
   for (let i = 0; i < window.localStorage.length; i++) {
     const k = window.localStorage.key(i) ?? '';
-    if (k.startsWith('datatable_filters_') || k.startsWith('datatable_cols_')) keys.push(k);
+    if (k.startsWith('datatable_filters_') || k.startsWith('datatable_cols_') || k.startsWith('datatable_filter_active_')) keys.push(k);
   }
   keys.forEach((k) => window.localStorage.removeItem(k));
   useFilterStore.getState().clearAll();
