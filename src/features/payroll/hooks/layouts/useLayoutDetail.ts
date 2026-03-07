@@ -47,10 +47,16 @@ export const useLayoutDetail = (config: SectionConfig, payrollData?: any) => {
   
   console.log("isCorrectApprovalStage", isCorrectApprovalStage);
 
-  const canEditInfo = !isApprovalContext ? true : !isBODApproval && isCorrectApprovalStage;
-  const canEditTT = !isApprovalContext ? true : (isFATApproval || isHRGAorBODApproval) && isCorrectApprovalStage;
-  const canEditPTT = !isApprovalContext ? true : (isFATApproval && !isBODApproval) && isCorrectApprovalStage;
-  const canEditRecap = !isApprovalContext ? true : !isBODApproval && isCorrectApprovalStage;
+  // Dokumentasi: Check if payroll status is "Menunggu Maker" to allow editing
+  const isMenungguMaker = useMemo(() => {
+    const currentStatus = payrollData?.information_employee?.payroll_status_name;
+    return currentStatus === "Menunggu Maker";
+  }, [payrollData]);
+
+  const canEditInfo = !isApprovalContext ? isMenungguMaker : !isBODApproval && isCorrectApprovalStage;
+  const canEditTT = !isApprovalContext ? isMenungguMaker : (isFATApproval || isHRGAorBODApproval) && isCorrectApprovalStage;
+  const canEditPTT = !isApprovalContext ? isMenungguMaker : (isFATApproval && !isBODApproval) && isCorrectApprovalStage;
+  const canEditRecap = !isApprovalContext ? isMenungguMaker : !isBODApproval && isCorrectApprovalStage;
 
   const [ttValues, setTtValues] = useState<Record<string, string>>(() => config.tunjanganTidakTetap?.initialValues ?? {});
   const [pttValues, setPttValues] = useState<Record<string, string>>(() => config.potonganTidakTetap?.initialValues ?? {});

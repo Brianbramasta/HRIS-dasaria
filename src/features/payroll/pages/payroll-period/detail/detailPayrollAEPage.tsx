@@ -83,6 +83,6 @@ export default function DetailGajiAEPage() {
   if (error && !payrollPeriodDetail) return null;
 
   const readyKey = payrollPeriodDetail ? "ready" : "loading";
-  return <DetailPayrollContent key={`${id}-${readyKey}`} config={config} onRefresh={() => fetchPayrollPeriodDetail(id ?? '')} />;
+  return <DetailPayrollContent key={`${id}-${readyKey}`} config={config} onRefresh={() => fetchPayrollPeriodDetail(id ?? '')} payrollData={payrollPeriodDetail} />;
 }
 

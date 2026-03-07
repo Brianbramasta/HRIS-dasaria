@@ -67,6 +67,6 @@ export default function DetailGajiTHRPage() {
     }
   };
 
-  return <DetailPayrollContent config={config} onRefresh={handleRefresh} />;
+  return <DetailPayrollContent config={config} onRefresh={handleRefresh} payrollData={payrollPeriodDetail} />;
 }
 
