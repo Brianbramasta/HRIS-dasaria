@@ -1,5 +1,4 @@
 // Dokumentasi: Komponen dinamis layout halaman Detail Gaji untuk berbagai tipe (AE, Non-AE, PKL, THR)
-import { useState } from "react";
 import PayrollCard from "@/features/payroll/components/cards/Cards";
 import InputField from "@/components/shared/field/InputField";
 import DateField from "@/components/shared/field/DateField";
@@ -11,12 +10,9 @@ import Button from "@/components/ui/button/Button";
 import { ChevronLeft } from "react-feather";
 import { IconPencil as Edit3 } from "@/icons/components/icons";
 import { useLayoutDetail } from "@/features/payroll/hooks/layouts/useLayoutDetail";
-import RecapModall from "@/features/payroll/components/modals/detail-payroll/RecapModall";
+import { useLayoutDetailNotComparison } from "@/features/payroll/hooks/layouts/useLayoutDetailNotComparison";
 import { formatCurrencyValue, parseCurrency } from "@/utils/formatCurrency";
 import PayrollApprovalModal from "../modals/payroll-period-approval/PayrollApprovalModal";
-import { useApiPayrollPeriodDirectorHr } from "@/features/payroll/hooks/api/useApiPayrollPeriodDirectorHr";
-import { useApiPayrollPeriodFat } from "@/features/payroll/hooks/api/useApiPayrollPeriodFat";
-import { useApiPayrollPeriodBod } from "@/features/payroll/hooks/api/useApiPayrollPeriodBod";
 
 export type FieldType = "input" | "date" | "select" | "multi-select" | "file";
 export type FieldDescriptor = {
@@ -159,126 +155,45 @@ export default function DetailPayrollContent({ config, onRefresh, payrollData }:
     gridColsPTT,
   } = useLayoutDetail(config, payrollData);
   console.log("payrollData", payrollData);
-  // Approval hooks
-  const { approvalDirectorHr } = useApiPayrollPeriodDirectorHr();
-  const { approvalFat } = useApiPayrollPeriodFat();
-  const { approvalBod } = useApiPayrollPeriodBod();
+  
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const {
+    isApprovalModalOpen,
+    setIsApprovalModalOpen,
+    isSubmitting,
+    handleApproval,
+    infoTitle,
+    infoHeaderColor,
+    recapTitle,
+    recapHeaderColor,
+    recapFields,
+    recapModalFields,
+    recapCatatanKaryawan,
+    recapCatatanBOD,
+    RekapModalComponent,
+    infoFields,
+    InfoModalComponent,
+    infoModalFields,
+    tunjanganTetapTitle,
+    tunjanganTetapHeaderColor,
+    tunjanganTidakTetapTitle,
+    tunjanganTidakTetapHeaderColor,
+    potonganTetapTitle,
+    potonganTetapHeaderColor,
+    potonganTidakTetapTitle,
+    potonganTidakTetapHeaderColor,
+    tunjanganTetapFields,
+    // isCurrencyField,
+    formatInputValue,
+    checkIfDataEmpty,
+  } = useLayoutDetailNotComparison(config, payrollData, isFATApproval, isHRGAorBODApproval);
 
-  // Approval modal state
-  const [isApprovalModalOpen, setIsApprovalModalOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleApproval = async () => {
-    if (!payrollData?.information_employee?.payroll_id) return;
-    
-    setIsSubmitting(true);
-    try {
-      let result = false;
-      const payrollId = payrollData.information_employee.payroll_id;
-
-      if (isFATApproval) {
-        result = await approvalFat({ payrollIds: [payrollId] });
-      } else if (isHRGAorBODApproval) {
-        // Check if it's HRGA or BOD based on current status
-        const currentStatus = payrollData?.information_employee?.payroll_status_name?.toLowerCase() || '';
-        if (currentStatus.includes('direktur hrga')) {
-          result = await approvalDirectorHr({ payrollIds: [payrollId] });
-        } else if (currentStatus.includes('bod')) {
-          result = await approvalBod({ payrollIds: [payrollId] });
-        }
-      }
-
-      if (result) {
-        setIsApprovalModalOpen(false);
-        window.location.reload();
-      }
-    } catch (error) {
-      console.error('Approval failed:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const infoTitle = config.infoCard?.title ?? "Informasi Karyawan";
-  const infoHeaderColor = config.infoCard?.headerColor ?? "gray";
-
-  const recapConfig =
-    config.rekapitulasi && typeof config.rekapitulasi === "object" ? config.rekapitulasi : undefined;
-  const recapTitle = recapConfig?.title ?? "REKAPITULASI";
-  const recapHeaderColor = recapConfig?.headerColor ?? "slate";
-  const recapFields: FieldDescriptor[] =
-    recapConfig?.fields ?? [
-      { name: "totalPendapatanKotor", label: "Total Pendapatan Kotor", type: "input", placeholder: "Otomatis", readonly: true },
-      { name: "totalPotongan", label: "Total Potongan", type: "input", placeholder: "Otomatis", readonly: true },
-      { name: "gajiBersih", label: "Gaji Bersih", type: "input", placeholder: "Otomatis", readonly: true },
-    ];
-
-  const recapModalFields: FieldDescriptor[] = recapConfig?.modalFields ?? recapFields;
-
-  const recapCatatanKaryawan = recapConfig?.catatanKaryawan ?? config.catatanKaryawan;
-  const recapCatatanBOD = recapConfig?.catatanBOD ?? config.catatanBOD;
-
-  const RekapModalComponent = recapConfig?.ModalComponent ?? RecapModall;
-
-  const infoConfig = config.info;
-  const infoFields = infoConfig?.fields ?? config.infoFields;
-  const InfoModalComponent = infoConfig?.ModalComponent ?? config.infoModal?.ModalComponent;
-  const infoModalFields = infoConfig?.modalFields ?? config.infoModal?.modalFields ?? infoFields;
-
-  const tunjanganTetapConfig =
-    config.tunjanganTetap && typeof config.tunjanganTetap === "object" ? config.tunjanganTetap : undefined;
-
-  const tunjanganTetapTitle = tunjanganTetapConfig?.title ?? "Tunjangan Tetap";
-  const tunjanganTetapHeaderColor = tunjanganTetapConfig?.headerColor ?? "green";
-
-  const tunjanganTidakTetapTitle = config.tunjanganTidakTetap?.title ?? "Tunjangan Tidak Tetap";
-  const tunjanganTidakTetapHeaderColor = config.tunjanganTidakTetap?.headerColor ?? "green";
-
-  const potonganTetapTitle = config.potonganTetap?.title ?? "Potongan Tetap";
-  const potonganTetapHeaderColor = config.potonganTetap?.headerColor ?? "red";
-
-  const potonganTidakTetapTitle = config.potonganTidakTetap?.title ?? "Potongan Tidak Tetap";
-  const potonganTidakTetapHeaderColor = config.potonganTidakTetap?.headerColor ?? "red";
-
-  const defaultTunjanganTetapFields: FieldDescriptor[] = [
-    { name: "bpjsJkk", label: "BPJS Ketenagakerjaan JKK (0,24%)", type: "input", placeholder: "Otomatis", readonly: true },
-    { name: "bpjsJkm", label: "BPJS Ketenagakerjaan JKM (0,30%)", type: "input", placeholder: "Otomatis", readonly: true },
-    { name: "bpjsJht", label: "BPJS Ketenagakerjaan JHT (3,7%)", type: "input", placeholder: "Otomatis", readonly: true },
-    { name: "bpjsJkn", label: "BPJS Kesehatan JKN (2%)", type: "input", placeholder: "Otomatis", readonly: true },
-    { name: "tunjanganJabatan", label: "Tunjangan Jabatan", type: "input", placeholder: "Otomatis", readonly: true },
-    { name: "tunjanganPernikahan", label: "Tunjangan Pernikahan", type: "input", placeholder: "Otomatis", readonly: true },
-    { name: "tunjanganLamaKerja", label: "Tunjangan Lama Kerja", type: "input", placeholder: "Otomatis", readonly: true },
-    { name: "tunjanganTransportasi", label: "Tunjangan Transportasi", type: "input", placeholder: "Otomatis", readonly: true },
-  ];
-
-  const tunjanganTetapFields: FieldDescriptor[] = tunjanganTetapConfig?.fields ?? defaultTunjanganTetapFields;
-
-  const isCurrencyField = (field: FieldDescriptor) => {
-    const name = (field.name ?? "").toLowerCase();
+  const renderEmptyState = (title: string) => {
     return (
-      name.includes("gaji") ||
-      name.includes("tunjangan") ||
-      name.includes("bpjs") ||
-      name.includes("potongan") ||
-      name.includes("total") ||
-      name.includes("fee") ||
-      name.includes("komisi") ||
-      name.includes("insentif") ||
-      name.includes("kasbon") ||
-      name.startsWith("nfa_") ||
-      name.startsWith("nfd_")
+      <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+        <p className="text-sm">Tidak ada data {title}</p>
+      </div>
     );
-  };
-
-  const formatInputValue = (field: FieldDescriptor) => {
-    if (field.type !== "input") return field.value;
-    if (!isCurrencyField(field)) return field.value;
-
-    if (field.value === null || field.value === undefined || field.value === "") return "-";
-    if (typeof field.value === "number") return formatCurrencyValue(field.value);
-
-    const parsed = parseCurrency(String(field.value));
-    return formatCurrencyValue(parsed);
   };
 
   const renderField = (field: FieldDescriptor) => {
@@ -365,74 +280,90 @@ export default function DetailPayrollContent({ config, onRefresh, payrollData }:
 
       {/* Informasi Karyawan */}
       <PayrollCard title={infoTitle} headerColor={infoHeaderColor}>
-        <div className={gridColsInfo}>
-          {infoFields.map((f) => renderField({ ...f, value: infoValues[f.name] ?? f.value }))}
-        </div>
-        {!!InfoModalComponent && canEditInfo && (
-          <div className="w-full flex justify-end">
-            <Button
-              size="sm"
-              variant="custom"
-              className="bg-blue-600 text-white"
-              onClick={() => setIsInfoModalOpen(true)}
-            >
-              <Edit3 color="white" />
-              Edit
-            </Button>
-          </div>
+        {checkIfDataEmpty(infoValues, infoFields) ? (
+          renderEmptyState(infoTitle)
+        ) : (
+          <>
+            <div className={gridColsInfo}>
+              {infoFields.map((f: FieldDescriptor) => renderField({ ...f, value: infoValues[f.name] ?? f.value }))}
+            </div>
+            {!!InfoModalComponent && canEditInfo && (
+              <div className="w-full flex justify-end">
+                <Button
+                  size="sm"
+                  variant="custom"
+                  className="bg-blue-600 text-white"
+                  onClick={() => setIsInfoModalOpen(true)}
+                >
+                  <Edit3 color="white" />
+                  Edit
+                </Button>
+              </div>
+            )}
+          </>
         )}
       </PayrollCard>
 
       {/* Tunjangan Tetap */}
       {config.tunjanganTetap && (
         <PayrollCard title={tunjanganTetapTitle} headerColor={tunjanganTetapHeaderColor}>
-          <div className={gridColsTT}>
-            {tunjanganTetapFields.map((f) =>
-              (() => {
-                const rawValue = infoValues[f.name] ?? (f as any).value;
+          {checkIfDataEmpty(infoValues, tunjanganTetapFields) ? (
+            renderEmptyState(tunjanganTetapTitle)
+          ) : (
+            <div className={gridColsTT}>
+              {tunjanganTetapFields.map((f) =>
+                (() => {
+                  const rawValue = infoValues[f.name] ?? (f as any).value;
 
-                return renderField({
-                  ...f,
-                  type: "input",
-                  placeholder: f.placeholder ?? "Otomatis",
-                  readonly: f.readonly ?? true,
-                  value: formatCurrencyValue(
-                    typeof rawValue === "number" ? rawValue : parseCurrency(String(rawValue ?? ""))
-                  ),
-                });
-              })()
-            )}
-          </div>
+                  return renderField({
+                    ...f,
+                    type: "input",
+                    placeholder: f.placeholder ?? "Otomatis",
+                    readonly: f.readonly ?? true,
+                    value: formatCurrencyValue(
+                      typeof rawValue === "number" ? rawValue : parseCurrency(String(rawValue ?? ""))
+                    ),
+                  });
+                })()
+              )}
+            </div>
+          )}
         </PayrollCard>
       )}
 
       {/* Tunjangan Tidak Tetap */}
       {config.tunjanganTidakTetap && (
         <PayrollCard title={tunjanganTidakTetapTitle} headerColor={tunjanganTidakTetapHeaderColor}>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {config.tunjanganTidakTetap.fields.map((f) => (
-              <InputField
-                key={f.name}
-                label={f.label}
-                placeholder={f.placeholder ?? "Inputan"}
-                value={formatInputValue({ ...f, value: ttValues[f.name] ?? "" })}
-                readonly
-              />
-            ))}
-          </div>
-          {/* Dokumentasi: Tampilkan tombol Edit jika HRGA/BOD approval atau Distribusi (FAT tidak bisa edit Tunjangan Tidak Tetap) */}
-          {canEditTT && (isHRGAorBODApproval || isDistribusiContext) && (
-            <div className="w-full flex justify-end">
-              <Button
-                size="sm"
-                variant="custom"
-                className="bg-blue-600 text-white"
-                onClick={() => setIsTTModalOpen(true)}
-              >
-                <Edit3 color="white" />
-                Edit
-              </Button>
-            </div>
+          {checkIfDataEmpty(ttValues, config.tunjanganTidakTetap.fields) ? (
+            renderEmptyState(tunjanganTidakTetapTitle)
+          ) : (
+            <>
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                {config.tunjanganTidakTetap.fields.map((f) => (
+                  <InputField
+                    key={f.name}
+                    label={f.label}
+                    placeholder={f.placeholder ?? "Inputan"}
+                    value={formatInputValue({ ...f, value: ttValues[f.name] ?? "" })}
+                    readonly
+                  />
+                ))}
+              </div>
+              {/* Dokumentasi: Tampilkan tombol Edit jika HRGA/BOD approval atau Distribusi (FAT tidak bisa edit Tunjangan Tidak Tetap) */}
+              {canEditTT && (isHRGAorBODApproval || isDistribusiContext) && (
+                <div className="w-full flex justify-end">
+                  <Button
+                    size="sm"
+                    variant="custom"
+                    className="bg-blue-600 text-white"
+                    onClick={() => setIsTTModalOpen(true)}
+                  >
+                    <Edit3 color="white" />
+                    Edit
+                  </Button>
+                </div>
+              )}
+            </>
           )}
         </PayrollCard>
       )}
@@ -440,62 +371,72 @@ export default function DetailPayrollContent({ config, onRefresh, payrollData }:
       {/* Potongan Tetap */}
       {config.potonganTetap && (
         <PayrollCard title={potonganTetapTitle} headerColor={potonganTetapHeaderColor}>
-          <div className={gridColsPTT}>
-            {config.potonganTetap.fields.map((f) => (
-              <div key={f.name} className={f.colSpan ? `md:col-span-${f.colSpan}` : ""}>
-                {f.type === "input" ? (
-                  <InputField
-                    label={f.label}
-                    placeholder={f.placeholder ?? "Inputan"}
-                    value={formatCurrencyValue(
-                      (() => {
-                        const rawValue = infoValues[f.name] ?? (f as any).value;
-                        return typeof rawValue === "number" ? rawValue : parseCurrency(String(rawValue ?? ""));
-                      })()
-                    )}
-                    type={f.inputType ?? "text"}
-                    readonly={f.readonly}
-                  />
-                ) : (
-                  <DateField
-                    label={f.label}
-                    id={f.id ?? f.name}
-                    placeholder={f.placeholder ?? "Pilih tanggal"}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
+          {checkIfDataEmpty(infoValues, config.potonganTetap.fields) ? (
+            renderEmptyState(potonganTetapTitle)
+          ) : (
+            <div className={gridColsPTT}>
+              {config.potonganTetap.fields.map((f) => (
+                <div key={f.name} className={f.colSpan ? `md:col-span-${f.colSpan}` : ""}>
+                  {f.type === "input" ? (
+                    <InputField
+                      label={f.label}
+                      placeholder={f.placeholder ?? "Inputan"}
+                      value={formatCurrencyValue(
+                        (() => {
+                          const rawValue = infoValues[f.name] ?? (f as any).value;
+                          return typeof rawValue === "number" ? rawValue : parseCurrency(String(rawValue ?? ""));
+                        })()
+                      )}
+                      type={f.inputType ?? "text"}
+                      readonly={f.readonly}
+                    />
+                  ) : (
+                    <DateField
+                      label={f.label}
+                      id={f.id ?? f.name}
+                      placeholder={f.placeholder ?? "Pilih tanggal"}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </PayrollCard>
       )}
 
       {/* Potongan Tidak Tetap */}
       {config.potonganTidakTetap && (
         <PayrollCard title={potonganTidakTetapTitle} headerColor={potonganTidakTetapHeaderColor}>
-          <div className={gridColsPTT}>
-            {config.potonganTidakTetap.fields.map((f) => (
-              <InputField
-                key={f.name}
-                label={f.label}
-                placeholder={f.placeholder ?? "Otomatis"}
-                value={formatInputValue({ ...f, value: pttValues[f.name] ?? "" })}
-                readonly
-              />
-            ))}
-          </div>
-          {/* Dokumentasi: Tampilkan tombol Edit hanya jika FAT approval atau Distribusi */}
-          {canEditPTT && (isFATApproval || isDistribusiContext) && (
-            <div className="w-full flex justify-end">
-              <Button
-                size="sm"
-                variant="custom"
-                className="bg-blue-600 text-white"
-                onClick={() => setIsPTTModalOpen(true)}
-              >
-                <Edit3 color="white" />
-                Edit
-              </Button>
-            </div>
+          {checkIfDataEmpty(pttValues, config.potonganTidakTetap.fields) ? (
+            renderEmptyState(potonganTidakTetapTitle)
+          ) : (
+            <>
+              <div className={gridColsPTT}>
+                {config.potonganTidakTetap.fields.map((f) => (
+                  <InputField
+                    key={f.name}
+                    label={f.label}
+                    placeholder={f.placeholder ?? "Otomatis"}
+                    value={formatInputValue({ ...f, value: pttValues[f.name] ?? "" })}
+                    readonly
+                  />
+                ))}
+              </div>
+              {/* Dokumentasi: Tampilkan tombol Edit hanya jika FAT approval atau Distribusi */}
+              {canEditPTT && (isFATApproval || isDistribusiContext) && (
+                <div className="w-full flex justify-end">
+                  <Button
+                    size="sm"
+                    variant="custom"
+                    className="bg-blue-600 text-white"
+                    onClick={() => setIsPTTModalOpen(true)}
+                  >
+                    <Edit3 color="white" />
+                    Edit
+                  </Button>
+                </div>
+              )}
+            </>
           )}
         </PayrollCard>
       )}
@@ -503,47 +444,53 @@ export default function DetailPayrollContent({ config, onRefresh, payrollData }:
       {/* REKAPITULASI */}
       {config.rekapitulasi && (
         <PayrollCard title={recapTitle} headerColor={recapHeaderColor}>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {recapFields.map((f) =>
-              renderField({
-                ...f,
-                value: recapValues[f.name] ?? f.value,
-              })
-            )}
-          </div>
-          <div className="space-y-4 mt-6">
-            {recapCatatanKaryawan && (
-              <TextAreaField
-                label="Catatan Karyawan"
-                placeholder="Detail Catatan..."
-                rows={4}
-                value={recapValues.note_hr ?? ""}
-                readonly
-              />
-            )}
-            {recapCatatanBOD && (
-              <TextAreaField
-                label="Catatan BOD"
-                placeholder="Detail Catatan..."
-                rows={4}
-                value={recapValues.note_bod ?? ""}
-                readonly
-              />
-            )}
-          </div>
-          {/* Dokumentasi: Tombol Edit di bagian bawah sesuai screenshot */}
-          {canEditRecap && (
-            <div className="w-full flex justify-end mt-6">
-              <Button
-                size="md"
-                variant="custom"
-                className="bg-blue-600 text-white flex items-center gap-2"
-                onClick={() => setIsRecapModalOpen(true)}
-              >
-                <Edit3 color="white" />
-                Edit
-              </Button>
-            </div>
+          {checkIfDataEmpty(recapValues, recapFields) && !recapCatatanKaryawan && !recapCatatanBOD ? (
+            renderEmptyState(recapTitle)
+          ) : (
+            <>
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                {recapFields.map((f) =>
+                  renderField({
+                    ...f,
+                    value: recapValues[f.name] ?? f.value,
+                  })
+                )}
+              </div>
+              <div className="space-y-4 mt-6">
+                {recapCatatanKaryawan && (
+                  <TextAreaField
+                    label="Catatan Karyawan"
+                    placeholder="Detail Catatan..."
+                    rows={4}
+                    value={recapValues.note_hr ?? ""}
+                    readonly
+                  />
+                )}
+                {recapCatatanBOD && (
+                  <TextAreaField
+                    label="Catatan BOD"
+                    placeholder="Detail Catatan..."
+                    rows={4}
+                    value={recapValues.note_bod ?? ""}
+                    readonly
+                  />
+                )}
+              </div>
+              {/* Dokumentasi: Tombol Edit di bagian bawah sesuai screenshot */}
+              {canEditRecap && (
+                <div className="w-full flex justify-end mt-6">
+                  <Button
+                    size="md"
+                    variant="custom"
+                    className="bg-blue-600 text-white flex items-center gap-2"
+                    onClick={() => setIsRecapModalOpen(true)}
+                  >
+                    <Edit3 color="white" />
+                    Edit
+                  </Button>
+                </div>
+              )}
+            </>
           )}
         </PayrollCard>
       )}
@@ -569,7 +516,7 @@ export default function DetailPayrollContent({ config, onRefresh, payrollData }:
           isOpen={isInfoModalOpen}
           onClose={() => setIsInfoModalOpen(false)}
           defaultValues={infoValues}
-          onSave={(values) => setInfoValues(values)}
+          onSave={(values: any) => setInfoValues(values)}
           fields={infoModalFields}
           onRefresh={onRefresh}
         />
@@ -579,7 +526,7 @@ export default function DetailPayrollContent({ config, onRefresh, payrollData }:
           isOpen={isTTModalOpen}
           onClose={() => setIsTTModalOpen(false)}
           defaultValues={ttValues}
-          onSave={(values) => setTtValues(values)}
+          onSave={(values: any) => setTtValues(values)}
           fields={config.tunjanganTidakTetap.modalFields ?? config.tunjanganTidakTetap.fields}
           onRefresh={onRefresh}
         />
