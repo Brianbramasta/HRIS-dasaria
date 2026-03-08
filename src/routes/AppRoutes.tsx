@@ -97,6 +97,7 @@ import ProtectedOutlet from "./ProtectedOutlet";
 import FormKasbonPage from "@/features/payroll/pages/cash-advance/form-cash-advance/FormCashAdvancePage";
 import TemporaryApiPage from "@/pages/OtherPage/TemporaryApiPage";
 import SetContactAdmin from "@/pages/OtherPage/SetContactAdmin";
+import GeneratePayrollPage from "@/pages/OtherPage/generatePayroll";
 import NotFound from "@/pages/OtherPage/NotFound";
 
 function PelanggaranRoute() {
@@ -247,6 +248,7 @@ export default function AppRoutes() {
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/reset-password" element={<ResetPasswordPage />} />
       <Route path="/set-contact-admin" element={<SetContactAdmin />} />
+      <Route path="/generate-payroll" element={<GeneratePayrollPage />} />
       <Route path="/temporary-api" element={<TemporaryApiPage />} />
 
 
