@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useApiEmployeeSalary } from '@/features/employee/hooks/api/useApiEmployeeSalary';
 import { useApiPayrollPreview } from '@/features/employee/hooks/api/useApiPayrollPreview';
-import { TemporarySalaryResponse, NonFixAllowanceDetail, EmployeeSalaryShowResponse } from '@/features/employee/types/dto/EmployeeSalaryType';
+import { NonFixAllowanceDetail, EmployeeSalaryShowResponse } from '@/features/employee/types/dto/EmployeeSalaryType';
 
 interface Props {
   isOpen: boolean;

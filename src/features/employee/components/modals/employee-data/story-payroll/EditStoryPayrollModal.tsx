@@ -3,7 +3,7 @@ import { Modal } from '@/components/ui/modal';
 import Button from '@/components/ui/button/Button';
 import InputField from '@/components/shared/field/InputField';
 import SelectField from '@/components/shared/field/SelectField';
-import { TemporarySalaryResponse, EmployeeSalaryShowResponse } from '@/features/employee/types/dto/EmployeeSalaryType';
+import { EmployeeSalaryShowResponse } from '@/features/employee/types/dto/EmployeeSalaryType';
 import { formatCurrency } from '@/utils/formatCurrency';
 import { Plus, Trash2 } from 'react-feather';
 import { useEditStoryPayrollModal } from '@/features/employee/hooks/modals/employee-data/story-payroll/useEditStoryPayrollModal';
