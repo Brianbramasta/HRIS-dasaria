@@ -94,6 +94,7 @@ export interface UseFormulirKaryawanReturn {
   handleSubmit: () => Promise<void>;
   handleBackToHome: () => void;
   handleBackToDataPage: () => void;
+  resetForm: () => void;
   
   // Render helper
   renderStep: () => React.ReactNode;
@@ -246,6 +247,7 @@ export const useFormulirKaryawan = (): UseFormulirKaryawanReturn => {
     handleSubmit,
     handleBackToHome,
     handleBackToDataPage,
+    resetForm,
     
     // Render helper
     renderStep,

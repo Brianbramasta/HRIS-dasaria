@@ -177,7 +177,6 @@ export const useFormulirKaryawanStore = create<FormulirStore>((set, get) => {
   stepCompleted: savedData?.stepCompleted || initialStepCompleted,
   isLoading: false,
   error: null,
-
   // Actions
   setCurrentStep: (step) => {
     set({ currentStep: step });

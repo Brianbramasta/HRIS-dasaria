@@ -58,7 +58,10 @@ export const Step01PersonalData: React.FC = () => {
               type="number"
               placeholder="Masukkan NIK"
               value={step1.nik}
-              onChange={(e) => handleChange('nik', e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, '').slice(0, 16);
+                handleChange('nik', value);
+              }}
               required
             />
           </div>
