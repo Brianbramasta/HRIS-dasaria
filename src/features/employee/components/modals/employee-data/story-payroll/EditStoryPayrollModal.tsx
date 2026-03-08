@@ -3,7 +3,7 @@ import { Modal } from '@/components/ui/modal';
 import Button from '@/components/ui/button/Button';
 import InputField from '@/components/shared/field/InputField';
 import SelectField from '@/components/shared/field/SelectField';
-import { TemporarySalaryResponse } from '@/features/employee/types/dto/EmployeeSalaryType';
+import { TemporarySalaryResponse, EmployeeSalaryShowResponse } from '@/features/employee/types/dto/EmployeeSalaryType';
 import { formatCurrency } from '@/utils/formatCurrency';
 import { Plus, Trash2 } from 'react-feather';
 import { useEditStoryPayrollModal } from '@/features/employee/hooks/modals/employee-data/story-payroll/useEditStoryPayrollModal';
@@ -12,7 +12,7 @@ interface EditStoryPayrollModalProps {
   isOpen: boolean;
   onClose: () => void;
   employeeId: string;
-  data: TemporarySalaryResponse | null;
+  data: EmployeeSalaryShowResponse | null;
   onSuccess: () => void;
 }
 
@@ -78,13 +78,13 @@ const EditStoryPayrollModal: FC<EditStoryPayrollModalProps> = (props) => {
             />
             <InputField
               label="PTKP Status"
-              value={data.ptkp_status || '-'}
+              value={data?.data?.employee_information?.ptkp || '-'}
               disabled
               className="bg-gray-100 dark:bg-gray-800 text-gray-500"
             />
             <InputField
               label="Gaji Bersih"
-              value={formatCurrency(data.temporary_salary)}
+              value={formatCurrency(data?.data?.payroll_information?.take_home_pay || 0)}
               disabled
               className="bg-gray-100 dark:bg-gray-800 text-gray-500"
             />
@@ -103,7 +103,7 @@ const EditStoryPayrollModal: FC<EditStoryPayrollModalProps> = (props) => {
             <div className="p-4 bg-gray-50 dark:bg-gray-800/50">
               <InputField
                 label="Nominal Gaji Pokok"
-                value={formatCurrency(data.basic_salary)}
+                value={formatCurrency(data?.data?.payroll_information?.basic_salary || 0)}
                 disabled
                 className="bg-gray-200 dark:bg-gray-700"
               />
@@ -116,29 +116,13 @@ const EditStoryPayrollModal: FC<EditStoryPayrollModalProps> = (props) => {
               <span className="font-semibold text-white">Tunjangan Tetap</span>
             </div>
             <div className="p-4 grid grid-cols-1 gap-4 md:grid-cols-2 bg-gray-50 dark:bg-gray-800/50">
-              <InputField
-                label="Tunjangan Jabatan"
-                value={formatCurrency(data.position_allowance)}
-                disabled
-                className="bg-gray-200 dark:bg-gray-700"
-              />
-              <InputField
-                label="Tunjangan Lama Kerja"
-                value={formatCurrency(data.length_of_service_allowance)}
-                disabled
-                className="bg-gray-200 dark:bg-gray-700"
-              />
-               <InputField
-                label="Tunjangan Pernikahan"
-                value={formatCurrency(data.marital_allowance)}
-                disabled
-                className="bg-gray-200 dark:bg-gray-700"
-              />
-              {data.bpjs_allowance_details?.map((bpjs, idx) => (
+              {data?.data?.payroll_information?.allowances
+                ?.filter(allowance => allowance.type === 'fixed')
+                ?.map((allowance, idx) => (
                 <InputField
                   key={idx}
-                  label={bpjs.item}
-                  value={formatCurrency(bpjs.value)}
+                  label={allowance.name}
+                  value={formatCurrency(allowance.amount)}
                   disabled
                   className="bg-gray-200 dark:bg-gray-700"
                 />
@@ -152,11 +136,11 @@ const EditStoryPayrollModal: FC<EditStoryPayrollModalProps> = (props) => {
               <span className="font-semibold text-white">Potongan Tetap</span>
             </div>
             <div className="p-4 grid grid-cols-1 gap-4 md:grid-cols-2 bg-gray-50 dark:bg-gray-800/50">
-              {data.bpjs_deduction_details?.map((deduction, idx) => (
+              {data?.data?.payroll_information?.deductions?.map((deduction, idx) => (
                 <InputField
                   key={idx}
-                  label={deduction.item}
-                  value={formatCurrency(deduction.value)}
+                  label={deduction.name}
+                  value={formatCurrency(deduction.amount)}
                   disabled
                   className="bg-gray-200 dark:bg-gray-700"
                 />

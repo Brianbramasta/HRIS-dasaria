@@ -55,3 +55,44 @@ export interface UpdateTemporarySalaryResponseItem {
   created_at: string;
   updated_at: string;
 }
+
+// New types for employee salary show endpoint
+export interface EmployeeSalaryAllowance {
+  type: 'fixed' | 'non_fixed';
+  name: string;
+  amount: number;
+  id?: string;
+}
+
+export interface EmployeeSalaryDeduction {
+  type: 'fixed';
+  name: string;
+  amount: number;
+}
+
+export interface EmployeeInformation {
+  ptkp: string;
+  bank_name: string;
+  bank_account_holder: string;
+  bank_account_number: string;
+  npwp: string;
+}
+
+export interface PayrollInformation {
+  basic_salary: number;
+  gross_salary: number;
+  allowances: EmployeeSalaryAllowance[];
+  deductions: EmployeeSalaryDeduction[];
+  take_home_pay: number;
+}
+
+export interface EmployeeSalaryShowResponse {
+  meta: {
+    status: number;
+    message: string;
+  };
+  data: {
+    employee_information: EmployeeInformation;
+    payroll_information: PayrollInformation;
+  };
+}

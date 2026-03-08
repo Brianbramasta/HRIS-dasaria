@@ -23,7 +23,7 @@ function SummaryItem({ label, children }: { label: string; children: ReactNode }
 }
 
 export default function StoryPayrollTab({ employeeId, isEditable }: Props) {
-  const { title, payrollInfo, payrollDetailCards, historyRows, historyColumns, temporarySalary, refetch } = useStoryPayrollTab(
+  const { title, payrollInfo, payrollDetailCards, historyRows, historyColumns, employeeSalaryShow, refetch } = useStoryPayrollTab(
     employeeId,
     isEditable,
   );
@@ -89,7 +89,7 @@ export default function StoryPayrollTab({ employeeId, isEditable }: Props) {
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
           employeeId={employeeId}
-          data={temporarySalary || null}
+          data={employeeSalaryShow}
           onSuccess={handleSuccessUpdate}
         />
       )}

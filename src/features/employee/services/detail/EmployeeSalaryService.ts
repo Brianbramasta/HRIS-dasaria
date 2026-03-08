@@ -1,5 +1,5 @@
 import { apiService } from '@/services/api';
-import { TemporarySalaryQueryParams } from '../../types/dto/EmployeeSalaryType';
+import { TemporarySalaryQueryParams, EmployeeSalaryShowResponse } from '../../types/dto/EmployeeSalaryType';
 
 class EmployeeSalaryService {
   private readonly basePath = '/employee-master-data/employees';
@@ -22,6 +22,14 @@ class EmployeeSalaryService {
     return apiService.post<any>(`${this.basePath}/${employeeId}/update-temporary-salary`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
+  }
+
+  /**
+   * Get Employee Salary Details
+   * GET /api/employee-master-data/employees/{employee_id}/salaries/show
+   */
+  async getEmployeeSalaryShow(employeeId: string): Promise<any> {
+    return apiService.get<any>(`${this.basePath}/salaries/${employeeId}/show`);
   }
 }
 

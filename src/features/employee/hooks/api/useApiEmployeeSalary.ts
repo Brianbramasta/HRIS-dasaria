@@ -4,20 +4,24 @@ import {
   TemporarySalaryQueryParams,
   UpdateTemporarySalaryPayload,
   TemporarySalaryResponse,
+  EmployeeSalaryShowResponse,
 } from '../../types/dto/EmployeeSalaryType';
 
 interface UseApiEmployeeSalaryReturn {
   loading: boolean;
   error: string | null;
   temporarySalary: TemporarySalaryResponse | null;
+  employeeSalaryShow: EmployeeSalaryShowResponse | null;
   fetchTemporarySalary: (employeeId: string, params: TemporarySalaryQueryParams) => Promise<void>;
   updateTemporarySalary: (employeeId: string, payload: UpdateTemporarySalaryPayload) => Promise<boolean>;
+  fetchEmployeeSalaryShow: (employeeId: string) => Promise<void>;
 }
 
 export const useApiEmployeeSalary = (): UseApiEmployeeSalaryReturn => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [temporarySalary, setTemporarySalary] = useState<TemporarySalaryResponse | null>(null);
+  const [employeeSalaryShow, setEmployeeSalaryShow] = useState<EmployeeSalaryShowResponse | null>(null);
 
   const fetchTemporarySalary = useCallback(async (employeeId: string, params: TemporarySalaryQueryParams) => {
     setLoading(true);
@@ -60,11 +64,27 @@ export const useApiEmployeeSalary = (): UseApiEmployeeSalaryReturn => {
     }
   }, []);
 
+  const fetchEmployeeSalaryShow = useCallback(async (employeeId: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await employeeSalaryService.getEmployeeSalaryShow(employeeId);
+      setEmployeeSalaryShow(response || null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch employee salary details');
+      console.error('Error fetching employee salary details:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   return {
     loading,
     error,
     temporarySalary,
+    employeeSalaryShow,
     fetchTemporarySalary,
     updateTemporarySalary,
+    fetchEmployeeSalaryShow,
   };
 };
