@@ -134,6 +134,13 @@ export const useLayoutDetailComparison = (config: any, payrollData: any, isFATAp
     return formatCurrencyValue(parsed);
   };
 
+  const checkIfDataEmpty = (values: Record<string, any>, fields: FieldDescriptor[]) => {
+    return fields.every(field => {
+      const value = values[field.name] ?? field.value;
+      return value === null || value === undefined || value === "";
+    });
+  };
+
   return {
     // URL parameter
     approvalType,
@@ -170,5 +177,6 @@ export const useLayoutDetailComparison = (config: any, payrollData: any, isFATAp
     // Utility functions
     isCurrencyField,
     formatInputValue,
+    checkIfDataEmpty,
   };
 };
