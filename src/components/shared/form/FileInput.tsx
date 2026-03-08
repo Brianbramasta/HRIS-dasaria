@@ -168,7 +168,8 @@ const FileInput: React.FC<FileInputProps> = ({
           </div>
         </div>
       )}
-      {(savedInfo?.fileName || skFileName) && (
+      {/* comment button remove */}
+      {/* {(savedInfo?.fileName || skFileName) && (
         <div className="mt-2 flex items-center justify-between bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
           <div className="flex items-center gap-2">
             <svg className="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -180,7 +181,7 @@ const FileInput: React.FC<FileInputProps> = ({
           </div>
           <button type="button" onClick={handleClear} className="text-xs text-red-600 hover:underline">Remove</button>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
