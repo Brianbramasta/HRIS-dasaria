@@ -301,6 +301,11 @@ export interface BankDropdownItem {
   bank_name: string;
 }
 
+export interface BpjsHealthTypeDropdownItem {
+  id: string;
+  name: string;
+}
+
 // Employee Near Contract End (untuk SpamModal)
 export interface EmployeeNearContractEndItem {
   avatar: string | null;

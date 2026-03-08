@@ -47,6 +47,7 @@ export function useCreateEmployee() {
     appendIfValue(fd, 'bpjs_employment_number', formData.step3.noBpjsKetenagakerjaan);
     appendIfValue(fd, 'bpjs_employment_status', formData.step3.statusBpjsKetenagakerjaan);
     appendIfValue(fd, 'bpjs_health_number', formData.step3.noBpjsKesehatan);
+    appendIfValue(fd, 'bpjs_health_type_id', formData.step3.tipeBpjsKesehatan);
     appendIfValue(fd, 'bpjs_health_status', formData.step3.statusBpjsKesehatan);
 
     // Documents (upload)

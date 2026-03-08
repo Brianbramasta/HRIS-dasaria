@@ -19,6 +19,7 @@ import {
   DocumentTypeDropdownItem,
   ResignationStatusDropdownItem,
   BankDropdownItem,
+  BpjsHealthTypeDropdownItem,
 } from '../types/dto/EmployeeType';
 
 class EmployeeMasterDataService {
@@ -260,6 +261,15 @@ class EmployeeMasterDataService {
   async getBankDropdown(search?: string): Promise<BankDropdownItem[]> {
     const qs = search ? `?search=${encodeURIComponent(search)}` : '';
     const resp = await apiService.get<BankDropdownItem[]>(`${this.basePath}/employees/bank-dropdown${qs}`);
+    return (resp as any)?.data ?? [];
+  }
+
+  /**
+   * Dropdown: Tipe BPJS Kesehatan
+   * @returns Promise dengan array tipe BPJS Kesehatan
+   */
+  async getBpjsHealthTypeDropdown(): Promise<BpjsHealthTypeDropdownItem[]> {
+    const resp = await apiService.get<BpjsHealthTypeDropdownItem[]>(`${this.basePath}/employees/bpjs-health-type-dropdown`);
     return (resp as any)?.data ?? [];
   }
 

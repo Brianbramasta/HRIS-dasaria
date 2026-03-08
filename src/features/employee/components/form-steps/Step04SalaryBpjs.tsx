@@ -10,6 +10,7 @@ export const Step04SalaryBpjs: React.FC = () => {
   const {
     bankOptions,
     categoriKaryawanOptions,
+    bpjsHealthTypeOptions,
     step3,
     isAuthenticated,
     previewData,
@@ -36,6 +37,34 @@ export const Step04SalaryBpjs: React.FC = () => {
     if (categoryLabel === 'Non-Staff') return 'Uang Saku';
     if (categoryLabel === 'Mitra') return 'Fee';
     return 'Gaji Pokok';
+  };
+
+  // Get dynamic options for Status BPJS Kesehatan based on Tipe BPJS Kesehatan
+  const getBpjsKesehatanStatusOptions = () => {
+    if (step3.tipeBpjsKesehatan === '8de18fc0-137e-4b0c-bda2-56e0835e5577') { // Mandiri ID
+      return [{ label: 'Tidak Aktif', value: 'Tidak Aktif' }];
+    }
+    return BPJS_STATUS_OPTIONS; // PBI can choose Aktif or Tidak Aktif
+  };
+
+  // Handle field changes with auto-setting logic
+  const handleFieldChange = (field: string, value: any) => {
+    // Auto-set Status BPJS Kesehatan when Tipe BPJS Kesehatan changes
+    if (field === 'tipeBpjsKesehatan') {
+      if (value === '8de18fc0-137e-4b0c-bda2-56e0835e5577') { // Mandiri ID
+        handleChange('statusBpjsKesehatan', 'Tidak Aktif');
+      } else if (value === 'b0383713-d651-4233-824b-1ff6b13dcd6b') { // PBI ID
+        // Auto-set to Aktif when PBI is selected
+        handleChange('statusBpjsKesehatan', 'Aktif');
+      }
+    }
+    
+    // Auto-set Status BPJS Ketenagakerjaan to Aktif when No. BPJS Ketenagakerjaan is filled
+    if (field === 'noBpjsKetenagakerjaan' && value) {
+      handleChange('statusBpjsKetenagakerjaan', 'Aktif');
+    }
+    
+    handleChange(field, value);
   };
 
   return (
@@ -297,7 +326,7 @@ export const Step04SalaryBpjs: React.FC = () => {
               label="No. BPJS Ketenagakerjaan"
               placeholder="Masukkan nomor"
               value={step3.noBpjsKetenagakerjaan}
-              onChange={(e) => handleChange('noBpjsKetenagakerjaan', e.target.value)}
+              onChange={(e) => handleFieldChange('noBpjsKetenagakerjaan', e.target.value)}
               
             />
           </div>
@@ -327,11 +356,23 @@ export const Step04SalaryBpjs: React.FC = () => {
             />
           </div>
 
+          {/* Tipe BPJS Kesehatan */}
+          <div>
+            <SelectField
+              label="Tipe BPJS Kesehatan (Mandiri/PBI)"
+              options={bpjsHealthTypeOptions}
+              defaultValue={step3.tipeBpjsKesehatan}
+              onChange={(value) => handleFieldChange('tipeBpjsKesehatan', value)}
+              placeholder="Pilih"
+              
+            />
+          </div>
+
           {/* Status BPJS Kesehatan */}
           <div>
             <SelectField
               label="Status BPJS Kesehatan"
-              options={BPJS_STATUS_OPTIONS}
+              options={getBpjsKesehatanStatusOptions()}
               defaultValue={step3.statusBpjsKesehatan}
               onChange={(value) => handleChange('statusBpjsKesehatan', value)}
               placeholder="Pilih"

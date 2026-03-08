@@ -100,6 +100,7 @@ const initialFormData: FormulirKaryawanData = {
     npwp: '',
     ptkpStatus: '',
     noBpjsKesehatan: '',
+    tipeBpjsKesehatan: '',
     statusBpjsKesehatan: '',
     noBpjsKetenagakerjaan: '',
     statusBpjsKetenagakerjaan: '',

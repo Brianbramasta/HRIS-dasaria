@@ -80,6 +80,7 @@ export interface SalaryFormData {
 
 export interface BpjsFormData {
   noBpjsKesehatan: string;
+  tipeBpjsKesehatan: string;
   statusBpjsKesehatan: string;
   noBpjsKetenagakerjaan: string;
   statusBpjsKetenagakerjaan: string;

@@ -36,6 +36,12 @@ export const getBankDropdownOptions = async (search?: string): Promise<DropdownO
   return (data || []).map((b: any) => ({ label: b.name, value: b.id }));
 }
 
+export const getBpjsHealthTypeDropdownOptions = async (): Promise<DropdownOption[]> => {
+  const data = await employeeMasterDataService.getBpjsHealthTypeDropdown();
+  console.log('BPJS Health Type dropdown data:', data);
+  return (data || []).map((bpjs: any) => ({ label: bpjs.name, value: bpjs.id }));
+}
+
 export const getDocumentTypeDropdownOptions = async (search?: string): Promise<DropdownOption[]> => {
   const data = await employeeMasterDataService.getDocumentTypeDropdown(search);
   console.log('Document Type dropdown data:', data);
