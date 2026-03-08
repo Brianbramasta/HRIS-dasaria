@@ -30,7 +30,7 @@ export interface UseContractReturn {
 }
 
 export interface UseAddContractReturn {
-  handleAdd: (summary: ContractEntry) => {
+  handleAdd: (summary: ContractEntry, personalData?: any) => {
     editingData: ContractEntry;
   };
 }
@@ -126,9 +126,9 @@ export async function updateContract(
  * Hook untuk handle add contract logic
  */
 export function useAdd() {
-  const handleAdd = (summary: ContractEntry) => {
+  const handleAdd = (summary: ContractEntry, personalData?: any) => {
     const editingData: ContractEntry = {
-      full_name: summary.full_name,
+      full_name: personalData?.Personal_Data?.full_name || summary.full_name,
       contract_status: '',
       last_contract_signed_date: '',
       end_date: '',
@@ -447,6 +447,7 @@ export function useContractTab({ employeeIdProp, data }: UseContractTabProps): U
   useEffect(() => {
     if (contractData) {
       console.log('Contract Data Loaded:', contractData);
+      console.log('Detail Data:', detail);
       setSummary({
         full_name: detail?.Personal_Data?.full_name || '',
         // contract_status_id: contractData.summary?.contract_status_id || '',
@@ -468,7 +469,7 @@ export function useContractTab({ employeeIdProp, data }: UseContractTabProps): U
 
   // Handlers
   const handleAdd = () => {
-    const { editingData } = handleAddLogic(summary);
+    const { editingData } = handleAddLogic(summary, detail);
     setEditingData(editingData);
     setSelectedFile(null);
     setAddModalOpen(true);

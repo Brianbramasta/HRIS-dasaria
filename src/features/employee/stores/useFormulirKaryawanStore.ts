@@ -386,9 +386,10 @@ export const useFormulirKaryawanStore = create<FormulirStore>((set, get) => {
             step3.bank &&
             step3.namaAkunBank &&
             step3.noRekening &&
-            step3.npwp &&
-            step3.noBpjsKesehatan &&
-            step3.statusBpjsKesehatan
+            step3.npwp 
+            // &&
+            // step3.noBpjsKesehatan &&
+            // step3.statusBpjsKesehatan
           );
         }
 
@@ -400,9 +401,10 @@ export const useFormulirKaryawanStore = create<FormulirStore>((set, get) => {
               step3.bank &&
               step3.namaAkunBank &&
               step3.noRekening &&
-              step3.npwp &&
-              step3.noBpjsKesehatan &&
-              step3.statusBpjsKesehatan
+              step3.npwp 
+              // &&
+              // step3.noBpjsKesehatan &&
+              // step3.statusBpjsKesehatan
             );
           }
           const step4 = formData.step4;
