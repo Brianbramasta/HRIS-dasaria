@@ -93,11 +93,18 @@ export default function EditStatusPerpanjanganModal({
             statusOptions={statusOptions}
             contractTypeOptions={contractTypeOptions}
           />
+          <div className='grid grid-cols-2 gap-4'>
+          <OldContract
+            data={oldContractData}
+            isEditing={false}
+            onChange={handleOldContractChange}
+          />
           <NewContract
             data={newContractData}
             isEditing={true}
             onChange={handleNewContractChange}
           />
+          </div>
         </div>
       );
     }
