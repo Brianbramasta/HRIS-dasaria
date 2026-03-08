@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useFileStore , setSkFile } from '@/stores/fileStore';
-import { clearSkFile } from '@/stores/fileStore';
 
 interface FileInputProps {
-  skFileName: string;
+  skFileName?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   isLabel?: boolean;
   label?: string;
@@ -16,7 +15,7 @@ interface FileInputProps {
 }
 
 const FileInput: React.FC<FileInputProps> = ({ 
-  skFileName, 
+  skFileName: _skFileName,
   onChange, 
   isLabel=true, 
   label='Unggah File SK terbaru', 
@@ -71,11 +70,6 @@ const FileInput: React.FC<FileInputProps> = ({
     noClick: false,
   });
 
-  const handleClear = () => {
-    setPreview(null);
-    setSavedInfo(null);
-    clearSkFile();
-  };
 
   return (
     <div className="space-y-2">
