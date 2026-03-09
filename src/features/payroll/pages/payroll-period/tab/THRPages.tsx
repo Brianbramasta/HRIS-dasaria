@@ -1,66 +1,142 @@
-import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { DataTableColumn } from '@/components/shared/datatable/DataTable';
+import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
 import PenggajianTabBase from '../../../components/tabs/PayrollTabBase';
 import Button from '@/components/ui/button/Button';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { ChevronDown } from 'react-feather';
+import useTHRPages from '../../../hooks/pages/payroll-period/useTHRPages';
+import { THRRow } from '../../../hooks/pages/payroll-period/useTHRPages';
+import { IconFileDetail, IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
+import React from 'react';
 
-type THRRow = {
-  no?: number;
-  idKaryawan: string;
-  pengguna: string;
-  tanggalPengajuan: string;
-  totalTHR: string;
-  gajiPokokUangSaku: string;
-  tunjanganTetap: string;
-  lamaKerja: string;
-  kategori: string;
-  perusahaan: string;
-  statusPenggajian: string;
-};
-
-export default function THRTab({ resetKey = 'thr' }: { resetKey?: string }) {
-  const location = useLocation();
+export default function THRTab({ }: { resetKey?: string }) {
   const navigate = useNavigate();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [approvalType, setApprovalType] = useState<string>('Persetujuan oleh FAT');
-  // Dokumentasi: Deteksi halaman Approval atau Distribusi untuk set judul
-  const isApprovalPage = location.pathname.includes('/payroll-period-approval');
-  const isDistribusiPage = location.pathname.includes('/salary-distribution');
-  const basePrefix = isApprovalPage ? '/payroll-period-approval' : '/payroll-period';
-  // Dokumentasi: Gunakan prefix detail khusus distribusi saat di halaman Distribusi
-  const detailPathPrefix = isDistribusiPage ? '/salary-distribution/detail-thr' : `${basePrefix}/detail-thr`;
-  const title = isApprovalPage ? 'Approval Periode Gajian' : isDistribusiPage ? 'Distribusi Slip Gaji' : 'Periode Gajian';
+  const {
+    rows,
+    baseColumns,
+    loading,
+    pageSize,
+    page,
+    total,
+    columnFilters,
+    dateRangeFilters,
+    title,
+    detailPathPrefix,
+    isApprovalPage,
+    isDropdownOpen,
+    approvalType,
+    handleDetailNavigation,
+    handleSearchChange,
+    handleSortChange,
+    handlePageChange,
+    handleRowsPerPageChange,
+    handleColumnFilterChange,
+    handleDateRangeFilterChange,
+    setIsDropdownOpen,
+    handleApprovalTypeChange,
+    isRowSelectable,
+    canEditDelete,
+    handleFinalize,
+  } = useTHRPages();
+  // Add format function for status column
+  const enhancedColumns: DataTableColumn<THRRow>[] = baseColumns.map(col => {
+    if (col.id === 'statusTHR') {
+      return {
+        ...col,
+        format: (v: any) => {
+          const value = String(v ?? '');
+          const lowered = value.toLowerCase();
 
-  // Dokumentasi: Fungsi untuk navigasi detail dengan approval type sebagai query parameter
-  const handleDetailNavigation = (id: string) => {
-    navigate(`${detailPathPrefix}/${id}?approvalType=${encodeURIComponent(approvalType)}`);
-  };
-  const [rows] = useState<THRRow[]>([
-    { idKaryawan: '32345678', pengguna: 'Lindsey Curtis', tanggalPengajuan: '20/12/2025', totalTHR: '5.000.000', gajiPokokUangSaku: '4.000.000', tunjanganTetap: '1.000.000', lamaKerja: '2 tahun', kategori: 'Staff', perusahaan: 'Dasaria', statusPenggajian: 'Draft' },
-  ]);
-  const baseColumns: DataTableColumn<THRRow>[] = [
-    { id: 'no', label: 'No.', align: 'center', sortable: false },
-    { id: 'idKaryawan', label: 'NIP' },
-    { id: 'pengguna', label: 'Pengguna' },
-    { id: 'tanggalPengajuan', label: 'Tanggal Pengajuan' },
-    { id: 'totalTHR', label: 'Total THR', align: 'right' },
-    { id: 'gajiPokokUangSaku', label: 'Gaji Pokok / Uang Saku', align: 'right' },
-    { id: 'tunjanganTetap', label: 'Tunjangan Tetap', align: 'right' },
-    { id: 'lamaKerja', label: 'Lama Kerja' },
-    { id: 'kategori', label: 'Kategori' },
-    { id: 'perusahaan', label: 'Perusahaan' },
-    { id: 'statusPenggajian', label: 'Status Penggajian', format: (v) => <span className="rounded-full bg-blue-100 p-[10px] flex justify-center text-xs text-blue-700 dark:bg-blue-900/30 dark:text-blue-200">{String(v)}</span> },
-  ];
+          const badgeClass = lowered.includes('menunggu')
+            ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-200'
+            : lowered.includes('selesai')
+            ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-200'
+            : lowered.includes('distribusi')
+            ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200'
+            : 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200';
+
+          return (
+            <span className={`rounded-full p-[10px] flex justify-center text-center text-xs status-styling ${badgeClass}`}>
+              {value}
+            </span>
+          );
+        },
+      };
+    }
+    return col;
+  });
+
+  const actions: DataTableAction<THRRow>[] = useMemo(
+    () => [
+      {
+        icon: React.createElement(IconFileDetail),
+        onClick: (row) => {
+          navigate(`${detailPathPrefix}/${row.payrollId}?approvalType=${encodeURIComponent(approvalType)}`);
+        },
+        variant: 'outline',
+        color: 'info',
+        condition: (row) => !row.statusTHR.toLowerCase().includes('menunggu maker'),
+      },
+      {
+        icon: <Edit />,
+        onClick: (row) => {
+          navigate(`${detailPathPrefix}/${row.payrollId}`);
+        },
+        condition: (row) => {
+          const editableStatuses = ['Menunggu Maker'];
+          return editableStatuses.includes(row.statusTHR);
+        },
+        variant: 'outline',
+        className: 'border-0',
+      },
+      {
+        icon: <Trash />,
+        onClick: (_row) => {
+          // This would need to be handled by the parent component
+          //console.log('Delete action for:', _row);
+        },
+        condition: (row) => {
+          const editableStatuses = ['Menunggu Maker'];
+          return editableStatuses.includes(row.statusTHR);
+        },
+        variant: 'outline',
+        className: 'border-0',
+        color: 'error',
+      },
+    ],
+    [navigate, detailPathPrefix, approvalType]
+  );
   return (
     <PenggajianTabBase
-      resetKey={resetKey}
+      resetKey="payroll-period-thr"
       rows={rows}
-      baseColumns={baseColumns}
+      baseColumns={enhancedColumns}
       detailPathPrefix={detailPathPrefix}
       title={title}
       onDetailNavigation={handleDetailNavigation}
+      customActions={actions}
+      isRowSelectable={isRowSelectable}
+      canEditDelete={canEditDelete}
+      disableImportButton={false}
+      disableTemplateButton={true}
+      disableFinalizeButton={false}
+      disableSelection={false}
+      loading={loading}
+      useExternalPagination={true}
+      externalPage={page}
+      externalTotal={total}
+      pageSize={pageSize}
+      onPageChangeExternal={handlePageChange}
+      onRowsPerPageChangeExternal={handleRowsPerPageChange}
+      onSearchChange={handleSearchChange}
+      onSortChange={handleSortChange}
+      onColumnFilterChange={handleColumnFilterChange}
+      columnFilters={columnFilters}
+      onDateRangeFilterChange={handleDateRangeFilterChange}
+      dateRangeFilters={dateRangeFilters}
+      onFinalize={handleFinalize}
+      templateType="Thr"
       toolbarRightSlot={
         isApprovalPage && <div className="relative">
           <Button
@@ -76,28 +152,19 @@ export default function THRTab({ resetKey = 'thr' }: { resetKey?: string }) {
             <div className="p-2 w-64">
               <button
                 className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-                onClick={() => {
-                  setApprovalType('Persetujuan oleh FAT');
-                  setIsDropdownOpen(false);
-                }}
+                onClick={() => handleApprovalTypeChange('Persetujuan oleh FAT')}
               >
                 Persetujuan oleh FAT
               </button>
               <button
                 className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-                onClick={() => {
-                  setApprovalType('Persetujuan oleh Direktur HRGA');
-                  setIsDropdownOpen(false);
-                }}
+                onClick={() => handleApprovalTypeChange('Persetujuan oleh Direktur HRGA')}
               >
                 Persetujuan oleh Direktur HRGA
               </button>
               <button
                 className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-                onClick={() => {
-                  setApprovalType('Persetujuan oleh BOD');
-                  setIsDropdownOpen(false);
-                }}
+                onClick={() => handleApprovalTypeChange('Persetujuan oleh BOD')}
               >
                 Persetujuan oleh BOD
               </button>

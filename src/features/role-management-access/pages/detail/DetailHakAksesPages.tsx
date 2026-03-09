@@ -124,8 +124,8 @@ export default function DetailHakAksesPages() {
     setIsModalOpen(true);
   };
 
-  const handleSubmit = (values: any) => {
-    console.log('New user submitted:', values);
+  const handleSubmit = (_values: any) => {
+    //console.log('New user submitted:', _values);
     // Implement API call to create new user here
     // After success, refresh the data table
   };
@@ -155,7 +155,7 @@ export default function DetailHakAksesPages() {
         isOpen={isSendEmailModalOpen}
         onClose={() => setIsSendEmailModalOpen(false)}
         onSubmit={() => {
-          console.log('Email sent to:', selectedUser);
+          //console.log('Email sent to:', selectedUser);
           setIsSendEmailModalOpen(false);
         }}
       />
@@ -163,8 +163,8 @@ export default function DetailHakAksesPages() {
       <ResetPasswordModal
         isOpen={isResetPasswordModalOpen}
         onClose={() => setIsResetPasswordModalOpen(false)}
-        onSubmit={(values) => {
-          console.log('Reset password submitted:', values);
+        onSubmit={(_values) => {
+          //console.log('Reset password submitted:', _values);
           setIsResetPasswordModalOpen(false);
         }}
         data={selectedUser ? { nip: selectedUser.idKaryawan, nama: selectedUser.nama } : null}
@@ -174,7 +174,7 @@ export default function DetailHakAksesPages() {
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onDelete={() => {
-          console.log('Delete user confirmed:', selectedUser);
+          //console.log('Delete user confirmed:', selectedUser);
           setIsDeleteModalOpen(false);
         }}
         roleName={roleName}

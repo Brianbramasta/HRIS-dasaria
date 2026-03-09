@@ -67,7 +67,7 @@ export const useApiMarriageAllowance = (): UseApiMarriageAllowanceReturn => {
   const [sortBy, setSortBy] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
   
-  const filterValue = useFilterStore((s) => s.filters['MarriageAllowance'] ?? '');
+  const filterValue = useFilterStore((s) => (s.filters['MarriageAllowance'] ?? []).join(','));
 
   const fetchMarriageAllowances = useCallback(async (filter?: Partial<TableFilter>) => {
     setLoading(true);
@@ -128,7 +128,8 @@ export const useApiMarriageAllowance = (): UseApiMarriageAllowanceReturn => {
 
       await marriageAllowanceServices.updateMarriageAllowance(id, formData);
       
-      return null;
+      // Return a truthy value to indicate success
+      return { id } as MarriageAllowanceListItem;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update marriage allowance');
       console.error('Error updating marriage allowance:', err);

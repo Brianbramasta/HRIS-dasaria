@@ -13,6 +13,7 @@ export type SalaryBpjsForm = {
   statusBpjsTK?: string;
   noBpjsKS?: string;
   statusBpjsKS?: string;
+  tipeBpjsKesehatan?: string;
   nominalBpjsTK?: string;
 };
 
@@ -58,6 +59,7 @@ export function useSalaryBpjsModal({ isOpen, employeeId = '', initialData, onClo
         bpjs_employment_status: form.statusBpjsTK,
         bpjs_health_number: form.noBpjsKS,
         bpjs_health_status: form.statusBpjsKS,
+        bpjs_health_type_id: form.tipeBpjsKesehatan,
       };
       if (onSubmitSalary) {
         await onSubmitSalary(employeeId, salaryPayload);

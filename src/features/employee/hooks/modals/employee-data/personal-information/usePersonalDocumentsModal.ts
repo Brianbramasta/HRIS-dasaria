@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import { getFieldDocument } from '@/features/employee/hooks/employee-data/form/useFormulirKaryawan';
-import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
 
 export type DocumentRow = {
   id: number;
@@ -24,18 +23,20 @@ type Params = {
   isOpen: boolean;
   initialData?: { rows: DocumentRow[] } | null;
   onSubmit: (data: PersonalDocumentsForm) => void;
+  employeeCategoryId?: string;
 };
 
-export function usePersonalDocumentsModal({ isOpen, initialData, onSubmit }: Params) {
+export function usePersonalDocumentsModal({ isOpen, initialData, onSubmit, employeeCategoryId='' }: Params) {
   const title = useMemo(() => 'Edit Berkas & Dokumen', []);
-  const { detail } = useDetailDataKaryawanPersonalInfo();
-  const employeeCategoryId = detail?.Employment_Position_Data?.employee_category_id || '';
+  // const { detail } = useDetailDataKaryawanPersonalInfo();
+  // const employeeCategoryId = detail?.Employment_Position_Data?.employee_category_id || '';
 
   const [documentFields, setDocumentFields] = useState<any[]>([]);
   const [loadingFields, setLoadingFields] = useState(false);
   const [fileMap, setFileMap] = useState<Record<string, { file?: File; fileName?: string; existingDocId?: string }>>({});
 
   useEffect(() => {
+    //console.log('employeeCategoryId', employeeCategoryId);
     if (!isOpen || !employeeCategoryId) return;
     let mounted = true;
     setLoadingFields(true);

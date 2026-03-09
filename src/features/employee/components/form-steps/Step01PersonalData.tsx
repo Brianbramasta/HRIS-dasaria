@@ -43,7 +43,7 @@ export const Step01PersonalData: React.FC = () => {
               id="email"
               label="Email"
               type="email"
-              placeholder="Email@example.com"
+              placeholder="email@contoh.com"
               value={step1.email}
               onChange={(e) => handleChange('email', e.target.value)}
               required
@@ -58,7 +58,10 @@ export const Step01PersonalData: React.FC = () => {
               type="number"
               placeholder="Masukkan NIK"
               value={step1.nik}
-              onChange={(e) => handleChange('nik', e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, '').slice(0, 16);
+                handleChange('nik', value);
+              }}
               required
             />
           </div>
@@ -70,7 +73,7 @@ export const Step01PersonalData: React.FC = () => {
               options={agamaOptions}
               defaultValue={step1.agama}
               onChange={(value) => handleChange('agama', value)}
-              placeholder="Select"
+              
               required
             />
           </div>
@@ -94,7 +97,7 @@ export const Step01PersonalData: React.FC = () => {
               options={GOLONGAN_DARAH_OPTIONS}
               defaultValue={step1.golDarah}
               onChange={(value) => handleChange('golDarah', value)}
-              placeholder="Select"
+              
               required
             />
           </div>
@@ -117,7 +120,7 @@ export const Step01PersonalData: React.FC = () => {
               options={pendidikanOptions}
               defaultValue={step1.pendidikanTerakhir}
               onChange={(value) => handleChange('pendidikanTerakhir', value)}
-              placeholder="Select"
+              
               required
             />
           </div>
@@ -129,7 +132,7 @@ export const Step01PersonalData: React.FC = () => {
               options={JENIS_KELAMIN_OPTIONS}
               defaultValue={step1.jenisKelamin}
               onChange={(value) => handleChange('jenisKelamin', value)}
-              placeholder="Select"
+              
               required
             />
           </div>
@@ -141,7 +144,7 @@ export const Step01PersonalData: React.FC = () => {
               options={STATUS_MENIKAH_OPTIONS}
               defaultValue={step1.statusMenikah}
               onChange={(value) => handleChange('statusMenikah', value)}
-              placeholder="Select"
+              placeholder="Pilih"
               required
             />
           </div>
@@ -166,19 +169,19 @@ export const Step01PersonalData: React.FC = () => {
               options={TANGGUNGAN_OPTIONS}
               defaultValue={step1.jumlahTanggungan}
               onChange={(value) => handleChange('jumlahTanggungan', value)}
-              placeholder="Select"
+              placeholder="Pilih"
               required
             />
           </div>
           {/* Upload Foto Profil */}
         <div className="">
-          <FIleField label="Upload Foto Profil" onChange={handleFileChange} required />
+          <FIleField label="Upload Foto Profil" onChange={handleFileChange} acceptedFormats={['image/png', 'image/jpeg', 'image/jpg']} required />
         </div>
         {/* Alamat KTP */}
           <div>
             <TextAreaField
               label="Alamat KTP"
-              placeholder="Enter as description ..."
+              placeholder="Masukkan alamat KTP"
               value={step1.alamatKtp}
               onChange={(value) => handleChange('alamatKtp', value)}
               rows={4}
@@ -194,7 +197,7 @@ export const Step01PersonalData: React.FC = () => {
           <div>
             <TextAreaField
               label="Alamat Domisili"
-              placeholder="Enter as description ..."
+              placeholder="Masukkan alamat domisili"
               value={step1.alamatDomisili}
               onChange={(value) => handleChange('alamatDomisili', value)}
               rows={4}

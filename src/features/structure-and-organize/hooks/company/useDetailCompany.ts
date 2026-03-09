@@ -40,7 +40,7 @@ export const useDetailCompany = () => {
         // Jika API tidak menyediakan 'type', default-kan ke 'active' agar UI tidak kosong
         type: d?.type ?? 'active',
       }));
-      console.log('Documents', docs);
+      //console.log('Documents', docs);
       setDocuments(docs);
     } catch (err) {
       console.error('Failed to load company detail', err);

@@ -3,15 +3,16 @@ import { useOrganizationHistoryAtasan, OrganizationChangeItem } from '@/features
 import Button from '@/components/ui/button/Button';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { ChevronDown } from 'react-feather';
-import EditRiwayatOrganisasiModal from '@/features/employee/components/modals/organization-history/EditOrganizationHistoryModal';
-import { IconFileDetail } from '@/icons/components/icons';
 import { useMemo } from 'react';
-import { formatUrlFile } from '@/utils/formatUrlFile';
+import { IconFileDetail } from '@/icons/components/icons';
 import { formatDateToIndonesian } from '@/utils/formatDate';
+import { formatUrlFile } from '@/utils/formatUrlFile';
+import { useNavigate } from 'react-router-dom';
 
 type OrgHistoryListRow = OrganizationChangeItem & { statusPerubahan: string };
 
 export default function OrganizationHistoryAtasanPage() {
+  const navigate = useNavigate();
   const {
     data,
     rowsWithStatus,
@@ -19,23 +20,17 @@ export default function OrganizationHistoryAtasanPage() {
     total,
     page,
     limit,
-    isEditOrgOpen,
     isDropdownOpen,
-    selectedRow,
     handleSearchChange,
     handleSortChange,
     handlePageChange,
     handleRowsPerPageChange,
     handleDateRangeFilterChange,
     dateRangeFilters,
-    handleAddOrganization,
-    handleCloseModal,
-    handleSubmitModal,
     handleDropdownToggle,
     handleDropdownClose,
     handleNavigateToHR,
     handleNavigateToAtasan,
-    detail,
   } = useOrganizationHistoryAtasan();
 
   // Define columns
@@ -114,7 +109,7 @@ export default function OrganizationHistoryAtasanPage() {
         dateRangeFilters={dateRangeFilters}
         emptyMessage="Belum ada perubahan organisasi"
         addButtonLabel="Tambah Organisasi"
-        onAdd={handleAddOrganization}
+        onAdd={() => navigate('/organization-history/detail?mode=add')}
         searchPlaceholder="Cari berdasarkan kata kunci"
         onSearchChange={handleSearchChange}
         onSortChange={handleSortChange}
@@ -147,15 +142,6 @@ export default function OrganizationHistoryAtasanPage() {
             </Dropdown>
           </div>
         }
-      />
-
-      <EditRiwayatOrganisasiModal
-        isOpen={isEditOrgOpen}
-        onClose={handleCloseModal}
-        onSubmit={handleSubmitModal}
-        // submitting={isSubmitting}
-        initialData={selectedRow ? detail || undefined : undefined}
-        hideSkFileUpload
       />
     </div>
   );

@@ -116,7 +116,7 @@ export function useOrganizationChange({
 
         const leadId = employeeId ?? '';
         const resp = await organizationChangeService.getOrganizationChanges(leadId, finalParams);
-        console.log('resp', resp);
+        //console.log('resp', resp);
         // Handle response structure
         const responseData = resp?.data as any; // OrganizationChangeListResponseRaw
         const list = (responseData?.data as OrganizationChangeListItemRaw[]) ?? [];
@@ -285,7 +285,7 @@ export function useOrganizationChange({
       } catch (err: any) {
         const message = err?.message || 'Failed to update organization change';
 
-        console.log('error', err);
+        //console.log('error', err);
         addNotification({ title: 'Error', description: message, variant: 'error', hideDuration: 5000 });
         return false;
       } finally {

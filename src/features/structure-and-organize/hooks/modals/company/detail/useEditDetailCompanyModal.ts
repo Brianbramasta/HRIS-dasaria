@@ -37,6 +37,7 @@ export function useEditDetailCompanyModal(params: {
       logo: company?.logo || '',
     });
     setLogoFile(null);
+    setPreviousWebsiteValue(company?.website || '');
   }, [isOpen, company]);
 
   React.useEffect(() => {
@@ -73,9 +74,53 @@ export function useEditDetailCompanyModal(params: {
     setForm((s: any) => ({ ...s, [field]: value }));
   };
 
+  const [previousWebsiteValue, setPreviousWebsiteValue] = React.useState('');
+
+  const handleWebsiteChange = (value: string) => {
+    if (!value || value.trim() === '') {
+      setForm((s: any) => ({ ...s, website: '' }));
+      setPreviousWebsiteValue('');
+      return;
+    }
+
+    // Deteksi apakah user sedang menghapus (nilai saat ini lebih pendek dari sebelumnya)
+    const isDeleting = value.length < previousWebsiteValue.length;
+    
+    let finalValue = value;
+    
+    // Hanya tambahkan https:// jika user sedang mengetik (bukan menghapus) dan belum ada protocol
+    if (!isDeleting) {
+      // Hapus semua protocol yang ada di awal
+      let cleanedValue = value.replace(/^(https?:\/\/)+/, '');
+      
+      // Tambahkan https:// di awal hanya jika belum ada protocol
+      if (!cleanedValue.startsWith('https://') && !cleanedValue.startsWith('http://')) {
+        finalValue = `https://${cleanedValue}`;
+      } else {
+        finalValue = cleanedValue;
+      }
+    }
+    
+    setForm((s: any) => ({ ...s, website: finalValue }));
+    setPreviousWebsiteValue(value);
+  };
+
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files && e.target.files[0];
-    if (f) setLogoFile(f);
+    if (f) {
+      const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+      if (!allowedTypes.includes(f.type)) {
+        addNotification({
+          variant: 'error',
+          title: 'Format file tidak didukung',
+          description: 'Hanya file PNG, JPG, dan JPEG yang diperbolehkan untuk logo.',
+        });
+        // Clear the file input
+        e.target.value = '';
+        return;
+      }
+      setLogoFile(f);
+    }
   };
 
   const handleSave = async () => {
@@ -122,7 +167,7 @@ export function useEditDetailCompanyModal(params: {
         industry: form.industry || null,
         founded_year: toYMD(form.founded),
         company_type: form.type || null,
-        website: form.website || null,
+        website: (form.website && form.website.trim() !== '' && form.website !== 'https://') ? form.website : null,
         logo: logoFile || null,
         name: form.name || null,
         description: form.description || null,
@@ -155,6 +200,7 @@ export function useEditDetailCompanyModal(params: {
     businessLines,
     submitting,
     handleChange,
+    handleWebsiteChange,
     handleFile,
     handleSave,
   };

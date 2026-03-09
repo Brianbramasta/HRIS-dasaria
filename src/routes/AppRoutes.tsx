@@ -4,6 +4,7 @@ import { Routes, Route, useParams } from "react-router";
 import AppLayout from "../layout/AppLayout";
 import StructureAndOrganize from "../features/structure-and-organize/pages/StructureAndOrganizationPage";
 import ExportPage from "../features/structure-and-organize/pages/ExportPage";
+import SlipPayrollPage from "../features/payroll/pages/distribution-payroll/SlipPayroll";
 import BusinessLinesTab from "../features/structure-and-organize/pages/business-line/BusinessLinesTab";
 import CompaniesTab from "../features/structure-and-organize/pages/company/CompaniesTab";
 import OfficesTab from "../features/structure-and-organize/pages/office/OfficesTab";
@@ -20,6 +21,9 @@ import DetailKaryawanPage from "../features/employee/pages/employee-data/detail/
 import FormulirKaryawanPage from "../features/employee/pages/employee-data/EmployeeFormPage";
 import PendaftaranKaryawanBaru from "../features/employee/pages/employee-data/NewEmployeeRegistration";
 import PengunduranDiri from "../features/employee/pages/resignation/ResignationPage";
+import ResignationListPage from "../features/employee/pages/resignation/ResignationListPage";
+import TerminationAdministrationPage from "../features/employee/pages/resignation/tab/TerminationAdministrationPage";
+import DetailTerminationAdministrationPage from "../features/employee/pages/resignation/detail/DetailTerminationAdministration";
 import FormResignPage from "../features/employee/pages/resignation/form-resign/FormResignPage";
 import DetailPengunduranDiriPage from "../features/employee/pages/resignation/detail/DetailResignationPage";
 import PerpanjanganKontrak from "../features/employee/pages/contract-renewal/contract-renewal-hr/ContractRenewalPage";
@@ -28,19 +32,20 @@ import PerpanjangKontrakEdit from "../features/employee/pages/contract-renewal/c
 import DataKaryawanPelanggaran from "../features/employee/components/employee-data/tab/Fraud";
 import OrganizationHistoryPage from "../features/employee/pages/organization-history/OrganizationHistoryPage";
 import OrganizationHistoryAtasanPage from "../features/employee/pages/organization-history/OrganizationHistoryAtasanPage";
+import DetailOrganizationHistoryPage from "../features/employee/pages/organization-history/detail/DetailOrganizationHistory";
 import DashboardPage from "@/features/dashboard/pages/Index";
 import Dashboard from "@/features/dashboard/pages/tab/Dashboard";
 import Notification from "@/features/dashboard/pages/tab/Notification";
 // import DaftarPenggajianPage from "@/features/penggajian/pages/daftarPenggajianPage";
-import KonfigurasiPenggajianPage from "@/features/payroll/pages/PayrollConfiguration/PayrollConfigurationPage";
+import KonfigurasiPenggajianPage from "@/features/payroll/pages/payroll-configuration/PayrollConfigurationPage";
 // Dokumentasi: Import tab untuk Konfigurasi Penggajian
-import KompensasiPage from "@/features/payroll/pages/PayrollConfiguration/tab/CompensationPage";
-import BpjsPage from "@/features/payroll/pages/PayrollConfiguration/tab/BPJSPage";
-import AcuanPotonganPage from "@/features/payroll/pages/PayrollConfiguration/tab/DeductionReferencePage";
-import TunjanganTetapPage from "@/features/payroll/pages/PayrollConfiguration/tab/FixedAllowancePage";
-import TunjanganTidakTetapPage from "@/features/payroll/pages/PayrollConfiguration/tab/NonRecurringAllowancePage";
-import PotonganTidakTetapPage from "@/features/payroll/pages/PayrollConfiguration/tab/NonRecurringDeductionPage";
-import THRPage from "@/features/payroll/pages/PayrollConfiguration/tab/BonusTHRPage";
+import KompensasiPage from "@/features/payroll/pages/payroll-configuration/tab/CompensationPage";
+import BpjsPage from "@/features/payroll/pages/payroll-configuration/tab/BPJSPage";
+import AcuanPotonganPage from "@/features/payroll/pages/payroll-configuration/tab/DeductionReferencePage";
+import TunjanganTetapPage from "@/features/payroll/pages/payroll-configuration/tab/FixedAllowancePage";
+import TunjanganTidakTetapPage from "@/features/payroll/pages/payroll-configuration/tab/NonRecurringAllowancePage";
+import PotonganTidakTetapPage from "@/features/payroll/pages/payroll-configuration/tab/NonRecurringDeductionPage";
+import THRPage from "@/features/payroll/pages/payroll-configuration/tab/BonusTHRPage";
 // Dokumentasi: Halaman dan tab Periode Penggajian
 import PeriodePenggajianPage from "@/features/payroll/pages/payroll-period/PayrollPeriodPage";
 import NonAETab from "@/features/payroll/pages/payroll-period/tab/NonAEPages";
@@ -48,17 +53,18 @@ import AETab from "@/features/payroll/pages/payroll-period/tab/AEPages";
 import PKLTab from "@/features/payroll/pages/shared/tab/PKLPages";
 import THRTab from "@/features/payroll/pages/payroll-period/tab/THRPages";
 
-// shared tabs
-import SharedNonAETab from "@/features/payroll/pages/shared/tab/NonAEPages";
-import SharedAETab from "@/features/payroll/pages/shared/tab/AEPages";
-import SharedTHRTab from "@/features/payroll/pages/shared/tab/THRPages";
-// Dokumentasi: Import halaman Detail Gaji untuk navigasi dari tabel Periode Penggajian
-// import DetailGajiPage from "@/features/penggajian/pages/periodePenggajian/detail/detailGaji";
+import ApprovalNonAETab from "@/features/payroll/pages/payroll-period-approval/tab/NonAEPages";
+import ApprovalAETab from "@/features/payroll/pages/payroll-period-approval/tab/AEPages";
+// import ApprovalPKLTab from "@/features/payroll/pages/payroll-period-approval/tab/PKLPages";
+import ApprovalTHRTab from "@/features/payroll/pages/payroll-period-approval/tab/THRPages";
 // Dokumentasi: Import halaman Detail Gaji AE dan Non-AE terpisah
-import DetailGajiAEPage from "@/features/payroll/pages/shared/detail/detailPayrollAEPage";
-import DetailGajiNonAEPage from "@/features/payroll/pages/shared/detail/detailPayrollNonAEPage";
-import DetailGajiTHRPage from "@/features/payroll/pages/shared/detail/detailPayrollTHRPage";
-import DetailGajiPKLPage from "@/features/payroll/pages/shared/detail/detailPayrollPKLPage";
+import DetailGajiAEPage from "@/features/payroll/pages/payroll-period/detail/detailPayrollAEPage";
+import DetailGajiNonAEPage from "@/features/payroll/pages/payroll-period/detail/detailPayrollNonAEPage";
+import DetailGajiTHRPage from "@/features/payroll/pages/payroll-period/detail/detailPayrollTHRPage";
+import DetailGajiAEApprovalPage from "@/features/payroll/pages/payroll-period-approval/detail/detailPayrollAEPage";
+import DetailGajiNonAEApprovalPage from "@/features/payroll/pages/payroll-period-approval/detail/detailPayrollNonAEPage";
+import DetailGajiTHRApprovalPage from "@/features/payroll/pages/payroll-period-approval/detail/detailPayrollTHRPage";
+// import DetailGajiPKLPage from "@/features/payroll/pages/payroll-period/detail/detailPayrollPKLPage";
 import HakAksesPage from "@/features/role-management-access/pages/RoleManagementPage";
 import DetailHakAksesPages from "@/features/role-management-access/pages/detail/DetailHakAksesPages";
 import ModulDetail from "@/features/role-management-access/pages/ModulDetail";
@@ -89,6 +95,9 @@ import { LoginPage, ForgotPasswordPage, ResetPasswordPage } from "../features/au
 import SelectServicePage from "../features/auth/pages/SelectServicePage";
 import ProtectedOutlet from "./ProtectedOutlet";
 import FormKasbonPage from "@/features/payroll/pages/cash-advance/form-cash-advance/FormCashAdvancePage";
+import TemporaryApiPage from "@/pages/OtherPage/TemporaryApiPage";
+import SetContactAdmin from "@/pages/OtherPage/SetContactAdmin";
+import GeneratePayrollPage from "@/pages/OtherPage/generatePayroll";
 import NotFound from "@/pages/OtherPage/NotFound";
 
 function PelanggaranRoute() {
@@ -158,7 +167,7 @@ export default function AppRoutes() {
           <Route path="/payroll-period/detail-ae/:id" element={<DetailGajiAEPage />} />
           <Route path="/payroll-period/detail-non-ae/:id" element={<DetailGajiNonAEPage />} />
           <Route path="/payroll-period/detail-thr/:id" element={<DetailGajiTHRPage />} />
-          <Route path="/payroll-period/detail-pkl/:id" element={<DetailGajiPKLPage />} />
+          {/* <Route path="/payroll-period/detail-pkl/:id" element={<DetailGajiPKLPage />} /> */}
           {/* Dokumentasi: Nested route untuk Kasbon dengan tiga tab */}
           <Route path="/cash-advance" element={<KasbonPage />}>
             <Route index element={<RiwayatPengajuanPage />} />
@@ -173,16 +182,16 @@ export default function AppRoutes() {
           <Route path="/payroll-dashboard" element={<DashboardPenggajianPage />} />
           <Route path="/payroll-period-approval" element={<ApprovalPeriodeGajianPage />}>
             {/* Dokumentasi: index default Non-AE untuk /payroll-period-approval */}
-            <Route index element={<SharedNonAETab />} />
-            <Route path="non-ae" element={<SharedNonAETab />} />
-            <Route path="ae" element={<SharedAETab />} />
-            <Route path="pkl" element={<PKLTab />} />
-            <Route path="thr" element={<SharedTHRTab />} />
+            <Route index element={<ApprovalNonAETab />} />
+            <Route path="non-ae" element={<ApprovalNonAETab />} />
+            <Route path="ae" element={<ApprovalAETab />} />
+            {/* <Route path="pkl" element={<ApprovalPKLTab />} /> */}
+            <Route path="thr" element={<ApprovalTHRTab />} />
             {/* detail approval */}
-            <Route path="detail-ae/:id" element={<DetailGajiAEPage />} />
-            <Route path="detail-non-ae/:id" element={<DetailGajiNonAEPage />} />
-            <Route path="detail-thr/:id" element={<DetailGajiTHRPage />} />
-            <Route path="detail-pkl/:id" element={<DetailGajiPKLPage />} />
+            <Route path="detail-ae/:id" element={<DetailGajiAEApprovalPage />} />
+            <Route path="detail-non-ae/:id" element={<DetailGajiNonAEApprovalPage />} />
+            <Route path="detail-thr/:id" element={<DetailGajiTHRApprovalPage />} />
+            {/* <Route path="detail-pkl/:id" element={<DetailGajiPKLPage />} /> */}
           </Route>
 
           {/* // Dokumentasi: Nested route untuk Distribusi Gaji dengan tiga tab */}
@@ -198,7 +207,11 @@ export default function AppRoutes() {
           <Route path="/employee-data/:id" element={<DetailKaryawanPage />} />
           <Route path="/employee-data/contract-extension" element={<PerpanjanganKontrak />} />
           <Route path="/employee-data/:id/pelanggaran" element={<PelanggaranRoute />} />
-          <Route path="/resignation" element={<PengunduranDiri />} />
+          <Route path="/resignation" element={<PengunduranDiri />}>
+            <Route index element={<ResignationListPage />} />
+            <Route path="termination-administration" element={<TerminationAdministrationPage />} />
+            <Route path="termination-administration/:id" element={<DetailTerminationAdministrationPage />} />
+          </Route>
 
           <Route path="/resignation/:id" element={<DetailPengunduranDiriPage />} />
           <Route path="/contract-extension" element={<PerpanjanganKontrak />} />
@@ -208,6 +221,7 @@ export default function AppRoutes() {
           <Route path="/submission-types" element={<JenisPengajuanPage />} />
           <Route path="/organization-history" element={<OrganizationHistoryPage />} />
           <Route path="/organization-history/atasan" element={<OrganizationHistoryAtasanPage />} />
+          <Route path="/organization-history/detail" element={<DetailOrganizationHistoryPage />} />
           <Route path="/role-management-access" element={<HakAksesPage />} />
           <Route path="/role-management-access/detail/:roleId" element={<DetailHakAksesPages />} />
           <Route path="/role-management-access/service-detail/:layananId" element={<ModulDetail />} />
@@ -215,7 +229,6 @@ export default function AppRoutes() {
           <Route path="/role-management-access/access-detail/:featureId" element={<AccessDetail />} />
           <Route path="/role-management-access/add" element={<EditRolePage />} />
           <Route path="/role-management-access/edit/:roleId" element={<EditRolePage />} />
-
 
 
         </Route>
@@ -226,12 +239,18 @@ export default function AppRoutes() {
         <Route path="/structure-and-organize/export" element={<ExportPage />} />
         <Route path="/export" element={<ExportPage />} />
         <Route path="/select-service" element={<SelectServicePage />} />
+        <Route path="/distribution-payroll/slip" element={<SlipPayrollPage />} />
+        <Route path="/distribution-payroll/slip/:payrollId" element={<SlipPayrollPage />} />
       </Route>
 
       {/* Auth Layout */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/reset-password" element={<ResetPasswordPage />} />
+      <Route path="/set-contact-admin" element={<SetContactAdmin />} />
+      <Route path="/generate-payroll" element={<GeneratePayrollPage />} />
+      <Route path="/temporary-api" element={<TemporaryApiPage />} />
+
 
       {/* Fallback Route */}
       <Route path="*" element={<NotFound />} />

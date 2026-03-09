@@ -24,7 +24,12 @@ export default defineConfig(({ mode }) => {
         "@": path.resolve(__dirname, "./src"),
       },
     },
-    server: {
+    server: { 
+      // nanti di production hapus ini
+      host: true,
+      allowedHosts: [
+        'stephenie-spriggy-lacey.ngrok-free.dev'
+      ],
       watch: {
         // Ignore changes to db.json and server.js to prevent dev reloads
         // when json-server writes updates after PATCH/POST.
@@ -35,7 +40,8 @@ export default defineConfig(({ mode }) => {
       },
     },
     define: {
-      "globalThis.VITE_API_URL": JSON.stringify(env.VITE_API_URL),
+      "globalThis.API_URL": JSON.stringify(env.API_URL),
+      "globalThis.API_PREFIX": JSON.stringify(env.API_PREFIX),
     },
   };
 });

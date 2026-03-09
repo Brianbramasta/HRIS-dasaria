@@ -62,7 +62,7 @@ export default function useEditContractRenewalStatusModal({ kontrakData, onClose
       setSubmitting(false);
       onClose();
       onSuccess?.();
-      console.log('Status updated:', { statusPerpanjangan, statusAtasan, statusKaryawan, catatan });
+      //console.log('Status updated:', { statusPerpanjangan, statusAtasan, statusKaryawan, catatan });
     }, 1000);
   };
 

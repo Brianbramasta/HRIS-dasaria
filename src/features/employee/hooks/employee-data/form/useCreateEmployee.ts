@@ -47,6 +47,7 @@ export function useCreateEmployee() {
     appendIfValue(fd, 'bpjs_employment_number', formData.step3.noBpjsKetenagakerjaan);
     appendIfValue(fd, 'bpjs_employment_status', formData.step3.statusBpjsKetenagakerjaan);
     appendIfValue(fd, 'bpjs_health_number', formData.step3.noBpjsKesehatan);
+    appendIfValue(fd, 'bpjs_health_type_id', formData.step3.tipeBpjsKesehatan);
     appendIfValue(fd, 'bpjs_health_status', formData.step3.statusBpjsKesehatan);
 
     // Documents (upload)
@@ -89,10 +90,14 @@ export function useCreateEmployee() {
     appendIfValue(fd, 'emergency_contact_relationship', formData.step2.hubunganKontakDarurat);
 
     // Non Fix Allowance
-    (formData.step3.nonFixAllowances || []).forEach((allowance: { id: string; amount: string | number }, index: number) => {
-      appendIfValue(fd, `non_fix_allowance[${index}][non_fix_allowance_id]`, allowance.id);
-      appendIfValue(fd, `non_fix_allowance[${index}][amount]`, allowance.amount);
-    });
+    // hanya kirim non_fix_allowance_id dan amount jika id tidak kosong
+      (formData.step3.nonFixAllowances || []).forEach((allowance: { id: string; amount: string | number }, index: number) => {
+         if(allowance.id !=='') {
+            appendIfValue(fd, `non_fix_allowance[${index}][non_fix_allowance_id]`, allowance.id);
+            appendIfValue(fd, `non_fix_allowance[${index}][amount]`, allowance.amount);
+        }
+
+      });
 
     // Avatar
     if (formData.step1.fotoProfil) {

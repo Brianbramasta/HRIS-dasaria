@@ -22,21 +22,38 @@ export default function DetailGajiPage() {
   );
 
   const config: SectionConfig = {
-    infoFields: [
-      { name: "idKaryawan", label: "NIP", type: "input", placeholder: "Otomatis", value: defaultData.idKaryawan, readonly: true },
-      { name: "pengguna", label: "Pengguna", type: "input", placeholder: "Otomatis", value: defaultData.pengguna, readonly: true },
-      { name: "tanggalPengajuan", label: "Tanggal Pengajuan", type: "date", id: "tanggal-pengajuan", placeholder: "Pilih tanggal" },
-      { name: "gajiPokokUangSaku", label: "Gaji Pokok/Uang Saku", type: "input", placeholder: "Input", inputType: "text" },
-      { name: "kategori", label: "Kategori", type: "input", placeholder: "Otomatis", readonly: true },
-      { name: "perusahaan", label: "Perusahaan", type: "input", placeholder: "Otomatis", readonly: true },
-      { name: "jumlahHariKerja", label: "Jumlah Hari Kerja", type: "input", placeholder: "Otomatis", readonly: true },
-    ],
+    infoFields: [],
+    info: {
+      fields: [
+        { name: "idKaryawan", label: "NIP", type: "input", placeholder: "Otomatis", value: defaultData.idKaryawan, readonly: true },
+        { name: "pengguna", label: "Pengguna", type: "input", placeholder: "Otomatis", value: defaultData.pengguna, readonly: true },
+        { name: "tanggalPengajuan", label: "Tanggal Pengajuan", type: "date", id: "tanggal-pengajuan", placeholder: "Pilih tanggal" },
+        { name: "gajiPokokUangSaku", label: "Gaji Pokok/Uang Saku", type: "input", placeholder: "Input", inputType: "text" },
+        { name: "kategori", label: "Kategori", type: "input", placeholder: "Otomatis", readonly: true },
+        { name: "perusahaan", label: "Perusahaan", type: "input", placeholder: "Otomatis", readonly: true },
+        { name: "jumlahHariKerja", label: "Jumlah Hari Kerja", type: "input", placeholder: "Otomatis", readonly: true },
+      ],
+      modalFields: [
+        { name: "idKaryawan", label: "NIP", type: "input", placeholder: "Otomatis", value: defaultData.idKaryawan, readonly: true },
+        { name: "pengguna", label: "Pengguna", type: "input", placeholder: "Otomatis", value: defaultData.pengguna, readonly: true },
+        { name: "tanggalPengajuan", label: "Tanggal Pengajuan", type: "date", id: "tanggal-pengajuan", placeholder: "Pilih tanggal" },
+        { name: "gajiPokokUangSaku", label: "Gaji Pokok/Uang Saku", type: "input", placeholder: "Input", inputType: "text" },
+        { name: "kategori", label: "Kategori", type: "input", placeholder: "Otomatis", readonly: true },
+        { name: "perusahaan", label: "Perusahaan", type: "input", placeholder: "Otomatis", readonly: true },
+        { name: "jumlahHariKerja", label: "Jumlah Hari Kerja", type: "input", placeholder: "Otomatis", readonly: true },
+      ],
+    },
     tunjanganTetap: true,
     tunjanganTidakTetap: {
       fields: [
         { name: "pph21", label: "Tunjangan PPH 21", type: "input" },
         { name: "pendidikan", label: "Tunjangan Pendidikan", type: "input" },
         { name: "performa", label: "Tunjangan Performa", type: "input" },
+      ],
+      modalFields: [
+        { name: "pph21", label: "Tunjangan PPH 21", type: "input", placeholder: "150.000" },
+        { name: "pendidikan", label: "Tunjangan Pendidikan", type: "input", placeholder: "300.000" },
+        { name: "performa", label: "Tunjangan Performa", type: "input", placeholder: "1.500.000" },
       ],
       initialValues: { pph21: "", pendidikan: "", performa: "" },
       ModalComponent: TambahTunjanganTidakTetapModal,
@@ -54,12 +71,18 @@ export default function DetailGajiPage() {
         { name: "jht2", label: "BPJS Ketenagakerjaan JHT (2%)", type: "input" },
         { name: "kasbon", label: "Kasbon", type: "input" },
       ],
+      modalFields: [
+        { name: "jkn1", label: "BPJS Kesehatan JKN (1%)", type: "input", placeholder: "100.000" },
+        { name: "jht2", label: "BPJS Ketenagakerjaan JHT (2%)", type: "input", placeholder: "200.000" },
+        { name: "kasbon", label: "Kasbon", type: "input", placeholder: "500.000" },
+      ],
       initialValues: { jkn1: "", jht2: "", kasbon: "" },
       ModalComponent: TambahPotonganTidakTetapModal,
     },
-    rekapitulasi: true,
-    catatanKaryawan: true,
-    catatanBOD: true,
+    rekapitulasi: {
+      catatanKaryawan: true,
+      catatanBOD: true,
+    },
   };
 
   return <DetailPayrollContent config={config} />;

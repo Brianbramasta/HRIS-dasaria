@@ -7,14 +7,16 @@ interface EditModulModalProps {
   isOpen: boolean;
   onClose: () => void;
   data: ModulData | null;
+  onSuccess?: () => void;
 }
 
-export default function EditModulModal({ isOpen, onClose, data }: EditModulModalProps) {
+export default function EditModulModal({ isOpen, onClose, data, onSuccess }: EditModulModalProps) {
   const {
     modulName,
     handleModulChange,
     handleSubmit,
-  } = useEditModulModal(isOpen, onClose, data);
+    loading,
+  } = useEditModulModal(isOpen, onClose, data, onSuccess);
 
   const content = (
     <div className="space-y-4 px-1">
@@ -35,7 +37,7 @@ export default function EditModulModal({ isOpen, onClose, data }: EditModulModal
       onClose={onClose}
       content={content}
       handleSubmit={handleSubmit}
-      submitting={false}
+      submitting={loading}
       maxWidth="max-w-[700px]"
     />
   );

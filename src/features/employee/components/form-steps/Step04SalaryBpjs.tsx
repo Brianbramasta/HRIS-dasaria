@@ -9,6 +9,8 @@ import { formatCurrency, parseCurrency } from '@/utils/formatCurrency';
 export const Step04SalaryBpjs: React.FC = () => {
   const {
     bankOptions,
+    categoriKaryawanOptions,
+    bpjsHealthTypeOptions,
     step3,
     isAuthenticated,
     previewData,
@@ -18,8 +20,57 @@ export const Step04SalaryBpjs: React.FC = () => {
     handleChange,
     addNonFixAllowance,
     removeNonFixAllowance,
-    updateNonFixAllowance
+    updateNonFixAllowance,
+    step3Employee
   } = useStep4Data(true);
+
+  // Get category label based on ID
+  const getCategoryLabel = () => {
+    if (!step3Employee?.kategoriKaryawan || !categoriKaryawanOptions?.length) return null;
+    const category = categoriKaryawanOptions.find((opt: any) => opt.value === step3Employee.kategoriKaryawan);
+    return category?.label || null;
+  };
+
+  // Get salary label based on employee category
+  const getSalaryLabel = () => {
+    const categoryLabel = getCategoryLabel();
+    if (categoryLabel === 'Non-Staff') return 'Uang Saku';
+    if (categoryLabel === 'Mitra') return 'Fee';
+    return 'Gaji Pokok';
+  };
+
+  // Get dynamic options for Status BPJS Kesehatan based on Tipe BPJS Kesehatan
+  const getBpjsKesehatanStatusOptions = () => {
+    // Find the selected option to get its label
+    const selectedType = bpjsHealthTypeOptions.find((opt: any) => opt.value === step3.tipeBpjsKesehatan);
+    if (selectedType?.label !== 'PBI') { // Not PBI
+      return [{ label: 'Tidak Aktif', value: 'Tidak Aktif' }];
+    }
+    return BPJS_STATUS_OPTIONS; // PBI can choose Aktif or Tidak Aktif
+  };
+
+  // Handle field changes with auto-setting logic
+  const handleFieldChange = (field: string, value: any) => {
+    // Auto-set Status BPJS Kesehatan when Tipe BPJS Kesehatan changes
+    if (field === 'tipeBpjsKesehatan') {
+      // Find the selected option to get its label
+      const selectedType = bpjsHealthTypeOptions.find((opt: any) => opt.value === value);
+      if (selectedType?.label === 'PBI') {
+        // Auto-set to Aktif when PBI is selected
+        handleChange('statusBpjsKesehatan', 'Aktif');
+      } else {
+        // Auto-set to Tidak Aktif for all non-PBI types
+        handleChange('statusBpjsKesehatan', 'Tidak Aktif');
+      }
+    }
+    
+    // Auto-set Status BPJS Ketenagakerjaan to Aktif when No. BPJS Ketenagakerjaan is filled
+    if (field === 'noBpjsKetenagakerjaan' && value) {
+      handleChange('statusBpjsKetenagakerjaan', 'Aktif');
+    }
+    
+    handleChange(field, value);
+  };
 
   return (
     <div className="space-y-6">
@@ -40,7 +91,7 @@ export const Step04SalaryBpjs: React.FC = () => {
               options={bankOptions}
               defaultValue={step3.bank}
               onChange={(value) => handleChange('bank', value)}
-              placeholder="Select"
+              placeholder="Pilih"
               required
             />
           </div>)}
@@ -52,7 +103,7 @@ export const Step04SalaryBpjs: React.FC = () => {
               options={bankOptions}
               defaultValue={step3.bank}
               onChange={(value) => handleChange('bank', value)}
-              placeholder="Select"
+              placeholder="Pilih"
               required
             />
           </div>)}
@@ -95,7 +146,7 @@ export const Step04SalaryBpjs: React.FC = () => {
           </div>
 
           {/* PTKP Status */}
-          {isAuthenticated && (
+          {isAuthenticated && getCategoryLabel() === 'Staff' && (
             <div>
               <InputField
                 label="PTKP Status"
@@ -111,8 +162,8 @@ export const Step04SalaryBpjs: React.FC = () => {
           {isAuthenticated && (
             <div >
               <InputField
-                label="Gaji Pokok"
-                value={formatCurrency(previewData?.basicSalary || 0)}
+                label={getSalaryLabel()}
+                value={formatCurrency(previewData?.basicSalary || 0 )}
                 readonly
                 disabled
                 className="bg-gray-100 dark:bg-gray-800"
@@ -126,7 +177,7 @@ export const Step04SalaryBpjs: React.FC = () => {
         </div>
 
         {/* Tunjangan Tetap */}
-        {isAuthenticated && (
+         {isAuthenticated && getCategoryLabel()=='Staff' && (
           <div className="mt-6">
             <h6 className="text-md font-medium text-gray-700 dark:text-gray-300 mb-3">Tunjangan Tetap</h6>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -137,13 +188,13 @@ export const Step04SalaryBpjs: React.FC = () => {
                 disabled
                 className="bg-gray-100 dark:bg-gray-800"
               />
-              <InputField
+              {/* <InputField
                 label="Tunjangan Transport"
                 value={formatCurrency(0)} 
                 readonly
                 disabled
                 className="bg-gray-100 dark:bg-gray-800"
-              />
+              /> */}
                 <InputField
                 label="Tunjangan Lama Kerja"
                 value={formatCurrency(previewData?.lengthOfServiceAllowance || 0)}
@@ -171,15 +222,15 @@ export const Step04SalaryBpjs: React.FC = () => {
               ))}
             </div>
           </div>
-        )}
+        )} 
 
         {/* Potongan Tetap */}
-        {isAuthenticated && (
+        {/* {isAuthenticated && (
           <div className="mt-6">
             <h6 className="text-md font-medium text-gray-700 dark:text-gray-300 mb-3">Potongan Tetap</h6>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4"> */}
                 {/* BPJS Deductions */}
-                {previewData?.bpjsDeductionDetails.map((item: any, index: number) => (
+                {/* {previewData?.bpjsDeductionDetails.map((item: any, index: number) => (
                 <InputField
                   key={index}
                   label={`Potongan ${item.item}`}
@@ -191,10 +242,10 @@ export const Step04SalaryBpjs: React.FC = () => {
               ))}
             </div>
           </div>
-        )}
+        )} */}
 
         {/* Tunjangan Tidak Tetap */}
-        {isAuthenticated && (
+        {isAuthenticated && getCategoryLabel() === 'Staff' && (
           <div className="mt-6">
             <h6 className="text-md font-medium text-gray-700 dark:text-gray-300 mb-3">Tunjangan Tidak Tetap</h6>
             <div className="space-y-4">
@@ -203,7 +254,14 @@ export const Step04SalaryBpjs: React.FC = () => {
                   <div className="md:col-span-6">
                     <SelectField
                       label="Jenis Tunjangan"
-                      options={nonFixAllowanceOptions.map((opt: any) => ({ value: opt.id, label: opt.allowance_name }))}
+                      options={nonFixAllowanceOptions
+                        .map((opt: any) => ({ value: opt.id, label: opt.allowance_name }))
+                        .filter(option => 
+                          !nonFixAllowances.some((otherAllowance, otherIndex) => 
+                            otherAllowance.id === option.value && otherIndex !== index
+                          )
+                        )
+                      }
                       defaultValue={allowance.id}
                       onChange={(value) => updateNonFixAllowance(index, 'id', value)}
                       placeholder="Pilih Tunjangan Tidak Tetap"
@@ -273,7 +331,7 @@ export const Step04SalaryBpjs: React.FC = () => {
               label="No. BPJS Ketenagakerjaan"
               placeholder="Masukkan nomor"
               value={step3.noBpjsKetenagakerjaan}
-              onChange={(e) => handleChange('noBpjsKetenagakerjaan', e.target.value)}
+              onChange={(e) => handleFieldChange('noBpjsKetenagakerjaan', e.target.value)}
               
             />
           </div>
@@ -285,7 +343,7 @@ export const Step04SalaryBpjs: React.FC = () => {
               options={BPJS_TK_STATUS_OPTIONS}
               defaultValue={step3.statusBpjsKetenagakerjaan}
               onChange={(value) => handleChange('statusBpjsKetenagakerjaan', value)}
-              placeholder="Select"
+              placeholder="Pilih"
               
             />
           </div>
@@ -303,14 +361,26 @@ export const Step04SalaryBpjs: React.FC = () => {
             />
           </div>
 
+          {/* Tipe BPJS Kesehatan */}
+          <div>
+            <SelectField
+              label="Tipe BPJS Kesehatan (Mandiri/PBI)"
+              options={bpjsHealthTypeOptions}
+              defaultValue={step3.tipeBpjsKesehatan}
+              onChange={(value) => handleFieldChange('tipeBpjsKesehatan', value)}
+              placeholder="Pilih"
+              
+            />
+          </div>
+
           {/* Status BPJS Kesehatan */}
           <div>
             <SelectField
-              label="Status BPJS Kesehatan"
-              options={BPJS_STATUS_OPTIONS}
+              label="Status BPJS Kesehatan (Mandiri/PBI)"
+              options={getBpjsKesehatanStatusOptions()}
               defaultValue={step3.statusBpjsKesehatan}
               onChange={(value) => handleChange('statusBpjsKesehatan', value)}
-              placeholder="Select"
+              placeholder="Pilih"
               
             />
           </div>

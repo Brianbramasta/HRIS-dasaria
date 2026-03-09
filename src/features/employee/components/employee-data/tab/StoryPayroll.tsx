@@ -6,7 +6,7 @@ import { useStoryPayrollTab } from '@/features/employee/hooks/tab/useStoryPayrol
 import { formatCurrency } from '@/utils/formatCurrency';
 import Button from '@/components/ui/button/Button';
 import { Edit2 } from 'react-feather';
-import EditStoryPayrollModal from '@/features/employee/components/modals/story-payroll/EditStoryPayrollModal';
+import EditStoryPayrollModal from '@/features/employee/components/modals/employee-data/story-payroll/EditStoryPayrollModal';
 
 interface Props {
   employeeId?: string;
@@ -23,7 +23,7 @@ function SummaryItem({ label, children }: { label: string; children: ReactNode }
 }
 
 export default function StoryPayrollTab({ employeeId, isEditable }: Props) {
-  const { title, payrollInfo, payrollDetailCards, historyRows, historyColumns, temporarySalary, refetch } = useStoryPayrollTab(
+  const { title, payrollInfo, payrollDetailCards, historyRows, historyColumns, employeeSalaryShow, refetch } = useStoryPayrollTab(
     employeeId,
     isEditable,
   );
@@ -89,7 +89,7 @@ export default function StoryPayrollTab({ employeeId, isEditable }: Props) {
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
           employeeId={employeeId}
-          data={temporarySalary || null}
+          data={employeeSalaryShow}
           onSuccess={handleSuccessUpdate}
         />
       )}

@@ -35,7 +35,12 @@ export type PayrollHistoryRow = {
 
 export function useStoryPayrollTab(employeeId?: string, isEditable?: boolean) {
   const { detail, loading: detailLoading, error: detailError, fetchDetail } = useDetailDataKaryawanPersonalInfo();
-  const { temporarySalary, loading: salaryLoading, error: salaryError, fetchTemporarySalary } = useApiEmployeeSalary();
+  const { 
+    employeeSalaryShow, 
+    loading: salaryLoading, 
+    error: salaryError, 
+    fetchEmployeeSalaryShow 
+  } = useApiEmployeeSalary();
 
   const loading = detailLoading || salaryLoading;
   const error = detailError || salaryError;
@@ -47,36 +52,28 @@ export function useStoryPayrollTab(employeeId?: string, isEditable?: boolean) {
   }, [employeeId, fetchDetail]);
 
   const refetch = useCallback(() => {
-    if (detail && employeeId) {
-      const personal = detail.Personal_Data;
-      const position = detail.Employment_Position_Data;
-
-      if (personal && position) {
-        fetchTemporarySalary(employeeId, {
-          Position_level_id: position.position_level_id,
-          category: personal.marital_status || 'Lajang', // Default fallback
-          dependents: personal.household_dependents || 0,
-          job_title_id: position.job_title_id,
-          employee_categories_id: position.employee_category_id,
-        });
-      }
+    if (employeeId) {
+      // Fetch employee salary show details
+      fetchEmployeeSalaryShow(employeeId);
     }
-  }, [detail, employeeId, fetchTemporarySalary]);
+  }, [employeeId, fetchEmployeeSalaryShow]);
 
   useEffect(() => {
     refetch();
   }, [refetch]);
 
-  // Use temporarySalary if available, otherwise fall back to store detail or empty defaults
+  // Use employeeSalaryShow if available, otherwise fall back to store detail or empty defaults
   const payrollInfo: PayrollInfo = useMemo(() => {
-    if (temporarySalary) {
+    if (employeeSalaryShow?.data) {
+      const employeeInfo = employeeSalaryShow.data.employee_information;
+      const payrollInfo = employeeSalaryShow.data.payroll_information;
       return {
-        bank: temporarySalary.bank_name || '-',
-        namaAkunBank: temporarySalary.bank_account_holder || '-',
-        noRekening: String(temporarySalary.bank_account_number || '-'),
-        npwp: String(temporarySalary.npwp || '-'),
-        ptkpStatus: temporarySalary.ptkp_status || '-',
-        gajiBersih: temporarySalary.temporary_salary || 0,
+        bank: employeeInfo.bank_name || '-',
+        namaAkunBank: employeeInfo.bank_account_holder || '-',
+        noRekening: employeeInfo.bank_account_number || '-',
+        npwp: employeeInfo.npwp || '-',
+        ptkpStatus: employeeInfo.ptkp || '-',
+        gajiBersih: payrollInfo.take_home_pay || 0,
       };
     }
 
@@ -89,79 +86,89 @@ export function useStoryPayrollTab(employeeId?: string, isEditable?: boolean) {
       ptkpStatus: salary?.ptkp_category ?? salary?.ptkp_code ?? '',
       gajiBersih: 0,
     };
-  }, [temporarySalary, detail]);
+  }, [employeeSalaryShow, detail]);
 
   const payrollDetailCards: PayrollDetailCardData[] = useMemo(() => {
-    if (!temporarySalary) return [];
+    // Use employeeSalaryShow data if available
+    if (employeeSalaryShow?.data) {
+      const payrollInfo = employeeSalaryShow.data.payroll_information;
+      const cards: PayrollDetailCardData[] = [];
 
-    const cards: PayrollDetailCardData[] = [];
-
-    // 1. Gaji Pokok
-    cards.push({
-      id: 'gaji_pokok',
-      title: 'Gaji Pokok',
-      items: [
-        {
-          label: 'Nominal Gaji Pokok',
-          amount: temporarySalary.basic_salary,
-        },
-      ],
-    });
-
-    // 2. Tunjangan Tetap
-    const fixedAllowances: PayrollDetailItem[] = [];
-    if (temporarySalary.position_allowance > 0) {
-      fixedAllowances.push({ label: 'Tunjangan Jabatan', amount: temporarySalary.position_allowance });
-    }
-    if (temporarySalary.length_of_service_allowance > 0) {
-      fixedAllowances.push({ label: 'Tunjangan Lama Kerja', amount: temporarySalary.length_of_service_allowance });
-    }
-    if (temporarySalary.marital_allowance > 0) {
-      fixedAllowances.push({ label: 'Tunjangan Pernikahan', amount: temporarySalary.marital_allowance });
-    }
-    // BPJS Allowances
-    temporarySalary.bpjs_allowance_details?.forEach((bpjs) => {
-      fixedAllowances.push({ label: bpjs.item, amount: bpjs.value });
-    });
-
-    if (fixedAllowances.length > 0) {
+      // 1. Gaji Pokok
       cards.push({
-        id: 'tunjangan_tetap',
-        title: 'Tunjangan Tetap',
-        items: fixedAllowances,
+        id: 'gaji_pokok',
+        title: 'Gaji Pokok',
+        items: [
+          {
+            label: 'Nominal Gaji Pokok',
+            amount: payrollInfo.basic_salary,
+          },
+        ],
       });
+
+      // 2. Tunjangan Tetap (Fixed Allowances)
+      const fixedAllowances: PayrollDetailItem[] = [];
+      payrollInfo.allowances?.forEach((allowance) => {
+        if (allowance.type === 'fixed' && allowance.amount > 0) {
+          fixedAllowances.push({ 
+            label: allowance.name, 
+            amount: allowance.amount 
+          });
+        }
+      });
+
+      if (fixedAllowances.length > 0) {
+        cards.push({
+          id: 'tunjangan_tetap',
+          title: 'Tunjangan Tetap',
+          items: fixedAllowances,
+        });
+      }
+
+      // 3. Potongan Tetap (Deductions)
+      const deductions: PayrollDetailItem[] = [];
+      payrollInfo.deductions?.forEach((deduction) => {
+        if (deduction.amount > 0) {
+          deductions.push({ 
+            label: deduction.name, 
+            amount: deduction.amount 
+          });
+        }
+      });
+
+      if (deductions.length > 0) {
+        cards.push({
+          id: 'potongan_tetap',
+          title: 'Potongan Tetap',
+          items: deductions,
+        });
+      }
+
+      // 4. Tunjangan Tidak Tetap (Non-Fixed Allowances)
+      const nonFixedAllowances: PayrollDetailItem[] = [];
+      payrollInfo.allowances?.forEach((allowance) => {
+        if (allowance.type === 'non_fixed' && allowance.amount > 0) {
+          nonFixedAllowances.push({ 
+            label: allowance.name, 
+            amount: allowance.amount 
+          });
+        }
+      });
+
+      if (nonFixedAllowances.length > 0) {
+        cards.push({
+          id: 'tunjangan_tidak_tetap',
+          title: 'Tunjangan Tidak Tetap',
+          items: nonFixedAllowances,
+        });
+      }
+
+      return cards;
     }
 
-    // 3. Potongan (Deductions)
-    const deductions: PayrollDetailItem[] = [];
-    temporarySalary.bpjs_deduction_details?.forEach((deduction) => {
-      deductions.push({ label: deduction.item, amount: deduction.value });
-    });
-
-    if (deductions.length > 0) {
-      cards.push({
-        id: 'potongan_tetap',
-        title: 'Potongan Tetap',
-        items: deductions,
-      });
-    }
-
-    // 4. Tunjangan Tidak Tetap (Non-Fix)
-    const nonFixAllowances: PayrollDetailItem[] = [];
-    temporarySalary.non_fix_allowance_details?.forEach((nf) => {
-      nonFixAllowances.push({ label: nf.allowance_name, amount: nf.amount });
-    });
-
-    if (nonFixAllowances.length > 0) {
-      cards.push({
-        id: 'tunjangan_tidak_tetap',
-        title: 'Tunjangan Tidak Tetap',
-        items: nonFixAllowances,
-      });
-    }
-
-    return cards;
-  }, [temporarySalary]);
+    // Return empty array if no data available
+    return [];
+  }, [employeeSalaryShow]);
 
   const historyRows: PayrollHistoryRow[] = useMemo(
     () => [
@@ -255,8 +262,7 @@ export function useStoryPayrollTab(employeeId?: string, isEditable?: boolean) {
     historyColumns,
     loading,
     error,
-    temporarySalary,
-    fetchTemporarySalary,
+    employeeSalaryShow,
     refetch,
   };
 }

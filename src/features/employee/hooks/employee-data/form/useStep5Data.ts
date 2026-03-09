@@ -21,12 +21,12 @@ export const useStep5Data = () => {
     
     let mounted = true;
     setLoading(true);
-    console.log(`useStep5Data: Fetching documents for categoryId: ${categoryId}`);
+    //console.log(`useStep5Data: Fetching documents for categoryId: ${categoryId}`);
     
     getFieldDocument(categoryId)
       .then((data) => {
         if (mounted) {
-           console.log('useStep5Data: Documents fetched:', data);
+           //console.log('useStep5Data: Documents fetched:', data);
            setDocumentFields(data || []);
         }
       })

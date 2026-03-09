@@ -29,6 +29,7 @@ interface UseContractRenewalApprovalReturn {
   handleRejectClick: (row: ContractRenewalApprovalListItem) => void;
   handleRejectModalClose: () => void;
   handleRejectSubmit: (alasanPenolakan: string) => Promise<void>;
+  handleUpdateContractRequest: (formData: FormData) => Promise<boolean>;
   handleApprove: (row: ContractRenewalApprovalListItem) => Promise<void>;
   handleNavigateToApproval: () => void;
   handleNavigateToExtension: () => void;
@@ -64,10 +65,10 @@ export function useContractRenewalApproval(): UseContractRenewalApprovalReturn {
     }
   }, []);
 
-  const fetchContractRenewalApprovals = useCallback(async (params?: ContractRenewalFilterParams) => {
+  const fetchContractRenewalApprovals = useCallback(async (_params?: ContractRenewalFilterParams) => {
     setIsLoading(true);
     try {
-      console.log('Fetching contract renewals with params:', params);
+      //console.log('Fetching contract renewals with params:', _params);
       // Dummy data for testing
       const dummyData: ContractRenewalApprovalListItem[] = [
         {
@@ -308,6 +309,35 @@ export function useContractRenewalApproval(): UseContractRenewalApprovalReturn {
     }
   }, [selectedKontrak, addNotification, fetchContractRenewalApprovals, handleRejectModalClose]);
 
+  const handleUpdateContractRequest = useCallback(async (formData: FormData) => {
+    if (!selectedKontrak) return false;
+
+    try {
+      // Assuming we can pass FormData or need to adjust service
+      // For now casting to any to bypass type check if service expects object
+      // Ideally service should handle FormData or we construct object
+      await contractRenewalService.updateContractRenewalSubmission(selectedKontrak.id, formData as any);
+      
+      addNotification({
+        title: 'Success',
+        description: 'Contract renewal request updated successfully',
+        variant: 'success',
+        hideDuration: 5000,
+      });
+      handleModalClose();
+      await fetchContractRenewalApprovals();
+      return true;
+    } catch (error: any) {
+      addNotification({
+        title: 'Error',
+        description: error?.message || 'Failed to update contract renewal request',
+        variant: 'error',
+        hideDuration: 5000,
+      });
+      return false;
+    }
+  }, [selectedKontrak, addNotification, handleModalClose, fetchContractRenewalApprovals]);
+
   const handleApprove = useCallback(async (row: ContractRenewalApprovalListItem) => {
     try {
       await contractRenewalService.approveContractRenewal(row.id);
@@ -346,7 +376,7 @@ export function useContractRenewalApproval(): UseContractRenewalApprovalReturn {
       [columnId]: values,
     }));
     // TODO: Implement API call with filter parameters when backend is ready
-    console.log('Column filter changed:', columnId, values);
+    //console.log('Column filter changed:', columnId, values);
   };
 
   const handleDateRangeFilterChange = (columnId: string, startDate: string, endDate: string | null) => {
@@ -363,8 +393,8 @@ export function useContractRenewalApproval(): UseContractRenewalApprovalReturn {
       }
     }
     // TODO: Implement API call with filter parameters when backend is ready
-    console.log('Date range filter changed:', columnId, { startDate, endDate });
-    console.log('Filter params for API:', filterParams);
+    //console.log('Date range filter changed:', columnId, { startDate, endDate });
+    //console.log('Filter params for API:', filterParams);
   };
 
   const columns: DataTableColumn<ContractRenewalApprovalListItem>[] = [
@@ -486,6 +516,7 @@ export function useContractRenewalApproval(): UseContractRenewalApprovalReturn {
     handleRejectClick,
     handleRejectModalClose,
     handleRejectSubmit,
+    handleUpdateContractRequest,
     handleApprove,
     handleNavigateToApproval,
     handleNavigateToExtension,

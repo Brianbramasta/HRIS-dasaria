@@ -17,11 +17,12 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   defaultValues?: Partial<PengunduranDiriForm> | null;
-  onSave?: (values: PengunduranDiriForm) => void;
+  onSave?: (values: PengunduranDiriForm) => boolean | Promise<boolean>;
+  onSuccessClose?: () => void;
 }
  
 // Dokumentasi: Komponen utama modal pengajuan pengunduran diri dengan state lokal
-const AddPengajuanPengunduranDiriModal: React.FC<Props> = ({ isOpen, onClose, defaultValues, onSave }) => {
+const AddPengajuanPengunduranDiriModal: React.FC<Props> = ({ isOpen, onClose, defaultValues, onSave, onSuccessClose }) => {
   const { form, submitting, showSuccessPopup, setField, handleSubmit, handleCloseSuccessPopup } =
     useAddResignationSubmission({ isOpen, onClose, defaultValues, onSave });
 
@@ -99,7 +100,10 @@ const AddPengajuanPengunduranDiriModal: React.FC<Props> = ({ isOpen, onClose, de
       />
       <PopupBerhasil
         isOpen={showSuccessPopup}
-        onClose={handleCloseSuccessPopup}
+        onClose={() => {
+          handleCloseSuccessPopup();
+          onSuccessClose?.();
+        }}
         title="Pengajuan Pengunduran Diri Berhasil Dikirim"
         description='"Terima kasih, pengajuan pengunduran diri Anda telah berhasil dikirim. Dokumen Anda kini sedang menunggu peninjauan dan persetujuan dari HRD. Anda akan dihubungi oleh tim HR kami mengenai langkah selanjutnya."'
       />

@@ -90,7 +90,7 @@ export default function FormResignPage() {
       });
       navigate('/pengunduran-diri');
     } catch (err) {
-        console.log('error',err)
+        //console.log('error',err)
       addNotification({
         title: 'Gagal menyimpan',
         description: 'Terjadi kesalahan saat menyimpan data.',

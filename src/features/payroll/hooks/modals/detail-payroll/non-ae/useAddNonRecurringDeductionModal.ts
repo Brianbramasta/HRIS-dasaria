@@ -1,10 +1,4 @@
-import { useMemo, useState } from 'react';
-
-export interface NonAEDeductionFormValues {
-  jkn1: string;
-  jht2: string;
-  kasbon: string;
-}
+import { useEffect, useMemo, useState } from 'react';
 
 const formatRupiah = (val: string) => {
   const cleaned = (val || '').replace(/[^0-9]/g, '');
@@ -13,20 +7,21 @@ const formatRupiah = (val: string) => {
 };
 
 export const useAddNonRecurringDeductionModal = (
-  defaultValues?: Partial<NonAEDeductionFormValues>
+  defaultValues?: Record<string, string>
 ) => {
-  const initial: NonAEDeductionFormValues = useMemo(
-    () => ({
-      jkn1: formatRupiah(defaultValues?.jkn1 ?? ''),
-      jht2: formatRupiah(defaultValues?.jht2 ?? ''),
-      kasbon: formatRupiah(defaultValues?.kasbon ?? ''),
-    }),
-    [defaultValues]
-  );
+  const initial: Record<string, string> = useMemo(() => {
+    return Object.fromEntries(
+      Object.entries(defaultValues ?? {}).map(([key, val]) => [key, formatRupiah(val ?? '')])
+    );
+  }, [defaultValues]);
 
-  const [form, setForm] = useState<NonAEDeductionFormValues>(initial);
+  const [form, setForm] = useState<Record<string, string>>(initial);
 
-  const setField = (key: keyof NonAEDeductionFormValues, value: string) => {
+  useEffect(() => {
+    setForm(initial);
+  }, [initial]);
+
+  const setField = (key: string, value: string) => {
     setForm((prev) => ({ ...prev, [key]: formatRupiah(value) }));
   };
 
@@ -34,7 +29,7 @@ export const useAddNonRecurringDeductionModal = (
     onSave: (data: Record<string, string>) => void,
     onClose: () => void
   ) => {
-    onSave(form as unknown as Record<string, string>);
+    onSave(form);
     onClose();
   };
 

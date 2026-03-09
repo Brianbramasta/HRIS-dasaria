@@ -6,7 +6,7 @@ import TextAreaField from '@/components/shared/field/TextAreaField';
 import FIleField from '@/components/shared/field/FIleField';
 import DateField from '@/components/shared/field/DateField';
 import SelectField from '@/components/shared/field/SelectField';
-import { formatDate } from '@/utils/formatDate'
+import { formatDateToIndonesian } from '@/utils/formatDate'
 import { useEditDetailCompanyModal } from '../../../../hooks/modals/company/detail/useEditDetailCompanyModal';
 
 interface EditDetailCompanyProps {
@@ -17,7 +17,7 @@ interface EditDetailCompanyProps {
 }
 
 const EditDetailCompany: React.FC<EditDetailCompanyProps> = ({ isOpen, onClose, company, onSuccess }) => {
-  const { form, businessLines, submitting, handleChange, handleFile, handleSave } = useEditDetailCompanyModal({
+  const { form, businessLines, submitting, handleChange, handleWebsiteChange, handleFile, handleSave } = useEditDetailCompanyModal({
     isOpen,
     onClose,
     company,
@@ -41,12 +41,14 @@ const EditDetailCompany: React.FC<EditDetailCompanyProps> = ({ isOpen, onClose, 
               disabled
               value={form.id}
               onChange={() => {}}
+              placeholder="ID Perusahaan akan otomatis terisi"
               required
             />
             <InputField
               label="Nama"
               value={form.name}
               onChange={(e:any) => handleChange('name', e.target.value)}
+              placeholder="Masukkan nama perusahaan"
               required
             />
 
@@ -69,7 +71,8 @@ const EditDetailCompany: React.FC<EditDetailCompanyProps> = ({ isOpen, onClose, 
             <FIleField
               label="Upload Logo"
               onChange={handleFile}
-              required
+              // required
+              acceptedFormats={['image/png', 'image/jpeg', 'image/jpg']}
               // isLabel={false}
             />
 
@@ -79,6 +82,7 @@ const EditDetailCompany: React.FC<EditDetailCompanyProps> = ({ isOpen, onClose, 
               rows={4}
               value={form.description}
               onChange={(v:any) => handleChange('description', v)}
+              placeholder="Masukkan deskripsi umum perusahaan"
               required
             />
             <div className="md:col-span-2 text-gray-500 font-medium text-md  mt-2">Informasi Kontak</div>
@@ -86,25 +90,29 @@ const EditDetailCompany: React.FC<EditDetailCompanyProps> = ({ isOpen, onClose, 
               label="Alamat"
               value={form.address}
               onChange={(e:any) => handleChange('address', e.target.value)}
+              placeholder="Masukkan alamat lengkap perusahaan"
               required
             />
             <InputField
               label="Kode Pos"
               value={form.postalCode}
               onChange={(e:any) => handleChange('postalCode', e.target.value)}
+              placeholder="Masukkan kode pos"
               required
             />
             <InputField
-              label="Gmail"
+              label="Email"
               type="email"
               value={form.email}
               onChange={(e:any) => handleChange('email', e.target.value)}
+              placeholder="Masukkan email perusahaan"
               required
             />
             <InputField
               label="Nomor Telepon"
               value={form.phone}
               onChange={(e:any) => handleChange('phone', e.target.value)}
+              placeholder="Masukkan nomor telepon perusahaan"
               required
             />
             <div className="md:col-span-2 text-gray-500 font-medium text-md  mt-2">Informasi Tambahan</div>
@@ -112,6 +120,7 @@ const EditDetailCompany: React.FC<EditDetailCompanyProps> = ({ isOpen, onClose, 
               label="Type Company"
               value={form.type}
               onChange={(e:any) => handleChange('type', e.target.value)}
+              placeholder="Masukkan tipe perusahaan (PT, CV, dll)"
               required
             />
             <InputField
@@ -119,22 +128,24 @@ const EditDetailCompany: React.FC<EditDetailCompanyProps> = ({ isOpen, onClose, 
               value={form.companySize || '0'}
               disabled
               onChange={(e:any) => handleChange('companySize', e.target.value)}
+              placeholder="Jumlah karyawan akan otomatis terisi"
               required
             />
             
             <DateField
               id="company-founded"
               label="Tanggal Didirikan"
-              defaultDate={formatDate(form.founded) || undefined}
+              defaultDate={formatDateToIndonesian(form.founded) || undefined}
               onChange={(date, dateString) => { void date; handleChange('founded', dateString); }}
-              // placeholder="Pilih Tanggal"
+              placeholder="Pilih tanggal didirikan"
               required
             />
             
             <InputField
               label="Website"
               value={form.website}
-              onChange={(e:any) => handleChange('website', e.target.value)}
+              onChange={(e:any) => handleWebsiteChange(e.target.value)}
+              placeholder="Masukkan website perusahaan"
               required
             />
             <InputField
@@ -142,6 +153,7 @@ const EditDetailCompany: React.FC<EditDetailCompanyProps> = ({ isOpen, onClose, 
               label="Industri"
               value={form.industry}
               onChange={(e:any) => handleChange('industry', e.target.value)}
+              placeholder="Masukkan bidang industri perusahaan"
               required
             />
           </div>

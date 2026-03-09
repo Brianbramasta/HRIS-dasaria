@@ -31,6 +31,13 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   const [query, setQuery] = useState("");
   const [labelMap, setLabelMap] = useState<Record<string, string>>({});
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isOpen && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -74,6 +81,8 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
       setLabelMap((prev) => ({ ...prev, [found.value]: found.text }));
     }
     onChange?.(newSelectedOptions);
+    // Close dropdown after selection
+    setIsOpen(false);
   };
 
   const removeOption = (value: string) => {
@@ -118,16 +127,16 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
                   selectedValuesText.map((text, index) => (
                     <div
                       key={index}
-                      className="group flex items-center justify-center rounded-full border-[0.7px] border-transparent bg-gray-100 py-1 pl-2.5 pr-2 text-sm text-gray-800 hover:border-gray-200 dark:bg-gray-800 dark:text-white/90 dark:hover:border-gray-800"
+                      className="group flex items-center justify-center rounded-full border-[0.7px] border-transparent bg-blue-50 py-1 pl-2.5 pr-2 text-sm text-blue-600 hover:border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:border-blue-800 max-w-[200px]"
                     >
-                      <span className="flex-initial max-w-full">{text}</span>
+                      <span className="flex-initial truncate" title={text}>{text}</span>
                       <div className="flex flex-row-reverse flex-auto">
                         <div
                           onClick={(e) => {
                             e.stopPropagation();
                             removeOption(selectedOptions[index]);
                           }}
-                          className="pl-2 text-gray-500 cursor-pointer group-hover:text-gray-400 dark:text-gray-400"
+                          className="pl-2 text-blue-500 cursor-pointer group-hover:text-blue-400 dark:text-blue-400 flex-shrink-0"
                         >
                           <svg
                             className="fill-current"
@@ -187,11 +196,12 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
 
           {isOpen && (
             <div
-              className="absolute left-0 z-40 w-full overflow-y-auto bg-white rounded-lg shadow-sm top-full max-h-select dark:bg-gray-900"
+              className="absolute left-0 z-40 w-full overflow-y-auto bg-white rounded-lg shadow-sm top-full max-h-select dark:bg-gray-900 border border-gray-300 shadow-lg dark:bg-gray-900 dark:border-gray-700"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-2 border-b border-gray-200 dark:border-gray-800">
                 <input
+                  ref={searchInputRef}
                   type="text"
                   value={query}
                   onChange={(e) => commitSearch(e.target.value)}
@@ -201,23 +211,18 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
               </div>
               <div className="flex flex-col">
                 {filteredOptions.map((option, index) => (
-                  <div
+                  <button
                     key={index}
-                    className={`hover:bg-primary/5 w-full cursor-pointer rounded-t border-b border-gray-200 dark:border-gray-800`}
+                    type="button"
+                    className={`block w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800 ${
+                      selectedOptions.includes(option.value)
+                        ? "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
+                        : ""
+                    }`}
                     onClick={() => handleSelect(option.value)}
                   >
-                    <div
-                      className={`relative flex w-full items-center p-2 pl-2 ${
-                        selectedOptions.includes(option.value)
-                          ? "bg-primary/10"
-                          : ""
-                      }`}
-                    >
-                      <div className="mx-2 leading-6 text-gray-800 dark:text-white/90">
-                        {option.text}
-                      </div>
-                    </div>
-                  </div>
+                    {option.text}
+                  </button>
                 ))}
                 {filteredOptions.length === 0 && (
                   <div className="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">Tidak ada hasil</div>

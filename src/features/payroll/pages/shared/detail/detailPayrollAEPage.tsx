@@ -39,6 +39,13 @@ export default function DetailGajiAEPage() {
         { name: "insentif", label: "Insentif", type: "input" },
         { name: "feeMitraSubnet", label: "Fee Mitra Subnet", type: "input" },
       ],
+      modalFields: [
+        { name: "komisiSales", label: "Komisi Sales", type: "input", placeholder: "150.000" },
+        { name: "komisiSurveySales", label: "Komisi Survey Sales", type: "input", placeholder: "300.000" },
+        { name: "growthReward", label: "Growth Reward", type: "input", placeholder: "1.500.000" },
+        { name: "insentif", label: "Insentif", type: "input", placeholder: "1.500.000" },
+        { name: "feeMitraSubnet", label: "Fee Mitra Subnet", type: "input", placeholder: "1.500.000" },
+      ],
       initialValues: { komisiSales: "", komisiSurveySales: "", growthReward: "", insentif: "", feeMitraSubnet: "" },
       ModalComponent: TambahTunjanganTidakTetapModalAE,
     },

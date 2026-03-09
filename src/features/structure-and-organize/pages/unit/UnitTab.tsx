@@ -42,7 +42,7 @@ export default function UnitTab({ resetKey }: Props) {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [selectedUnit, setSelectedUnit] = useState<UnitRow | null>(null);
-  const { rows_column, total, page, pageSize, setPage, setPageSize, setSearch } = useUnits();
+  const { rows_column, total, page, pageSize, setPage, setPageSize, setSearch, fetchUnits } = useUnits();
   const fileStore = useFileStore();
 
   return (
@@ -101,6 +101,12 @@ export default function UnitTab({ resetKey }: Props) {
         onClose={() => {
           setIsAddOpen(false);
           fileStore.clearSkFile();
+          fetchUnits();
+        }}
+        onSuccess={() => {
+          setIsAddOpen(false);
+          fileStore.clearSkFile();
+          fetchUnits();
         }}
       />
       <EditUnitModal
@@ -109,6 +115,12 @@ export default function UnitTab({ resetKey }: Props) {
           setIsEditOpen(false);
           setSelectedUnit(null);
           fileStore.clearSkFile();
+        }}
+        onSuccess={() => {
+          setIsEditOpen(false);
+          setSelectedUnit(null);
+          fileStore.clearSkFile();
+          fetchUnits();
         }}
         unit={selectedUnit}
       />
@@ -124,6 +136,7 @@ export default function UnitTab({ resetKey }: Props) {
           setIsDeleteOpen(false);
           setSelectedUnit(null);
           fileStore.clearSkFile();
+          fetchUnits();
         }}
       />
     </>

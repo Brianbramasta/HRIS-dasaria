@@ -13,7 +13,7 @@ interface Props {
 }
 
 const MediaSosialModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSubmit, submitting = false }) => {
-  const { title, form, setForm } = useMediaSosialModal({ isOpen, initialData });
+  const { title, form, setForm, handleSocialMediaChange } = useMediaSosialModal({ isOpen, initialData });
 
   const content = (
     <div className="space-y-8">
@@ -30,7 +30,7 @@ const MediaSosialModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSub
               label="Facebook"
               id="facebook"
               value={form.facebook || ''}
-              onChange={(e) => setForm((p) => ({ ...p, facebook: e.target.value }))}
+              onChange={(e) => handleSocialMediaChange('facebook', e.target.value)}
               placeholder="https://www.facebook.com/username"
             />
           </div>
@@ -39,7 +39,7 @@ const MediaSosialModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSub
               label="X.com"
               id="xCom"
               value={form.xCom || ''}
-              onChange={(e) => setForm((p) => ({ ...p, xCom: e.target.value }))}
+              onChange={(e) => handleSocialMediaChange('xCom', e.target.value)}
               placeholder="https://x.com/username"
             />
           </div>
@@ -48,7 +48,7 @@ const MediaSosialModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSub
               label="Linkedin"
               id="linkedin"
               value={form.linkedin || ''}
-              onChange={(e) => setForm((p) => ({ ...p, linkedin: e.target.value }))}
+              onChange={(e) => handleSocialMediaChange('linkedin', e.target.value)}
               placeholder="https://www.linkedin.com/in/username"
             />
           </div>
@@ -57,7 +57,7 @@ const MediaSosialModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSub
               label="Instagram"
               id="instagram"
               value={form.instagram || ''}
-              onChange={(e) => setForm((p) => ({ ...p, instagram: e.target.value }))}
+              onChange={(e) => handleSocialMediaChange('instagram', e.target.value)}
               placeholder="https://instagram.com/username"
             />
           </div>
@@ -66,7 +66,7 @@ const MediaSosialModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSub
               label="Akun Sosial Media Orang Terdekat"
               id="akunSosialMediaTerdekat"
               value={form.akunSosialMediaTerdekat || ''}
-              onChange={(e) => setForm((p) => ({ ...p, akunSosialMediaTerdekat: e.target.value }))}
+              onChange={(e) => handleSocialMediaChange('akunSosialMediaTerdekat', e.target.value)}
               placeholder="https://..."
               required
             />

@@ -16,6 +16,7 @@ interface FilterModalProps<T> {
   onAddFilterItem: (value: string) => void;
   onRemoveFilterItem: (item: string) => void;
   onApplyFilter: () => void;
+  onResetFilter: () => void;
 }
 
 export function FilterModal<T>({
@@ -31,6 +32,7 @@ export function FilterModal<T>({
   onAddFilterItem,
   onRemoveFilterItem,
   onApplyFilter,
+  onResetFilter,
 }: FilterModalProps<T>) {
   return (
     <Modal 
@@ -103,6 +105,7 @@ export function FilterModal<T>({
           </div>
         </div>
         <div className="flex justify-end gap-3">
+          <Button variant="outline" onClick={onResetFilter}>Reset Filter</Button>
           <Button variant="outline" onClick={onClose}>Tutup</Button>
           <Button variant="primary" onClick={onApplyFilter}>
             Cari

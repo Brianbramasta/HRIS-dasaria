@@ -3,10 +3,9 @@ import { useOrganizationHistory, OrganizationChangeItem } from '@/features/emplo
 import Button from '@/components/ui/button/Button';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { ChevronDown } from 'react-feather';
-import EditRiwayatOrganisasiModal from '@/features/employee/components/modals/organization-history/EditOrganizationHistoryModal';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IconPencil, IconFileDetail } from '@/icons/components/icons';
+import { IconFileDetail } from '@/icons/components/icons';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 
 type OrgHistoryListRow = OrganizationChangeItem & { statusPerubahan: string };
@@ -21,26 +20,17 @@ export default function OrganizationHistoryPage() {
     total,
     page,
     limit,
-    isEditOrgOpen,
     isDropdownOpen,
-    selectedRow,
     handleSearchChange,
     handleSortChange,
     handlePageChange,
     handleRowsPerPageChange,
     handleDateRangeFilterChange,
     dateRangeFilters,
-    handleAddOrganization,
-    handleEditOrganization,
-    handleCloseModal,
-    handleSubmitModal,
     handleDropdownToggle,
     handleDropdownClose,
     handleNavigateToHR,
     handleNavigateToAtasan,
-    // setSelectedRow,
-    // setIsEditOrgOpen,
-    detail,
   } = useOrganizationHistory();
 
   // Define columns
@@ -68,6 +58,10 @@ export default function OrganizationHistoryPage() {
         id: 'statusPerubahan',
         label: 'Status Perubahan',
         align: 'center',
+        filterOptions: [
+          { label: 'Rekomendasi', value: 'Rekomendasi' },
+          { label: 'Selesai', value: 'Selesai' },
+        ],
         format: (v: string) => {
           const val = (v as string) || '-';
           // Basic styling for different statuses
@@ -90,24 +84,24 @@ export default function OrganizationHistoryPage() {
       {
         icon: <IconFileDetail />,
         className: 'text-gray-700',
-        condition: (row) => Boolean((row as any)?.decree_file),
+        // condition: (row) => Boolean((row as any)?.decree_file),
         onClick: (row) => {
-          // console.log(row);
+          // //console.log(row);
           // return;
           // navigate(`/organization-history/preview?id=${row.id}`);
-          navigate(`/employee-data/${row.employee_id}?mode=view&tab=organization-history`);
+          navigate(`/organization-history/detail?id=${row.id}`);
         },
       },
-      {
-        icon: <IconPencil />,
-        className: 'text-gray-700',
-        condition: (row) => !(row as any)?.decree_file,
-        onClick: (row) => {
-          handleEditOrganization(row);
-        },
-      }
+      // {
+      //   icon: <IconPencil />,
+      //   className: 'text-gray-700',
+      //   condition: (row) => !(row as any)?.decree_file,
+      //   onClick: (row) => {
+      //     handleEditOrganization(row);
+      //   },
+      // }
     ],
-    [navigate, handleEditOrganization]
+    [navigate]
   );
 
   return (
@@ -129,7 +123,7 @@ export default function OrganizationHistoryPage() {
         dateRangeFilters={dateRangeFilters}
         emptyMessage="Belum ada perubahan organisasi"
         addButtonLabel="Tambah Organisasi"
-        onAdd={handleAddOrganization}
+        onAdd={() => navigate('/organization-history/detail?mode=add')}
         searchPlaceholder="Cari berdasarkan kata kunci"
         onSearchChange={handleSearchChange}
         onSortChange={handleSortChange}
@@ -162,14 +156,6 @@ export default function OrganizationHistoryPage() {
             </Dropdown>
           </div>
         }
-      />
-
-      <EditRiwayatOrganisasiModal
-        isOpen={isEditOrgOpen}
-        onClose={handleCloseModal}
-        onSubmit={handleSubmitModal}
-        // submitting={isSubmitting}
-        initialData={selectedRow ? detail || undefined : undefined}
       />
     </div>
   );

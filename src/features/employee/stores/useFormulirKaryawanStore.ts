@@ -100,6 +100,7 @@ const initialFormData: FormulirKaryawanData = {
     npwp: '',
     ptkpStatus: '',
     noBpjsKesehatan: '',
+    tipeBpjsKesehatan: '',
     statusBpjsKesehatan: '',
     noBpjsKetenagakerjaan: '',
     statusBpjsKetenagakerjaan: '',
@@ -123,9 +124,9 @@ const initialStepCompleted: StepCompletionStatus = {
 const saveToStorage = (data: any) => {
   try {
     // Convert File objects to serializable format
-    const serializedData = JSON.stringify(data, (key, value) => {
-      // console.log('key, value', key, value);
-      console.log('key, value', key, value);
+    const serializedData = JSON.stringify(data, (_key, value) => {
+      // //console.log('key, value', _key, value);
+      //console.log('key, value', _key, value);
       if (value instanceof File) {
         return {
           _isFile: true,
@@ -177,7 +178,6 @@ export const useFormulirKaryawanStore = create<FormulirStore>((set, get) => {
   stepCompleted: savedData?.stepCompleted || initialStepCompleted,
   isLoading: false,
   error: null,
-
   // Actions
   setCurrentStep: (step) => {
     set({ currentStep: step });
@@ -239,7 +239,7 @@ export const useFormulirKaryawanStore = create<FormulirStore>((set, get) => {
   },
 
   updateStep3Employee: (data) => {
-    console.log('updateStep3Employee', data);
+    //console.log('updateStep3Employee', data);
     set((state) => {
       const newState = {
         formData: {
@@ -372,7 +372,7 @@ export const useFormulirKaryawanStore = create<FormulirStore>((set, get) => {
         {
           if (totalSteps === 5) {
             const s = formData.step3Employee;
-            console.log('step',s);
+            //console.log('step',s);
             return !!(
               
               s.position &&
@@ -386,9 +386,10 @@ export const useFormulirKaryawanStore = create<FormulirStore>((set, get) => {
             step3.bank &&
             step3.namaAkunBank &&
             step3.noRekening &&
-            step3.npwp &&
-            step3.noBpjsKesehatan &&
-            step3.statusBpjsKesehatan
+            step3.npwp 
+            // &&
+            // step3.noBpjsKesehatan &&
+            // step3.statusBpjsKesehatan
           );
         }
 
@@ -400,9 +401,10 @@ export const useFormulirKaryawanStore = create<FormulirStore>((set, get) => {
               step3.bank &&
               step3.namaAkunBank &&
               step3.noRekening &&
-              step3.npwp &&
-              step3.noBpjsKesehatan &&
-              step3.statusBpjsKesehatan
+              step3.npwp 
+              // &&
+              // step3.noBpjsKesehatan &&
+              // step3.statusBpjsKesehatan
             );
           }
           const step4 = formData.step4;

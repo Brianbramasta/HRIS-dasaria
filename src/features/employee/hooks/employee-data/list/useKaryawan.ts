@@ -34,13 +34,13 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
   const [showShareModal, setShowShareModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteSubmitting, setDeleteSubmitting] = useState(false);
-  const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/data-karyawan/form` : '/data-karyawan/form';
+  const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/employee-data/form` : '/employee-data/form';
 
   /**
    * Transform API response data to Karyawan interface
    */
   const transformApiDataToKaryawan = (apiData: EmployeeListItem): Karyawan => {
-    console.log('Transforming API data:', apiData);
+    //console.log('Transforming API data:', apiData);
 
     return {
       // Core Identity

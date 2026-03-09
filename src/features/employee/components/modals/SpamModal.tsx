@@ -1,92 +1,47 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { Modal } from "@/components/ui/modal";
 import { useSpamModalStore } from "@/stores/useSpamModalStore";
-import { useNavigate } from "react-router";
-
-interface ContractData {
-  id: string;
-  employeeName: string;
-  avatar: string;
-  contractDuration: string;
-  durationColor: "orange" | "red" | "green"; // orange: bulan, red: minggu, green: normal
-}
+import { useNavigate, useLocation } from "react-router";
 
 interface SpamModalProps {
-  data?: ContractData[];
+  // data?: ContractData[]; // No longer needed as it's in the store
 }
 
-export const SpamModal: React.FC<SpamModalProps> = ({
-  data = [
-    {
-      id: "1",
-      employeeName: "Lindsey Curtis",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lindsey",
-      contractDuration: "2 Bulan",
-      durationColor: "orange",
-    },
-    {
-      id: "2",
-      employeeName: "Lindsey Curtis",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lindsey2",
-      contractDuration: "2 Minggu",
-      durationColor: "red",
-    },
-    {
-      id: "3",
-      employeeName: "Lindsey Curtis",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lindsey3",
-      contractDuration: "1 Bulan",
-      durationColor: "orange",
-    },
-    {
-      id: "4",
-      employeeName: "Lindsey Curtis",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lindsey4",
-      contractDuration: "2 Bulan",
-      durationColor: "orange",
-    },
-    {
-      id: "5",
-      employeeName: "Lindsey Curtis",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lindsey5",
-      contractDuration: "2 Bulan",
-      durationColor: "orange",
-    }, {
-      id: "6",
-      employeeName: "Lindsey Curtis",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lindsey6",
-      contractDuration: "2 Bulan",
-      durationColor: "orange",
-    },
-  ],
-}) => {
-  const { isOpen, closeModal } = useSpamModalStore();
+export const SpamModal: React.FC<SpamModalProps> = () => {
+  const { 
+    isOpen, 
+    closeModal, 
+    displayData, 
+    fetchEmployeesNearContractEnd, 
+    getDurationBgColor, 
+    isEmployeePage, 
+    handleProcess,
+    resetModalState
+  } = useSpamModalStore();
+  
   const navigate = useNavigate();
-  const [selectedEmployees] = useState<Set<string>>(
-    new Set()
-  );
+  const location = useLocation();
+  const [prevPathname, setPrevPathname] = React.useState(location.pathname);
 
-
-
-  const getDurationBgColor = (color: "orange" | "red" | "green") => {
-    switch (color) {
-      case "orange":
-        return "bg-orange-100 text-orange-700";
-      case "red":
-        return "bg-red-100 text-red-700";
-      case "green":
-        return "bg-green-100 text-green-700";
-      default:
-        return "bg-gray-100 text-gray-700";
+  // Fetch data only when accessing employee pages and reset state on page change
+  useEffect(() => {
+    // Reset state if page has changed
+    if (prevPathname !== location.pathname) {
+      resetModalState();
+      setPrevPathname(location.pathname);
     }
-  };
-
-  const handleProcess = () => {
-    console.log("Processing selected employees:", Array.from(selectedEmployees));
-    navigate("/contract-extension");
-    // Handle the process here
-    closeModal();
-  };
+    
+    if (isEmployeePage(location.pathname)) {
+      //console.log('On employee page, checking for contract end data...');
+      fetchEmployeesNearContractEnd();
+    } else {
+      // Close modal and reset state if not on employee page
+      if (isOpen) {
+        closeModal();
+      }
+      resetModalState();
+    }
+  }, [location.pathname, prevPathname, isOpen, closeModal, fetchEmployeesNearContractEnd, isEmployeePage, resetModalState]);
 
   return (
     <Modal
@@ -128,7 +83,7 @@ export const SpamModal: React.FC<SpamModalProps> = ({
                 </tr>
               </thead>
               <tbody>
-                {data.map((item) => (
+                {displayData.map((item) => (
                   <tr
                     key={item.id}
                     className="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"
@@ -171,7 +126,7 @@ export const SpamModal: React.FC<SpamModalProps> = ({
             Ingatkan Nanti
           </button>
           <button
-            onClick={handleProcess}
+            onClick={() => handleProcess(navigate)}
             className="flex-1 rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white transition-colors hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
           >
             Proses Perpanjangan

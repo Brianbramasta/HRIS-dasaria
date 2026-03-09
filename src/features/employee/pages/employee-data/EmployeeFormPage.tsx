@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import ProgressBarWithOutsideLabel from '../../../../components/ui/progressbar/ProgressBarWithOutsideLabel';
 import Step01PersonalData from '../../components/form-steps/Step01PersonalData';
 import Step02EducationalBackground from '../../components/form-steps/Step02EducationalBackground';
@@ -38,7 +39,16 @@ export default function FormulirKaryawanPage() {
     handleSubmit,
     handleBackToHome,
     handleBackToDataPage,
+    resetForm,
   } = useFormulirKaryawan();
+
+  // Check localStorage and reset if no draft data exists
+  useEffect(() => {
+    const hasDraftData = localStorage.getItem('formulir_karyawan_draft');
+    if (!hasDraftData) {
+      resetForm();
+    }
+  }, [resetForm]);
 
   const renderStep = () => {
     switch (currentStep) {

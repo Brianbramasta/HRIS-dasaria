@@ -3,7 +3,7 @@ import type { CompanyListItem } from '../../../types/OrganizationApiTypes';
 import InputField from '@/components/shared/field/InputField';
 import TextAreaField from '@/components/shared/field/TextAreaField';
 import SelectField from '@/components/shared/field/SelectField';
-import FileInput from '@/components/form/input/FileInput';
+import FIleField from '@/components/shared/field/FIleField';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
 import {  TrashBinIcon } from '@/icons';
 import { IconPlus } from '@/icons/components/icons';
@@ -80,14 +80,14 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
             />
 
           <div className="mt-4 hidden md:grid md:grid-cols-12 gap-3 text-sm font-medium">
-            <div className="md:col-span-4">Nama Dokumen <span className="ml-1 text-error-500">*</span></div>
-            <div className="md:col-span-4">No. Dokumen <span className="ml-1 text-error-500">*</span></div>
-            <div className="md:col-span-4">Unggah file <span className="ml-1 text-error-500">*</span></div>
+            <div className="md:col-span-3">Nama Dokumen <span className="ml-1 text-error-500">*</span></div>
+            <div className="md:col-span-3">No. Dokumen <span className="ml-1 text-error-500">*</span></div>
+            <div className="md:col-span-6">Unggah file <span className="ml-1 text-error-500">*</span></div>
           </div>
 
           {documents.map((doc, idx) => (
             <div key={idx} className="grid grid-cols-12 items-start gap-3 mb-3">
-              <div className="col-span-12 md:col-span-4">
+              <div className="col-span-12 md:col-span-3">
                 <InputField
                   label="Nama Dokumen"
                   labelClassName="text-sm font-medium md:hidden"
@@ -98,7 +98,7 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
                   className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
-              <div className="col-span-12 md:col-span-4">
+              <div className="col-span-12 md:col-span-3">
                 <InputField
                   label="No. Dokumen"
                   labelClassName="text-sm font-medium md:hidden"
@@ -109,11 +109,11 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({ isOpen, onClose, onSu
                   className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
-              <div className="col-span-12 md:col-span-4">
+              <div className="col-span-12 md:col-span-6">
                 <label className="text-sm font-medium md:hidden mb-2 block">Unggah file</label>
                 <div className="flex flex-col gap-2 md:flex-row md:items-center">
                   <div className="flex-1">
-                    <FileInput onChange={(e) => handleDocFileChange(idx, e)} required />
+                    <FIleField onChange={(e) => handleDocFileChange(idx, e)} required />
                   </div>
                   {idx === documents.length - 1 ? (
                     <div className="flex flex-col gap-2 w-full md:flex-row md:w-auto">

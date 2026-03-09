@@ -30,7 +30,7 @@ export function useUploadExcelModal(args: {
     onDrop,
     multiple: false,
     maxSize: MAX_SIZE,
-    accept: { 'text/csv': ['.csv'] },
+    accept: { 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'], 'application/vnd.ms-excel': ['.xls'] },
   });
 
   const handleSubmit = async (e: React.FormEvent) => {

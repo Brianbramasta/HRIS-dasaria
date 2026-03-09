@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { IconEyeOpen, IconEyeClose } from '@/icons/components/icons';
 import Checkbox from '../../../components/form/input/Checkbox';
 import Button from '../../../components/ui/button/Button';
@@ -19,6 +20,19 @@ interface LoginFormProps {
 }
 
 export default function LoginForm({ onSubmit, isLoading = false, error = null, formData, showPassword, keepMeLoggedIn, onInputChange, onKeepMeLoggedInChange, onToggleShowPassword }: LoginFormProps) {
+  const [adminContact, setAdminContact] = useState('+62 851-4250-5733');
+
+  useEffect(() => {
+    const savedContact = localStorage.getItem('adminContact');
+    if (savedContact) {
+      setAdminContact(savedContact);
+    }
+  }, []);
+
+  const handleContactClick = () => {
+    const formattedNumber = adminContact.replace(/[^\d+]/g, '');
+    window.open(`https://wa.me/${formattedNumber}`, '_blank');
+  };
 
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -115,7 +129,10 @@ export default function LoginForm({ onSubmit, isLoading = false, error = null, f
 
       <div className="mt-6 text-sm text-center text-gray-600 dark:text-gray-400">
         Don't have an account?{' '}
-        <span className="font-medium text-blue-600 cursor-pointer hover:underline">
+        <span 
+          className="font-medium text-blue-600 cursor-pointer hover:underline"
+          onClick={handleContactClick}
+        >
           Contact admin
         </span>
       </div>

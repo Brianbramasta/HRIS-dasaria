@@ -73,7 +73,7 @@ const EditEmployeePositionModal: React.FC<EditEmployeePositionModalProps> = ({ i
             defaultValue={jabatan}
             onChange={(v) => {
               setJabatan(v);
-              console.log('value', v);
+              //console.log('value', v);
             }}
             onSearch={async (q) => {
               await searchPositions(q);

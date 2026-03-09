@@ -8,15 +8,16 @@ type FormValues = {
 
 export function useEditFeeModal(args: {
     defaultValues?: any;
-    onSave: (values: { nominalValue: number }) => void;
+    onSave: (values: { amount: number }) => void;
     onClose: () => void;
 }) {
     const { defaultValues, onSave, onClose } = args;
 
     const initial: FormValues = useMemo(
         () => {
-            const nominalVal = defaultValues?.nominal ?? 0;
-            const namaFeeVal = defaultValues?.namaFee ?? '';
+            // Handle both API format and mapped format
+            const nominalVal = defaultValues?.nominal ?? defaultValues?.amount ?? 0;
+            const namaFeeVal = defaultValues?.namaFee ?? defaultValues?.name ?? '';
 
             return {
                 namaFee: namaFeeVal,
@@ -29,8 +30,8 @@ export function useEditFeeModal(args: {
     const [form, setForm] = useState<FormValues>(initial);
 
     useMemo(() => {
-        const nominalVal = defaultValues?.nominal ?? 0;
-        const namaFeeVal = defaultValues?.namaFee ?? '';
+        const nominalVal = defaultValues?.nominal ?? defaultValues?.amount ?? 0;
+        const namaFeeVal = defaultValues?.namaFee ?? defaultValues?.name ?? '';
         setForm({
             namaFee: namaFeeVal,
             nominal: nominalVal ? formatCurrency(nominalVal) : '',
@@ -43,7 +44,7 @@ export function useEditFeeModal(args: {
 
     const handleSubmit = () => {
         const nominalNumber = parseCurrency(form.nominal) || 0;
-        onSave({ nominalValue: nominalNumber });
+        onSave({ amount: nominalNumber });
         onClose();
     };
 

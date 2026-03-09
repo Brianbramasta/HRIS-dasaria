@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useApiApps } from './api/useApiApps';
 
 export interface RoleData {
   no: number;
@@ -16,6 +17,7 @@ export interface LayananData {
 
 export default function useRoleManagement() {
   const navigate = useNavigate();
+  const { apps, fetchApps, deleteApp, loading: appsLoading } = useApiApps();
 
   const [isAddServiceModalOpen, setIsAddServiceModalOpen] = useState(false);
   const [isDeleteServiceModalOpen, setIsDeleteServiceModalOpen] = useState(false);
@@ -34,16 +36,6 @@ export default function useRoleManagement() {
     { no: 4, idRole: '225150206', role: 'Staff', sistemLayanan: 'HRIS' },
   ]);
 
-  // Data Sistem Layanan
-  const [rawLayananData] = useState<LayananData[]>([
-    { no: 1, idLayanan: '225150207', sistemLayanan: 'HRIS' },
-    { no: 2, idLayanan: '225150205', sistemLayanan: 'IAM' },
-    { no: 3, idLayanan: '225150206', sistemLayanan: 'ERP' },
-    { no: 4, idLayanan: '225150206', sistemLayanan: 'OMB' },
-    { no: 5, idLayanan: '225150206', sistemLayanan: 'BMS' },
-    { no: 6, idLayanan: '225150206', sistemLayanan: 'Customer Chat Care' },
-  ]);
-
   const roleData = useMemo(() => {
     return rawRoleData.filter((row) => {
       // Filter by Sistem Layanan (multi-select)
@@ -58,7 +50,13 @@ export default function useRoleManagement() {
   }, [rawRoleData, columnFilters]);
 
   const layananData = useMemo(() => {
-    return rawLayananData.filter((row) => {
+    const mappedData = apps.map((app, index) => ({
+      no: index + 1,
+      idLayanan: app.id,
+      sistemLayanan: app.name,
+    }));
+
+    return mappedData.filter((row) => {
       // Filter by Sistem Layanan (multi-select)
       const selectedLayanan = columnFilters['sistemLayanan'];
       if (selectedLayanan && selectedLayanan.length > 0) {
@@ -66,7 +64,7 @@ export default function useRoleManagement() {
       }
       return true;
     });
-  }, [rawLayananData, columnFilters]);
+  }, [apps, columnFilters]);
 
   const handleAddRole = useCallback(() => {
     navigate('/role-management-access/add');
@@ -95,11 +93,15 @@ export default function useRoleManagement() {
     setSelectedServiceToDelete(null);
   }, []);
 
-  const handleConfirmDeleteService = useCallback(() => {
-    console.log('Deleting service:', selectedServiceToDelete);
-    // TODO: Implement actual delete logic here
-    handleCloseDeleteServiceModal();
-  }, [selectedServiceToDelete, handleCloseDeleteServiceModal]);
+  const handleConfirmDeleteService = useCallback(async () => {
+    if (selectedServiceToDelete) {
+      const success = await deleteApp(selectedServiceToDelete.idLayanan);
+      if (success) {
+        await fetchApps();
+        handleCloseDeleteServiceModal();
+      }
+    }
+  }, [selectedServiceToDelete, deleteApp, fetchApps, handleCloseDeleteServiceModal]);
 
   const handleCloseDeleteRoleModal = useCallback(() => {
     setIsDeleteRoleModalOpen(false);
@@ -107,7 +109,7 @@ export default function useRoleManagement() {
   }, []);
 
   const handleConfirmDeleteRole = useCallback(() => {
-    console.log('Deleting role:', selectedRoleToDelete);
+    //console.log('Deleting role:', selectedRoleToDelete);
     // TODO: Implement actual delete logic here
     handleCloseDeleteRoleModal();
   }, [selectedRoleToDelete, handleCloseDeleteRoleModal]);
@@ -167,5 +169,8 @@ export default function useRoleManagement() {
     handleConfirmDeleteRole,
     columnFilters,
     handleColumnFilterChange,
+    // API Props
+    fetchApps,
+    appsLoading,
   };
 }

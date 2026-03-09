@@ -16,7 +16,7 @@ import { useStep2Data } from '../../hooks/employee-data/form/useFromStep';
 
 export const Step02EducationalBackground: React.FC = () => {
   
-  const { pendidikanTerakhir, addEducationRow, removeEducationRow, updateEducationField, handleChange, step2 } = useStep2Data();
+  const { pendidikanTerakhir, addEducationRow, removeEducationRow, updateEducationField, handleChange, handleSocialMediaChange, step2 } = useStep2Data();
   
 
   // fetching moved to `useStep2Data` hook
@@ -98,7 +98,7 @@ export const Step02EducationalBackground: React.FC = () => {
                         options={pendidikanTerakhir}
                         defaultValue={edu.jenjang}
                         onChange={(value) => updateEducationField(index, 'jenjang', value)}
-                        placeholder="Select"
+                        
                         required
                       />
                     </div>
@@ -116,7 +116,7 @@ export const Step02EducationalBackground: React.FC = () => {
                       <InputField
                         id={`gelar-${index}`}
                         label="Gelar"
-                        placeholder="Masukkan gelar"
+                        placeholder="Masukkan deskripsi"
                         value={edu.gelar}
                         onChange={(e) => updateEducationField(index, 'gelar', e.target.value)}
                       />
@@ -261,7 +261,7 @@ export const Step02EducationalBackground: React.FC = () => {
               label="Facebook"
               placeholder="https://www.facebook.com/"
               value={step2.facebook}
-              onChange={(e) => handleChange('facebook', e.target.value)}
+              onChange={(e) => handleSocialMediaChange('facebook', e.target.value)}
             />
           </div>
 
@@ -271,7 +271,7 @@ export const Step02EducationalBackground: React.FC = () => {
               label="X.com"
               placeholder="https://x.com/"
               value={step2.xCom}
-              onChange={(e) => handleChange('xCom', e.target.value)}
+              onChange={(e) => handleSocialMediaChange('xCom', e.target.value)}
             />
           </div>
 
@@ -281,7 +281,7 @@ export const Step02EducationalBackground: React.FC = () => {
               label="LinkedIn"
               placeholder="https://www.linkedin.com/"
               value={step2.linkedin}
-              onChange={(e) => handleChange('linkedin', e.target.value)}
+              onChange={(e) => handleSocialMediaChange('linkedin', e.target.value)}
             />
           </div>
 
@@ -291,7 +291,7 @@ export const Step02EducationalBackground: React.FC = () => {
               label="Instagram"
               placeholder="https://instagram.com/"
               value={step2.instagram}
-              onChange={(e) => handleChange('instagram', e.target.value)}
+              onChange={(e) => handleSocialMediaChange('instagram', e.target.value)}
             />
           </div>
 
@@ -301,7 +301,7 @@ export const Step02EducationalBackground: React.FC = () => {
               label="Akun Sosial Media Orang Terdekat"
               placeholder="https://www.linkedin.com/"
               value={step2.akunSosialMediaTerdekat}
-              onChange={(e) => handleChange('akunSosialMediaTerdekat', e.target.value)}
+              onChange={(e) => handleSocialMediaChange('akunSosialMediaTerdekat', e.target.value)}
               required
             />
           </div>

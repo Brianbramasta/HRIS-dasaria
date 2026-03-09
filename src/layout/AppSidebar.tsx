@@ -54,7 +54,7 @@ const navItems: NavItem[] = [
       { name: "Konfigurasi Penggajian", path: "/payroll-configuration", pro: false },
       { name: "Periode Gajian", path: "/payroll-period", pro: false },
       { name: "Persetujuan Periode Gajian", path: "/payroll-period-approval", pro: false },
-      { name: "Distribusi Gaji", path: "/salary-distribution", pro: false },
+      { name: "Distribusi Gaji & Slip Gaji", path: "/salary-distribution", pro: false },
       { name: "Kasbon", path: "/cash-advance", pro: false },
 
     ],
@@ -174,7 +174,7 @@ const AppSidebar: React.FC = () => {
                   openSubmenu?.type === menuType && openSubmenu?.index === index
                 ) || nav.subItems?.some((s) => isActive(s.path));
                 const color = sectionActive ? 'var(--color-brand-500)' : '#6C757D';
-                console.log('nav name', nav.name)
+                //console.log('nav name', nav.name)
                 const iconNode =
                   nav.name === "Data Master Karyawan"
                     ? IconKaryawan({ size: 16, color })
@@ -267,7 +267,11 @@ const AppSidebar: React.FC = () => {
                       to={subItem.path}
                       onClick={() => {
                         if (nav.name === "Data Master Karyawan") {
-                          openModal();
+                          // Don't open modal for contract extension pages
+                          const excludedPaths = ['/contract-extension', '/employee-data/contract-extension'];
+                          if (!excludedPaths.some(path => subItem.path.startsWith(path))) {
+                            openModal();
+                          }
                         }
                       }}
                       className={`menu-dropdown-item ${isActive(subItem.path)

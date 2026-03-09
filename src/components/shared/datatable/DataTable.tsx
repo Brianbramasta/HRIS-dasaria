@@ -302,8 +302,13 @@ export function DataTable<T = any>({
           <div className="flex items-center gap-3">
 
             {filterable && (
-              <Button onClick={() => filterModalHook.setFilterModalOpen(true)} variant="outline" size="sm">
-                <FilterLineIcon />
+              <Button 
+                onClick={() => filterModalHook.setFilterModalOpen(true)} 
+                variant={filterModalHook.isFilterActive ? "custom" : "outline"} 
+                className={filterModalHook.isFilterActive ? "border-blue-500 border text-blue-500 " : ""}
+                size="sm"
+              >
+                <FilterLineIcon className={filterModalHook.isFilterActive ? "text-blue-500" : ""} />
                 Filter
               </Button>
             )}
@@ -493,6 +498,7 @@ export function DataTable<T = any>({
         onAddFilterItem={filterModalHook.handleAddFilterItem}
         onRemoveFilterItem={filterModalHook.handleRemoveFilterItem}
         onApplyFilter={() => filterModalHook.handleApplyFilter(setVisibleColumns)}
+        onResetFilter={() => filterModalHook.handleResetFilter(setVisibleColumns)}
       />
 
       <ExportModal

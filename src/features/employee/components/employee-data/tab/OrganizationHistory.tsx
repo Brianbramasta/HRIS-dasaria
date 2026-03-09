@@ -30,7 +30,7 @@ export default function OrganizationHistoryTab({employeeId,  isEditable }: Props
         filterable
         emptyMessage="Belum ada riwayat organisasi"
         // addButtonLabel="Tambah Riwayat"
-        // onAdd={() => console.log('Add Org History')}
+        // onAdd={() => //console.log('Add Org History')}
       />
   );
 }

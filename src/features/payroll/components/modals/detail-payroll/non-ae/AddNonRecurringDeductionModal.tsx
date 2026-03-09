@@ -1,34 +1,72 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import Input from '@/components/form/input/InputField';
 import type { ModalProps } from '@/features/payroll/components/layouts/LayoutDetail';
 import { useAddNonRecurringDeductionModal } from '@/features/payroll/hooks/modals/detail-payroll/non-ae/useAddNonRecurringDeductionModal';
+import { useApiPayrollPeriod } from '@/features/payroll/hooks/api/useApiPayrollPeriod';
+import { useParams } from 'react-router-dom';
+import { formatInputCurrency, parseCurrency } from '@/utils/formatCurrency';
 
-type Props = ModalProps;
+type Props = ModalProps & {
+  onRefresh?: () => void;
+};
 
 const TambahPotonganTidakTetapModal: React.FC<Props> = ({
   isOpen,
   onClose,
   defaultValues,
   onSave,
+  fields,
+  onRefresh,
 }) => {
   const { form, setField, handleSubmit } = useAddNonRecurringDeductionModal(defaultValues as any);
+  const { id: payrollId } = useParams();
+  const { updateNonFixDeduction } = useApiPayrollPeriod();
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmitWithApi = async () => {
+    setSubmitting(true);
+    try {
+      if (payrollId) {
+        const nonFixedDeductions = Object.entries(form ?? {})
+          .map(([key, rawAmount]) => {
+            const match = key.match(/^nfd_(.+)$/);
+            if (!match) return null;
+             const componenId = match[1];
+            const amount = parseCurrency(String(rawAmount ?? ''));
+            return { componenId, amount: amount === null ? '' : String(amount) };
+          })
+          .filter(Boolean) as { componenId: string; amount: string }[];
+
+        const ok = await updateNonFixDeduction({ payrollId, nonFixedDeductions });
+        if (!ok) return;
+      }
+
+      onSave(form ?? {});
+      onClose();
+      // Refresh payroll detail data
+      onRefresh?.();
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const content = (
     <div className="space-y-5">
-      <div>
-        <Label>BPJS Kesehatan JKN (1%)</Label>
-        <Input placeholder="100.000" value={form.jkn1} onChange={(e) => setField('jkn1', e.target.value)} />
-      </div>
-      <div>
-        <Label>BPJS Ketenagakerjaan JHT (2%)</Label>
-        <Input placeholder="200.000" value={form.jht2} onChange={(e) => setField('jht2', e.target.value)} />
-      </div>
-      <div>
-        <Label>Kasbon</Label>
-        <Input placeholder="500.000" value={form.kasbon} onChange={(e) => setField('kasbon', e.target.value)} />
-      </div>
+      {(fields ?? []).map((f) => (
+        <div key={f.name}>
+          <Label>{f.label}</Label>
+          <Input
+            type={f.inputType ?? 'text'}
+            placeholder={f.placeholder ?? '0'}
+            value={formatInputCurrency(form?.[f.name] ?? '')}
+            onChange={(e) => setField(f.name, formatInputCurrency(e.target.value))}
+            disabled={f.disabled}
+            readonly={f.readonly}
+          />
+        </div>
+      ))}
     </div>
   );
 
@@ -38,8 +76,8 @@ const TambahPotonganTidakTetapModal: React.FC<Props> = ({
       isOpen={isOpen}
       onClose={onClose}
       content={content}
-      handleSubmit={() => handleSubmit(onSave, onClose)}
-      submitting={false}
+      handleSubmit={payrollId ? handleSubmitWithApi : () => handleSubmit(onSave, onClose)}
+      submitting={submitting}
       maxWidth="max-w-lg"
       confirmTitleButton="Simpan Perubahan"
       closeTitleButton="Tutup"

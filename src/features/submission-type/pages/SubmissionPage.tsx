@@ -3,7 +3,7 @@
 // - Menyediakan Select (Pengunduran Diri/Kasbon) di toolbar atas
 // - Menampilkan tombol "Tambah Pengajuan" menggunakan Button bawaan DataTable
 // - Integrasi: Buka popup Pengajuan Kasbon saat memilih "Kasbon" di Select atau klik tombol Tambah
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import DataTable from "../../../components/shared/datatable/DataTable";
 import Select from "../../../components/form/Select";
 // import { FileText } from "react-feather";
@@ -12,12 +12,16 @@ import { IconFileDetail as FileText } from "@/icons/components/icons";
 import AddPengajuanKasbonModal from "@/features/submission-type/components/modals/cash-advance-submission/AddCashAdvanceSubmissionModal";
 import AddPengajuanPengunduranDiriModal from "@/features//submission-type/components/modals/resignation-submission/AddResignationSubmissionModal";
 import { addNotification } from "@/stores/notificationStore";
+import { useApiSubmissionType } from "@/features/submission-type/hooks/api/useApiSubmissionType";
+import { PopupApplicationDetailResult, PopupStatus } from "@/features/submission-type/types/dto/SubmissionType";
+import { formatDateToIndonesian } from "@/utils/formatDate";
+import { formatUrlFile } from "@/utils/formatUrlFile";
 
 interface RowPengajuan {
   jenisPengajuan: string;
   tanggalPengajuan: string;
-  lampiran: string;
-  status: "Pending" | "Disetujui" | "Ditolak";
+  lampiran: string | null;
+  status: string;
   catatan: string;
 }
 
@@ -26,64 +30,99 @@ export default function JenisPengajuanPage() {
   // Dokumentasi: State kontrol untuk membuka/menutup modal pengajuan
   const [openKasbonModal, setOpenKasbonModal] = useState(false);
   const [openResignModal, setOpenResignModal] = useState(false);
+  const { submissions, fetchIndex, popupDetail, fetchPopupDetail, storeSubmission } = useApiSubmissionType();
+
+  useEffect(() => {
+    fetchIndex();
+  }, [fetchIndex]);
 
   const allData: RowPengajuan[] = useMemo(
     () => [
-      {
-        jenisPengajuan: "Pengunduran Diri",
-        tanggalPengajuan: "20/11/2025",
-        lampiran: "-",
-        status: "Pending",
-        catatan: "Lorem ipsum dolor sit amet consectetur.",
-      },
-      {
-        jenisPengajuan: "Kasbon",
-        tanggalPengajuan: "20/11/2025",
-        lampiran: "-",
-        status: "Disetujui",
-        catatan: "Lorem ipsum dolor sit amet consectetur.",
-      },
+      // {
+      //   jenisPengajuan: "Pengunduran Diri",
+      //   tanggalPengajuan: "2025-11-20",
+      //   lampiran: null,
+      //   status: "Pending",
+      //   catatan: "Lorem ipsum dolor sit amet consectetur.",
+      // },
+      // {
+      //   jenisPengajuan: "Kasbon",
+      //   tanggalPengajuan: "2025-11-20",
+      //   lampiran: null,
+      //   status: "Disetujui",
+      //   catatan: "Lorem ipsum dolor sit amet consectetur.",
+      // },
     ],
     []
   );
 
+  const apiData: RowPengajuan[] = useMemo(
+    () =>
+      (submissions || []).map((s) => ({
+        jenisPengajuan: s.submission_type,
+        tanggalPengajuan: s.submission_date,
+        lampiran: s.attachment_document,
+        status: s.status,
+        catatan: s.note ?? "-",
+      })),
+    [submissions]
+  );
+
   const filteredData = useMemo(() => {
-    if (!jenis) return allData;
-    return allData.filter((d) => d.jenisPengajuan === jenis);
-  }, [allData, jenis]);
+    const source = apiData.length > 0 ? apiData : allData;
+    return source;
+  }, [allData, apiData]);
 
   const columns = [
     { id: "no", label: "No.", align: "center" as const, sortable: false },
     { id: "jenisPengajuan", label: "Jenis Pengajuan" },
-    { id: "tanggalPengajuan", label: "Tanggal Pengajuan" },
-    { id: "lampiran", label: "Lampiran", align: "center" as const },
+    { id: "tanggalPengajuan", label: "Tanggal Pengajuan", dateRangeFilter: true, format: (value: RowPengajuan["tanggalPengajuan"]) => formatDateToIndonesian(value) },
+    { id: "lampiran", label: "Lampiran", align: "center" as const, isAction: true, format: (value: RowPengajuan["lampiran"]) => (
+      value ? <a href={formatUrlFile(value)} target="_blank" rel="noopener noreferrer" className="flex justify-center items-center"><FileText  /></a> : "—"
+    ) },
     {
       id: "status",
       label: "Status",
+      filterOptions: [
+        { label: "Pending", value: "Pending" },
+        { label: "Disetujui", value: "Disetujui" },
+        { label: "Ditolak", value: "Ditolak" },
+      ],
       format: (value: RowPengajuan["status"]) => (
         <span
-          className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${
+          className={`inline-block rounded-full px-3 py-1 text-xs font-medium status-styling ${
             value === "Pending"
               ? "bg-orange-100 text-orange-700"
               : value === "Disetujui"
               ? "bg-green-100 text-green-700"
-              : "bg-red-100 text-red-700"
+              : value === "Ditolak"
+              ? "bg-red-100 text-red-700"
+              : "bg-orange-100 text-orange-700"
           }`}
         >
           {value}
         </span>
       ),
     },
-    { id: "catatan", label: "Catatan" },
+    {
+      id: "catatan",
+      label: "Catatan",
+      format: (value: RowPengajuan["catatan"]) => {
+        if (typeof value !== "string") return value as unknown as string;
+        const formatted = formatDateToIndonesian(value);
+        return formatted || value;
+      },
+    },
   ];
 
   const actions = [
     {
       icon: <FileText />,
-      onClick: (row: RowPengajuan) => {
-        console.log("Preview pengajuan", row);
+      onClick: (_row: RowPengajuan) => {
+        //console.log("Preview pengajuan", _row);
       },
       className: "text-gray-600",
+      condition: () => false, // Hanya tampilkan jika ada lampiran
     },
   ];
 
@@ -92,6 +131,35 @@ export default function JenisPengajuanPage() {
     { value: "Kasbon", label: "Kasbon" },
   ];
 
+  const kasbonDefaults = useMemo(() => {
+    const detail: PopupApplicationDetailResult | null = popupDetail;
+    if (detail && "basic_salary" in detail) {
+      return {
+        idKaryawan: detail.nip,
+        namaLengkap: detail.full_name,
+        departemen: detail.department_name,
+        posisi: detail.position_name,
+        gajiPokok: detail.basic_salary,
+      };
+    }
+    return null;
+  }, [popupDetail]);
+
+  const resignDefaults = useMemo(() => {
+    const detail: PopupApplicationDetailResult | null = popupDetail;
+    if (detail && "company_name" in detail) {
+      return {
+        idKaryawan: detail.nip,
+        namaLengkap: detail.full_name,
+        perusahaan: detail.company_name,
+        direktorat: detail.directorate_name,
+        divisi: detail.division_name,
+        departement: detail.department_name,
+        posisi: detail.position_name,
+      };
+    }
+    return null;
+  }, [popupDetail]);
   return (
     <div className="p-4">
       <DataTable<RowPengajuan>
@@ -111,6 +179,7 @@ export default function JenisPengajuanPage() {
             });
             return;
           }
+          fetchPopupDetail(jenis as PopupStatus);
           if (jenis === "Kasbon") {
             setOpenKasbonModal(true);
           } else if (jenis === "Pengunduran Diri") {
@@ -127,6 +196,9 @@ export default function JenisPengajuanPage() {
               onChange={(v) => {
                 // Dokumentasi: Saat memilih Kasbon, buka modal pengajuan kasbon
                 setJenis(v);
+                if (v) {
+                  // fetchPopupDetail(v as PopupStatus);
+                }
                 // if (v === "Kasbon") setOpenKasbonModal(true);
               }}
             />
@@ -137,15 +209,52 @@ export default function JenisPengajuanPage() {
       <AddPengajuanKasbonModal
         isOpen={openKasbonModal}
         onClose={() => setOpenKasbonModal(false)}
-        onSave={(values) => {
-          console.log("Submit Pengajuan Kasbon", values);
+        defaultValues={kasbonDefaults ?? undefined}
+        onSuccessClose={() => fetchIndex()}
+        // isFormValid={true}
+        onSave={async (values) => {
+          const ok = await storeSubmission({
+            submission: "Kasbon",
+            tanggal_pengajuan: values.tanggalPengajuan,
+            loan_type_id: "fd854227-c6e1-4359-8c42-e9e6a042fec0",
+            nominal_loan: values.nominalKasbon,
+            loan_period: values.periodeCicilan,
+            supervisor_approval_file: values.suratPersetujuanAtasan || null,
+            supporting_documents:
+              values.dokumenPendukung && values.dokumenPendukung.length > 0
+                ? values.dokumenPendukung[0]
+                : null,
+            loan_description: values.keterangan,
+            nominal_installment: values.nominalCicilan,
+          });
+          if (ok) {
+            fetchIndex();
+          }
+          return ok;
         }}
       />
       <AddPengajuanPengunduranDiriModal
         isOpen={openResignModal}
         onClose={() => setOpenResignModal(false)}
-        onSave={(values) => {
-          console.log("Submit Pengunduran Diri", values);
+        defaultValues={resignDefaults ?? undefined}
+        onSuccessClose={() => fetchIndex()}
+        onSave={async (values) => {
+          const ok = await storeSubmission({
+            submission: "Pengunduran Diri",
+            tanggal_pengajuan: values.tanggalPengajuan,
+            document_lampiran: values.suratPengunduranDiri || null,
+            loan_type_id: "",
+            nominal_loan: 0,
+            loan_period: 0,
+            supervisor_approval_file: null,
+            supporting_documents: null,
+            loan_description: values.alasan,
+            nominal_installment: 0,
+          });
+          if (ok) {
+            fetchIndex();
+          }
+          return ok;
         }}
       />
     </div>

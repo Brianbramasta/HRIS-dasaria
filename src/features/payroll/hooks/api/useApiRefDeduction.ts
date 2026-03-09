@@ -69,7 +69,7 @@ export const useApiRefDeduction = (): UseApiRefDeductionReturn => {
   
   // Assuming filterStore is global and has keys for features. 
   // Using 'RefDeduction' as filter key, similar to 'Compensation'
-  const filterValue = useFilterStore((s) => s.filters['RefDeduction'] ?? '');
+  const filterValue = useFilterStore((s) => (s.filters['RefDeduction'] ?? []).join(','));
 
   const fetchRefDeductions = useCallback(async (filter?: Partial<TableFilter>) => {
     setLoading(true);

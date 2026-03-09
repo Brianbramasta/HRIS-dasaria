@@ -41,7 +41,7 @@ export default function PendaftaranKaryawanBaru() {
         });
       }
     } catch (err) {
-      console.log(err)
+      //console.log(err)
       addNotification({
         variant: 'error',
         title: 'Gagal membagikan tautan',

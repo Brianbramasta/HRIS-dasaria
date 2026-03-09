@@ -76,41 +76,41 @@ export const breadcrumbRoutes: Record<string, RouteConfig> = {
 
   // Employee Data
   '/employee-data': {
-    title: 'Data Karyawan',
+    title: 'Data Master Karyawan',
     breadcrumbs: () => [
       { label: 'Data Karyawan' }
     ]
   },
   '/employee-data/pendaftaran': {
-    title: 'Pendaftaran Karyawan Baru',
+    title: 'Data Master Karyawan',
     breadcrumbs: () => [
       { label: 'Data Karyawan', path: '/employee-data' },
       { label: 'Pendaftaran Baru' }
     ]
   },
   '/employee-data/form': {
-    title: 'Formulir Karyawan',
+    title: 'Data Master Karyawan',
     breadcrumbs: () => [
       { label: 'Data Karyawan', path: '/employee-data' },
       { label: 'Formulir' }
     ]
   },
   '/employee-data/contract-extension': {
-     title: 'Perpanjangan Kontrak',
+     title: 'Data Master Karyawan',
      breadcrumbs: () => [
        { label: 'Data Karyawan', path: '/employee-data' },
        { label: 'Perpanjangan Kontrak' }
      ]
   },
   '/employee-data/:id': {
-    title: 'Detail Karyawan',
+    title: 'Data Master Karyawan',
     breadcrumbs: () => [
       { label: 'Data Karyawan', path: '/employee-data' },
       { label: 'Detail Karyawan' }
     ]
   },
   '/employee-data/:id/pelanggaran': {
-    title: 'Pelanggaran Karyawan',
+    title: 'Data Master Karyawan',
     breadcrumbs: (params) => [
       { label: 'Data Karyawan', path: '/employee-data' },
       { label: 'Detail Karyawan', path: `/employee-data/${params.id}` },
@@ -126,14 +126,14 @@ export const breadcrumbRoutes: Record<string, RouteConfig> = {
     ]
   },
   '/structure-and-organize/business-lines': {
-    title: 'Lini Bisnis',
+    title: 'Struktur & Organisasi',
     breadcrumbs: () => [
       { label: 'Struktur & Organisasi', path: '/structure-and-organize' },
       { label: 'Lini Bisnis' }
     ]
   },
   '/structure-and-organize/business-lines/:id': {
-    title: 'Detail Lini Bisnis',
+    title: 'Struktur & Organisasi',
     breadcrumbs: () => [
       { label: 'Struktur & Organisasi', path: '/structure-and-organize' },
       { label: 'Lini Bisnis', path: '/structure-and-organize/business-lines' },
@@ -141,14 +141,14 @@ export const breadcrumbRoutes: Record<string, RouteConfig> = {
     ]
   },
   '/structure-and-organize/companies': {
-    title: 'Perusahaan',
+    title: 'Struktur & Organisasi',
     breadcrumbs: () => [
       { label: 'Struktur & Organisasi', path: '/structure-and-organize' },
       { label: 'Perusahaan' }
     ]
   },
   '/structure-and-organize/companies/:id': {
-    title: 'Detail Perusahaan',
+    title: 'Struktur & Organisasi',
     breadcrumbs: () => [
       { label: 'Struktur & Organisasi', path: '/structure-and-organize' },
       { label: 'Perusahaan', path: '/structure-and-organize/companies' },
@@ -156,49 +156,49 @@ export const breadcrumbRoutes: Record<string, RouteConfig> = {
     ]
   },
   '/structure-and-organize/offices': {
-    title: 'Kantor',
+    title: 'Struktur & Organisasi',
     breadcrumbs: () => [
       { label: 'Struktur & Organisasi', path: '/structure-and-organize' },
       { label: 'Kantor' }
     ]
   },
   '/structure-and-organize/directorates': {
-    title: 'Direktorat',
+    title: 'Struktur & Organisasi',
     breadcrumbs: () => [
       { label: 'Struktur & Organisasi', path: '/structure-and-organize' },
       { label: 'Direktorat' }
     ]
   },
   '/structure-and-organize/divisions': {
-    title: 'Divisi',
+    title: 'Struktur & Organisasi',
     breadcrumbs: () => [
       { label: 'Struktur & Organisasi', path: '/structure-and-organize' },
       { label: 'Divisi' }
     ]
   },
   '/structure-and-organize/departments': {
-    title: 'Departemen',
+    title: 'Struktur & Organisasi',
     breadcrumbs: () => [
       { label: 'Struktur & Organisasi', path: '/structure-and-organize' },
       { label: 'Departemen' }
     ]
   },
   '/structure-and-organize/units': {
-    title: 'Unit',
+    title: 'Struktur & Organisasi',
     breadcrumbs: () => [
       { label: 'Struktur & Organisasi', path: '/structure-and-organize' },
       { label: 'Unit' }
     ]
   },
   '/structure-and-organize/positions': {
-    title: 'Jabatan',
+    title: 'Struktur & Organisasi',
     breadcrumbs: () => [
       { label: 'Struktur & Organisasi', path: '/structure-and-organize' },
       { label: 'Jabatan' }
     ]
   },
   '/structure-and-organize/employee-positions': {
-    title: 'Posisi Karyawan',
+    title: 'Struktur & Organisasi',
     breadcrumbs: () => [
       { label: 'Struktur & Organisasi', path: '/structure-and-organize' },
       { label: 'Posisi Karyawan' }
@@ -207,55 +207,55 @@ export const breadcrumbRoutes: Record<string, RouteConfig> = {
 
   // Payroll Configuration
   '/payroll-configuration': {
-    title: 'Konfigurasi Penggajian',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Konfigurasi Penggajian' }
     ]
   },
   '/payroll-configuration/compensation': {
-    title: 'Kompensasi',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Konfigurasi Penggajian', path: '/payroll-configuration' },
       { label: 'Kompensasi' }
     ]
   },
   '/payroll-configuration/bpjs': {
-    title: 'BPJS',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Konfigurasi Penggajian', path: '/payroll-configuration' },
       { label: 'BPJS' }
     ]
   },
   '/payroll-configuration/deduction-reference': {
-    title: 'Acuan Potongan',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Konfigurasi Penggajian', path: '/payroll-configuration' },
       { label: 'Acuan Potongan' }
     ]
   },
   '/payroll-configuration/fixed-allowance': {
-    title: 'Tunjangan Tetap',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Konfigurasi Penggajian', path: '/payroll-configuration' },
       { label: 'Tunjangan Tetap' }
     ]
   },
   '/payroll-configuration/non-recurring-allowance': {
-    title: 'Tunjangan Tidak Tetap',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Konfigurasi Penggajian', path: '/payroll-configuration' },
       { label: 'Tunjangan Tidak Tetap' }
     ]
   },
   '/payroll-configuration/non-recurring-deduction': {
-    title: 'Potongan Tidak Tetap',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Konfigurasi Penggajian', path: '/payroll-configuration' },
       { label: 'Potongan Tidak Tetap' }
     ]
   },
   '/payroll-configuration/thr': {
-    title: 'THR',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Konfigurasi Penggajian', path: '/payroll-configuration' },
       { label: 'THR' }
@@ -264,48 +264,48 @@ export const breadcrumbRoutes: Record<string, RouteConfig> = {
 
   // Payroll Period
   '/payroll-period': {
-    title: 'Periode Penggajian',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Periode Penggajian' }
     ]
   },
   '/payroll-period/non-ae': {
-    title: 'Periode Penggajian (Non AE)',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Periode Penggajian', path: '/payroll-period' },
       { label: 'Non AE' }
     ]
   },
   '/payroll-period/ae': {
-    title: 'Periode Penggajian (AE)',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Periode Penggajian', path: '/payroll-period' },
       { label: 'AE' }
     ]
   },
   '/payroll-period/internship': {
-    title: 'Periode Penggajian (PKL)',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Periode Penggajian', path: '/payroll-period' },
       { label: 'PKL' }
     ]
   },
   '/payroll-period/holiday-allowance': {
-    title: 'Periode Penggajian (THR)',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Periode Penggajian', path: '/payroll-period' },
       { label: 'THR' }
     ]
   },
   '/payroll-period/detail-ae/:id': {
-    title: 'Detail Gaji AE',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Periode Penggajian', path: '/payroll-period' },
       { label: 'Detail AE' }
     ]
   },
   '/payroll-period/detail-non-ae/:id': {
-    title: 'Detail Gaji Non AE',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Periode Penggajian', path: '/payroll-period' },
       { label: 'Detail Non AE' }
@@ -319,7 +319,7 @@ export const breadcrumbRoutes: Record<string, RouteConfig> = {
     ]
   },
   '/payroll-period/detail-pkl/:id': {
-    title: 'Detail Gaji PKL',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Periode Penggajian', path: '/payroll-period' },
       { label: 'Detail PKL' }
@@ -328,41 +328,41 @@ export const breadcrumbRoutes: Record<string, RouteConfig> = {
 
   // Cash Advance
   '/cash-advance': {
-    title: 'Kasbon',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Kasbon' }
     ]
   },
   '/cash-advance/submission-history': {
-    title: 'Riwayat Pengajuan Kasbon',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Kasbon', path: '/cash-advance' },
       { label: 'Riwayat Pengajuan' }
     ]
   },
   '/cash-advance/cash-advance-status': {
-    title: 'Status Kasbon',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Kasbon', path: '/cash-advance' },
       { label: 'Status' }
     ]
   },
   '/cash-advance/approval': {
-    title: 'Approval Kasbon',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Kasbon', path: '/cash-advance' },
       { label: 'Approval' }
     ]
   },
   '/cash-advance/cash-advance-form': {
-    title: 'Formulir Kasbon',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Kasbon', path: '/cash-advance' },
       { label: 'Formulir' }
     ]
   },
   '/cash-advance/detail/:id': {
-    title: 'Detail Kasbon',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Kasbon', path: '/cash-advance' },
       { label: 'Detail' }
@@ -371,7 +371,7 @@ export const breadcrumbRoutes: Record<string, RouteConfig> = {
 
   // Payroll Dashboard
   '/payroll-dashboard': {
-    title: 'Dashboard Penggajian',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Dashboard Penggajian' }
     ]
@@ -379,62 +379,62 @@ export const breadcrumbRoutes: Record<string, RouteConfig> = {
 
   // Payroll Period Approval
   '/payroll-period-approval': {
-    title: 'Approval Periode Gaji',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Approval Periode Gaji' }
     ]
   },
   '/payroll-period-approval/non-ae': {
-    title: 'Approval Gaji Non AE',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Approval Periode Gaji', path: '/payroll-period-approval' },
       { label: 'Non AE' }
     ]
   },
   '/payroll-period-approval/ae': {
-    title: 'Approval Gaji AE',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Approval Periode Gaji', path: '/payroll-period-approval' },
       { label: 'AE' }
     ]
   },
   '/payroll-period-approval/pkl': {
-    title: 'Approval Gaji PKL',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Approval Periode Gaji', path: '/payroll-period-approval' },
       { label: 'PKL' }
     ]
   },
   '/payroll-period-approval/thr': {
-    title: 'Approval Gaji THR',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Approval Periode Gaji', path: '/payroll-period-approval' },
       { label: 'THR' }
     ]
   },
   '/payroll-period-approval/detail-ae/:id': {
-    title: 'Detail Approval AE',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Approval Periode Gaji', path: '/payroll-period-approval' },
       { label: 'Detail AE' }
     ]
   },
   '/payroll-period-approval/detail-non-ae/:id': {
-    title: 'Detail Approval Non AE',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Approval Periode Gaji', path: '/payroll-period-approval' },
       { label: 'Detail Non AE' }
     ]
   },
   '/payroll-period-approval/detail-thr/:id': {
-    title: 'Detail Approval THR',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Approval Periode Gaji', path: '/payroll-period-approval' },
       { label: 'Detail THR' }
     ]
   },
   '/payroll-period-approval/detail-pkl/:id': {
-    title: 'Detail Approval PKL',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Approval Periode Gaji', path: '/payroll-period-approval' },
       { label: 'Detail PKL' }
@@ -443,27 +443,27 @@ export const breadcrumbRoutes: Record<string, RouteConfig> = {
 
   // Salary Distribution
   '/salary-distribution': {
-    title: 'Distribusi Gaji',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Distribusi Gaji' }
     ]
   },
   '/salary-distribution/non-ae': {
-    title: 'Distribusi Gaji Non AE',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Distribusi Gaji', path: '/salary-distribution' },
       { label: 'Non AE' }
     ]
   },
   '/salary-distribution/ae': {
-    title: 'Distribusi Gaji AE',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Distribusi Gaji', path: '/salary-distribution' },
       { label: 'AE' }
     ]
   },
   '/salary-distribution/thr': {
-    title: 'Distribusi Gaji THR',
+    title: 'Penggajian',
     breadcrumbs: () => [
       { label: 'Distribusi Gaji', path: '/salary-distribution' },
       { label: 'THR' }
@@ -472,20 +472,20 @@ export const breadcrumbRoutes: Record<string, RouteConfig> = {
 
   // Resignation
   '/resignation': {
-    title: 'Pengunduran Diri',
+    title: 'Data Master Karyawan',
     breadcrumbs: () => [
       { label: 'Pengunduran Diri' }
     ]
   },
   '/resignation/form': {
-    title: 'Formulir Pengunduran Diri',
+    title: 'Data Master Karyawan',
     breadcrumbs: () => [
       { label: 'Pengunduran Diri', path: '/resignation' },
       { label: 'Formulir' }
     ]
   },
   '/resignation/:id': {
-    title: 'Detail Pengunduran Diri',
+    title: 'Data Master Karyawan',
     breadcrumbs: () => [
       { label: 'Pengunduran Diri', path: '/resignation' },
       { label: 'Detail' }
@@ -494,20 +494,20 @@ export const breadcrumbRoutes: Record<string, RouteConfig> = {
 
   // Contract Extension
   '/contract-extension': {
-    title: 'Perpanjangan Kontrak',
+    title: 'Data Master Karyawan',
     breadcrumbs: () => [
       { label: 'Perpanjangan Kontrak' }
     ]
   },
   '/contract-extension/persetujuan': {
-    title: 'Persetujuan Perpanjangan Kontrak',
+    title: 'Data Master Karyawan',
     breadcrumbs: () => [
       { label: 'Perpanjangan Kontrak', path: '/contract-extension' },
       { label: 'Persetujuan' }
     ]
   },
   '/contract-extension/detail/:id': {
-    title: 'Detail Perpanjangan Kontrak',
+    title: 'Data Master Karyawan',
     breadcrumbs: () => [
       { label: 'Perpanjangan Kontrak', path: '/contract-extension' },
       { label: 'Detail' }
@@ -524,13 +524,13 @@ export const breadcrumbRoutes: Record<string, RouteConfig> = {
 
   // Organization History
   '/organization-history': {
-    title: 'Perubahan Organisasi',
+    title: 'Data Master Karyawan',
     breadcrumbs: () => [
       { label: 'Perubahan Organisasi' }
     ]
   },
   '/organization-history/atasan': {
-    title: 'Perubahan Organisasi Atasan',
+    title: 'Data Master Karyawan',
     breadcrumbs: () => [
       { label: 'Perubahan Organisasi', path: '/organization-history' },
       { label: 'Atasan' }

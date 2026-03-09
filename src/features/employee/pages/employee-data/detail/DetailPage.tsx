@@ -8,6 +8,7 @@ import PelanggaranTab from '../../../components/employee-data/tab/Fraud';
 import StoryPayrollTab from '../../../components/employee-data/tab/StoryPayroll';
 import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
 import { formatUrlFile } from '@/utils/formatUrlFile';
+import { IconFacebook, IconInstagram, IconLinkedin, IconX } from '@/icons/components/icons';
 
 function useQuery() {
   const { search } = useLocation();
@@ -53,10 +54,26 @@ export default function DetailKaryawanPage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {detail?.Social_Media_Data[0]?.twitter_name && <a href={detail?.Social_Media_Data[0]?.twitter_name} target='_blank'><img src='/images/icons/sosial-media/x.svg'/></a>}
-            {detail?.Social_Media_Data[0]?.linkedin_name && <a href={detail?.Social_Media_Data[0]?.linkedin_name} target='_blank'><img src='/images/icons/sosial-media/linkedin.svg'/></a>}
-            {detail?.Social_Media_Data[0]?.facebook_name && <a href={detail?.Social_Media_Data[0]?.facebook_name} target='_blank'><img src='/images/icons/sosial-media/facebook.svg'/></a>}
-            {detail?.Social_Media_Data[0]?.instagram_name && <a href={detail?.Social_Media_Data[0]?.instagram_name} target='_blank'><img src='/images/icons/sosial-media/instagram.svg'/></a>}
+            {detail?.Social_Media_Data[0]?.twitter_name && (
+              <a href={detail?.Social_Media_Data[0]?.twitter_name} target='_blank' rel="noopener noreferrer">
+                <IconX className="w-10 h-10 text-current hover:text-gray-600 dark:hover:text-gray-300 transition-colors" />
+              </a>
+            )}
+            {detail?.Social_Media_Data[0]?.linkedin_name && (
+              <a href={detail?.Social_Media_Data[0]?.linkedin_name} target='_blank' rel="noopener noreferrer">
+                <IconLinkedin className="w-10 h-10 text-current hover:text-gray-600 dark:hover:text-gray-300 transition-colors" />
+              </a>
+            )}
+            {detail?.Social_Media_Data[0]?.facebook_name && (
+              <a href={detail?.Social_Media_Data[0]?.facebook_name} target='_blank' rel="noopener noreferrer">
+                <IconFacebook className="w-10 h-10 text-current hover:text-gray-600 dark:hover:text-gray-300 transition-colors" />
+              </a>
+            )}
+            {detail?.Social_Media_Data[0]?.instagram_name && (
+              <a href={detail?.Social_Media_Data[0]?.instagram_name} target='_blank' rel="noopener noreferrer">
+                <IconInstagram className="w-10 h-10 text-current hover:text-gray-600 dark:hover:text-gray-300 transition-colors" />
+              </a>
+            )}
           </div>
         </div>
       </div>

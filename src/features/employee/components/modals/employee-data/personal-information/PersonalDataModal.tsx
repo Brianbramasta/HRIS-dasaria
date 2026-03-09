@@ -160,6 +160,7 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
           <FIleField
             label="Upload Foto Profil"
             htmlFor="avatarFile"
+            acceptedFormats={['image/png', 'image/jpeg', 'image/jpg']}
             onChange={handleFileChange}
             required
           />

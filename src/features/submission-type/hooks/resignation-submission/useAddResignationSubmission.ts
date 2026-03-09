@@ -17,7 +17,7 @@ export interface UseAddResignationSubmissionParams {
   isOpen: boolean;
   onClose: () => void;
   defaultValues?: Partial<PengunduranDiriForm> | null;
-  onSave?: (values: PengunduranDiriForm) => void;
+  onSave?: (values: PengunduranDiriForm) => boolean | Promise<boolean>;
 }
 
 export function useAddResignationSubmission({
@@ -57,9 +57,11 @@ export function useAddResignationSubmission({
   const handleSubmit = async () => {
     setSubmitting(true);
     try {
-      if (onSave) onSave(form);
-      onClose();
-      setTimeout(() => setShowSuccessPopup(true), 300);
+      const ok = onSave ? await onSave(form) : false;
+      if (ok) {
+        onClose();
+        setTimeout(() => setShowSuccessPopup(true), 300);
+      }
     } finally {
       setSubmitting(false);
     }

@@ -1,17 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useFileStore , setSkFile } from '@/stores/fileStore';
-import { clearSkFile } from '@/stores/fileStore';
 
 interface FileInputProps {
-  skFileName: string;
+  skFileName?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   isLabel?: boolean;
   label?: string;
   required?: boolean;
+  acceptedFormats?: string[];
+  dragText?: string;
+  formatText?: string;
+  browseText?: string;
 }
 
-const FileInput: React.FC<FileInputProps> = ({ skFileName, onChange, isLabel=true, label='Unggah File SK terbaru', required }) => {
+const FileInput: React.FC<FileInputProps> = ({ 
+  skFileName: _skFileName,
+  onChange, 
+  isLabel=true, 
+  label='Unggah File SK terbaru', 
+  required,
+  acceptedFormats = ['application/pdf'],
+  dragText = 'Letakkan File ke Sini',
+  formatText = 'Hanya menerima format PDF',
+  browseText = 'Pilih File'
+}) => {
   const [preview, setPreview] = useState<string | null>(null);
   const [savedInfo, setSavedInfo] = useState<{ fileName: string; filePath: string; size: number } | null>(null);
   const skFile =  useFileStore((s) => s.skFile);;
@@ -50,21 +63,13 @@ const FileInput: React.FC<FileInputProps> = ({ skFileName, onChange, isLabel=tru
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: {
-      'image/png': [],
-      'image/jpeg': [],
-      'image/webp': [],
-      'image/svg+xml': [],
-      'application/pdf': [],
-    },
+    accept: acceptedFormats.reduce((acc, format) => {
+      acc[format] = [];
+      return acc;
+    }, {} as Record<string, []>),
     noClick: false,
   });
 
-  const handleClear = () => {
-    setPreview(null);
-    setSavedInfo(null);
-    clearSkFile();
-  };
 
   return (
     <div className="space-y-2">
@@ -110,15 +115,15 @@ const FileInput: React.FC<FileInputProps> = ({ skFileName, onChange, isLabel=tru
 
             {/* Text Content */}
             <h4 className="mb-3 font-semibold text-gray-800 text-theme-xl dark:text-white/90">
-              {isDragActive ? 'Drop Files Here' : 'Drag & Drop Files Here'}
+              {isDragActive ? 'Drop Files Here' : dragText}
             </h4>
 
             <span className="text-center mb-5 block w-full max-w-[290px] text-sm text-gray-700 dark:text-gray-400">
-              Drag and drop your PNG, JPG, WebP, SVG images here or browse
+              {formatText}
             </span>
 
             <span className="font-medium underline text-theme-sm text-brand-500">
-              Browse File
+              {browseText}
             </span>
           </div>
         </form>
@@ -157,7 +162,8 @@ const FileInput: React.FC<FileInputProps> = ({ skFileName, onChange, isLabel=tru
           </div>
         </div>
       )}
-      {(savedInfo?.fileName || skFileName) && (
+      {/* comment button remove */}
+      {/* {(savedInfo?.fileName || skFileName) && (
         <div className="mt-2 flex items-center justify-between bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
           <div className="flex items-center gap-2">
             <svg className="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -169,7 +175,7 @@ const FileInput: React.FC<FileInputProps> = ({ skFileName, onChange, isLabel=tru
           </div>
           <button type="button" onClick={handleClear} className="text-xs text-red-600 hover:underline">Remove</button>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

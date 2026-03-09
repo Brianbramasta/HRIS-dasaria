@@ -19,6 +19,7 @@ import {
   DocumentTypeDropdownItem,
   ResignationStatusDropdownItem,
   BankDropdownItem,
+  BpjsHealthTypeDropdownItem,
 } from '../types/dto/EmployeeType';
 
 class EmployeeMasterDataService {
@@ -263,6 +264,15 @@ class EmployeeMasterDataService {
     return (resp as any)?.data ?? [];
   }
 
+  /**
+   * Dropdown: Tipe BPJS Kesehatan
+   * @returns Promise dengan array tipe BPJS Kesehatan
+   */
+  async getBpjsHealthTypeDropdown(): Promise<BpjsHealthTypeDropdownItem[]> {
+    const resp = await apiService.get<BpjsHealthTypeDropdownItem[]>(`${this.basePath}/employees/bpjs-health-type-dropdown`);
+    return (resp as any)?.data ?? [];
+  }
+
  
 
   // /employee-status-dropdown
@@ -290,6 +300,13 @@ class EmployeeMasterDataService {
   async getStructuralJobDropdown(IdJabatanKepangkatan?:string): Promise<any[]> {
     const resp = await apiService.get<any[]>(`${this.basePath}/employees/structural-job-dropdown/${IdJabatanKepangkatan}`);
     return (resp as any)?.data ?? [];
+  }
+
+  // /api/employee-master-data/contract-extensions/employees-near-contract-end
+  async getEmployeesNearContractEnd(params?: any): Promise<ApiResponse<ApiPaginatedResponse<any>>> {
+    const queryString = apiService.buildQueryString(params);
+    const url = queryString ? `${this.basePath}/contract-extensions/employees-near-contract-end?${queryString}` : `${this.basePath}/contract-extensions/employees-near-contract-end`;
+    return apiService.get<ApiPaginatedResponse<any>>(url);
   }
 
  

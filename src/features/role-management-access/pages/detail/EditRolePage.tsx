@@ -18,16 +18,10 @@ export default function EditRolePage() {
     handleSelectAllRow,
     handleTutup,
     handleSimpan,
-    isEditMode
+    isEditMode,
+    serviceOptions,
+    loading
   } = useEditRole();
-
-  const serviceOptions = [
-    { label: 'HRIS', value: 'HRIS' },
-    { label: 'CRM', value: 'CRM' },
-    { label: 'Finance', value: 'Finance' },
-    { label: 'Payroll', value: 'Payroll' },
-    { label: 'Inventory', value: 'Inventory' },
-  ];
 
   return (
     <div className="p-6">
@@ -104,8 +98,8 @@ export default function EditRolePage() {
           <Button variant="outline" onClick={handleTutup} className="px-6">
             Tutup
           </Button>
-          <Button variant="primary" onClick={handleSimpan} className="px-6 bg-blue-600 hover:bg-blue-700 text-white">
-            Simpan Perubahan
+          <Button variant="primary" onClick={handleSimpan} className="px-6 bg-blue-600 hover:bg-blue-700 text-white" disabled={loading}>
+            {loading ? 'Menyimpan...' : 'Simpan Perubahan'}
           </Button>
         </div>
       </div>

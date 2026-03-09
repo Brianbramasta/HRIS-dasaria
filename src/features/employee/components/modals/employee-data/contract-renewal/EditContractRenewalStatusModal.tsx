@@ -2,14 +2,13 @@ import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import ContractRenewalDetail from '@/features/employee/components/modals/employee-data/contract-renewal/slice-component/ContractRenewalDetail';
 import OldContract from '@/features/employee/components/modals/employee-data/contract-renewal/slice-component/OldContract';
 import NewContract from '@/features/employee/components/modals/employee-data/contract-renewal/slice-component/NewContract';
-import useEditContractRenewalStatusModal from '@/features/employee/hooks/modals/employee-data/contract-renewal/useEditContractRenewalStatusModal';
-import { useContractRenewalStore } from '@/features/employee/stores/useContractRenewalStore';
-import { useState, useEffect } from 'react';
+import { useEditContractRenewalStatusModal } from '@/features/employee/hooks/modals/contract-renewal/useEditContractRenewalStatusModal';
 
 interface EditStatusPerpanjanganModalProps {
   isOpen: boolean;
   onClose: () => void;
   kontrakData?: {
+    id: string;
     idKaryawan: string;
     pengguna: string;
     posisi: string;
@@ -18,11 +17,15 @@ interface EditStatusPerpanjanganModalProps {
     tanggalBerakhir: string;
     sisaKontrak: string;
     statusPerpanjangan: string;
+    statusPerpanjanganId?: string;
     statusAtasan: string;
     statusKaryawan: string;
     catatan: string;
   };
   onSuccess?: () => void;
+  onSubmit: (data: FormData) => Promise<boolean>;
+  statusOptions?: { value: string; label: string }[];
+  contractTypeOptions?: { value: string; label: string }[];
 }
 
 export default function EditStatusPerpanjanganModal({
@@ -30,93 +33,32 @@ export default function EditStatusPerpanjanganModal({
   onClose,
   kontrakData,
   onSuccess,
+  onSubmit,
+  statusOptions,
+  contractTypeOptions,
 }: EditStatusPerpanjanganModalProps) {
   const {
     submitting,
+    contractRenewalData,
+    oldContractData,
+    newContractData,
+    handleContractRenewalChange,
+    handleOldContractChange,
+    handleNewContractChange,
     handleSubmit,
-  } = useEditContractRenewalStatusModal({ kontrakData, onClose, onSuccess });
-
-  const [contractRenewalData, setContractRenewalData] = useState<any>(null);
-  const [oldContractData, setOldContractData] = useState<any>(null);
-  const [newContractData, setNewContractData] = useState<any>(null);
-  
-  const {
+    handleClose,
     shouldShowDetailAndOldContract,
     shouldShowAllComponents,
     shouldShowOnlyDetail,
-  } = useContractRenewalStore();
-
-  useEffect(() => {
-    if (isOpen && kontrakData) {
-      // Map contract renewal data
-      setContractRenewalData({
-        employee_id: kontrakData.idKaryawan,
-        full_name: kontrakData.pengguna,
-        position_name: kontrakData.posisi,
-        department_name: kontrakData.departemen,
-        join_date: kontrakData.tanggalMasuk,
-        end_date: kontrakData.tanggalBerakhir,
-        remaining_contract: kontrakData.sisaKontrak,
-        renewal_status_name: kontrakData.statusPerpanjangan,
-        notes: kontrakData.catatan,
-      });
-
-      // Initialize old and new contract data (can be extended based on actual data structure)
-      setOldContractData({
-        employee_category_name: kontrakData.pengguna,
-        company_name: '',
-        office_name: '',
-        directorate_name: '',
-        division_name: '',
-        department_name: kontrakData.departemen,
-        unit_name: '',
-        position_name: kontrakData.posisi,
-        job_title_name: '',
-        structural_position_name: '',
-        position_level_name: '',
-        grade: '',
-        basic_salary: 0,
-      });
-
-      setNewContractData({
-        new_change_type_name: '',
-        new_employee_category_name: '',
-        new_company_name: '',
-        new_office_name: '',
-        new_directorate_name: '',
-        new_division_name: '',
-        new_department_name: '',
-        new_unit_name: '',
-        new_position_name: '',
-        new_job_title_name: '',
-        new_structural_position_name: '',
-        new_position_level_name: '',
-        new_grade: '',
-        new_basic_salary: 0,
-      });
-    }
-  }, [isOpen, kontrakData]);
-
-  const handleContractRenewalChange = (field: string, value: any) => {
-    setContractRenewalData((prev: any) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  const handleOldContractChange = (field: string, value: any) => {
-    setOldContractData((prev: any) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  const handleNewContractChange = (field: string, value: any) => {
-    setNewContractData((prev: any) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
+  } = useEditContractRenewalStatusModal({
+    isOpen,
+    onClose,
+    onSuccess,
+    onSubmit,
+    kontrakData,
+    statusOptions,
+    contractTypeOptions,
+  });
 
   const renderContent = () => {
     // Determine which components to show based on renewal status
@@ -126,8 +68,10 @@ export default function EditStatusPerpanjanganModal({
         <div className="space-y-6">
           <ContractRenewalDetail
             data={contractRenewalData}
-            isEditing={false}
+            isEditing={false} // Maybe this should be true for status editing?
             onChange={handleContractRenewalChange}
+            statusOptions={statusOptions}
+            contractTypeOptions={contractTypeOptions}
           />
           <OldContract
             data={oldContractData}
@@ -146,12 +90,21 @@ export default function EditStatusPerpanjanganModal({
             data={contractRenewalData}
             isEditing={false}
             onChange={handleContractRenewalChange}
+            statusOptions={statusOptions}
+            contractTypeOptions={contractTypeOptions}
+          />
+          <div className='grid grid-cols-2 gap-4'>
+          <OldContract
+            data={oldContractData}
+            isEditing={false}
+            onChange={handleOldContractChange}
           />
           <NewContract
             data={newContractData}
             isEditing={true}
             onChange={handleNewContractChange}
           />
+          </div>
         </div>
       );
     }
@@ -165,6 +118,8 @@ export default function EditStatusPerpanjanganModal({
             isEditing={false}
             onChange={handleContractRenewalChange}
             showLimitedFields={true}
+            statusOptions={statusOptions}
+            contractTypeOptions={contractTypeOptions}
           />
         </div>
       );
@@ -178,6 +133,8 @@ export default function EditStatusPerpanjanganModal({
           isEditing={false}
           onChange={handleContractRenewalChange}
           showLimitedFields={true}
+          statusOptions={statusOptions}
+          contractTypeOptions={contractTypeOptions}
         />
       </div>
     );
@@ -188,7 +145,7 @@ export default function EditStatusPerpanjanganModal({
       title="Edit Status Perpanjangan"
       titleAlign='left'
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleClose}
       handleSubmit={handleSubmit}
       submitting={submitting}
       maxWidth="max-w-6xl"

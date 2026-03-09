@@ -28,13 +28,14 @@ const AddOfficeModal: React.FC<AddOfficeModalProps> = ({ isOpen, onClose, onSucc
     submitting,
     handleSubmit,
     handleFileChange,
+    handleClose,
   } = useAddOfficeModal(isOpen, onClose, onSuccess);
 
   return (
     <ModalAddEdit
       title="Tambah Office"
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleClose}
       content={
         <>
           <InputField

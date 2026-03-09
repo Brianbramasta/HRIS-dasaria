@@ -11,14 +11,23 @@ interface TextAreaFieldProps extends InnerProps {
   htmlFor?: string;
 }
 
+const generatePlaceholder = (label?: ReactNode): string => {
+  if (!label) return "Masukkan deskripsi";
+  const labelStr = String(label).replace("*", "").trim();
+  return `Masukkan ${labelStr.toLowerCase()}`;
+};
+
 const TextAreaField: FC<TextAreaFieldProps> = ({
   label,
   labelClassName,
   containerClassName,
   htmlFor,
   required,
+  placeholder,
   ...rest
 }) => {
+  const defaultPlaceholder = placeholder || generatePlaceholder(label);
+  
   return (
     <div className={containerClassName}>
       {label && (
@@ -29,7 +38,7 @@ const TextAreaField: FC<TextAreaFieldProps> = ({
           </>
         </Label>
       )}
-      <TextArea required={required} {...rest} />
+      <TextArea required={required} placeholder={defaultPlaceholder} {...rest} />
     </div>
   );
 };

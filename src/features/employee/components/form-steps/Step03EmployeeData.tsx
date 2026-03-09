@@ -52,10 +52,10 @@ export const Step03EmployeeData: React.FC = () => {
                 onChange={(value) => {
                   handleChange('kategoriKaryawan', value);
                   const selectedCategory = kategoriKaryawanOptions.find((opt: any) => opt.value === value);
-                  console.log('kategoriKaryawan1', selectedCategory);
+                  //console.log('kategoriKaryawan1', selectedCategory);
                   if (selectedCategory) {
                     const label = selectedCategory.label;
-                    console.log('kategoriKaryawan2', label);
+                    //console.log('kategoriKaryawan2', label);
                     if (['Staff', 'Mitra'].includes(label)) {
                       const statusEvaluasi = employeeStatusOptions.find((opt: any) => opt.label === 'Evaluasi');
                       if (statusEvaluasi) handleChange('employmentStatus', statusEvaluasi.value);
@@ -66,7 +66,6 @@ export const Step03EmployeeData: React.FC = () => {
                   }
                 }}
                 onSearch={handleEmployeeCategorySearch}
-                placeholder="Select"
                 required
               />
             </div>
@@ -74,7 +73,6 @@ export const Step03EmployeeData: React.FC = () => {
               <DateField
                 id="tanggalMasuk"
                 label="Tanggal Masuk"
-                placeholder="hh/bb/tttt"
                 defaultDate={step3.tanggalMasuk as any}
                 onChange={(...args) => handleChange('tanggalMasuk', args[1] as string)}
                 required
@@ -87,7 +85,6 @@ export const Step03EmployeeData: React.FC = () => {
                 defaultValue={step3.company}
                 onChange={(value) => handleChange('company', value)}
                 onSearch={handleCompanySearch}
-                placeholder="Select"
                 required
               />
             </div>
@@ -98,7 +95,6 @@ export const Step03EmployeeData: React.FC = () => {
                 defaultValue={step3.direktorat}
                 onChange={(value) => handleChange('direktorat', value)}
                 onSearch={handleDirectorateSearch}
-                placeholder="Select"
                 required
               />
             </div>
@@ -110,7 +106,6 @@ export const Step03EmployeeData: React.FC = () => {
                 onChange={(value) => handleChange('departemen', value)}
                 disabled={departmentOptions.length === 0}
                 onSearch={handleDepartmentSearch}
-                placeholder="Select"
                 required
               />
             </div>
@@ -121,7 +116,6 @@ export const Step03EmployeeData: React.FC = () => {
                 defaultValue={step3.jabatan}
                 onChange={(value) => handleChange('jabatan', value)}
                 onSearch={handleJobTitleSearch}
-                placeholder="Select"
                 required
               />
             </div>
@@ -132,7 +126,6 @@ export const Step03EmployeeData: React.FC = () => {
                 defaultValue={step3.jenjangJabatan}
                 onChange={(value) => handleChange('jenjangJabatan', value)}
                 onSearch={handlePositionLevelSearch}
-                placeholder="Select"
                 required
               />
             </div>
@@ -142,7 +135,6 @@ export const Step03EmployeeData: React.FC = () => {
                 options={STATUS_PAYROLL_OPTIONS}
                 defaultValue={step3.statusPayroll}
                 onChange={(value) => handleChange('statusPayroll', value)}
-                placeholder="Select"
                 required
               />
             </div>
@@ -155,7 +147,6 @@ export const Step03EmployeeData: React.FC = () => {
                 options={employeeStatusOptions.filter((status: any) => ['Aktif', 'Evaluasi'].includes(status.label))}
                 defaultValue={step3.employmentStatus}
                 onChange={(value) => handleChange('employmentStatus', value)}
-                placeholder="Select"
                 required
                 disabled
               />
@@ -164,7 +155,6 @@ export const Step03EmployeeData: React.FC = () => {
               <DateField
                 id="tanggalAkhir"
                 label="Tanggal Akhir"
-                placeholder="hh/bb/tttt"
                 defaultDate={step3.tanggalAkhir as any}
                 onChange={(...args) => handleChange('tanggalAkhir', args[1] as string)}
                 required
@@ -177,7 +167,6 @@ export const Step03EmployeeData: React.FC = () => {
                 defaultValue={step3.kantor}
                 onChange={(value) => handleChange('kantor', value)}
                 onSearch={handleOfficeSearch}
-                placeholder="Select"
                 disabled={officeOptions.length === 0}
                 required
               />
@@ -190,7 +179,6 @@ export const Step03EmployeeData: React.FC = () => {
                 onChange={(value) => handleChange('divisi', value)}
                 onSearch={handleDivisionSearch}
                 disabled={divisionOptions.length === 0}
-                placeholder="Select"
                 required
               />
             </div>
@@ -201,7 +189,6 @@ export const Step03EmployeeData: React.FC = () => {
                 defaultValue={step3.unit}
                 onChange={(value) => handleChange('unit', value)}
                 onSearch={handleUnitSearch}
-                placeholder="Select"
                 disabled={unitOptions.length === 0}
                 // required
               />
@@ -213,7 +200,6 @@ export const Step03EmployeeData: React.FC = () => {
                 defaultValue={step3.position}
                 onChange={(value) => handleChange('position', value)}
                 onSearch={handlePositionSearch}
-                placeholder="Select"
                 required
               />
             </div>
@@ -224,7 +210,6 @@ export const Step03EmployeeData: React.FC = () => {
                 options={jabatanStrukturalOptions}
                 defaultValue={step3.jabatanStruktural}
                 onChange={(value) => handleChange('jabatanStruktural', value)}
-                placeholder="Select"
                 required
                 disabled={!step3.jabatan}
               />
@@ -246,7 +231,6 @@ export const Step03EmployeeData: React.FC = () => {
                 options={HAK_AKSES_OPTIONS}
                 defaultValue={(step3 as any).userAccess}
                 onChange={(value) => handleChange('userAccess', value)}
-                placeholder="Select"
               />
             </div> */}
             {/* <div>
@@ -255,7 +239,6 @@ export const Step03EmployeeData: React.FC = () => {
                 options={RESIGNATION_STATUS_OPTIONS}
                 defaultValue={step3.resignationStatus}
                 onChange={(value) => handleChange('resignationStatus', value)}
-                placeholder="Select"
               />
             </div> */}
           </div>

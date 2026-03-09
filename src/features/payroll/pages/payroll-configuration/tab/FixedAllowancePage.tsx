@@ -5,7 +5,7 @@ import ExpandCard from '@/features/structure-and-organize/components/card/Expand
 import { IconFileDetail, IconPencil } from '@/icons/components/icons';
 import EditTunjanganPernikahanModal from '@/features/payroll/components/modals/payroll-configuration/fixedAllowance/EditMarriageAllowanceModal';
 import EditTunjanganLamaKerjaModal from '@/features/payroll/components/modals/payroll-configuration/fixedAllowance/EditLengthOfServiceAllowanceModal';
-import EditFeeModal from '@/features/payroll/components/modals/payroll-configuration/fixedAllowance/EditFeeModal';
+// import EditFeeModal from '@/features/payroll/components/modals/payroll-configuration/fixedAllowance/EditFeeModal';
 // import EditTunjanganTransportasiModal from '@/features/payroll/components/modals/payroll-configuration/fixedAllowance/EditTransportationAllowanceModal';
 // Dokumentasi: Integrasi modal Edit/Detail Tunjangan Jabatan & BPJS
 import EditDetailTunjanganJabatanDanBpjsModal from '@/features/payroll/components/modals/payroll-configuration/fixedAllowance/EditPositionAndBPJSAllowanceModal';
@@ -13,7 +13,7 @@ import { useMarriageAllowance } from '@/features/payroll/hooks/payroll-configura
 import { useLengthOfServiceAllowance } from '@/features/payroll/hooks/payroll-configuration/fixed-allowance/useLengthOfServiceAllowance';
 import { usePositionAllowance } from '@/features/payroll/hooks/payroll-configuration/fixed-allowance/usePositionAllowance';
 // import { useTransportationAllowance } from '@/features/payroll/hooks/payroll-configuration/fixed-allowance/useTransportationAllowance';
-import { useFeeAllowance } from '@/features/payroll/hooks/payroll-configuration/fixed-allowance/useFeeAllowance';
+// import { useFeeAllowance } from '@/features/payroll/hooks/payroll-configuration/fixed-allowance/useFeeAllowance';
 import { formatCurrency } from '@/utils/formatCurrency';
 
 export default function TunjanganTetapPage() {
@@ -59,14 +59,14 @@ export default function TunjanganTetapPage() {
   //   selected: selectedTransportation,
   // } = useTransportationAllowance();
 
-  const {
-    feeAllowanceRows,
-    handleEditOpen: handleEditOpenFee,
-    editModal: editModalFee,
-    handleUpdate: handleUpdateFee,
-    selected: selectedFee,
-    loading: loadingFee,
-  } = useFeeAllowance();
+  // const {
+  //   feeAllowanceRows,
+  //   handleEditOpen: handleEditOpenFee,
+  //   editModal: editModalFee,
+  //   handleUpdate: handleUpdateFee,
+  //   selected: selectedFee,
+  //   loading: loadingFee,
+  // } = useFeeAllowance();
 
   return (
     <div className="space-y-6 p-4">
@@ -129,7 +129,7 @@ export default function TunjanganTetapPage() {
         />
       </ExpandCard>
 
-      <ExpandCard title="FEE" withHeaderDivider defaultOpen>
+      {/* <ExpandCard title="FEE" withHeaderDivider defaultOpen>
         <DocumentsTable
           items={feeAllowanceRows as any}
           columns={[
@@ -139,7 +139,7 @@ export default function TunjanganTetapPage() {
           ] as any}
           actions={[{ icon: <IconPencil />, onClick: (row: any) => handleEditOpenFee(row) }]}
         />
-      </ExpandCard>
+      </ExpandCard> */}
 
       {/* <ExpandCard title="Tunjangan Transportasi" withHeaderDivider defaultOpen>
         <DocumentsTable
@@ -169,13 +169,13 @@ export default function TunjanganTetapPage() {
         onSave={handleUpdateLengthOfService}
         isLoading={loadingLengthOfService}
       />
-      <EditFeeModal
+      {/* <EditFeeModal
         isOpen={editModalFee.isOpen}
         onClose={editModalFee.closeModal}
         defaultValues={selectedFee}
         onSave={handleUpdateFee}
         isLoading={loadingFee}
-      />
+      /> */}
       {/* <EditTunjanganTransportasiModal
         isOpen={editModalTransportation.isOpen}
         onClose={editModalTransportation.closeModal}

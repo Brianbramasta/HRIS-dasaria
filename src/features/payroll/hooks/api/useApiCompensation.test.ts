@@ -123,7 +123,7 @@ describe('useApiCompensation Hook', () => {
           
           await act(async () => {
               await result.current.updateCompensation('1', {
-                  categoryCompensation: 'New Cat',
+                  categoryCompensationId: 'New Cat Id',
                   amountGeneral: 5000,
                   amountJunior: null,
                   amountMiddle: null,

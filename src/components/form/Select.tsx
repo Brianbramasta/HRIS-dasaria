@@ -34,6 +34,7 @@ const Select: React.FC<SelectProps> = ({
   const ref = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [menuStyle, setMenuStyle] = useState<{ left: number; top?: number; bottom?: number; width: number }>({ left: 0, top: 0, width: 0 });
 
   const selectedLabel =
@@ -103,6 +104,13 @@ const Select: React.FC<SelectProps> = ({
     };
   }, [open]);
 
+  useEffect(() => {
+    if (open && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [open]);
+
   const commitChange = (value: string) => {
     setSelectedValue(value);
     onChange(value);
@@ -114,14 +122,16 @@ const Select: React.FC<SelectProps> = ({
     <div className="relative" ref={ref}>
       <button
         type="button"
-        className={`text-start h-11 w-full appearance-none rounded-lg border px-4 py-2.5 pr-11 text-sm shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 ${
+        className={`text-start h-11 w-full appearance-none rounded-lg border px-4 py-2.5 pr-11 text-sm shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 truncate ${
           selectedValue ? "text-gray-800 dark:text-white/90" : "text-gray-400"
         } ${className} ${disabled ? "cursor-not-allowed bg-gray-100 dark:bg-gray-800" : "cursor-pointer border-gray-300 bg-transparent "}`}
         onClick={() => setOpen((v) => !v)}
         ref={buttonRef}
         disabled={disabled}
       >
-        {selectedLabel}
+        <span className="block truncate" title={selectedLabel}>
+          {selectedLabel}
+        </span>
       </button>
 
       <select
@@ -153,6 +163,7 @@ const Select: React.FC<SelectProps> = ({
             <div className="p-2 border-b border-gray-200 dark:border-gray-800">
               <input
                 type="text"
+                ref={inputRef}
                 value={query}
                 onChange={(e) => {
                   const q = e.target.value;
@@ -182,7 +193,7 @@ const Select: React.FC<SelectProps> = ({
                     type="button"
                     className={`block w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800 ${
                       selectedValue === o.value
-                        ? "bg-gray-50 dark:bg-gray-800"
+                        ? "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
                         : ""
                     }`}
                     onClick={() => commitChange(o.value)}

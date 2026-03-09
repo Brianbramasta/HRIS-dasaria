@@ -3,6 +3,7 @@ import { directoratesService } from '../../services/request/DirectoratesService'
 import { DirectorateListItem, TableFilter } from '../../types/OrganizationApiTypes';
 import useFilterStore from '../../../../stores/filterStore';
 import { toFileSummary } from '../../utils/shared/toFileSummary';
+import { loadPageFilters } from '../../../../stores/filterStore';
 
 // Mapping helpers
 
@@ -65,7 +66,7 @@ export const useApiDirectorates = (): UseDirectoratesReturn => {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
-  const filterValue = useFilterStore((s) => s.filters['Direktorat'] ?? '');
+  const filterValue = useFilterStore((s) => (s.filters['Direktorat'] ?? []).join(','));
 
   const fetchDirectorates = useCallback(async (filter?: TableFilter) => {
     setLoading(true);
@@ -77,7 +78,12 @@ export const useApiDirectorates = (): UseDirectoratesReturn => {
       const effectiveSearch = filter?.search ?? search;
       const effectiveSortBy = filter?.sortBy ?? sortBy;
       const effectiveSortOrder = filter?.sortOrder ?? sortOrder;
-      const effectiveFilter = filter?.filter ?? filterValue;
+      
+      // Get individual filter terms from localStorage instead of comma-separated string
+      const pageKey = '/structure-and-organize/directorates'; // Current page path
+      const { terms } = loadPageFilters(pageKey);
+      const effectiveFilter = filter?.filter ?? (terms.length > 0 ? terms : filterValue);
+      
       const params: any = { page: effectivePage, per_page: effectivePageSize };
       if (effectiveSearch) params.search = effectiveSearch;
       if (effectiveFilter) params.filter = effectiveFilter;

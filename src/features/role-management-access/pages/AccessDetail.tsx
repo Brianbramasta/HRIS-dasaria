@@ -7,6 +7,7 @@ import DeleteAccessModal from '../components/modals/access/DeleteAccessModal';
 
 export default function AccessDetail() {
   const {
+    featureId,
     accessData,
     handleAddAccess,
     handleEditAccess,
@@ -19,6 +20,7 @@ export default function AccessDetail() {
     setIsDeleteAccessModalOpen,
     selectedAccess,
     onDeleteConfirm,
+    refreshData,
   } = useAccessDetail();
 
   const accessColumns: DataTableColumn<AccessData>[] = [
@@ -57,11 +59,14 @@ export default function AccessDetail() {
       <AddAccessModal
         isOpen={isAddAccessModalOpen}
         onClose={() => setIsAddAccessModalOpen(false)}
+        featureId={featureId}
+        onSuccess={refreshData}
       />
       <EditAccessModal
         isOpen={isEditAccessModalOpen}
         onClose={() => setIsEditAccessModalOpen(false)}
         data={selectedAccess}
+        onSuccess={refreshData}
       />
       <DeleteAccessModal
         isOpen={isDeleteAccessModalOpen}

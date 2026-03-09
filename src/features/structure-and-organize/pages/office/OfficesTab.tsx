@@ -14,7 +14,8 @@ const officeColumns: DataTableColumn<OfficeRow>[] = [
   { id: 'no', label: 'No', sortable: false },
   { id: 'nama-kantor', label: 'Kantor', sortable: true },
   { id: 'deskripsi-umum', label: 'Deskripsi Umum', sortable: true },
-  { id: 'file-sk-dan-memo', label: 'File SK dan Memo', sortable: false, align: 'center', isAction: true, format: (row: OfficeRow) => (
+  { id: 'file-sk-dan-memo', label: 'File SK dan Memo', sortable: false, align: 'center', isAction: true, format: ( row: OfficeRow) => (
+   
     row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer" className='flex justify-center items-center'><FileText size={16} /></a> : '—'
   ) },
 ];

@@ -61,6 +61,7 @@ export const useCompensation = ({ autoFetch = true }: { autoFetch?: boolean } = 
     return {
       levelJabatan: selected.jobTitleName,
       jabatanStruktural: selected.structuralJobs?.map(s => s.structuralJobName).join(', ') || selected.structuralJobName || '',
+      categoryCompensationId: selected.categoryCompensationId,
       kategori: selected.categoryCompensation,
       general: selected.amountGeneral !== null ? formatCurrency(selected.amountGeneral) : '',
       junior: selected.amountJunior !== null ? formatCurrency(selected.amountJunior) : '',
@@ -84,6 +85,7 @@ export const useCompensation = ({ autoFetch = true }: { autoFetch?: boolean } = 
           ...prev,
           jobTitleName: detail.jobTitle.jobTitleName,
           structuralJobs: detail.jobTitle.structuralJobs,
+          categoryCompensationId: detail.categoryCompensationId,
           categoryCompensation: detail.categoryCompensation,
           amountGeneral: detail.amountGeneral,
           amountJunior: detail.amountJunior,
@@ -103,7 +105,7 @@ export const useCompensation = ({ autoFetch = true }: { autoFetch?: boolean } = 
     if (!selected) return;
 
     const payload: CompensationUpdatePayload = {
-      categoryCompensation: formData.kategori || '',
+      categoryCompensationId: formData.categoryCompensationId || '',
       amountGeneral: parseCurrency(formData.general),
       amountJunior: parseCurrency(formData.junior),
       amountMiddle: parseCurrency(formData.middle),

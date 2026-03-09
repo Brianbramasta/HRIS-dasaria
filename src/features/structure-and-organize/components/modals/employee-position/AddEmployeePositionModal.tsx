@@ -44,6 +44,7 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
     unitOptions,
     handleFileChange,
     handleSubmit,
+    handleClose,
     searchPositions,
     searchDirectorates,
     searchDivisions,
@@ -54,7 +55,7 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
     <ModalAddEdit
       title="Tambah Posisi"
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleClose}
       content={
         <>
           <InputField

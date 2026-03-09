@@ -300,3 +300,24 @@ export interface BankDropdownItem {
   bank_code: string;
   bank_name: string;
 }
+
+export interface BpjsHealthTypeDropdownItem {
+  id: string;
+  name: string;
+}
+
+// Employee Near Contract End (untuk SpamModal)
+export interface EmployeeNearContractEndItem {
+  avatar: string | null;
+  employee_name: string;
+  current_contract_end: string; // Format: YYYY-MM-DD
+  remaining_month: number;
+}
+
+export interface EmployeesNearContractEndResponse {
+  meta: {
+    status: number;
+    message: string;
+  };
+  data: EmployeeNearContractEndItem[];
+}

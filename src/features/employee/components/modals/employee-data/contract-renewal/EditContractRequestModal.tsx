@@ -2,6 +2,7 @@ import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Input from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
 import useEditContractRequestModal from '@/features/employee/hooks/modals/employee-data/contract-renewal/useEditContractRequestModal';
+import { useState } from 'react';
 
 interface EditPengajuanKontrakModalProps {
   isOpen: boolean;
@@ -10,19 +11,32 @@ interface EditPengajuanKontrakModalProps {
     idKaryawan: string;
     pengguna: string;
     jenisPerubahan: string;
+    jenisPerubahanId?: string;
     perusahaan: string;
+    perusahaanId?: string;
     kantor: string;
+    kantorId?: string;
     direktorat: string;
+    direktoratId?: string;
     divisi: string;
+    divisiId?: string;
     departemen: string;
+    departemenBaruId?: string;
     position: string;
+    positionId?: string;
     jabatan: string;
+    jabatanId?: string;
     golongan: string;
     jenjangJabatan: string;
+    jenjangJabatanId?: string;
     gajiPokok: string;
     kategoriKaryawan: string;
+    kategoriKaryawanId?: string;
+    unitId?: string;
+    structuralPositionId?: string;
   };
   onSuccess?: () => void;
+  onSubmit: (data: FormData) => Promise<boolean>;
 }
 
 export default function EditPengajuanKontrakModal({
@@ -30,6 +44,7 @@ export default function EditPengajuanKontrakModal({
   onClose,
   kontrakData,
   onSuccess,
+  onSubmit,
 }: EditPengajuanKontrakModalProps) {
   const {
     jenisPerubahanOptions,
@@ -60,9 +75,116 @@ export default function EditPengajuanKontrakModal({
     setJenjangJabatan,
     kategoriKaryawan,
     setKategoriKaryawan,
-    submitting,
-    handleSubmit,
+    // submitting: hookSubmitting,
+    // handleSubmit: hookHandleSubmit,
   } = useEditContractRequestModal({ kontrakData, onClose, onSuccess });
+
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
+    setSubmitting(true);
+    try {
+      const formData = new FormData();
+
+      // Helper to append if value exists
+      // Prioritize using the ID if the selected value matches the initial value (assuming no change)
+      // or if we had a way to map back to ID.
+      // Since we don't have IDs for the hardcoded options, we'll try to use the initial ID if available.
+      
+      if (jenisPerubahan) {
+        const val = (jenisPerubahan === kontrakData?.jenisPerubahan && kontrakData?.jenisPerubahanId) 
+          ? kontrakData.jenisPerubahanId 
+          : jenisPerubahan; // Fallback to sending value (might fail if API needs ID)
+        formData.append('change_type_id', val);
+      }
+
+      if (perusahaan) {
+        const val = (perusahaan === kontrakData?.perusahaan && kontrakData?.perusahaanId)
+          ? kontrakData.perusahaanId
+          : perusahaan;
+        formData.append('company_id', val);
+      }
+
+      if (kantor) {
+        const val = (kantor === kontrakData?.kantor && kontrakData?.kantorId)
+          ? kontrakData.kantorId
+          : kantor;
+        formData.append('office_id', val);
+      }
+
+      if (direktorat) {
+        const val = (direktorat === kontrakData?.direktorat && kontrakData?.direktoratId)
+          ? kontrakData.direktoratId
+          : direktorat;
+        formData.append('directorate_id', val);
+      }
+
+      if (divisi) {
+        const val = (divisi === kontrakData?.divisi && kontrakData?.divisiId)
+          ? kontrakData.divisiId
+          : divisi;
+        formData.append('division_id', val);
+      }
+      
+      // Department seems not selectable in UI (onChange={() => {}}), so use initial
+      if (kontrakData?.departemenBaruId) {
+        formData.append('department_id', kontrakData.departemenBaruId);
+      }
+
+      if (position) {
+         const val = (position === kontrakData?.position && kontrakData?.positionId)
+          ? kontrakData.positionId
+          : position;
+        formData.append('position_id', val);
+      }
+
+      if (jabatan) {
+        // rank_position maps to job_title_id usually? Or job_title_id maps to Jabatan?
+        // Assuming jabatan -> job_title_id (rank_position)
+        const val = (jabatan === kontrakData?.jabatan && kontrakData?.jabatanId)
+          ? kontrakData.jabatanId
+          : jabatan;
+        formData.append('job_title_id', val);
+      }
+
+      if (jenjangJabatan) {
+         const val = (jenjangJabatan === kontrakData?.jenjangJabatan && kontrakData?.jenjangJabatanId)
+          ? kontrakData.jenjangJabatanId
+          : jenjangJabatan;
+        formData.append('position_level_id', val);
+      }
+
+      if (kategoriKaryawan) {
+         const val = (kategoriKaryawan === kontrakData?.kategoriKaryawan && kontrakData?.kategoriKaryawanId)
+          ? kontrakData.kategoriKaryawanId
+          : kategoriKaryawan;
+        formData.append('employee_category_id', val);
+      }
+      
+      if (kontrakData?.unitId) {
+        formData.append('unit_id', kontrakData.unitId);
+      }
+      
+      if (kontrakData?.structuralPositionId) {
+        formData.append('structural_job_id', kontrakData.structuralPositionId);
+      }
+      
+      // Salary
+      if (kontrakData?.gajiPokok) {
+        formData.append('salary', kontrakData.gajiPokok);
+      }
+
+      const success = await onSubmit(formData);
+      if (success) {
+        onSuccess?.();
+        onClose();
+      }
+    } catch (error) {
+      console.error('Failed to submit contract request', error);
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <ModalAddEdit

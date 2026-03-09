@@ -64,7 +64,7 @@ export const useApiLengthOfServiceAllowance = (): UseApiLengthOfServiceAllowance
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
   
   // Assuming filterStore is global. Key used: 'LengthOfServiceAllowance' (can be adjusted)
-  const filterValue = useFilterStore((s) => s.filters['LengthOfServiceAllowance'] ?? '');
+  const filterValue = useFilterStore((s) => (s.filters['LengthOfServiceAllowance'] ?? []).join(','));
 
   const fetchItems = useCallback(async (filter?: Partial<TableFilter>) => {
     setLoading(true);

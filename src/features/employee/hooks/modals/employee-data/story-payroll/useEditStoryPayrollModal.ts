@@ -1,13 +1,13 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useApiEmployeeSalary } from '@/features/employee/hooks/api/useApiEmployeeSalary';
 import { useApiPayrollPreview } from '@/features/employee/hooks/api/useApiPayrollPreview';
-import { TemporarySalaryResponse, NonFixAllowanceDetail } from '@/features/employee/types/dto/EmployeeSalaryType';
+import { UpdateNonFixAllowancePayload, EmployeeSalaryShowResponse } from '@/features/employee/types/dto/EmployeeSalaryType';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   employeeId: string;
-  data: TemporarySalaryResponse | null;
+  data: EmployeeSalaryShowResponse | null;
   onSuccess: () => void;
 }
 
@@ -18,7 +18,7 @@ export interface NonFixAllowanceFormItem {
 }
 
 export const useEditStoryPayrollModal = ({ isOpen, onClose, employeeId, data, onSuccess }: Props) => {
-  const { updateTemporarySalary, loading } = useApiEmployeeSalary();
+  const { updateNonFixAllowance, loading } = useApiEmployeeSalary();
   const { nonFixAllowanceOptions, fetchNonFixAllowanceDropdown } = useApiPayrollPreview();
 
   // Form State
@@ -45,17 +45,23 @@ export const useEditStoryPayrollModal = ({ isOpen, onClose, employeeId, data, on
   // Initialize data
   useEffect(() => {
     if (data && isOpen) {
-      setBankName(data.bank_name || '');
-      setAccountNumber(String(data.bank_account_number || ''));
-      setAccountHolder(data.bank_account_holder || '');
-      setNpwp(String(data.npwp || ''));
+      const employeeInfo = data.data.employee_information;
+      const payrollInfo = data.data.payroll_information;
+      
+      setBankName(employeeInfo.bank_name || '');
+      setAccountNumber(employeeInfo.bank_account_number || '');
+      setAccountHolder(employeeInfo.bank_account_holder || '');
+      setNpwp(employeeInfo.npwp || '');
 
-      const initialNonFix = data.non_fix_allowance_details?.map((item) => ({
-        tr_id: item.tr_employee_non_fix_allowance_id,
-        id: item.non_fix_allowance_id,
-        amount: item.amount,
-      })) || [];
-      setNonFixAllowances(initialNonFix);
+      // Extract non-fixed allowances from new structure
+      const nonFixedAllowances = payrollInfo.allowances
+        .filter(allowance => allowance.type === 'non_fixed')
+        .map((allowance) => ({
+          tr_id: allowance.id,
+          id: allowance.id || '',
+          amount: allowance.amount,
+        })) || [];
+      setNonFixAllowances(nonFixedAllowances);
     }
   }, [data, isOpen]);
 
@@ -76,15 +82,15 @@ export const useEditStoryPayrollModal = ({ isOpen, onClose, employeeId, data, on
   };
 
   const handleSubmit = async () => {
-    const payload: NonFixAllowanceDetail[] = nonFixAllowances.map((item) => ({
-      tr_employee_non_fix_allowance_id: item.tr_id,
-      non_fix_allowance_id: item.id,
-      amount: item.amount,
-    }));
+    const payload: UpdateNonFixAllowancePayload = {
+      employee_id: employeeId,
+      data_update: nonFixAllowances.map((item) => ({
+        non_fix_id: item.id,
+        amount: item.amount,
+      })),
+    };
 
-    const success = await updateTemporarySalary(employeeId, {
-      non_fix_allowance_details: payload,
-    });
+    const success = await updateNonFixAllowance(payload);
 
     if (success) {
       onSuccess();

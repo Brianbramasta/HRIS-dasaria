@@ -5,6 +5,7 @@ import InputField from '../../../../../components/form/input/InputField';
 import DatePicker from '../../../../../components/form/date-picker';
 import TextArea from '../../../../../components/form/input/TextArea';
 import { useEffectiveResignationDateModal } from '../../../hooks/modals/resignation/useEffectiveResignationDateModal';
+import { formatDateToIndonesian } from '@/utils/formatDate';
 
 interface EffectiveResignationDateModalProps {
   isOpen: boolean;
@@ -70,7 +71,7 @@ const EffectiveResignationDateModal: React.FC<EffectiveResignationDateModalProps
         <InputField
           id="tanggalPengajuan"
           type="text"
-          value={tanggalPengajuan}
+          value={formatDateToIndonesian(String(tanggalPengajuan)) || tanggalPengajuan}
           disabled
           placeholder="Tanggal Pengajuan"
         />
@@ -87,7 +88,7 @@ const EffectiveResignationDateModal: React.FC<EffectiveResignationDateModalProps
       </div>
 
       <div>
-        <Label htmlFor="deskripsi">Deskripsi</Label>
+        <Label htmlFor="deskripsi">Catatan</Label>
         <TextArea
           placeholder="Deskripsi..."
           rows={4}

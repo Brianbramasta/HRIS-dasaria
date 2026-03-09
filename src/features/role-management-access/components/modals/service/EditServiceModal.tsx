@@ -8,14 +8,15 @@ interface EditServiceModalProps {
   isOpen: boolean;
   onClose: () => void;
   data: LayananData | null;
+  onSuccess?: () => void;
 }
 
-export default function EditServiceModal({ isOpen, onClose, data }: EditServiceModalProps) {
+export default function EditServiceModal({ isOpen, onClose, data, onSuccess }: EditServiceModalProps) {
   const {
     serviceName,
     handleServiceChange,
     handleSubmit,
-  } = useEditServiceModal(isOpen, onClose, data);
+  } = useEditServiceModal(isOpen, onClose, data, onSuccess);
 
   return (
     <Modal

@@ -67,7 +67,7 @@ class BusinessLinesService {
    * @returns Promise dengan response API
    */
   async delete(id: string, formData: FormData): Promise<any> {
-    return apiService.post<any>(`${this.basePath}business-lines${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+    return apiService.post<any>(`${this.basePath}business-lines/${id}/delete`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
   }
 }
 

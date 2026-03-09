@@ -76,7 +76,7 @@ export const useApiBusinessLines = (): UseApiBusinessLinesReturn => {
   const [search, setSearch] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
-  const filterValue = useFilterStore((s) => s.filters['Lini Bisnis'] ?? '');
+  const filterValue = useFilterStore((s) => (s.filters['Lini Bisnis'] ?? []).join(','));
 
   const fetchBusinessLines = useCallback(async (filter?: Partial<TableFilter>) => {
     setLoading(true);
@@ -324,7 +324,7 @@ export const useApiBusinessLines = (): UseApiBusinessLinesReturn => {
     try {
       const resp = await businessLinesService.getById(id);
       const item = (resp as any)?.data as any;
-      // console.log('getById', item);
+      // //console.log('getById', item);
       if (!item) return null;
       return mapToBusinessLine(item);
     } catch (err) {

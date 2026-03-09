@@ -26,6 +26,7 @@ export default function PersetujuanPerpanjanganKontrak() {
     handleModalClose,
     handleRejectModalClose,
     handleRejectSubmit,
+    handleUpdateContractRequest,
     handleNavigateToApproval,
     handleNavigateToExtension,
   } = useContractRenewalApproval();
@@ -87,6 +88,7 @@ export default function PersetujuanPerpanjanganKontrak() {
           <EditPengajuanKontrakModal
             isOpen={isModalOpen}
             onClose={handleModalClose}
+            onSubmit={handleUpdateContractRequest}
             kontrakData={{
               idKaryawan: selectedKontrak.employee_id,
               pengguna: selectedKontrak.full_name,
@@ -104,7 +106,7 @@ export default function PersetujuanPerpanjanganKontrak() {
               kategoriKaryawan: 'Staff',
             }}
             onSuccess={() => {
-              console.log('Modal closed after success');
+              //console.log('Modal closed after success');
             }}
           />
           <KonfirmasiPenolakanKontrak

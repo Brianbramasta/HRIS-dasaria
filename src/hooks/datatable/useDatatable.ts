@@ -88,7 +88,7 @@ export function useDatatable<T = any>({
     setOrder(newOrder);
     setOrderBy(columnId);
     onSortChange?.(columnId, newOrder);
-    console.log('handleSort',columnId, newOrder);
+    //console.log('handleSort',columnId, newOrder);
   };
 
   // Filter data based on search term

@@ -35,3 +35,8 @@ export * from './icons/IconTidakLengkap';
 export * from './icons/IconEmail';
 export * from './icons/IconEyeOpen';
 export * from './icons/IconEyeClose';
+export * from './icons/IconInfo';
+export * from './icons/IconFacebook';
+export * from './icons/IconInstagram';
+export * from './icons/IconLinkedin';
+export * from './icons/IconX';

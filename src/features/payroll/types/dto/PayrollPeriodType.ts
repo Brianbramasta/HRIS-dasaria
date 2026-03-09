@@ -1,0 +1,223 @@
+export interface PayrollPeriodListItem {
+    payrollId: string;
+    employeeId: string;
+    avatar: string | null;
+    fullName: string;
+    periode: string;
+    workingDays: number;
+    netSalary: string;
+    basicSalary: number;
+    deductionTotal: number;
+    allowanceTotal: number;
+    nonFixedAllowanceTotal: number;
+    employeeCategoryName: string;
+    companyName: string;
+    payrollStatusName: string;
+}
+
+export interface PayrollMeta {
+    status: number;
+    message: string;
+}
+
+export interface PayrollPeriodResponse {
+    payroll_id: string;
+    employee_id: string;
+    avatar: string | null;
+    full_name: string;
+    periode: string;
+    working_days: number;
+    net_salary: string;
+    basic_salary: number;
+    deduction_total: number;
+    allowance_total: number;
+    non_fixed_allowance_total: number;
+    employee_category_name: string;
+    company_name: string;
+    payroll_status_name: string;
+}
+
+export interface PayrollPeriodListResponse {
+    meta: PayrollMeta;
+    data: {
+        current_page: number;
+        data: PayrollPeriodResponse[];
+        per_page: number;
+        to: number;
+        total: number;
+    };
+}
+
+export interface PayrollPeriodDetailEmployeeInformation {
+    payroll_id: string;
+    employee_id: string;
+    full_name: string;
+    company_name: string;
+    job_title_name?: string;
+    length_of_service?: string;
+    payroll_status_name?: string;
+}
+
+export interface PayrollPeriodFixedAllowanceAndDeductionItem {
+    id: string;
+    payroll_id: string;
+    componen_id: string;
+    componen_name: string;
+    amount: string;
+}
+
+export interface PayrollPeriodEmployeeLoanItem {
+    id: string;
+    application_id: string | null;
+    employee_id: string;
+    application_date: string;
+    deduction_start_period: string;
+    disbursed_at: string;
+    loan_type_id: string;
+    nominal_loan: number;
+    nominal_installment: number;
+    loan_period: number;
+    loan_status_id: string;
+    supervisor_approval_file: string;
+    supporting_documents: string;
+    loan_description: string;
+    rejection_reason: string | null;
+    created_at: string | null;
+    updated_at: string;
+}
+
+export interface PayrollPeriodFixedAllowanceAndDeductionSection {
+    fixed_allowance_and_deduction: PayrollPeriodFixedAllowanceAndDeductionItem[];
+    employee_loan: PayrollPeriodEmployeeLoanItem[];
+}
+
+export interface PayrollPeriodNonFixedAllowanceMasterItem {
+    componen_id: string;
+    allowance_name: string;
+    category_sub: string;
+    amount: number | null;
+}
+
+export interface PayrollPeriodEmployeeNonFixedAllowanceItem {
+    id: string;
+    allowance_name: string;
+    category_sub: string;
+    amount: number;
+}
+
+export interface PayrollPeriodNonFixedDeductionItem {
+    id: string;
+    deduction_name: string;
+    category: string;
+    amount: number;
+}
+
+export interface PayrollPeriodGrossCalculation {
+    gross_salary: number;
+    deduction_total: number;
+    net_salary: string;
+    note_hr?: string;
+    note_bod?: string;
+}
+
+export interface HolidayCalculation {
+    basic_salary: number;
+    net_salary: number;
+    note_hr?: string;
+    note_bod?: string;
+}
+
+export interface PayrollPeriodDetailData {
+    information_employee: PayrollPeriodDetailEmployeeInformation;
+    fixed_allowance_and_deduction?: PayrollPeriodFixedAllowanceAndDeductionSection;
+    non_fixed_allowance?: {
+        non_fixed_allowance: PayrollPeriodNonFixedAllowanceMasterItem[];
+    };
+    non_fixed_deduction?: PayrollPeriodNonFixedDeductionItem[];
+    gross_calculation?: PayrollPeriodGrossCalculation;
+    holiday_calculation?: HolidayCalculation;
+}
+
+export interface PayrollPeriodDetailResponse {
+    meta: PayrollMeta;
+    data: PayrollPeriodDetailData;
+}
+
+export type PayrollPeriodUpdateNonFixAllowanceItemPayload = {
+    componenId: string;
+    amount: number | string;
+};
+
+export type PayrollPeriodUpdateNonFixDeductionItemPayload = {
+    componenId: string;
+    amount: number | string;
+};
+
+export interface PayrollPeriodUpdateNonFixAllowancePayload {
+    payrollId: string;
+    nonFixedAllowances: PayrollPeriodUpdateNonFixAllowanceItemPayload[];
+}
+
+export interface PayrollPeriodUpdateNonFixDeductionPayload {
+    payrollId: string;
+    nonFixedDeductions: PayrollPeriodUpdateNonFixDeductionItemPayload[];
+}
+
+export interface PayrollPeriodUpdateWorkingDaysPayload {
+    payrollId: string;
+    workingDays: number | string;
+}
+
+export interface PayrollPeriodApprovalHrPayload {
+    payrollIds: string[];
+    all?: boolean;
+    type: string;
+}
+
+export interface PayrollPeriodUpdateNotePayload {
+    payrollId: string;
+    noteHr?: string;
+    noteBod?: string;
+    type?: string;
+    holiday_allowance?: string;
+}
+
+export interface PayrollPeriodDeletePayload {
+    payrollId: string;
+}
+
+export interface PayrollPeriodGenericActionResponse<TData = any> {
+    meta: PayrollMeta;
+    data: TData;
+}
+
+export interface PayrollPeriodImportApprovalStatusData {
+    statusAll: {
+        id: string;
+        payroll_month: string;
+        allowance_imported_at: string;
+        approval_hr: string;
+        approval_direktur_hr: string;
+        approval_direktur_fat: string;
+        approval_direktur_bod: string;
+        distribute: string;
+        closed: string;
+        type: string;
+        created_at: string;
+        updated_at: string;
+        status_payroll: string;
+    };
+    summary: Array<{
+        card: Array<{
+            label: string;
+            remaining: number;
+            progress: number;
+            total: number;
+        }>;
+    }>;
+}
+
+export interface PayrollPeriodImportApprovalStatusResponse {
+    meta: PayrollMeta;
+    data: PayrollPeriodImportApprovalStatusData;
+}

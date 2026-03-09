@@ -1,12 +1,15 @@
 import { useState, useCallback, useEffect } from 'react';
 import { ModulData } from '../../useModulDetail';
+import { useApiModules } from '../../api/useApiModules';
 
 export const useEditModulModal = (
   isOpen: boolean, 
   onClose: () => void,
-  initialData: ModulData | null
+  initialData: ModulData | null,
+  onSuccess?: () => void
 ) => {
   const [modulName, setModulName] = useState('');
+  const { updateModule, loading } = useApiModules();
 
   useEffect(() => {
     if (isOpen && initialData) {
@@ -18,7 +21,7 @@ export const useEditModulModal = (
     setModulName(value);
   }, []);
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(async () => {
     if (!initialData) return;
     
     // Validasi sederhana
@@ -27,14 +30,20 @@ export const useEditModulModal = (
       return;
     }
 
-    console.log('Updating modul:', { ...initialData, modul: modulName });
-    // Di sini nanti panggil API update
-    onClose();
-  }, [initialData, modulName, onClose]);
+    const success = await updateModule(initialData.idModul, {
+      name: modulName
+    });
+
+    if (success) {
+      onSuccess?.();
+      onClose();
+    }
+  }, [initialData, modulName, updateModule, onSuccess, onClose]);
 
   return {
     modulName,
     handleModulChange,
     handleSubmit,
+    loading,
   };
 };

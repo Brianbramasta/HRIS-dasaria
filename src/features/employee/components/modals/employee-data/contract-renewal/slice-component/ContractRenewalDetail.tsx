@@ -4,8 +4,7 @@ import SelectField from '@/components/shared/field/SelectField';
 import TextAreaField from '@/components/shared/field/TextAreaField';
 import DateField from '@/components/shared/field/DateField';
 import FileField from '@/components/shared/field/FIleField';
-import { useContractRenewalStore } from '../../../../../stores/useContractRenewalStore';
-import { useEffect } from 'react';
+import { useContractRenewalDetail } from '@/features/employee/hooks/modals/contract-renewal/slice-component/useContractRenewalDetail';
 
 interface ContractRenewalDetailProps {
   data?: {
@@ -17,8 +16,9 @@ interface ContractRenewalDetailProps {
     end_date?: string;
     remaining_contract?: string;
     renewal_status_name?: string;
+    contract_type_id?: string;
     contract_type_name?: string;
-    contract_number?: string;
+    contract_sequence?: string;
     new_contract_date?: string;
     new_contract_end_date?: string;
     contract_document?: string;
@@ -28,6 +28,8 @@ interface ContractRenewalDetailProps {
   isEditing?: boolean;
   onChange?: (field: string, value: any) => void;
   showLimitedFields?: boolean;
+  statusOptions?: { value: string; label: string }[];
+  contractTypeOptions?: { value: string; label: string }[];
 }
 
 export default function ContractRenewalDetail({
@@ -35,25 +37,17 @@ export default function ContractRenewalDetail({
   isEditing = false,
   onChange,
   showLimitedFields = false,
+  statusOptions = [],
+  contractTypeOptions = [],
 }: ContractRenewalDetailProps) {
-  const { shouldShowAllDetailFields, setChangeTypeName } = useContractRenewalStore();
-
-  // Auto-update store when renewal status changes
-  useEffect(() => {
-    if (data?.renewal_status_name) {
-      setChangeTypeName(data.renewal_status_name);
-    }
-  }, [data?.renewal_status_name, setChangeTypeName]);
-
-  const handleInputChange = (field: string, value: any) => {
-    if (onChange) {
-      onChange(field, value);
-    }
-    // Auto-update store when renewal status changes
-    if (field === 'renewal_status_name') {
-      setChangeTypeName(value);
-    }
-  };
+  const { effectiveContractTypeOptions, handleInputChange, showAllDetailFields } = useContractRenewalDetail({
+    data,
+    isEditing,
+    onChange,
+    showLimitedFields,
+    statusOptions,
+    contractTypeOptions,
+  });
 
   return (
     <PayrollCard
@@ -125,47 +119,49 @@ export default function ContractRenewalDetail({
             label="Status Perpanjangan"
             defaultValue={data?.renewal_status_name || ''}
             // disabled={!isEditing}
+            required
             onChange={(value) => handleInputChange('renewal_status_name', value)}
             containerClassName="space-y-2"
-            options={[
-              { label: 'Diperpanjang Tetap', value: 'Diperpanjang Tetap' },
-              { label: 'Diperpanjang Berubah', value: 'Diperpanjang Berubah' },
-              { label: 'Sedang di Proses', value: 'Sedang di Proses' },
-              { label: 'Menunggu diproses', value: 'Menunggu diproses' },
-              { label: 'Ditolak', value: 'Ditolak' },
-            ]}
+            options={
+              statusOptions.length > 0
+                ? statusOptions
+                : [
+                    { label: 'Diperpanjang Tetap', value: 'Diperpanjang Tetap' },
+                    { label: 'Diperpanjang Berubah', value: 'Diperpanjang Berubah' },
+                    { label: 'Sedang di Proses', value: 'Sedang di Proses' },
+                    { label: 'Menunggu diproses', value: 'Menunggu diproses' },
+                    { label: 'Ditolak', value: 'Ditolak' },
+                  ]
+            }
           />
-          {!showLimitedFields && shouldShowAllDetailFields() && (
+          {showAllDetailFields && (
             <SelectField
               label="Jenis Kontrak"
-              defaultValue={data?.contract_type_name || ''}
-              disabled={!isEditing}
-              onChange={(value) => handleInputChange('contract_type_name', value)}
+              defaultValue={data?.contract_type_id || ''}
+              required
+              // disabled={!isEditing}
+              onChange={(value) => handleInputChange('contract_type_id', value)}
               containerClassName="space-y-2"
-              options={[
-                { label: 'Pilih Jenis Kontrak', value: '' },
-                { label: 'Kontrak Tetap', value: 'Kontrak Tetap' },
-                { label: 'Kontrak Sementara', value: 'Kontrak Sementara' },
-                { label: 'PKWT', value: 'PKWT' },
-              ]}
+              options={effectiveContractTypeOptions}
             />
           )}
         </div>
 
         {/* Row 4: Kontrak Ke, Tanggal TTD Kontrak Baru, Tanggal Berakhir Kontrak Baru */}
-        {!showLimitedFields && shouldShowAllDetailFields() && (
+        {showAllDetailFields && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <InputField
               label="Kontrak Ke"
               type="number"
-              value={data?.contract_number || ''}
+              value={data?.contract_sequence || ''}
               disabled={!isEditing}
-              onChange={(e) => handleInputChange('contract_number', e.target.value)}
+              onChange={(e) => handleInputChange('contract_sequence', e.target.value)}
               containerClassName="space-y-2"
             />
             <DateField
               label="Tanggal TTD Kontrak Baru"
               defaultDate={data?.new_contract_date || ''}
+              required
               // disabled={!isEditing}
               onChange={(_dates, dateStr) => handleInputChange('new_contract_date', dateStr)}
               containerClassName="space-y-2"
@@ -173,6 +169,7 @@ export default function ContractRenewalDetail({
             <DateField
               label="Tanggal Berakhir Kontrak Baru"
               defaultDate={data?.new_contract_end_date || ''}
+              required
               // disabled={!isEditing}
               onChange={(_dates, dateStr) => handleInputChange('new_contract_end_date', dateStr)}
               containerClassName="space-y-2"
@@ -181,12 +178,13 @@ export default function ContractRenewalDetail({
         )}
 
         {/* Row 5: Dokumen Kontrak, Dokumen Evaluasi */}
-        {!showLimitedFields && shouldShowAllDetailFields() && (
+        {showAllDetailFields && (
           <div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <FileField
                 label="Dokumen Kontrak"
                 // disabled={!isEditing}
+                required
                 onChange={(e) => handleInputChange('contract_document', e.target.files?.[0])}
                 containerClassName="space-y-2"
                 // accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
@@ -194,6 +192,7 @@ export default function ContractRenewalDetail({
               <FileField
                 label="Dokumen Evaluasi"
                 // disabled={!isEditing}
+                required
                 onChange={(e) => handleInputChange('evaluation_document', e.target.files?.[0])}
                 containerClassName="space-y-2"
                 // accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
@@ -207,7 +206,8 @@ export default function ContractRenewalDetail({
           <TextAreaField
             label="Catatan"
             value={data?.notes || ''}
-            disabled={!isEditing}
+            // disabled={!isEditing}
+            required
             onChange={(value) => handleInputChange('notes', value)}
             containerClassName="space-y-2"
             rows={4}
