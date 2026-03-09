@@ -1,17 +1,41 @@
 import { useState } from "react";
 import Button from "@/components/ui/button/Button";
+import SelectField from "@/components/shared/field/SelectField";
+import { useGenerateApiPayroll } from "@/features/payroll/hooks/api/useGenerateApiPayroll";
 
 const GeneratePayrollPage = () => {
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [selectedType, setSelectedType] = useState<string>("");
+  const { loading, error, generatePayroll } = useGenerateApiPayroll();
 
-  const handleGeneratePayroll = () => {
-    setIsGenerating(true);
-    
-    // Simulate payroll generation process
-    setTimeout(() => {
-      setIsGenerating(false);
-      alert("Payroll generated successfully in dev server!");
-    }, 2000);
+  const handleGeneratePayroll = async () => {
+    if (!selectedType) {
+      alert("Please select a payroll type first!");
+      return;
+    }
+
+    // Map dropdown values to API types
+    let apiType: 'Staff' | 'Mitra' | 'Thr';
+    if (selectedType === 'non-ae') {
+      apiType = 'Staff';
+    } else if (selectedType === 'ae') {
+      apiType = 'Mitra';
+    } else if (selectedType === 'thr') {
+      apiType = 'Thr';
+    } else {
+      alert("Invalid type selected!");
+      return;
+    }
+
+    const success = await generatePayroll(apiType);
+    if (success) {
+      alert("Payroll generated successfully!");
+    } else {
+      alert(error || "Failed to generate payroll!");
+    }
+  };
+
+  const handleTypeChange = (value: string) => {
+    setSelectedType(value);
   };
 
   return (
@@ -21,45 +45,46 @@ const GeneratePayrollPage = () => {
           <h1 className="text-2xl font-bold text-gray-900 mb-4">
             Generate Payroll
           </h1>
-{/*           
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-            <h2 className="text-lg font-semibold text-blue-900 mb-2">
-              Development Server Information
-            </h2>
-            <p className="text-blue-800">
-              This page is for generating payroll in the development server environment.
-              The payroll generation process will simulate the actual payroll calculation
-              and distribution workflow.
-            </p>
-          </div> */}
 
-          <div className="space-y-4">
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="font-medium text-gray-900 mb-2">
-                Payroll Generation Details:
-              </h3>
-              <ul className="text-sm text-gray-600 space-y-1">
-                <li>• Environment: Development Server</li>
-                <li>• Status: Ready to generate</li>
-                <li>• Processing: Mock data simulation</li>
-              </ul>
+          <div className="space-y-6">
+            <div>
+              <SelectField
+                label="Payroll Tipe"
+                defaultValue={selectedType}
+                onChange={handleTypeChange}
+                // placeholder="Select payroll type"
+                containerClassName="w-full"
+                options={[
+                  // { value: "", label: "Select payroll type" },
+                  { value: "non-ae", label: "Non-ae" },
+                  { value: "ae", label: "AE" },
+                  { value: "thr", label: "THR" }
+                ]}
+              />
             </div>
 
+            
             <div className="flex justify-center pt-4">
               <Button
                 variant="primary"
                 size="md"
                 onClick={handleGeneratePayroll}
-                disabled={isGenerating}
+                disabled={loading || !selectedType}
                 className="px-8 py-3"
               >
-                {isGenerating ? "Generating..." : "Generate Payroll"}
+                {loading ? "Generating..." : "Generate Payroll"}
               </Button>
             </div>
 
-            {isGenerating && (
+            {loading && (
               <div className="text-center text-sm text-gray-600">
                 Processing payroll generation in dev server...
+              </div>
+            )}
+
+            {error && (
+              <div className="text-center text-sm text-red-600">
+                Error: {error}
               </div>
             )}
           </div>
