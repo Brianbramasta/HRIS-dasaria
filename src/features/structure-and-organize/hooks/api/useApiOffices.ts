@@ -93,8 +93,7 @@ export const useApiOffices = (): UseOfficesReturn => {
       const perPage = payload?.data?.per_page ?? pageSize;
       const totalPagesCount = perPage ? Math.ceil(total / perPage) : 1;
       setOffices((items || []).map(mapToOffice));
-      console.log(mapToOffice(items[0]));
-      // console.log(items);
+      
       setTotal(total);
       setTotalPages(totalPagesCount);
     } catch (err) {
