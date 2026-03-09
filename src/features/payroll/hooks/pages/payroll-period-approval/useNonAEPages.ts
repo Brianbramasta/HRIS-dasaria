@@ -457,7 +457,7 @@ export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
   // Fungsi untuk clear selection (simulasi karena tidak ada akses ke DataTable)
   const clearSelection = () => {
     // Ini akan ditangani oleh DataTable component secara internal
-    console.log('Selection cleared');
+    //console.log('Selection cleared');
   };
 
   // Event handlers

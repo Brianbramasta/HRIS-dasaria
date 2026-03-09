@@ -40,7 +40,7 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
    * Transform API response data to Karyawan interface
    */
   const transformApiDataToKaryawan = (apiData: EmployeeListItem): Karyawan => {
-    console.log('Transforming API data:', apiData);
+    //console.log('Transforming API data:', apiData);
 
     return {
       // Core Identity

@@ -30,7 +30,7 @@ export default function DetailGajiTHRPage() {
     }),
     [payrollPeriodDetail, id]
   );
-  // console.log(defaultData, 'defaultData');
+  // //console.log(defaultData, 'defaultData');
 
   const config: SectionConfig = {
     infoFields: [

@@ -106,7 +106,7 @@ export default function PersetujuanPerpanjanganKontrak() {
               kategoriKaryawan: 'Staff',
             }}
             onSuccess={() => {
-              console.log('Modal closed after success');
+              //console.log('Modal closed after success');
             }}
           />
           <KonfirmasiPenolakanKontrak

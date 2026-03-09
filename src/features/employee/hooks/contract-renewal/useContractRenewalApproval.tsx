@@ -68,7 +68,7 @@ export function useContractRenewalApproval(): UseContractRenewalApprovalReturn {
   const fetchContractRenewalApprovals = useCallback(async (params?: ContractRenewalFilterParams) => {
     setIsLoading(true);
     try {
-      console.log('Fetching contract renewals with params:', params);
+      //console.log('Fetching contract renewals with params:', params);
       // Dummy data for testing
       const dummyData: ContractRenewalApprovalListItem[] = [
         {
@@ -376,7 +376,7 @@ export function useContractRenewalApproval(): UseContractRenewalApprovalReturn {
       [columnId]: values,
     }));
     // TODO: Implement API call with filter parameters when backend is ready
-    console.log('Column filter changed:', columnId, values);
+    //console.log('Column filter changed:', columnId, values);
   };
 
   const handleDateRangeFilterChange = (columnId: string, startDate: string, endDate: string | null) => {
@@ -393,8 +393,8 @@ export function useContractRenewalApproval(): UseContractRenewalApprovalReturn {
       }
     }
     // TODO: Implement API call with filter parameters when backend is ready
-    console.log('Date range filter changed:', columnId, { startDate, endDate });
-    console.log('Filter params for API:', filterParams);
+    //console.log('Date range filter changed:', columnId, { startDate, endDate });
+    //console.log('Filter params for API:', filterParams);
   };
 
   const columns: DataTableColumn<ContractRenewalApprovalListItem>[] = [

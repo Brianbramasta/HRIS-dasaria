@@ -173,7 +173,7 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
                 const perPage = payload?.per_page ?? filter?.pageSize ?? pageSize;
                 const totalPagesCalc = perPage ? Math.ceil(totalCount / perPage) : 1;
 
-                console.log(items,' items');
+                //console.log(items,' items');
 
                 setPayrollPeriods((items || []).map(mapToPayrollPeriodListItem));
                 setTotal(totalCount);
@@ -237,7 +237,7 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
                 approvalStore.setApprovalStatus(status);
             }
             
-            console.log(status, 'status 1');
+            //console.log(status, 'status 1');
             return status;
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to fetch import approval status');
@@ -371,7 +371,7 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
                     formData.append(`payroll_id[${index}]`, id);
                 });
             }
-            console.log(payload,'payload')
+            //console.log(payload,'payload')
             const typeParam = payload.type ? `?type=${payload.type}` : '';
             await payrollPeriodService.approvalHr(formData, typeParam);
             return true;

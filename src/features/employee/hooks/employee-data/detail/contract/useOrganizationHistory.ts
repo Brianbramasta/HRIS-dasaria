@@ -74,8 +74,8 @@ export function useOrganizationHistory(employeeId?: string): UseOrganizationHist
 
   const fetch = useCallback(
     async (params?: OrganizationChangeListParams) => {
-        console.log('params', params);
-        console.log('employeeId', employeeId);
+        //console.log('params', params);
+        //console.log('employeeId', employeeId);
       if (!employeeId) {
         setRows([]);
         return;

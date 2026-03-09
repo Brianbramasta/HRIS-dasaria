@@ -190,7 +190,7 @@ export function useEditContractRenewalStatusModal({
     try {
       const formData = new FormData();
       formData.append('_method', 'PATCH');
-      console.log(contractRenewalData,'contractRenewalData');
+      //console.log(contractRenewalData,'contractRenewalData');
       if (contractRenewalData?.renewal_status_name) {
         formData.append('extension_status_id', contractRenewalData.renewal_status_name);
       }

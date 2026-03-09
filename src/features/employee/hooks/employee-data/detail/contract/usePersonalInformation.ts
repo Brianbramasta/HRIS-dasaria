@@ -557,7 +557,7 @@ export const usePersonalInformation = (employeeId?: string): UsePersonalInformat
         //     ...data,
         //     personal: updatedPersonal,
         //   });
-        console.log('updatePersonalData response:', response);
+        //console.log('updatePersonalData response:', response);
         refetchDetail(id);
         } else {
           setError(response.meta?.message || 'Failed to update personal data');
@@ -594,7 +594,7 @@ export const usePersonalInformation = (employeeId?: string): UsePersonalInformat
 
         const formData = buildEducationFormData(mappedPayload);
         const response = await personalInformationService.updateEducationData(id, formData);
-        console.log('updateEducationData response:', response);
+        //console.log('updateEducationData response:', response);
         if (response.meta.status === 200  ) {
     
             refetchDetail(id);
@@ -828,7 +828,7 @@ const mapSocialMediaModalToPayload = useCallback(
 
       setLoading(true);
       setError(null);
-      console.log('test updateEmploymentPosition', id, payload);
+      //console.log('test updateEmploymentPosition', id, payload);
 
       try {
         let mappedPayload: UpdateEmploymentPositionPayload;
@@ -876,7 +876,7 @@ const mapSocialMediaModalToPayload = useCallback(
         setError('Employee ID is required');
         return;
       }
-      console.log('test updateEmployeeDocument', id, payload);
+      //console.log('test updateEmployeeDocument', id, payload);
 
       setLoading(true);
       setError(null);

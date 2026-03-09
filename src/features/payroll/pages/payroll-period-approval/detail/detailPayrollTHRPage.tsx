@@ -9,7 +9,7 @@ export default function DetailGajiTHRPage() {
   const { id } = useParams();
 
   const { fetchPayrollPeriodDetail, payrollPeriodDetail, loading, error } = useApiPayrollPeriodDirectorHrTHR();
-  console.log("payrollPeriodDetail", payrollPeriodDetail);
+  //console.log("payrollPeriodDetail", payrollPeriodDetail);
 
   useEffect(() => {
     if (!id) return;

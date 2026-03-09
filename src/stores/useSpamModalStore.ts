@@ -120,7 +120,7 @@ export const useSpamModalStore = create<SpamModalState>((set, get) => ({
   },
 
   handleProcess: (navigate: (path: string) => void) => {
-    console.log("Processing selected employees:", Array.from(get().selectedEmployees));
+    //console.log("Processing selected employees:", Array.from(get().selectedEmployees));
     navigate("/contract-extension");
     get().closeModal();
   },

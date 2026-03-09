@@ -59,20 +59,20 @@ export function getContractEndStatusDropdown(employeeId: string) {
 
 export const getContractEndStatusDropdownOptions = async (search?: string): Promise<DropdownOption[]> => {
   const data = await contractService.getContractEndStatusDropdown(search);
-  console.log('Contract End Status dropdown data:', data);
+  //console.log('Contract End Status dropdown data:', data);
   return (data || []).map((s: any) => ({ label: s.name, value: s.id }));
 }
 
 
 export const getContractStatusDropdownOptions = async (search?: string): Promise<DropdownOption[]> => {
   const data = await contractService.getContractStatusDropdown(search);
-  console.log('Contract Status dropdown data:', data);
+  //console.log('Contract Status dropdown data:', data);
   return (data || []).map((s: any) => ({ label: s.name, value: s.id }));
 }
 
 export const getContractTypeDropdownOptions = async (search?: string): Promise<DropdownOption[]> => {
   const data = await contractService.getContractTypeDropdown(search);
-  console.log('Contract Type dropdown data:', data);
+  //console.log('Contract Type dropdown data:', data);
   return (data || []).map((s: any) => ({ label: s.name, value: s.id }));
 }
 
@@ -86,7 +86,7 @@ export async function updateContract(
   fetchContractData?: () => Promise<void>
 ) {
   try {
-    console.log('Updating contract with payload:', payload);
+    //console.log('Updating contract with payload:', payload);
     const response = await contractService.updateContract(employeeId, contractId, payload);
     if (response.meta?.status !== 200) {
       addNotification({
@@ -242,7 +242,7 @@ export function useDetail() {
   const handleViewDetail = async (row: ContractHistoryItem, detail: any) => {
     const response = await getContractForEdit(row.id as unknown as string);
     const data = response.data as any;
-    console.log('Detail row:', row);
+    //console.log('Detail row:', row);
     const detailData: ContractEntry = {
       id: row.id,
       full_name: data.full_name || detail?.Data_Pribadi.full_name,
@@ -282,7 +282,7 @@ export function useContract({ employeeId, autoFetch = true }: UseContractOptions
 
     try {
       const response = await contractService.getContractData(employeeId);
-      console.log('Fetched Contract Data:', response.data);
+      //console.log('Fetched Contract Data:', response.data);
       setContractData(response.data);
     } catch (err: any) {
       const errorMessage = err?.message || 'Failed to fetch contract data';
@@ -446,8 +446,8 @@ export function useContractTab({ employeeIdProp, data }: UseContractTabProps): U
   // Update summary and rows when contract data is loaded
   useEffect(() => {
     if (contractData) {
-      console.log('Contract Data Loaded:', contractData);
-      console.log('Detail Data:', detail);
+      //console.log('Contract Data Loaded:', contractData);
+      //console.log('Detail Data:', detail);
       setSummary({
         full_name: detail?.Personal_Data?.full_name || '',
         // contract_status_id: contractData.summary?.contract_status_id || '',

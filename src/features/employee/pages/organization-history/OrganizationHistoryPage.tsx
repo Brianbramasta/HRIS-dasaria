@@ -86,7 +86,7 @@ export default function OrganizationHistoryPage() {
         className: 'text-gray-700',
         // condition: (row) => Boolean((row as any)?.decree_file),
         onClick: (row) => {
-          // console.log(row);
+          // //console.log(row);
           // return;
           // navigate(`/organization-history/preview?id=${row.id}`);
           navigate(`/organization-history/detail?id=${row.id}`);

@@ -88,7 +88,7 @@ export function useEditContractRenewal(): UseEditContractRenewalReturn {
       });
       return false;
     }
-    console.log(payload,'payload');
+    //console.log(payload,'payload');
     try {
       // Ensure _method is set to PATCH for method spoofing
       if (!payload.has('_method')) {

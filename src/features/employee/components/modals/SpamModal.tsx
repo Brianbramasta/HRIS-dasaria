@@ -32,7 +32,7 @@ export const SpamModal: React.FC<SpamModalProps> = () => {
     }
     
     if (isEmployeePage(location.pathname)) {
-      console.log('On employee page, checking for contract end data...');
+      //console.log('On employee page, checking for contract end data...');
       fetchEmployeesNearContractEnd();
     } else {
       // Close modal and reset state if not on employee page

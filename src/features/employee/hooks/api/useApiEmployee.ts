@@ -20,7 +20,7 @@ export const useApiEmployee = (): UseApiEmployeeReturn => {
     setError(null);
     try {
       const response = await employeeMasterDataService.getEmployeesNearContractEnd(params);
-      console.log('API Response:', response);
+      //console.log('API Response:', response);
       
       if (response?.data) {
         // API response structure: { meta, data: [...] }
@@ -39,7 +39,7 @@ export const useApiEmployee = (): UseApiEmployeeReturn => {
         }
         
         setEmployeesNearContractEnd(employees);
-        console.log('Set employees:', employees);
+        //console.log('Set employees:', employees);
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Failed to fetch employees near contract end';

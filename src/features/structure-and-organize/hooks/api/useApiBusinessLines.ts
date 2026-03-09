@@ -324,7 +324,7 @@ export const useApiBusinessLines = (): UseApiBusinessLinesReturn => {
     try {
       const resp = await businessLinesService.getById(id);
       const item = (resp as any)?.data as any;
-      // console.log('getById', item);
+      // //console.log('getById', item);
       if (!item) return null;
       return mapToBusinessLine(item);
     } catch (err) {

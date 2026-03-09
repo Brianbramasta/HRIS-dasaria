@@ -154,7 +154,7 @@ export default function DetailPayrollContent({ config, onRefresh, payrollData }:
     gridColsTT,
     gridColsPTT,
   } = useLayoutDetail(config, payrollData);
-  console.log("payrollData", payrollData);
+  //console.log("payrollData", payrollData);
   
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const {

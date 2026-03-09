@@ -184,7 +184,7 @@ export default function Notification() {
         isOpen={isRejectModalOpen}
         onClose={() => setIsRejectModalOpen(false)}
         onConfirm={(reason) => {
-          console.log("Rejected with reason:", reason);
+          //console.log("Rejected with reason:", reason);
           setIsRejectModalOpen(false);
         }}
       />
@@ -193,7 +193,7 @@ export default function Notification() {
         isOpen={isActionModalOpen}
         onClose={() => setIsActionModalOpen(false)}
         onConfirm={() => {
-          console.log(`Confirmed action: ${actionType}`);
+          //console.log(`Confirmed action: ${actionType}`);
           setIsActionModalOpen(false);
         }}
         type={actionType}

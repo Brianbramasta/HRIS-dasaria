@@ -128,7 +128,7 @@ export default function TerminationAdministrationPage() {
   );
 
   const handleAddSubmit = async (payload: AddTerminationForm) => {
-    // console.log('Submitting termination administration:', payload);
+    // //console.log('Submitting termination administration:', payload);
     // return
     const storePayload = {
       employee_id: payload.nip,

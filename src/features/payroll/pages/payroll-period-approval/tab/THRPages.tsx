@@ -109,7 +109,7 @@ export default function THRTab({ }: { resetKey?: string }) {
   };
 
   const clearSelection = () => {
-    console.log('Selection cleared');
+    //console.log('Selection cleared');
   };
 
   return (

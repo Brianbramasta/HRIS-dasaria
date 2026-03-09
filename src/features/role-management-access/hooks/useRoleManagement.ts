@@ -109,7 +109,7 @@ export default function useRoleManagement() {
   }, []);
 
   const handleConfirmDeleteRole = useCallback(() => {
-    console.log('Deleting role:', selectedRoleToDelete);
+    //console.log('Deleting role:', selectedRoleToDelete);
     // TODO: Implement actual delete logic here
     handleCloseDeleteRoleModal();
   }, [selectedRoleToDelete, handleCloseDeleteRoleModal]);

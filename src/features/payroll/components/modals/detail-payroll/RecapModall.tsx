@@ -136,9 +136,9 @@ const RecapModall: FC<RekapModalProps> = ({
   const handleSubmit = async () => {
     setSubmitting(true);
     try {
-      console.log('Current pathname:', location.pathname);
-      console.log('isTHRPage:', isTHRPage);
-      console.log('Form values:', values);
+      //console.log('Current pathname:', location.pathname);
+      //console.log('isTHRPage:', isTHRPage);
+      //console.log('Form values:', values);
       
       if (id) {
         const updatePayload: any = {
@@ -149,14 +149,14 @@ const RecapModall: FC<RekapModalProps> = ({
 
         // Add THR-specific parameters if this is THR page
         if (isTHRPage) {
-          console.log("isTHRPage is true. Adding THR specific parameters.");
-          console.log("totalTunjanganHariRaya value:", values.totalTunjanganHariRaya);
+          //console.log("isTHRPage is true. Adding THR specific parameters.");
+          //console.log("totalTunjanganHariRaya value:", values.totalTunjanganHariRaya);
           updatePayload.type = 'Thr';
           // Get the totalTunjanganHariRaya value from the form values
           updatePayload.holiday_allowance = values.totalTunjanganHariRaya || '';
         }
 
-        console.log('Final updatePayload:', updatePayload);
+        //console.log('Final updatePayload:', updatePayload);
         const ok = await updateNote(updatePayload);
         if (!ok) return;
         

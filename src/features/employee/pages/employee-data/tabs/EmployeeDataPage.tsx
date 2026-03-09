@@ -15,7 +15,7 @@ import { getEmployeeStatusDropdownOptions, DropdownOption } from '../../../hooks
 
 // Helper function for rendering remaining contract badge
 const renderSisaKontrakBadge = (sisaKontrak: string | undefined) => {
-  console.log('sisaKontrak:', sisaKontrak);
+  //console.log('sisaKontrak:', sisaKontrak);
   if (!sisaKontrak) {
     return <span className="status-styling rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-800">-</span>;
   }

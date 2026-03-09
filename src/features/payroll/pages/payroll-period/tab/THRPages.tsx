@@ -94,7 +94,7 @@ export default function THRTab({ }: { resetKey?: string }) {
         icon: <Trash />,
         onClick: (row) => {
           // This would need to be handled by the parent component
-          console.log('Delete action for:', row);
+          //console.log('Delete action for:', row);
         },
         condition: (row) => {
           const editableStatuses = ['Menunggu Maker'];

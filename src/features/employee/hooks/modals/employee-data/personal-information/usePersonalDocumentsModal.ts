@@ -36,7 +36,7 @@ export function usePersonalDocumentsModal({ isOpen, initialData, onSubmit, emplo
   const [fileMap, setFileMap] = useState<Record<string, { file?: File; fileName?: string; existingDocId?: string }>>({});
 
   useEffect(() => {
-    console.log('employeeCategoryId', employeeCategoryId);
+    //console.log('employeeCategoryId', employeeCategoryId);
     if (!isOpen || !employeeCategoryId) return;
     let mounted = true;
     setLoadingFields(true);

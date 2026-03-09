@@ -64,7 +64,7 @@ export default function FormKasbonPage() {
         gajiPokok: form.gajiPokok,
         tanggalPengajuan: form.tanggalPengajuan,
       } as any;
-      console.log('submit kasbon', payload);
+      //console.log('submit kasbon', payload);
 
       addNotification({
         title: 'Berhasil',

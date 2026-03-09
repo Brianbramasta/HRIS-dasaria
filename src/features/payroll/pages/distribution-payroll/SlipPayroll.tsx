@@ -79,10 +79,10 @@ export default function SlipPayrollPage() {
 
   useEffect(() => {
     const fetchSlipGaji = async () => {
-      console.log('fetchSlipGaji called, payrollId:', payrollId);
+      //console.log('fetchSlipGaji called, payrollId:', payrollId);
       
       if (!payrollId) {
-        console.log('No payrollId found');
+        //console.log('No payrollId found');
         setError('Payroll ID tidak ditemukan');
         setLoading(false);
         return;
@@ -93,7 +93,7 @@ export default function SlipPayrollPage() {
         setError(null);
         
         const slipGajiUrl = getSlipGajiUrl(payrollId);
-        console.log('Fetching from URL:', slipGajiUrl);
+        //console.log('Fetching from URL:', slipGajiUrl);
         
         // Fetch the slip-gaji content
         const response = await fetch(slipGajiUrl, {
@@ -103,26 +103,26 @@ export default function SlipPayrollPage() {
             'ngrok-skip-browser-warning': 'true'
           }
         });
-        console.log('Response status:', response.status);
-        console.log('Response headers:', response.headers);
+        //console.log('Response status:', response.status);
+        //console.log('Response headers:', response.headers);
         
         if (!response.ok) {
           throw new Error(`Gagal mengambil slip gaji: ${response.status}`);
         }
 
         const contentType = response.headers.get('content-type');
-        console.log('Content type:', contentType);
+        //console.log('Content type:', contentType);
         
         if (contentType && contentType.includes('application/json')) {
           // If JSON response, get the content from data field
           const jsonData = await response.json();
-          console.log('JSON response:', jsonData);
+          //console.log('JSON response:', jsonData);
           setSlipGajiContent(jsonData.data || JSON.stringify(jsonData));
         } else {
           // If HTML or text response, use directly
           const htmlContent = await response.text();
-          console.log('HTML response length:', htmlContent.length);
-          console.log('HTML response preview:', htmlContent.substring(0, 200));
+          //console.log('HTML response length:', htmlContent.length);
+          //console.log('HTML response preview:', htmlContent.substring(0, 200));
           setSlipGajiContent(htmlContent);
         }
       } catch (err) {
@@ -131,7 +131,7 @@ export default function SlipPayrollPage() {
         
         // Fallback to original state data if available
         if (state.data) {
-          console.log('Falling back to state data');
+          //console.log('Falling back to state data');
           setSlipGajiContent(''); // Clear content to trigger fallback
         }
       } finally {
@@ -145,7 +145,7 @@ export default function SlipPayrollPage() {
   useEffect(() => {
     // Auto print after content is loaded or fallback to state data
     if (!loading && !error) {
-      console.log('Triggering auto print...');
+      //console.log('Triggering auto print...');
       const id = window.setTimeout(() => {
         window.print();
       }, 1000); // Increased delay to ensure content is rendered
@@ -190,7 +190,7 @@ export default function SlipPayrollPage() {
 
   // If we have slip gaji content from API, embed it
   if (slipGajiContent) {
-    console.log('Rendering slip gaji content, length:', slipGajiContent.length);
+    //console.log('Rendering slip gaji content, length:', slipGajiContent.length);
     return (
       <>
         <style>
@@ -212,11 +212,11 @@ export default function SlipPayrollPage() {
     );
   }
 
-  console.log('No slip gaji content, state.data:', !!state.data, 'loading:', loading, 'error:', error);
+  //console.log('No slip gaji content, state.data:', !!state.data, 'loading:', loading, 'error:', error);
 
   // If no slip gaji content from API and no state data, show error
   if (!slipGajiContent && !state.data) {
-    console.log('No content and no state data, showing error');
+    //console.log('No content and no state data, showing error');
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
@@ -234,7 +234,7 @@ export default function SlipPayrollPage() {
 
   // If we have state data but no API content, show fallback
   if (!slipGajiContent && state.data) {
-    console.log('Rendering fallback component with state data');
+    //console.log('Rendering fallback component with state data');
 
     return (
       <>

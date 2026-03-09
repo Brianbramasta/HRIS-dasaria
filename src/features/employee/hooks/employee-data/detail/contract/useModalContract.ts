@@ -96,7 +96,7 @@ export function useModalContract({ isOpen, initialData, isEditable = true }: Mod
       } else {
         setForm(emptyForm);
       }
-      console.log('Initial Data:', initialData);
+      //console.log('Initial Data:', initialData);
     }
   }, [initialData, isOpen, isLoadingDropdowns]);
 

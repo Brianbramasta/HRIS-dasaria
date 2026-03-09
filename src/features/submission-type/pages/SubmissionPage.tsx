@@ -119,7 +119,7 @@ export default function JenisPengajuanPage() {
     {
       icon: <FileText />,
       onClick: (row: RowPengajuan) => {
-        console.log("Preview pengajuan", row);
+        //console.log("Preview pengajuan", row);
       },
       className: "text-gray-600",
       condition: () => false, // Hanya tampilkan jika ada lampiran

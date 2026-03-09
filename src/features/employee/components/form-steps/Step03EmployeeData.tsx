@@ -52,10 +52,10 @@ export const Step03EmployeeData: React.FC = () => {
                 onChange={(value) => {
                   handleChange('kategoriKaryawan', value);
                   const selectedCategory = kategoriKaryawanOptions.find((opt: any) => opt.value === value);
-                  console.log('kategoriKaryawan1', selectedCategory);
+                  //console.log('kategoriKaryawan1', selectedCategory);
                   if (selectedCategory) {
                     const label = selectedCategory.label;
-                    console.log('kategoriKaryawan2', label);
+                    //console.log('kategoriKaryawan2', label);
                     if (['Staff', 'Mitra'].includes(label)) {
                       const statusEvaluasi = employeeStatusOptions.find((opt: any) => opt.label === 'Evaluasi');
                       if (statusEvaluasi) handleChange('employmentStatus', statusEvaluasi.value);

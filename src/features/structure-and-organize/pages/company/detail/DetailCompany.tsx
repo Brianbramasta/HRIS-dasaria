@@ -52,7 +52,7 @@ const DetailPerusahaan: React.FC = () => {
           icon: <IconFileDetail />,
           className: 'h-9 w-9 flex items-center justify-center rounded-lg  text-white ',
           onClick: (r: any) => {
-            console.log('Detail Dokumen', r);
+            //console.log('Detail Dokumen', r);
             const url = formatUrlFile(r?.fileUrl || r?.url || r?.link);
             if (url) window.open(url, '_blank');
           },
@@ -68,7 +68,7 @@ const DetailPerusahaan: React.FC = () => {
             onClick: (r: any) => {
               setSelectedDoc(r);
               setDeleteDocOpen(true);
-              console.log('Delete Dokumen', r);
+              //console.log('Delete Dokumen', r);
             },
           },
           detailAction,

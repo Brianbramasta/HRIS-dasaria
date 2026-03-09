@@ -14,61 +14,61 @@ export interface DropdownOption {
 
 export const getReligionDropdownOptions = async (search?: string): Promise<DropdownOption[]> => {
   const data = await employeeMasterDataService.getReligionDropdown(search);
-  console.log('Religion dropdown data:', data);
+  //console.log('Religion dropdown data:', data);
   return (data || []).map((r: any) => ({ label: r.name, value: r.id }));
 };
 
 export const getEducationDropdownOptions = async (search?: string): Promise<DropdownOption[]> => {
   const data = await employeeMasterDataService.getEducationDropdown(search);
-  console.log('Education dropdown data:', data);
+  //console.log('Education dropdown data:', data);
   return (data || []).map((e: any) => ({ label: e.name, value: e.id }));
 }
 
 export const getEmployeeCategoryDropdownOptions = async (search?: string): Promise<DropdownOption[]> => {
   const data = await employeeMasterDataService.getEmployeeCategoryDropdown(search);
-  console.log('Employee Category dropdown data:', data);
+  //console.log('Employee Category dropdown data:', data);
   return (data || []).map((c: any) => ({ label: c.name, value: c.id }));
 }
 
 export const getBankDropdownOptions = async (search?: string): Promise<DropdownOption[]> => {
   const data = await employeeMasterDataService.getBankDropdown(search);
-  console.log('Bank dropdown data:', data);
+  //console.log('Bank dropdown data:', data);
   return (data || []).map((b: any) => ({ label: b.name, value: b.id }));
 }
 
 export const getBpjsHealthTypeDropdownOptions = async (): Promise<DropdownOption[]> => {
   const data = await employeeMasterDataService.getBpjsHealthTypeDropdown();
-  console.log('BPJS Health Type dropdown data:', data);
+  //console.log('BPJS Health Type dropdown data:', data);
   return (data || []).map((bpjs: any) => ({ label: bpjs.name, value: bpjs.id }));
 }
 
 export const getDocumentTypeDropdownOptions = async (search?: string): Promise<DropdownOption[]> => {
   const data = await employeeMasterDataService.getDocumentTypeDropdown(search);
-  console.log('Document Type dropdown data:', data);
+  //console.log('Document Type dropdown data:', data);
   return (data || []).map((d: any) => ({ label: d.name, value: d.id }));
 }
 
 export const getPositionLevelDropdownOptions = async (search?: string): Promise<DropdownOption[]> => {
   const data = await employeeMasterDataService.getPositionLevelDropdown(search);
-  console.log('Position Level dropdown data:', data);
+  //console.log('Position Level dropdown data:', data);
   return (data || []).map((p: any) => ({ label: p.name, value: p.id }));
 }
 
 export const getEmployeeStatusDropdownOptions = async (search?: string): Promise<DropdownOption[]> => {
   const data = await employeeMasterDataService.getEmployeeStatusDropdown(search);
-  console.log('Employee Status dropdown data:', data);
+  //console.log('Employee Status dropdown data:', data);
   return (data || []).map((s: any) => ({ label: s.name, value: s.id }));
 }
 
 export const getStructuralJobDropdownOptions = async (IdJabatanKepangkatan?: string): Promise<DropdownOption[]> => {
   const data = await employeeMasterDataService.getStructuralJobDropdown(IdJabatanKepangkatan);
-  console.log('Structural Job dropdown data:', data);
+  //console.log('Structural Job dropdown data:', data);
   return (data || []).map((j: any) => ({ label: j.name, value: j.id }));
 }
 
 export const getUnitDropdownByDepartmentIdOptions = async (departmentId?: string, search?: string): Promise<DropdownOption[]> => {
   const data = await employeeMasterDataService.getUnitDropdownByDepartmentId(departmentId, search);
-  console.log('Unit dropdown data:', data);
+  //console.log('Unit dropdown data:', data);
   return (data || []).map((u: any) => ({ label: u.name ?? u.name, value: u.id }));
 }
 
@@ -179,7 +179,7 @@ export const useFormulirKaryawan = (): UseFormulirKaryawanReturn => {
         const errorMessages: string[] = [];
         Object.entries(err.errors).forEach(([field, messages]) => {
           if (Array.isArray(messages)) {
-            console.log(`Field: ${field}, Messages: ${messages}`);
+            //console.log(`Field: ${field}, Messages: ${messages}`);
             messages.forEach((msg) => errorMessages.push(msg));
           }
         });

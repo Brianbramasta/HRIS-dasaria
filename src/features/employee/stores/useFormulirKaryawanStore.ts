@@ -125,8 +125,8 @@ const saveToStorage = (data: any) => {
   try {
     // Convert File objects to serializable format
     const serializedData = JSON.stringify(data, (key, value) => {
-      // console.log('key, value', key, value);
-      console.log('key, value', key, value);
+      // //console.log('key, value', key, value);
+      //console.log('key, value', key, value);
       if (value instanceof File) {
         return {
           _isFile: true,
@@ -239,7 +239,7 @@ export const useFormulirKaryawanStore = create<FormulirStore>((set, get) => {
   },
 
   updateStep3Employee: (data) => {
-    console.log('updateStep3Employee', data);
+    //console.log('updateStep3Employee', data);
     set((state) => {
       const newState = {
         formData: {
@@ -372,7 +372,7 @@ export const useFormulirKaryawanStore = create<FormulirStore>((set, get) => {
         {
           if (totalSteps === 5) {
             const s = formData.step3Employee;
-            console.log('step',s);
+            //console.log('step',s);
             return !!(
               
               s.position &&

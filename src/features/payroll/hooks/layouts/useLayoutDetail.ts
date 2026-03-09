@@ -6,7 +6,7 @@ import type { SectionConfig } from "@/features/payroll/components/layouts/Layout
 export const useLayoutDetail = (config: SectionConfig, payrollData?: any) => {
   const goBack = useGoBack();
   const location = useLocation();
-  console.log("payrollData1", payrollData);
+  //console.log("payrollData1", payrollData);
   
   // Dokumentasi: Deteksi konteks Approval & Distribusi untuk kontrol tombol edit
   const isApprovalContext = location.pathname.startsWith("/payroll-period-approval");
@@ -31,8 +31,8 @@ export const useLayoutDetail = (config: SectionConfig, payrollData?: any) => {
     
     const currentStatus = payrollData.information_employee.payroll_status_name;
     
-    console.log("currentStatus", currentStatus);
-    console.log("approvalType", approvalType);
+    //console.log("currentStatus", currentStatus);
+    //console.log("approvalType", approvalType);
     switch (approvalType) {
       case "Persetujuan oleh Direktur HRGA":
         return currentStatus.toLowerCase() === "menunggu diproses direktur hrga";
@@ -45,7 +45,7 @@ export const useLayoutDetail = (config: SectionConfig, payrollData?: any) => {
     }
   }, [isApprovalContext, payrollData, approvalType]);
   
-  console.log("isCorrectApprovalStage", isCorrectApprovalStage);
+  //console.log("isCorrectApprovalStage", isCorrectApprovalStage);
 
   // Dokumentasi: Check if payroll status is "Menunggu Maker" to allow editing
   const isMenungguMaker = useMemo(() => {

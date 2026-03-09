@@ -174,7 +174,7 @@ const AppSidebar: React.FC = () => {
                   openSubmenu?.type === menuType && openSubmenu?.index === index
                 ) || nav.subItems?.some((s) => isActive(s.path));
                 const color = sectionActive ? 'var(--color-brand-500)' : '#6C757D';
-                console.log('nav name', nav.name)
+                //console.log('nav name', nav.name)
                 const iconNode =
                   nav.name === "Data Master Karyawan"
                     ? IconKaryawan({ size: 16, color })

@@ -38,7 +38,7 @@ export default function DetailLiniBisnis() {
           actions={[
             {
               icon: <IconFileDetail  />,
-              onClick: (row: any) => { window.open(row.fileUrl, '_blank'); /* preview */ console.log('preview', row); },
+              onClick: (row: any) => { window.open(row.fileUrl, '_blank'); /* preview */ },
             }
           ]}
         />

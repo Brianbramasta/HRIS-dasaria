@@ -59,7 +59,7 @@ export function useFilterModal<T>({
   }, [resetKey, location.pathname, title]);
 
   const handleColumnVisibilityChange = (columnId: string) => {
-    console.log('test', columnId);
+    //console.log('test', columnId);
     if (columnId === 'no') return;
     const col = columns.find((c) => c.id === columnId);
     if (col?.isAction) return;
@@ -86,7 +86,7 @@ export function useFilterModal<T>({
 
   const handleAddFilterItem = (value: string) => {
     const v = value.trim();
-    console.log('Adding filter item:', v.length);
+    //console.log('Adding filter item:', v.length);
     if (v.length > 0 && !modalFilterItems.includes(v)) {
       setModalFilterItems((prev) => [...prev, v]);
       // Set filter active when filter item is added and save to localStorage
@@ -112,17 +112,17 @@ export function useFilterModal<T>({
     const terms = modalFilterItems.length > 0 
       ? modalFilterItems 
       : (modalFilterTerm.trim() ? [modalFilterTerm.trim()] : []);
-    console.log(terms,'filter terms array')
+    //console.log(terms,'filter terms array')
     setFilterFor(title ?? 'global', terms);
     const columnTotal = columns.filter((x) => x.isAction !== true).length;
     const tempVisibleColumnsTotal = tempVisibleColumns.length;
     const filterActive = terms.length > 0 || tempVisibleColumnsTotal < columnTotal;
     
 
-    console.log(filterActive,'filter active')
-    console.log(tempVisibleColumns,'tempVisibleColumns')
-    console.log(columnTotal,'columnTotal')
-    console.log(tempVisibleColumnsTotal,'tempVisibleColumnsTotal')
+    //console.log(filterActive,'filter active')
+    //console.log(tempVisibleColumns,'tempVisibleColumns')
+    //console.log(columnTotal,'columnTotal')
+    //console.log(tempVisibleColumnsTotal,'tempVisibleColumnsTotal')
     
     persistPageFilters(pageKey, terms, tempVisibleColumns, filterActive);
     setIsFilterActive(filterActive);

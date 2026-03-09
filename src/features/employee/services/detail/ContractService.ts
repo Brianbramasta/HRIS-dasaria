@@ -28,9 +28,9 @@ class ContractService {
     contractId: string,
     payload: FormData
   ): Promise<ApiResponse<CreateContractResponse>> {
-    console.log('ContractService.updateContract payload:', payload);
+    //console.log('ContractService.updateContract payload:', payload);
     payload.append('_method', 'PATCH');
-    console.log('ContractService.updateContract payload 2:', payload);
+    //console.log('ContractService.updateContract payload 2:', payload);
 
     return apiService.post<CreateContractResponse>(
       `${this.basePath}/${employeeId}/update-contract/${contractId}`,

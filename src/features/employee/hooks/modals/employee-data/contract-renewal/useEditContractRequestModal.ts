@@ -85,17 +85,7 @@ export default function useEditContractRequestModal({ kontrakData, onClose, onSu
       setSubmitting(false);
       onClose();
       onSuccess?.();
-      console.log('Pengajuan updated:', {
-        jenisPerubahan,
-        perusahaan,
-        kantor,
-        direktorat,
-        divisi,
-        position,
-        jabatan,
-        jenjangJabatan,
-        kategoriKaryawan,
-      });
+   
     }, 1000);
   };
 
