@@ -17,6 +17,7 @@ export default function useBPJSCard(employeeId?: string, salaryData?: any, bpjsD
     statusBpjsKS: bpjsData?.bpjs_health_status || '',
     noBpjsTK: bpjsData?.bpjs_employment_number?.toString() || '',
     statusBpjsTK: bpjsData?.bpjs_employment_status || '',
+    tipeBpjsKesehatan: bpjsData?.bpjs_health_type_id || '',
     nominalBpjsTK: '',
   };
 

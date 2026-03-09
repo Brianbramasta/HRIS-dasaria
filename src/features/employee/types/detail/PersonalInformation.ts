@@ -60,6 +60,8 @@ export interface BpjsDataResponse {
   bpjs_employment_status: string | null;
   bpjs_health_number: string | null;
   bpjs_health_status: string | null;
+  bpjs_health_type_id: string | null;
+  bpjs_health_type_name: string | null;
 }
 
 export interface EmploymentPositionResponse {
@@ -162,6 +164,7 @@ export interface UpdateBpjsDataPayload {
   bpjs_employment_status?: string;
   bpjs_health_number?: string;
   bpjs_health_status?: string;
+  bpjs_health_type_id?: string;
 }
 
 export interface UpdateEmploymentPositionPayload {

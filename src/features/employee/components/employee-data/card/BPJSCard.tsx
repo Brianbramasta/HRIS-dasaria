@@ -29,21 +29,28 @@ export default function BPJSCard({ employeeId, salaryData, bpjsData }: Props) {
     <ExpandCard title="BPJS" leftIcon={isComplete ? <IconLengkap /> : <IconTidakLengkap />} withHeaderDivider>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
+          <Label>No. BPJS Ketenagakerjaan</Label>
+          <InputField value={bpjsData?.bpjs_employment_number || ''} readonly={true} />
+        </div>
+         <div>
+          <Label>Status BPJS Ketenagakerjaan</Label>
+          <InputField value={bpjsData?.bpjs_employment_status || ''} readonly={true} />
+        </div>
+        <div>
           <Label>No. BPJS Kesehatan</Label>
           <InputField value={bpjsData?.bpjs_health_number || ''} readonly={true} />
+        </div>
+          <div>
+          <Label>Tipe BPJS Kesehatan</Label>
+          <InputField value={bpjsData?.bpjs_health_type_name || ''} readonly={true} />
         </div>
         <div>
           <Label>Status BPJS Kesehatan</Label>
           <InputField value={bpjsData?.bpjs_health_status || ''} readonly={true} />
         </div>
-        <div>
-          <Label>No. BPJS Ketenagakerjaan</Label>
-          <InputField value={bpjsData?.bpjs_employment_number || ''} readonly={true} />
-        </div>
-        <div>
-          <Label>Status BPJS Ketenagakerjaan</Label>
-          <InputField value={bpjsData?.bpjs_employment_status || ''} readonly={true} />
-        </div>
+      
+        
+       
       </div>
       <div className="mt-4 flex justify-end">
         <Button variant="primary" size="sm" onClick={openModal} className='w-full md:w-auto flex items-center justify-center'>
