@@ -16,6 +16,16 @@ export interface UpdateTemporarySalaryPayload {
   non_fix_allowance_details: NonFixAllowanceDetail[];
 }
 
+export interface UpdateNonFixAllowanceItem {
+  non_fix_id: string;
+  amount: number;
+}
+
+export interface UpdateNonFixAllowancePayload {
+  employee_id: string;
+  data_update: UpdateNonFixAllowanceItem[];
+}
+
 export interface BpjsDetail {
   item: string;
   value: number;

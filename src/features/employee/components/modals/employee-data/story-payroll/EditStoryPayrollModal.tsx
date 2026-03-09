@@ -4,7 +4,7 @@ import Button from '@/components/ui/button/Button';
 import InputField from '@/components/shared/field/InputField';
 import SelectField from '@/components/shared/field/SelectField';
 import { EmployeeSalaryShowResponse } from '@/features/employee/types/dto/EmployeeSalaryType';
-import { formatCurrency } from '@/utils/formatCurrency';
+import { formatCurrency, parseCurrency } from '@/utils/formatCurrency';
 import { Plus, Trash2 } from 'react-feather';
 import { useEditStoryPayrollModal } from '@/features/employee/hooks/modals/employee-data/story-payroll/useEditStoryPayrollModal';
 
@@ -174,9 +174,9 @@ const EditStoryPayrollModal: FC<EditStoryPayrollModalProps> = (props) => {
                   <div className="flex-1">
                     <InputField
                       label="Nominal"
-                      type="number"
-                      value={item.amount}
-                      onChange={(e) => handleChangeAllowance(index, 'amount', Number(e.target.value))}
+                      type="text"
+                      value={formatCurrency(item.amount)}
+                      onChange={(e) => handleChangeAllowance(index, 'amount', parseCurrency(e.target.value) || 0)}
                       placeholder="Rp 0"
                     />
                   </div>

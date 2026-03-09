@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { employeeSalaryService } from '../../services/detail/EmployeeSalaryService';
 import {
   TemporarySalaryQueryParams,
-  UpdateTemporarySalaryPayload,
+  UpdateNonFixAllowancePayload,
   TemporarySalaryResponse,
   EmployeeSalaryShowResponse,
 } from '../../types/dto/EmployeeSalaryType';
@@ -13,7 +13,7 @@ interface UseApiEmployeeSalaryReturn {
   temporarySalary: TemporarySalaryResponse | null;
   employeeSalaryShow: EmployeeSalaryShowResponse | null;
   fetchTemporarySalary: (employeeId: string, params: TemporarySalaryQueryParams) => Promise<void>;
-  updateTemporarySalary: (employeeId: string, payload: UpdateTemporarySalaryPayload) => Promise<boolean>;
+  updateNonFixAllowance: (payload: UpdateNonFixAllowancePayload) => Promise<boolean>;
   fetchEmployeeSalaryShow: (employeeId: string) => Promise<void>;
 }
 
@@ -38,26 +38,15 @@ export const useApiEmployeeSalary = (): UseApiEmployeeSalaryReturn => {
     }
   }, []);
 
-  const updateTemporarySalary = useCallback(async (employeeId: string, payload: UpdateTemporarySalaryPayload): Promise<boolean> => {
+  const updateNonFixAllowance = useCallback(async (payload: UpdateNonFixAllowancePayload): Promise<boolean> => {
     setLoading(true);
     setError(null);
     try {
-      const formData = new FormData();
-      formData.append('_method', 'PATCH');
-
-      payload.non_fix_allowance_details.forEach((item, index) => {
-        if (item.tr_employee_non_fix_allowance_id) {
-          formData.append(`non_fix_allowance_details[${index}][tr_employee_non_fix_allowance_id]`, item.tr_employee_non_fix_allowance_id);
-        }
-        formData.append(`non_fix_allowance_details[${index}][non_fix_allowance_id]`, item.non_fix_allowance_id);
-        formData.append(`non_fix_allowance_details[${index}][amount]`, String(item.amount));
-      });
-
-      await employeeSalaryService.updateTemporarySalary(employeeId, formData);
+      await employeeSalaryService.updateNonFixAllowance(payload);
       return true;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update temporary salary');
-      console.error('Error updating temporary salary:', err);
+      setError(err instanceof Error ? err.message : 'Failed to update non-fix allowance');
+      console.error('Error updating non-fix allowance:', err);
       return false;
     } finally {
       setLoading(false);
@@ -84,7 +73,7 @@ export const useApiEmployeeSalary = (): UseApiEmployeeSalaryReturn => {
     temporarySalary,
     employeeSalaryShow,
     fetchTemporarySalary,
-    updateTemporarySalary,
+    updateNonFixAllowance,
     fetchEmployeeSalaryShow,
   };
 };

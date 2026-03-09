@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useApiEmployeeSalary } from '@/features/employee/hooks/api/useApiEmployeeSalary';
 import { useApiPayrollPreview } from '@/features/employee/hooks/api/useApiPayrollPreview';
-import { NonFixAllowanceDetail, EmployeeSalaryShowResponse } from '@/features/employee/types/dto/EmployeeSalaryType';
+import { UpdateNonFixAllowancePayload, EmployeeSalaryShowResponse } from '@/features/employee/types/dto/EmployeeSalaryType';
 
 interface Props {
   isOpen: boolean;
@@ -18,7 +18,7 @@ export interface NonFixAllowanceFormItem {
 }
 
 export const useEditStoryPayrollModal = ({ isOpen, onClose, employeeId, data, onSuccess }: Props) => {
-  const { updateTemporarySalary, loading } = useApiEmployeeSalary();
+  const { updateNonFixAllowance, loading } = useApiEmployeeSalary();
   const { nonFixAllowanceOptions, fetchNonFixAllowanceDropdown } = useApiPayrollPreview();
 
   // Form State
@@ -82,15 +82,15 @@ export const useEditStoryPayrollModal = ({ isOpen, onClose, employeeId, data, on
   };
 
   const handleSubmit = async () => {
-    const payload: NonFixAllowanceDetail[] = nonFixAllowances.map((item) => ({
-      tr_employee_non_fix_allowance_id: item.tr_id,
-      non_fix_allowance_id: item.id,
-      amount: item.amount,
-    }));
+    const payload: UpdateNonFixAllowancePayload = {
+      employee_id: employeeId,
+      data_update: nonFixAllowances.map((item) => ({
+        non_fix_id: item.id,
+        amount: item.amount,
+      })),
+    };
 
-    const success = await updateTemporarySalary(employeeId, {
-      non_fix_allowance_details: payload,
-    });
+    const success = await updateNonFixAllowance(payload);
 
     if (success) {
       onSuccess();

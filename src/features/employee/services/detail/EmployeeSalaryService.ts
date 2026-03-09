@@ -25,6 +25,14 @@ class EmployeeSalaryService {
   }
 
   /**
+   * Update Non-Fix Allowance
+   * POST /api/employee-master-data/employees/salaries/non-fix-allowance/update
+   */
+  async updateNonFixAllowance(payload: any): Promise<any> {
+    return apiService.post<any>(`${this.basePath}/salaries/non-fix-allowance/update`, payload);
+  }
+
+  /**
    * Get Employee Salary Details
    * GET /api/employee-master-data/employees/{employee_id}/salaries/show
    */
