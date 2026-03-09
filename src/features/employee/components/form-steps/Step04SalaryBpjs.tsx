@@ -41,7 +41,9 @@ export const Step04SalaryBpjs: React.FC = () => {
 
   // Get dynamic options for Status BPJS Kesehatan based on Tipe BPJS Kesehatan
   const getBpjsKesehatanStatusOptions = () => {
-    if (step3.tipeBpjsKesehatan === '8de18fc0-137e-4b0c-bda2-56e0835e5577') { // Mandiri ID
+    // Find the selected option to get its label
+    const selectedType = bpjsHealthTypeOptions.find((opt: any) => opt.value === step3.tipeBpjsKesehatan);
+    if (selectedType?.label !== 'PBI') { // Not PBI
       return [{ label: 'Tidak Aktif', value: 'Tidak Aktif' }];
     }
     return BPJS_STATUS_OPTIONS; // PBI can choose Aktif or Tidak Aktif
@@ -51,11 +53,14 @@ export const Step04SalaryBpjs: React.FC = () => {
   const handleFieldChange = (field: string, value: any) => {
     // Auto-set Status BPJS Kesehatan when Tipe BPJS Kesehatan changes
     if (field === 'tipeBpjsKesehatan') {
-      if (value === '8de18fc0-137e-4b0c-bda2-56e0835e5577') { // Mandiri ID
-        handleChange('statusBpjsKesehatan', 'Tidak Aktif');
-      } else if (value === 'b0383713-d651-4233-824b-1ff6b13dcd6b') { // PBI ID
+      // Find the selected option to get its label
+      const selectedType = bpjsHealthTypeOptions.find((opt: any) => opt.value === value);
+      if (selectedType?.label === 'PBI') {
         // Auto-set to Aktif when PBI is selected
         handleChange('statusBpjsKesehatan', 'Aktif');
+      } else {
+        // Auto-set to Tidak Aktif for all non-PBI types
+        handleChange('statusBpjsKesehatan', 'Tidak Aktif');
       }
     }
     
