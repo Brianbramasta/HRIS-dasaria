@@ -38,7 +38,7 @@ const DeleteOfficeModal: React.FC<DeleteOfficeModalProps> = ({ content, isOpen, 
         
 
         <div className="flex justify-end gap-3 ">
-          <button type='submit' className="rounded-xl border px-5 py-2">{closeTitleButton}</button>
+          <button type='button' onClick={onClose} className="rounded-xl border px-5 py-2">{closeTitleButton}</button>
           <button
           type='submit'
             disabled={submitting}
