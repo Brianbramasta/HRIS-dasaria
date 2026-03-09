@@ -65,10 +65,10 @@ export function useContractRenewalApproval(): UseContractRenewalApprovalReturn {
     }
   }, []);
 
-  const fetchContractRenewalApprovals = useCallback(async (params?: ContractRenewalFilterParams) => {
+  const fetchContractRenewalApprovals = useCallback(async (_params?: ContractRenewalFilterParams) => {
     setIsLoading(true);
     try {
-      //console.log('Fetching contract renewals with params:', params);
+      //console.log('Fetching contract renewals with params:', _params);
       // Dummy data for testing
       const dummyData: ContractRenewalApprovalListItem[] = [
         {

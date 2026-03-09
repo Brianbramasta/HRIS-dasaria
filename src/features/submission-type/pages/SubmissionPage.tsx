@@ -118,8 +118,8 @@ export default function JenisPengajuanPage() {
   const actions = [
     {
       icon: <FileText />,
-      onClick: (row: RowPengajuan) => {
-        //console.log("Preview pengajuan", row);
+      onClick: (_row: RowPengajuan) => {
+        //console.log("Preview pengajuan", _row);
       },
       className: "text-gray-600",
       condition: () => false, // Hanya tampilkan jika ada lampiran

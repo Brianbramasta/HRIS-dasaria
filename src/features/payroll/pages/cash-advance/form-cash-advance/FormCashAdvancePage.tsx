@@ -52,18 +52,6 @@ export default function FormKasbonPage() {
     try {
       setLoading(true);
       // Simulasi submit: pada implementasi API, kirim payload ke endpoint kasbon
-      const selectedDepartment = departmentOptions.find(d => d.value === form.departmentId)?.label || '';
-      const selectedPosition = positionOptions.find(p => p.value === form.posisiId)?.label || '';
-      const payload = {
-        idKaryawan: form.idKaryawan,
-        name: form.name,
-        departmentId: form.departmentId,
-        department: selectedDepartment,
-        posisiId: form.posisiId,
-        posisi: selectedPosition || undefined,
-        gajiPokok: form.gajiPokok,
-        tanggalPengajuan: form.tanggalPengajuan,
-      } as any;
       //console.log('submit kasbon', payload);
 
       addNotification({

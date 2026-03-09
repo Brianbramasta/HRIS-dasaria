@@ -183,8 +183,8 @@ export default function Notification() {
       <RejectConfirmationModal
         isOpen={isRejectModalOpen}
         onClose={() => setIsRejectModalOpen(false)}
-        onConfirm={(reason) => {
-          //console.log("Rejected with reason:", reason);
+        onConfirm={(_reason) => {
+          //console.log("Rejected with reason:", _reason);
           setIsRejectModalOpen(false);
         }}
       />

@@ -177,9 +177,9 @@ export const useFormulirKaryawan = (): UseFormulirKaryawanReturn => {
       if (err?.errors && typeof err.errors === 'object') {
         // Format validation errors for display
         const errorMessages: string[] = [];
-        Object.entries(err.errors).forEach(([field, messages]) => {
+        Object.entries(err.errors).forEach(([_field, messages]) => {
           if (Array.isArray(messages)) {
-            //console.log(`Field: ${field}, Messages: ${messages}`);
+            //console.log(`Field: ${_field}, Messages: ${messages}`);
             messages.forEach((msg) => errorMessages.push(msg));
           }
         });

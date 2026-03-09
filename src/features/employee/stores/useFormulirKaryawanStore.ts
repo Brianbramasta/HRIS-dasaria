@@ -124,9 +124,9 @@ const initialStepCompleted: StepCompletionStatus = {
 const saveToStorage = (data: any) => {
   try {
     // Convert File objects to serializable format
-    const serializedData = JSON.stringify(data, (key, value) => {
-      // //console.log('key, value', key, value);
-      //console.log('key, value', key, value);
+    const serializedData = JSON.stringify(data, (_key, value) => {
+      // //console.log('key, value', _key, value);
+      //console.log('key, value', _key, value);
       if (value instanceof File) {
         return {
           _isFile: true,

@@ -54,8 +54,8 @@ export function useOrganizationHistoryAtasan(options: UseOrganizationHistoryAtas
   );
 
   const createOrganizationHistory = useCallback(
-    async (employeeId: string, payload: CreateOrganizationChangePayload) => {
-      //console.log(employeeId);
+    async (_employeeId: string, payload: CreateOrganizationChangePayload) => {
+      //console.log(_employeeId);
       const enrichedPayload: CreateOrganizationChangePayload = {
         ...payload,
         approved_by: 'di approve manual tanpa login ',
