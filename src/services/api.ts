@@ -35,7 +35,13 @@ class ApiService {
 
     // Tentukan baseURL berdasarkan apakah path termasuk dalam daftar
     const tempApiUrl = useTemporaryApiStore.getState().apiUrl;
-    this.baseURL = tempApiUrl || import.meta.env.VITE_API_URL; 
+    const tempApiPrefix = useTemporaryApiStore.getState().apiPrefix;
+    
+    if (tempApiUrl && tempApiPrefix) {
+      this.baseURL = tempApiUrl + tempApiPrefix;
+    } else {
+      this.baseURL = (globalThis as any).API_URL + (globalThis as any).API_PREFIX;
+    } 
     
     this.instance = axios.create({
       baseURL: this.baseURL,

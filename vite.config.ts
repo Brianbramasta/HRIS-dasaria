@@ -40,7 +40,8 @@ export default defineConfig(({ mode }) => {
       },
     },
     define: {
-      "globalThis.VITE_API_URL": JSON.stringify(env.VITE_API_URL),
+      "globalThis.API_URL": JSON.stringify(env.API_URL),
+      "globalThis.API_PREFIX": JSON.stringify(env.API_PREFIX),
     },
   };
 });
