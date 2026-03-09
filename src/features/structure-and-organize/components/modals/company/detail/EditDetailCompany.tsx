@@ -6,7 +6,7 @@ import TextAreaField from '@/components/shared/field/TextAreaField';
 import FIleField from '@/components/shared/field/FIleField';
 import DateField from '@/components/shared/field/DateField';
 import SelectField from '@/components/shared/field/SelectField';
-import { formatDate } from '@/utils/formatDate'
+import { formatDateToIndonesian } from '@/utils/formatDate'
 import { useEditDetailCompanyModal } from '../../../../hooks/modals/company/detail/useEditDetailCompanyModal';
 
 interface EditDetailCompanyProps {
@@ -71,7 +71,7 @@ const EditDetailCompany: React.FC<EditDetailCompanyProps> = ({ isOpen, onClose, 
             <FIleField
               label="Upload Logo"
               onChange={handleFile}
-              required
+              // required
               acceptedFormats={['image/png', 'image/jpeg', 'image/jpg']}
               // isLabel={false}
             />
@@ -135,7 +135,7 @@ const EditDetailCompany: React.FC<EditDetailCompanyProps> = ({ isOpen, onClose, 
             <DateField
               id="company-founded"
               label="Tanggal Didirikan"
-              defaultDate={formatDate(form.founded) || undefined}
+              defaultDate={formatDateToIndonesian(form.founded) || undefined}
               onChange={(date, dateString) => { void date; handleChange('founded', dateString); }}
               placeholder="Pilih tanggal didirikan"
               required
