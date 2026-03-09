@@ -191,7 +191,7 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
             variant="custom" 
             className="w-max border border-[#007BFF] bg-[white] text-[#007BFF] dark:text-white color-[#007BFF]" 
             size="sm"
-            onClick={() => window.open(`${apiUrl}/payroll/payroll-periode/export-template${templateType ? `?type=${templateType.toLowerCase()}` : ''}`, '_blank')}
+            onClick={() => window.open(`${apiUrl || (globalThis as any).API_URL + (globalThis as any).API_PREFIX}/payroll/payroll-periode/export-template${templateType ? `?type=${templateType}` : ''}`, '_blank')}
             disabled={approvalStore.isAllButtonsDisabled()}
           >
             <IconDownloadTemplate size={16} color="#007BFF" />
