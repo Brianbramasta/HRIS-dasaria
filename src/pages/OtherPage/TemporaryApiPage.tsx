@@ -30,7 +30,10 @@ const TemporaryApiPage: React.FC = () => {
       <p className="text-gray-600 text-sm">
         Gunakan halaman ini untuk mengubah URL API secara dinamis. Perubahan akan disimpan di local storage dan akan digunakan oleh ApiService.
       </p>
-      
+      <form onSubmit={(e) => {
+        e.preventDefault();
+        handleApply();
+      }}>
       <div className="mt-6">
         <InputField
           label="Inputkan URL API di sini"
@@ -48,11 +51,12 @@ const TemporaryApiPage: React.FC = () => {
       </div>
       
       <button 
-        onClick={handleApply}
+      type='submit'
         className="mt-4 px-4 py-2 bg-brand-500 text-white rounded-lg hover:bg-brand-600 transition-colors text-sm font-medium"
       >
         Terapkan Perubahan & Ke Dashboard
       </button>
+      </form>
     </div>
   );
 };
