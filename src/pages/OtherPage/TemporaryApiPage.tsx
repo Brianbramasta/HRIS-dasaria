@@ -54,6 +54,7 @@ const TemporaryApiPage: React.FC = () => {
           value={apiUrl}
           onChange={handleChange}
           containerClassName="mb-4"
+          required
         />
         <InputField
           label="Inputkan Prefix API di sini"
@@ -61,16 +62,17 @@ const TemporaryApiPage: React.FC = () => {
           value={apiPrefix}
           onChange={handlePrefixChange}
           containerClassName="mb-4"
+          required
         />
       </div>
 
       <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-        <p className="text-xs text-blue-700">
+        {/* <p className="text-xs text-blue-700">
           <strong>URL Saat Ini:</strong> {apiUrl || 'Menggunakan Default (VITE_API_URL)'}
         </p>
         <p className="text-xs text-blue-700 mt-1">
           <strong>Prefix Saat Ini:</strong> {apiPrefix || 'Menggunakan Default (/api)'}
-        </p>
+        </p> */}
         <p className="text-xs text-blue-700 mt-1">
           <strong>URL Lengkap:</strong> {apiUrl && apiPrefix ? `${apiUrl}${apiPrefix}` : 'Menggunakan Default (VITE_API_URL)'}
         </p>
