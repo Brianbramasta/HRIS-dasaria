@@ -118,7 +118,7 @@ export function usePersonalDataModal({ isOpen, initialData, onSubmit }: Params) 
       'alamatDomisili',
       'alamatKtp',
       'agama',
-      'fotoProfil',
+      // 'fotoProfil',
     ];
     const isValid = requiredKeys.every((k) => {
       const v = form[k] as any;

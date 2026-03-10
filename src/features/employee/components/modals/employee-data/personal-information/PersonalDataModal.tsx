@@ -1,12 +1,20 @@
-import React from 'react';
-import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
-import FIleField from '@/components/shared/field/FIleField';
-import InputField from '@/components/shared/field/InputField';
-import SelectField from '@/components/shared/field/SelectField';
-import TextAreaField from '@/components/shared/field/TextAreaField';
-import DateField from '@/components/shared/field/DateField';
-import {  JENIS_KELAMIN_OPTIONS, STATUS_MENIKAH_OPTIONS, GOLONGAN_DARAH_OPTIONS, TANGGUNGAN_OPTIONS } from '@/features/employee/utils/EmployeeMappings';
-import { usePersonalDataModal, PersonalDataForm } from '@/features/employee/hooks/modals/employee-data/personal-information/usePersonalDataModal';
+import React from "react";
+import ModalAddEdit from "@/components/shared/modal/ModalAddEdit";
+import FIleField from "@/components/shared/field/FIleField";
+import InputField from "@/components/shared/field/InputField";
+import SelectField from "@/components/shared/field/SelectField";
+import TextAreaField from "@/components/shared/field/TextAreaField";
+import DateField from "@/components/shared/field/DateField";
+import {
+  JENIS_KELAMIN_OPTIONS,
+  STATUS_MENIKAH_OPTIONS,
+  GOLONGAN_DARAH_OPTIONS,
+  TANGGUNGAN_OPTIONS,
+} from "@/features/employee/utils/EmployeeMappings";
+import {
+  usePersonalDataModal,
+  PersonalDataForm,
+} from "@/features/employee/hooks/modals/employee-data/personal-information/usePersonalDataModal";
 
 interface PersonalDataModalProps {
   isOpen: boolean;
@@ -17,15 +25,30 @@ interface PersonalDataModalProps {
   employeeId?: string;
 }
 
-const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialData, onClose, onSubmit, submitting = false }) => {
-  const { title, form, agamaOptions, pendidikanOptions, handleInput, handleFileChange, handleSubmit } =
-    usePersonalDataModal({ isOpen, initialData, onSubmit });
+const PersonalDataModal: React.FC<PersonalDataModalProps> = ({
+  isOpen,
+  initialData,
+  onClose,
+  onSubmit,
+  submitting = false,
+}) => {
+  const {
+    title,
+    form,
+    agamaOptions,
+    pendidikanOptions,
+    handleInput,
+    handleFileChange,
+    handleSubmit,
+  } = usePersonalDataModal({ isOpen, initialData, onSubmit });
 
   const content = (
     <div>
-      <div className='mb-4'>
+      <div className="mb-4">
         <h2 className="text-3xl font-bold text-start mb-2">{title}</h2>
-        <p className="text-sm text-grey-200 font-semibold">Update your details to keep your profile up-to-date.</p>
+        <p className="text-sm text-grey-200 font-semibold">
+          Update your details to keep your profile up-to-date.
+        </p>
       </div>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div>
@@ -33,7 +56,7 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
             label="Nama Lengkap"
             id="namaLengkap"
             value={form.namaLengkap}
-            onChange={(e) => handleInput('namaLengkap', e.target.value)}
+            onChange={(e) => handleInput("namaLengkap", e.target.value)}
             required
           />
         </div>
@@ -43,7 +66,7 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
             id="email"
             type="email"
             value={form.email}
-            onChange={(e) => handleInput('email', e.target.value)}
+            onChange={(e) => handleInput("email", e.target.value)}
             required
           />
         </div>
@@ -52,8 +75,8 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
           <InputField
             label="NIK"
             id="nik"
-            value={form.nik || ''}
-            onChange={(e) => handleInput('nik', e.target.value)}
+            value={form.nik || ""}
+            onChange={(e) => handleInput("nik", e.target.value)}
             required
           />
         </div>
@@ -62,8 +85,8 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
             label="Agama"
             htmlFor="agamaSelect"
             options={agamaOptions}
-            defaultValue={form.agama || ''}
-            onChange={(v) => handleInput('agama', v)}
+            defaultValue={form.agama || ""}
+            onChange={(v) => handleInput("agama", v)}
             placeholder="Select"
             required
           />
@@ -73,8 +96,8 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
           <InputField
             label="Tempat Lahir"
             id="tempatLahir"
-            value={form.tempatLahir || ''}
-            onChange={(e) => handleInput('tempatLahir', e.target.value)}
+            value={form.tempatLahir || ""}
+            onChange={(e) => handleInput("tempatLahir", e.target.value)}
             required
           />
         </div>
@@ -83,8 +106,8 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
             label="Gol. Darah"
             htmlFor="golDarahSelect"
             options={GOLONGAN_DARAH_OPTIONS}
-            defaultValue={form.golDarah || ''}
-            onChange={(v) => handleInput('golDarah', v)}
+            defaultValue={form.golDarah || ""}
+            onChange={(v) => handleInput("golDarah", v)}
             placeholder="Select"
             required
           />
@@ -96,7 +119,7 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
             label="Tanggal Lahir"
             placeholder="Pilih tanggal"
             defaultDate={form.tanggalLahir || undefined}
-            onChange={(_, dateStr) => handleInput('tanggalLahir', dateStr)}
+            onChange={(_, dateStr) => handleInput("tanggalLahir", dateStr)}
             required
           />
         </div>
@@ -105,8 +128,8 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
             label="Pendidikan Terakhir"
             htmlFor="pendidikanTerakhirSelect"
             options={pendidikanOptions}
-            defaultValue={form.pendidikanTerakhir || ''}
-            onChange={(v) => handleInput('pendidikanTerakhir', v)}
+            defaultValue={form.pendidikanTerakhir || ""}
+            onChange={(v) => handleInput("pendidikanTerakhir", v)}
             placeholder="Select"
             required
           />
@@ -117,8 +140,8 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
             label="Jenis Kelamin"
             htmlFor="jenisKelaminSelect"
             options={JENIS_KELAMIN_OPTIONS}
-            defaultValue={form.jenisKelamin || ''}
-            onChange={(v) => handleInput('jenisKelamin', v)}
+            defaultValue={form.jenisKelamin || ""}
+            onChange={(v) => handleInput("jenisKelamin", v)}
             placeholder="Select"
             required
           />
@@ -128,8 +151,8 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
             label="Status Menikah"
             htmlFor="statusMenikahSelect"
             options={STATUS_MENIKAH_OPTIONS}
-            defaultValue={form.statusMenikah || ''}
-            onChange={(v) => handleInput('statusMenikah', v)}
+            defaultValue={form.statusMenikah || ""}
+            onChange={(v) => handleInput("statusMenikah", v)}
             placeholder="Select"
             required
           />
@@ -139,8 +162,8 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
           <InputField
             label="Nomor Telepon"
             id="nomorTelepon"
-            value={form.nomorTelepon || ''}
-            onChange={(e) => handleInput('nomorTelepon', e.target.value)}
+            value={form.nomorTelepon || ""}
+            onChange={(e) => handleInput("nomorTelepon", e.target.value)}
             required
           />
         </div>
@@ -149,8 +172,8 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
             label="Jumlah Tanggungan sesuai KK"
             htmlFor="jumlahTanggunganSelect"
             options={TANGGUNGAN_OPTIONS}
-            defaultValue={form.jumlahTanggungan || ''}
-            onChange={(v) => handleInput('jumlahTanggungan', v)}
+            defaultValue={form.jumlahTanggungan || ""}
+            onChange={(v) => handleInput("jumlahTanggungan", v)}
             placeholder="Select"
             required
           />
@@ -160,9 +183,8 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
           <FIleField
             label="Upload Foto Profil"
             htmlFor="avatarFile"
-            acceptedFormats={['image/png', 'image/jpeg', 'image/jpg']}
+            acceptedFormats={["image/png", "image/jpeg", "image/jpg"]}
             onChange={handleFileChange}
-            required
           />
           {/* {form.avatarUrl && (
            <div className='mt-2'>
@@ -177,8 +199,8 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
             label="Alamat Domisili"
             htmlFor="alamatDomisili"
             rows={3}
-            value={form.alamatDomisili || ''}
-            onChange={(v) => handleInput('alamatDomisili', v)}
+            value={form.alamatDomisili || ""}
+            onChange={(v) => handleInput("alamatDomisili", v)}
             required
           />
         </div>
@@ -187,8 +209,8 @@ const PersonalDataModal: React.FC<PersonalDataModalProps> = ({ isOpen, initialDa
             label="Alamat KTP"
             htmlFor="alamatKtp"
             rows={3}
-            value={form.alamatKtp || ''}
-            onChange={(v) => handleInput('alamatKtp', v)}
+            value={form.alamatKtp || ""}
+            onChange={(v) => handleInput("alamatKtp", v)}
             required
           />
         </div>
