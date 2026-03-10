@@ -1,16 +1,24 @@
-import { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
-import PenggajianTabBase from '../../../components/tabs/PayrollTabBase';
-import Button from '@/components/ui/button/Button';
-import { Dropdown } from '@/components/ui/dropdown/Dropdown';
-import { ChevronDown } from 'react-feather';
-import useTHRPages from '../../../hooks/pages/payroll-period/useTHRPages';
-import { THRRow } from '../../../hooks/pages/payroll-period/useTHRPages';
-import { IconFileDetail, IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
-import React from 'react';
+import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  DataTableColumn,
+  DataTableAction,
+} from "@/components/shared/datatable/DataTable";
+import PenggajianTabBase from "../../../components/tabs/PayrollTabBase";
+import Button from "@/components/ui/button/Button";
+import { Dropdown } from "@/components/ui/dropdown/Dropdown";
+import { ChevronDown } from "react-feather";
+import useTHRPages from "../../../hooks/pages/payroll-period/useTHRPages";
+import { THRRow } from "../../../hooks/pages/payroll-period/useTHRPages";
+import {
+  IconFileDetail,
+  IconPencil as Edit,
+  IconHapus as Trash,
+} from "@/icons/components/icons";
+import React from "react";
+import DevGeneratePayrollButton from "@/features/payroll/components/dev/DevGeneratePayrollButton";
 
-export default function THRTab({ }: { resetKey?: string }) {
+export default function THRTab({}: { resetKey?: string }) {
   const navigate = useNavigate();
   const {
     rows,
@@ -40,24 +48,26 @@ export default function THRTab({ }: { resetKey?: string }) {
     handleFinalize,
   } = useTHRPages();
   // Add format function for status column
-  const enhancedColumns: DataTableColumn<THRRow>[] = baseColumns.map(col => {
-    if (col.id === 'statusTHR') {
+  const enhancedColumns: DataTableColumn<THRRow>[] = baseColumns.map((col) => {
+    if (col.id === "statusTHR") {
       return {
         ...col,
         format: (v: any) => {
-          const value = String(v ?? '');
+          const value = String(v ?? "");
           const lowered = value.toLowerCase();
 
-          const badgeClass = lowered.includes('menunggu')
-            ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-200'
-            : lowered.includes('selesai')
-            ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-200'
-            : lowered.includes('distribusi')
-            ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200'
-            : 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200';
+          const badgeClass = lowered.includes("menunggu")
+            ? "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-200"
+            : lowered.includes("selesai")
+              ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-200"
+              : lowered.includes("distribusi")
+                ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200"
+                : "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200";
 
           return (
-            <span className={`rounded-full p-[10px] flex justify-center text-center text-xs status-styling ${badgeClass}`}>
+            <span
+              className={`rounded-full p-[10px] flex justify-center text-center text-xs status-styling ${badgeClass}`}
+            >
               {value}
             </span>
           );
@@ -72,11 +82,14 @@ export default function THRTab({ }: { resetKey?: string }) {
       {
         icon: React.createElement(IconFileDetail),
         onClick: (row) => {
-          navigate(`${detailPathPrefix}/${row.payrollId}?approvalType=${encodeURIComponent(approvalType)}`);
+          navigate(
+            `${detailPathPrefix}/${row.payrollId}?approvalType=${encodeURIComponent(approvalType)}`,
+          );
         },
-        variant: 'outline',
-        color: 'info',
-        condition: (row) => !row.statusTHR.toLowerCase().includes('menunggu maker'),
+        variant: "outline",
+        color: "info",
+        condition: (row) =>
+          !row.statusTHR.toLowerCase().includes("menunggu maker"),
       },
       {
         icon: <Edit />,
@@ -84,11 +97,11 @@ export default function THRTab({ }: { resetKey?: string }) {
           navigate(`${detailPathPrefix}/${row.payrollId}`);
         },
         condition: (row) => {
-          const editableStatuses = ['Menunggu Maker'];
+          const editableStatuses = ["Menunggu Maker"];
           return editableStatuses.includes(row.statusTHR);
         },
-        variant: 'outline',
-        className: 'border-0',
+        variant: "outline",
+        className: "border-0",
       },
       {
         icon: <Trash />,
@@ -97,15 +110,15 @@ export default function THRTab({ }: { resetKey?: string }) {
           //console.log('Delete action for:', _row);
         },
         condition: (row) => {
-          const editableStatuses = ['Menunggu Maker'];
+          const editableStatuses = ["Menunggu Maker"];
           return editableStatuses.includes(row.statusTHR);
         },
-        variant: 'outline',
-        className: 'border-0',
-        color: 'error',
+        variant: "outline",
+        className: "border-0",
+        color: "error",
       },
     ],
-    [navigate, detailPathPrefix, approvalType]
+    [navigate, detailPathPrefix, approvalType],
   );
   return (
     <PenggajianTabBase
@@ -138,39 +151,60 @@ export default function THRTab({ }: { resetKey?: string }) {
       onFinalize={handleFinalize}
       templateType="Thr"
       toolbarRightSlot={
-        isApprovalPage && <div className="relative">
-          <Button
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            variant="outline"
-            size="sm"
-            className="flex items-center gap-1 dropdown-toggle"
-          >
-            {approvalType}
-            <ChevronDown size={16} />
-          </Button>
-          <Dropdown isOpen={isDropdownOpen} onClose={() => setIsDropdownOpen(false)}>
-            <div className="p-2 w-64">
-              <button
-                className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-                onClick={() => handleApprovalTypeChange('Persetujuan oleh FAT')}
+        <>
+          <DevGeneratePayrollButton
+            types={["Thr"]}
+            onGenerated={() => navigate('/payroll-period/thr', { replace: true })}
+          />
+
+          {isApprovalPage && (
+            <div className="relative">
+              <Button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-1 dropdown-toggle"
               >
-                Persetujuan oleh FAT
-              </button>
-              <button
-                className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-                onClick={() => handleApprovalTypeChange('Persetujuan oleh Direktur HRGA')}
+                {approvalType}
+                <ChevronDown size={16} />
+              </Button>
+
+              <Dropdown
+                isOpen={isDropdownOpen}
+                onClose={() => setIsDropdownOpen(false)}
               >
-                Persetujuan oleh Direktur HRGA
-              </button>
-              <button
-                className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-                onClick={() => handleApprovalTypeChange('Persetujuan oleh BOD')}
-              >
-                Persetujuan oleh BOD
-              </button>
+                <div className="p-2 w-64">
+                  <button
+                    className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+                    onClick={() =>
+                      handleApprovalTypeChange("Persetujuan oleh FAT")
+                    }
+                  >
+                    Persetujuan oleh FAT
+                  </button>
+
+                  <button
+                    className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+                    onClick={() =>
+                      handleApprovalTypeChange("Persetujuan oleh Direktur HRGA")
+                    }
+                  >
+                    Persetujuan oleh Direktur HRGA
+                  </button>
+
+                  <button
+                    className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+                    onClick={() =>
+                      handleApprovalTypeChange("Persetujuan oleh BOD")
+                    }
+                  >
+                    Persetujuan oleh BOD
+                  </button>
+                </div>
+              </Dropdown>
             </div>
-          </Dropdown>
-        </div>
+          )}
+        </>
       }
     />
   );
