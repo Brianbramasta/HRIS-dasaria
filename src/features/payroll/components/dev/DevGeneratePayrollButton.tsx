@@ -1,6 +1,6 @@
 import Button from "@/components/ui/button/Button";
-const apiUrl = globalThis.API_URL;
-const apiPrefix = globalThis.API_PREFIX;
+const apiUrl = (globalThis as any).API_URL ;
+const apiPrefix =(globalThis as any).API_PREFIX;
 
 interface Props {
   types: string[];
