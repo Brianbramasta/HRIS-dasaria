@@ -10,7 +10,7 @@ import { toFileSummary } from '../../utils/shared/toFileSummary';
 export const mapToDepartment = (item: any): DepartmentListItem => ({
   id: item.id ?? item.id ?? '',
   name: item.department_name ?? item.name ?? '',
-  description: item.department_description ?? item.description ?? null,
+  description: item.department_description ?? item.department_description ?? null,
   divisionId: item.division_id ?? null,
   divisionName: item.division_name ?? null,
   memoNumber: item.department_decree_number ?? null,
@@ -27,6 +27,10 @@ const toSortField = (field?: string): string => {
     'Nama Divisi': 'division_name',
     'nama-divisi': 'division_name',
     division_name: 'division_name',
+    'Deskripsi': 'department_description',
+    'deskripsi': 'department_description',
+    description: 'department_description',
+    department_description: 'department_description',
   };
   return map[field || ''] || 'department_name';
 };
@@ -98,6 +102,8 @@ export const useApiDepartments = (): UseDepartmentsReturn => {
       const totalPagesCount = perPage ? Math.ceil(total / perPage) : 1;
       
       setDepartments((items || []).map(mapToDepartment));
+      console.log('Departments:', items);
+      console.log('Mapped Departments:', (items || []).map(mapToDepartment));
       setTotal(total);
       setTotalPages(totalPagesCount);
     } catch (err) {

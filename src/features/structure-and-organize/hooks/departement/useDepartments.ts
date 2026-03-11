@@ -27,10 +27,12 @@ export const useDepartments = () => {
       no: idx + 1,
       'nama-departemen': (d as any).name ?? '—',
       'nama-divisi': (d as any).divisionName ?? '—',
+      'deskripsi': (d as any).description ?? '—',
       'file-sk-dan-memo': (d as any).skFile ?? '_',
       raw: d,
     }));
   }, [api.departments]);
+  
 
   const exportCSV = (filename: string, data: any[]) => {
     if (!data || data.length === 0) return;
