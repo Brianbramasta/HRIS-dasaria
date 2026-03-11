@@ -85,9 +85,9 @@ const DetailPerusahaan: React.FC = () => {
         <div className="col-span-12 md:col-span-4 rounded-lg p-4 md:p-6 shadow-sm bg-white dark:border-gray-800 dark:bg-gray-900 dark:text-white">
           <div className="flex flex-col items-center">
             <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center mb-4">{/* logo */}
-              <span className="text-3xl font-bold dark:text-black">
+              {/* <span className="text-3xl font-bold dark:text-black w-32 h-32"> */}
                 {formatImage(company?.logo, company?.name || '')}
-              </span>
+              {/* </span> */}
             </div>
             <h2 className="text-xl font-bold">{company?.name}</h2>
             <p className="text-md font-medium">{company?.businessLineName || '—'}</p>
