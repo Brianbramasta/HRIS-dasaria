@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useGetUnits } from './api/useApiUnits';
 import { FileSummary, UnitListItem } from '../types/OrganizationApiTypes';
 import { toFileSummary } from '../utils/shared/toFileSummary';
+import { useFilterStore } from '@/stores/filterStore';
 
 export type UnitRow = {
   id: string;
@@ -21,6 +22,9 @@ export const useUnits = () => {
   const [pageSize, setPageSize] = useState(10);
   const [search, setSearch] = useState('');
   const [total, setTotal] = useState(0);
+  const [sortBy, setSortBy] = useState('');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const filterValue = useFilterStore((s) => (s.filters['Unit'] ?? []).join(','));
 
   const mapToUnit = useCallback(
     (item: any): UnitListItem => ({
@@ -41,6 +45,9 @@ export const useUnits = () => {
         page,
         per_page: pageSize,
         search,
+        sort_by: sortBy,
+        sort_order: sortOrder,
+        filter: filterValue,
       };
 
       const result = await fetchApi(params);
@@ -54,7 +61,7 @@ export const useUnits = () => {
       // Error handled by useGetUnits hook state
       console.error(err);
     }
-  }, [page, pageSize, search, mapToUnit, fetchApi]);
+  }, [page, pageSize, search, sortBy, sortOrder, filterValue, mapToUnit, fetchApi]);
 
   useEffect(() => {
     fetchUnits();
@@ -82,9 +89,16 @@ export const useUnits = () => {
     pageSize,
     loading,
     error,
+    sortBy,
+    sortOrder,
+    filterValue,
     setPage,
     setPageSize,
     setSearch,
+    setSort: (column: string, order: 'asc' | 'desc') => {
+      setSortBy(column);
+      setSortOrder(order);
+    },
     fetchUnits,
   };
 };
