@@ -42,7 +42,7 @@ export default function UnitTab({ resetKey }: Props) {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [selectedUnit, setSelectedUnit] = useState<UnitRow | null>(null);
-  const { rows_column, total, page, pageSize, setPage, setPageSize, setSearch, fetchUnits } = useUnits();
+  const { rows_column, total, page, pageSize, loading, setPage, setPageSize, setSearch, setSort, fetchUnits } = useUnits();
   const fileStore = useFileStore();
 
   return (
@@ -51,7 +51,7 @@ export default function UnitTab({ resetKey }: Props) {
         title="Unit"
         data={rows_column}
         columns={unitColumns}
-        loading={false}
+        loading={loading}
         pageSize={pageSize}
         useExternalPagination
         externalPage={page}
@@ -84,13 +84,19 @@ export default function UnitTab({ resetKey }: Props) {
         resetKey={resetKey}
         onSearchChange={val => {
           setSearch(val);
+          fetchUnits();
         }}
-        onSortChange={() => {}}
+        onSortChange={(columnId, order) => {
+          setSort(columnId, order);
+          fetchUnits();
+        }}
         onPageChangeExternal={p => {
           setPage(p);
+          fetchUnits();
         }}
         onRowsPerPageChangeExternal={ps => {
           setPageSize(ps);
+          fetchUnits();
         }}
         onColumnVisibilityChange={() => {}}
         onAdd={() => setIsAddOpen(true)}

@@ -7,6 +7,7 @@ interface FileInputProps {
   required?: boolean;
   acceptedFormats?: string[];
   placeholder?: string;
+  maxFileSize?: number; // in bytes
 }
 
 const FileInput: FC<FileInputProps> = ({ 
@@ -15,7 +16,8 @@ const FileInput: FC<FileInputProps> = ({
   multiple = false, 
   required, 
   acceptedFormats = ['application/pdf'],
-  placeholder = "Tidak ada file yang dipilih"
+  placeholder = "Tidak ada file yang dipilih",
+  maxFileSize = 5 * 1024 * 1024 // 5MB default
 }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -25,6 +27,12 @@ const FileInput: FC<FileInputProps> = ({
         // Clear the file input if invalid file type
         e.target.value = '';
         // Don't call onChange to prevent parent from receiving invalid file
+        return;
+      }
+      if (file.size > maxFileSize) {
+        // Clear the file input if file size exceeds limit
+        e.target.value = '';
+        alert(`File size exceeds maximum limit of ${Math.round(maxFileSize / (1024 * 1024))}MB`);
         return;
       }
     }

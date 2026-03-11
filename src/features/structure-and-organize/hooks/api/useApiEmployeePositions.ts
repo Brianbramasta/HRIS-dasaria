@@ -84,7 +84,7 @@ interface UseEmployeePositionsReturn {
     memoNumber: string;
     skFile?: File | null;
   }) => Promise<void>;
-  deleteEmployeePosition: (id: string, payload: { memoNumber: string; skFileId: string; }) => Promise<void>;
+  deleteEmployeePosition: (id: string, payload: { memoNumber: string; skFileId: string | File; }) => Promise<void>;
   detail: (id: string) => Promise<EmployeePositionListItem | null>;
   setPage: (page: number) => void;
   setPageSize: (pageSize: number) => void;
@@ -260,7 +260,7 @@ export const useApiEmployeePositions = (): UseEmployeePositionsReturn => {
     }
   }, []);
 
-  const deleteEmployeePosition = useCallback(async (id: string, payload: { memoNumber: string; skFileId: string; }) => {
+  const deleteEmployeePosition = useCallback(async (id: string, payload: { memoNumber: string; skFileId: string | File; }) => {
     setLoading(true);
     setError(null);
     
@@ -268,7 +268,13 @@ export const useApiEmployeePositions = (): UseEmployeePositionsReturn => {
       const form = new FormData();
       form.append('_method', 'DELETE');
       if (payload.memoNumber) form.append('position_deleted_decree_number', payload.memoNumber);
-      if (payload.skFileId) form.append('position_deleted_decree_file', payload.skFileId);
+      if (payload.skFileId) {
+        if (payload.skFileId instanceof File) {
+          form.append('position_deleted_decree_file', payload.skFileId);
+        } else {
+          form.append('position_deleted_decree_file', payload.skFileId);
+        }
+      }
 
       await employeePositionsService.delete(id, form);
       setEmployeePositions(prev => prev.filter(employeePosition => employeePosition.id !== id));

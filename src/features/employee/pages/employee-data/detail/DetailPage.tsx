@@ -7,8 +7,9 @@ import OrganizationHistoryTab from '../../../components/employee-data/tab/Organi
 import PelanggaranTab from '../../../components/employee-data/tab/Fraud';
 import StoryPayrollTab from '../../../components/employee-data/tab/StoryPayroll';
 import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/useDetailDataKaryawanPersonalInfo';
-import { formatUrlFile } from '@/utils/formatUrlFile';
+// import { formatUrlFile } from '@/utils/formatUrlFile';
 import { IconFacebook, IconInstagram, IconLinkedin, IconX } from '@/icons/components/icons';
+import { formatImage } from '@/utils/formatImage';
 
 function useQuery() {
   const { search } = useLocation();
@@ -43,11 +44,14 @@ export default function DetailKaryawanPage() {
       <div className="rounded-xl border border-gray-200 bg-white p-6 dark:text-white dark:border-gray-800 dark:bg-gray-900 mb-4">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex flex-col md:flex-row items-center gap-3">
-            <img
+            {/* <img
               src={formatUrlFile(detail?.Personal_Data?.avatar ?? 'https://api.dicebear.com/7.x/avataaars/svg?seed=${id}')}
               alt="Employee Avatar"
               className="h-12 w-12 rounded-full"
-            />
+            /> */}
+            <span className="h-12 w-12 rounded-full">
+              {formatImage(detail?.Personal_Data?.avatar ?? 'https://api.dicebear.com/7.x/avataaars/svg?seed=${id}', detail?.Personal_Data?.full_name)}
+            </span>
             <div className='text-center md:text-left'>
               <div className="text-base font-semibold">{detail?.Personal_Data?.full_name}</div>
               <div className="text-sm text-gray-500">{detail?.Employment_Position_Data?.department_name} | {detail?.Employment_Position_Data?.user_access}</div>

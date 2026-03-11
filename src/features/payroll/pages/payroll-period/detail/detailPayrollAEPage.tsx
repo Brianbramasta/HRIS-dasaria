@@ -14,6 +14,7 @@ export default function DetailGajiAEPage() {
   useEffect(() => {
     if (!id) return;
     fetchPayrollPeriodDetail(id, 'Mitra');
+    
   }, [id, fetchPayrollPeriodDetail]);
 
   const defaultData = useMemo(
@@ -32,6 +33,7 @@ export default function DetailGajiAEPage() {
     () => payrollPeriodDetail?.non_fixed_allowance?.non_fixed_allowance ?? [],
     [payrollPeriodDetail]
   );
+  console.log("nonFixedAllowanceItems", nonFixedAllowanceItems)
 
   const config: SectionConfig = {
     infoFields: [
@@ -56,7 +58,7 @@ export default function DetailGajiAEPage() {
         placeholder: "0",
       })),
       initialValues: nonFixedAllowanceItems.reduce<Record<string, string>>((acc, x) => {
-        acc[`nfa_${x.componen_id}`] = String(x.amount ?? "");
+        acc[`nfa_${x.componen_id}`] = String(x.amount ?? "-");
         return acc;
       }, {}),
       ModalComponent: TambahTunjanganTidakTetapModalAE,

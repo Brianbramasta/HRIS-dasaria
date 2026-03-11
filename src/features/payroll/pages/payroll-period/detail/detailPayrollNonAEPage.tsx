@@ -17,6 +17,8 @@ export default function DetailGajiPage() {
   useEffect(() => {
     if (!id) return;
     fetchPayrollPeriodDetail(id, 'Staff');
+    console.log("fetchPayrollPeriodDetail", id);
+    
   }, [id, fetchPayrollPeriodDetail]);
 
   const defaultData = useMemo(
@@ -46,6 +48,7 @@ export default function DetailGajiPage() {
     () => payrollPeriodDetail?.non_fixed_allowance?.non_fixed_allowance ?? [],
     [payrollPeriodDetail]
   );
+   console.log("nonFixedAllowanceEmployeeItems", nonFixedAllowanceEmployeeItems)
 
   const nonFixedDeductionItems = useMemo(
     () => payrollPeriodDetail?.non_fixed_deduction ?? [],
@@ -163,7 +166,7 @@ export default function DetailGajiPage() {
         type: "input" as const,
       })),
       initialValues: nonFixedAllowanceEmployeeItems.reduce<Record<string, string>>((acc, x: PayrollPeriodNonFixedAllowanceMasterItem) => {
-        acc[`nfa_${x.componen_id}`] = String(x.amount ?? "");
+        acc[`nfa_${x.componen_id}`] = String(x.amount ?? "-");
         return acc;
       }, {}),
       ModalComponent: TambahTunjanganTidakTetapModal,
@@ -175,7 +178,7 @@ export default function DetailGajiPage() {
       fields: potonganTidakTetapFields,
       modalFields: potonganTidakTetapFields,
       initialValues: nonFixedDeductionItems.reduce<Record<string, string>>((acc, x) => {
-        acc[`nfd_${x.id}`] = String(x.amount ?? "");
+        acc[`nfd_${x.id}`] = String(x.amount ?? "-");
         return acc;
       }, {}),
       ModalComponent: TambahPotonganTidakTetapModal,
