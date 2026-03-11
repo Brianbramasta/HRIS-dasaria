@@ -92,6 +92,7 @@ interface DataTableProps<T = any> {
   // Date range filter callbacks
   onDateRangeFilterChange?: (columnId: string, startDate: string, endDate: string | null) => void;
   dateRangeFilters?: Record<string, { startDate: string; endDate: string | null }>;
+  maxHeight?: string;
 }
 
 export function DataTable<T = any>({
@@ -131,6 +132,7 @@ export function DataTable<T = any>({
   columnFilters = {},
   onDateRangeFilterChange,
   dateRangeFilters = {},
+  maxHeight = 'max-h-[calc(100vh-500px)]',
 }: DataTableProps<T>) {
 
   // Use custom hook for all business logic
@@ -317,7 +319,7 @@ export function DataTable<T = any>({
         </div>
       </div>
 
-      <div className="overflow-auto max-h-[calc(100vh-500px)] mx-6 border rounded-sm">
+      <div className={`overflow-auto ${maxHeight} mx-6 border rounded-sm`}>
         <Table className="min-w-full">
           <TableHeader className="sticky top-0 z-10">
             <TableRow className="border-b border-gray-200 bg-[#004969] dark:border-gray-700 dark:bg-gray-800">
