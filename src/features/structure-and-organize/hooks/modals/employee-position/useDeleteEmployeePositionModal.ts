@@ -37,7 +37,10 @@ export function useDeleteEmployeePositionModal({
     }
     setSubmitting(true);
     try {
-      await deleteEmployeePosition(employeePosition.id, { memoNumber: memoNumber.trim(), skFileId: skFile?.path || skFile?.name });
+      await deleteEmployeePosition(employeePosition.id, { 
+        memoNumber: memoNumber.trim(), 
+        skFileId: skFile?.file || skFile?.path || skFile?.name 
+      });
       onSuccess?.(employeePosition.id);
       onClose();
     } catch (err) {
