@@ -13,6 +13,7 @@ interface FileFieldProps {
   acceptedFormats?: string[];
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
+  maxFileSize?: number; // in bytes
 }
 
 const FIleField: FC<FileFieldProps> = ({
@@ -26,6 +27,7 @@ const FIleField: FC<FileFieldProps> = ({
   acceptedFormats = ['application/pdf'],
   onChange,
   className = "",
+  maxFileSize = 5 * 1024 * 1024, // 5MB default
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState<string>("");
@@ -33,6 +35,17 @@ const FIleField: FC<FileFieldProps> = ({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
+      // Check file size for each file
+      for (let i = 0; i < files.length; i++) {
+        if (files[i].size > maxFileSize) {
+          // Clear the file input if file size exceeds limit
+          e.target.value = '';
+          setFileName("");
+          alert(`File size exceeds maximum limit of ${Math.round(maxFileSize / (1024 * 1024))}MB`);
+          return;
+        }
+      }
+      
       if (multiple) {
         setFileName(`${files.length} file dipilih`);
       } else {

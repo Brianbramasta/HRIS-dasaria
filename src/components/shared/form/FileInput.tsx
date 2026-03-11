@@ -12,6 +12,7 @@ interface FileInputProps {
   dragText?: string;
   formatText?: string;
   browseText?: string;
+  maxFileSize?: number; // in bytes
 }
 
 const FileInput: React.FC<FileInputProps> = ({ 
@@ -23,7 +24,8 @@ const FileInput: React.FC<FileInputProps> = ({
   acceptedFormats = ['application/pdf'],
   dragText = 'Letakkan File ke Sini',
   formatText = 'Hanya menerima format PDF',
-  browseText = 'Pilih File'
+  browseText = 'Pilih File',
+  maxFileSize = 5 * 1024 * 1024 // 5MB default
 }) => {
   const [preview, setPreview] = useState<string | null>(null);
   const [savedInfo, setSavedInfo] = useState<{ fileName: string; filePath: string; size: number } | null>(null);
@@ -41,6 +43,7 @@ const FileInput: React.FC<FileInputProps> = ({
   const onDrop = async (acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
       const file = acceptedFiles[0];
+      
       // Local preview as immediate feedback
       const localPreview = URL.createObjectURL(file);
       setPreview(localPreview);
@@ -61,13 +64,24 @@ const FileInput: React.FC<FileInputProps> = ({
     }
   };
 
+  const onDropRejected = (fileRejections: any[]) => {
+    const fileRejection = fileRejections[0];
+    if (fileRejection.errors.some((error: any) => error.code === 'file-too-large')) {
+      alert(`File size exceeds maximum limit of ${Math.round(maxFileSize / (1024 * 1024))}MB`);
+    } else if (fileRejection.errors.some((error: any) => error.code === 'file-invalid-type')) {
+      alert('Invalid file format');
+    }
+  };
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
+    onDropRejected,
     accept: acceptedFormats.reduce((acc, format) => {
       acc[format] = [];
       return acc;
     }, {} as Record<string, []>),
     noClick: false,
+    maxSize: maxFileSize,
   });
 
 
