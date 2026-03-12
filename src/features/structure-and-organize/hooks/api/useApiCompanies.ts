@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { 
   TableFilter,
   CompanyListItem,
@@ -212,6 +212,11 @@ export const useApiCompanies = (): UseApiCompaniesReturn => {
       setLoading(false);
     }
   }, [search, sortBy, sortOrder, page, pageSize, filterValue]);
+
+  // Auto-fetch when search, page, pageSize, sort, or filter changes
+  useEffect(() => {
+    fetchCompanies();
+  }, [fetchCompanies]);
 
   const createCompany = useCallback(async (payload: {
     name: string;

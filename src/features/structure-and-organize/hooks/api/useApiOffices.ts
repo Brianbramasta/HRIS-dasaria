@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { officesService } from '../../services/request/OfficesService';
 import { OfficeListItem, TableFilter } from '../../types/OrganizationApiTypes';
 import useFilterStore from '../../../../stores/filterStore';
@@ -102,6 +102,11 @@ export const useApiOffices = (): UseOfficesReturn => {
       setLoading(false);
     }
   }, [page, pageSize, search, sortBy, sortOrder, filterValue]);
+
+  // Auto-fetch when search, page, pageSize, sort, or filter changes
+  useEffect(() => {
+    fetchOffices();
+  }, [fetchOffices]);
 
   // DOK: createOffice meneruskan companyIds ke service untuk company[n][id_company]
   const createOffice = useCallback(async (officeData: { companyIds: string[]; name: string; description?: string | null; memoNumber: string; skFile?: File | null; }) => {

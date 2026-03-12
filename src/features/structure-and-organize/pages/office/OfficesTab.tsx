@@ -30,7 +30,6 @@ export default function OfficesTab({ resetKey }: Props) {
     setPageSize, 
     setSearch, 
     setSort,
-    fetchOffices, 
     exportCSV,
     addModal,
     editModal,
@@ -58,10 +57,10 @@ export default function OfficesTab({ resetKey }: Props) {
       searchable
       filterable
       resetKey={resetKey}
-      onSearchChange={(val) => { setSearch(val); fetchOffices(); }}
-      onSortChange={(columnId, order) => { setSort(columnId, order); fetchOffices(); }}
-      onPageChangeExternal={(p) => { setPage(p); fetchOffices(); }}
-      onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); fetchOffices(); }}
+      onSearchChange={(val) => { setSearch(val); }}
+      onSortChange={(columnId, order) => { setSort(columnId, order); }}
+      onPageChangeExternal={(p) => { setPage(p); }}
+      onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); }}
       useExternalPagination
       externalPage={page}
       externalTotal={total}

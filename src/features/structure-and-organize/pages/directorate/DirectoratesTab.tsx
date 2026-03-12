@@ -21,7 +21,6 @@ const directorateColumns: DataTableColumn<DirectorateRow>[] = [
 export default function DirectoratesTab({ resetKey }: Props) {
   const { 
     rows, 
-    fetchDirectorates, 
     setSearch, 
     setPage, 
     setPageSize, 
@@ -56,10 +55,10 @@ export default function DirectoratesTab({ resetKey }: Props) {
       searchable
       filterable
       resetKey={resetKey}
-      onSearchChange={(val) => { setSearch(val); fetchDirectorates(); }}
-      onSortChange={(columnId, order) => { setSort(columnId, order); fetchDirectorates(); }}
-      onPageChangeExternal={(p) => { setPage(p); fetchDirectorates(); }}
-      onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); fetchDirectorates(); }}
+      onSearchChange={(val) => { setSearch(val); }}
+      onSortChange={(columnId, order) => { setSort(columnId, order); }}
+      onPageChangeExternal={(p) => { setPage(p); }}
+      onRowsPerPageChangeExternal={(ps) => { setPageSize(ps); }}
       useExternalPagination
       externalPage={page}
       externalTotal={total}
