@@ -53,14 +53,14 @@ export default function BusinessLinesTab({ resetKey }: Props) {
       icon: <Edit />, 
       onClick: (row: any) => handleEditOpen(row.raw) 
     },
-    { 
-      label: '', 
-      variant: 'outline', 
-      className: 'border-0', 
-      color: 'error', 
-      icon: <Trash />, 
-      onClick: (row: any) => handleDeleteOpen(row.raw) 
-    },
+    // { 
+    //   label: '', 
+    //   variant: 'outline', 
+    //   className: 'border-0', 
+    //   color: 'error', 
+    //   icon: <Trash />, 
+    //   onClick: (row: any) => handleDeleteOpen(row.raw) 
+    // },
   ];
 
   return (

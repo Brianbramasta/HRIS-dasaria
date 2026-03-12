@@ -33,18 +33,18 @@ export const useCompanies = () => {
   }, [api.companies]);
 
   const actionsIconOnly = useMemo(() => [
-    { 
-      label: '', 
-      onClick: (row: any) => {
-        const comp = api.companies.find((c) => c.id === row.id) || null;
-        setSelectedCompany(comp);
-        setDeleteOpen(true);
-      }, 
-      variant: 'outline', 
-      className: 'border-0', 
-      color: 'error', 
-      icon: React.createElement(Trash) 
-    },
+    // { 
+    //   label: '', 
+    //   onClick: (row: any) => {
+    //     const comp = api.companies.find((c) => c.id === row.id) || null;
+    //     setSelectedCompany(comp);
+    //     setDeleteOpen(true);
+    //   }, 
+    //   variant: 'outline', 
+    //   className: 'border-0', 
+    //   color: 'error', 
+    //   icon: React.createElement(Trash) 
+    // },
   ] as DataTableAction<any>[], [api.companies]);
 
   const handleCloseAdd = () => {

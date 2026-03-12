@@ -67,17 +67,17 @@ export default function UnitTab({ resetKey }: Props) {
               setIsEditOpen(true);
             },
           },
-          {
-            label: '',
-            variant: 'outline',
-            className: 'border-0',
-            color: 'error',
-            icon: <Trash />,
-            onClick: row => {
-              setSelectedUnit(row);
-              setIsDeleteOpen(true);
-            },
-          },
+          // {
+          //   label: '',
+          //   variant: 'outline',
+          //   className: 'border-0',
+          //   color: 'error',
+          //   icon: <Trash />,
+          //   onClick: row => {
+          //     setSelectedUnit(row);
+          //     setIsDeleteOpen(true);
+          //   },
+          // },
         ]}
         searchable
         filterable

@@ -54,11 +54,11 @@ export default function EmployeePositionsTab({ resetKey }: Props) {
       onClick: (row: any) => handleEditOpen(row.raw),
       variant: 'outline', className: 'border-0', icon: <Edit  />
     },
-    {
-      label: '',
-      onClick: (row: any) => handleDeleteOpen(row.raw),
-      variant: 'outline', className: 'border-0', color: 'error', icon: <Trash  />
-    },
+    // {
+    //   label: '',
+    //   onClick: (row: any) => handleDeleteOpen(row.raw),
+    //   variant: 'outline', className: 'border-0', color: 'error', icon: <Trash  />
+    // },
   ];
 
   return (

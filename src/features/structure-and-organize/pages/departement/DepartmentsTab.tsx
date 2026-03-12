@@ -43,7 +43,7 @@ export default function DepartmentsTab({ resetKey }: Props) {
 
   const actionsIconOnly: DataTableAction<any>[] = [
     { label: '', onClick: (row: any) => handleEditOpen(row.raw), variant: 'outline', className: 'border-0', icon: <Edit/> },
-    { label: '', onClick: (row: any) => handleDeleteOpen(row.raw), variant: 'outline', className: 'border-0', color: 'error', icon: <Trash/> },
+    // { label: '', onClick: (row: any) => handleDeleteOpen(row.raw), variant: 'outline', className: 'border-0', color: 'error', icon: <Trash/> },
   ];
 
   return (
