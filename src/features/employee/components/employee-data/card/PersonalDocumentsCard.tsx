@@ -75,6 +75,8 @@ export default function PersonalDocumentsCard({ documents }: Props) {
     <ExpandCard title="Berkas/Dokumen Pribadi" leftIcon={isComplete ? <IconLengkap /> : <IconTidakLengkap />}  withHeaderDivider>
       <div className="grid grid-cols-1 gap-4">
         <DataTable
+          border={false}
+          resetKey='personal-documents'
           data={tableData}
           maxHeight='max-w-full'
           columns={[

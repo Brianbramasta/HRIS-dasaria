@@ -62,6 +62,7 @@ interface DataTableProps<T = any> {
   exportButtonLabel?: string;
   filterable?: boolean;
   className?: string;
+  border?: boolean;
   loading?: boolean;
   emptyMessage?: string;
   // External callbacks to trigger refetches or synchronize state
@@ -113,6 +114,7 @@ export function DataTable<T = any>({
   exportButtonLabel = 'Ekspor',
   filterable = true,
   className = '',
+  border = true,
   loading = false,
   emptyMessage = 'No data available',
   onSearchChange,
@@ -231,7 +233,7 @@ export function DataTable<T = any>({
 
 
   return (
-    <div className={`rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900 ${className}`}>
+    <div className={`rounded-xl ${border ? 'border border-gray-200 shadow-sm dark:border-gray-800 ' : ''} bg-white dark:bg-gray-900 ${className}`}>
       <div className=" border-gray-200 p-6 dark:border-gray-800">
         {isNewLine && title && (
           <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-0">{title}</h4>
