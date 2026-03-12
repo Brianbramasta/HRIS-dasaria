@@ -2,7 +2,7 @@
 // fallback ke tombol default (Ekspor & Tambah) menggunakan onExport dan onAdd bila slot tidak disediakan.
 // Dokumentasi: Menambahkan toolbarLeftSlotAtas agar layout atas bisa menempatkan input di kiri
 // Dokumentasi: Menambahkan column filter support dengan filterOptions untuk menampilkan icon filter di header kolom tertentu
-import React from 'react';
+import React, { useState } from 'react';
 import { Table, TableHeader, TableBody, TableRow, TableCell } from '../../ui/table';
 import PaginationWithIcon from '../../tables/DataTables/TableOne/PaginationWithIcon';
 import Button from '../../ui/button/Button';
@@ -93,6 +93,7 @@ interface DataTableProps<T = any> {
   onDateRangeFilterChange?: (columnId: string, startDate: string, endDate: string | null) => void;
   dateRangeFilters?: Record<string, { startDate: string; endDate: string | null }>;
   maxHeight?: string;
+  disablePagination?: boolean;
 }
 
 export function DataTable<T = any>({
@@ -133,13 +134,23 @@ export function DataTable<T = any>({
   onDateRangeFilterChange,
   dateRangeFilters = {},
   maxHeight = 'max-h-[calc(100vh-500px)]',
+  disablePagination = false,
 }: DataTableProps<T>) {
+
+  // Internal state for client-side column filtering
+  const [internalColumnFilters, setInternalColumnFilters] = useState<Record<string, string[]>>({});
+  const [internalDateRangeFilters, setInternalDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
+
+  // Use internal state for client-side mode, external props for server-side mode
+  const effectiveColumnFilters = onColumnFilterChange ? columnFilters : internalColumnFilters;
+  const effectiveDateRangeFilters = onDateRangeFilterChange ? dateRangeFilters : internalDateRangeFilters;
 
   // Use custom hook for all business logic
   const {
     page,
     rowsPerPage,
     searchTerm,
+    // appliedSearchTerm,
     visibleColumns,
     sortedData,
     paginatedData,
@@ -155,18 +166,18 @@ export function DataTable<T = any>({
     setVisibleColumns,
     activeFilterColumn,
     filterIconRefs,
-    dateRangeIconRefs,
-    filterAnchorEl,
-    handleFilterIconClick,
-    handleColumnFilterApply,
-    handleColumnFilterReset,
-    handleFilterPopupClose,
-    activeDateRangeColumn,
-    dateRangeAnchorEl,
-    handleDateRangeIconClick,
     handleDateRangeFilterApply,
     handleDateRangeFilterReset,
     handleDateRangePopupClose,
+    handleFilterIconClick,
+    handleDateRangeIconClick,
+    filterAnchorEl,
+    dateRangeAnchorEl,
+    activeDateRangeColumn,
+    dateRangeIconRefs,
+    handleFilterPopupClose,
+    handleColumnFilterApply,
+    handleColumnFilterReset,
   } = useDatatable({
     data,
     columns,
@@ -180,12 +191,26 @@ export function DataTable<T = any>({
     useExternalPagination,
     externalPage,
     externalTotal,
-    onColumnFilterChange,
-    columnFilters,
-    onDateRangeFilterChange,
-    dateRangeFilters
-
+    onColumnFilterChange: onColumnFilterChange || ((columnId, values) => {
+      // Client-side column filter handler
+      setInternalColumnFilters(prev => ({
+        ...prev,
+        [columnId]: values
+      }));
+    }),
+    columnFilters: effectiveColumnFilters,
+    onDateRangeFilterChange: onDateRangeFilterChange || ((columnId, startDate, endDate) => {
+      // Client-side date range filter handler
+      setInternalDateRangeFilters(prev => ({
+        ...prev,
+        [columnId]: { startDate, endDate }
+      }));
+    }),
+    dateRangeFilters: effectiveDateRangeFilters
   });
+
+  // Use all data when pagination is disabled, otherwise use paginated data
+  const displayData = disablePagination ? sortedData : paginatedData;
 
   // Filter Modal Hook
   const filterModalHook = useFilterModal({
@@ -319,7 +344,7 @@ export function DataTable<T = any>({
         </div>
       </div>
 
-      <div className={`overflow-auto ${maxHeight} mx-6 border rounded-sm`}>
+      <div className={`overflow-auto ${maxHeight} ${disablePagination?'mb-4':''} mx-6 border rounded-sm`}>
         <Table className="min-w-full">
           <TableHeader className="sticky top-0 z-10">
             <TableRow className="border-b border-gray-200 bg-[#004969] dark:border-gray-700 dark:bg-gray-800">
@@ -342,7 +367,7 @@ export function DataTable<T = any>({
                         className="ml-1 cursor-pointer hover:opacity-80"
                         onClick={(e) => handleFilterIconClick(column.id, e)}
                       >
-                        <IconColumnFilter size={20} color={columnFilters[column.id]?.length > 0 ? '#3B82F6' : '#FFFFFF'} />
+                        <IconColumnFilter size={20} color={effectiveColumnFilters[column.id]?.length > 0 ? '#3B82F6' : '#FFFFFF'} />
                       </span>
                     )}
                     {column.dateRangeFilter && (
@@ -355,7 +380,7 @@ export function DataTable<T = any>({
                       >
                         <IconCalendarFilter
                           size={20}
-                          color={(dateRangeFilters[column.id]?.startDate) ? '#3B82F6' : '#FFFFFF'}
+                          color={(effectiveDateRangeFilters[column.id]?.startDate) ? '#3B82F6' : '#FFFFFF'}
                         />
                       </span>
                     )}
@@ -375,12 +400,12 @@ export function DataTable<T = any>({
               <TableRow>
                 <TableCell colSpan={displayColumns.length + (actions ? 1 : 0) + (secondaryActions ? 1 : 0)} className="px-6 py-8 text-center text-gray-500">Loading...</TableCell>
               </TableRow>
-            ) : paginatedData.length === 0 ? (
+            ) : displayData.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={displayColumns.length + (actions ? 1 : 0) + (secondaryActions ? 1 : 0)} className="px-6 py-8 text-center text-gray-500">{emptyMessage}</TableCell>
               </TableRow>
             ) : (
-              paginatedData.map((row, index) => (
+              displayData.map((row, index) => (
                 <TableRow key={index} className="border-b border-gray-100 hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-800/50">
                   {displayColumns.map((column) => (
                     <TableCell
@@ -462,30 +487,32 @@ export function DataTable<T = any>({
         </Table>
       </div>
 
-      <div className="flex flex-col md:flex-row items-center justify-between  border-gray-200 px-6 py-4 dark:border-gray-800 gap-2">
-        <div className="flex items-center gap-2 text-sm dark:text-white">
-          <span>Menampilkan</span>
-          <select
-            value={rowsPerPage}
-            onChange={(e) => handleRowsPerPageChange(Number(e.target.value))}
-            className="rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-          >
-            {pageSizeOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-          <span>{paginationInfo}</span>
+      {!disablePagination && (
+        <div className="flex flex-col md:flex-row items-center justify-between  border-gray-200 px-6 py-4 dark:border-gray-800 gap-2">
+          <div className="flex items-center gap-2 text-sm dark:text-white">
+            <span>Menampilkan</span>
+            <select
+              value={rowsPerPage}
+              onChange={(e) => handleRowsPerPageChange(Number(e.target.value))}
+              className="rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+            >
+              {pageSizeOptions.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+            <span>{paginationInfo}</span>
+          </div>
+          <PaginationWithIcon
+            initialPage={page + 1}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          // showInfo={true}
+          // infoText={`${sortedData.length === 0 ? 0 : page * rowsPerPage + 1}-${Math.min((page + 1) * rowsPerPage, sortedData.length)} of ${sortedData.length}`}
+          />
         </div>
-        <PaginationWithIcon
-          initialPage={page + 1}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-        // showInfo={true}
-        // infoText={`${sortedData.length === 0 ? 0 : page * rowsPerPage + 1}-${Math.min((page + 1) * rowsPerPage, sortedData.length)} of ${sortedData.length}`}
-        />
-      </div>
+      )}
 
       <FilterModal
         isOpen={filterModalHook.isFilterModalOpen}
@@ -520,7 +547,7 @@ export function DataTable<T = any>({
           onClose={handleFilterPopupClose}
           options={columns.find((col) => col.id === activeFilterColumn)?.filterOptions || []}
           maxRows={columns.find((col) => col.id === activeFilterColumn)?.filterMaxRows}
-          selectedValues={columnFilters[activeFilterColumn] || []}
+          selectedValues={effectiveColumnFilters[activeFilterColumn] || []}
           onApply={(values) => handleColumnFilterApply(activeFilterColumn, values)}
           onReset={() => handleColumnFilterReset(activeFilterColumn)}
           anchorEl={filterAnchorEl}
@@ -532,8 +559,8 @@ export function DataTable<T = any>({
         <DateRangeFilterPopup
           isOpen={true}
           onClose={handleDateRangePopupClose}
-          startDate={dateRangeFilters[activeDateRangeColumn]?.startDate}
-          endDate={dateRangeFilters[activeDateRangeColumn]?.endDate}
+          startDate={effectiveDateRangeFilters[activeDateRangeColumn]?.startDate}
+          endDate={effectiveDateRangeFilters[activeDateRangeColumn]?.endDate}
           onApply={(startDate, endDate) => handleDateRangeFilterApply(activeDateRangeColumn, startDate, endDate)}
           onReset={() => handleDateRangeFilterReset(activeDateRangeColumn)}
           anchorEl={dateRangeAnchorEl}

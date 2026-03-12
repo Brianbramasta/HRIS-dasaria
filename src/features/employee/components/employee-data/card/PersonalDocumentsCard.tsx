@@ -1,79 +1,42 @@
 import { useState } from 'react';
 import ExpandCard from '@/features/structure-and-organize/components/card/ExpandCard';
 import DataTable from '@/components/shared/datatable/DataTable';
-import Button from '@/components/ui/button/Button';
-import { Edit2 } from 'react-feather';
 import { IconLengkap, IconPencil, IconTidakLengkap } from '@/icons/components/icons';
 import { IconFileDetail } from '@/icons/components/icons';
 import EditDocumentModal from '@/features/employee/components/modals/employee-data/personal-information/EditDocumentModal';
 import { ColumnFilterOption } from '@/components/shared/datatable/filter-column/ColumnFilterPopup';
+import { EmployeeDocumentItem } from '@/features/employee/types/detail/PersonalInformation';
 
-export default function PersonalDocumentsCard() {
+interface Props {
+  documents: EmployeeDocumentItem[];
+}
+
+export default function PersonalDocumentsCard({ documents }: Props) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState<any>(null);
   
-  const dummyData = [
-    {
-      id: 1,
-      tipeFile: 'Foto',
-      jenisFile: 'Foto Terbaru',
-      catatan: 'Foto berwarna background biru',
-      statusDokumen: 'sudah_upload',
-      fileUrl: '#'
-    },
-    {
-      id: 2,
-      tipeFile: 'Identitas',
-      jenisFile: 'Kartu Tanda Penduduk',
-      catatan: 'KTP masih berlaku',
-      statusDokumen: 'sudah_upload',
-      fileUrl: '#'
-    },
-    {
-      id: 3,
-      tipeFile: 'Pendidikan',
-      jenisFile: 'Ijazah Terakhir',
-      catatan: 'Ijazah S1',
-      statusDokumen: 'belum_upload',
-      fileUrl: '#'
-    },
-    {
-      id: 4,
-      tipeFile: 'Keluarga',
-      jenisFile: 'Kartu Keluarga',
-      catatan: 'KK terbaru',
-      statusDokumen: 'sudah_upload',
-      fileUrl: '#'
-    },
-    {
-      id: 5,
-      tipeFile: 'Asuransi',
-      jenisFile: 'BPJS Kesehatan',
-      catatan: 'BPJS Kesehatan aktif',
-      statusDokumen: 'belum_upload',
-      fileUrl: '#'
-    },
-    {
-      id: 6,
-      tipeFile: 'Asuransi',
-      jenisFile: 'BPJS Ketenagakerjaan',
-      catatan: 'BPJS Ketenagakerjaan aktif',
-      statusDokumen: 'sudah_upload',
-      fileUrl: '#'
-    }
-  ];
+  // Transform document data to match table structure
+  const tableData = documents.map((doc, index) => ({
+    id: doc.id,
+    tipeFile: doc.file_type,
+    jenisFile: doc.jenis_file,
+    catatan: doc.description,
+    statusDokumen: doc.status === 'Sudah Upload' ? 'sudah_upload' : 'belum_upload',
+    fileUrl: doc.file,
+    _index: index
+  }));
 
-  // Add index to data for numbering
-  const dataWithIndex = dummyData.map((item, index) => ({ ...item, _index: index }));
+  // Check if all documents are uploaded
+  const isComplete = documents.every(doc => doc.status === 'Sudah Upload');
 
   // Filter options for Jenis File column
-  const jenisFileFilterOptions: ColumnFilterOption[] = [
-    { label: 'Foto Terbaru', value: 'Foto Terbaru' },
-    { label: 'Kartu Tanda Penduduk', value: 'Kartu Tanda Penduduk' },
-    { label: 'Ijazah Terakhir', value: 'Ijazah Terakhir' },
-    { label: 'Kartu Keluarga', value: 'Kartu Keluarga' },
-    { label: 'BPJS Kesehatan', value: 'BPJS Kesehatan' },
-    { label: 'BPJS Ketenagakerjaan', value: 'BPJS Ketenagakerjaan' },
+  const jenisFileOptions: ColumnFilterOption[] = [
+    ...new Map(
+      documents.map(doc => [doc.jenis_file, { 
+        label: doc.jenis_file, 
+        value: doc.jenis_file 
+      }])
+    ).values()
   ];
 
   const handleEditDocument = (row: any) => {
@@ -107,29 +70,37 @@ export default function PersonalDocumentsCard() {
       );
     }
   };
-  const isComplete = false;
+
   return (
     <ExpandCard title="Berkas/Dokumen Pribadi" leftIcon={isComplete ? <IconLengkap /> : <IconTidakLengkap />}  withHeaderDivider>
       <div className="grid grid-cols-1 gap-4">
         <DataTable
-          data={dataWithIndex}
+          data={tableData}
+          maxHeight='max-w-full'
           columns={[
             { 
               id: 'no', 
               label: 'No.', 
               align: 'center', 
+              sortable: false,
               format: (_v: any, row: any) => row._index + 1 
             },
-            { id: 'tipeFile', label: 'Tipe File' },
+            { id: 'tipeFile', label: 'Tipe File', sortable: true },
             { 
               id: 'jenisFile', 
               label: 'Jenis File',
-              filterOptions: jenisFileFilterOptions
+              sortable: true,
+              filterOptions: jenisFileOptions
             },
-            { id: 'catatan', label: 'Catatan' },
+            { id: 'catatan', label: 'Catatan', sortable: true },
             { 
               id: 'statusDokumen', 
               label: 'Status Dokumen',
+              sortable: true,
+              filterOptions: [
+                { label: 'Sudah Upload', value: 'sudah_upload' },
+                { label: 'Belum Upload', value: 'belum_upload' }
+              ],
               format: (_v: any, row: any) => getStatusBadge(row.statusDokumen)
             },
           ]}
@@ -142,20 +113,24 @@ export default function PersonalDocumentsCard() {
             },
             {
               icon: <IconFileDetail />,
+              condition: (row: any) => row.statusDokumen === 'sudah_upload',
               onClick: (row: any) => {
                 console.log('View file:', row.jenisFile);
               },
             },
           ]}
-          filterable={true}
+          filterable={false}
+          searchable={true}
+          searchPlaceholder="Cari dokumen..."
           emptyMessage="Tidak ada data dokumen"
+          disablePagination={true}
         />
       </div>
-      <div className="mt-4 flex justify-end">
+      {/* <div className="mt-4 flex justify-end">
         <Button variant="primary" size="sm" className='w-full md:w-auto flex items-center justify-center'>
           <Edit2 size={16} className="mr-2" /> Edit
         </Button>
-      </div>
+      </div> */}
       <EditDocumentModal
         isOpen={isEditModalOpen}
         onClose={handleCloseModal}

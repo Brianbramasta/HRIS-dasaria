@@ -1,15 +1,8 @@
 import { create } from 'zustand';
 import { personalInformationService } from '@/features/employee/services/detail/PersonalInformationService';
+import { PersonalInformationData } from '@/features/employee/types/detail/PersonalInformation';
 
-interface PersonalInfoDetail {
-  Personal_Data: any;
-  Education_Data: any;
-  Social_Media_Data: any;
-  Employment_Position_Data: any;
-  Salary_Data: any;
-  BPJS_Data: any;
-  Document_Data: any;
-}
+interface PersonalInfoDetail extends PersonalInformationData {}
 
 interface DetailDataKaryawanPersonalInfoState {
   detail: PersonalInfoDetail | null;

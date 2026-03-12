@@ -1,4 +1,5 @@
 export interface PersonalDataResponse {
+  id: string;
   full_name: string;
   national_id: string | null;
   birth_place: string | null;
@@ -81,18 +82,26 @@ export interface EmploymentPositionResponse {
 
 export interface EmployeeDocumentItem {
   id: string;
-  employee_document_id: string;
-  file: string;
+  file_type_id: string;
+  jenis_file: string;
+  file_type: string;
+  description: string;
+  file: string | null;
+  status: string;
 }
 
 export interface PersonalInformationData {
-  personal: PersonalDataResponse;
-  education_formal: EducationFormalItem[];
-  education_non_formal: EducationNonFormalItem[];
-  social_media: SocialMediaDataResponse;
-  salary: SalaryDataResponse;
-  bpjs?: BpjsDataResponse;
-  documents?: EmployeeDocumentItem[];
+  Personal_Data: PersonalDataResponse;
+  Education_Data: {
+    employee_id: string;
+    formal_educations: EducationFormalItem[];
+    non_formal_educations: EducationNonFormalItem[];
+  };
+  Social_Media_Data: SocialMediaDataResponse[];
+  Employment_Position_Data: EmploymentPositionResponse;
+  Salary_Data: SalaryDataResponse;
+  BPJS_Data: BpjsDataResponse;
+  Document_Data: EmployeeDocumentItem[];
 }
 
 // ===================== Request Payload Types =====================

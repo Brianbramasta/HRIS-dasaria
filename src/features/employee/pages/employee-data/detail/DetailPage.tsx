@@ -50,11 +50,11 @@ export default function DetailKaryawanPage() {
               className="h-12 w-12 rounded-full"
             /> */}
             <span className="h-12 w-12 rounded-full">
-              {formatImage(detail?.Personal_Data?.avatar ?? 'https://api.dicebear.com/7.x/avataaars/svg?seed=${id}', detail?.Personal_Data?.full_name)}
+              {formatImage(detail?.Personal_Data?.avatar ?? null, detail?.Personal_Data?.full_name || 'User')}
             </span>
             <div className='text-center md:text-left'>
               <div className="text-base font-semibold">{detail?.Personal_Data?.full_name}</div>
-              <div className="text-sm text-gray-500">{detail?.Employment_Position_Data?.department_name} | {detail?.Employment_Position_Data?.user_access}</div>
+              <div className="text-sm text-gray-500">{detail?.Employment_Position_Data?.department_id}</div>
             </div>
           </div>
           <div className="flex items-center gap-2">

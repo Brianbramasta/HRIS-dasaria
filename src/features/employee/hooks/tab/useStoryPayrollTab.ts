@@ -79,11 +79,11 @@ export function useStoryPayrollTab(employeeId?: string, isEditable?: boolean) {
 
     const salary = detail?.Salary_Data;
     return {
-      bank: salary?.bank_name ?? '',
+      bank: salary?.bank_id ?? '',
       namaAkunBank: salary?.bank_account_holder ?? '',
       noRekening: salary?.bank_account_number ?? '',
       npwp: salary?.npwp ?? '',
-      ptkpStatus: salary?.ptkp_category ?? salary?.ptkp_code ?? '',
+      ptkpStatus: salary?.ptkp_id ?? '',
       gajiBersih: 0,
     };
   }, [employeeSalaryShow, detail]);

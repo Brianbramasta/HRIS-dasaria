@@ -89,7 +89,7 @@ export interface MappedPersonalInformation {
   personal: MappedPersonalData;
   educationFormal: MappedEducationFormal[];
   educationNonFormal: MappedEducationNonFormal[];
-  socialMedia: MappedSocialMedia;
+  socialMedia: MappedSocialMedia[];
   salary: MappedSalary;
   bpjs: MappedBpjs;
 }
@@ -215,12 +215,12 @@ const mapBpjs = (data: BpjsDataResponse): MappedBpjs => {
  */
 const mapPersonalInformation = (data: PersonalInformationData): MappedPersonalInformation => {
   return {
-    personal: mapPersonalData(data.personal),
-    educationFormal: data.education_formal.map(mapEducationFormal),
-    educationNonFormal: data.education_non_formal.map(mapEducationNonFormal),
-    socialMedia: mapSocialMedia(data.social_media),
-    salary: mapSalary(data.salary),
-    bpjs: data.bpjs ? mapBpjs(data.bpjs) : {
+    personal: mapPersonalData(data.Personal_Data),
+    educationFormal: data.Education_Data.formal_educations.map(mapEducationFormal),
+    educationNonFormal: data.Education_Data.non_formal_educations.map(mapEducationNonFormal),
+    socialMedia: data.Social_Media_Data.map(mapSocialMedia),
+    salary: mapSalary(data.Salary_Data),
+    bpjs: data.BPJS_Data ? mapBpjs(data.BPJS_Data) : {
       bpjsEmploymentNumber: null,
       bpjsEmploymentStatus: null,
       bpjsHealthNumber: null,

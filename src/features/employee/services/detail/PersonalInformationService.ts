@@ -9,21 +9,23 @@ import {
   BpjsDataResponse,
   EmploymentPositionResponse,
   EmployeeDocumentItem,
+  PersonalInformationData,
 } from '@/features/employee/types/detail/PersonalInformation';
 // ===================== Response Types =====================
 
 
 
 class PersonalInformationService {
-  private readonly basePath = 'employee-master-data/employees';
+  private readonly basePath = 'employee-master-data/employees/personal-informations';
 
   /**
    * Get Data Informasi Pribadi - Mengambil semua data pribadi karyawan
    * @param employeeId - ID karyawan
    * @returns Promise dengan data personal, pendidikan, media sosial, dan gaji
    */
-  async getPersonalInformationData(employeeId: string): Promise<ApiResponse<any>> {
-    return apiService.get<any>(`${this.basePath}/${employeeId}/data-personal`);
+  async getPersonalInformationData(employeeId: string): Promise<ApiResponse<PersonalInformationData>> {
+    return apiService.get<PersonalInformationData>(`${this.basePath}/${employeeId}/show`);
+    // api/employee-master-data/employees/personal-informations/:employeId/show
   }
 
   /**

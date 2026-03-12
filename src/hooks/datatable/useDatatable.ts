@@ -36,11 +36,14 @@ export function useDatatable<T = any>({
   externalPage,
   externalTotal,
   onColumnFilterChange,
+  columnFilters = {},
   onDateRangeFilterChange,
+  dateRangeFilters = {},
 }: UseDatatableProps<T>) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(pageSize);
   const [searchTerm, setSearchTerm] = useState('');
+  const [appliedSearchTerm, setAppliedSearchTerm] = useState('');
   const [orderBy, setOrderBy] = useState<string>('');
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [visibleColumns, setVisibleColumns] = useState<string[]>(() =>
@@ -91,22 +94,60 @@ export function useDatatable<T = any>({
     //console.log('handleSort',columnId, newOrder);
   };
 
-  // Filter data based on search term
+  // Filter data based on search term and column filters
   const filteredData = useMemo(() => {
-    return data
-    // if (!searchTerm) return data;
-    // return data.filter((row) =>
-    //   columns.some((column) => {
-    //     if (!visibleColumns.includes(column.id)) return false;
-    //     const value = row[column.id as keyof T];
-    //     if (value === null || value === undefined) return false;
-    //     return value.toString().toLowerCase().includes(searchTerm.toLowerCase());
-    //   })
-    // );
-  }, [data]);
+    let result = data;
+    
+    // Apply search filter (client-side only when no external search handler)
+    if (appliedSearchTerm && !onSearchChange) {
+      result = result.filter((row) =>
+        columns.some((column) => {
+          if (!visibleColumns.includes(column.id)) return false;
+          const value = row[column.id as keyof T];
+          if (value === null || value === undefined) return false;
+          return value.toString().toLowerCase().includes(appliedSearchTerm.toLowerCase());
+        })
+      );
+    }
+    
+    // Apply column filters (client-side)
+    if (Object.keys(columnFilters).length > 0) {
+      Object.entries(columnFilters).forEach(([columnId, selectedValues]) => {
+        if (selectedValues.length > 0) {
+          result = result.filter((row) => {
+            const value = row[columnId as keyof T];
+            if (value === null || value === undefined) return false;
+            return selectedValues.includes(value.toString());
+          });
+        }
+      });
+    }
+    
+    // Apply date range filters (client-side)
+    if (Object.keys(dateRangeFilters).length > 0) {
+      Object.entries(dateRangeFilters).forEach(([columnId, dateRange]) => {
+        if (dateRange.startDate) {
+          result = result.filter((row) => {
+            const value = row[columnId as keyof T];
+            if (!value) return false;
+            const rowDate = new Date(value as string);
+            const startDate = new Date(dateRange.startDate);
+            const endDate = dateRange.endDate ? new Date(dateRange.endDate) : new Date();
+            
+            return rowDate >= startDate && rowDate <= endDate;
+          });
+        }
+      });
+    }
+    
+    return result;
+  }, [data, appliedSearchTerm, columns, visibleColumns, onSearchChange, columnFilters, onColumnFilterChange, dateRangeFilters, onDateRangeFilterChange]);
 
   // Sort filtered data
   const sortedData = useMemo(() => {
+    // If there's an external sort handler, don't sort client-side
+    if (onSortChange) return filteredData;
+    
     if (!orderBy) return filteredData;
     return [...filteredData].sort((a, b) => {
       const aValue = a[orderBy as keyof T] as any;
@@ -118,7 +159,7 @@ export function useDatatable<T = any>({
       }
       return order === 'asc' ? (aValue > bValue ? 1 : -1) : (aValue < bValue ? 1 : -1);
     });
-  }, [filteredData, orderBy, order]);
+  }, [filteredData, orderBy, order, onSortChange]);
 
   // Paginate sorted data
   const paginatedData = useMemo(() => {
@@ -150,6 +191,8 @@ export function useDatatable<T = any>({
 
   // Handle search submit (Enter key)
   const handleSearchSubmit = () => {
+    setAppliedSearchTerm(searchTerm);
+    setPage(0);
     onSearchChange?.(searchTerm);
   };
 
@@ -244,6 +287,7 @@ export function useDatatable<T = any>({
     page,
     rowsPerPage,
     searchTerm,
+    appliedSearchTerm,
     orderBy,
     order,
     visibleColumns,
