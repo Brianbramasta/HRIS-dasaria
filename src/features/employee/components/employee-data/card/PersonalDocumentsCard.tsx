@@ -6,18 +6,23 @@ import { IconFileDetail } from '@/icons/components/icons';
 import EditDocumentModal from '@/features/employee/components/modals/employee-data/personal-information/EditDocumentModal';
 import { ColumnFilterOption } from '@/components/shared/datatable/filter-column/ColumnFilterPopup';
 import { EmployeeDocumentItem } from '@/features/employee/types/detail/PersonalInformation';
+import { usePersonalInformation } from '@/features/employee/hooks/employee-data/detail/contract/usePersonalInformation';
 
 interface Props {
   documents: EmployeeDocumentItem[];
+  employeeId: string;
 }
 
-export default function PersonalDocumentsCard({ documents }: Props) {
+export default function PersonalDocumentsCard({ documents, employeeId }: Props) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState<any>(null);
   
+  // Initialize personal information hook
+  const { getTemporaryUrl, uploadEmployeeDocument, loading } = usePersonalInformation(employeeId);
+  
   // Transform document data to match table structure
   const tableData = documents.map((doc, index) => ({
-    id: doc.id,
+    id: doc.file_type_id,
     tipeFile: doc.file_type,
     jenisFile: doc.jenis_file,
     catatan: doc.description,
@@ -40,7 +45,21 @@ export default function PersonalDocumentsCard({ documents }: Props) {
   ];
 
   const handleEditDocument = (row: any) => {
-    setSelectedDocument(row);
+    // Find the original document data from the documents array using file_type_id
+    const originalDocument = documents.find(doc => doc.file_type_id === row.id);
+    console.log(originalDocument?.file_type_id,'originalDocument?.file_type_id')
+    console.log(documents)
+    console.log(row.id,'row.id')
+    // Set selected document with proper field mapping for the modal
+    setSelectedDocument({
+      id: originalDocument?.file_type_id,
+      jenisFile: originalDocument?.jenis_file || row.jenisFile,
+      tipeFile: originalDocument?.file_type || row.tipeFile,
+      catatan: originalDocument?.description || row.catatan,
+      fileUrl: originalDocument?.file || row.fileUrl,
+      file_type_id: originalDocument?.file_type_id,
+      statusDokumen: row.statusDokumen
+    });
     setIsEditModalOpen(true);
   };
 
@@ -49,10 +68,48 @@ export default function PersonalDocumentsCard({ documents }: Props) {
     setSelectedDocument(null);
   };
 
-  const handleSubmitDocument = (data: any) => {
+  const handleSubmitDocument = async (data: any) => {
     console.log('Submitting document data:', data);
-    // Here you would typically update the data
-    handleCloseModal();
+    
+    try {
+      if (data.document && data.file_type_id) {
+        // Upload new document
+        const uploadResult = await uploadEmployeeDocument(employeeId, {
+          file_type_id: data.file_type_id,
+          document: data.document
+        });
+        
+        if (uploadResult) {
+          console.log('Document uploaded successfully:', uploadResult);
+          handleCloseModal();
+        } else {
+          console.error('Failed to upload document');
+        }
+      } else {
+        console.error('Missing required data for upload');
+      }
+    } catch (error) {
+      console.error('Error submitting document:', error);
+    }
+  };
+
+  const handleViewFile = async (row: any) => {
+    if (!row.fileUrl) {
+      console.error('No file URL available');
+      return;
+    }
+
+    try {
+      const temporaryUrlData = await getTemporaryUrl(row.fileUrl);
+      if (temporaryUrlData && temporaryUrlData.temporary_url) {
+        // Open the document in a new tab
+        window.open(temporaryUrlData.temporary_url, '_blank');
+      } else {
+        console.error('Failed to get temporary URL');
+      }
+    } catch (error) {
+      console.error('Error viewing file:', error);
+    }
   };
 
   const getStatusBadge = (status: string) => {
@@ -117,7 +174,7 @@ export default function PersonalDocumentsCard({ documents }: Props) {
               icon: <IconFileDetail />,
               condition: (row: any) => row.statusDokumen === 'sudah_upload',
               onClick: (row: any) => {
-                console.log('View file:', row.jenisFile);
+                handleViewFile(row);
               },
             },
           ]}
@@ -138,7 +195,7 @@ export default function PersonalDocumentsCard({ documents }: Props) {
         onClose={handleCloseModal}
         initialData={selectedDocument}
         onSubmit={handleSubmitDocument}
-        submitting={false}
+        submitting={loading}
       />
     </ExpandCard>
   );

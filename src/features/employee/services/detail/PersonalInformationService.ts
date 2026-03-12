@@ -160,6 +160,20 @@ class PersonalInformationService {
       }
     );
   }
+
+  /**
+   * Get Temporary URL - Mendapatkan URL sementara untuk akses dokumen
+   * @param path - Path file yang akan diakses
+   * @returns Promise dengan temporary URL
+   */
+  async getTemporaryUrl(
+    path: string
+  ): Promise<ApiResponse<{ temporary_url: string; expires_at: string }>> {
+    return apiService.post<{ temporary_url: string; expires_at: string }>(
+      'temporaries/url',
+      { path }
+    );
+  }
 }
 
 export const personalInformationService = new PersonalInformationService();

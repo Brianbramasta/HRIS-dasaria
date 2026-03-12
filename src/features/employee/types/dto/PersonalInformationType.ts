@@ -63,3 +63,38 @@ export interface PersonalInformationFullData {
   BPJS_Data?: any;
   Document_Data?: any;
 }
+
+// ===================== Upload Document Types =====================
+
+export interface GetTemporaryUrlRequest {
+  path: string;
+}
+
+export interface GetTemporaryUrlResponse {
+  temporary_url: string;
+  expires_at: string;
+}
+
+export interface UpdateEmployeeDocumentRequest {
+  file_type_id: string;
+  document: File;
+}
+
+export interface UpdateEmployeeDocumentResponse {
+  employee_id: string;
+  document_id: string;
+  file_type_id: string;
+  file_name: string;
+  file_path: string;
+  uploaded_at: string;
+}
+
+export interface DocumentUploadError {
+  errorCode: string;
+  message: string;
+  details?: {
+    allowed_types?: string[];
+    max_size?: string;
+    actual_size?: string;
+  };
+}

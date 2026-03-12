@@ -17,6 +17,11 @@ import {
   UpdateEmploymentPositionPayload,
   UpdateEmployeeDocumentPayload,
 } from '@/features/employee/types/detail/PersonalInformation';
+import {
+  GetTemporaryUrlResponse,
+  UpdateEmployeeDocumentRequest,
+  UpdateEmployeeDocumentResponse,
+} from '@/features/employee/types/dto/PersonalInformationType';
 import {personalInformationService} from '@/features/employee/services/detail/PersonalInformationService';
 
 // ===================== Mapped Types =====================
@@ -111,6 +116,8 @@ export interface UsePersonalInformationActions {
   updateBpjsData: (employeeId: string, payload: UpdateBpjsDataPayload) => Promise<void>;
   updateEmploymentPosition: (employeeId: string, payload: UpdateEmploymentPositionPayload) => Promise<void>;
   updateEmployeeDocument: (employeeId: string, payload: UpdateEmployeeDocumentPayload) => Promise<void>;
+  getTemporaryUrl: (path: string) => Promise<GetTemporaryUrlResponse | null>;
+  uploadEmployeeDocument: (employeeId: string, payload: UpdateEmployeeDocumentRequest) => Promise<UpdateEmployeeDocumentResponse | null>;
   resetError: () => void;
 }
 
@@ -902,6 +909,95 @@ const mapSocialMediaModalToPayload = useCallback(
     [employeeId, refetchDetail]
   );
 
+  /**
+   * Get Temporary URL - Mendapatkan URL sementara untuk akses dokumen
+   */
+  const getTemporaryUrl = useCallback(
+    async (path: string): Promise<GetTemporaryUrlResponse | null> => {
+      if (!path) {
+        setError('Document path is required');
+        return null;
+      }
+
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await personalInformationService.getTemporaryUrl(path);
+
+        if (response.meta.status == 200 && response.data) {
+          return response.data;
+        } else {
+          setError(response.meta?.message || 'Failed to get temporary URL');
+          return null;
+        }
+      } catch (err: any) {
+        const errorMessage = err?.message || 'An error occurred while getting temporary URL';
+        setError(errorMessage);
+        console.error('getTemporaryUrl error:', err);
+        return null;
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
+
+  /**
+   * Upload Employee Document - Upload dokumen karyawan dengan file type ID
+   */
+  const uploadEmployeeDocument = useCallback(
+    async (id: string = employeeId!, payload: UpdateEmployeeDocumentRequest): Promise<UpdateEmployeeDocumentResponse | null> => {
+      if (!id) {
+        setError('Employee ID is required');
+        return null;
+      }
+
+      if (!payload.file_type_id || !payload.document) {
+        setError('File type ID and document are required');
+        return null;
+      }
+
+      setLoading(true);
+      setError(null);
+
+      try {
+        const formData = new FormData();
+        formData.append('_method', 'PATCH');
+        formData.append('file_type_id', payload.file_type_id);
+        formData.append('document', payload.document);
+
+        const response = await personalInformationService.updateEmployeeDocument(id, formData);
+
+        if (response.meta.status == 200 && response.data && response.data.length > 0) {
+          const uploadedDoc = response.data[0];
+          const mappedResponse: UpdateEmployeeDocumentResponse = {
+            employee_id: id,
+            document_id: uploadedDoc.id || '',
+            file_type_id: payload.file_type_id,
+            file_name: payload.document.name,
+            file_path: uploadedDoc.file || '',
+            uploaded_at: new Date().toISOString(),
+          };
+          
+          refetchDetail(id);
+          return mappedResponse;
+        } else {
+          setError(response.meta?.message || 'Failed to upload employee document');
+          return null;
+        }
+      } catch (err: any) {
+        const errorMessage = err?.message || 'An error occurred while uploading employee document';
+        setError(errorMessage);
+        console.error('uploadEmployeeDocument error:', err);
+        return null;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [employeeId, refetchDetail]
+  );
+
   return {
     data,
     loading,
@@ -914,6 +1010,8 @@ const mapSocialMediaModalToPayload = useCallback(
     updateBpjsData,
     updateEmploymentPosition,
     updateEmployeeDocument,
+    getTemporaryUrl,
+    uploadEmployeeDocument,
     resetError: () => setError(null),
   };
 };

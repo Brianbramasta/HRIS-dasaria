@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import InputField from '@/components/shared/field/InputField';
 import TextAreaField from '@/components/shared/field/TextAreaField';
 import FileInput from '@/components/shared/form/FileInput';
+import { setSkFile } from '@/stores/fileStore';
 
 interface EditDocumentModalProps {
   isOpen: boolean;
@@ -32,6 +33,32 @@ export default function EditDocumentModal({
     file: null as File | null
   });
 
+  // Update form data when initialData changes
+  useEffect(() => {
+    if (initialData) {
+      setFormData({
+        jenisFile: initialData.jenisFile || '',
+        tipeFile: initialData.tipeFile || '',
+        catatan: initialData.catatan || '',
+        file: null as File | null
+      });
+    }
+  }, [initialData]);
+
+  // Reset form data when modal is closed
+  useEffect(() => {
+    if (!isOpen) {
+      setFormData({
+        jenisFile: '',
+        tipeFile: '',
+        catatan: '',
+        file: null as File | null
+      });
+      // Clear the file store to remove file preview
+      setSkFile(undefined);
+    }
+  }, [isOpen]);
+
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
       ...prev,
@@ -50,7 +77,8 @@ export default function EditDocumentModal({
   const handleSubmit = () => {
     onSubmit({
       ...formData,
-      id: initialData?.id
+      file_type_id: initialData?.id,
+      document: formData.file
     });
   };
 
