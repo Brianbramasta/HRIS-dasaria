@@ -1,5 +1,5 @@
 import DataTable, { DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
-import { IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
+import { IconPencil as Edit } from '@/icons/components/icons';
 import { useOffices } from '../../Index';
 import type { OfficeRow } from '../../types/OrganizationTableTypes';
 import AddOfficeModal from '../../components/modals/office/AddOfficeModal';
@@ -37,7 +37,6 @@ export default function OfficesTab({ resetKey }: Props) {
     selected,
     handleAddOpen,
     handleEditOpen,
-    handleDeleteOpen,
     handleClose,
     handleSuccess,
   } = useOffices() as any;

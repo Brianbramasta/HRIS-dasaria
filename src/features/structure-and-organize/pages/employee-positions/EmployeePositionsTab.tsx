@@ -1,7 +1,7 @@
 // Penyesuaian besar: halaman Posisi Pegawai kompatibel dengan pagination eksternal DataTable
 import DataTable, { DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
 // import { Edit, Trash } from 'react-feather';
-import { IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
+import { IconPencil as Edit } from '@/icons/components/icons';
 import { useEmployeePositions } from '../../Index';
 import { EmployeePositionRow } from '../../types/OrganizationTableTypes';
 import AddEmployeePositionModal from '../../components/modals/employee-position/AddEmployeePositionModal';
@@ -43,7 +43,6 @@ export default function EmployeePositionsTab({ resetKey }: Props) {
     selected,
     handleAddOpen,
     handleEditOpen,
-    handleDeleteOpen,
     handleClose,
     handleSuccess,
   } = useEmployeePositions() as any;

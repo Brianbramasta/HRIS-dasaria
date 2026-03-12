@@ -1,5 +1,5 @@
 import DataTable, { DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
-import { IconPencil as Edit, IconHapus as Trash, FileText } from '@/icons/components/icons';
+import { IconPencil as Edit, FileText } from '@/icons/components/icons';
 import { useDepartments } from '../../Index';
 import type { DepartmentRow } from '../../types/OrganizationTableTypes';
 import AddDepartmentModal from '../../components/modals/department/AddDepartmentModal';
@@ -36,7 +36,6 @@ export default function DepartmentsTab({ resetKey }: Props) {
     selected,
     handleAddOpen,
     handleEditOpen,
-    handleDeleteOpen,
     handleClose,
     handleSuccess,
   } = useDepartments() as any;

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import DataTable, { DataTableColumn } from '../../../../components/shared/datatable/DataTable';
-import { IconPencil as Edit, IconHapus as Trash, FileText } from '@/icons/components/icons';
+import { IconPencil as Edit, FileText } from '@/icons/components/icons';
 import { useUnits, type UnitRow } from '../../hooks/useUnits';
 import AddUnitModal from '../../components/modals/unit/AddUnitModal';
 import EditUnitModal from '../../components/modals/unit/EditUnitModal';

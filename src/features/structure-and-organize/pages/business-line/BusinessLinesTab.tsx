@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import DataTable, { DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
-import { IconPencil as Edit, IconHapus as Trash, FileText } from '@/icons/components/icons';
+import { IconPencil as Edit, FileText } from '@/icons/components/icons';
 import { useBusinessLines } from '../../Index';
 import AddBusinessLineModal from '../../components/modals/business-line/AddBusinessLineModal';
 import EditBusinessLineModal from '../../components/modals/business-line/EditBusinessLineModal';
@@ -40,7 +40,6 @@ export default function BusinessLinesTab({ resetKey }: Props) {
     selected,
     handleAddOpen,
     handleEditOpen,
-    handleDeleteOpen,
     handleClose,
     handleSuccess,
   } = useBusinessLines() as any; // Cast to any to avoid type issues if return type is not fully inferred yet, though strictly it should be typed. useDepartments used 'as any'.

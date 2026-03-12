@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useApiCompanies } from '../api/useApiCompanies';
 import { useFileStore } from '@/stores/fileStore';
 import { CompanyListItem } from '../../types/OrganizationApiTypes';
 import { CompanyRow } from '../../types/OrganizationTableTypes';
 import { DataTableAction } from '@/components/shared/datatable/DataTable';
-import { IconHapus as Trash } from '@/icons/components/icons';
 
 export const useCompanies = () => {
   const api = useApiCompanies();

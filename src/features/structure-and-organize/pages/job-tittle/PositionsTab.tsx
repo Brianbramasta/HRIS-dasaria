@@ -1,5 +1,5 @@
 import DataTable, { DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
-import { IconPencil as Edit, IconHapus as Trash, FileText } from '@/icons/components/icons';
+import { IconPencil as Edit, FileText } from '@/icons/components/icons';
 import { usePositions } from '../../Index';
 import type { PositionRow } from '../../types/OrganizationTableTypes';
 import { AddPositionModal } from '../../components/modals/job-title/AddPositionModal';
@@ -38,7 +38,6 @@ export default function PositionsTab({ resetKey }: Props) {
     selected,
     handleAddOpen,
     handleEditOpen,
-    handleDeleteOpen,
     handleClose,
     handleSuccess,
   } = usePositions();

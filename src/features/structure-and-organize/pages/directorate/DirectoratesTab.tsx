@@ -1,5 +1,5 @@
 import DataTable, { DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
-import { IconPencil as Edit, IconHapus as Trash } from '@/icons/components/icons';
+import { IconPencil as Edit } from '@/icons/components/icons';
 import { useDirectorates } from '../../Index';
 import type { DirectorateRow } from '../../types/OrganizationTableTypes';
 import AddDirectorateModal from '../../components/modals/directorate/AddDirectorateModal';
@@ -35,7 +35,6 @@ export default function DirectoratesTab({ resetKey }: Props) {
     selected,
     handleAddOpen,
     handleEditOpen,
-    handleDeleteOpen,
     handleClose,
     handleSuccess
   } = useDirectorates();

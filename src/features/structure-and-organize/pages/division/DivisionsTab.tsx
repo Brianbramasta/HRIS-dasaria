@@ -1,5 +1,5 @@
 import DataTable, { DataTableColumn, DataTableAction } from '../../../../components/shared/datatable/DataTable';
-import { IconPencil as Edit, IconHapus as Trash, FileText } from '@/icons/components/icons';
+import { IconPencil as Edit, FileText } from '@/icons/components/icons';
 import { useDivisions } from '../../Index';
 import type { DivisionRow } from '../../types/OrganizationTableTypes';
 import AddDivisionModal from '../../components/modals/division/AddDivisionModal';
@@ -37,7 +37,6 @@ export default function DivisionsTab({ resetKey }: Props) {
     selected,
     handleAddOpen,
     handleEditOpen,
-    handleDeleteOpen,
     handleClose,
     handleSuccess,
   } = useDivisions() as any;
