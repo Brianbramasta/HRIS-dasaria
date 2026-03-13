@@ -53,9 +53,9 @@ export default function ContractTab({
     setDetailData,
     setSelectedFile,
     handleAdd,
-    handleViewDetail,
+    // handleViewDetail,
     handleAddSubmit,
-    handleEditRow,
+    // handleEditRow,
     // handleEditSubmit,
     // contractData,
     isSubmitting,
@@ -63,8 +63,8 @@ export default function ContractTab({
 
   const { columns, actions } = useContractTabConfig({
     rows,
-    handleViewDetail,
-    handleEditRow,
+    // handleViewDetail,
+    // handleEditRow,
   });
   const showAddButton = rows.length === 0;
 

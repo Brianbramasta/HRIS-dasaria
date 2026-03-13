@@ -1,17 +1,19 @@
 import { useMemo } from 'react';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 import type { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
-import { IconPencil, IconFileDetail } from '@/icons/components/icons';
+import { IconFileDetail } from '@/icons/components/icons';
+// import { IconPencil, IconFileDetail } from '@/icons/components/icons';
 import type { ContractHistoryItem } from '@/features/employee/types/dto/ContractType';
 import { handleViewFile } from "@/utils/viewFileHandle";
 
 interface Params {
   rows: ContractHistoryItem[];
-  handleViewDetail: (row: ContractHistoryItem) => void;
-  handleEditRow: (row: ContractHistoryItem) => void;
+  // handleViewDetail: (row: ContractHistoryItem) => void;
+  // handleEditRow: (row: ContractHistoryItem) => void;
 }
 
-export function useContractTabConfig({ rows, handleViewDetail, handleEditRow }: Params) {
+// export function useContractTabConfig({ rows, handleViewDetail, handleEditRow }: Params) {
+export function useContractTabConfig({ rows }: Params) {
   const columns: DataTableColumn<ContractHistoryItem>[] = useMemo(
     () => [
       { id: 'no', label: 'No.', align: 'center', format: (_v, row) => rows.findIndex((r) => r.id === row.id) + 1, sortable: false },
@@ -43,7 +45,7 @@ export function useContractTabConfig({ rows, handleViewDetail, handleEditRow }: 
       // },
     ],
     // [handleViewDetail, handleEditRow],
-    [handleViewDetail],
+    [],
   );
 
   return { columns, actions };
