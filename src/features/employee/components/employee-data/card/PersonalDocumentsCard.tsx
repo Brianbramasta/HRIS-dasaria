@@ -78,9 +78,11 @@ export default function PersonalDocumentsCard({ documents, employeeId }: Props) 
           file_type_id: data.file_type_id,
           document: data.document
         });
+        console.log(uploadResult,'uploadResult')
         
         if (uploadResult) {
           console.log('Document uploaded successfully:', uploadResult);
+          // Modal will be closed and data will be refetched automatically
           handleCloseModal();
         } else {
           console.error('Failed to upload document');

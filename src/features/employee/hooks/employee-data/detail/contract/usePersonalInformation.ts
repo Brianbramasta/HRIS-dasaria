@@ -968,12 +968,17 @@ const mapSocialMediaModalToPayload = useCallback(
         formData.append('document', payload.document);
 
         const response = await personalInformationService.updateEmployeeDocument(id, formData);
+        
+        console.log('API Response:', response);
+        console.log('Response meta status:', response.meta.status);
+        console.log('Response data:', response.data);
+        console.log('Response data length:', response.data?.length);
 
-        if (response.meta.status == 200 && response.data && response.data.length > 0) {
-          const uploadedDoc = response.data[0];
+        if (response.meta.status == 200 && response.data) {
+          const uploadedDoc = response.data;
           const mappedResponse: UpdateEmployeeDocumentResponse = {
             employee_id: id,
-            document_id: uploadedDoc.id || '',
+            document_id: uploadedDoc.employee_document_id || '',
             file_type_id: payload.file_type_id,
             file_name: payload.document.name,
             file_path: uploadedDoc.file || '',

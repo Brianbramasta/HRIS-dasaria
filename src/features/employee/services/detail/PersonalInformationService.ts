@@ -8,7 +8,6 @@ import {
   SalaryDataResponse,
   BpjsDataResponse,
   EmploymentPositionResponse,
-  EmployeeDocumentItem,
   PersonalInformationData,
 } from '@/features/employee/types/detail/PersonalInformation';
 // ===================== Response Types =====================
@@ -151,8 +150,8 @@ class PersonalInformationService {
   async updateEmployeeDocument(
     employeeId: string,
     payload: FormData
-  ): Promise<ApiResponse<EmployeeDocumentItem[]>> {
-    return apiService.post<EmployeeDocumentItem[]>(
+  ): Promise<ApiResponse<any>> {
+    return apiService.post<any>(
       `${this.basePath}/${employeeId}/update-employee-document`,
       payload,
       {
