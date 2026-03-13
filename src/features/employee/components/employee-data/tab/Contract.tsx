@@ -85,6 +85,7 @@ export default function ContractTab({ employeeId: employeeIdProp, data }: Props)
       {/* History Table */}
       <div className="mt-6">
         <DataTable<ContractHistoryItem>
+          resetKey='riwayat-kontrak'
           title="Riwayat Kontrak"
           data={rows}
           columns={columns}

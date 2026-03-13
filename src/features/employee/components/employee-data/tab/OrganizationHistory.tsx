@@ -23,6 +23,7 @@ export default function OrganizationHistoryTab({employeeId,  isEditable }: Props
 
   return (
       <DataTable<OrgHistoryRow>
+        resetKey='riwayat-organisasi'
         title="Riwayat Organisasi"
         data={rows}
         columns={columns}

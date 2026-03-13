@@ -7,6 +7,7 @@ import EditDocumentModal from '@/features/employee/components/modals/employee-da
 import { ColumnFilterOption } from '@/components/shared/datatable/filter-column/ColumnFilterPopup';
 import { EmployeeDocumentItem } from '@/features/employee/types/detail/PersonalInformation';
 import { usePersonalInformation } from '@/features/employee/hooks/employee-data/detail/contract/usePersonalInformation';
+import { handleViewFile } from '@/utils/viewFileHandle';
 
 interface Props {
   documents: EmployeeDocumentItem[];
@@ -18,7 +19,7 @@ export default function PersonalDocumentsCard({ documents, employeeId }: Props) 
   const [selectedDocument, setSelectedDocument] = useState<any>(null);
   
   // Initialize personal information hook
-  const { getTemporaryUrl, uploadEmployeeDocument, loading } = usePersonalInformation(employeeId);
+  const {uploadEmployeeDocument, loading } = usePersonalInformation(employeeId);
   
   // Transform document data to match table structure
   const tableData = documents.map((doc, index) => ({
@@ -95,24 +96,7 @@ export default function PersonalDocumentsCard({ documents, employeeId }: Props) 
     }
   };
 
-  const handleViewFile = async (row: any) => {
-    if (!row.fileUrl) {
-      console.error('No file URL available');
-      return;
-    }
-
-    try {
-      const temporaryUrlData = await getTemporaryUrl(row.fileUrl);
-      if (temporaryUrlData && temporaryUrlData.temporary_url) {
-        // Open the document in a new tab
-        window.open(temporaryUrlData.temporary_url, '_blank');
-      } else {
-        console.error('Failed to get temporary URL');
-      }
-    } catch (error) {
-      console.error('Error viewing file:', error);
-    }
-  };
+ 
 
   const getStatusBadge = (status: string) => {
     if (status === 'sudah_upload') {

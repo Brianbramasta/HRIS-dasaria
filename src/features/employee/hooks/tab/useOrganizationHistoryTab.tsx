@@ -4,6 +4,7 @@ import type { DataTableColumn, DataTableAction } from '@/components/shared/datat
 import { IconFileDetail } from '@/icons/components/icons';
 import { useOrganizationHistory, type OrgHistoryRow } from '@/features/employee/hooks/employee-data/detail/contract/useOrganizationHistory';
 import { formatUrlFile } from '@/utils/formatUrlFile';
+import handleViewFile from '@/utils/viewFileHandle';
 
 export function useOrganizationHistoryTab(employeeId?: string) {
   const { rows } = useOrganizationHistory(employeeId);
@@ -34,19 +35,31 @@ export function useOrganizationHistoryTab(employeeId?: string) {
       { id: 'kategoriKaryawanLama', label: 'Kategori Karyawan Lama' },
       { id: 'kategoriKaryawanBaru', label: 'Kategori Karyawan Baru' },
       { id: 'alasanPerubahan', label: 'Alasan Perubahan' },
+      { 
+        id: 'detailSK', 
+        label: 'Detail SK', 
+        sortable: false, 
+        format: (v) => v!=null?<span onClick={() => handleViewFile(v)} className="cursor-pointer flex items-center justify-center"><IconFileDetail /></span> : null 
+      },
+      { 
+        id: 'detailAdendum', 
+        label: 'Detail Adendum', 
+        sortable: false, 
+        format: (v) => v!=null?<span onClick={() => handleViewFile(v)} className="cursor-pointer flex items-center justify-center"><IconFileDetail /></span> : null 
+      },
     ],
     [rows],
   );
 
   const actions: DataTableAction<OrgHistoryRow>[] = [
-    {
-      variant: 'outline',
-      icon: <IconFileDetail />,
-      condition: (row) => Boolean((row as any)?.decree_file),
-      onClick: (row) => {
-        window.open(formatUrlFile((row as any)?.decree_file) || '', '_blank');
-      },
-    },
+    // {
+    //   variant: 'outline',
+    //   icon: <IconFileDetail />,
+    //   condition: (row) => Boolean((row as any)?.decree_file),
+    //   onClick: (row) => {
+    //     window.open(formatUrlFile((row as any)?.decree_file) || '', '_blank');
+    //   },
+    // },
   ];
 
   return { rows, columns, actions };

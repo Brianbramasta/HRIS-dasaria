@@ -77,6 +77,7 @@ export default function StoryPayrollTab({ employeeId, isEditable }: Props) {
       </SectionCard>
 
       <DataTable
+        resetKey='riwayat-penggajian'
         data={historyRows}
         columns={historyColumns}
         title="Riwayat Penggajian"
