@@ -85,7 +85,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
         department_name: item.department_name,
         join_date: item.current_contract_start,
         end_date: item.current_contract_end,
-        remaining_contract: `${item.remaining_month} bulan`,
+        remaining_contract: `${item.remaining_month}`,
         renewal_status: 0 as any, // Default/Placeholder
         renewal_status_name: item.extension_status_name,
         supervisor_approval_status: 0 as any, // Default/Placeholder

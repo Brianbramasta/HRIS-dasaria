@@ -59,7 +59,7 @@ export const useSpamModalStore = create<SpamModalState>((set, get) => ({
           id: `${item.employee_name}-${index}`,
           employeeName: item.employee_name,
           avatar: item.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${item.employee_name}`,
-          contractDuration: `${item.remaining_month} Bulan`,
+          contractDuration: `${item.remaining_month}`,
           durationColor: get().getDurationColor(item.remaining_month),
         }));
 
