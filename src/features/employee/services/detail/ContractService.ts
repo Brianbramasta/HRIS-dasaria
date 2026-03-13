@@ -18,7 +18,7 @@ class ContractService {
    * @returns Promise dengan data kontrak dan riwayat
    */
   async getContractData(employeeId: string): Promise<ApiResponse<ContractData>> {
-    return apiService.get<ContractData>(`${this.basePath}/${employeeId}/data-kontrak`);
+    return apiService.get<ContractData>(`${this.basePath}/contracts/${employeeId}/all`);
   }
 
   // edit
@@ -82,7 +82,7 @@ class ContractService {
     
 
     return apiService.post<CreateContractResponse>(
-      `${this.basePath}/${employeeId}/kontrak`,
+      `${this.basePath}/contracts/${employeeId}/store`,
       payload,
       {
         headers: { 'Content-Type': 'multipart/form-data' },

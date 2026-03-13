@@ -76,9 +76,9 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
           label="Status Kontrak"
           options={optionsContractStatus}
           placeholder="Select"
-          defaultValue={form.contract_status}
+          defaultValue= 'Aktif'
           onChange={(v) => onInputChange('contract_status', v)}
-          disabled={isReadonly}
+          disabled={!isReadonly}
           required={!isReadonly}
         />
       </div>
@@ -87,7 +87,7 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
       <div className={form.contract_type_name === 'PKWTT' ? 'md:col-span-2' : ''}>
         <DateField
           id="last_contract_signed_date"
-          label="TTD Kontrak Terakhir"
+          label="Mulai Kontrak"
           placeholder="Pilih Tanggal"
           defaultDate={formatDateToIndonesian(form.last_contract_signed_date) || undefined}
           onChange={isReadonly ? () => {} : onDateChange('last_contract_signed_date')}

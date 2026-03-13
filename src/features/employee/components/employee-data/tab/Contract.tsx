@@ -1,25 +1,32 @@
-import { type ReactNode } from 'react';
-import type { Karyawan } from '@/features/employee/types/dto/EmployeeType';
-import Button from '@/components/ui/button/Button';
-import { DataTable } from '@/components/shared/datatable/DataTable';
-import AddContractModal from '@/features/employee/components/modals/employee-data/contract/AddContractModal';
-import EditContractModal from '@/features/employee/components/modals/employee-data/contract/EditContractModal';
-import DetailContractModal from '@/features/employee/components/modals/employee-data/contract/DetailContractModal';
-import { useContractTab } from '@/features/employee/hooks/employee-data/detail/contract/useContract';
-import ComponentCard from '@/components/common/ComponentCard';
-import type { ContractHistoryItem } from '@/features/employee/types/dto/ContractType';
-import { formatUrlFile } from '@/utils/formatUrlFile';
-import PdfPreviewEmbed from '@/components/shared/modal/PdfPreviewEmbed';
-import { clearSkFile } from '@/stores/fileStore';
-import { formatDateToIndonesian } from '@/utils/formatDate';
-import { useContractTabConfig } from '@/features/employee/hooks/tab/useContractTabConfig';
+import { type ReactNode } from "react";
+import type { Karyawan } from "@/features/employee/types/dto/EmployeeType";
+import Button from "@/components/ui/button/Button";
+import { DataTable } from "@/components/shared/datatable/DataTable";
+import AddContractModal from "@/features/employee/components/modals/employee-data/contract/AddContractModal";
+// import EditContractModal from "@/features/employee/components/modals/employee-data/contract/EditContractModal";
+import DetailContractModal from "@/features/employee/components/modals/employee-data/contract/DetailContractModal";
+import { useContractTab } from "@/features/employee/hooks/employee-data/detail/contract/useContract";
+import ComponentCard from "@/components/common/ComponentCard";
+import type { ContractHistoryItem } from "@/features/employee/types/dto/ContractType";
+import { formatUrlFile } from "@/utils/formatUrlFile";
+import PdfPreviewEmbed from "@/components/shared/modal/PdfPreviewEmbed";
+import { clearSkFile } from "@/stores/fileStore";
+import { formatDateToIndonesian } from "@/utils/formatDate";
+import { useContractTabConfig } from "@/features/employee/hooks/tab/useContractTabConfig";
+import { handleViewFile } from "@/utils/viewFileHandle";
 
 interface Props {
   employeeId?: string;
   data?: Karyawan;
 }
 
-function SummaryItem({ label, children }: { label: string; children: ReactNode }) {
+function SummaryItem({
+  label,
+  children,
+}: {
+  label: string;
+  children: ReactNode;
+}) {
   return (
     <div className="h-fit rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900 dark:text-white">
       <div className="text-sm font-bold ">{label}</div>
@@ -28,14 +35,17 @@ function SummaryItem({ label, children }: { label: string; children: ReactNode }
   );
 }
 
-export default function ContractTab({ employeeId: employeeIdProp, data }: Props) {
+export default function ContractTab({
+  employeeId: employeeIdProp,
+  data,
+}: Props) {
   const {
     summary,
     rows,
     isAddModalOpen,
     setAddModalOpen,
-    isEditModalOpen,
-    setEditModalOpen,
+    // isEditModalOpen,
+    // setEditModalOpen,
     isDetailModalOpen,
     setDetailModalOpen,
     editingData,
@@ -46,38 +56,81 @@ export default function ContractTab({ employeeId: employeeIdProp, data }: Props)
     handleViewDetail,
     handleAddSubmit,
     handleEditRow,
-    handleEditSubmit,
+    // handleEditSubmit,
     // contractData,
     isSubmitting,
   } = useContractTab({ employeeIdProp, data });
 
-  const { columns, actions } = useContractTabConfig({ rows, handleViewDetail, handleEditRow });
+  const { columns, actions } = useContractTabConfig({
+    rows,
+    handleViewDetail,
+    handleEditRow,
+  });
+  const showAddButton = rows.length === 0;
 
+  const rowUrl = {
+    fileUrl: summary?.file_contract || null,
+  };
   return (
     <>
       <ComponentCard title="Kontrak">
         <div className="grid grid-cols-1 gap-0 md:gap-6 md:grid-cols-5 ">
           {/* Left PDF Preview */}
           <div className="col-span-1 flex flex-col mb-6 md:mb-0">
-            <PdfPreviewEmbed 
-              fileUrl={summary?.file_contract ? formatUrlFile(summary?.file_contract as string) : undefined}
+            <PdfPreviewEmbed
+              fileUrl={
+                summary?.file_contract
+                  ? formatUrlFile(summary?.file_contract as string)
+                  : undefined
+              }
               className="w-full md:h-full min-h-[300px] md:min-h-max"
             />
             <div className="mt-3 w-full flex justify-center">
-              <Button variant="primary" onClick={() => window.open(formatUrlFile(summary?.file_contract as string), '_blank')} disabled={summary?.file_contract === null || summary?.file_contract === undefined}>Pratinjau PDF</Button>
+              <Button
+                variant="primary"
+                onClick={() =>
+                  // window.open(
+                  //   formatUrlFile(summary?.file_contract as string),
+                  //   "_blank",
+                  // )
+                  handleViewFile(rowUrl)
+                }
+                disabled={
+                  summary?.file_contract === null ||
+                  summary?.file_contract === undefined
+                }
+              >
+                Pratinjau PDF
+              </Button>
             </div>
           </div>
 
           {/* Summary Fields */}
           <div className="col-span-4 grid grid-cols-1 gap-4 sm:grid-cols-2 h-fit">
-            <SummaryItem label="Status Kontrak">{summary?.contract_status}</SummaryItem>
-            <SummaryItem label="Tanggal Tanda Tangan Kontrak">{formatDateToIndonesian(summary?.last_contract_signed_date)}</SummaryItem>
-            <SummaryItem label="Tanggal Berakhir Kontrak">{formatDateToIndonesian(summary?.end_date)}</SummaryItem>
-            <SummaryItem label="Lama Bekerja">{summary?.lama_bekerja}</SummaryItem>
-            <SummaryItem label="Sisa Kontrak">{summary?.sisa_kontrak || '-'}</SummaryItem>
-            <SummaryItem label="Jenis Kontrak">{summary?.contract_type_name}</SummaryItem>
-            <SummaryItem label="Kontrak ke">{summary?.contract_number}</SummaryItem>
-            <SummaryItem label="Status Berakhir">{summary?.contract_end_status_name || '-'}</SummaryItem>
+            <SummaryItem label="Status Kontrak">
+              {summary?.contract_status}
+            </SummaryItem>
+            <SummaryItem label="Tanggal Mulai Kontrak">
+              {formatDateToIndonesian(summary?.last_contract_signed_date)}
+            </SummaryItem>
+            <SummaryItem label="Tanggal Berakhir Kontrak">
+              {formatDateToIndonesian(summary?.end_date)}
+            </SummaryItem>
+            <SummaryItem label="Lama Bekerja">
+              {summary?.lama_bekerja}
+            </SummaryItem>
+            <SummaryItem label="Sisa Kontrak">
+              {summary?.sisa_kontrak || "-"}
+            </SummaryItem>
+            <SummaryItem label="Jenis Kontrak">
+              {summary?.contract_type_name}
+            </SummaryItem>
+            <SummaryItem label="Kontrak ke">
+              {summary?.contract_number}
+            </SummaryItem>
+            <SummaryItem label="Status Berakhir">
+              {summary?.contract_end_status_name || "-"}
+            </SummaryItem>
           </div>
         </div>
       </ComponentCard>
@@ -85,31 +138,32 @@ export default function ContractTab({ employeeId: employeeIdProp, data }: Props)
       {/* History Table */}
       <div className="mt-6">
         <DataTable<ContractHistoryItem>
-          resetKey='riwayat-kontrak'
+          resetKey="riwayat-kontrak"
           title="Riwayat Kontrak"
           data={rows}
           columns={columns}
           actions={actions}
-          onAdd={handleAdd}
-          addButtonLabel="Tambah Dokumen"
+          onAdd={showAddButton ? handleAdd : undefined}
+          addButtonLabel={showAddButton ? "Tambah Dokumen" : undefined}
           emptyMessage="Belum ada riwayat kontrak"
         />
       </div>
+      {showAddButton && (
+        <AddContractModal
+          isOpen={isAddModalOpen}
+          initialData={editingData}
+          onClose={() => {
+            setAddModalOpen(false);
+            setSelectedFile(null);
+            clearSkFile();
+          }}
+          onSubmit={handleAddSubmit}
+          submitting={isSubmitting}
+          onFileChange={setSelectedFile}
+        />
+      )}
 
-      <AddContractModal
-        isOpen={isAddModalOpen}
-        initialData={editingData}
-        onClose={() => {
-          setAddModalOpen(false);
-          setSelectedFile(null);
-          clearSkFile();
-        }}
-        onSubmit={handleAddSubmit}
-        submitting={isSubmitting}
-        onFileChange={setSelectedFile}
-      />
-
-      <EditContractModal
+      {/* <EditContractModal
         isOpen={isEditModalOpen}
         initialData={editingData}
         onClose={() => {
@@ -120,7 +174,7 @@ export default function ContractTab({ employeeId: employeeIdProp, data }: Props)
         onSubmit={handleEditSubmit}
         submitting={isSubmitting}
         onFileChange={setSelectedFile}
-      />
+      /> */}
 
       <DetailContractModal
         isOpen={isDetailModalOpen}
