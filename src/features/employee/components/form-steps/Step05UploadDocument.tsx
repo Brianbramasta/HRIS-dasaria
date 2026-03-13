@@ -4,7 +4,7 @@ import { useStep5Data } from '../../hooks/employee-data/form/useFromStep';
 
 export const Step05UploadDocument: React.FC = () => {
   
-  const { personalDocuments, legalDocuments, loading, handleFileChange, getFileForField } = useStep5Data();
+  const { personalDocuments, legalDocuments, loading, handleFileChange } = useStep5Data();
 
   if (loading) {
     return <div className="p-4 text-center text-gray-500">Memuat data dokumen...</div>;
