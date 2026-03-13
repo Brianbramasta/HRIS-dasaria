@@ -435,14 +435,24 @@ const DetailOrganizationHistoryPage: React.FC = () => {
             />
           </div>
           {isAddMode && (
-            <div className="col-span-1 md:col-span-2">
-              <FIleField label="Upload Sk Perubahan" required onChange={addState.handleFileChange as any} />
-            </div>
+            <>
+              <div className="col-span-1">
+                <FIleField label="Upload Sk Perubahan" required onChange={addState.handleFileChange as any} />
+              </div>
+              <div className="col-span-1">
+                <FIleField label="Upload Adendum" onChange={addState.handleAdendumFileChange as any} />
+              </div>
+            </>
           )}
           <div className="col-span-1 md:col-span-2">
             {/* <InputField label="Sk Perubahan" placeholder="Otomatis" disabled value={form.decree_file || ''} /> */}
             {!isAddMode && (
               <InputField label="Sk Perubahan" placeholder="Otomatis" disabled value={form.decree_file || ''} onChange={() => {}} />
+            )}
+          </div>
+          <div className="col-span-1 md:col-span-2">
+            {!isAddMode && (
+              <InputField label="Adendum" placeholder="Otomatis" disabled value={form.adendum_file || ''} onChange={() => {}} />
             )}
           </div>
           <div className="col-span-1 md:col-span-2">

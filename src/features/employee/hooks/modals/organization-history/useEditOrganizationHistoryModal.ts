@@ -28,7 +28,9 @@ export type OrganizationChangeForm = {
   position_id?: string;
   position_level_id?: string;
   skFile?: File | null;
+  adendumFile?: File | null;
   decree_file?: string;
+  adendum_file?: string;
   golongan?: string;
   nip?: string;
   previous_salary?: number;
@@ -93,6 +95,7 @@ export function useEditOrganizationHistoryModal({ isOpen, initialData }: Params)
         employee_category_id: initialData.new_employee_category_id || initialData.employee_category_id,
         reason: initialData.reason || initialData.alasanPerubahan,
         decree_file: initialData.decree_file,
+        adendum_file: initialData.adendum_file,
       };
       setForm(mappedData);
     } else if (isOpen) {
@@ -301,6 +304,11 @@ export function useEditOrganizationHistoryModal({ isOpen, initialData }: Params)
     setForm((prev) => ({ ...prev, skFile: file }));
   };
 
+  const handleAdendumFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    setForm((prev) => ({ ...prev, adendumFile: file }));
+  };
+
   useEffect(() => {
     if (!isOpen) return;
     const fetchInitialData = async () => {
@@ -478,6 +486,7 @@ export function useEditOrganizationHistoryModal({ isOpen, initialData }: Params)
     selectedGrade,
     handleInput,
     handleFileChange,
+    handleAdendumFileChange,
     handleEmployeeSearch,
     handleCompanySearch,
     handleOfficeSearch,

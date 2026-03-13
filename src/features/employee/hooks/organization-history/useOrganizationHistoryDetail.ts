@@ -58,6 +58,7 @@ export function useOrganizationHistoryDetail() {
         employee_category_id: data.new_employee_category_id || '',
         reason: data.reason,
         decree_file: data.decree_file || '',
+        adendum_file: (data as any).adendum_file || '',
         unit_id: raw.new_unit_id || '',
         previous_salary: raw.previous_salary || 0,
         new_salary: raw.new_salary || 0,
