@@ -400,8 +400,9 @@ export const useFormulirKaryawanStore = create<FormulirStore>((set, get) => {
             return !!(
               step3.bank &&
               step3.namaAkunBank &&
-              step3.noRekening &&
-              step3.npwp 
+              step3.noRekening 
+              // &&
+              // step3.npwp 
               // &&
               // step3.noBpjsKesehatan &&
               // step3.statusBpjsKesehatan

@@ -230,7 +230,7 @@ export function DataTable<T = any>({
     title,
   });
 
-
+const rowCount = displayData.length; 
 
   return (
     <div className={`rounded-xl ${border ? 'border border-gray-200 shadow-sm dark:border-gray-800 ' : ''} bg-white dark:bg-gray-900 ${className}`}>
@@ -346,7 +346,7 @@ export function DataTable<T = any>({
         </div>
       </div>
 
-      <div className={`overflow-auto ${maxHeight} ${disablePagination?'mb-4':''} mx-6 border rounded-sm`}>
+      <div className={`overflow-auto ${maxHeight} ${disablePagination?'mb-4':''} ${rowCount<10?'min-h-fit': ''} mx-6 border rounded-sm`} >
         <Table className="min-w-full">
           <TableHeader className="sticky top-0 z-10">
             <TableRow className="border-b border-gray-200 bg-[#004969] dark:border-gray-700 dark:bg-gray-800">

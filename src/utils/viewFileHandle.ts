@@ -1,38 +1,35 @@
 import personalInformationService from "@/features/employee/services/detail/PersonalInformationService";
 import { GetTemporaryUrlResponse } from "@/features/employee/types/dto/PersonalInformationType";
-import { useCallback } from "react";
 
-const getTemporaryUrl = useCallback(
-    async (path: string): Promise<GetTemporaryUrlResponse | null> => {
-      if (!path) {
-        console.error('Document path is required');
-        return null;
-      }
+const getTemporaryUrl = async (path: string): Promise<GetTemporaryUrlResponse | null> => {
+  if (!path) {
+    console.error('Document path is required');
+    return null;
+  }
 
-      console.log('Getting temporary URL for path:', path);
-      // setLoading(true);
-      // setError(null);
+  console.log('Getting temporary URL for path:', path);
+  // setLoading(true);
+  // setError(null);
 
-      try {
-        const response = await personalInformationService.getTemporaryUrl(path);
+  try {
+    const response = await personalInformationService.getTemporaryUrl(path);
 
-        if (response.meta.status == 200 && response.data) {
-          return response.data;
-        } else {
-          console.error(response.meta?.message || 'Failed to get temporary URL');
-          return null;
-        }
-      } catch (err: any) {
-        const errorMessage = err?.message || 'An error occurred while getting temporary URL';
-        console.error(errorMessage);
-        console.error('getTemporaryUrl error:', err);
-        return null;
-      } finally {
-        // setLoading(false);
-      }
-    },
-    []
-  );
+    if (response.meta.status == 200 && response.data) {
+      return response.data;
+    } else {
+      console.error(response.meta?.message || 'Failed to get temporary URL');
+      return null;
+    }
+  } catch (err: any) {
+    const errorMessage = err?.message || 'An error occurred while getting temporary URL';
+    console.error(errorMessage);
+    console.error('getTemporaryUrl error:', err);
+    return null;
+  } finally {
+    // setLoading(false);
+  }
+};
+
 export const handleViewFile = async (row: any) => {
     if (!row.fileUrl) {
       console.error('No file URL available');

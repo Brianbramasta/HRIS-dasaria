@@ -3,7 +3,7 @@ import { formatDateToIndonesian } from '@/utils/formatDate';
 import type { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
 import { IconFileDetail } from '@/icons/components/icons';
 import { useOrganizationHistory, type OrgHistoryRow } from '@/features/employee/hooks/employee-data/detail/contract/useOrganizationHistory';
-import { formatUrlFile } from '@/utils/formatUrlFile';
+// import { formatUrlFile } from '@/utils/formatUrlFile';
 import handleViewFile from '@/utils/viewFileHandle';
 
 export function useOrganizationHistoryTab(employeeId?: string) {
