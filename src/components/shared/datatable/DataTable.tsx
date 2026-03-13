@@ -346,7 +346,7 @@ const rowCount = displayData.length;
         </div>
       </div>
 
-      <div className={`overflow-auto ${maxHeight} ${disablePagination?'mb-4':''} ${rowCount<10?'min-h-fit': 'min-h-[800px]'} mx-6 border rounded-sm`} >
+      <div className={`overflow-auto ${maxHeight} ${disablePagination?'mb-4':''} ${rowCount<=10?'min-h-fit': 'min-h-[800px]'} mx-6 border rounded-sm`} >
         <Table className="min-w-full">
           <TableHeader className="sticky top-0 z-10">
             <TableRow className="border-b border-gray-200 bg-[#004969] dark:border-gray-700 dark:bg-gray-800">

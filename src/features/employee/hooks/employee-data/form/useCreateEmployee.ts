@@ -53,8 +53,11 @@ export function useCreateEmployee() {
     // Documents (upload)
     (formData.step4.documents || []).forEach((doc: DocumentItem, i: number) => {
       const fileType = doc.tipeFile || '5';
-      appendIfValue(fd, `documents[${i}][employee_document_id]`, fileType);
-      if (doc.file) fd.append(`documents[${i}][file]`, doc.file);
+      
+      if (doc.file) {
+        fd.append(`documents[${i}][file]`, doc.file)
+        appendIfValue(fd, `documents[${i}][employee_document_id]`, fileType);
+      };
     });
 
     // Education formal (semua entri formal)

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import ProgressBarWithOutsideLabel from '../../../../components/ui/progressbar/ProgressBarWithOutsideLabel';
 import Step01PersonalData from '../../components/form-steps/Step01PersonalData';
 import Step02EducationalBackground from '../../components/form-steps/Step02EducationalBackground';
@@ -9,6 +9,7 @@ import SuccessModal from '../../components/SuccessModal';
 import Button from '../../../../components/ui/button/Button';
 // import { ChevronLeft } from 'react-feather';
 import useFormulirKaryawan from '../../hooks/employee-data/form/useFormulirKaryawan';
+import { useFormulirKaryawanStore } from '../../stores/useFormulirKaryawanStore';
 
 const TITLES_WITH_LOGIN = [
   'Data Pribadi',
@@ -28,19 +29,20 @@ export default function FormulirKaryawanPage() {
   const {
     currentStep,
     isLoading,
-    error,
     totalSteps,
     isAuthenticated,
     showSuccessModal,
     setShowSuccessModal,
     formRef,
-    handleNextStep,
+    handleNextWithFileCheck,
     handlePreviousStep,
     handleSubmit,
     handleBackToHome,
     handleBackToDataPage,
     resetForm,
   } = useFormulirKaryawan();
+
+  const { formData } = useFormulirKaryawanStore();
 
   // Check localStorage and reset if no draft data exists
   useEffect(() => {
@@ -49,6 +51,69 @@ export default function FormulirKaryawanPage() {
       resetForm();
     }
   }, [resetForm]);
+
+  // Handle page navigation/refresh confirmation
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      // Check if there are any files uploaded
+      const hasFiles = checkForUploadedFiles();
+      
+      if (hasFiles) {
+        const message = 'Apakah Anda yakin ingin pindah halaman? Progress file tidak akan tersimpan.';
+        e.preventDefault();
+        e.returnValue = message;
+        return message;
+      }
+    };
+
+    const checkForUploadedFiles = () => {
+      // Check if foto profil is uploaded
+      if (formData.step1.fotoProfil && formData.step1.fotoProfil instanceof File) {
+        return true;
+      }
+      
+      // Check if any documents are uploaded
+      if (formData.step4.documents && Array.isArray(formData.step4.documents)) {
+        return formData.step4.documents.some((doc: any) => doc.file && doc.file instanceof File);
+      }
+      
+      return false;
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [formData]);
+
+  const handleBackWithConfirmation = useCallback(() => {
+    // Check if there are any files uploaded
+    const hasFiles = checkForUploadedFiles();
+    
+    if (hasFiles) {
+      const message = 'Apakah Anda yakin ingin pindah halaman? Progress file tidak akan tersimpan.';
+      if (window.confirm(message)) {
+        handleBackToDataPage();
+      }
+    } else {
+      handleBackToDataPage();
+    }
+  }, [handleBackToDataPage]);
+
+  const checkForUploadedFiles = () => {
+    // Check if foto profil is uploaded
+    if (formData.step1.fotoProfil && formData.step1.fotoProfil instanceof File) {
+      return true;
+    }
+    
+    // Check if any documents are uploaded
+    if (formData.step4.documents && Array.isArray(formData.step4.documents)) {
+      return formData.step4.documents.some((doc: any) => doc.file && doc.file instanceof File);
+    }
+    
+    return false;
+  };
 
   const renderStep = () => {
     switch (currentStep) {
@@ -90,15 +155,6 @@ export default function FormulirKaryawanPage() {
 
         {/* Main Card */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 sm:p-8">
-          
-
-          {/* Error Message */}
-          {error && (
-            <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-800 dark:text-red-200">
-              {error}
-            </div>
-          )}
-
           <form ref={formRef} onSubmit={(e) => e.preventDefault()}>
             {/* Form Content */}
             <div className="mt-8">{renderStep()}</div>
@@ -107,7 +163,7 @@ export default function FormulirKaryawanPage() {
             <div className="mt-8 flex items-center justify-end gap-4">
               {currentStep === 1 ? (
                 <Button
-                  onClick={handleBackToDataPage}
+                  onClick={handleBackWithConfirmation}
                   variant="custom"
                   className="flex items-center gap-2 border border-[#007BFF] text-[#007BFF]"
                 >
@@ -137,7 +193,7 @@ export default function FormulirKaryawanPage() {
                 </Button>
               ) : (
                 <Button
-                  onClick={handleNextStep}
+                  onClick={handleNextWithFileCheck}
                   disabled={isLoading}
                   variant="primary"
                   className="flex items-center gap-2"

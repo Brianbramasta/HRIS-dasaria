@@ -31,11 +31,11 @@ export const Step05UploadDocument: React.FC = () => {
             // required={doc.is_mandatory === 1}
             onChange={(e) => handleFileChange(doc.id, e)}
           />
-          {existingFile && (
+          {/* {existingFile && (
             <p className="text-xs text-green-600 mt-1 truncate">
               File terpilih: {existingFile.namaFile}
             </p>
-          )}
+          )} */}
         </div>
       </div>
     );

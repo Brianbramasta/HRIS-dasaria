@@ -120,21 +120,14 @@ const initialStepCompleted: StepCompletionStatus = {
   step5: false,
 };
 
-// Fungsi helper untuk menyimpan data ke localStorage
+// Fungsi helper untuk menyimpan data ke localStorage (tanpa file)
 const saveToStorage = (data: any) => {
   try {
-    // Convert File objects to serializable format
+    // Convert File objects to null (exclude from localStorage)
     const serializedData = JSON.stringify(data, (_key, value) => {
-      // //console.log('key, value', _key, value);
-      //console.log('key, value', _key, value);
+      // Exclude File objects from being saved to localStorage
       if (value instanceof File) {
-        return {
-          _isFile: true,
-          name: value.name,
-          size: value.size,
-          type: value.type,
-          lastModified: value.lastModified,
-        };
+        return null;
       }
       return value;
     });
@@ -149,7 +142,23 @@ const loadFromStorage = (): any | null => {
   try {
     const data = localStorage.getItem(FORM_STORAGE_KEY);
     if (data) {
-      return JSON.parse(data);
+      const parsedData = JSON.parse(data);
+      
+      // Restore file fields to empty string since they're not saved in localStorage
+      if (parsedData.formData) {
+        if (parsedData.formData.step1) {
+          parsedData.formData.step1.fotoProfil = '';
+        }
+        if (parsedData.formData.step4 && parsedData.formData.step4.documents) {
+          // Reset document files but keep document structure
+          parsedData.formData.step4.documents = parsedData.formData.step4.documents.map((doc: any) => ({
+            ...doc,
+            file: null
+          }));
+        }
+      }
+      
+      return parsedData;
     }
   } catch (error) {
     console.error('Error loading from localStorage:', error);

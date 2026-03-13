@@ -96,6 +96,7 @@ export interface UseFormulirKaryawanReturn {
   
   // Navigation handlers
   handleNextStep: () => void;
+  handleNextWithFileCheck: () => void;
   handlePreviousStep: () => void;
   handleSubmit: () => Promise<void>;
   handleBackToHome: () => void;
@@ -146,9 +147,51 @@ export const useFormulirKaryawan = (): UseFormulirKaryawanReturn => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [goToPreviousStep]);
 
+  // Check for missing files (only Step 1 - foto profil)
+  const checkForMissingFiles = useCallback(() => {
+    // Only check Step 1 (Personal Data) - foto profil
+    if (!formData.step1.fotoProfil || formData.step1.fotoProfil === '') {
+      return 1;
+    }
+    
+    return 0; // No missing files
+  }, [formData]);
+
+  // Handle next step with file check
+  const handleNextWithFileCheck = useCallback(() => {
+    // Check if foto profil is missing
+    const missingFileStep = checkForMissingFiles();
+    
+    if (missingFileStep > 0) {
+      const message = `File di Step ${missingFileStep} hilang. Silakan upload ulang file tersebut sebelum melanjutkan.`;
+      if (window.confirm(message)) {
+        // Redirect to the step with missing file
+        const { setCurrentStep } = useFormulirKaryawanStore.getState();
+        setCurrentStep(missingFileStep);
+      }
+      return;
+    }
+    
+    // If no missing files, proceed with normal next step
+    goToNextStep();
+  }, [checkForMissingFiles, goToNextStep]);
+
   // handleSubmit: bangun FormData via hook dan submit ke API employees
   const handleSubmit = useCallback(async () => {
     if (!validateRequiredFields()) return;
+    
+    // Check for missing files before submit (only Step 1)
+    const missingFileStep = checkForMissingFiles();
+    if (missingFileStep > 0) {
+      const message = `File di Step ${missingFileStep} hilang. Silakan upload ulang file tersebut sebelum submit.`;
+      if (window.confirm(message)) {
+        // Redirect to the step with missing file
+        const { setCurrentStep } = useFormulirKaryawanStore.getState();
+        setCurrentStep(missingFileStep);
+      }
+      return;
+    }
+    
     try {
       setLoading(true);
       setError(null);
@@ -249,6 +292,7 @@ export const useFormulirKaryawan = (): UseFormulirKaryawanReturn => {
     
     // Navigation handlers
     handleNextStep,
+    handleNextWithFileCheck,
     handlePreviousStep,
     handleSubmit,
     handleBackToHome,
