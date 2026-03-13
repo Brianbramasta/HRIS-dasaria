@@ -3,6 +3,7 @@ import { formatDateToIndonesian } from '@/utils/formatDate';
 import type { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
 import { IconPencil, IconFileDetail } from '@/icons/components/icons';
 import type { ContractHistoryItem } from '@/features/employee/types/dto/ContractType';
+import { handleViewFile } from "@/utils/viewFileHandle";
 
 interface Params {
   rows: ContractHistoryItem[];
@@ -22,25 +23,27 @@ export function useContractTabConfig({ rows, handleViewDetail, handleEditRow }: 
     [rows],
   );
 
+
   const actions: DataTableAction<ContractHistoryItem>[] = useMemo(
     () => [
       {
         variant: 'outline',
         color: 'error',
         icon: <IconFileDetail />,
-        condition: (row) => row.contract_status === 'Tidak Aktif',
         onClick: (row) => {
-          handleViewDetail(row);
+          const payload = { fileUrl: row.file_contract };
+          handleViewFile(payload);
         },
       },
-      {
-        variant: 'outline',
-        icon: <IconPencil />,
-        condition: (row) => row.contract_status === 'Aktif',
-        onClick: (row) => handleEditRow(row),
-      },
+      // {
+      //   variant: 'outline',
+      //   icon: <IconPencil />,
+      //   condition: (row) => row.contract_status === 'Aktif',
+      //   onClick: (row) => handleEditRow(row),
+      // },
     ],
-    [handleViewDetail, handleEditRow],
+    // [handleViewDetail, handleEditRow],
+    [handleViewDetail],
   );
 
   return { columns, actions };
