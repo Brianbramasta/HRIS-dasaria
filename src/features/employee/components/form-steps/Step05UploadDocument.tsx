@@ -11,7 +11,7 @@ export const Step05UploadDocument: React.FC = () => {
   }
 
   const renderDocumentField = (doc: any) => {
-    const existingFile = getFileForField(doc.id);
+    // const existingFile = getFileForField(doc.id);
     return (
       <div key={doc.id} className="w-full">
         <div className="relative">
