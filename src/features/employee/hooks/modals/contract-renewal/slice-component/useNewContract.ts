@@ -27,8 +27,6 @@ type Params = {
     new_grade?: string;
     new_basic_salary?: string | number;
     new_contract_document?: string;
-    marital_status: string;
-    dependents: number;
     // Salary components
     new_gaji_pokok?: string | number;
     new_tunjangan_pernikahan?: string | number;
@@ -36,6 +34,8 @@ type Params = {
     new_tunjangan_lama_kerja?: string | number;
     new_tunjangan_diskresi?: Array<{ id: string; amount: number }>;
     new_gaji_bersih?: string | number;
+    marital_status?: string;
+    dependents?: number;
   };
   isEditing?: boolean;
   onChange?: (field: string, value: any) => void;
@@ -462,7 +462,11 @@ export function useNewContract({
         //   pp.length_of_service || 0,
         // );
 
-        const gajiBersih = (pp.basic_salary || 0) + (newContractData.new_tunjangan_lama_kerja || 0)+ (newContractData.new_tunjangan_pernikahan||0) + (pp.position_allowance||0);
+        const gajiBersih =
+          (pp.basic_salary || 0) +
+          (newContractData.new_tunjangan_lama_kerja || 0) +
+          (newContractData.new_tunjangan_pernikahan || 0) +
+          (pp.position_allowance || 0);
         handleNewContractChange("new_gaji_bersih", gajiBersih);
       } catch (err) {
         console.error("Failed to fetch payroll preview", err);
