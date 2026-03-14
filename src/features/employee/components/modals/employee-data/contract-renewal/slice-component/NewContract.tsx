@@ -2,7 +2,8 @@ import PayrollCard from '@/features/payroll/components/cards/Cards';
 import InputField from '@/components/shared/field/InputField';
 import SelectField from '@/components/shared/field/SelectField';
 import { useNewContract } from '@/features/employee/hooks/modals/contract-renewal/slice-component/useNewContract';
-import { formatInputCurrency } from '@/utils/formatCurrency';
+import { formatInputCurrency, formatCurrency, parseCurrency } from '@/utils/formatCurrency';
+import { IconPlus as PlusIcon, IconHapus as TrashBinIcon } from '@/icons/components/icons';
 
 interface NewContractData {
   new_change_type_id?: string;
@@ -21,6 +22,13 @@ interface NewContractData {
   new_grade?: string;
   new_basic_salary?: string | number;
   new_contract_document?: string;
+  // Salary components
+  new_gaji_pokok?: string | number;
+  new_tunjangan_pernikahan?: string | number;
+  new_tunjangan_jabatan?: string | number;
+  new_tunjangan_lama_kerja?: string | number;
+  new_tunjangan_diskresi?: Array<{ id: string; amount: number }>;
+  new_gaji_bersih?: string | number;
 }
 
 interface NewContractProps {
@@ -34,6 +42,7 @@ export default function NewContract({
   isEditing = false,
   onChange,
 }: NewContractProps) {
+  console.log('🎨 NewContract rendering:', { data, isEditing });
   const {
     changeTypeOptions,
     companyOptions,
@@ -48,6 +57,10 @@ export default function NewContract({
     positionLevelOptions,
     jabatanStrukturalOptions,
     unitOptions,
+    diskresiOptions,
+    isNonStaffOrMitraCategory,
+    isStaffCategory,
+    salaryLabel,
     setCompanySearch,
     setOfficeSearch,
     setDirectorateSearch,
@@ -59,7 +72,17 @@ export default function NewContract({
     setPositionLevelSearch,
     setEmployeeCategorySearch,
     handleInputChange,
+    addNonFixAllowance,
+    removeNonFixAllowance,
+    updateNonFixAllowance,
   } = useNewContract({ data, isEditing, onChange });
+
+  console.log('📋 Hook values:', { 
+    isNonStaffOrMitraCategory, 
+    isStaffCategory, 
+    salaryLabel,
+    categoryName: data?.new_employee_category_name 
+  });
 
   return (
     <PayrollCard
@@ -69,7 +92,7 @@ export default function NewContract({
     >
       <div className="space-y-6">
         {/* Row 1: Jenis Perubahan, Kategori Karyawan, Perusahaan */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <SelectField
             label="Jenis Perubahan"
             defaultValue={data?.new_change_type_id || ''}
@@ -101,10 +124,8 @@ export default function NewContract({
             containerClassName="space-y-2"
             placeholder="Select"
           />
-        </div>
 
         {/* Row 2: Kantor, Direktorat, Divisi */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <SelectField
             label="Kantor"
             options={officeOptions.length > 0 ? officeOptions : [{ label: 'Pilih perusahaan terlebih dahulu', value: '' }]}
@@ -135,10 +156,8 @@ export default function NewContract({
             containerClassName="space-y-2"
             placeholder="Select"
           />
-        </div>
 
         {/* Row 3: Departemen, Unit, Position */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <SelectField
             label="Departemen"
             options={departmentOptions.length > 0 ? departmentOptions : [{ label: 'Pilih divisi terlebih dahulu', value: '' }]}
@@ -169,10 +188,8 @@ export default function NewContract({
             containerClassName="space-y-2"
             placeholder="Select"
           />
-        </div>
 
         {/* Row 4: Jabatan Kepangkatan, Jabatan Struktural, Jenjang Jabatan */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <SelectField
             label="Jabatan Kepangkatan"
             options={jobTitleOptions}
@@ -202,10 +219,8 @@ export default function NewContract({
             containerClassName="space-y-2"
             placeholder="Select"
           />
-        </div>
 
-        {/* Row 5: Golongan, GAJI BERSIH */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Row 5: Golongan, Gaji Pokok */}
           <InputField
             label="Golongan"
             value={selectedGrade || data?.new_grade || ''}
@@ -214,13 +229,126 @@ export default function NewContract({
             containerClassName="space-y-2"
           />
           <InputField
-            label="GAJI BERSIH"
+            label={salaryLabel}
             type="text"
-            value={formatInputCurrency(String(data?.new_basic_salary || ''))}
+            value={formatInputCurrency(String(data?.new_gaji_pokok || ''))}
             disabled={!isEditing}
             onChange={(e) => {
               const cleaned = e.target.value.replace(/[^0-9]/g, '');
-              handleInputChange('new_basic_salary', cleaned);
+              handleInputChange('new_gaji_pokok', cleaned);
+            }}
+            containerClassName="space-y-2"
+          />
+
+        {/* Row 6: Tunjangan Pernikahan, Tunjangan Jabatan */}
+          {!isNonStaffOrMitraCategory && (
+            <>
+              
+              <InputField
+                label="Tunjangan Jabatan"
+                type="text"
+                value={formatInputCurrency(String(data?.new_tunjangan_jabatan || ''))}
+                disabled={!isEditing}
+                onChange={(e) => {
+                  const cleaned = e.target.value.replace(/[^0-9]/g, '');
+                  handleInputChange('new_tunjangan_jabatan', cleaned);
+                }}
+                containerClassName="space-y-2"
+              />
+            </>
+          )}
+
+        {/* Row 7: Tunjangan Lama Kerja */}
+          {!isNonStaffOrMitraCategory && (
+            <InputField
+              label="Tunjangan Lama Kerja"
+              type="text"
+              value={formatInputCurrency(String(data?.new_tunjangan_lama_kerja || ''))}
+              disabled={!isEditing}
+              onChange={(e) => {
+                const cleaned = e.target.value.replace(/[^0-9]/g, '');
+                handleInputChange('new_tunjangan_lama_kerja', cleaned);
+              }}
+              containerClassName="space-y-2"
+            />
+          )}
+
+        {/* Row 8: Tunjangan Diskresi (Dynamic) */}
+          {!isNonStaffOrMitraCategory  && (
+            <div className="md:col-span-2">
+              <div className="space-y-4">
+                {(data?.new_tunjangan_diskresi || [{ id: '', amount: 0 }]).map((allowance, index) => (
+                  <div key={index} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                    <div className="md:col-span-6">
+                      <SelectField
+                        label="Jenis Tunjangan Diskresi"
+                        options={diskresiOptions}
+                        defaultValue={allowance.id}
+                        onChange={(value) => updateNonFixAllowance(index, 'id', value)}
+                        placeholder="Pilih Tunjangan Tidak Tetap"
+                        disabled={!isEditing}
+                        containerClassName="space-y-2"
+                      />
+                    </div>
+                    <div className="md:col-span-6 flex items-end gap-2">
+                      <div className="flex-1">
+                        <InputField
+                          label="Nominal"
+                          value={formatCurrency(Number(allowance.amount) || 0)}
+                          onChange={(e) => updateNonFixAllowance(index, 'amount', parseCurrency(e.target.value) || 0)}
+                          placeholder="Rp 0"
+                          disabled={!isEditing}
+                          containerClassName="space-y-2"
+                        />
+                      </div>
+                      <div>
+                        {!isEditing ? null : (index === (data?.new_tunjangan_diskresi || []).length - 1 ? (
+                          <button
+                            className="p-2.5 rounded-lg bg-success-500 hover:bg-success-600 text-white w-11 h-11 flex items-center justify-center"
+                            onClick={addNonFixAllowance}
+                            type="button"
+                          >
+                            <PlusIcon />
+                          </button>
+                        ) : (
+                          <button
+                            className="p-2.5 rounded-lg bg-error-500 hover:bg-error-600 text-white w-11 h-11 flex items-center justify-center"
+                            onClick={() => removeNonFixAllowance(index)}
+                            type="button"
+                          >
+                            <TrashBinIcon color="white" />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {!isNonStaffOrMitraCategory && (
+          <InputField
+                label="Tunjangan Pernikahan"
+                type="text"
+                value={formatInputCurrency(String(data?.new_tunjangan_pernikahan || ''))}
+                disabled={!isEditing}
+                onChange={(e) => {
+                  const cleaned = e.target.value.replace(/[^0-9]/g, '');
+                  handleInputChange('new_tunjangan_pernikahan', cleaned);
+                }}
+                containerClassName="space-y-2"
+              />
+          )}
+
+        {/* Row 9: Gaji Bersih */}
+          <InputField
+            label="Gaji Bersih"
+            type="text"
+            value={formatInputCurrency(String(data?.new_gaji_bersih || ''))}
+            disabled={!isEditing}
+            onChange={(e) => {
+              const cleaned = e.target.value.replace(/[^0-9]/g, '');
+              handleInputChange('new_gaji_bersih', cleaned);
             }}
             containerClassName="space-y-2"
           />

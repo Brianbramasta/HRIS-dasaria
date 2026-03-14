@@ -4,6 +4,9 @@ import {
   ContractExtensionListResponse,
   ContractExtensionDetailResult,
   ExtensionStatusItem,
+  EmployeesNearContractEndResponse,
+  UpdateContractResponse,
+  ProcessContractExtensionResponse,
 } from '../types/dto/ContractExtensionType';
 
 class ContractExtensionsService {
@@ -18,11 +21,11 @@ class ContractExtensionsService {
   }
 
   /**
-   * Get Detail Perpanjangan Kontrak
-   * GET /api/employee-master-data/contract-extensions/{id}/detail
+   * Get Karyawan Akan Habis Kontrak
+   * GET /api/employee-master-data/contract-extensions/employees-near-contract-end
    */
-  async getContractExtensionDetail(id: string): Promise<ApiResponse<ContractExtensionDetailResult>> {
-    return apiService.get<ContractExtensionDetailResult>(`${this.basePath}/${id}/detail`);
+  async getEmployeesNearContractEnd(): Promise<ApiResponse<EmployeesNearContractEndResponse>> {
+    return apiService.get<EmployeesNearContractEndResponse>(`${this.basePath}/employees-near-contract-end`);
   }
 
   /**
@@ -34,13 +37,29 @@ class ContractExtensionsService {
   }
 
   /**
-   * Process Request Decision (Update)
-   * POST /api/employee-master-data/contract-extensions/{id}/process-request-decision
+   * Get Detail Perpanjangan Kontrak
+   * GET /api/employee-master-data/contract-extensions/{id}/detail
    */
-  async processRequestDecision(id: string, formData: FormData): Promise<ApiResponse<any>> {
-    return apiService.post<any>(`${this.basePath}/${id}/process-request-decision`, formData, {
+  async getContractExtensionDetail(id: string): Promise<ApiResponse<ContractExtensionDetailResult>> {
+    return apiService.get<ContractExtensionDetailResult>(`${this.basePath}/${id}/detail`);
+  }
+
+  /**
+   * Update Perpanjangan Kontrak
+   * POST /api/employee-master-data/contract-extensions/{id}/update-contract
+   */
+  async updateContract(id: string, formData: FormData): Promise<ApiResponse<UpdateContractResponse>> {
+    return apiService.post<UpdateContractResponse>(`${this.basePath}/${id}/update-contract`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
+  }
+
+  /**
+   * Proses Perpanjangan Kontrak
+   * PATCH /api/employee-master-data/contract-extensions/{id}/process
+   */
+  async processContractExtension(id: string): Promise<ApiResponse<ProcessContractExtensionResponse>> {
+    return apiService.patch<ProcessContractExtensionResponse>(`${this.basePath}/${id}/process`);
   }
 }
 

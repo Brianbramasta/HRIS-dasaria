@@ -179,13 +179,15 @@ export default function PerpanjangKontrakEdit() {
                 <OldContract
                   data={oldContractData}
                   isEditing={false}
+                  kategoriKaryawanOptions={[]}
                 />
               </div>
 
               <div>
                 <NewContract
                   data={newContractData}
-                  isEditing={false}
+                  isEditing={true}
+                  kategoriKaryawanOptions={[]}
                 />
               </div>
             </div>
@@ -205,7 +207,7 @@ export default function PerpanjangKontrakEdit() {
           {/* Edit Button - Only show when status is "Menunggu diproses" or "Sedang di Proses" */}
           {kontrakData?.extension_status && (
             <div className="flex justify-end pt-4 ">
-              {kontrakData.extension_status === "Menunggu diproses" || kontrakData.extension_status === "Sedang di Proses" ? (
+              {/* {kontrakData.extension_status === "Menunggu diproses" || kontrakData.extension_status === "Sedang di Proses" ? ( */}
                 <Button
                   onClick={handleEditClick}
                   variant="primary"
@@ -213,7 +215,7 @@ export default function PerpanjangKontrakEdit() {
                 >
                   Edit
                 </Button>
-              ) : null}
+              {/* ) : null} */}
             </div>
           )}
         </div>

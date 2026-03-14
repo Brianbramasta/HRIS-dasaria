@@ -28,6 +28,108 @@ export interface ContractExtensionListResponse {
   per_page: number;
   to: number;
   total: number;
+  first_page_url?: string;
+  last_page_url?: string;
+  next_page_url?: string;
+  prev_page_url?: string;
+  from?: number;
+  last_page?: number;
+  links?: Array<{
+    url: string | null;
+    label: string;
+    page: number | null;
+    active: boolean;
+  }>;
+  path?: string;
+}
+
+// --- Employees Near Contract End ---
+export interface EmployeeNearContractEnd {
+  id: string;
+  employee_name: string;
+  remaining_month: number;
+  contract_end_date: string;
+  department: string;
+}
+
+export interface EmployeesNearContractEndResponse {
+  data: EmployeeNearContractEnd[];
+}
+
+// --- Extension Status Dropdown ---
+export interface ExtensionStatusItem {
+  id: string;
+  name: string;
+}
+
+// --- Contract Extension Detail ---
+export interface CurrentContract {
+  start_date: string;
+  end_date: string;
+  contract_type: string;
+}
+
+export interface ExtensionHistory {
+  sequence: number;
+  start_date: string;
+  end_date: string;
+  note: string;
+}
+
+export interface ContractExtensionDetailResult {
+  id: string;
+  employee_name: string;
+  current_contract: CurrentContract;
+  extension_history: ExtensionHistory[];
+}
+
+// --- Update Contract Payload ---
+export interface UpdateContractPayload {
+  _method: string;
+  note?: string;
+  eval_document?: File;
+  contract_type_id: string;
+  contract_sequence: string;
+  start_date: string;
+  end_date: string;
+  contract_document?: File;
+  company_id: string;
+  office_id: string;
+  directorate_id: string;
+  department_id: string;
+  division_id: string;
+  position_id: string;
+  job_title_id: string;
+  structural_job_id: string;
+  unit_id: string;
+  position_level_id: string;
+  change_type: string;
+  employee_category_id: string;
+  extension_type: string;
+  non_fix_allowance?: NonFixAllowanceItem[];
+}
+
+export interface NonFixAllowanceItem {
+  non_fix_allowance_id: string;
+  amount: string;
+}
+
+// --- Process Contract Extension ---
+export interface ProcessContractExtensionResponse {
+  id: string;
+  status: string;
+  processed_at: string;
+}
+
+// --- Update Contract Response ---
+export interface UpdateContractResponse {
+  id: string;
+  contract_sequence: number;
+  start_date: string;
+  end_date: string;
+  extension_type: string;
+  status: string;
+  updated_at: string;
 }
 
 // --- Detail ---

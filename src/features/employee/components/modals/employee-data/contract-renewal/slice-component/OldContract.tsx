@@ -1,7 +1,8 @@
 import PayrollCard from '@/features/payroll/components/cards/Cards';
 import InputField from '@/components/shared/field/InputField';
-import { formatInputCurrency } from '@/utils/formatCurrency';
+import { formatCurrency, formatInputCurrency, parseCurrency } from '@/utils/formatCurrency';
 import { useOldContract } from '@/features/employee/hooks/modals/contract-renewal/slice-component/useOldContract';
+import SelectField from '@/components/shared/field/SelectField';
 
 interface OldContractData {
   change_type_name?: string;
@@ -19,6 +20,13 @@ interface OldContractData {
   basic_salary?: string | number;
   employee_category_name?: string;
   old_contract_document?: string;
+  // Salary components
+  gaji_pokok?: string | number;
+  tunjangan_pernikahan?: string | number;
+  tunjangan_jabatan?: string | number;
+  tunjangan_lama_kerja?: string | number;
+  tunjangan_diskresi?: Array<{ id: string; amount: number }>;
+  gaji_bersih?: string | number;
 }
 
 interface OldContractProps {
@@ -32,7 +40,11 @@ export default function OldContract({
   isEditing = false,
   onChange,
 }: OldContractProps) {
-  const { handleInputChange } = useOldContract({ data, isEditing, onChange });
+  const { 
+    handleInputChange, 
+    isNonStaffOrMitraCategory,
+    salaryLabel,
+  } = useOldContract({ data, isEditing, onChange, kategoriKaryawanOptions: [] });
 
   return (
     <PayrollCard
@@ -42,7 +54,7 @@ export default function OldContract({
     >
       <div className="space-y-6">
         {/* Row 1: Kategori Karyawan, Perusahaan, Kantor */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <InputField
             label="Kategori Karyawan"
             value={data?.employee_category_name || ''}
@@ -64,10 +76,8 @@ export default function OldContract({
             onChange={(e) => handleInputChange('office_name', e.target.value)}
             containerClassName="space-y-2"
           />
-        </div>
 
         {/* Row 2: Direktorat, Divisi, Departemen */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <InputField
             label="Direktorat"
             value={data?.directorate_name || ''}
@@ -89,10 +99,8 @@ export default function OldContract({
             onChange={(e) => handleInputChange('department_name', e.target.value)}
             containerClassName="space-y-2"
           />
-        </div>
 
         {/* Row 3: Unit, Position, Jabatan Kepangkatan */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <InputField
             label="Unit"
             value={data?.unit_name || ''}
@@ -114,10 +122,8 @@ export default function OldContract({
             onChange={(e) => handleInputChange('job_title_name', e.target.value)}
             containerClassName="space-y-2"
           />
-        </div>
 
         {/* Row 4: Jabatan Struktural, Jenjang Jabatan, Golongan */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <InputField
             label="Jabatan Struktural"
             value={data?.structural_position_name || ''}
@@ -139,22 +145,114 @@ export default function OldContract({
             onChange={(e) => handleInputChange('grade', e.target.value)}
             containerClassName="space-y-2"
           />
-        </div>
 
-        {/* Row 5: GAJI BERSIH (full width) */}
-        <div className="grid grid-cols-1 gap-4">
+        {/* Row 5: Gaji Pokok, Tunjangan Pernikahan */}
           <InputField
-            label="GAJI BERSIH"
+            label={salaryLabel}
             type="text"
-            value={formatInputCurrency(String(data?.basic_salary || ''))}
+            value={formatInputCurrency(String(data?.gaji_pokok || ''))}
             disabled={!isEditing}
             onChange={(e) => {
               const cleaned = e.target.value.replace(/[^0-9]/g, '');
-              handleInputChange('basic_salary', cleaned);
+              handleInputChange('gaji_pokok', cleaned);
+            }}
+            containerClassName="space-y-2"
+          />
+          {!isNonStaffOrMitraCategory && (
+            <InputField
+              label="Tunjangan Pernikahan"
+              type="text"
+              value={formatInputCurrency(String(data?.tunjangan_pernikahan || ''))}
+              disabled={!isEditing}
+              onChange={(e) => {
+                const cleaned = e.target.value.replace(/[^0-9]/g, '');
+                handleInputChange('tunjangan_pernikahan', cleaned);
+              }}
+              containerClassName="space-y-2"
+            />
+          )}
+
+        {/* Row 6: Tunjangan Jabatan, Tunjangan Lama Kerja */}
+          {!isNonStaffOrMitraCategory && (
+            <InputField
+              label="Tunjangan Jabatan"
+              type="text"
+              value={formatInputCurrency(String(data?.tunjangan_jabatan || ''))}
+              disabled={!isEditing}
+              onChange={(e) => {
+                const cleaned = e.target.value.replace(/[^0-9]/g, '');
+                handleInputChange('tunjangan_jabatan', cleaned);
+              }}
+              containerClassName="space-y-2"
+            />
+          )}
+          {!isNonStaffOrMitraCategory && (
+            <InputField
+              label="Tunjangan Lama Kerja"
+              type="text"
+              value={formatInputCurrency(String(data?.tunjangan_lama_kerja || ''))}
+              disabled={!isEditing}
+              onChange={(e) => {
+                const cleaned = e.target.value.replace(/[^0-9]/g, '');
+                handleInputChange('tunjangan_lama_kerja', cleaned);
+              }}
+              containerClassName="space-y-2"
+            />
+          )}
+
+        {/* Row 7: Tunjangan Diskresi (Dynamic) */}
+          {!isNonStaffOrMitraCategory && (
+            <div className="md:col-span-2">
+              <div className="space-y-4">
+                {data?.tunjangan_diskresi && data.tunjangan_diskresi.length > 0 ? (
+                  data.tunjangan_diskresi.map((allowance, index) => (
+                    <div key={index} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                      <div className="md:col-span-6">
+                        <SelectField
+                          label="Jenis Tunjangan Diskresi"
+                          options={[]} // TODO: Add diskresi options
+                          defaultValue={allowance.id}
+                          onChange={(value) => handleInputChange(`tunjangan_diskresi.${index}.id`, value)}
+                          placeholder="Pilih Tunjangan Tidak Tetap"
+                          disabled={!isEditing}
+                          containerClassName="space-y-2"
+                        />
+                      </div>
+                      <div className="md:col-span-6 flex items-end gap-2">
+                        <div className="flex-1">
+                          <InputField
+                            label="Nominal"
+                            value={formatCurrency(Number(allowance.amount) || 0)}
+                            onChange={(e) => handleInputChange(`tunjangan_diskresi.${index}.amount`, parseCurrency(e.target.value) || 0)}
+                            placeholder="Rp 0"
+                            disabled={!isEditing}
+                            containerClassName="space-y-2"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <></>
+                )}
+              </div>
+            </div>
+          )}
+
+        {/* Row 8: Gaji Bersih (full width) */}
+          <InputField
+            label="Gaji Bersih"
+            type="text"
+            value={formatInputCurrency(String(data?.gaji_bersih || ''))}
+            disabled={!isEditing}
+            onChange={(e) => {
+              const cleaned = e.target.value.replace(/[^0-9]/g, '');
+              handleInputChange('gaji_bersih', cleaned);
             }}
             containerClassName="space-y-2"
           />
         </div>
+
 
       </div>
     </PayrollCard>
