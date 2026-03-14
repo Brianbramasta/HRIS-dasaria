@@ -27,6 +27,8 @@ interface NewContractData {
   new_tunjangan_lama_kerja?: string | number;
   new_tunjangan_diskresi?: Array<{ id: string; amount: number }>;
   new_gaji_bersih?: string | number;
+  marital_status?: string; 
+  dependents?: number;
 }
 
 interface NewContractProps {
