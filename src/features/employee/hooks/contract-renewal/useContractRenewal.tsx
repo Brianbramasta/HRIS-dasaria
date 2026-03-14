@@ -23,6 +23,8 @@ interface UseContractRenewalReturn {
   dateRangeFilters: Record<string, { startDate: string; endDate: string | null }>;
   handleColumnFilterChange: (columnId: string, values: string[]) => void;
   handleDateRangeFilterChange: (columnId: string, startDate: string, endDate: string | null) => void;
+  handleSearchChange: (search: string) => void;
+  handleSortChange: (columnId: string, order: 'asc' | 'desc') => void;
   setIsDropdownOpen: (value: boolean) => void;
   handleNavigateToApproval: () => void;
   handleNavigateToExtension: () => void;
@@ -176,6 +178,14 @@ export function useContractRenewal(): UseContractRenewalReturn {
     }
   };
 
+  const handleSearchChange = useCallback((search: string) => {
+    handleFetchContractRenewals({ search });
+  }, [handleFetchContractRenewals]);
+
+  const handleSortChange = useCallback((columnId: string, order: 'asc' | 'desc') => {
+    handleFetchContractRenewals({ column: columnId, sort: order });
+  }, [handleFetchContractRenewals]);
+
   const columns: DataTableColumn<ContractRenewalListItem>[] = [
     {
       id: 'no',
@@ -230,7 +240,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
       ),
     },
     { id: 'remaining_contract', label: 'Sisa Kontrak', minWidth: 120, sortable: true },
-    { id: 'notes', label: 'Catatan', minWidth: 150, sortable: false },
+    { id: 'notes', label: 'Catatan', minWidth: 150, sortable: true },
     {
       id: 'renewal_status_name',
       label: 'Status Perpanjangan',
@@ -279,6 +289,8 @@ export function useContractRenewal(): UseContractRenewalReturn {
     dateRangeFilters,
     handleColumnFilterChange,
     handleDateRangeFilterChange,
+    handleSearchChange,
+    handleSortChange,
     setIsDropdownOpen,
     handleNavigateToApproval,
     handleNavigateToExtension,

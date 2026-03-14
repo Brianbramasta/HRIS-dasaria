@@ -13,6 +13,13 @@ export default function PerpanjanganKontrak() {
     dateRangeFilters,
     handleColumnFilterChange,
     handleDateRangeFilterChange,
+    handleSearchChange,
+    handleSortChange,
+    currentPage,
+    totalItems,
+    perPage,
+    handlePageChange,
+    handleRowsPerPageChange,
   } = useContractRenewal();
 
   
@@ -24,12 +31,20 @@ export default function PerpanjanganKontrak() {
         columns={columns}
         actions={actions}
         title="Perpanjangan Kontrak"
+        searchable={true}
         searchPlaceholder="Cari berdasarkan kata kunci"
-        pageSize={10}
+        pageSize={perPage}
         pageSizeOptions={[10, 25, 50]}
         filterable={true}
         loading={isLoading}
         emptyMessage="Tidak ada data kontrak"
+        onSearchChange={handleSearchChange}
+        onSortChange={handleSortChange}
+        onPageChangeExternal={handlePageChange}
+        onRowsPerPageChangeExternal={handleRowsPerPageChange}
+        useExternalPagination={true}
+        externalPage={currentPage}
+        externalTotal={totalItems}
         onColumnFilterChange={handleColumnFilterChange}
         columnFilters={columnFilters}
         onDateRangeFilterChange={handleDateRangeFilterChange}
