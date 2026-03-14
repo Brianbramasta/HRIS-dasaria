@@ -112,6 +112,7 @@ export interface UpdateContractPayload {
 export interface NonFixAllowanceItem {
   non_fix_allowance_id: string;
   amount: string;
+  allowance_name: string;
 }
 
 // --- Process Contract Extension ---
@@ -158,6 +159,12 @@ export interface ContractPositionDetail {
   position_level_id: string;
   grade: string;
   salary: number | null;
+  gaji_pokok: number | null;
+  tunjangan_jabatan: number | null;
+  tunjangan_pernikahan: number | null;
+  tunjangan_lama_kerja: number | null;
+  tunjangan_dekresi: NonFixAllowanceItem[];
+  take_home_pay: number | null;
 }
 
 export interface ContractNewPositionDetail extends ContractPositionDetail {

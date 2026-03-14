@@ -22,7 +22,7 @@ type Params = {
     tunjangan_pernikahan?: string | number;
     tunjangan_jabatan?: string | number;
     tunjangan_lama_kerja?: string | number;
-    tunjangan_diskresi?: Array<{ id: string; amount: number }>;
+    tunjangan_diskresi?: Array<{ id: string; amount: number, allowance_name: string }>;
     gaji_bersih?: string | number;
   };
   isEditing?: boolean;
