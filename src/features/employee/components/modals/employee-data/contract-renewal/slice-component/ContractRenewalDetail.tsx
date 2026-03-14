@@ -5,7 +5,6 @@ import TextAreaField from '@/components/shared/field/TextAreaField';
 import DateField from '@/components/shared/field/DateField';
 import FileField from '@/components/shared/field/FIleField';
 import { useContractRenewalDetail } from '@/features/employee/hooks/modals/contract-renewal/slice-component/useContractRenewalDetail';
-import { useMemo } from 'react';
 
 interface ContractRenewalDetailProps {
   data?: {
@@ -29,7 +28,7 @@ interface ContractRenewalDetailProps {
   isEditing?: boolean;
   onChange?: (field: string, value: any) => void;
   showLimitedFields?: boolean;
-  statusOptions?: { value: string; label: string }[];
+  statusOptions?: { value: string; label: string; disabled?: boolean }[];
   contractTypeOptions?: { value: string; label: string }[];
 }
 
@@ -41,7 +40,7 @@ export default function ContractRenewalDetail({
   statusOptions = [],
   contractTypeOptions = [],
 }: ContractRenewalDetailProps) {
-  const { effectiveContractTypeOptions, handleInputChange, showAllDetailFields } = useContractRenewalDetail({
+  const { effectiveContractTypeOptions, processedStatusOptions, handleInputChange, showAllDetailFields } = useContractRenewalDetail({
     data,
     isEditing,
     onChange,
@@ -50,28 +49,6 @@ export default function ContractRenewalDetail({
     contractTypeOptions,
   });
 
-  // Process status options to disable informational options
-  const processedStatusOptions = useMemo(() => {
-    const options = statusOptions.length > 0 ? statusOptions : [
-      { label: 'Diperpanjang Tetap', value: 'Diperpanjang Tetap' },
-      { label: 'Diperpanjang Berubah', value: 'Diperpanjang Berubah' },
-      { label: 'Sedang diproses', value: 'Sedang diproses', disabled: true },
-      { label: 'Menunggu diproses', value: 'Menunggu diproses', disabled: true },
-      { label: 'Ditolak', value: 'Ditolak', disabled: true },
-    ];
-
-    return options.map(option => {
-      // Only allow "Diperpanjang Tetap" and "Diperpanjang Berubah" to be selectable
-      const isSelectable = 
-        option.label === 'Diperpanjang Tetap' || 
-        option.label === 'Diperpanjang Berubah';
-        
-      return { 
-        ...option, 
-        disabled: !isSelectable 
-      };
-    });
-  }, [statusOptions]);
 
   return (
     <PayrollCard

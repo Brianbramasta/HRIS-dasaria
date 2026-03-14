@@ -63,7 +63,6 @@ export default function OldContract({
     }
     
     const result = categoryName?.includes('mitra') || categoryName?.includes('non staff') || categoryName === 'non-staff';
-    console.log('🔍 OldContract isNonStaffOrMitraCategory:', { categoryId: data?.employee_category_name, categoryName, result });
     return result;
   }, [data?.employee_category_name, kategoriKaryawanOptions]);
 
@@ -84,7 +83,6 @@ export default function OldContract({
     let label = 'Gaji Pokok';
     if (categoryName?.toLowerCase() === 'non-staff' || categoryName?.toLowerCase()?.includes('non staff')) label = 'Uang Saku';
     if (categoryName?.toLowerCase() === 'mitra' || categoryName?.toLowerCase()?.includes('mitra')) label = 'Fee';
-    console.log('🔍 OldContract salaryLabel:', { categoryId: data?.employee_category_name, categoryName, label });
     return label;
   }, [data?.employee_category_name, kategoriKaryawanOptions]);
 

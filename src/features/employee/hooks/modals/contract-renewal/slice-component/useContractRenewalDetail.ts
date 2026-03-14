@@ -2,7 +2,7 @@ import { useEffect, useMemo, useCallback } from 'react';
 import { useContractRenewalStore } from '@/features/employee/stores/useContractRenewalStore';
 import { useApiContractExtension } from '@/features/employee/hooks/api/useApiContractExtension';
 
-type StatusOption = { value: string; label: string };
+type StatusOption = { value: string; label: string; disabled?: boolean };
 type ContractTypeOption = { value: string; label: string };
 
 type Params = {
@@ -81,6 +81,35 @@ export function useContractRenewalDetail({
     [onChange, statusOptions, setChangeTypeName]
   );
 
+  const processedStatusOptions = useMemo(() => {
+    // const options = statusOptions.length > 0 ? statusOptions : [
+    //   { label: 'Diperpanjang Tetap', value: 'Diperpanjang Tetap' },
+    //   { label: 'Diperpanjang Berubah', value: 'Diperpanjang Berubah' },
+    //   { label: 'Sedang diproses', value: 'Sedang diproses', disabled: true },
+    //   { label: 'Menunggu diproses', value: 'Menunggu diproses', disabled: true },
+    //   { label: 'Ditolak', value: 'Ditolak', disabled: true },
+    // ];
+    const options = [
+      { label: 'Diperpanjang Tetap', value: 'Diperpanjang Tetap' },
+      { label: 'Diperpanjang Berubah', value: 'Diperpanjang Berubah' },
+      { label: 'Sedang diproses', value: 'Sedang diproses', disabled: true },
+      { label: 'Menunggu diproses', value: 'Menunggu diproses', disabled: true },
+      { label: 'Ditolak', value: 'Ditolak', disabled: true },
+    ];
+
+    return options.map(option => {
+      // Only allow "Diperpanjang Tetap" and "Diperpanjang Berubah" to be selectable
+      const isSelectable = 
+        option.label === 'Diperpanjang Tetap' || 
+        option.label === 'Diperpanjang Berubah';
+        
+      return { 
+        ...option, 
+        disabled: !isSelectable 
+      };
+    });
+  }, [statusOptions]);
+
   const showAllDetailFields = useMemo(() => {
     return !showLimitedFields && shouldShowAllDetailFields();
   }, [showLimitedFields, shouldShowAllDetailFields]);
@@ -89,6 +118,7 @@ export function useContractRenewalDetail({
     isEditing,
     data,
     effectiveContractTypeOptions,
+    processedStatusOptions,
     handleInputChange,
     showAllDetailFields,
   };
