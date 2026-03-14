@@ -67,7 +67,7 @@ export interface BpjsDataResponse {
 
 export interface EmploymentPositionResponse {
   employment_status_id: string;
-  department_id: string;
+  department_name: string;
   start_date: string;
   position_id: string;
   job_title_id: string;
