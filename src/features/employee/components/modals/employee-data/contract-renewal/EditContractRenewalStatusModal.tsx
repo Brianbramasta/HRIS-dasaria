@@ -59,6 +59,7 @@ export default function EditStatusPerpanjanganModal({
     statusOptions,
     contractTypeOptions,
   });
+  console.log('contractRenewalData', contractRenewalData)
 
   const renderContent = () => {
     // Determine which components to show based on renewal status

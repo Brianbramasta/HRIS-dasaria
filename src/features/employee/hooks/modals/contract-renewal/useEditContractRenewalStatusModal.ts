@@ -110,6 +110,19 @@ export function useEditContractRenewalStatusModal({
 
   useEffect(() => {
     if (isOpen && kontrakData) {
+      console.log('kontrakData', kontrakData)
+      // Find the matching option value
+      let renewalStatusValue = kontrakData.statusPerpanjangan;
+      
+      if (statusOptions && statusOptions.length > 0) {
+        // Try to find the option by ID first, then by name
+        const matchedOption = statusOptions.find(opt => 
+          opt.value === kontrakData.statusPerpanjanganId || 
+          opt.label === kontrakData.statusPerpanjangan
+        );
+        renewalStatusValue = matchedOption ? matchedOption.value : kontrakData.statusPerpanjangan;
+      }
+      
       setContractRenewalData({
         employee_id: kontrakData.idKaryawan,
         full_name: kontrakData.pengguna,
@@ -118,9 +131,7 @@ export function useEditContractRenewalStatusModal({
         join_date: kontrakData.tanggalMasuk,
         end_date: kontrakData.tanggalBerakhir,
         remaining_contract: kontrakData.sisaKontrak,
-        renewal_status_name: statusOptions?.length
-          ? (kontrakData.statusPerpanjanganId || kontrakData.statusPerpanjangan)
-          : kontrakData.statusPerpanjangan,
+        renewal_status_name: renewalStatusValue,
         notes: kontrakData.catatan,
       });
 
@@ -159,6 +170,7 @@ export function useEditContractRenewalStatusModal({
           new_position_level_name: '',
           new_grade: '',
           new_basic_salary: 0,
+          new_tunjangan_diskresi: [{ id: '', amount: 0 }],
         });
       }
     }
@@ -179,10 +191,35 @@ export function useEditContractRenewalStatusModal({
   }, []);
 
   const handleNewContractChange = useCallback((field: string, value: any) => {
-    setNewContractData((prev: any) => ({
-      ...prev,
-      [field]: value,
-    }));
+    setNewContractData((prev: any) => {
+      // Handle nested fields like 'new_tunjangan_diskresi.0.amount'
+      if (field.includes('.')) {
+        const parts = field.split('.');
+        const newObj = { ...prev };
+        let current = newObj;
+        
+        for (let i = 0; i < parts.length - 1; i++) {
+          const part = parts[i];
+          // If the part is a number, we're dealing with an array index
+          const isIndex = !isNaN(Number(parts[i+1]));
+          
+          if (Array.isArray(current[part])) {
+            current[part] = [...current[part]];
+          } else {
+            current[part] = isIndex ? [] : { ...current[part] };
+          }
+          current = current[part];
+        }
+        
+        current[parts[parts.length - 1]] = value;
+        return newObj;
+      }
+
+      return {
+        ...prev,
+        [field]: value,
+      };
+    });
   }, []);
 
   const handleSubmit = useCallback(async () => {

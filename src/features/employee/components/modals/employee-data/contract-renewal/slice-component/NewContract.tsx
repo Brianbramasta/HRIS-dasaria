@@ -43,7 +43,6 @@ export default function NewContract({
   isEditing = false,
   onChange,
 }: NewContractProps) {
-  console.log('🎨 NewContract rendering:', { data, isEditing });
   const { nonFixAllowanceOptions, fetchNonFixAllowanceDropdown } = useApiPayrollPreview();
   const {
     changeTypeOptions,
@@ -78,12 +77,11 @@ export default function NewContract({
     updateNonFixAllowance,
   } = useNewContract({ data, isEditing, onChange });
 
-  console.log('📋 Hook values:', { 
-    isNonStaffOrMitraCategory, 
-    isStaffCategory, 
-    salaryLabel,
-    categoryName: data?.new_employee_category_name 
-  });
+  // Create stable reference for non-fix allowances to prevent filtering issues
+  const nonFixAllowances = data?.new_tunjangan_diskresi || [{ id: '', amount: 0 }];
+  console.log(nonFixAllowanceOptions,'nonFixallowance')
+
+  
 
   return (
     <PayrollCard
@@ -287,10 +285,10 @@ export default function NewContract({
           )}
 
         {/* Row 8: Tunjangan Diskresi (Dynamic) */}
-          {!isNonStaffOrMitraCategory  && (
+          {isStaffCategory  && (
             <div className="md:col-span-2">
               <div className="space-y-4">
-                {(data?.new_tunjangan_diskresi || [{ id: '', amount: 0 }]).map((allowance, index) => (
+                {nonFixAllowances.map((allowance, index) => (
                   <div key={index} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                     <div className="md:col-span-6">
                       <SelectField
@@ -301,7 +299,7 @@ export default function NewContract({
                             label: opt.allowance_name 
                           }))
                           .filter(option => 
-                            !(data?.new_tunjangan_diskresi || []).some((otherAllowance, otherIndex) => 
+                            !nonFixAllowances.some((otherAllowance, otherIndex) => 
                               otherAllowance.id === option.value && otherIndex !== index
                             )
                           )
@@ -325,7 +323,7 @@ export default function NewContract({
                         />
                       </div>
                       <div>
-                        {!isEditing ? null : (index === (data?.new_tunjangan_diskresi || [{ id: '', amount: 0 }]).length - 1 ? (
+                        {!isEditing ? null : (index === nonFixAllowances.length - 1 ? (
                           <button
                             className="p-2.5 rounded-lg bg-success-500 hover:bg-success-600 text-white w-11 h-11 flex items-center justify-center"
                             onClick={addNonFixAllowance}

@@ -39,7 +39,6 @@ type Params = {
 };
 
 export function useNewContract({ data = {}, isEditing = false, onChange }: Params) {
-  console.log('📊 useNewContract data changed:', { data, isEditing });
   const [companyOptions, setCompanyOptions] = useState<any[]>([]);
   const [officeOptions, setOfficeOptions] = useState<any[]>([]);
   const [directorateOptions, setDirectorateOptions] = useState<any[]>([]);
@@ -72,7 +71,7 @@ export function useNewContract({ data = {}, isEditing = false, onChange }: Param
     const categoryOption = kategoriKaryawanOptions.find(option => option.value === data?.new_employee_category_name);
     const categoryName = categoryOption?.label?.toLowerCase();
     const result = categoryName?.includes('mitra') || categoryName?.includes('non staff') || categoryName === 'non-staff';
-    console.log('🔍 isNonStaffOrMitraCategory:', { categoryId: data?.new_employee_category_name, categoryName, result });
+    console.log('🔍 isNonStaffOrMitraCategory changed:', { categoryId: data?.new_employee_category_name, categoryName, result });
     return result;
   }, [data?.new_employee_category_name, kategoriKaryawanOptions]);
 
@@ -81,7 +80,6 @@ export function useNewContract({ data = {}, isEditing = false, onChange }: Param
     const categoryOption = kategoriKaryawanOptions.find(option => option.value === data?.new_employee_category_name);
     const categoryName = categoryOption?.label?.toLowerCase();
     const result = categoryName?.includes('staff') || categoryName === 'staff';
-    console.log('🔍 isStaffCategory:', { categoryId: data?.new_employee_category_name, categoryName, result });
     return result;
   }, [data?.new_employee_category_name, kategoriKaryawanOptions]);
 
@@ -93,13 +91,11 @@ export function useNewContract({ data = {}, isEditing = false, onChange }: Param
     let label = 'Gaji Pokok';
     if (categoryName?.toLowerCase() === 'non-staff' || categoryName?.toLowerCase().includes('non staff')) label = 'Uang Saku';
     if (categoryName?.toLowerCase() === 'mitra' || categoryName?.toLowerCase().includes('mitra')) label = 'Fee';
-    console.log('🔍 salaryLabel:', { categoryId: data?.new_employee_category_name, categoryName, label });
     return label;
   }, [data?.new_employee_category_name, kategoriKaryawanOptions]);
 
   const handleInputChange = useCallback(
     (field: string, value: any) => {
-      console.log('🔄 handleInputChange:', { field, value });
       if (onChange) {
         onChange(field, value);
       }

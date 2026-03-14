@@ -43,7 +43,6 @@ export function useOldContract({ data = {}, isEditing = false, onChange, kategor
     const categoryOption = kategoriKaryawanOptions.find(option => option.value === data?.employee_category_name);
     const categoryName = categoryOption?.label?.toLowerCase();
     const result = categoryName?.includes('mitra') || categoryName?.includes('non staff') || categoryName === 'non-staff';
-    console.log('🔍 OldContract isNonStaffOrMitraCategory:', { categoryId: data?.employee_category_name, categoryName, result });
     return result;
   }, [data?.employee_category_name, kategoriKaryawanOptions]);
 
@@ -52,7 +51,6 @@ export function useOldContract({ data = {}, isEditing = false, onChange, kategor
     const categoryOption = kategoriKaryawanOptions.find(option => option.value === data?.employee_category_name);
     const categoryName = categoryOption?.label?.toLowerCase();
     const result = categoryName?.includes('staff') || categoryName === 'staff';
-    console.log('🔍 OldContract isStaffCategory:', { categoryId: data?.employee_category_name, categoryName, result });
     return result;
   }, [data?.employee_category_name, kategoriKaryawanOptions]);
 
@@ -64,7 +62,6 @@ export function useOldContract({ data = {}, isEditing = false, onChange, kategor
     let label = 'Gaji Pokok';
     if (categoryName?.toLowerCase() === 'non-staff' || categoryName?.toLowerCase().includes('non staff')) label = 'Uang Saku';
     if (categoryName?.toLowerCase() === 'mitra' || categoryName?.toLowerCase().includes('mitra')) label = 'Fee';
-    console.log('🔍 OldContract salaryLabel:', { categoryId: data?.employee_category_name, categoryName, label });
     return label;
   }, [data?.employee_category_name, kategoriKaryawanOptions]);
 
