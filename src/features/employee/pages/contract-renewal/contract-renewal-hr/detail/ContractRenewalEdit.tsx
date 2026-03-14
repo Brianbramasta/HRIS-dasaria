@@ -232,7 +232,7 @@ export default function PerpanjangKontrakEdit() {
                ) : null}
             </div>
             <div className="flex justify-end pt-4 ">
-              {kontrakData.extension_status === "Menunggu diproses" || kontrakData.extension_status === "Sedang di Proses" ? (
+              {kontrakData.extension_status === "Menunggu diproses" || kontrakData.extension_status === "Sedang diproses" ? (
                 <Button
                   onClick={handleEditClick}
                   variant="primary"
