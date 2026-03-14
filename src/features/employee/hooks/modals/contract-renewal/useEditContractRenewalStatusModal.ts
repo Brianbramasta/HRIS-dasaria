@@ -57,24 +57,34 @@ export function useEditContractRenewalStatusModal({
 
   useEffect(() => {
     if (contractExtensionDetail) {
-      if (contractExtensionDetail.new_position) {
-        const np = contractExtensionDetail.new_position;
+      console.log("ss", contractExtensionDetail);
+      if (
+        contractExtensionDetail.new_position ||
+        contractExtensionDetail.previous_position
+      ) {
+        const np = contractExtensionDetail.new_position || {};
+        const op = contractExtensionDetail.previous_position || {};
+
         setNewContractData({
-          new_change_type_id: np.change_type_id,
-          new_change_type_name: np.change_type,
-          new_employee_category_name: np.employee_category_id,
-          new_company_name: np.company_id,
-          new_office_name: np.office_id,
-          new_directorate_name: np.directorate_id,
-          new_division_name: np.division_id,
-          new_department_name: np.department_id,
+          new_change_type_id: np.change_type_id || "",
+          new_change_type_name: np.change_type || "",
+          new_employee_category_name: op.employee_category_id || "",
+          new_company_name: np.company_id || "",
+          new_office_name: np.office_id || "",
+          new_directorate_name: np.directorate_id || "",
+          new_division_name: np.division_id || "",
+          new_department_name: np.department_id || "",
           new_unit_name: np.unit_id || "",
-          new_position_name: np.position_id,
-          new_job_title_name: np.rank_position_id,
-          new_structural_position_name: np.structural_position_id,
-          new_position_level_name: np.position_level_id,
-          new_grade: np.grade,
-          new_basic_salary: np.salary,
+          new_position_name: np.position_id || "",
+          new_job_title_name: np.rank_position_id || "",
+          new_structural_position_name: np.structural_position_id || "",
+          new_position_level_name: np.position_level_id || "",
+          new_grade: np.grade || "",
+          new_basic_salary: np.salary || 0,
+          new_tunjangan_lama_kerja: op.tunjangan_lama_kerja || "",
+          new_tunjangan_pernikahan: op.tunjangan_pernikahan || "",
+          marital_status: contractExtensionDetail.marital_status || "",
+          dependents: contractExtensionDetail.dependents || 0,
         });
       }
 

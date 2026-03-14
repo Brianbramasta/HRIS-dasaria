@@ -194,6 +194,8 @@ export interface ContractExtensionDetailResult {
   note: string | null;
   previous_position: ContractPositionDetail;
   new_position: ContractNewPositionDetail;
+  marital_status: string;
+  dependents: number;
 }
 
 // --- Dropdown ---

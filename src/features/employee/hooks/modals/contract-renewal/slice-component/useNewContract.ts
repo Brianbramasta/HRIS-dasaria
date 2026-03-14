@@ -1,12 +1,13 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { employeeMasterDataService } from '@/features/employee/services/EmployeeMasterData.service';
-import { useApiContractExtension } from '@/features/employee/hooks/api/useApiContractExtension';
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { employeeMasterDataService } from "@/features/employee/services/EmployeeMasterData.service";
+import { useApiContractExtension } from "@/features/employee/hooks/api/useApiContractExtension";
 import {
   getEmployeeCategoryDropdownOptions,
   getPositionLevelDropdownOptions,
   getStructuralJobDropdownOptions,
   getUnitDropdownByDepartmentIdOptions,
-} from '@/features/employee/hooks/employee-data/form/useFormulirKaryawan';
+} from "@/features/employee/hooks/employee-data/form/useFormulirKaryawan";
+import { payrollPreviewService } from "@/features/employee/services/PayrollPreviewService";
 
 type Params = {
   data?: {
@@ -26,6 +27,8 @@ type Params = {
     new_grade?: string;
     new_basic_salary?: string | number;
     new_contract_document?: string;
+    marital_status: string;
+    dependents: number;
     // Salary components
     new_gaji_pokok?: string | number;
     new_tunjangan_pernikahan?: string | number;
@@ -38,7 +41,11 @@ type Params = {
   onChange?: (field: string, value: any) => void;
 };
 
-export function useNewContract({ data = {}, isEditing = false, onChange }: Params) {
+export function useNewContract({
+  data = {},
+  isEditing = false,
+  onChange,
+}: Params) {
   const [companyOptions, setCompanyOptions] = useState<any[]>([]);
   const [officeOptions, setOfficeOptions] = useState<any[]>([]);
   const [directorateOptions, setDirectorateOptions] = useState<any[]>([]);
@@ -46,51 +53,77 @@ export function useNewContract({ data = {}, isEditing = false, onChange }: Param
   const [departmentOptions, setDepartmentOptions] = useState<any[]>([]);
   const [jobTitleOptions, setJobTitleOptions] = useState<any[]>([]);
   const [positionOptions, setPositionOptions] = useState<any[]>([]);
-  const [kategoriKaryawanOptions, setKategoriKaryawanOptions] = useState<any[]>([]);
-  const [selectedGrade, setSelectedGrade] = useState<string>('');
+  const [kategoriKaryawanOptions, setKategoriKaryawanOptions] = useState<any[]>(
+    [],
+  );
+  const [selectedGrade, setSelectedGrade] = useState<string>("");
   const [positionLevelOptions, setPositionLevelOptions] = useState<any[]>([]);
-  const [jabatanStrukturalOptions, setJabatanStrukturalOptions] = useState<any[]>([]);
+  const [jabatanStrukturalOptions, setJabatanStrukturalOptions] = useState<
+    any[]
+  >([]);
   const [unitOptions, setUnitOptions] = useState<any[]>([]);
   const [diskresiOptions] = useState<any[]>([]);
-  const [companySearch, setCompanySearch] = useState('');
-  const [officeSearch, setOfficeSearch] = useState('');
-  const [directorateSearch, setDirectorateSearch] = useState('');
-  const [divisionSearch, setDivisionSearch] = useState('');
-  const [departmentSearch, setDepartmentSearch] = useState('');
-  const [unitSearch, setUnitSearch] = useState('');
-  const [jobTitleSearch, setJobTitleSearch] = useState('');
-  const [positionSearch, setPositionSearch] = useState('');
-  const [positionLevelSearch, setPositionLevelSearch] = useState('');
-  const [employeeCategorySearch, setEmployeeCategorySearch] = useState('');
+  const [companySearch, setCompanySearch] = useState("");
+  const [officeSearch, setOfficeSearch] = useState("");
+  const [directorateSearch, setDirectorateSearch] = useState("");
+  const [divisionSearch, setDivisionSearch] = useState("");
+  const [departmentSearch, setDepartmentSearch] = useState("");
+  const [unitSearch, setUnitSearch] = useState("");
+  const [jobTitleSearch, setJobTitleSearch] = useState("");
+  const [positionSearch, setPositionSearch] = useState("");
+  const [positionLevelSearch, setPositionLevelSearch] = useState("");
+  const [employeeCategorySearch, setEmployeeCategorySearch] = useState("");
 
   const { changeTypeOptions, fetchChangeTypes } = useApiContractExtension();
 
   // Category checking logic
   const isNonStaffOrMitraCategory = useMemo(() => {
-    // Find category name from ID using kategoriKaryawanOptions
-    const categoryOption = kategoriKaryawanOptions.find(option => option.value === data?.new_employee_category_name);
+    if (!data?.new_employee_category_name) return false; // ❌ langsung return false kalau masih kosong
+    const categoryOption = kategoriKaryawanOptions.find(
+      (option) =>
+        String(option.value) === String(data.new_employee_category_name),
+    );
     const categoryName = categoryOption?.label?.toLowerCase();
-    const result = categoryName?.includes('mitra') || categoryName?.includes('non staff') || categoryName === 'non-staff';
-    console.log('🔍 isNonStaffOrMitraCategory changed:', { categoryId: data?.new_employee_category_name, categoryName, result });
+    const result =
+      categoryName?.includes("mitra") ||
+      categoryName?.includes("non staff") ||
+      categoryName === "non-staff";
+    console.log("🔍 isNonStaffOrMitraCategory changed:", {
+      categoryId: data.new_employee_category_name,
+      categoryName,
+      result,
+    });
     return result;
   }, [data?.new_employee_category_name, kategoriKaryawanOptions]);
 
   const isStaffCategory = useMemo(() => {
-    // Find category name from ID using kategoriKaryawanOptions
-    const categoryOption = kategoriKaryawanOptions.find(option => option.value === data?.new_employee_category_name);
+    if (!data?.new_employee_category_name) return false;
+    const categoryOption = kategoriKaryawanOptions.find(
+      (option) =>
+        String(option.value) === String(data.new_employee_category_name),
+    );
     const categoryName = categoryOption?.label?.toLowerCase();
-    const result = categoryName?.includes('staff') || categoryName === 'staff';
-    return result;
+    return categoryName?.includes("staff") || categoryName === "staff";
   }, [data?.new_employee_category_name, kategoriKaryawanOptions]);
 
   // Dynamic salary label logic
   const salaryLabel = useMemo(() => {
     // Find category name from ID using kategoriKaryawanOptions
-    const categoryOption = kategoriKaryawanOptions.find(option => option.value === data?.new_employee_category_name);
+    const categoryOption = kategoriKaryawanOptions.find(
+      (option) => option.value === data?.new_employee_category_name,
+    );
     const categoryName = categoryOption?.label;
-    let label = 'Gaji Pokok';
-    if (categoryName?.toLowerCase() === 'non-staff' || categoryName?.toLowerCase().includes('non staff')) label = 'Uang Saku';
-    if (categoryName?.toLowerCase() === 'mitra' || categoryName?.toLowerCase().includes('mitra')) label = 'Fee';
+    let label = "Gaji Pokok";
+    if (
+      categoryName?.toLowerCase() === "non-staff" ||
+      categoryName?.toLowerCase().includes("non staff")
+    )
+      label = "Uang Saku";
+    if (
+      categoryName?.toLowerCase() === "mitra" ||
+      categoryName?.toLowerCase().includes("mitra")
+    )
+      label = "Fee";
     return label;
   }, [data?.new_employee_category_name, kategoriKaryawanOptions]);
 
@@ -100,33 +133,42 @@ export function useNewContract({ data = {}, isEditing = false, onChange }: Param
         onChange(field, value);
       }
     },
-    [onChange]
+    [onChange],
   );
+  const [newContractData, setNewContractData] = useState(data || {});
 
+  // helper
+  const handleNewContractChange = useCallback(
+    (field: string, value: any) => {
+      setNewContractData((prev) => ({ ...prev, [field]: value }));
+      handleInputChange(field, value); // update props callback
+    },
+    [handleInputChange],
+  );
   const addNonFixAllowance = useCallback(() => {
     const currentDiskresi = data?.new_tunjangan_diskresi || [];
-    const newDiskresi = [...currentDiskresi, { id: '', amount: 0 }];
-    handleInputChange('new_tunjangan_diskresi', newDiskresi);
+    const newDiskresi = [...currentDiskresi, { id: "", amount: 0 }];
+    handleInputChange("new_tunjangan_diskresi", newDiskresi);
   }, [data?.new_tunjangan_diskresi, handleInputChange]);
 
   const removeNonFixAllowance = useCallback(
     (index: number) => {
       const currentDiskresi = data?.new_tunjangan_diskresi || [];
       const newDiskresi = currentDiskresi.filter((_, i) => i !== index);
-      handleInputChange('new_tunjangan_diskresi', newDiskresi);
+      handleInputChange("new_tunjangan_diskresi", newDiskresi);
     },
-    [data?.new_tunjangan_diskresi, handleInputChange]
+    [data?.new_tunjangan_diskresi, handleInputChange],
   );
 
   const updateNonFixAllowance = useCallback(
-    (index: number, field: 'id' | 'amount', value: any) => {
+    (index: number, field: "id" | "amount", value: any) => {
       const currentDiskresi = data?.new_tunjangan_diskresi || [];
       const newDiskresi = currentDiskresi.map((item, i) =>
-        i === index ? { ...item, [field]: value } : item
+        i === index ? { ...item, [field]: value } : item,
       );
-      handleInputChange('new_tunjangan_diskresi', newDiskresi);
+      handleInputChange("new_tunjangan_diskresi", newDiskresi);
     },
-    [data?.new_tunjangan_diskresi, handleInputChange]
+    [data?.new_tunjangan_diskresi, handleInputChange],
   );
 
   useEffect(() => {
@@ -148,8 +190,15 @@ export function useNewContract({ data = {}, isEditing = false, onChange }: Param
   useEffect(() => {
     const handler = setTimeout(async () => {
       try {
-        const companies = await employeeMasterDataService.getCompanyDropdown(companySearch || undefined);
-        setCompanyOptions((companies || []).map((i: any) => ({ label: i.company_name, value: i.id })));
+        const companies = await employeeMasterDataService.getCompanyDropdown(
+          companySearch || undefined,
+        );
+        setCompanyOptions(
+          (companies || []).map((i: any) => ({
+            label: i.company_name,
+            value: i.id,
+          })),
+        );
       } catch {
         setCompanyOptions([]);
       }
@@ -160,8 +209,16 @@ export function useNewContract({ data = {}, isEditing = false, onChange }: Param
   useEffect(() => {
     const handler = setTimeout(async () => {
       try {
-        const directorates = await employeeMasterDataService.getDirectorateDropdown(directorateSearch || undefined);
-        setDirectorateOptions((directorates || []).map((i: any) => ({ label: i.directorate_name, value: i.id })));
+        const directorates =
+          await employeeMasterDataService.getDirectorateDropdown(
+            directorateSearch || undefined,
+          );
+        setDirectorateOptions(
+          (directorates || []).map((i: any) => ({
+            label: i.directorate_name,
+            value: i.id,
+          })),
+        );
       } catch {
         setDirectorateOptions([]);
       }
@@ -172,8 +229,15 @@ export function useNewContract({ data = {}, isEditing = false, onChange }: Param
   useEffect(() => {
     const handler = setTimeout(async () => {
       try {
-        const positions = await employeeMasterDataService.getPositionDropdown(positionSearch || undefined);
-        setPositionOptions((positions || []).map((i: any) => ({ label: i.position_name, value: i.id })));
+        const positions = await employeeMasterDataService.getPositionDropdown(
+          positionSearch || undefined,
+        );
+        setPositionOptions(
+          (positions || []).map((i: any) => ({
+            label: i.position_name,
+            value: i.id,
+          })),
+        );
       } catch {
         setPositionOptions([]);
       }
@@ -184,8 +248,16 @@ export function useNewContract({ data = {}, isEditing = false, onChange }: Param
   useEffect(() => {
     const handler = setTimeout(async () => {
       try {
-        const jobTitles = await employeeMasterDataService.getJobTitleDropdown(jobTitleSearch || undefined);
-        setJobTitleOptions((jobTitles || []).map((i: any) => ({ label: i.job_title_name, value: i.id, grade: i.grade })));
+        const jobTitles = await employeeMasterDataService.getJobTitleDropdown(
+          jobTitleSearch || undefined,
+        );
+        setJobTitleOptions(
+          (jobTitles || []).map((i: any) => ({
+            label: i.job_title_name,
+            value: i.id,
+            grade: i.grade,
+          })),
+        );
       } catch {
         setJobTitleOptions([]);
       }
@@ -196,7 +268,9 @@ export function useNewContract({ data = {}, isEditing = false, onChange }: Param
   useEffect(() => {
     const handler = setTimeout(async () => {
       try {
-        const kategori = await getEmployeeCategoryDropdownOptions(employeeCategorySearch || undefined);
+        const kategori = await getEmployeeCategoryDropdownOptions(
+          employeeCategorySearch || undefined,
+        );
         setKategoriKaryawanOptions(kategori);
       } catch {
         setKategoriKaryawanOptions([]);
@@ -208,7 +282,9 @@ export function useNewContract({ data = {}, isEditing = false, onChange }: Param
   useEffect(() => {
     const handler = setTimeout(async () => {
       try {
-        const positionLevels = await getPositionLevelDropdownOptions(positionLevelSearch || undefined);
+        const positionLevels = await getPositionLevelDropdownOptions(
+          positionLevelSearch || undefined,
+        );
         setPositionLevelOptions(positionLevels);
       } catch {
         setPositionLevelOptions([]);
@@ -224,8 +300,16 @@ export function useNewContract({ data = {}, isEditing = false, onChange }: Param
         return;
       }
       try {
-        const items = await employeeMasterDataService.getDivisionsByDirectorate(data.new_directorate_name, divisionSearch || undefined);
-        setDivisionOptions((items || []).map((i: any) => ({ label: i.division_name, value: i.id })));
+        const items = await employeeMasterDataService.getDivisionsByDirectorate(
+          data.new_directorate_name,
+          divisionSearch || undefined,
+        );
+        setDivisionOptions(
+          (items || []).map((i: any) => ({
+            label: i.division_name,
+            value: i.id,
+          })),
+        );
       } catch {
         setDivisionOptions([]);
       }
@@ -240,7 +324,9 @@ export function useNewContract({ data = {}, isEditing = false, onChange }: Param
         return;
       }
       try {
-        const items = await getStructuralJobDropdownOptions(data.new_job_title_name);
+        const items = await getStructuralJobDropdownOptions(
+          data.new_job_title_name,
+        );
         setJabatanStrukturalOptions(items);
       } catch {
         setJabatanStrukturalOptions([]);
@@ -256,8 +342,16 @@ export function useNewContract({ data = {}, isEditing = false, onChange }: Param
         return;
       }
       try {
-        const items = await employeeMasterDataService.getDepartmentsByDivision(data.new_division_name, departmentSearch || undefined);
-        setDepartmentOptions((items || []).map((i: any) => ({ label: i.department_name, value: i.id })));
+        const items = await employeeMasterDataService.getDepartmentsByDivision(
+          data.new_division_name,
+          departmentSearch || undefined,
+        );
+        setDepartmentOptions(
+          (items || []).map((i: any) => ({
+            label: i.department_name,
+            value: i.id,
+          })),
+        );
       } catch {
         setDepartmentOptions([]);
       }
@@ -272,7 +366,10 @@ export function useNewContract({ data = {}, isEditing = false, onChange }: Param
         return;
       }
       try {
-        const items = await getUnitDropdownByDepartmentIdOptions(data.new_department_name, unitSearch || undefined);
+        const items = await getUnitDropdownByDepartmentIdOptions(
+          data.new_department_name,
+          unitSearch || undefined,
+        );
         setUnitOptions(items);
       } catch {
         setUnitOptions([]);
@@ -288,8 +385,16 @@ export function useNewContract({ data = {}, isEditing = false, onChange }: Param
         return;
       }
       try {
-        const items = await employeeMasterDataService.getOfficeDropdown(officeSearch || undefined, data.new_company_name);
-        setOfficeOptions((items || []).map((i: any) => ({ label: i.office_name, value: i.id })));
+        const items = await employeeMasterDataService.getOfficeDropdown(
+          officeSearch || undefined,
+          data.new_company_name,
+        );
+        setOfficeOptions(
+          (items || []).map((i: any) => ({
+            label: i.office_name,
+            value: i.id,
+          })),
+        );
       } catch {
         setOfficeOptions([]);
       }
@@ -298,12 +403,81 @@ export function useNewContract({ data = {}, isEditing = false, onChange }: Param
   }, [data?.new_company_name, officeSearch]);
 
   useEffect(() => {
-    const selectedJob = jobTitleOptions.find((job) => job.value === data?.new_job_title_name);
+    const selectedJob = jobTitleOptions.find(
+      (job) => job.value === data?.new_job_title_name,
+    );
     if (selectedJob?.grade) {
       setSelectedGrade(selectedJob.grade);
-      handleInputChange('new_grade', selectedJob.grade);
+      handleInputChange("new_grade", selectedJob.grade);
     }
   }, [jobTitleOptions, data?.new_job_title_name, handleInputChange]);
+
+  const [selectedEmployeeCategory, setSelectedEmployeeCategory] =
+    useState<string>("");
+
+  useEffect(() => {
+    if (
+      data?.new_employee_category_name &&
+      kategoriKaryawanOptions.length > 0
+    ) {
+      const exists = kategoriKaryawanOptions.find(
+        (opt) => String(opt.value) === String(data.new_employee_category_name),
+      );
+      if (exists) {
+        setSelectedEmployeeCategory(exists.value);
+      }
+    }
+  }, [data?.new_employee_category_name, kategoriKaryawanOptions]);
+
+  useEffect(() => {
+    const fetchPayrollPreview = async () => {
+      if (
+        !newContractData?.new_job_title_name ||
+        !newContractData?.new_position_level_name ||
+        !newContractData?.marital_status // pastikan marital_status ada
+      )
+        return;
+
+      try {
+        const params = {
+          job_title_id: newContractData.new_job_title_name,
+          Position_level_id: newContractData.new_position_level_name,
+          employee_categories_id:
+            newContractData.new_employee_category_name || "",
+          category: newContractData.marital_status, // key tetap "category"
+          dependents: Number(newContractData.dependents) || 0,
+        };
+
+        const res = await payrollPreviewService.getPreviewPayroll(params);
+        const pp = res.data;
+
+        handleNewContractChange("new_gaji_pokok", pp.basic_salary);
+        handleNewContractChange("new_tunjangan_jabatan", pp.position_allowance);
+        // handleNewContractChange(
+        //   "new_tunjangan_pernikahan",
+        //   pp.marital_allowance || 0,
+        // );
+        // handleNewContractChange(
+        //   "new_tunjangan_lama_kerja",
+        //   pp.length_of_service || 0,
+        // );
+
+        const gajiBersih = (pp.basic_salary || 0) + (newContractData.new_tunjangan_lama_kerja || 0)+ (newContractData.new_tunjangan_pernikahan||0) + (pp.position_allowance||0);
+        handleNewContractChange("new_gaji_bersih", gajiBersih);
+      } catch (err) {
+        console.error("Failed to fetch payroll preview", err);
+      }
+    };
+
+    fetchPayrollPreview();
+  }, [
+    newContractData?.new_job_title_name,
+    newContractData?.new_position_level_name,
+    newContractData?.new_employee_category_name,
+    newContractData?.marital_status, // pastikan sudah ada
+    newContractData?.dependents,
+    handleNewContractChange,
+  ]);
 
   return {
     isEditing,
@@ -339,5 +513,8 @@ export function useNewContract({ data = {}, isEditing = false, onChange }: Param
     addNonFixAllowance,
     removeNonFixAllowance,
     updateNonFixAllowance,
+    selectedEmployeeCategory,
+    setSelectedEmployeeCategory,
+    handleNewContractChange,
   };
 }
