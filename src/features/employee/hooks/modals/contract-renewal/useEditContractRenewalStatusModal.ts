@@ -198,7 +198,7 @@ export function useEditContractRenewalStatusModal({
         formData.append('note', contractRenewalData.notes);
       }
       if (contractRenewalData?.evaluation_document instanceof File) {
-        formData.append('document_evaluasi', contractRenewalData.evaluation_document);
+        formData.append('eval_document', contractRenewalData.evaluation_document);
       }
       if (contractRenewalData?.contract_type_id) {
         formData.append('contract_type_id', contractRenewalData.contract_type_id);
@@ -207,13 +207,20 @@ export function useEditContractRenewalStatusModal({
         formData.append('contract_sequence', contractRenewalData.contract_sequence);
       }
       if (contractRenewalData?.new_contract_date) {
-        formData.append('sign_date_new_contract', contractRenewalData.new_contract_date);
+        formData.append('start_date', contractRenewalData.new_contract_date);
       }
       if (contractRenewalData?.new_contract_end_date) {
-        formData.append('end_date_new_contract', contractRenewalData.new_contract_end_date);
+        formData.append('end_date', contractRenewalData.new_contract_end_date);
       }
       if (contractRenewalData?.contract_document instanceof File) {
         formData.append('contract_document', contractRenewalData.contract_document);
+      }
+
+      // Determine extension_type based on whether we're showing all components (change) or not (no change)
+      if (shouldShowAllComponents()) {
+        formData.append('extension_type', 'berubah');
+      } else {
+        formData.append('extension_type', 'tetap');
       }
 
       if (shouldShowAllComponents() && newContractData) {
@@ -228,8 +235,25 @@ export function useEditContractRenewalStatusModal({
         if (newContractData.new_structural_position_name) formData.append('structural_job_id', newContractData.new_structural_position_name);
         if (newContractData.new_unit_name) formData.append('unit_id', newContractData.new_unit_name);
         if (newContractData.new_position_level_name) formData.append('position_level_id', newContractData.new_position_level_name);
-        if (newContractData.new_change_type_id) formData.append('change_type_id', newContractData.new_change_type_id);
+        // if (newContractData.new_change_type_id) formData.append('change_type_id', newContractData.new_change_type_id);
         if (newContractData.new_employee_category_name) formData.append('employee_category_id', newContractData.new_employee_category_name);
+        
+        // Add change_type and extension_type
+        if (newContractData.new_change_type_name) {
+          formData.append('change_type', newContractData.new_change_type_name);
+        }
+        
+        // Add non-fix allowance (tunjangan diskresi)
+        if (newContractData.new_tunjangan_diskresi && Array.isArray(newContractData.new_tunjangan_diskresi)) {
+          newContractData.new_tunjangan_diskresi.forEach((allowance: any, index: number) => {
+            if (allowance.id) {
+              formData.append(`non_fix_allowance[${index}][non_fix_allowance_id]`, allowance.id);
+            }
+            if (allowance.amount) {
+              formData.append(`non_fix_allowance[${index}][amount]`, allowance.amount.toString());
+            }
+          });
+        }
       }
 
       const success = await onSubmit(formData);

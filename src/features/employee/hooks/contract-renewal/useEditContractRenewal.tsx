@@ -95,7 +95,7 @@ export function useEditContractRenewal(): UseEditContractRenewalReturn {
         payload.append('_method', 'PATCH');
       }
 
-      await contractExtensionsService.processRequestDecision(id, payload);
+      await contractExtensionsService.updateContract(id, payload);
       // addNotification({
       //   title: 'Success',
       //   description: 'Status updated successfully',
@@ -133,7 +133,7 @@ export function useEditContractRenewal(): UseEditContractRenewalReturn {
         payload.append('_method', 'PATCH');
       }
 
-      await contractExtensionsService.processRequestDecision(id, payload);
+      await contractExtensionsService.updateContract(id, payload);
       // addNotification({
       //   title: 'Success',
       //   description: 'Pengajuan updated successfully',

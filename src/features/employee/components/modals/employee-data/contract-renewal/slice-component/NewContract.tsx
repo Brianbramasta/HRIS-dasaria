@@ -2,6 +2,7 @@ import PayrollCard from '@/features/payroll/components/cards/Cards';
 import InputField from '@/components/shared/field/InputField';
 import SelectField from '@/components/shared/field/SelectField';
 import { useNewContract } from '@/features/employee/hooks/modals/contract-renewal/slice-component/useNewContract';
+import { useApiPayrollPreview } from '@/features/employee/hooks/api/useApiPayrollPreview';
 import { formatInputCurrency, formatCurrency, parseCurrency } from '@/utils/formatCurrency';
 import { IconPlus as PlusIcon, IconHapus as TrashBinIcon } from '@/icons/components/icons';
 
@@ -43,6 +44,7 @@ export default function NewContract({
   onChange,
 }: NewContractProps) {
   console.log('🎨 NewContract rendering:', { data, isEditing });
+  const { nonFixAllowanceOptions, fetchNonFixAllowanceDropdown } = useApiPayrollPreview();
   const {
     changeTypeOptions,
     companyOptions,
@@ -57,7 +59,6 @@ export default function NewContract({
     positionLevelOptions,
     jabatanStrukturalOptions,
     unitOptions,
-    diskresiOptions,
     isNonStaffOrMitraCategory,
     isStaffCategory,
     salaryLabel,
@@ -97,7 +98,12 @@ export default function NewContract({
             label="Jenis Perubahan"
             defaultValue={data?.new_change_type_id || ''}
             disabled={!isEditing}
-            onChange={(value) => handleInputChange('new_change_type_id', value)}
+            onChange={(value) => {
+              handleInputChange('new_change_type_id', value);
+              // Find and store label as well
+              const selectedOption = changeTypeOptions.find(option => option.value === value);
+              handleInputChange('new_change_type_name', selectedOption?.label || '');
+            }}
             containerClassName="space-y-2"
             options={[
               { label: 'Pilih Jenis Perubahan', value: '' },
@@ -109,7 +115,14 @@ export default function NewContract({
             options={kategoriKaryawanOptions}
             defaultValue={data?.new_employee_category_name || ''}
             disabled={!isEditing}
-            onChange={(value) => handleInputChange('new_employee_category_name', value)}
+            onChange={(value) => {
+              handleInputChange('new_employee_category_name', value);
+              // Fetch non-fix allowance options when category changes to Staff
+              const selectedOption = kategoriKaryawanOptions.find(option => option.value === value);
+              if (selectedOption?.label === 'Staff') {
+                fetchNonFixAllowanceDropdown();
+              }
+            }}
             onSearch={setEmployeeCategorySearch}
             containerClassName="space-y-2"
             placeholder="Select"
@@ -282,7 +295,17 @@ export default function NewContract({
                     <div className="md:col-span-6">
                       <SelectField
                         label="Jenis Tunjangan Diskresi"
-                        options={diskresiOptions}
+                        options={nonFixAllowanceOptions
+                          .map((opt: any) => ({ 
+                            value: opt.id, 
+                            label: opt.allowance_name 
+                          }))
+                          .filter(option => 
+                            !(data?.new_tunjangan_diskresi || []).some((otherAllowance, otherIndex) => 
+                              otherAllowance.id === option.value && otherIndex !== index
+                            )
+                          )
+                        }
                         defaultValue={allowance.id}
                         onChange={(value) => updateNonFixAllowance(index, 'id', value)}
                         placeholder="Pilih Tunjangan Tidak Tetap"
@@ -302,7 +325,7 @@ export default function NewContract({
                         />
                       </div>
                       <div>
-                        {!isEditing ? null : (index === (data?.new_tunjangan_diskresi || []).length - 1 ? (
+                        {!isEditing ? null : (index === (data?.new_tunjangan_diskresi || [{ id: '', amount: 0 }]).length - 1 ? (
                           <button
                             className="p-2.5 rounded-lg bg-success-500 hover:bg-success-600 text-white w-11 h-11 flex items-center justify-center"
                             onClick={addNonFixAllowance}
