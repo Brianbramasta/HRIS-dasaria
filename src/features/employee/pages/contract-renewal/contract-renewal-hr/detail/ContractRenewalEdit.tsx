@@ -8,6 +8,7 @@ import EditStatusPerpanjanganModal from '@/features/employee/components/modals/e
 import Button from '@/components/ui/button/Button';
 import { useEditContractRenewal } from '../../../../hooks/contract-renewal/useEditContractRenewal';
 import { useContractRenewalStore } from '../../../../stores/useContractRenewalStore';
+import { useApiContractExtension } from '../../../../hooks/api/useApiContractExtension';
 
 
 
@@ -27,6 +28,8 @@ export default function PerpanjangKontrakEdit() {
     extensionStatusOptions,
   } = useEditContractRenewal();
 
+  const { processContractExtension } = useApiContractExtension();
+
   const {
     setChangeTypeName,
     shouldShowAllComponents,
@@ -42,6 +45,15 @@ export default function PerpanjangKontrakEdit() {
 
   const handleEditClick = () => {
     setIsStatusModalOpen(true);
+  };
+
+  const handleProcessContract = async () => {
+    if (!id) return;
+    
+    const success = await processContractExtension(id);
+    if (success) {
+      await fetchContractRenewalDetail();
+    }
   };
 
   // Map data for ContractRenewalDetail
@@ -206,8 +218,21 @@ export default function PerpanjangKontrakEdit() {
 
           {/* Edit Button - Only show when status is "Menunggu diproses" or "Sedang di Proses" */}
           {kontrakData?.extension_status && (
+            < div className='flex justify-end gap-4'>
+             <div className="flex justify-end pt-4 ">
+              {kontrakData.extension_status === "Menunggu diproses" ? (
+                <Button
+                  onClick={handleProcessContract}
+                  variant="custom"
+                  className='border'
+                  size="sm"
+                >
+                  Di proses
+                </Button>
+               ) : null}
+            </div>
             <div className="flex justify-end pt-4 ">
-              {/* {kontrakData.extension_status === "Menunggu diproses" || kontrakData.extension_status === "Sedang di Proses" ? ( */}
+              {kontrakData.extension_status === "Menunggu diproses" || kontrakData.extension_status === "Sedang di Proses" ? (
                 <Button
                   onClick={handleEditClick}
                   variant="primary"
@@ -215,7 +240,8 @@ export default function PerpanjangKontrakEdit() {
                 >
                   Edit
                 </Button>
-              {/* ) : null} */}
+              ) : null} 
+            </div>
             </div>
           )}
         </div>

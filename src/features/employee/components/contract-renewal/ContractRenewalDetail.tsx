@@ -115,7 +115,8 @@ export default function ContractRenewalDetail({
             containerClassName="space-y-2"
             options={[
               { label: 'Diperpanjang Tetap', value: 'Diperpanjang Tetap' },
-              { label: 'Sedang di Proses', value: 'Sedang di Proses' },
+              { label: 'Diperpanjang Berubah', value: 'Diperpanjang Berubah' },
+              { label: 'Sedang diproses', value: 'Sedang diproses' },
               { label: 'Menunggu diproses', value: 'Menunggu diproses' },
               { label: 'Ditolak', value: 'Ditolak' },
             ]}

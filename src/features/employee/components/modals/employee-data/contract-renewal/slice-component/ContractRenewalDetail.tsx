@@ -55,7 +55,7 @@ export default function ContractRenewalDetail({
     const options = statusOptions.length > 0 ? statusOptions : [
       { label: 'Diperpanjang Tetap', value: 'Diperpanjang Tetap' },
       { label: 'Diperpanjang Berubah', value: 'Diperpanjang Berubah' },
-      { label: 'Sedang di Proses', value: 'Sedang di Proses', disabled: true },
+      { label: 'Sedang diproses', value: 'Sedang diproses', disabled: true },
       { label: 'Menunggu diproses', value: 'Menunggu diproses', disabled: true },
       { label: 'Ditolak', value: 'Ditolak', disabled: true },
     ];
