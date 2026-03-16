@@ -54,7 +54,7 @@ export default function DetailKaryawanPage() {
             </span>
             <div className='text-center md:text-left'>
               <div className="text-base font-semibold">{detail?.Personal_Data?.full_name}</div>
-              <div className="text-sm text-gray-500">{detail?.Employment_Position_Data?.department_name}</div>
+              <div className="text-sm text-gray-500"> {detail?.Employment_Position_Data?.employee_category} | {detail?.Employment_Position_Data?.department_name}</div>
             </div>
           </div>
           <div className="flex items-center gap-2">

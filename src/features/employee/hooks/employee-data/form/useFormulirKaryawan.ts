@@ -160,9 +160,7 @@ export const useFormulirKaryawan = (): UseFormulirKaryawanReturn => {
   // Handle next step with file check
   const handleNextWithFileCheck = useCallback(() => {
     // Check if foto profil is missing
-    // const missingFileStep = checkForMissingFiles();
-    
-    // if (missingFileStep > 0) {
+    // if (checkForMissingFiles() > 0) {
     //   const message = `File di Step ${missingFileStep} hilang. Silakan upload ulang file tersebut sebelum melanjutkan.`;
     //   if (window.confirm(message)) {
     //     // Redirect to the step with missing file

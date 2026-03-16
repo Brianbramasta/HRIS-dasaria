@@ -179,7 +179,7 @@ const Select: React.FC<SelectProps> = ({
               <li>
                 <button
                   type="button"
-                  className={`block w-full px-4 py-2 text-left text-sm ${
+                  className={`block w-full px-4 py-2 text-left text-sm dark:text-gray-600 ${
                     selectedValue === "" ? "bg-brand-50 dark:bg-gray-800" : ""
                   }`}
                   onClick={() => commitChange("")}
@@ -199,7 +199,7 @@ const Select: React.FC<SelectProps> = ({
                     } ${
                       selectedValue === o.value
                         ? "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
-                        : ""
+                        : "dark:text-gray-400"
                     }`}
                     onClick={() => !o.disabled && commitChange(o.value)}
                     disabled={o.disabled}

@@ -78,6 +78,7 @@ export interface EmploymentPositionResponse {
   payroll_status: string;
   division_id: string;
   employee_category_id: string;
+  employee_category: string;
 }
 
 export interface EmployeeDocumentItem {
