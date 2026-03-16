@@ -3,6 +3,7 @@ import InputField from "@/components/shared/field/InputField";
 import SelectField from "@/components/shared/field/SelectField";
 import { useNewContract } from "@/features/employee/hooks/modals/contract-renewal/slice-component/useNewContract";
 import { useApiPayrollPreview } from "@/features/employee/hooks/api/useApiPayrollPreview";
+import { useEffect } from "react";
 import {
   formatInputCurrency,
   formatCurrency,
@@ -90,11 +91,18 @@ export default function NewContract({
     setSelectedEmployeeCategory,
   } = useNewContract({ data, isEditing, onChange });
 
+  // Fetch non-fix allowance dropdown when component renders
+  useEffect(() => {
+    fetchNonFixAllowanceDropdown();
+  }, []);
+
   // Create stable reference for non-fix allowances to prevent filtering issues
-  const nonFixAllowances = data?.new_tunjangan_diskresi || [
-    { id: "", amount: 0 },
-  ];
-  console.log(nonFixAllowanceOptions, "nonFixallowance");
+  const nonFixAllowances =
+    data?.new_tunjangan_diskresi && data.new_tunjangan_diskresi.length > 0
+      ? data.new_tunjangan_diskresi
+      : [{ id: "", amount: 0 }];
+  console.log(nonFixAllowances, "nonFixallowance");
+  console.log(nonFixAllowanceOptions, "nonFixAllowanceOptions");
 
   return (
     <PayrollCard title="Kontrak Baru" headerColor="green" border={false}>
@@ -103,7 +111,7 @@ export default function NewContract({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <SelectField
             label="Jenis Perubahan"
-            defaultValue={data?.new_change_type_id || ""}
+            defaultValue={data?.new_change_type_id}
             disabled={!isEditing}
             onChange={(value) => {
               handleInputChange("new_change_type_id", value);
@@ -113,8 +121,9 @@ export default function NewContract({
               );
               handleInputChange(
                 "new_change_type_name",
-                selectedOption?.label || "",
+                selectedOption?.label,
               );
+            
             }}
             containerClassName="space-y-2"
             options={[
@@ -144,7 +153,7 @@ export default function NewContract({
           <SelectField
             label="Perusahaan"
             options={companyOptions}
-            defaultValue={data?.new_company_name || ""}
+            defaultValue={data?.new_company_name}
             disabled={!isEditing}
             onChange={(value) => handleInputChange("new_company_name", value)}
             onSearch={setCompanySearch}
@@ -160,7 +169,7 @@ export default function NewContract({
                 ? officeOptions
                 : [{ label: "Pilih perusahaan terlebih dahulu", value: "" }]
             }
-            defaultValue={data?.new_office_name || ""}
+            defaultValue={data?.new_office_name}
             disabled={!isEditing || officeOptions.length === 0}
             onChange={(value) => handleInputChange("new_office_name", value)}
             onSearch={setOfficeSearch}
@@ -170,7 +179,7 @@ export default function NewContract({
           <SelectField
             label="Direktorat"
             options={directorateOptions}
-            defaultValue={data?.new_directorate_name || ""}
+            defaultValue={data?.new_directorate_name}
             disabled={!isEditing}
             onChange={(value) =>
               handleInputChange("new_directorate_name", value)
@@ -186,7 +195,7 @@ export default function NewContract({
                 ? divisionOptions
                 : [{ label: "Pilih direktorat terlebih dahulu", value: "" }]
             }
-            defaultValue={data?.new_division_name || ""}
+            defaultValue={data?.new_division_name}
             disabled={!isEditing || divisionOptions.length === 0}
             onChange={(value) => handleInputChange("new_division_name", value)}
             onSearch={setDivisionSearch}
@@ -202,7 +211,7 @@ export default function NewContract({
                 ? departmentOptions
                 : [{ label: "Pilih divisi terlebih dahulu", value: "" }]
             }
-            defaultValue={data?.new_department_name || ""}
+            defaultValue={data?.new_department_name}
             disabled={!isEditing || departmentOptions.length === 0}
             onChange={(value) =>
               handleInputChange("new_department_name", value)
@@ -218,7 +227,7 @@ export default function NewContract({
                 ? unitOptions
                 : [{ label: "Pilih departemen terlebih dahulu", value: "" }]
             }
-            defaultValue={data?.new_unit_name || ""}
+            defaultValue={data?.new_unit_name}
             disabled={!isEditing || unitOptions.length === 0}
             onChange={(value) => handleInputChange("new_unit_name", value)}
             onSearch={setUnitSearch}
@@ -228,7 +237,7 @@ export default function NewContract({
           <SelectField
             label="Position"
             options={positionOptions}
-            defaultValue={data?.new_position_name || ""}
+            defaultValue={data?.new_position_name}
             disabled={!isEditing}
             onChange={(value) => handleInputChange("new_position_name", value)}
             onSearch={setPositionSearch}
@@ -240,7 +249,7 @@ export default function NewContract({
           <SelectField
             label="Jabatan Kepangkatan"
             options={jobTitleOptions}
-            defaultValue={data?.new_job_title_name || ""}
+            defaultValue={data?.new_job_title_name}
             disabled={!isEditing}
             onChange={(value) =>
               handleNewContractChange("new_job_title_name", value)
@@ -252,7 +261,7 @@ export default function NewContract({
           <SelectField
             label="Jabatan Struktural"
             options={jabatanStrukturalOptions}
-            defaultValue={data?.new_structural_position_name || ""}
+            defaultValue={data?.new_structural_position_name}
             disabled={!isEditing || !data?.new_job_title_name}
             onChange={(value) =>
               handleInputChange("new_structural_position_name", value)
@@ -263,7 +272,7 @@ export default function NewContract({
           <SelectField
             label="Jenjang Jabatan"
             options={positionLevelOptions}
-            defaultValue={data?.new_position_level_name || ""}
+            defaultValue={data?.new_position_level_name}
             disabled={!isEditing}
             onChange={(value) =>
               handleNewContractChange("new_position_level_name", value)
@@ -276,7 +285,7 @@ export default function NewContract({
           {/* Row 5: Golongan, Gaji Pokok */}
           <InputField
             label="Golongan"
-            value={selectedGrade || data?.new_grade || ""}
+            value={selectedGrade || data?.new_grade}
             disabled
             onChange={(e) => handleInputChange("new_grade", e.target.value)}
             containerClassName="space-y-2"
@@ -284,7 +293,7 @@ export default function NewContract({
           <InputField
             label={salaryLabel}
             type="text"
-            value={formatInputCurrency(String(data?.new_gaji_pokok || ""))}
+            value={formatInputCurrency(String(data?.new_gaji_pokok))}
             disabled
             onChange={(e) => {
               const cleaned = e.target.value.replace(/[^0-9]/g, "");
@@ -300,7 +309,7 @@ export default function NewContract({
                 label="Tunjangan Jabatan"
                 type="text"
                 value={formatInputCurrency(
-                  String(data?.new_tunjangan_jabatan || ""),
+                  String(data?.new_tunjangan_jabatan),
                 )}
                 disabled
                 onChange={(e) => {
@@ -318,7 +327,7 @@ export default function NewContract({
               label="Tunjangan Lama Kerja"
               type="text"
               value={formatInputCurrency(
-                String(data?.new_tunjangan_lama_kerja || ""),
+                String(data?.new_tunjangan_lama_kerja),
               )}
               disabled
               onChange={(e) => {
@@ -411,7 +420,7 @@ export default function NewContract({
               label="Tunjangan Pernikahan"
               type="text"
               value={formatInputCurrency(
-                String(data?.new_tunjangan_pernikahan || ""),
+                String(data?.new_tunjangan_pernikahan || 0),
               )}
               disabled
               onChange={(e) => {
@@ -426,7 +435,14 @@ export default function NewContract({
           <InputField
             label="Gaji Bersih"
             type="text"
-            value={formatInputCurrency(String(data?.new_gaji_bersih || ""))}
+            value={formatInputCurrency(
+              String(
+                Number(data?.new_gaji_bersih || 0) +
+                (data?.new_tunjangan_diskresi || [])
+                  .filter(item => item.id && item.amount > 0)
+                  .reduce((total, item) => total + (item.amount || 0), 0)
+              )
+            )}
             disabled
             onChange={(e) => {
               const cleaned = e.target.value.replace(/[^0-9]/g, "");

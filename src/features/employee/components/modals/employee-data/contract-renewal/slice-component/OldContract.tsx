@@ -59,7 +59,7 @@ export default function OldContract({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <InputField
             label="Kategori Karyawan"
-            value={data?.employee_category_name || ""}
+            value={data?.employee_category_name}
             disabled={!isEditing}
             onChange={(e) =>
               handleInputChange("employee_category_name", e.target.value)
@@ -68,14 +68,14 @@ export default function OldContract({
           />
           <InputField
             label="Perusahaan"
-            value={data?.company_name || ""}
+            value={data?.company_name}
             disabled={!isEditing}
             onChange={(e) => handleInputChange("company_name", e.target.value)}
             containerClassName="space-y-2"
           />
           <InputField
             label="Kantor"
-            value={data?.office_name || ""}
+            value={data?.office_name}
             disabled={!isEditing}
             onChange={(e) => handleInputChange("office_name", e.target.value)}
             containerClassName="space-y-2"
@@ -84,7 +84,7 @@ export default function OldContract({
           {/* Row 2: Direktorat, Divisi, Departemen */}
           <InputField
             label="Direktorat"
-            value={data?.directorate_name || ""}
+            value={data?.directorate_name}
             disabled={!isEditing}
             onChange={(e) =>
               handleInputChange("directorate_name", e.target.value)
@@ -93,14 +93,14 @@ export default function OldContract({
           />
           <InputField
             label="Divisi"
-            value={data?.division_name || ""}
+            value={data?.division_name}
             disabled={!isEditing}
             onChange={(e) => handleInputChange("division_name", e.target.value)}
             containerClassName="space-y-2"
           />
           <InputField
             label="Departemen"
-            value={data?.department_name || ""}
+            value={data?.department_name}
             disabled={!isEditing}
             onChange={(e) =>
               handleInputChange("department_name", e.target.value)
@@ -111,21 +111,21 @@ export default function OldContract({
           {/* Row 3: Unit, Position, Jabatan Kepangkatan */}
           <InputField
             label="Unit"
-            value={data?.unit_name || ""}
+            value={data?.unit_name}
             disabled={!isEditing}
             onChange={(e) => handleInputChange("unit_name", e.target.value)}
             containerClassName="space-y-2"
           />
           <InputField
             label="Position"
-            value={data?.position_name || ""}
+            value={data?.position_name}
             disabled={!isEditing}
             onChange={(e) => handleInputChange("position_name", e.target.value)}
             containerClassName="space-y-2"
           />
           <InputField
             label="Jabatan Kepangkatan"
-            value={data?.job_title_name || ""}
+            value={data?.job_title_name}
             disabled={!isEditing}
             onChange={(e) =>
               handleInputChange("job_title_name", e.target.value)
@@ -136,7 +136,7 @@ export default function OldContract({
           {/* Row 4: Jabatan Struktural, Jenjang Jabatan, Golongan */}
           <InputField
             label="Jabatan Struktural"
-            value={data?.structural_position_name || ""}
+            value={data?.structural_position_name}
             disabled={!isEditing}
             onChange={(e) =>
               handleInputChange("structural_position_name", e.target.value)
@@ -145,7 +145,7 @@ export default function OldContract({
           />
           <InputField
             label="Jenjang Jabatan"
-            value={data?.position_level_name || ""}
+            value={data?.position_level_name}
             disabled={!isEditing}
             onChange={(e) =>
               handleInputChange("position_level_name", e.target.value)
@@ -154,7 +154,7 @@ export default function OldContract({
           />
           <InputField
             label="Golongan"
-            value={data?.grade || ""}
+            value={data?.grade}
             disabled={!isEditing}
             onChange={(e) => handleInputChange("grade", e.target.value)}
             containerClassName="space-y-2"
@@ -164,7 +164,7 @@ export default function OldContract({
           <InputField
             label={salaryLabel}
             type="text"
-            value={formatInputCurrency(String(data?.gaji_pokok || ""))}
+            value={formatInputCurrency(String(data?.gaji_pokok))}
             disabled={!isEditing}
             onChange={(e) => {
               const cleaned = e.target.value.replace(/[^0-9]/g, "");
@@ -177,7 +177,7 @@ export default function OldContract({
               label="Tunjangan Pernikahan"
               type="text"
               value={formatInputCurrency(
-                String(data?.tunjangan_pernikahan || ""),
+                String(data?.tunjangan_pernikahan),
               )}
               disabled={!isEditing}
               onChange={(e) => {
@@ -193,7 +193,7 @@ export default function OldContract({
             <InputField
               label="Tunjangan Jabatan"
               type="text"
-              value={formatInputCurrency(String(data?.tunjangan_jabatan || ""))}
+              value={formatInputCurrency(String(data?.tunjangan_jabatan))}
               disabled={!isEditing}
               onChange={(e) => {
                 const cleaned = e.target.value.replace(/[^0-9]/g, "");
@@ -207,7 +207,7 @@ export default function OldContract({
               label="Tunjangan Lama Kerja"
               type="text"
               value={formatInputCurrency(
-                String(data?.tunjangan_lama_kerja || ""),
+                String(data?.tunjangan_lama_kerja),
               )}
               disabled={!isEditing}
               onChange={(e) => {
@@ -273,7 +273,7 @@ export default function OldContract({
           <InputField
             label="Gaji Bersih"
             type="text"
-            value={formatInputCurrency(String(data?.gaji_bersih || ""))}
+            value={formatInputCurrency(String(data?.gaji_bersih))}
             disabled={!isEditing}
             onChange={(e) => {
               const cleaned = e.target.value.replace(/[^0-9]/g, "");

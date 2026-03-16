@@ -104,6 +104,7 @@ export function useEditContractRenewal(): UseEditContractRenewalReturn {
       // });
       setIsStatusModalOpen(false);
       await fetchContractRenewalDetail();
+      navigate('/contract-extension');
       return true;
     } catch (error: any) {
       addNotification({

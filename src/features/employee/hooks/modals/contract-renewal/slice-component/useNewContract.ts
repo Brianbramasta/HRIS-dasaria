@@ -162,7 +162,7 @@ export function useNewContract({
 
   const updateNonFixAllowance = useCallback(
     (index: number, field: "id" | "amount", value: any) => {
-      const currentDiskresi = data?.new_tunjangan_diskresi || [];
+      const currentDiskresi = data?.new_tunjangan_diskresi || [{ id: "", amount: 0 }];
       const newDiskresi = currentDiskresi.map((item, i) =>
         i === index ? { ...item, [field]: value } : item,
       );
@@ -462,11 +462,17 @@ export function useNewContract({
         //   pp.length_of_service || 0,
         // );
 
+        // Calculate total tunjangan diskresi
+        const totalTunjanganDiskresi = (newContractData.new_tunjangan_diskresi || [])
+          .filter(item => item.id && item.amount > 0)
+          .reduce((total, item) => total + (item.amount || 0), 0);
+
         const gajiBersih =
           (pp.basic_salary || 0) +
           (newContractData.new_tunjangan_lama_kerja || 0) +
           (newContractData.new_tunjangan_pernikahan || 0) +
-          (pp.position_allowance || 0);
+          (pp.position_allowance || 0) +
+          totalTunjanganDiskresi;
         handleNewContractChange("new_gaji_bersih", gajiBersih);
       } catch (err) {
         console.error("Failed to fetch payroll preview", err);
@@ -480,6 +486,32 @@ export function useNewContract({
     newContractData?.new_employee_category_name,
     newContractData?.marital_status, // pastikan sudah ada
     newContractData?.dependents,
+    handleNewContractChange,
+  ]);
+
+  // Calculate Gaji Bersih when tunjangan diskresi or other salary components change
+  useEffect(() => {
+    if (!newContractData?.new_gaji_pokok) return; // wait for basic salary to be calculated
+
+    // Calculate total tunjangan diskresi
+    const totalTunjanganDiskresi = (newContractData.new_tunjangan_diskresi || [])
+      .filter(item => item.id && item.amount > 0)
+      .reduce((total, item) => total + (item.amount || 0), 0);
+
+    const gajiBersih =
+      Number(newContractData.new_gaji_pokok || 0) +
+      Number(newContractData.new_tunjangan_lama_kerja || 0) +
+      Number(newContractData.new_tunjangan_pernikahan || 0) +
+      Number(newContractData.new_tunjangan_jabatan || 0) +
+      totalTunjanganDiskresi;
+    
+    handleNewContractChange("new_gaji_bersih", gajiBersih);
+  }, [
+    newContractData?.new_gaji_pokok,
+    newContractData?.new_tunjangan_lama_kerja,
+    newContractData?.new_tunjangan_pernikahan,
+    newContractData?.new_tunjangan_jabatan,
+    newContractData?.new_tunjangan_diskresi,
     handleNewContractChange,
   ]);
 
