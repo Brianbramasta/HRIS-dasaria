@@ -223,16 +223,16 @@ export default function PerpanjangKontrakEdit() {
               {kontrakData.extension_status === "Menunggu diproses" ? (
                 <Button
                   onClick={handleProcessContract}
-                  variant="custom"
+                  variant="primary"
                   className='border'
                   size="sm"
                 >
-                  Di proses
+                  Proses
                 </Button>
                ) : null}
             </div>
             <div className="flex justify-end pt-4 ">
-              {kontrakData.extension_status === "Menunggu diproses" || kontrakData.extension_status === "Sedang diproses" ? (
+              { kontrakData.extension_status === "Sedang diproses" ? (
                 <Button
                   onClick={handleEditClick}
                   variant="primary"
