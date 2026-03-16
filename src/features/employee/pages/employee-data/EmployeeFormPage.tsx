@@ -68,9 +68,9 @@ export default function FormulirKaryawanPage() {
 
     const checkForUploadedFiles = () => {
       // Check if foto profil is uploaded
-      if (formData.step1.fotoProfil && formData.step1.fotoProfil instanceof File) {
-        return true;
-      }
+      // if (formData.step1.fotoProfil && formData.step1.fotoProfil instanceof File) {
+      //   return true;
+      // }
       
       // Check if any documents are uploaded
       if (formData.step4.documents && Array.isArray(formData.step4.documents)) {

@@ -364,8 +364,9 @@ export const useFormulirKaryawanStore = create<FormulirStore>((set, get) => {
           step1.nomorTelepon &&
           step1.jumlahTanggungan &&
           step1.alamatDomisili &&
-          step1.alamatKtp &&
-          step1.fotoProfil
+          step1.alamatKtp 
+          // &&
+          // step1.fotoProfil
         ); }
 
       case 2:

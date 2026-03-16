@@ -162,15 +162,15 @@ export const useFormulirKaryawan = (): UseFormulirKaryawanReturn => {
     // Check if foto profil is missing
     const missingFileStep = checkForMissingFiles();
     
-    if (missingFileStep > 0) {
-      const message = `File di Step ${missingFileStep} hilang. Silakan upload ulang file tersebut sebelum melanjutkan.`;
-      if (window.confirm(message)) {
-        // Redirect to the step with missing file
-        const { setCurrentStep } = useFormulirKaryawanStore.getState();
-        setCurrentStep(missingFileStep);
-      }
-      return;
-    }
+    // if (missingFileStep > 0) {
+    //   const message = `File di Step ${missingFileStep} hilang. Silakan upload ulang file tersebut sebelum melanjutkan.`;
+    //   if (window.confirm(message)) {
+    //     // Redirect to the step with missing file
+    //     const { setCurrentStep } = useFormulirKaryawanStore.getState();
+    //     setCurrentStep(missingFileStep);
+    //   }
+    //   return;
+    // }
     
     // If no missing files, proceed with normal next step
     goToNextStep();
@@ -181,16 +181,16 @@ export const useFormulirKaryawan = (): UseFormulirKaryawanReturn => {
     if (!validateRequiredFields()) return;
     
     // Check for missing files before submit (only Step 1)
-    const missingFileStep = checkForMissingFiles();
-    if (missingFileStep > 0) {
-      const message = `File di Step ${missingFileStep} hilang. Silakan upload ulang file tersebut sebelum submit.`;
-      if (window.confirm(message)) {
-        // Redirect to the step with missing file
-        const { setCurrentStep } = useFormulirKaryawanStore.getState();
-        setCurrentStep(missingFileStep);
-      }
-      return;
-    }
+    // const missingFileStep = checkForMissingFiles();
+    // if (missingFileStep > 0) {
+    //   const message = `File di Step ${missingFileStep} hilang. Silakan upload ulang file tersebut sebelum submit.`;
+    //   if (window.confirm(message)) {
+    //     // Redirect to the step with missing file
+    //     const { setCurrentStep } = useFormulirKaryawanStore.getState();
+    //     setCurrentStep(missingFileStep);
+    //   }
+    //   return;
+    // }
     
     try {
       setLoading(true);
