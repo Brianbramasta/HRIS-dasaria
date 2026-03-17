@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { ChevronLeft } from 'react-feather';
 import PayrollCard from '@/features/payroll/components/cards/Cards';
 import { useApiOrganizationChange } from '@/features/employee/hooks/api/useApiOrganizationChange';
 import InputField from '@/components/shared/field/InputField';
 import TextAreaField from '@/components/shared/field/TextAreaField';
+import FIleField from '@/components/shared/field/FIleField';
+import LinkPreview from '@/components/shared/form/LinkPreview';
+import Button from '@/components/ui/button/Button';
+import { handleViewFile } from '@/utils/viewFileHandle';
 import { formatCurrency } from '@/utils/formatCurrency';
-import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const DetailOrganizationHistoryPage: React.FC = () => {
@@ -17,7 +20,26 @@ const DetailOrganizationHistoryPage: React.FC = () => {
   const {
     organizationChangeDetail,
     fetchOrganizationChangeDetail,
+    uploadDocument,
+    loading,
   } = useApiOrganizationChange();
+
+  const [skFile, setSkFile] = useState<File | null>(null);
+  const [adendumFile, setAdendumFile] = useState<File | null>(null);
+
+  const handleSubmit = useCallback(async () => {
+    if (!id) return;
+    
+    const payload = {
+      decree_file: skFile || undefined,
+      adendum_file: adendumFile || undefined,
+    };
+
+    const success = await uploadDocument(id, payload);
+    if (success) {
+      navigate('/organization-history');
+    }
+  }, [id, skFile, adendumFile, uploadDocument, navigate]);
 
   console.log(organizationChangeDetail,'organizationChangeDetail');
 
@@ -236,10 +258,36 @@ const DetailOrganizationHistoryPage: React.FC = () => {
             />
           </div>
           <div className="col-span-1">
-            <InputField label="Sk Perubahan" placeholder="Otomatis" disabled value={organizationChangeDetail?.decree_file || ''} onChange={() => {}} />
+            {organizationChangeDetail?.decree_file ? (
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Sk Perubahan</label>
+                <LinkPreview 
+                  label="Lihat Sk Perubahan" 
+                  url={organizationChangeDetail.decree_file} 
+                  onClick={() => handleViewFile({ fileUrl: organizationChangeDetail.decree_file })}
+                />
+              </div>
+            ) : (
+              <FIleField label="Upload Sk Perubahan" onChange={(e) => setSkFile(e.target.files?.[0] || null)} />
+            )}
           </div>
           <div className="col-span-1">
-            <InputField label="Adendum" placeholder="Otomatis" disabled value={organizationChangeDetail?.adendum_file || ''} onChange={() => {}} />
+            {organizationChangeDetail?.adendum_file ? (
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Adendum</label>
+                <LinkPreview 
+                  label="Lihat Adendum" 
+                  url={organizationChangeDetail.adendum_file} 
+                  onClick={() => handleViewFile({ fileUrl: organizationChangeDetail.adendum_file })}
+                />
+              </div>
+            ) : (
+              <FIleField 
+                label="Upload Adendum" 
+                onChange={(e) => setAdendumFile(e.target.files?.[0] || null)} 
+                disabled={!!organizationChangeDetail?.decree_file}
+              />
+            )}
           </div>
           <div className="col-span-1 md:col-span-2">
             <TextAreaField
@@ -252,6 +300,19 @@ const DetailOrganizationHistoryPage: React.FC = () => {
               onChange={() => {}}
             />
           </div>
+          {!organizationChangeDetail?.decree_file && (
+            <div className="col-span-1 md:col-span-2 flex justify-end">
+              <Button
+                variant="custom"
+                size="sm"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2"
+                onClick={handleSubmit}
+                disabled={loading || (!skFile && !adendumFile)}
+              >
+                {loading ? 'Menyimpan...' : 'Simpan'}
+              </Button>
+            </div>
+          )}
         </div>
       </PayrollCard>
       </div>

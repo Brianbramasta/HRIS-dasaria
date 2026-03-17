@@ -6,15 +6,24 @@ interface LinkPreviewProps {
   label?: string;
   disabled?: boolean;
   className?: string;
+  onClick?: () => void;
 }
 
-export default function LinkPreview({ url, label = 'Lihat Sertifikat', disabled = false, className = '' }: LinkPreviewProps) {
+export default function LinkPreview({ url, label = 'Lihat Sertifikat', disabled = false, className = '', onClick }: LinkPreviewProps) {
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    } else {
+      window.open(formatUrlFile(url || ''), '_blank');
+    }
+  };
+
   return (
     <Button
       variant="outline"
       size="sm"
       className={`w-full ${className}`}
-      onClick={() => window.open(formatUrlFile(url || ''), '_blank')}
+      onClick={handleClick}
       disabled={disabled || !url}
       endIcon={
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">

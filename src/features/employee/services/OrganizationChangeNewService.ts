@@ -76,6 +76,7 @@ class OrganizationChangeNewService {
    */
   async uploadDocument(changeId: string, payload: UploadDocumentPayload): Promise<ApiResponse<UploadDocumentResponse>> {
     const formData = new FormData();
+    formData.append('_method', 'PATCH');
     
     if (payload.decree_file) {
       formData.append('decree_file', payload.decree_file);

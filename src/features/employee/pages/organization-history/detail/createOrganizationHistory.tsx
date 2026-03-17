@@ -27,6 +27,7 @@ const CreateOrganizationHistoryPage: React.FC = () => {
     isStaffCategory,
     salaryLabel,
     diskresiOptions,
+    isFromAtasan,
     handleInput,
     handleNIPChange,
     handleSubmit,
@@ -423,12 +424,16 @@ const CreateOrganizationHistoryPage: React.FC = () => {
                 containerClassName="space-y-2"
               />
             </div>
-            <div>
-              <FIleField label="Upload Sk Perubahan" required onChange={addState.handleFileChange as any} />
-            </div>
-            <div>
-              <FIleField label="Upload Adendum" onChange={addState.handleAdendumFileChange as any} />
-            </div>
+            {!isFromAtasan && (
+              <>
+                <div>
+                  <FIleField label="Upload Sk Perubahan" required onChange={addState.handleFileChange as any} />
+                </div>
+                <div>
+                  <FIleField label="Upload Adendum" onChange={addState.handleAdendumFileChange as any} />
+                </div>
+              </>
+            )}
             <div className="col-span-1 md:col-span-2">
               <TextAreaField
                 label="Alasan Perubahan"

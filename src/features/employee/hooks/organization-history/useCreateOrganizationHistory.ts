@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useApiOrganizationChange } from '@/features/employee/hooks/api/useApiOrganizationChange';
 import { useEditOrganizationHistoryModal } from '@/features/employee/hooks/modals/organization-history/useEditOrganizationHistoryModal';
 import { useApiPayrollPreview } from '@/features/employee/hooks/api/useApiPayrollPreview';
@@ -8,6 +8,9 @@ import { formatIndonesianToISO, formatDateToISO } from '@/utils/formatDate';
 
 export const useCreateOrganizationHistory = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  const isFromAtasan = searchParams.get('mode') === 'atasan';
 
   // API Hook
   const {
@@ -356,7 +359,7 @@ export const useCreateOrganizationHistory = () => {
 
       const payload = {
         employee_id: detailForm.employee_id,
-        org_change_type: 'hr',
+        org_change_type: isFromAtasan ? 'recomendation' : 'hr',
         change_type_id: detailForm.change_type_id,
         change_type_name: changeTypeName,
         effective_date: formattedDate,
@@ -391,7 +394,7 @@ export const useCreateOrganizationHistory = () => {
 
       const success = await storeOrganizationChange(payload);
       if (success) {
-        navigate(-1);
+        navigate('/organization-history');
       }
     } catch (error) {
       console.error('Error creating organization change:', error);
@@ -429,6 +432,7 @@ export const useCreateOrganizationHistory = () => {
     isStaffCategory,
     salaryLabel,
     diskresiOptions,
+    isFromAtasan,
     handleInput,
     handleNIPChange,
     handleSubmit,

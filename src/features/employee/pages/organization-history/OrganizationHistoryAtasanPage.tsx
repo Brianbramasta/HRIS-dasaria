@@ -167,7 +167,7 @@ export default function OrganizationHistoryAtasanPage() {
         dateRangeFilters={dateRangeFilters}
         emptyMessage="Belum ada perubahan organisasi"
         addButtonLabel="Tambah Organisasi"
-        onAdd={() => navigate('/organization-history/create')}
+        onAdd={() => navigate('/organization-history/create?mode=atasan')}
         searchPlaceholder="Cari berdasarkan kata kunci"
         onSearchChange={handleSearchChange}
         onSortChange={handleSortChange}
