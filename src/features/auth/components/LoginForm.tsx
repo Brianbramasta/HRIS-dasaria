@@ -20,7 +20,7 @@ interface LoginFormProps {
 }
 
 export default function LoginForm({ onSubmit, isLoading = false, error = null, formData, showPassword, keepMeLoggedIn, onInputChange, onKeepMeLoggedInChange, onToggleShowPassword }: LoginFormProps) {
-  const [adminContact, setAdminContact] = useState('+62 851-4250-5733');
+  const [adminContact, setAdminContact] = useState(import.meta.env.VITE_ADMIN_CONTACT || '+62 823-3868-4262');
 
   useEffect(() => {
     const savedContact = localStorage.getItem('adminContact');
