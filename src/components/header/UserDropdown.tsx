@@ -4,6 +4,8 @@ import { Dropdown } from "../ui/dropdown/Dropdown";
 import { useAuthStore } from "@/features/auth/stores/AuthStore";
 import { clearAllFilterPersistence } from "@/stores/filterStore";
 
+const isDev = import.meta.env.VITE_APP_ENV === 'dev';
+
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const { user, logout } = useAuthStore((state) => state);
@@ -93,6 +95,33 @@ export default function UserDropdown() {
               Edit profile
             </DropdownItem>
           </li>
+          {isDev && (
+            <li>
+              <DropdownItem
+                onItemClick={closeDropdown}
+                tag="a"
+                to="/temporary-api"
+                className="flex items-center gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+              >
+                <svg
+                  className="fill-gray-500 group-hover:fill-gray-700 dark:fill-gray-400 dark:group-hover:fill-gray-300"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM11.25 7C11.25 6.58579 11.5858 6.25 12 6.25C12.4142 6.25 12.75 6.58579 12.75 7V11.25H17C17.4142 11.25 17.75 11.5858 17.75 12C17.75 12.4142 17.4142 12.75 17 12.75H12.75V17C12.75 17.4142 12.4142 17.75 12 17.75C11.5858 17.75 11.25 17.4142 11.25 17V12.75H7C6.58579 12.75 6.25 12.4142 6.25 12C6.25 11.5858 6.58579 11.25 7 11.25H11.25V7Z"
+                    fill=""
+                  />
+                </svg>
+                Temporary API
+              </DropdownItem>
+            </li>
+          )}
           {/* <li>
             <DropdownItem
               onItemClick={closeDropdown}
