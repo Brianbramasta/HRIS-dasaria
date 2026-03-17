@@ -14,6 +14,7 @@ interface FileFieldProps {
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
   maxFileSize?: number; // in bytes
+  disabled?: boolean;
 }
 
 const FIleField: FC<FileFieldProps> = ({
@@ -28,11 +29,13 @@ const FIleField: FC<FileFieldProps> = ({
   onChange,
   className = "",
   maxFileSize = 5 * 1024 * 1024, // 5MB default
+  disabled = false,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState<string>("");
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (disabled) return;
     const files = e.target.files;
     if (files && files.length > 0) {
       // Check file size for each file
@@ -58,10 +61,12 @@ const FIleField: FC<FileFieldProps> = ({
   };
 
   const handleClick = () => {
+    if (disabled) return;
     fileInputRef.current?.click();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (disabled) return;
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       handleClick();
@@ -71,7 +76,7 @@ const FIleField: FC<FileFieldProps> = ({
   return (
     <div className={containerClassName}>
       {label && (
-        <Label htmlFor={htmlFor} className={labelClassName}>
+        <Label htmlFor={htmlFor} className={`${labelClassName} ${disabled ? 'opacity-50' : ''}`}>
           <>
             {label}
             {required && <span className="mr-1 text-error-500"> *</span>}
@@ -115,7 +120,7 @@ const FIleField: FC<FileFieldProps> = ({
                   <>
                     <span
                       ref={iconRef}
-                      className="inline-block ml-2 align-middle cursor-default"
+                      className={`inline-block ml-2 align-middle ${disabled ? 'cursor-not-allowed' : 'cursor-default'}`}
                       onMouseEnter={onEnter}
                       onMouseLeave={onLeave}
                     >
@@ -161,19 +166,21 @@ const FIleField: FC<FileFieldProps> = ({
         onChange={handleFileChange}
         className="hidden"
         id={htmlFor}
+        disabled={disabled}
       />
       
       {/* Custom file input UI */}
       <div 
-        className={`h-11 w-full rounded-lg border border-gray-300 bg-transparent text-sm text-gray-500 shadow-theme-xs transition-colors dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400 ${className}`}
+        className={`h-11 w-full rounded-lg border border-gray-300 bg-transparent text-sm text-gray-500 shadow-theme-xs transition-colors dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400 ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'} ${className}`}
         onClick={handleClick}
         onKeyDown={handleKeyDown}
-        tabIndex={0}
+        tabIndex={disabled ? -1 : 0}
         role="button"
         aria-label="Pilih file"
+        aria-disabled={disabled}
       >
         <div className="flex h-full items-center">
-          <div className="file:mr-5 file:border-collapse file:cursor-pointer file:rounded-l-lg file:border-0 file:border-r file:border-solid file:border-gray-200 file:bg-gray-50 file:py-3 file:pl-3.5 file:pr-3 file:text-sm file:text-gray-700 hover:file:bg-gray-100 dark:file:border-gray-800 dark:file:bg-white/[0.03] dark:file:text-gray-400 px-3 py-2.5 border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-white/[0.03] hover:bg-gray-100 dark:hover:bg-white/[0.05] cursor-pointer rounded-l-lg">
+          <div className={`px-3 py-2.5 border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-white/[0.03] rounded-l-lg ${disabled ? 'cursor-not-allowed' : 'hover:bg-gray-100 dark:hover:bg-white/[0.05] cursor-pointer'}`}>
             <span className="text-sm text-gray-700 dark:text-gray-400">Pilih File</span>
           </div>
           <div className="flex-1 px-3 text-sm text-gray-500 dark:text-gray-400 truncate">
