@@ -1,6 +1,6 @@
 // Dokumentasi: Halaman Tunjangan Tetap + integrasi tiga Modal Edit (Pernikahan, Lama Kerja, Transportasi)
 import { useState } from 'react';
-import DocumentsTable from '@/features/structure-and-organize/components/table/TableGlobal';
+import DataTable from '@/components/shared/datatable/DataTable';
 import ExpandCard from '@/features/structure-and-organize/components/card/ExpandCard';
 import { IconFileDetail, IconPencil } from '@/icons/components/icons';
 import EditTunjanganPernikahanModal from '@/features/payroll/components/modals/payroll-configuration/fixedAllowance/EditMarriageAllowanceModal';
@@ -71,16 +71,34 @@ export default function TunjanganTetapPage() {
   return (
     <div className="space-y-6 p-4">
       <ExpandCard title="Tunjangan Jabatan dan BPJS" withHeaderDivider defaultOpen>
-        <DocumentsTable
-          items={positionAllowanceRows as any}
+        <DataTable
+          border={false}
+          resetKey='position-allowance'
+          data={positionAllowanceRows}
+          maxHeight='max-w-full'
           columns={[
-            { id: 'no', label: 'No.', align: 'center', render: (_v: any, _r: any, idx: number) => idx + 1 },
-            { id: 'jabatan', label: 'Jabatan' },
-            { id: 'presentase', label: 'Presentase', align: 'center' },
-            { id: 'nominal', label: 'Nominal', align: 'right', render: (val: any) => formatCurrency(val || 0) },
+            { 
+              id: 'no', 
+              label: 'No.', 
+              align: 'center', 
+              sortable: false,
+              format: (_v: any, row: any) => row._index + 1 
+            },
+            { id: 'jabatan', label: 'Jabatan', sortable: true },
+            { id: 'presentase', label: 'Presentase', align: 'center', sortable: true },
+            { 
+              id: 'nominal', 
+              label: 'Nominal', 
+              align: 'right', 
+              sortable: true,
+              format: (_v: any, row: any) => formatCurrency(row.nominal || 0) 
+            },
             {
-              id: 'detailBpjs', label: 'Detail  BPJS', align: 'center', render: (_v: any, row: any) => (
-                // Dokumentasi: tombol Detail membuka modal Detail Tunjangan Jabatan
+              id: 'detailBpjs', 
+              label: 'Detail BPJS', 
+              align: 'center', 
+              sortable: false,
+              format: (_v: any, row: any) => (
                 <button
                   onClick={() => {
                     setPositionMode('detail');
@@ -92,65 +110,172 @@ export default function TunjanganTetapPage() {
                 </button>
               )
             },
-          ] as any}
-          // Dokumentasi: tombol Edit membuka modal Edit Tunjangan Jabatan
-          actions={[{
-            icon: <IconPencil />, onClick: (row: any) => {
-              setPositionMode('edit');
-              handleEditOpenPosition(row);
+          ]}
+          actions={[
+            {
+              icon: <IconPencil />, 
+              onClick: (row: any) => {
+                setPositionMode('edit');
+                handleEditOpenPosition(row);
+              }
             }
-          }]}
+          ]}
+          filterable={false}
+          searchable={true}
+          searchPlaceholder="Cari tunjangan jabatan..."
+          emptyMessage="Tidak ada data tunjangan jabatan"
+          disablePagination={false}
         />
       </ExpandCard>
 
       <ExpandCard title="Tunjangan Pernikahan" withHeaderDivider defaultOpen>
-        <DocumentsTable
-          items={marriageAllowanceRows as any}
+        <DataTable
+          border={false}
+          resetKey='marriage-allowance'
+          data={marriageAllowanceRows}
+          maxHeight='max-w-full'
           columns={[
-            { id: 'no', label: 'No.', align: 'center', render: (_v: any, _r: any, idx: number) => idx + 1 },
-            { id: 'statusPernikahan', label: 'Status Pernikahan' },
-            { id: 'status', label: 'Status' },
-            { id: 'tanggungan', label: 'Tanggungan', align: 'center' },
-            { id: 'nominal', label: 'Nominal', align: 'right', render: (val: any) => formatCurrency(val || 0) },
-          ] as any}
-          actions={[{ icon: <IconPencil />, onClick: (row: any) => handleEditOpenMarriage(row) }]}
+            { 
+              id: 'no', 
+              label: 'No.', 
+              align: 'center', 
+              sortable: false,
+              format: (_v: any, row: any) => row._index + 1 
+            },
+            { id: 'statusPernikahan', label: 'Status Pernikahan', sortable: true },
+            { id: 'status', label: 'Status', sortable: true },
+            { id: 'tanggungan', label: 'Tanggungan', align: 'center', sortable: true },
+            { 
+              id: 'nominal', 
+              label: 'Nominal', 
+              align: 'right', 
+              sortable: true,
+              format: (_v: any, row: any) => formatCurrency(row.nominal || 0) 
+            },
+          ]}
+          actions={[
+            { 
+              icon: <IconPencil />, 
+              onClick: (row: any) => handleEditOpenMarriage(row) 
+            }
+          ]}
+          filterable={false}
+          searchable={true}
+          searchPlaceholder="Cari tunjangan pernikahan..."
+          emptyMessage="Tidak ada data tunjangan pernikahan"
+          disablePagination={false}
         />
       </ExpandCard>
 
       <ExpandCard title="Tunjangan Lama Kerja" withHeaderDivider defaultOpen>
-        <DocumentsTable
-          items={lengthOfServiceRows as any}
+        <DataTable
+          border={false}
+          resetKey='length-of-service-allowance'
+          data={lengthOfServiceRows}
+          maxHeight='max-w-full'
           columns={[
-            { id: 'no', label: 'No.', align: 'center', render: (_v: any, _r: any, idx: number) => idx + 1 },
-            { id: 'lamaKerja', label: 'Lama Kerja' },
-            { id: 'nominal', label: 'Nominal', align: 'right', render: (val: any) => formatCurrency(val || 0) },
-          ] as any}
-          actions={[{ icon: <IconPencil />, onClick: (row: any) => handleEditOpenLengthOfService(row) }]}
+            { 
+              id: 'no', 
+              label: 'No.', 
+              align: 'center', 
+              sortable: false,
+              format: (_v: any, row: any) => row._index + 1 
+            },
+            { id: 'lamaKerja', label: 'Lama Kerja', sortable: true },
+            { 
+              id: 'nominal', 
+              label: 'Nominal', 
+              align: 'right', 
+              sortable: true,
+              format: (_v: any, row: any) => formatCurrency(row.nominal || 0) 
+            },
+          ]}
+          actions={[
+            { 
+              icon: <IconPencil />, 
+              onClick: (row: any) => handleEditOpenLengthOfService(row) 
+            }
+          ]}
+          filterable={false}
+          searchable={true}
+          searchPlaceholder="Cari tunjangan lama kerja..."
+          emptyMessage="Tidak ada data tunjangan lama kerja"
+          disablePagination={false}
         />
       </ExpandCard>
 
       {/* <ExpandCard title="FEE" withHeaderDivider defaultOpen>
-        <DocumentsTable
-          items={feeAllowanceRows as any}
+        <DataTable
+          border={false}
+          resetKey='fee-allowance'
+          data={feeAllowanceRows}
+          maxHeight='max-w-full'
           columns={[
-            { id: 'no', label: 'No.', align: 'center', render: (_v: any, _r: any, idx: number) => idx + 1 },
-            { id: 'namaFee', label: 'Nama FEE' },
-            { id: 'nominal', label: 'Nominal', align: 'right', render: (val: any) => formatCurrency(val || 0) },
-          ] as any}
-          actions={[{ icon: <IconPencil />, onClick: (row: any) => handleEditOpenFee(row) }]}
+            { 
+              id: 'no', 
+              label: 'No.', 
+              align: 'center', 
+              sortable: false,
+              format: (_v: any, row: any) => row._index + 1 
+            },
+            { id: 'namaFee', label: 'Nama FEE', sortable: true },
+            { 
+              id: 'nominal', 
+              label: 'Nominal', 
+              align: 'right', 
+              sortable: true,
+              format: (_v: any, row: any) => formatCurrency(row.nominal || 0) 
+            },
+          ]}
+          actions={[
+            { 
+              icon: <IconPencil />, 
+              onClick: (row: any) => handleEditOpenFee(row) 
+            }
+          ]}
+          filterable={false}
+          searchable={true}
+          searchPlaceholder="Cari fee..."
+          emptyMessage="Tidak ada data fee"
+          disablePagination={false}
         />
       </ExpandCard> */}
 
       {/* <ExpandCard title="Tunjangan Transportasi" withHeaderDivider defaultOpen>
-        <DocumentsTable
-          items={transportationAllowanceRows as any}
+        <DataTable
+          border={false}
+          resetKey='transportation-allowance'
+          data={transportationAllowanceRows}
+          maxHeight='max-w-full'
           columns={[
-            { id: 'no', label: 'No.', align: 'center', render: (_v: any, _r: any, idx: number) => idx + 1 },
-            { id: 'transportasi', label: 'Transportasi' },
-            { id: 'kategori', label: 'Kategori' },
-            { id: 'nominal', label: 'Nominal', align: 'right', render: (val: any) => formatCurrency(val || 0) },
-          ] as any}
-          actions={[{ icon: <IconPencil />, onClick: (row: any) => handleEditOpenTransportation(row) }]}
+            { 
+              id: 'no', 
+              label: 'No.', 
+              align: 'center', 
+              sortable: false,
+              format: (_v: any, row: any) => row._index + 1 
+            },
+            { id: 'transportasi', label: 'Transportasi', sortable: true },
+            { id: 'kategori', label: 'Kategori', sortable: true },
+            { 
+              id: 'nominal', 
+              label: 'Nominal', 
+              align: 'right', 
+              sortable: true,
+              format: (_v: any, row: any) => formatCurrency(row.nominal || 0) 
+            },
+          ]}
+          actions={[
+            { 
+              icon: <IconPencil />, 
+              onClick: (row: any) => handleEditOpenTransportation(row) 
+            }
+          ]}
+          filterable={false}
+          searchable={true}
+          searchPlaceholder="Cari tunjangan transportasi..."
+          emptyMessage="Tidak ada data tunjangan transportasi"
+          disablePagination={false}
         />
       </ExpandCard> */}
 
