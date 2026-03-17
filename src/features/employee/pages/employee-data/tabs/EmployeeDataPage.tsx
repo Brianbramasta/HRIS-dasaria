@@ -221,7 +221,7 @@ export default function DataKaryawanPage() {
             alt={row.full_name}
             className="h-8 w-8 rounded-full"
           />
-          <span>{row.full_name}</span>
+          <span className="whitespace-nowrap">{row.full_name}</span>
         </div>
       ),
     },
