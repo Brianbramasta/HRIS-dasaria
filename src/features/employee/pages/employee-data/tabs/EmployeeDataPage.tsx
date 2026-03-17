@@ -7,7 +7,7 @@ import useKaryawan from '../../../hooks/employee-data/list/useKaryawan';
 import AddKaryawanModal from '../../../components/modals/AddEmployeeModal';
 import DeleteKaryawanModal from '../../../components/modals/employee-data/DeleteEmployeeModal';
 import ShareLinkModal from '../../../components/modals/sharelink/ShareLinkModal';
-import { IconFileDetail, IconHapus } from '@/icons/components/icons';
+import { IconFileDetail } from '@/icons/components/icons';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 import { useEffect, useState } from 'react';
 import { formatImage } from '@/utils/formatImage';
@@ -159,7 +159,7 @@ export default function DataKaryawanPage() {
     // Modal handlers
     handleAddKaryawan,
     handleExportKaryawan,
-    handleDeleteClick,
+    
     handleConfirmDelete,
     handleAddModalClose,
     handleAddManual,
