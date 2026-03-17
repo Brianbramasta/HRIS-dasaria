@@ -1,7 +1,7 @@
-import { Modal } from '../../../../components/ui/modal/index';
-import Button from '../../../../components/ui/button/Button';
-import Checkbox from '../../../../components/form/input/Checkbox';
-import { DataTableColumn } from '../../../../components/shared/datatable/DataTable';
+import { Modal } from '../../ui/modal/index';
+import Button from '../../ui/button/Button';
+import Checkbox from '../../form/input/Checkbox';
+import { DataTableColumn } from './DataTable';
 
 interface ExportModalProps<T> {
   isOpen: boolean;

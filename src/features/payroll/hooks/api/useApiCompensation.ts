@@ -80,9 +80,8 @@ export const useApiCompensation = (): UseApiCompensationReturn => {
   const [search, setSearch] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
-  // Assuming filterStore is global and has keys for features. 
-  // If 'Compensation' filter key exists use it, otherwise empty.
-  const filterValue = useFilterStore((s) => (s.filters['Compensation'] ?? []).join(','));
+  // Filter value from store using the same key as DataTable title ('Kompensasi')
+  const filterValue = useFilterStore((s) => (s.filters['Kompensasi'] ?? []).join(','));
 
   const fetchCompensations = useCallback(async (filter?: Partial<TableFilter>) => {
     setLoading(true);

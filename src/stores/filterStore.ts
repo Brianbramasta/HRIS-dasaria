@@ -6,30 +6,8 @@ interface FilterState {
   clearFilterFor: (key: string) => void;
   getFilterFor: (key: string) => string[];
   clearAll: () => void;
+  initializeFromLocalStorage: () => void;
 }
-
-export const useFilterStore = create<FilterState>((set, get) => ({
-  filters: {},
-  setFilterFor: (key: string, value: string[]) => {
-    set((s) => ({ filters: { ...s.filters, [key]: value } }));
-  },
-  clearFilterFor: (key: string) => {
-    const next = { ...get().filters };
-    delete next[key];
-    set({ filters: next });
-  },
-  getFilterFor: (key: string) => get().filters[key] ?? [],
-  clearAll: () => set({ filters: {} }),
-}));
-
-export const setFilterFor = (key: string, value: string[]) =>
-  useFilterStore.getState().setFilterFor(key, value);
-
-export const clearFilterFor = (key: string) =>
-  useFilterStore.getState().clearFilterFor(key);
-
-export const getFilterFor = (key: string) =>
-  useFilterStore.getState().getFilterFor(key);
 
 const parseArray = (str: string | null): string[] | null => {
   if (!str) return null;
@@ -40,6 +18,56 @@ const parseArray = (str: string | null): string[] | null => {
     return null;
   }
 };
+
+const loadFiltersFromLocalStorage = (): Record<string, string[]> => {
+  if (typeof window === 'undefined') return {};
+  
+  const filters: Record<string, string[]> = {};
+  
+  // Load all datatable_filters_* keys from localStorage
+  for (let i = 0; i < window.localStorage.length; i++) {
+    const key = window.localStorage.key(i);
+    if (key && key.startsWith('datatable_filters_')) {
+      const pageKey = key.replace('datatable_filters_', '');
+      const filterValue = parseArray(window.localStorage.getItem(key));
+      if (filterValue && filterValue.length > 0) {
+        // Convert page key to a readable format (e.g., 'tunjangan-tidak-tetap' to 'Tunjangan Tidak Tetap')
+        const readableKey = pageKey.split('-').map(word => 
+          word.charAt(0).toUpperCase() + word.slice(1)
+        ).join(' ');
+        filters[readableKey] = filterValue;
+      }
+    }
+  }
+  
+  return filters;
+};
+
+export const useFilterStore = create<FilterState>((set, get) => ({
+  filters: loadFiltersFromLocalStorage(),
+  setFilterFor: (key: string, value: string[]) => {
+    set((s) => ({ filters: { ...s.filters, [key]: value } }));
+  },
+  clearFilterFor: (key: string) => {
+    const next = { ...get().filters };
+    delete next[key];
+    set({ filters: next });
+  },
+  getFilterFor: (key: string) => get().filters[key] ?? [],
+  clearAll: () => set({ filters: {} }),
+  initializeFromLocalStorage: () => {
+    set({ filters: loadFiltersFromLocalStorage() });
+  },
+}));
+
+export const setFilterFor = (key: string, value: string[]) =>
+  useFilterStore.getState().setFilterFor(key, value);
+
+export const clearFilterFor = (key: string) =>
+  useFilterStore.getState().clearFilterFor(key);
+
+export const getFilterFor = (key: string) =>
+  useFilterStore.getState().getFilterFor(key);
 
 export const persistPageFilters = (pageKey: string, terms: string[], columns: string[], isFilterActive: boolean = false) => {
   if (typeof window === 'undefined') return;

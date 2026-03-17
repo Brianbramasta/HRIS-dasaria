@@ -100,6 +100,7 @@ export default function NonRecurringAllowancePage() {
     <div className="p-4">
       <DataTable
         title="Tunjangan Tidak Tetap"
+        resetKey='tunjangan-tidak-tetap'
         data={rows}
         columns={columns}
         actions={actions}

@@ -32,6 +32,7 @@ export const useCompensation = ({ autoFetch = true }: { autoFetch?: boolean } = 
 
   // Auto fetch data saat mount atau saat parameter berubah (server-side)
   useEffect(() => {
+    console.log('fetching compensation');
     if (autoFetch) {
       fetchCompensations();
     }

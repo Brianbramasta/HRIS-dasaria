@@ -64,6 +64,7 @@ export default function KompensasiPage() {
     <div className="p-4">
       <DataTable
         title="Kompensasi"
+        resetKey='Kompensasi'
         data={rows}
         columns={columns}
         actions={actions}
@@ -73,7 +74,7 @@ export default function KompensasiPage() {
         externalPage={page}
         externalTotal={total}
         searchable
-        filterable
+        filterable={true}
         onSearchChange={(val) => setSearch(val)}
         onSortChange={(columnId, order) => setSort(columnId, order)}
         onPageChangeExternal={(p) => setPage(p)}

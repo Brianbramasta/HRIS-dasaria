@@ -13,8 +13,8 @@ import { IconExport, IconColumnFilter, IconCalendarFilter } from '@/icons/compon
 import { useFilterModal } from '../../../hooks/datatable/useFilterModal';
 import { useExportModal } from '../../../hooks/datatable/useExportModal';
 import { useDatatable } from '../../../hooks/datatable/useDatatable';
-import { FilterModal } from '../../../features/structure-and-organize/components/modals/FilterModal';
-import { ExportModal } from '../../../features/structure-and-organize/components/modals/ExportModal'
+import { FilterModal } from './FilterModal';
+import { ExportModal } from './ExportModal'
 import { ColumnFilterPopup, ColumnFilterOption } from './filter-column/ColumnFilterPopup';
 import { DateRangeFilterPopup } from './filter-column/DateRangeFilterPopup';
 
