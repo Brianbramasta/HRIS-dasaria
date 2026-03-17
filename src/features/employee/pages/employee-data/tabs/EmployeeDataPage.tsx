@@ -425,12 +425,12 @@ export default function DataKaryawanPage() {
   ];
 
   const actions: DataTableAction<Karyawan>[] = [
-    {
-      icon: <IconHapus />,
-      onClick: handleDeleteClick,
-      variant: 'outline',
-      color: 'error',
-    },
+    // {
+    //   icon: <IconHapus />,
+    //   onClick: handleDeleteClick,
+    //   variant: 'outline',
+    //   color: 'error',
+    // },
   ];
 
   // if (error) {
