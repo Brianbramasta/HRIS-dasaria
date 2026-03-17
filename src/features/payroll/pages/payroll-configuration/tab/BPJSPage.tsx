@@ -80,6 +80,7 @@ export default function BpjsPage() {
     <div className="p-4">
       <DataTable
         title="BPJS"
+        resetKey='BPJS'
         data={rows}
         columns={columns}
         actions={actions}

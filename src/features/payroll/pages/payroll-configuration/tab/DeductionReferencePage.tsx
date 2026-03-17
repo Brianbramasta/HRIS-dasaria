@@ -61,6 +61,7 @@ export default function AcuanPotonganPage() {
     <div className="p-4">
       <DataTable
         title="Acuan Potongan"
+        resetKey='Acuan Potongan'
         data={rows}
         columns={columns}
         actions={actions}
