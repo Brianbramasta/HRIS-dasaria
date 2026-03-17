@@ -1,38 +1,92 @@
 import { DataTable, DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
-import { useOrganizationHistory, OrganizationChangeItem } from '@/features/employee/hooks/organization-history/useOrganizationHistory.tsx';
+import { useApiOrganizationChange } from '@/features/employee/hooks/api/useApiOrganizationChange';
+import { OrganizationChangeListItem } from '@/features/employee/types/dto/OrganizationChangeType';
 import Button from '@/components/ui/button/Button';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { ChevronDown } from 'react-feather';
-import { useMemo } from 'react';
+import { useMemo, useEffect, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IconFileDetail } from '@/icons/components/icons';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 import { formatImage } from '@/utils/formatImage';
 
-type OrgHistoryListRow = OrganizationChangeItem & { statusPerubahan: string };
+type OrgHistoryListRow = OrganizationChangeListItem & { statusPerubahan: string };
 
 export default function OrganizationHistoryPage() {
   const navigate = useNavigate();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   
   const {
-    data,
-    rowsWithStatus,
+    organizationChanges: data,
     loading,
-    total,
-    page,
-    limit,
-    isDropdownOpen,
-    handleSearchChange,
-    handleSortChange,
-    handlePageChange,
-    handleRowsPerPageChange,
-    handleDateRangeFilterChange,
-    dateRangeFilters,
-    handleDropdownToggle,
-    handleDropdownClose,
-    handleNavigateToHR,
-    handleNavigateToAtasan,
-  } = useOrganizationHistory();
+    pagination,
+    fetchOrganizationChanges,
+  } = useApiOrganizationChange();
+
+  // Fetch data with default (all categories) on mount
+  useEffect(() => {
+    fetchOrganizationChanges({});
+  }, [fetchOrganizationChanges]);
+
+  // Event handlers
+  const handleSearchChange = useCallback((searchValue: string) => {
+    fetchOrganizationChanges({ 
+      'filter[employee_name]': searchValue 
+    });
+  }, [fetchOrganizationChanges]);
+
+  const handleSortChange = useCallback((sortValue: string) => {
+    fetchOrganizationChanges({ 
+      sort: sortValue 
+    });
+  }, [fetchOrganizationChanges]);
+
+  const handlePageChange = useCallback((page: number) => {
+    fetchOrganizationChanges({ 
+      page 
+    });
+  }, [fetchOrganizationChanges]);
+
+  const handleRowsPerPageChange = useCallback((perPage: number) => {
+    fetchOrganizationChanges({ 
+      per_page: perPage 
+    });
+  }, [fetchOrganizationChanges]);
+
+  const handleDateRangeFilterChange = useCallback((columnId: string, startDate: string, endDate: string | null) => {
+    // Note: API doesn't seem to support date range filtering in the contract
+    // This would need to be implemented on the backend
+    console.log('Date range filter:', columnId, startDate, endDate);
+  }, []);
+
+  const dateRangeFilters: Record<string, { startDate: string; endDate: string | null }> = {};
+
+  const handleDropdownToggle = useCallback(() => {
+    setIsDropdownOpen(!isDropdownOpen);
+  }, [isDropdownOpen]);
+
+  const handleDropdownClose = useCallback(() => {
+    setIsDropdownOpen(false);
+  }, []);
+
+  const handleNavigateToHR = useCallback(() => {
+    setIsDropdownOpen(false);
+    navigate('/organization-history');
+  }, [navigate]);
+
+  const handleNavigateToAtasan = useCallback(() => {
+    setIsDropdownOpen(false);
+    navigate('/organization-history/atasan');
+  }, [navigate]);
+
+  // Add statusPerubahan to data for compatibility
+  const rowsWithStatus = useMemo(() => 
+    data.map(item => ({
+      ...item,
+      statusPerubahan: item.org_change_status
+    })),
+    [data]
+  );
 
   // Define columns
   const columns: DataTableColumn<OrgHistoryListRow>[] = useMemo(
@@ -40,18 +94,18 @@ export default function OrganizationHistoryPage() {
       { id: 'no', label: 'No.', align: 'center', format: (_v, row) => data.findIndex((r) => r.id === row.id) + 1 },
       { id: 'employee_id', label: 'NIP' },
       {
-        id: 'full_name',
+        id: 'employee_name',
         label: 'Pengguna',
         format: (_v, row) => (
           <div className="flex items-center gap-2">
             <div className="h-6 w-6 rounded-full overflow-hidden">
-              {formatImage(null, row.full_name || 'User')}
+              {formatImage(null, row.employee_name || 'User')}
             </div>
-            <span>{row.full_name || '-'}</span>
+            <span>{row.employee_name || '-'}</span>
           </div>
         ),
       },
-      { id: 'change_type', label: 'Jenis Perubahan' },
+      { id: 'change_type_name', label: 'Jenis Perubahan' },
       { id: 'effective_date', label: 'Tanggal Efektif', dateRangeFilter: true, format: (v: string) => formatDateToIndonesian(v || '') },
       {
         id: 'statusPerubahan',
@@ -110,19 +164,19 @@ export default function OrganizationHistoryPage() {
         data={rowsWithStatus}
         columns={columns}
         actions={actions}
-        pageSize={limit}
+        pageSize={pagination.perPage}
         loading={loading}
         filterable
         useExternalPagination
-        externalPage={page}
-        externalTotal={total}
+        externalPage={pagination.currentPage}
+        externalTotal={pagination.total}
         onPageChangeExternal={handlePageChange}
         onRowsPerPageChangeExternal={handleRowsPerPageChange}
         onDateRangeFilterChange={handleDateRangeFilterChange}
         dateRangeFilters={dateRangeFilters}
         emptyMessage="Belum ada perubahan organisasi"
         addButtonLabel="Tambah Organisasi"
-        onAdd={() => navigate('/organization-history/detail?mode=add')}
+        onAdd={() => navigate('/organization-history/create')}
         searchPlaceholder="Cari berdasarkan kata kunci"
         onSearchChange={handleSearchChange}
         onSortChange={handleSortChange}

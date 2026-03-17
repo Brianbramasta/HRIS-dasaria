@@ -33,6 +33,7 @@ import DataKaryawanPelanggaran from "../features/employee/components/employee-da
 import OrganizationHistoryPage from "../features/employee/pages/organization-history/OrganizationHistoryPage";
 import OrganizationHistoryAtasanPage from "../features/employee/pages/organization-history/OrganizationHistoryAtasanPage";
 import DetailOrganizationHistoryPage from "../features/employee/pages/organization-history/detail/DetailOrganizationHistory";
+import CreateOrganizationHistoryPage from "../features/employee/pages/organization-history/detail/createOrganizationHistory";
 import DashboardPage from "@/features/dashboard/pages/Index";
 import Dashboard from "@/features/dashboard/pages/tab/Dashboard";
 import Notification from "@/features/dashboard/pages/tab/Notification";
@@ -222,6 +223,7 @@ export default function AppRoutes() {
           <Route path="/organization-history" element={<OrganizationHistoryPage />} />
           <Route path="/organization-history/atasan" element={<OrganizationHistoryAtasanPage />} />
           <Route path="/organization-history/detail" element={<DetailOrganizationHistoryPage />} />
+          <Route path="/organization-history/create" element={<CreateOrganizationHistoryPage />} />
           <Route path="/role-management-access" element={<HakAksesPage />} />
           <Route path="/role-management-access/detail/:roleId" element={<DetailHakAksesPages />} />
           <Route path="/role-management-access/service-detail/:layananId" element={<ModulDetail />} />
