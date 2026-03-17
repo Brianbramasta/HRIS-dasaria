@@ -19,7 +19,7 @@ interface UseApiOrganizationChangeReturn {
   // Actions
   fetchOrganizationChanges: (params?: OrganizationChangeQueryParams) => Promise<void>;
   fetchOrganizationChangeDetail: (changeId: string) => Promise<void>;
-  fetchOrganizationChangesByEmployee: (employeeId: string) => Promise<void>;
+  fetchOrganizationChangesByEmployee: (employeeId: string) => Promise<any>;
   storeOrganizationChange: (payload: StoreOrganizationChangePayload) => Promise<boolean>;
   uploadDocument: (changeId: string, payload: UploadDocumentPayload) => Promise<boolean>;
 
@@ -99,7 +99,7 @@ export const useApiOrganizationChange = (): UseApiOrganizationChangeReturn => {
   }, []);
 
   // Fetch Organization Changes by Employee
-  const fetchOrganizationChangesByEmployee = useCallback(async (employeeId: string) => {
+  const fetchOrganizationChangesByEmployee = useCallback(async (employeeId: string): Promise<any> => {
     try {
       setLoading(true);
       setError(null);
@@ -116,11 +116,14 @@ export const useApiOrganizationChange = (): UseApiOrganizationChangeReturn => {
           // For now, set empty array as the structure is different
           setEmployeeOrganizationChanges([]);
         }
+        return response.data;
       } else {
         setError(response.meta.message || 'Failed to fetch employee organization changes');
+        return null;
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred while fetching employee organization changes');
+      return null;
     } finally {
       setLoading(false);
     }

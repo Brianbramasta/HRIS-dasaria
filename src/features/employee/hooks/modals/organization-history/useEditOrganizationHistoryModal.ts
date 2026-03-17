@@ -68,6 +68,9 @@ export function useEditOrganizationHistoryModal({ isOpen, initialData }: Params)
   const [jobTitleSearch, setJobTitleSearch] = useState<string>('');
   const [positionSearch, setPositionSearch] = useState<string>('');
   const [positionLevelSearch, setPositionLevelSearch] = useState<string>('');
+  const [departmentSearch, setDepartmentSearch] = useState<string>('');
+  const [structuralJobSearch, setStructuralJobSearch] = useState<string>('');
+  const [employeeCategorySearch, setEmployeeCategorySearch] = useState<string>('');
   const isEditMode = !!initialData;
   
   const [currentEmployee, setCurrentEmployee] = useState<Karyawan | null>(null);
@@ -170,6 +173,19 @@ export function useEditOrganizationHistoryModal({ isOpen, initialData }: Params)
   }, [divisionSearch, isOpen, form.directorate_id]);
 
   useEffect(() => {
+    if (!isOpen || !form.division_id) return;
+    const handler = setTimeout(async () => {
+      try {
+        const items = await employeeMasterDataService.getDepartmentsByDivision(form.division_id as string, departmentSearch || undefined);
+        setDepartmentOptions((items || []).map((i: any) => ({ label: i.department_name, value: i.id })));
+      } catch {
+        setDepartmentOptions([]);
+      }
+    }, 400);
+    return () => clearTimeout(handler);
+  }, [departmentSearch, isOpen, form.division_id]);
+
+  useEffect(() => {
     if (!isOpen || !form.department_id) return;
     const handler = setTimeout(async () => {
       try {
@@ -220,6 +236,32 @@ export function useEditOrganizationHistoryModal({ isOpen, initialData }: Params)
     }, 400);
     return () => clearTimeout(handler);
   }, [positionLevelSearch, isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handler = setTimeout(async () => {
+      try {
+        const items = await getEmployeeCategoryDropdownOptions(employeeCategorySearch || undefined);
+        setKategoriKaryawanOptions(items);
+      } catch {
+        setKategoriKaryawanOptions([]);
+      }
+    }, 400);
+    return () => clearTimeout(handler);
+  }, [employeeCategorySearch, isOpen]);
+
+  useEffect(() => {
+    if (!isOpen || !form.job_title_id) return;
+    const handler = setTimeout(async () => {
+      try {
+        const items = await getStructuralJobDropdownOptions(form.job_title_id as string);
+        setStructuralJobOptions(items);
+      } catch {
+        setStructuralJobOptions([]);
+      }
+    }, 400);
+    return () => clearTimeout(handler);
+  }, [structuralJobSearch, isOpen, form.job_title_id]);
 
   const handleInput = (key: keyof OrganizationChangeForm, value: any) => {
     setForm((prev) => {
@@ -297,6 +339,18 @@ export function useEditOrganizationHistoryModal({ isOpen, initialData }: Params)
 
   const handlePositionLevelSearch = useCallback((query: string) => {
     setPositionLevelSearch(query);
+  }, []);
+
+  const handleDepartmentSearch = useCallback((query: string) => {
+    setDepartmentSearch(query);
+  }, []);
+
+  const handleStructuralJobSearch = useCallback((query: string) => {
+    setStructuralJobSearch(query);
+  }, []);
+
+  const handleEmployeeCategorySearch = useCallback((query: string) => {
+    setEmployeeCategorySearch(query);
   }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -467,6 +521,7 @@ export function useEditOrganizationHistoryModal({ isOpen, initialData }: Params)
   return {
     title,
     form,
+    setForm,
     isEditMode,
     currentEmployee,
     isLoadingEmployee,
@@ -496,5 +551,8 @@ export function useEditOrganizationHistoryModal({ isOpen, initialData }: Params)
     handleJobTitleSearch,
     handlePositionSearch,
     handlePositionLevelSearch,
+    handleDepartmentSearch,
+    handleStructuralJobSearch,
+    handleEmployeeCategorySearch,
   };
 }
