@@ -8,6 +8,7 @@ import { useContractRenewalStore } from '../../stores/useContractRenewalStore';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 import { useApiContractExtension } from '../api/useApiContractExtension';
 import { ContractExtensionListItem } from '../../types/dto/ContractExtensionType';
+import { formatImage } from '@/utils/formatImage';
 
 interface UseContractRenewalReturn {
   data: ContractRenewalListItem[];
@@ -202,11 +203,9 @@ export function useContractRenewal(): UseContractRenewalReturn {
       sortable: true,
       format: (value, row) => (
         <div className="flex items-center gap-2">
-          <img
-            src={row.avatar}
-            alt={value}
-            className="h-8 w-8 rounded-full"
-          />
+          <div className="h-8 w-8 rounded-full overflow-hidden">
+          {formatImage(null, value || 'User')}
+          </div>
           <div>
             <div className="text-sm font-medium min-w-max">{value}</div>
             <div className="text-[11px] text-gray-500 min-w-max">{row.position_name || '-'}</div>

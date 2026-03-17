@@ -7,6 +7,7 @@ import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IconFileDetail } from '@/icons/components/icons';
 import { formatDateToIndonesian } from '@/utils/formatDate';
+import { formatImage } from '@/utils/formatImage';
 
 type OrgHistoryListRow = OrganizationChangeItem & { statusPerubahan: string };
 
@@ -43,11 +44,9 @@ export default function OrganizationHistoryPage() {
         label: 'Pengguna',
         format: (_v, row) => (
           <div className="flex items-center gap-2">
-            <img
-              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${row.full_name || 'User'}`}
-              alt={row.full_name || 'User'}
-              className="h-6 w-6 rounded-full"
-            />
+            <div className="h-6 w-6 rounded-full overflow-hidden">
+              {formatImage(null, row.full_name || 'User')}
+            </div>
             <span>{row.full_name || '-'}</span>
           </div>
         ),
