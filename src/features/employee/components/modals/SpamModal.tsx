@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Modal } from "@/components/ui/modal";
 import { useSpamModalStore } from "@/stores/useSpamModalStore";
 import { useNavigate, useLocation } from "react-router";
+import { formatImage } from "@/utils/formatImage";
 
 interface SpamModalProps {
   // data?: ContractData[]; // No longer needed as it's in the store
@@ -91,11 +92,9 @@ export const SpamModal: React.FC<SpamModalProps> = () => {
 
                     <td className="px-4 py-4 text-center">
                       <div className="flex items-center gap-3">
-                        <img
-                          src={item.avatar}
-                          alt={item.employeeName}
-                          className="h-10 w-10 rounded-full"
-                        />
+                        <div className="h-10 w-10 rounded-full overflow-hidden">
+                          {formatImage(item.avatar, item.employeeName)}
+                        </div>
                         <span className="font-medium text-gray-900 dark:text-gray-100">
                           {item.employeeName}
                         </span>
