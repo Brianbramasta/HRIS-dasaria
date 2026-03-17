@@ -7,6 +7,7 @@ import {
 } from '../../types/dto/RefDeductionType';
 import { refDeductionServices } from '../../services/RefDeductionServices';
 import useFilterStore from '../../../../stores/filterStore';
+import { formatFilterValue } from '@/utils/formatFilterValue';
 
 // Mapping helpers
 
@@ -69,7 +70,7 @@ export const useApiRefDeduction = (): UseApiRefDeductionReturn => {
   
   // Assuming filterStore is global and has keys for features. 
   // Using 'RefDeduction' as filter key, similar to 'Compensation'
-  const filterValue = useFilterStore((s) => (s.filters['Acuan Potongan'] ?? []).join(','));
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['Acuan Potongan']));
 
   const fetchRefDeductions = useCallback(async (filter?: Partial<TableFilter>) => {
     setLoading(true);

@@ -7,6 +7,7 @@ import {
 } from '../../../types/dto/fixed-allowance/FeeType';
 import { feeServices } from '../../../services/fixed-allowance/FeeServices';
 import useFilterStore from '../../../../../stores/filterStore';
+import { formatFilterValue } from '@/utils/formatFilterValue';
 
 // Mapping helpers
 const mapToFeeListItem = (item: any): FeeListItem => ({
@@ -62,7 +63,7 @@ export const useApiFee = (): UseApiFeeReturn => {
   const [sortBy, setSortBy] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
   
-  const filterValue = useFilterStore((s) => (s.filters['Fee'] ?? []).join(','));
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['Fee']));
 
   const fetchFees = useCallback(async (filter?: Partial<TableFilter>) => {
     setLoading(true);

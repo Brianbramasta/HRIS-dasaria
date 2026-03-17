@@ -7,6 +7,7 @@ import {
 } from '../../../types/dto/non-fixed-allowance/NonFixedAllowanceType';
 import { nonFixedAllowanceServices } from '../../../services/non-fixed-allowance/NonFixedAllowanceServices';
 import useFilterStore from '../../../../../stores/filterStore';
+import { formatFilterValue } from '@/utils/formatFilterValue';
 
 // Mapping helpers
 const mapToListItem = (item: any): NonFixedAllowanceListItem => ({
@@ -71,7 +72,7 @@ export const useApiNonFixedAllowance = (): UseApiNonFixedAllowanceReturn => {
 
   // Assuming filterStore is global and has keys for features.
   // Using 'NonFixedAllowance' as key, adjust if necessary
-  const filterValue = useFilterStore((s: any) => s.filters['Tunjangan Tidak Tetap'] ?? '');
+  const filterValue = formatFilterValue(useFilterStore((s: any) => s.filters['Tunjangan Tidak Tetap']));
 
   const fetchList = useCallback(async (filter?: Partial<TableFilter>) => {
     setLoading(true);

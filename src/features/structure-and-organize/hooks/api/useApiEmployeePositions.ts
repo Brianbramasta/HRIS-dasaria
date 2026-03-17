@@ -3,6 +3,7 @@ import { employeePositionsService } from '../../services/request/EmployeePositio
 import { EmployeePositionListItem, TableFilter } from '../../types/OrganizationApiTypes';
 import useFilterStore from '../../../../stores/filterStore';
 import { toFileSummary } from '../../utils/shared/toFileSummary';
+import { formatFilterValue } from '@/utils/formatFilterValue';
 
 // Mapping helpers
 
@@ -110,7 +111,7 @@ export const useApiEmployeePositions = (): UseEmployeePositionsReturn => {
   // Dokumentasi: set default sort 'Nama Posisi' dan hindari auto-fetch berulang
   const [sortBy, setSortBy] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-  const filterValue = useFilterStore((s) => (s.filters['Posisi Pegawai'] ?? []).join(','));
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['Posisi Pegawai']));
 
   // Dokumentasi: menerima Partial<TableFilter>, kombinasikan dengan state lokal
   const fetchEmployeePositions = useCallback(async (filter?: Partial<TableFilter>) => {

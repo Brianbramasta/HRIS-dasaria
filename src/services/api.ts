@@ -250,7 +250,7 @@ class ApiService {
         const values = Array.isArray(value)
           ? value
           : String(value)
-              .split(',')
+              .split('~!@')
               .map((s) => s.trim())
               .filter(Boolean);
 

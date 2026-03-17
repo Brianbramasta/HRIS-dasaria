@@ -7,6 +7,7 @@ import {
 import { companiesService } from '../../services/request/CompaniesService';
 import useFilterStore from '../../../../stores/filterStore';
 import { toFileSummary } from '../../utils/shared/toFileSummary';
+import { formatFilterValue } from '@/utils/formatFilterValue';
 
 // Mapping helpers
 
@@ -158,7 +159,7 @@ export const useApiCompanies = (): UseApiCompaniesReturn => {
   const [search, setSearch] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
-  const filterValue = useFilterStore((s) => (s.filters['Perusahaan'] ?? []).join(','));
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['Perusahaan']));
 
   const fetchCompanies = useCallback(async (filter?: Partial<TableFilter>) => {
     setLoading(true);

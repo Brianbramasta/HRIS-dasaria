@@ -4,6 +4,7 @@ import { divisionsService } from '../../services/request/DivisionsService';
 import { DivisionListItem, TableFilter } from '../../types/OrganizationApiTypes';
 import useFilterStore from '../../../../stores/filterStore';
 import { toFileSummary } from '../../utils/shared/toFileSummary';
+import { formatFilterValue } from '@/utils/formatFilterValue';
 
 // Mapping helpers
 
@@ -70,7 +71,7 @@ export const useApiDivisions = (): UseDivisionsReturn => {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
-  const filterValue = useFilterStore((s) => (s.filters['Divisi'] ?? []).join(','));
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['Divisi']));
 
   const fetchDivisions = useCallback(async (filter?: TableFilter) => {
     setLoading(true);

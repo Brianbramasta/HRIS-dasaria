@@ -7,6 +7,7 @@ import {
     PayrollPeriodFatListItem,
 } from '../../types/dto/PayrollPeriodFatType';
 import { payrollPeriodFatService } from '../../services/PayrollPeriodFatService';
+import { formatFilterValue } from '@/utils/formatFilterValue';
 
 const toSortField = (field?: string): string => {
     const map: Record<string, string> = {
@@ -83,7 +84,7 @@ export const useApiPayrollPeriodFat = (): UseApiPayrollPeriodFatReturn => {
     const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
     const [type, setType] = useState<'Mitra' | 'Staff' | 'Thr'>('Mitra');
 
-    const filterStatus = useFilterStore((s) => s.filters['PayrollPeriodStatus'] ?? '');
+    const filterStatus = formatFilterValue(useFilterStore((s) => s.filters['PayrollPeriodStatus']));
 
     const fetchPayrollPeriods = useCallback(
         async (filter?: Partial<TableFilter>) => {

@@ -4,6 +4,7 @@ import { DirectorateListItem, TableFilter } from '../../types/OrganizationApiTyp
 import useFilterStore from '../../../../stores/filterStore';
 import { toFileSummary } from '../../utils/shared/toFileSummary';
 import { loadPageFilters } from '../../../../stores/filterStore';
+import { formatFilterValue } from '@/utils/formatFilterValue';
 
 // Mapping helpers
 
@@ -66,7 +67,7 @@ export const useApiDirectorates = (): UseDirectoratesReturn => {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
-  const filterValue = useFilterStore((s) => (s.filters['Direktorat'] ?? []).join(','));
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['Direktorat']));
 
   const fetchDirectorates = useCallback(async (filter?: TableFilter) => {
     setLoading(true);

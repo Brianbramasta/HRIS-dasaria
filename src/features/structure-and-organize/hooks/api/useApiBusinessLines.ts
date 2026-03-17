@@ -8,6 +8,7 @@ import {
 import { businessLinesService } from '../../services/request/BusinessLinesService';
 import useFilterStore from '../../../../stores/filterStore';
 import { toFileSummary } from '../../utils/shared';
+import { formatFilterValue } from '@/utils/formatFilterValue';
 
 // Mapping helpers: transform raw API payload -> frontend types
 
@@ -76,7 +77,7 @@ export const useApiBusinessLines = (): UseApiBusinessLinesReturn => {
   const [search, setSearch] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
-  const filterValue = useFilterStore((s) => (s.filters['Lini Bisnis'] ?? []).join(','));
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['Lini Bisnis']));
 
   const fetchBusinessLines = useCallback(async (filter?: Partial<TableFilter>) => {
     setLoading(true);

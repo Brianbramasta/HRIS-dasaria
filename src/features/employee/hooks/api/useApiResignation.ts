@@ -20,6 +20,7 @@ import { resignationAdministrationService } from '../../services/ResignationAdmi
 import { organizationChangeService } from '../../services/OrganizationChangeService';
 import { personalInformationService } from '../../services/detail/PersonalInformationService';
 import { contractService } from '../../services/detail/ContractService';
+import { formatFilterValue } from '@/utils/formatFilterValue';
 
 interface UseApiResignationReturn {
   loading: boolean;
@@ -126,8 +127,8 @@ export const useApiResignation = (): UseApiResignationReturn => {
   const [adminDateRangeFilters, setAdminDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
 
   // Filter values from store
-  const applicationFilterValue = useFilterStore((s) => s.filters['Pengunduran Diri'] ?? '');
-  const adminFilterValue = useFilterStore((s) => s.filters['Terminasi Administrasi'] ?? '');
+  const applicationFilterValue = formatFilterValue(useFilterStore((s) => s.filters['Pengunduran Diri'] ?? ''));
+  const adminFilterValue = formatFilterValue(useFilterStore((s) => s.filters['Terminasi Administrasi'] ?? ''));
 
   const fetchApplications = useCallback(async (params?: Partial<TableFilter>) => {
     setLoading(true);

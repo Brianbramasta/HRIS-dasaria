@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { PengunduranDiri, PengunduranDiriFilterParams, ResignStatus } from '../../types/Resignation';
 import pengunduranDiriService from '../../services/ResignationService';
 import useFilterStore from '../../../../stores/filterStore';
+import { formatFilterValue } from '@/utils/formatFilterValue';
 
 export interface UsePengunduranDiriOptions {
   initialPage?: number;
@@ -20,7 +21,7 @@ export function usePengunduranDiri(options: UsePengunduranDiriOptions = {}) {
   const [page, setPage] = useState(initialPage);
   const [limit, setLimit] = useState(initialLimit);
   const [currentStatus, setCurrentStatus] = useState<ResignStatus | 'all'>(status);
-  const filterValue = useFilterStore((s) => (s.filters['global'] ?? []).join(','));
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['global']));
 
   const fetchPengunduranDiri = useCallback(
     async (params?: PengunduranDiriFilterParams) => {

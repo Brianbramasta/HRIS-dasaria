@@ -3,6 +3,7 @@ import { useGetUnits } from './api/useApiUnits';
 import { FileSummary, UnitListItem } from '../types/OrganizationApiTypes';
 import { toFileSummary } from '../utils/shared/toFileSummary';
 import { useFilterStore } from '@/stores/filterStore';
+import { formatFilterValue } from '@/utils/formatFilterValue';
 
 export type UnitRow = {
   id: string;
@@ -24,7 +25,7 @@ export const useUnits = () => {
   const [total, setTotal] = useState(0);
   const [sortBy, setSortBy] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-  const filterValue = useFilterStore((s) => (s.filters['Unit'] ?? []).join(','));
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['Unit']));
 
   const mapToUnit = useCallback(
     (item: any): UnitListItem => ({

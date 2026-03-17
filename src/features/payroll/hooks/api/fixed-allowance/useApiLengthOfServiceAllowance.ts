@@ -8,6 +8,7 @@ import {
 } from '../../../types/dto/fixed-allowance/LengthOfServiceAllowanceType';
 import { lengthOfServiceAllowanceServices } from '../../../services/fixed-allowance/LengthOfServiceAllowanceServices';
 import useFilterStore from '../../../../../stores/filterStore';
+import { formatFilterValue } from '@/utils/formatFilterValue';
 
 // Mapping helpers
 const mapToListItem = (item: LengthOfServiceAllowanceApiItem): LengthOfServiceAllowanceListItem => ({
@@ -64,7 +65,7 @@ export const useApiLengthOfServiceAllowance = (): UseApiLengthOfServiceAllowance
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
   
   // Assuming filterStore is global. Key used: 'LengthOfServiceAllowance' (can be adjusted)
-  const filterValue = useFilterStore((s) => (s.filters['LengthOfServiceAllowance'] ?? []).join(','));
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['LengthOfServiceAllowance']));
 
   const fetchItems = useCallback(async (filter?: Partial<TableFilter>) => {
     setLoading(true);

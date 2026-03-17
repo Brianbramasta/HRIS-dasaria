@@ -8,6 +8,7 @@ import {
 } from '../../types/dto/DeductionType';
 import { deductionServices } from '../../services/DeductionServices';
 import useFilterStore from '../../../../stores/filterStore';
+import { formatFilterValue } from '../../../../utils/formatFilterValue';
 
 
 // Mapping helpers
@@ -70,7 +71,7 @@ export const useApiDeduction = (): UseApiDeductionReturn => {
   const [sortBy, setSortBy] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
   // Assuming filterStore is global and has keys for features. 
-  const filterValue = useFilterStore((s) => (s.filters['Potongan Tidak Tetap'] ?? []).join(','));
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['Potongan Tidak Tetap']));
   console.log('filterValue',filterValue)
 
   const fetchDeductions = useCallback(async (filter?: Partial<TableFilter>) => {

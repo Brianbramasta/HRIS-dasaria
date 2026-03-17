@@ -6,6 +6,7 @@ import employeeMasterDataService from '../../../services/EmployeeMasterData.serv
 import useFilterStore from '../../../../../stores/filterStore';
 import { addNotification } from '../../../../../stores/notificationStore';
 import errorHandle from '@/utils/errorHandle';
+import { formatFilterValue } from '@/utils/formatFilterValue';
 
 export interface UseKaryawanOptions {
   initialPage?: number;
@@ -23,7 +24,7 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(initialPage);
   const [limit, setLimit] = useState(initialLimit);
-  const filterValue = useFilterStore((s) => s.filters['Data Master Karyawan'] ?? '');
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['Data Master Karyawan'] ?? ''));
   const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
   const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
 

@@ -8,6 +8,7 @@ import {
 } from '../../types/dto/BpjsItemType';
 import { bpjsItemServices } from '../../services/BpjsItemServices';
 import useFilterStore from '../../../../stores/filterStore';
+import { formatFilterValue } from '@/utils/formatFilterValue';
 
 // Mapping helpers
 
@@ -77,7 +78,7 @@ export const useApiBpjsItem = (): UseApiBpjsItemReturn => {
   
   // Assuming filterStore is global and has keys for features. 
   // We use 'BpjsItem' as the key.
-  const filterValue = useFilterStore((s) => (s.filters['BPJS'] ?? []).join(','));
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['BPJS']));
 
   const fetchBpjsItems = useCallback(async (filter?: Partial<TableFilter>) => {
     setLoading(true);

@@ -11,6 +11,7 @@ import {
 } from '../../types/dto/CashAdvanceType';
 import { cashAdvanceServices } from '../../services/CashAdvanceServices';
 import useFilterStore from '../../../../stores/filterStore';
+import { formatFilterValue } from '@/utils/formatFilterValue';
 
 // Mapping helpers
 const mapToCashAdvanceListItem = (item: any): CashAdvanceListItem => ({
@@ -112,7 +113,7 @@ export const useApiCashAdvance = (): UseApiCashAdvanceReturn => {
     const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
     const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
 
-    const filterStatus = useFilterStore((s) => (s.filters['CashAdvanceStatus'] ?? []).join(','));
+    const filterStatus = formatFilterValue(useFilterStore((s) => s.filters['CashAdvanceStatus']));
 
     const fetchCashAdvances = useCallback(async (filter?: Partial<TableFilter>) => {
         setLoading(true);

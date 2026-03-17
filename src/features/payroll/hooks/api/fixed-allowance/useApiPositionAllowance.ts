@@ -8,6 +8,7 @@ import {
 } from '../../../types/dto/fixed-allowance/PositionAllowanceType';
 import { positionAllowanceServices } from '../../../services/fixed-allowance/PositionAllowanceServices';
 import useFilterStore from '../../../../../stores/filterStore';
+import { formatFilterValue } from '@/utils/formatFilterValue';
 
 // Mapping helpers
 const mapToPositionAllowanceListItem = (item: any): PositionAllowanceListItem => ({
@@ -65,7 +66,7 @@ export const useApiPositionAllowance = (): UseApiPositionAllowanceReturn => {
   const [sortBy, setSortBy] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
   
-  const filterValue = useFilterStore((s) => (s.filters['PositionAllowance'] ?? []).join(','));
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['PositionAllowance']));
 
   const fetchPositionAllowances = useCallback(async (filter?: Partial<TableFilter>) => {
     setLoading(true);

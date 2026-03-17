@@ -14,6 +14,7 @@ import {
 import { payrollPeriodService } from '../../services/PayrollPeriodService';
 import useFilterStore from '../../../../stores/filterStore';
 import { usePayrollApprovalStore } from '../../store/usePayrollApprovalStore';
+import { formatFilterValue } from '@/utils/formatFilterValue';
 
 // Mapping helpers
 const mapToPayrollPeriodListItem = (item: any): PayrollPeriodListItem => ({
@@ -113,7 +114,7 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
     const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
     const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
 
-    const filterStatus = useFilterStore((s) => (s.filters['PayrollPeriodStatus'] ?? []).join(','));
+    const filterStatus = formatFilterValue(useFilterStore((s) => s.filters['PayrollPeriodStatus'] ?? []));
 
     const fetchPayrollPeriods = useCallback(
         async (filter?: Partial<TableFilter>) => {

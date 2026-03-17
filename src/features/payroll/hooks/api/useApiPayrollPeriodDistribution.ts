@@ -7,6 +7,7 @@ import {
     PayrollPeriodDistributionSendSlipSalaryPayload,
 } from '../../types/dto/PayrollPeriodDistributionType';
 import { payrollPeriodDistributionService } from '../../services/PayrollPeriodDistributionService';
+import { formatFilterValue } from '@/utils/formatFilterValue';
 
 const toSortField = (field?: string): string => {
     const map: Record<string, string> = {
@@ -82,7 +83,7 @@ export const useApiPayrollPeriodDistribution = (): UseApiPayrollPeriodDistributi
     const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
     const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
 
-    const filterStatus = useFilterStore((s) => s.filters['PayrollPeriodStatus'] ?? '');
+    const filterStatus = formatFilterValue(useFilterStore((s) => s.filters['PayrollPeriodStatus']));
 
     const fetchPayrollPeriods = useCallback(
         async (filter?: Partial<TableFilter>) => {

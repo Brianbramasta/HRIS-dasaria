@@ -7,6 +7,7 @@ import {
 } from '../../../types/dto/fixed-allowance/MarriageAllowanceType';
 import { marriageAllowanceServices } from '../../../services/fixed-allowance/MarriageAllowanceServices';
 import useFilterStore from '../../../../../stores/filterStore';
+import { formatFilterValue } from '@/utils/formatFilterValue';
 
 // Mapping helpers
 
@@ -67,7 +68,7 @@ export const useApiMarriageAllowance = (): UseApiMarriageAllowanceReturn => {
   const [sortBy, setSortBy] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
   
-  const filterValue = useFilterStore((s) => (s.filters['MarriageAllowance'] ?? []).join(','));
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['MarriageAllowance']));
 
   const fetchMarriageAllowances = useCallback(async (filter?: Partial<TableFilter>) => {
     setLoading(true);

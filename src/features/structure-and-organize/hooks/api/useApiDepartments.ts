@@ -4,6 +4,7 @@ import { departmentsService } from '../../services/request/DepartmentsService';
 import { DepartmentListItem, TableFilter } from '../../types/OrganizationApiTypes';
 import useFilterStore from '../../../../stores/filterStore';
 import { toFileSummary } from '../../utils/shared/toFileSummary';
+import { formatFilterValue } from '@/utils/formatFilterValue';
 
 // Mapping helpers
 
@@ -72,7 +73,7 @@ export const useApiDepartments = (): UseDepartmentsReturn => {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
-  const filterValue = useFilterStore((s) => (s.filters['Departemen'] ?? []).join(','));
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['Departemen']));
 
   const fetchDepartments = useCallback(async (filter?: TableFilter) => {
     setLoading(true);

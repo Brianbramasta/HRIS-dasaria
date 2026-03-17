@@ -3,6 +3,7 @@ import { officesService } from '../../services/request/OfficesService';
 import { OfficeListItem, TableFilter } from '../../types/OrganizationApiTypes';
 import useFilterStore from '../../../../stores/filterStore';
 import { toFileSummary } from '../../utils/shared/toFileSummary';
+import { formatFilterValue } from '@/utils/formatFilterValue';
 
 export const mapToOffice = (item: any): OfficeListItem => ({
   id: item.id ?? item.id ?? '',
@@ -67,7 +68,7 @@ export const useApiOffices = (): UseOfficesReturn => {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
-  const filterValue = useFilterStore((s) => (s.filters['Kantor'] ?? []).join(','));
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['Kantor']));
 
   const fetchOffices = useCallback(async (filter?: TableFilter) => {
     setLoading(true);

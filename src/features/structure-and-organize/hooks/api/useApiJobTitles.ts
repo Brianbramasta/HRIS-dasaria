@@ -4,6 +4,7 @@ import { positionsService } from '../../services/request/PositionService';
 import { PositionListItem, TableFilter } from '../../types/OrganizationApiTypes';
 import useFilterStore from '../../../../stores/filterStore';
 import { toFileSummary } from '../../utils/shared/index';
+import { formatFilterValue } from '@/utils/formatFilterValue';
 
 export const mapToPosition = (item: any): PositionListItem => {
   const structuralJobs: string[] = [];
@@ -104,7 +105,7 @@ export const useApiJobTitles = (): UseApiJobTitlesReturn => {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-  const filterValue = useFilterStore((s) => (s.filters['Jabatan'] ?? []).join(','));
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['Jabatan']));
 
   const fetchPositions = useCallback(async (filter?: TableFilter) => {
     setLoading(true);

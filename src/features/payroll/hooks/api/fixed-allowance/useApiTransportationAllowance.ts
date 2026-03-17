@@ -7,6 +7,7 @@ import {
 } from '../../../types/dto/fixed-allowance/TransportationAllowanceType';
 import { transportationAllowanceServices } from '../../../services/fixed-allowance/TransportationAllowanceServices';
 import useFilterStore from '../../../../../stores/filterStore';
+import { formatFilterValue } from '@/utils/formatFilterValue';
 
 // Mapping helpers
 const mapToTransportationAllowanceListItem = (item: any): TransportationAllowanceListItem => ({
@@ -65,7 +66,7 @@ export const useApiTransportationAllowance = (): UseApiTransportationAllowanceRe
   const [sortBy, setSortBy] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
   
-  const filterValue = useFilterStore((s) => (s.filters['TransportationAllowance'] ?? []).join(','));
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['TransportationAllowance']));
 
   const fetchTransportationAllowances = useCallback(async (filter?: Partial<TableFilter>) => {
     setLoading(true);
