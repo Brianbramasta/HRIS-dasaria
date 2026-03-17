@@ -83,6 +83,7 @@ export default function NonRecurringDeductionPage() {
     <div className="p-4">
       <DataTable
         title="Potongan Tidak Tetap"
+        resetKey='Potongan Tidak Tetap'
         data={rows}
         columns={columns}
         actions={actions}

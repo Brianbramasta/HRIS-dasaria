@@ -70,7 +70,8 @@ export const useApiDeduction = (): UseApiDeductionReturn => {
   const [sortBy, setSortBy] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
   // Assuming filterStore is global and has keys for features. 
-  const filterValue = useFilterStore((s) => (s.filters['Deduction'] ?? []).join(','));
+  const filterValue = useFilterStore((s) => (s.filters['Potongan Tidak Tetap'] ?? []).join(','));
+  console.log('filterValue',filterValue)
 
   const fetchDeductions = useCallback(async (filter?: Partial<TableFilter>) => {
     setLoading(true);
@@ -96,6 +97,7 @@ export const useApiDeduction = (): UseApiDeductionReturn => {
         params.column = toSortField(effectiveSortBy);
         if (effectiveSortOrder) params.sort = effectiveSortOrder;
       }
+      console.log(params,'params')
       
       const response = await deductionServices.getDeductionList(params);
 

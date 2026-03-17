@@ -23,13 +23,15 @@ export const useNonRecurringDeduction = () => {
   // Initial Fetch with category filter
   useEffect(() => {
     // Cast filter to any to support custom category property
-    api.fetchDeductions({ filter: { category: 'notfixed' } as any });
+    // api.fetchDeductions({ filter: { category: 'notfixed' } as any });
+    api.fetchDeductions();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Run once on mount
+  }, [api.fetchDeductions]); // Run once on mount
 
   // Refresh helper
   const refreshData = () => {
-    api.fetchDeductions({ filter: { category: 'notfixed' } as any });
+    // api.fetchDeductions({ filter: { category: 'notfixed' } as any });
+    api.fetchDeductions();
   };
 
   const rows = useMemo(() => {

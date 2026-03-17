@@ -102,6 +102,7 @@ export const useApiCompensation = (): UseApiCompensationReturn => {
         params.column = toSortField(effectiveSortBy);
         if (effectiveSortOrder) params.sort = effectiveSortOrder;
       }
+      console.log(params,'params')
       
       const response = await payrollConfigurationServices.getCompensationList(params);
 
