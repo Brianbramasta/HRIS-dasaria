@@ -49,6 +49,15 @@ export function useTHRPages(_options: UseTHRPagesOptions = {}) {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [approvalType, setApprovalType] = useState<string>('Persetujuan oleh FAT');
+
+  
+  // Dokumentasi: Deteksi halaman Approval atau Distribusi untuk set judul
+  const isApprovalPage = location.pathname.includes('/payroll-period-approval');
+  const isDistribusiPage = location.pathname.includes('/salary-distribution');
+  const basePrefix = isApprovalPage ? '/payroll-period-approval' : '/payroll-period';
+  // Dokumentasi: Gunakan prefix detail khusus distribusi saat di halaman Distribusi
+  const detailPathPrefix = isDistribusiPage ? '/salary-distribution/detail-thr' : `${basePrefix}/detail-thr`;
+  const title = isApprovalPage ? 'Approval Periode Gajian' : isDistribusiPage ? 'Distribusi Slip Gaji' : 'Periode Gajian';
   
   // Hook untuk fetch data payroll period
   const {
@@ -71,20 +80,13 @@ export function useTHRPages(_options: UseTHRPagesOptions = {}) {
     setColumnFilters,
     setDateRangeFilters,
     setType,
-  } = useApiPayrollPeriod();
+  } = useApiPayrollPeriod(title);
 
   // Set type to 'Thr' when component mounts
   useEffect(() => {
     setType('Thr');
   }, [setType]);
 
-  // Dokumentasi: Deteksi halaman Approval atau Distribusi untuk set judul
-  const isApprovalPage = location.pathname.includes('/payroll-period-approval');
-  const isDistribusiPage = location.pathname.includes('/salary-distribution');
-  const basePrefix = isApprovalPage ? '/payroll-period-approval' : '/payroll-period';
-  // Dokumentasi: Gunakan prefix detail khusus distribusi saat di halaman Distribusi
-  const detailPathPrefix = isDistribusiPage ? '/salary-distribution/detail-thr' : `${basePrefix}/detail-thr`;
-  const title = isApprovalPage ? 'Approval Periode Gajian' : isDistribusiPage ? 'Distribusi Slip Gaji' : 'Periode Gajian';
 
   // Dokumentasi: Fungsi untuk navigasi detail dengan approval type sebagai query parameter
   const handleDetailNavigation = (payrollId: string) => {

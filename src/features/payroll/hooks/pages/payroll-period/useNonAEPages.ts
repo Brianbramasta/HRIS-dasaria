@@ -59,6 +59,13 @@ export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
   const navigate = useNavigate();
   
   const approvalStore = usePayrollApprovalStore();
+  // Dokumentasi: Deteksi halaman Approval atau Distribusi untuk set judul
+  const isApprovalPage = location.pathname.includes('/payroll-period-approval');
+  const isDistribusiPage = location.pathname.includes('/salary-distribution');
+  const basePrefix = isApprovalPage ? '/payroll-period-approval' : '/payroll-period';
+  // Dokumentasi: Gunakan prefix detail khusus distribusi saat di halaman Distribusi
+  const detailPathPrefix = isDistribusiPage ? '/salary-distribution/detail-non-ae' : `${basePrefix}/detail-non-ae`;
+  const title = isApprovalPage ? 'Approval Periode Gajian' : isDistribusiPage ? 'Distribusi Slip Gaji' : 'Periode Gajian';
 
   // Hook untuk fetch data payroll period
   const {
@@ -81,15 +88,9 @@ export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
     setColumnFilters,
     setDateRangeFilters,
     setType,
-  } = useApiPayrollPeriod();
+  } = useApiPayrollPeriod(title);
 
-  // Dokumentasi: Deteksi halaman Approval atau Distribusi untuk set judul
-  const isApprovalPage = location.pathname.includes('/payroll-period-approval');
-  const isDistribusiPage = location.pathname.includes('/salary-distribution');
-  const basePrefix = isApprovalPage ? '/payroll-period-approval' : '/payroll-period';
-  // Dokumentasi: Gunakan prefix detail khusus distribusi saat di halaman Distribusi
-  const detailPathPrefix = isDistribusiPage ? '/salary-distribution/detail-non-ae' : `${basePrefix}/detail-non-ae`;
-  const title = isApprovalPage ? 'Approval Periode Gajian' : isDistribusiPage ? 'Distribusi Slip Gaji' : 'Periode Gajian';
+  
 
   // Dokumentasi: Fungsi untuk navigasi detail dengan approval type sebagai query parameter
   const handleDetailNavigation = (payrollId: string) => {

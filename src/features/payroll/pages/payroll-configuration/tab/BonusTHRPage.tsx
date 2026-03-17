@@ -80,6 +80,7 @@ export default function THRPage() {
     <div className="p-4">
       <DataTable
         title="Tunjangan Hari Raya"
+        resetKey='Tunjangan Hari Raya'
         data={rows}
         columns={columns}
         actions={actions}

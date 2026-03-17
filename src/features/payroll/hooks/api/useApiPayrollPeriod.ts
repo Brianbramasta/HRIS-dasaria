@@ -59,7 +59,7 @@ interface UseApiPayrollPeriodReturn {
     search: string;
     sortBy: string;
     sortOrder: 'asc' | 'desc' | null;
-    filterStatus: string;
+    filterValue: string;
     type: string;
 
     // Actions
@@ -97,7 +97,7 @@ interface UseApiPayrollPeriodReturn {
     dateRangeFilters: Record<string, { startDate: string; endDate: string | null }>;
 }
 
-export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
+export const useApiPayrollPeriod = (title: string = 'Periode Gajian'): UseApiPayrollPeriodReturn => {
     const [payrollPeriods, setPayrollPeriods] = useState<PayrollPeriodListItem[]>([]);
     const [payrollPeriodDetail, setPayrollPeriodDetail] = useState<PayrollPeriodDetailData | null>(null);
     const [importApprovalStatus, setImportApprovalStatus] = useState<PayrollPeriodImportApprovalStatusData | null>(null);
@@ -114,7 +114,7 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
     const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
     const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
 
-    const filterStatus = formatFilterValue(useFilterStore((s) => s.filters['PayrollPeriodStatus'] ?? []));
+    const filterValue = formatFilterValue(useFilterStore((s) => s.filters[title] ?? []));
 
     const fetchPayrollPeriods = useCallback(
         async (filter?: Partial<TableFilter>) => {
@@ -127,12 +127,12 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
                 const effectiveSearch = filter?.search ?? search;
                 const effectiveSortBy = filter?.sortBy ?? sortBy;
                 const effectiveSortOrder = filter?.sortOrder ?? sortOrder;
-                const effectiveStatus = filter?.filter ?? filterStatus;
+                const effectiveFilter = filter?.filter ?? filterValue;
                 const effectiveType = filter?.type ?? type;
 
                 const params: any = { page: effectivePage, per_page: effectivePageSize };
                 if (effectiveSearch) params.search = effectiveSearch;
-                if (effectiveStatus) params.status = effectiveStatus;
+                if (effectiveFilter) params.filter = effectiveFilter;
                 if (effectiveType) params.type = effectiveType;
                 if (effectiveSortBy) {
                     params.column = toSortField(effectiveSortBy);
@@ -192,7 +192,7 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
                 setLoading(false);
             }
         },
-        [search, sortBy, sortOrder, page, pageSize, filterStatus, type, columnFilters, dateRangeFilters]
+        [search, sortBy, sortOrder, page, pageSize, type, filterValue, columnFilters, dateRangeFilters]
     );
 
     const fetchPayrollPeriodDetail = useCallback(async (payrollId: string, type?: 'Mitra' | 'Staff' | 'Thr'): Promise<PayrollPeriodDetailData | null> => {
@@ -448,7 +448,7 @@ export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
         search,
         sortBy,
         sortOrder,
-        filterStatus,
+        filterValue,
         type,
 
         fetchPayrollPeriods,

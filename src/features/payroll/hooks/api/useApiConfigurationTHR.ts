@@ -7,6 +7,8 @@ import {
   ConfigurationTHRUpdateStatusPayload,
 } from '../../types/dto/ConfigurationTHRType';
 import { configurationTHRServices } from '../../services/ConfigurationTHRServices';
+import useFilterStore from '../../../../stores/filterStore';
+import { formatFilterValue } from '@/utils/formatFilterValue';
 
 // Mapping helpers
 const mapToConfigurationTHRListItem = (item: any): ConfigurationTHRListItem => ({
@@ -26,6 +28,7 @@ interface UseApiConfigurationTHRReturn {
   search: string;
   sortBy: string;
   sortOrder: 'asc' | 'desc' | null;
+  filterValue: string;
 
   // Actions
   fetchConfigurationTHR: (filter?: Partial<TableFilter>) => Promise<void>;
@@ -51,6 +54,8 @@ export const useApiConfigurationTHR = (): UseApiConfigurationTHRReturn => {
   const [search, setSearch] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
+  // Filter value from store using the same key as DataTable title ('Tunjangan Hari Raya')
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['Tunjangan Hari Raya']));
 
   const fetchConfigurationTHR = useCallback(async (filter?: Partial<TableFilter>) => {
     setLoading(true);
@@ -62,9 +67,11 @@ export const useApiConfigurationTHR = (): UseApiConfigurationTHRReturn => {
       const effectiveSearch = filter?.search ?? search;
       const effectiveSortBy = filter?.sortBy ?? sortBy;
       const effectiveSortOrder = filter?.sortOrder ?? sortOrder;
+      const effectiveFilter = filter?.filter ?? filterValue;
 
       const params: any = { page: effectivePage, per_page: effectivePageSize };
       if (effectiveSearch) params.search = effectiveSearch;
+      if (effectiveFilter) params.filter = effectiveFilter;
       if (effectiveSortBy) {
         params.column = effectiveSortBy; // Assuming API accepts column name directly
         if (effectiveSortOrder) params.sort = effectiveSortOrder;
@@ -93,7 +100,7 @@ export const useApiConfigurationTHR = (): UseApiConfigurationTHRReturn => {
     } finally {
       setLoading(false);
     }
-  }, [search, sortBy, sortOrder, page, pageSize]);
+  }, [search, sortBy, sortOrder, page, pageSize, filterValue]);
 
   const updateConfigurationTHR = useCallback(async (id: string, payload: ConfigurationTHRUpdatePayload): Promise<ConfigurationTHRListItem | null> => {
     setLoading(true);
@@ -193,6 +200,7 @@ export const useApiConfigurationTHR = (): UseApiConfigurationTHRReturn => {
     search,
     sortBy,
     sortOrder,
+    filterValue,
 
     fetchConfigurationTHR,
     updateConfigurationTHR,
