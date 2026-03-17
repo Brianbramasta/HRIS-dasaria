@@ -10,6 +10,7 @@ import ShareLinkModal from '../../../components/modals/sharelink/ShareLinkModal'
 import { IconFileDetail, IconHapus } from '@/icons/components/icons';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 import { useEffect, useState } from 'react';
+import { formatImage } from '@/utils/formatImage';
 import { getEmployeeStatusDropdownOptions, DropdownOption } from '../../../hooks/employee-data/form/useFormulirKaryawan';
 
 
@@ -216,11 +217,9 @@ export default function DataKaryawanPage() {
       sortable: true,
       format: (_, row) => (
         <div className="flex items-center gap-2">
-          <img
-            src={row.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${row.full_name}`}
-            alt={row.full_name}
-            className="h-8 w-8 rounded-full"
-          />
+          <div className="h-8 w-8 rounded-full overflow-hidden">
+            {formatImage(row.avatar || null, row.full_name || '')}
+          </div>
           <span className="whitespace-nowrap">{row.full_name}</span>
         </div>
       ),
