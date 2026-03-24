@@ -97,7 +97,7 @@ interface UseApiPayrollPeriodReturn {
     dateRangeFilters: Record<string, { startDate: string; endDate: string | null }>;
 }
 
-export const useApiPayrollPeriod = (title: string = 'Periode Gajian'): UseApiPayrollPeriodReturn => {
+export const useApiPayrollPeriod = (): UseApiPayrollPeriodReturn => {
     const [payrollPeriods, setPayrollPeriods] = useState<PayrollPeriodListItem[]>([]);
     const [payrollPeriodDetail, setPayrollPeriodDetail] = useState<PayrollPeriodDetailData | null>(null);
     const [importApprovalStatus, setImportApprovalStatus] = useState<PayrollPeriodImportApprovalStatusData | null>(null);

@@ -86,7 +86,7 @@ export function useAEPages(_options: UseAEPagesOptions = {}) {
     setColumnFilters,
     setDateRangeFilters,
     setType,
-  } = useApiPayrollPeriod(title);
+  } = useApiPayrollPeriod();
 
   // Set type to 'Mitra' when component mounts
   useEffect(() => {

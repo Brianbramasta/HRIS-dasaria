@@ -88,7 +88,7 @@ export function useNonAEPages(_options: UseNonAEPagesOptions = {}) {
     setColumnFilters,
     setDateRangeFilters,
     setType,
-  } = useApiPayrollPeriod(title);
+  } = useApiPayrollPeriod();
 
   
 

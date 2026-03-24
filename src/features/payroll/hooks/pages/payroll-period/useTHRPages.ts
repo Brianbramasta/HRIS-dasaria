@@ -80,7 +80,7 @@ export function useTHRPages(_options: UseTHRPagesOptions = {}) {
     setColumnFilters,
     setDateRangeFilters,
     setType,
-  } = useApiPayrollPeriod(title);
+  } = useApiPayrollPeriod();
 
   // Set type to 'Thr' when component mounts
   useEffect(() => {
