@@ -45,17 +45,17 @@ export function useFilterModal<T>({
   useEffect(() => {
     const pageKey = resetKey ?? location.pathname;
     const { terms, isFilterActive: active } = loadPageFilters(pageKey);
-    console.log('load page filters', pageKey, terms, active);
+    // console.log('load page filters', pageKey, terms, active);
     if (terms.length) {
       setModalFilterItems(terms);
       setIsFilterActive(active);
     } else {
       const existing = getFilterFor(pageKey ?? 'global');
-      console.log('load global title', title);
+      // console.log('load global title', title);
       
       if (existing && existing.length > 0) {
         const items = existing;
-        console.log('load global filters', title, items);
+        // console.log('load global filters', title, items);
         setModalFilterItems(items);
         setIsFilterActive(false);
       }
