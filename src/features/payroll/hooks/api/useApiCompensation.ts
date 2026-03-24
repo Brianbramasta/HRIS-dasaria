@@ -82,7 +82,7 @@ export const useApiCompensation = (): UseApiCompensationReturn => {
   const [sortBy, setSortBy] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
   // Filter value from store using the same key as DataTable title ('Kompensasi')
-  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['Kompensasi']));
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters[s.resetKey]));
 
   const fetchCompensations = useCallback(async (filter?: Partial<TableFilter>) => {
     setLoading(true);

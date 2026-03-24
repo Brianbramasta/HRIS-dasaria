@@ -105,7 +105,7 @@ export const useApiJobTitles = (): UseApiJobTitlesReturn => {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['Jabatan']));
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters[s.resetKey]));
 
   const fetchPositions = useCallback(async (filter?: TableFilter) => {
     setLoading(true);

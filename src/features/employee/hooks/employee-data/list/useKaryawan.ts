@@ -24,7 +24,7 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(initialPage);
   const [limit, setLimit] = useState(initialLimit);
-  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['Data Master Karyawan'] ?? ''));
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters[s.resetKey]));
   const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
   const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
 

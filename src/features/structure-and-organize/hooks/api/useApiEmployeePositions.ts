@@ -111,7 +111,7 @@ export const useApiEmployeePositions = (): UseEmployeePositionsReturn => {
   // Dokumentasi: set default sort 'Nama Posisi' dan hindari auto-fetch berulang
   const [sortBy, setSortBy] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['Posisi Pegawai']));
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters[s.resetKey]));
 
   // Dokumentasi: menerima Partial<TableFilter>, kombinasikan dengan state lokal
   const fetchEmployeePositions = useCallback(async (filter?: Partial<TableFilter>) => {

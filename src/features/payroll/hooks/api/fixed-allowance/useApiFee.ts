@@ -63,7 +63,7 @@ export const useApiFee = (): UseApiFeeReturn => {
   const [sortBy, setSortBy] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
   
-  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['Fee']));
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters[s.resetKey]));
 
   const fetchFees = useCallback(async (filter?: Partial<TableFilter>) => {
     setLoading(true);

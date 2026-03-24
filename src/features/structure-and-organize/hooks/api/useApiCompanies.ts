@@ -159,7 +159,7 @@ export const useApiCompanies = (): UseApiCompaniesReturn => {
   const [search, setSearch] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
-  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['Perusahaan']));
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters[s.resetKey]));
 
   const fetchCompanies = useCallback(async (filter?: Partial<TableFilter>) => {
     setLoading(true);

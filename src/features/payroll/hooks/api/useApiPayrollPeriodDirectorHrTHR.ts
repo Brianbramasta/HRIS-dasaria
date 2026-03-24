@@ -84,7 +84,7 @@ export const useApiPayrollPeriodDirectorHrTHR = (): UseApiPayrollPeriodDirectorH
     const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
     const [type, setType] = useState<'Mitra' | 'Staff' | 'Thr'>('Thr'); // Default to 'Thr' for THR pages
 
-    const filterStatus = formatFilterValue(useFilterStore((s) => s.filters['PayrollPeriodStatus']));
+    const filterStatus = formatFilterValue(useFilterStore((s) => s.filters[s.resetKey]));
 
     const fetchPayrollPeriods = useCallback(
         async (filter?: Partial<TableFilter>) => {

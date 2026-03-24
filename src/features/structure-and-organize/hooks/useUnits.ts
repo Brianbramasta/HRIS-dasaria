@@ -25,7 +25,7 @@ export const useUnits = () => {
   const [total, setTotal] = useState(0);
   const [sortBy, setSortBy] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['Unit']));
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters[s.resetKey]));
 
   const mapToUnit = useCallback(
     (item: any): UnitListItem => ({

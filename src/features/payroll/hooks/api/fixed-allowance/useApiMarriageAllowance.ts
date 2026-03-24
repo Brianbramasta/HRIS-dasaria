@@ -68,7 +68,7 @@ export const useApiMarriageAllowance = (): UseApiMarriageAllowanceReturn => {
   const [sortBy, setSortBy] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
   
-  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['MarriageAllowance']));
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters[s.resetKey]));
 
   const fetchMarriageAllowances = useCallback(async (filter?: Partial<TableFilter>) => {
     setLoading(true);

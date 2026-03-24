@@ -78,7 +78,7 @@ export const useApiBpjsItem = (): UseApiBpjsItemReturn => {
   
   // Assuming filterStore is global and has keys for features. 
   // We use 'BpjsItem' as the key.
-  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['BPJS']));
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters[s.resetKey]));
 
   const fetchBpjsItems = useCallback(async (filter?: Partial<TableFilter>) => {
     setLoading(true);

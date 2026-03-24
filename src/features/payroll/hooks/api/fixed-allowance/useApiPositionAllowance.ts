@@ -66,7 +66,7 @@ export const useApiPositionAllowance = (): UseApiPositionAllowanceReturn => {
   const [sortBy, setSortBy] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
   
-  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['PositionAllowance']));
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters[s.resetKey]));
 
   const fetchPositionAllowances = useCallback(async (filter?: Partial<TableFilter>) => {
     setLoading(true);

@@ -127,8 +127,8 @@ export const useApiResignation = (): UseApiResignationReturn => {
   const [adminDateRangeFilters, setAdminDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
 
   // Filter values from store
-  const applicationFilterValue = formatFilterValue(useFilterStore((s) => s.filters['Pengunduran Diri'] ?? ''));
-  const adminFilterValue = formatFilterValue(useFilterStore((s) => s.filters['Terminasi Administrasi'] ?? ''));
+  const applicationFilterValue = formatFilterValue(useFilterStore((s) => s.filters[s.resetKey]));
+  const adminFilterValue = formatFilterValue(useFilterStore((s) => s.filters[s.resetKey]));
 
   const fetchApplications = useCallback(async (params?: Partial<TableFilter>) => {
     setLoading(true);
