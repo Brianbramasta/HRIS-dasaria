@@ -84,7 +84,7 @@ export const useApiPayrollPeriodDirectorHrTHR = (): UseApiPayrollPeriodDirectorH
     const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
     const [type, setType] = useState<'Mitra' | 'Staff' | 'Thr'>('Thr'); // Default to 'Thr' for THR pages
 
-    const filterStatus = formatFilterValue(useFilterStore((s) => s.filters[s.resetKey]));
+    const filterValue = formatFilterValue(useFilterStore((s) => s.filters[s.resetKey]));
 
     const fetchPayrollPeriods = useCallback(
         async (filter?: Partial<TableFilter>) => {
@@ -105,11 +105,11 @@ export const useApiPayrollPeriodDirectorHrTHR = (): UseApiPayrollPeriodDirectorH
                 const effectiveSearch = filter?.search ?? search;
                 const effectiveSortBy = filter?.sortBy ?? sortBy;
                 const effectiveSortOrder = filter?.sortOrder ?? sortOrder;
-                const effectiveStatus = filter?.filter ?? filterStatus;
+                const effectiveFilter = filter?.filter ?? filterValue;
 
                 const params: any = { page: effectivePage, per_page: effectivePageSize };
                 if (effectiveSearch) params.search = effectiveSearch;
-                if (effectiveStatus) params.status = effectiveStatus;
+                if (effectiveFilter) params.fiter = effectiveFilter;
                 if (type) params.type = type;
                 if (effectiveSortBy) {
                     params.column = toSortField(effectiveSortBy);
@@ -167,7 +167,7 @@ export const useApiPayrollPeriodDirectorHrTHR = (): UseApiPayrollPeriodDirectorH
                 setLoading(false);
             }
         },
-        [type, page, pageSize, search, sortBy, sortOrder, filterStatus, columnFilters, dateRangeFilters]
+        [type, page, pageSize, search, sortBy, sortOrder, filterValue, columnFilters, dateRangeFilters]
     );
 
     const fetchPayrollPeriodDetail = useCallback(async (payrollId: string, typeParam?: 'Mitra' | 'Staff' | 'Thr'): Promise<PayrollPeriodDirectorHrDetailData | null> => {

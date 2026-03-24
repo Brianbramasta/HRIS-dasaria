@@ -109,7 +109,7 @@ export const useApiPayrollPeriodBodTHR = (): UseApiPayrollPeriodBodTHRReturn => 
 
                 const params: any = { page: effectivePage, per_page: effectivePageSize };
                 if (effectiveSearch) params.search = effectiveSearch;
-                if (effectiveStatus) params.status = effectiveStatus;
+                if (effectiveStatus) params.filter = effectiveStatus;
                 if (type) params.type = type;
                 if (effectiveSortBy) {
                     params.column = toSortField(effectiveSortBy);

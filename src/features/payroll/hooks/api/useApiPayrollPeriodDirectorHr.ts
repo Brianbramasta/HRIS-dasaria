@@ -95,6 +95,7 @@ export const useApiPayrollPeriodDirectorHr = (options: UseApiPayrollPeriodDirect
 
     const fetchPayrollPeriods = useCallback(
         async (filter?: Partial<TableFilter>) => {
+            console.log('test')
             setLoading(true);
             setError(null);
 

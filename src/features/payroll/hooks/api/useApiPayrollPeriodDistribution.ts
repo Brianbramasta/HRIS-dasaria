@@ -109,7 +109,7 @@ export const useApiPayrollPeriodDistribution = (): UseApiPayrollPeriodDistributi
 
                 const params: any = { page: effectivePage, per_page: effectivePageSize };
                 if (effectiveSearch) params.search = effectiveSearch;
-                if (effectiveStatus) params.status = effectiveStatus;
+                if (effectiveStatus) params.filter = effectiveStatus;
                 if (effectiveType) params.type = effectiveType;
                 if (effectiveSortBy) {
                     params.column = toSortField(effectiveSortBy);
