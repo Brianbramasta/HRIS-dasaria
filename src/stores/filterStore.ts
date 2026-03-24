@@ -2,6 +2,8 @@ import create from 'zustand';
 
 interface FilterState {
   filters: Record<string, string[]>;
+  resetKey: string;
+  setResetKey: (key: string) => void;
   setFilterFor: (key: string, value: string[]) => void;
   clearFilterFor: (key: string) => void;
   getFilterFor: (key: string) => string[];
@@ -45,6 +47,8 @@ const loadFiltersFromLocalStorage = (): Record<string, string[]> => {
 
 export const useFilterStore = create<FilterState>((set, get) => ({
   filters: loadFiltersFromLocalStorage(),
+  resetKey: '',
+  setResetKey: (key: string) => set({ resetKey: key }),
   setFilterFor: (key: string, value: string[]) => {
     set((s) => ({ filters: { ...s.filters, [key]: value } }));
   },
@@ -68,6 +72,9 @@ export const clearFilterFor = (key: string) =>
 
 export const getFilterFor = (key: string) =>
   useFilterStore.getState().getFilterFor(key);
+
+export const setResetKey = (key: string) =>
+  useFilterStore.getState().setResetKey(key);
 
 export const persistPageFilters = (pageKey: string, terms: string[], columns: string[], isFilterActive: boolean = false) => {
   if (typeof window === 'undefined') return;

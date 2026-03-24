@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { setFilterFor, getFilterFor, loadPageFilters, persistPageFilters } from '../../stores/filterStore';
+import { setFilterFor, getFilterFor, loadPageFilters, persistPageFilters, setResetKey } from '../../stores/filterStore';
 import { DataTableColumn } from '../../components/shared/datatable/DataTable';
 
 interface UseFilterModalProps<T> {
@@ -39,6 +39,8 @@ export function useFilterModal<T>({
       const items = existing;
       setModalFilterItems(items);
       setIsFilterActive(active);
+      setResetKey(resetKey || '')
+
     // }
   }, [isFilterModalOpen, resetKey, location.pathname, visibleColumns, title]);
 
