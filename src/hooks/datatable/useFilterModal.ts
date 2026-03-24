@@ -45,13 +45,17 @@ export function useFilterModal<T>({
   useEffect(() => {
     const pageKey = resetKey ?? location.pathname;
     const { terms, isFilterActive: active } = loadPageFilters(pageKey);
+    console.log('load page filters', pageKey, terms, active);
     if (terms.length) {
       setModalFilterItems(terms);
       setIsFilterActive(active);
     } else {
-      const existing = getFilterFor(title ?? 'global');
+      const existing = getFilterFor(pageKey ?? 'global');
+      console.log('load global title', title);
+      
       if (existing && existing.length > 0) {
         const items = existing;
+        console.log('load global filters', title, items);
         setModalFilterItems(items);
         setIsFilterActive(false);
       }
@@ -113,7 +117,7 @@ export function useFilterModal<T>({
       ? modalFilterItems 
       : (modalFilterTerm.trim() ? [modalFilterTerm.trim()] : []);
     //console.log(terms,'filter terms array')
-    setFilterFor(title ?? 'global', terms);
+    setFilterFor(pageKey ?? 'global', terms);
     const columnTotal = columns.filter((x) => x.isAction !== true).length;
     const tempVisibleColumnsTotal = tempVisibleColumns.length;
     const filterActive = terms.length > 0 || tempVisibleColumnsTotal < columnTotal;
