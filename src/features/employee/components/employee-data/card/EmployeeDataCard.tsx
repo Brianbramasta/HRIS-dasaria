@@ -3,6 +3,8 @@ import Label from '@/components/form/Label';
 import InputField from '@/components/form/input/InputField';
 import EmployeeDataModal from '@/features/employee/components/modals/employee-data/personal-information/EmployeeDataModal';
 import { IconLengkap, IconTidakLengkap } from '@/icons/components/icons';
+import Button from '@/components/ui/button/Button';
+import { Edit2 } from 'react-feather';
 import useEmployeeDataCard from '@/features/employee/hooks/card/useEmployeeDataCard';
 
 interface Props {
@@ -12,9 +14,11 @@ interface Props {
 export default function EmployeeDataCard({ data, employeeId }: Props & { employeeId: string }) {
   const {
     isOpen,
+    openModal,
     closeModal,
     initialForm,
     isComplete,
+    isEditHidden,
     handleSubmit,
   } = useEmployeeDataCard(data, employeeId);
 
@@ -86,6 +90,14 @@ export default function EmployeeDataCard({ data, employeeId }: Props & { employe
           <InputField value={data?.payroll_status || ''} readonly={true} />
         </div>
       </div>
+
+       {isEditHidden && (
+        <div className="mt-4 flex justify-end">
+          <Button variant="primary" size="sm" onClick={openModal} className='w-full md:w-auto flex items-center justify-center'>
+            <Edit2 size={16} className="mr-2" /> Edit
+          </Button>
+        </div>
+      )}  
 
       <EmployeeDataModal
         isOpen={isOpen}
