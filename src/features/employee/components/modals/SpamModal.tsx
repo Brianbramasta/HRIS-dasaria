@@ -3,12 +3,14 @@ import { Modal } from "@/components/ui/modal";
 import { useSpamModalStore } from "@/stores/useSpamModalStore";
 import { useNavigate, useLocation } from "react-router";
 import { formatImage } from "@/utils/formatImage";
+import { useAuthStore } from "@/features/auth/stores/AuthStore";
 
 interface SpamModalProps {
   // data?: ContractData[]; // No longer needed as it's in the store
 }
 
 export const SpamModal: React.FC<SpamModalProps> = () => {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const { 
     isOpen, 
     closeModal, 
@@ -23,6 +25,11 @@ export const SpamModal: React.FC<SpamModalProps> = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [prevPathname, setPrevPathname] = React.useState(location.pathname);
+
+  // Don't render modal if user is not authenticated
+  if (!isAuthenticated) {
+    return null;
+  }
 
   // Fetch data only when accessing employee pages and reset state on page change
   useEffect(() => {
