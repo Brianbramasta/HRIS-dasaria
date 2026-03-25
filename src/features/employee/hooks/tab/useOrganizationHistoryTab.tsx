@@ -4,7 +4,7 @@ import type { DataTableColumn, DataTableAction } from '@/components/shared/datat
 import { IconFileDetail } from '@/icons/components/icons';
 import { useOrganizationHistory, type OrgHistoryRow } from '@/features/employee/hooks/employee-data/detail/contract/useOrganizationHistory';
 // import { formatUrlFile } from '@/utils/formatUrlFile';
-import handleViewFile from '@/utils/viewFileHandle';
+import { handleViewFileByUrl } from '@/utils/viewFileHandle';
 
 export function useOrganizationHistoryTab(employeeId?: string) {
   const { rows } = useOrganizationHistory(employeeId);
@@ -39,13 +39,13 @@ export function useOrganizationHistoryTab(employeeId?: string) {
         id: 'detailSK', 
         label: 'Detail SK', 
         sortable: false, 
-        format: (v) => v!=null?<span onClick={() => handleViewFile(v)} className="cursor-pointer flex items-center justify-center"><IconFileDetail /></span> : null 
+        format: (v) => v!=null?<span onClick={() => handleViewFileByUrl(v)} className="cursor-pointer flex items-center justify-center"><IconFileDetail /></span> : null 
       },
       { 
         id: 'detailAdendum', 
         label: 'Detail Adendum', 
         sortable: false, 
-        format: (v) => v!=null?<span onClick={() => handleViewFile(v)} className="cursor-pointer flex items-center justify-center"><IconFileDetail /></span> : null 
+        format: (v) => v!=null?<span onClick={() => handleViewFileByUrl(v)} className="cursor-pointer flex items-center justify-center"><IconFileDetail /></span> : null 
       },
     ],
     [rows],

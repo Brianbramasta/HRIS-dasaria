@@ -44,30 +44,64 @@ export interface OrganizationChangeListParams {
 export interface OrganizationChangeListItemRaw {
   id: string;
   employee_id: string;
-  full_name: string;
-  jenis_perubahan: string;
-  efektif_date: string;
-  perusahaan_lama: string;
-  perusahaan_baru: string;
-  direktorat_lama: string;
-  direktorat_baru: string;
-  divisi_lama: string;
-  divisi_baru: string;
-  departemen_lama: string;
-  departemen_baru: string;
-  posisi_lama: string;
-  posisi_baru: string;
-  jabatan_lama: string;
-  jabatan_baru: string;
-  jenjang_jabatan_lama: string;
-  jenjang_jabatan_baru: string;
-  jabatan_struktural_lama?: string | null;
-  jabatan_struktural_baru?: string | null;
-  kategori_karyawan_lama: string | null;
-  kategori_karyawan_baru: string | null;
-  reason: string;
-  status: string;
+  employee_name: string;
+  marital_status: string;
+  dependents: number;
+  reason_change: string;
   decree_file?: string | null;
+  adendum_file?: string | null;
+  previous_position: {
+    employee_category: string;
+    employee_category_id: string;
+    company: string;
+    office: string;
+    directorate: string;
+    division: string;
+    department: string;
+    unit: string;
+    position: string;
+    rank_position: string;
+    structural_position: string;
+    position_level: string;
+    effective_date: string;
+    gaji_pokok: number;
+    tunjangan_pernikahan: number;
+    tunjangan_jabatan: number;
+    tunjangan_lama_kerja: number;
+    grade: string;
+    tunjangan_dekresi: Array<{
+      id: string;
+      amount: number;
+      allowance_name: string;
+    }>;
+    take_home_pay: number;
+  };
+  new_position: {
+    employee_category: string;
+    employee_category_id: string;
+    company: string;
+    office: string;
+    directorate: string;
+    division: string;
+    department: string;
+    unit: string;
+    position: string;
+    rank_position: string;
+    structural_position: string;
+    position_level: string;
+    effective_date: string;
+    gaji_pokok: number;
+    tunjangan_pernikahan: number;
+    tunjangan_jabatan: number;
+    tunjangan_lama_kerja: number;
+    grade: string;
+    tunjangan_dekresi: Array<{
+      id: string;
+      amount: number;
+      allowance_name: string;
+    }>;
+    take_home_pay: number;
+  };
 }
 
 export interface OrganizationChangeListResponseRaw {

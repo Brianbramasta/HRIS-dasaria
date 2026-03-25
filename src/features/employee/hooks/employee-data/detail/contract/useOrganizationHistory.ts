@@ -27,7 +27,8 @@ export type OrgHistoryRow = {
   kategoriKaryawanLama: string | null;
   kategoriKaryawanBaru: string | null;
   alasanPerubahan: string;
-  decree_file?: string | null;
+  detailSK?: string | null;
+  detailAdendum?: string | null;
 };
 
 export interface UseOrganizationHistoryReturn {
@@ -40,30 +41,31 @@ export interface UseOrganizationHistoryReturn {
 function mapToRow(item: OrganizationChangeListItemRaw): OrgHistoryRow {
   return {
     id: item.id,
-    jenisPerubahan: item.jenis_perubahan,
-    tanggalEfektif: item.efektif_date,
-    perusahaanLama: item.perusahaan_lama,
-    perusahaanBaru: item.perusahaan_baru,
-    direktoratLama: item.direktorat_lama,
-    direktoratBaru: item.direktorat_baru,
-    divisiLama: item.divisi_lama,
-    divisiBaru: item.divisi_baru,
-    departemenLama: item.departemen_lama,
-    departemenBaru: item.departemen_baru,
-    unitLama: (item as any).unit_lama ?? '-',
-    unitBaru: (item as any).unit_baru ?? '-',
-    posisiLama: item.posisi_lama,
-    posisiBaru: item.posisi_baru,
-    jabatanLama: item.jabatan_lama,
-    jabatanBaru: item.jabatan_baru,
-    jabatanStrukturalLama: item.jabatan_struktural_lama ?? null,
-    jabatanStrukturalBaru: item.jabatan_struktural_baru ?? null,
-    jenjangJabatanLama: item.jenjang_jabatan_lama,
-    jenjangJabatanBaru: item.jenjang_jabatan_baru,
-    kategoriKaryawanLama: item.kategori_karyawan_lama,
-    kategoriKaryawanBaru: item.kategori_karyawan_baru,
-    alasanPerubahan: item.reason,
-    decree_file: item.decree_file,
+    jenisPerubahan: 'Perubahan Organisasi', // Since there's no jenis_perubahan field in the new response
+    tanggalEfektif: item.new_position.effective_date,
+    perusahaanLama: item.previous_position.company,
+    perusahaanBaru: item.new_position.company,
+    direktoratLama: item.previous_position.directorate,
+    direktoratBaru: item.new_position.directorate,
+    divisiLama: item.previous_position.division,
+    divisiBaru: item.new_position.division,
+    departemenLama: item.previous_position.department,
+    departemenBaru: item.new_position.department,
+    unitLama: item.previous_position.unit ?? '-',
+    unitBaru: item.new_position.unit ?? '-',
+    posisiLama: item.previous_position.position,
+    posisiBaru: item.new_position.position,
+    jabatanLama: item.previous_position.position,
+    jabatanBaru: item.new_position.position,
+    jabatanStrukturalLama: item.previous_position.structural_position ?? null,
+    jabatanStrukturalBaru: item.new_position.structural_position ?? null,
+    jenjangJabatanLama: item.previous_position.position_level,
+    jenjangJabatanBaru: item.new_position.position_level,
+    kategoriKaryawanLama: item.previous_position.employee_category,
+    kategoriKaryawanBaru: item.new_position.employee_category,
+    alasanPerubahan: item.reason_change,
+    detailSK: item.decree_file,
+    detailAdendum: item.adendum_file,
   };
 }
 
@@ -83,7 +85,8 @@ export function useOrganizationHistory(employeeId?: string): UseOrganizationHist
       setLoading(true);
       setError(null);
       try {
-        const resp = await organizationHistoryService.getEmployeeOrganizationChanges(employeeId, params);
+        const requestParams = { ...params, employeeId };
+        const resp = await organizationHistoryService.getEmployeeOrganizationChanges(requestParams);
         const data = (resp as any)?.data?.data ?? [];
         setRows(data.map(mapToRow));
       } catch (err: any) {

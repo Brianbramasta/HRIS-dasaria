@@ -31,6 +31,7 @@ const getTemporaryUrl = async (path: string): Promise<GetTemporaryUrlResponse | 
 };
 
 export const handleViewFile = async (row: any) => {
+  console.log('row', row);
     if (!row.fileUrl) {
       console.error('No file URL available');
       return;
@@ -38,6 +39,26 @@ export const handleViewFile = async (row: any) => {
 
     try {
       const temporaryUrlData = await getTemporaryUrl(row.fileUrl);
+      if (temporaryUrlData && temporaryUrlData.temporary_url) {
+        // Open the document in a new tab
+        window.open(temporaryUrlData.temporary_url, '_blank');
+      } else {
+        console.error('Failed to get temporary URL');
+      }
+    } catch (error) {
+      console.error('Error viewing file:', error);
+    }
+  };
+
+export const handleViewFileByUrl = async (fileUrl: string) => {
+  console.log('fileUrl', fileUrl);
+    if (!fileUrl) {
+      console.error('No file URL available');
+      return;
+    }
+
+    try {
+      const temporaryUrlData = await getTemporaryUrl(fileUrl);
       if (temporaryUrlData && temporaryUrlData.temporary_url) {
         // Open the document in a new tab
         window.open(temporaryUrlData.temporary_url, '_blank');
