@@ -50,6 +50,7 @@ export interface OrganizationChangeListItemRaw {
   reason_change: string;
   decree_file?: string | null;
   adendum_file?: string | null;
+  change_type_name?: string | null;
   previous_position: {
     employee_category: string;
     employee_category_id: string;

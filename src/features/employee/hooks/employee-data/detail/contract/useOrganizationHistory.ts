@@ -41,7 +41,7 @@ export interface UseOrganizationHistoryReturn {
 function mapToRow(item: OrganizationChangeListItemRaw): OrgHistoryRow {
   return {
     id: item.id,
-    jenisPerubahan: 'Perubahan Organisasi', // Since there's no jenis_perubahan field in the new response
+    jenisPerubahan: item.change_type_name || '-', // Since there's no jenis_perubahan field in the new response
     tanggalEfektif: item.new_position.effective_date,
     perusahaanLama: item.previous_position.company,
     perusahaanBaru: item.new_position.company,

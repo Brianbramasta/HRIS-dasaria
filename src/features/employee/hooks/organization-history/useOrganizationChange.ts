@@ -125,7 +125,7 @@ export function useOrganizationChange({
           id: item.id,
           employee_id: item.employee_id,
           full_name: item.employee_name,
-          change_type: 'Perubahan Organisasi', // Since there's no jenis_perubahan field in the new response
+          change_type: item.change_type_name || '-', // Since there's no jenis_perubahan field in the new response
           effective_date: item.new_position.effective_date,
           reason: item.reason_change,
           old_company: item.previous_position.company,
