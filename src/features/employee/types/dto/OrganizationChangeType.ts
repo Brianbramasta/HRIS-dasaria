@@ -80,6 +80,7 @@ export interface PositionDetail {
   grade: string;
   tunjangan_dekresi: NonFixAllowanceItem[];
   take_home_pay: number;
+  effective_date: string;
 }
 
 export interface OrganizationChangeDetail {

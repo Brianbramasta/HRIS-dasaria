@@ -10,6 +10,7 @@ import Button from '@/components/ui/button/Button';
 import { handleViewFile } from '@/utils/viewFileHandle';
 import { formatCurrency } from '@/utils/formatCurrency';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { formatDateToIndonesian } from '@/utils/formatDate';
 
 const DetailOrganizationHistoryPage: React.FC = () => {
   const navigate = useNavigate();
@@ -165,7 +166,7 @@ const DetailOrganizationHistoryPage: React.FC = () => {
             <InputField label="Jenis Perubahan" required value={organizationChangeDetail?.change_type_name || ''} disabled placeholder="Jenis Perubahan" onChange={() => {}} />
           </div>
           <div>
-            <InputField id="effectiveDateDetail" label="Tanggal Efektif" required value={organizationChangeDetail?.effective_date || ''} placeholder="— (masih aktif)" onChange={() => {}} disabled />
+            <InputField id="effectiveDateDetail" label="Tanggal Efektif" required value={formatDateToIndonesian(organizationChangeDetail?.new_position?.effective_date || '')} placeholder="— (masih aktif)" onChange={() => {}} disabled />
           </div>
           <div>
             <InputField label="Kategori Karyawan" required value={organizationChangeDetail?.new_position?.employee_category || ''} disabled placeholder="Kategori Karyawan" onChange={() => {}} />
