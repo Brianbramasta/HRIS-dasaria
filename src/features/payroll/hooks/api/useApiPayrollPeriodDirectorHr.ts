@@ -72,7 +72,7 @@ interface UseApiPayrollPeriodDirectorHrReturn {
     setType: (type: 'Mitra' | 'Staff' | 'Thr') => void;
 }
 
-export const useApiPayrollPeriodDirectorHr = (options: UseApiPayrollPeriodDirectorHrOptions = {}, title:string = 'Periode Gajian'): UseApiPayrollPeriodDirectorHrReturn => {
+export const useApiPayrollPeriodDirectorHr = (options: UseApiPayrollPeriodDirectorHrOptions = {}): UseApiPayrollPeriodDirectorHrReturn => {
     const [payrollPeriods, setPayrollPeriods] = useState<PayrollPeriodDirectorHrListItem[]>([]);
     const [payrollPeriodDetail, setPayrollPeriodDetail] = useState<PayrollPeriodDirectorHrDetailData | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
