@@ -88,10 +88,9 @@ export const useApiPayrollPeriodDirectorHr = (options: UseApiPayrollPeriodDirect
     const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
     const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
     const [type, setType] = useState<'Mitra' | 'Staff' | 'Thr'>(options.initialType ?? 'Staff');
-    console.log(title,'title')
 
     const filterValue = formatFilterValue(useFilterStore((s) => s.filters[s.resetKey]));
-    console.log(filterValue,'filterValue9')
+    console.log(filterValue,'filterValue 9')
 
     const fetchPayrollPeriods = useCallback(
         async (filter?: Partial<TableFilter>) => {

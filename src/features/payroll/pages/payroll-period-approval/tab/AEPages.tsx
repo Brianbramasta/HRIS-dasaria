@@ -231,6 +231,19 @@ export default function AETab({ }: { resetKey?: string }) {
     setInitialDataFetched(true);
   }, [isApprovalPage, isDirectorHrga, isFat, isBod, fetchDirectorRows, fetchFatRows, fetchBodRows, setDirectorType, setFatType, setBodType, initialDataFetched]);
 
+  // Listen for filter changes and refetch data
+  useEffect(() => {
+    if (!isApprovalPage) return;
+    
+    if (isDirectorHrga) {
+      fetchDirectorRows({ page: directorPage, pageSize: directorPageSize, type: employeeType });
+    } else if (isFat) {
+      fetchFatRows({ page: fatPage, pageSize: fatPageSize, type: employeeType });
+    } else if (isBod) {
+      fetchBodRows({ page: bodPage, pageSize: bodPageSize, type: employeeType });
+    }
+  }, [isApprovalPage, isDirectorHrga, isFat, isBod, fetchDirectorRows, fetchFatRows, fetchBodRows, directorPage, directorPageSize, fatPage, fatPageSize, bodPage, bodPageSize, employeeType]);
+
   // Fetch approval status for the store
   // useEffect(() => {
   //   if (!approvalStatusFetched) {
