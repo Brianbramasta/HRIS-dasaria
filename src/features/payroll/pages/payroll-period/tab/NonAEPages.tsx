@@ -55,35 +55,37 @@ export default function NonAETab({}: { resetKey?: string }) {
   };
 
   // Add format function for status column
-  const baseColumns: DataTableColumn<NonAERow>[] = baseColumnsFromHook.map(
-    (col) => {
-      if (col.id === "statusPenggajian") {
-        return {
-          ...col,
-          format: (v: any) => {
-            const value = String(v ?? "");
-            const lowered = value.toLowerCase();
+  const baseColumns: DataTableColumn<NonAERow>[] = useMemo(() =>
+    baseColumnsFromHook.map(
+      (col) => {
+        if (col.id === "statusPenggajian") {
+          return {
+            ...col,
+            format: (v: any) => {
+              const value = String(v ?? "");
+              const lowered = value.toLowerCase();
 
-            const badgeClass = lowered.includes("menunggu maker")
-              ? "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-200"
-              : lowered.includes("selesai")
-                ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-200"
-                : lowered.includes("distribusi")
-                  ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200"
-                  : "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200";
+              const badgeClass = lowered.includes("menunggu maker")
+                ? "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-200"
+                : lowered.includes("selesai")
+                  ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-200"
+                  : lowered.includes("distribusi")
+                    ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200"
+                    : "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-200";
 
-            return (
-              <span
-                className={`rounded-full p-[10px] flex justify-center text-center text-xs status-styling ${badgeClass}`}
-              >
-                {value}
-              </span>
-            );
-          },
-        };
-      }
-      return col;
-    },
+              return (
+                <span
+                  className={`rounded-full p-[10px] flex justify-center text-center text-xs status-styling ${badgeClass}`}
+                >
+                  {value}
+                </span>
+              );
+            },
+          };
+        }
+        return col;
+      },
+    ), [baseColumnsFromHook]
   );
 
   const actions: DataTableAction<NonAERow>[] = useMemo(

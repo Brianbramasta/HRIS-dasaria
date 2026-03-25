@@ -63,7 +63,7 @@ export function useDatatable<T = any>({
     const { columns: savedCols } = loadPageFilters(pageKey);
     const next = (savedCols ?? valid).filter((id) => valid.includes(id));
     setVisibleColumns(next.length ? next : valid);
-  }, [resetKey, columns, location.pathname]);
+  }, [resetKey, location.pathname, columns.map(c => c.id).join(',')]);
 
   // Keep internal page in sync with external page when using server-side pagination
   useEffect(() => {

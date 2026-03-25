@@ -37,7 +37,7 @@ const PayrollCard: React.FC<PayrollCardProps> = ({
   return (
     <div
       className={twMerge(
-        `rounded-2xl overflow-hidden ${border ? 'border border-gray-200 dark:border-gray-800' : ''} bg-white dark:bg-white/[0.03]`,
+        `rounded-2xl overflow-hidden ${border ? 'border border-gray-200 dark:border-gray-800' : ''} bg-white dark:bg-white/[0.03] col-span-2 md:col-span-1`,
         className
       )}
     >

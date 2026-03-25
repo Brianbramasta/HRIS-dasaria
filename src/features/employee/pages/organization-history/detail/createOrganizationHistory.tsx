@@ -445,7 +445,7 @@ const CreateOrganizationHistoryPage: React.FC = () => {
                 rows={4}
               />
             </div>
-            <div className="flex justify-end gap-3">
+            <div className="col-span-1 md:col-span-2 flex justify-end gap-3">
               <Button variant="outline" size="sm" onClick={() => navigate(-1)}>
                 Batal
               </Button>
