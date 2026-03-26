@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useFormulirKaryawanStore } from '@/features/employee/stores/useFormulirKaryawanStore';
 import { employeeMasterDataService } from '../../../services/EmployeeMasterData.service';
 import { getEmployeeCategoryDropdownOptions, getPositionLevelDropdownOptions, getEmployeeStatusDropdownOptions, getStructuralJobDropdownOptions, getUnitDropdownByDepartmentIdOptions } from './useFormulirKaryawan';
@@ -32,8 +32,96 @@ export const useStep3Data = (isOpen?: boolean) => {
   const { formData,updateStep3Employee } = useFormulirKaryawanStore();
   const step3 = formData.step3Employee;
 
+  // Derive selected labels
+  const selectedCategoryLabel = kategoriKaryawanOptions.find(opt => opt.value === step3.kategoriKaryawan)?.label || '';
+  const selectedJobLabel = jobTitleOptions.find(opt => opt.value === step3.jabatan)?.label || '';
+  const selectedStructuralJobLabel = jabatanStrukturalOptions.find(opt => opt.value === step3.jabatanStruktural)?.label || '';
+
+  // Filter job title options based on selected category
+  const filteredJobTitleOptions = useMemo(() => {
+    if (!selectedCategoryLabel) return jobTitleOptions;
+
+    if (selectedCategoryLabel === 'Non-Staff') {
+      return jobTitleOptions.filter(opt => opt.label.includes('Non-Staff'));
+    }
+    if (selectedCategoryLabel === 'Mitra') {
+      return jobTitleOptions.filter(opt => ['Kemitraan', 'Partnership'].some(keyword => opt.label.includes(keyword)));
+    }
+    if (selectedCategoryLabel === 'Staff') {
+      const staffLabels = [
+        'Entry Level',
+        'Officer',
+        'Principal',
+        'Supervisor',
+        'Manager',
+        'Direktur'
+      ];
+      // Use includes for flexibility in labels
+      return jobTitleOptions.filter(opt => staffLabels.some(label => opt.label.includes(label)));
+    }
+    return jobTitleOptions;
+  }, [jobTitleOptions, selectedCategoryLabel]);
+
+  // Determine field visibility based on job title and structural job
+  const visibleFields = useMemo(() => {
+    // Default visibility
+    const fields = {
+      direktorat: true,
+      divisi: true,
+      departemen: true,
+      unit: true,
+      position: true,
+    };
+
+    if (!selectedCategoryLabel) return fields;
+
+    if (selectedCategoryLabel === 'Non-Staff' || selectedCategoryLabel === 'Mitra') {
+      // tampilkan pilihan lengkap Departmen sampai position
+      return fields;
+    }
+
+    if (selectedCategoryLabel === 'Staff') {
+      if (['Entry Level', 'Officer'].some(l => selectedJobLabel.includes(l))) {
+        return fields;
+      }
+      
+      // Reset defaults for higher level staff
+      fields.divisi = false;
+      fields.departemen = false;
+      fields.unit = false;
+      fields.position = false;
+
+      if (selectedJobLabel.includes('Principal')) {
+        fields.divisi = true;
+        fields.departemen = true;
+        if (['Branch Leader', 'Kepala Branch'].includes(selectedStructuralJobLabel)) {
+          fields.unit = true;
+        }
+      } else if (selectedJobLabel.includes('Supervisor')) {
+        fields.divisi = true;
+        fields.departemen = true;
+      } else if (selectedJobLabel.includes('Manager')) {
+        fields.divisi = true;
+      } else if (['Direktur', 'Director'].includes(selectedJobLabel)) {
+        // Only direktorat
+      } else {
+        // Fallback for staff with no specific job title selected yet
+        fields.divisi = true;
+        fields.departemen = true;
+        fields.unit = true;
+        fields.position = true;
+      }
+    }
+
+    return fields;
+  }, [selectedCategoryLabel, selectedJobLabel, selectedStructuralJobLabel]);
+
   const handleChange = (field: string, value: string) => {
     // handle dependent resets atomically so hook effects can update options
+    if (field === 'kategoriKaryawan') {
+      updateStep3Employee({ kategoriKaryawan: value, jabatan: '', jabatanStruktural: '' } as any);
+      return;
+    }
     if (field === 'company') {
       updateStep3Employee({ company: value, kantor: '' } as any);
       return;
@@ -50,8 +138,19 @@ export const useStep3Data = (isOpen?: boolean) => {
       updateStep3Employee({ departemen: value, unit: '' } as any);
       return;
     }
+    if (field === 'jabatanStruktural') {
+      updateStep3Employee({ jabatanStruktural: value, unit: '' } as any);
+      return;
+    }
     if (field === 'jabatan') {
-      updateStep3Employee({ jabatan: value } as any);
+      updateStep3Employee({ 
+        jabatan: value, 
+        jabatanStruktural: '', 
+        unit: '', 
+        departemen: '', 
+        divisi: '', 
+        position: '' 
+      } as any);
       const selectedJob = jobTitleOptions.find(job => job.value === value);
       if (selectedJob?.grade) {
         setSelectedGrade(selectedJob.grade);
@@ -258,7 +357,7 @@ export const useStep3Data = (isOpen?: boolean) => {
     directorateOptions,
     divisionOptions,
     departmentOptions,
-    jobTitleOptions,
+    jobTitleOptions: filteredJobTitleOptions,
     positionOptions,
     kategoriKaryawanOptions,
     selectedGrade,
@@ -268,6 +367,7 @@ export const useStep3Data = (isOpen?: boolean) => {
     handleChange,
     jabatanStrukturalOptions,
     unitOptions,
+    visibleFields,
     handleCompanySearch,
     handleOfficeSearch,
     handleDirectorateSearch,

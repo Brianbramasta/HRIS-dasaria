@@ -148,31 +148,24 @@ export const useFormulirKaryawan = (): UseFormulirKaryawanReturn => {
   }, [goToPreviousStep]);
 
   // Check for missing files (only Step 1 - foto profil)
-  const checkForMissingFiles = useCallback(() => {
-    // Only check Step 1 (Personal Data) - foto profil
-    if (!formData.step1.fotoProfil || formData.step1.fotoProfil === '') {
-      return 1;
-    }
+  // const checkForMissingFiles = useCallback(() => {
+  //   // Only check Step 1 (Personal Data) - foto profil
+  //   if (!formData.step1.fotoProfil || formData.step1.fotoProfil === '') {
+  //     return 1;
+  //   }
     
-    return 0; // No missing files
-  }, [formData]);
+  //   return 0; // No missing files
+  // }, [formData]);
 
   // Handle next step with file check
   const handleNextWithFileCheck = useCallback(() => {
-    // Check if foto profil is missing
-    // if (checkForMissingFiles() > 0) {
-    //   const message = `File di Step ${missingFileStep} hilang. Silakan upload ulang file tersebut sebelum melanjutkan.`;
-    //   if (window.confirm(message)) {
-    //     // Redirect to the step with missing file
-    //     const { setCurrentStep } = useFormulirKaryawanStore.getState();
-    //     setCurrentStep(missingFileStep);
-    //   }
-    //   return;
-    // }
+    if (!validateRequiredFields()) return;
     
     // If no missing files, proceed with normal next step
-    goToNextStep();
-  }, [checkForMissingFiles, goToNextStep]);
+    if (goToNextStep()) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [validateRequiredFields, goToNextStep]);
 
   // handleSubmit: bangun FormData via hook dan submit ke API employees
   const handleSubmit = useCallback(async () => {

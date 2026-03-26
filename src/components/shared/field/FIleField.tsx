@@ -164,7 +164,7 @@ const FIleField: FC<FileFieldProps> = ({
         required={required}
         accept={acceptedFormats.join(',')}
         onChange={handleFileChange}
-        className="hidden"
+        className="sr-only"
         id={htmlFor}
         disabled={disabled}
       />
