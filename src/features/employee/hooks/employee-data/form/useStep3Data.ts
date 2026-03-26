@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useFormulirKaryawanStore } from '@/features/employee/stores/useFormulirKaryawanStore';
 import { employeeMasterDataService } from '../../../services/EmployeeMasterData.service';
 import { getEmployeeCategoryDropdownOptions, getPositionLevelDropdownOptions, getEmployeeStatusDropdownOptions, getStructuralJobDropdownOptions, getUnitDropdownByDepartmentIdOptions } from './useFormulirKaryawan';
+import { useApiEmployeePositions } from '../../../../structure-and-organize/hooks/api/useApiEmployeePositions';
 
 // digunakan di form 3
 export const useStep3Data = (isOpen?: boolean) => {
@@ -31,6 +32,12 @@ export const useStep3Data = (isOpen?: boolean) => {
   
   const { formData,updateStep3Employee } = useFormulirKaryawanStore();
   const step3 = formData.step3Employee;
+  
+  // Initialize employee positions hook
+  const {
+    employeePositions,
+    fetchEmployeePositions
+  } = useApiEmployeePositions();
 
   // Derive selected labels
   const selectedCategoryLabel = kategoriKaryawanOptions.find(opt => opt.value === step3.kategoriKaryawan)?.label || '';
@@ -218,18 +225,87 @@ export const useStep3Data = (isOpen?: boolean) => {
     return () => clearTimeout(handler);
   }, [directorateSearch, isOpen]);
 
+  // Fetch filtered employee positions based on selected criteria
   useEffect(() => {
     if (isOpen === false) return;
-    const handler = setTimeout(async () => {
+    
+    const fetchFilteredPositions = async () => {
       try {
-        const positions = await employeeMasterDataService.getPositionDropdown(positionSearch || undefined);
-        setPositionOptions((positions || []).map((i: any) => ({ label: i.position_name, value: i.id })));
-      } catch {
-        setPositionOptions([]);
+        // Fetch all positions with get_all:1 parameter
+        const filterParams: any = {
+          get_all: 1
+        };
+        
+        // Add search if user is searching
+        if (positionSearch) {
+          filterParams.search = positionSearch;
+        }
+        
+        await fetchEmployeePositions(filterParams);
+      } catch (error) {
+        console.error('Error fetching filtered positions:', error);
       }
-    }, 400);
-    return () => clearTimeout(handler);
-  }, [positionSearch, isOpen]);
+    };
+    
+    fetchFilteredPositions();
+  }, [positionSearch, isOpen, fetchEmployeePositions]);
+
+  // Filter positions on client side based on selected criteria
+  const filteredPositionOptions = useMemo(() => {
+    if (!employeePositions.length) return [];
+    
+    return employeePositions
+      .filter((position) => {
+        // Filter by job_title_id if selected
+        if (step3.jabatan && position.positionId !== step3.jabatan) {
+          return false;
+        }
+        
+        // Filter by structural_job_id if selected
+        if (step3.jabatanStruktural && position.structuralJobId !== step3.jabatanStruktural) {
+          return false;
+        }
+        
+        // Filter by directorate_id if selected
+        if (step3.direktorat && position.directorateId !== step3.direktorat) {
+          return false;
+        }
+        
+        // Filter by division_id if selected
+        if (step3.divisi && position.divisionId !== step3.divisi) {
+          return false;
+        }
+        
+        // Filter by department_id if selected
+        if (step3.departemen && position.departmentId !== step3.departemen) {
+          return false;
+        }
+        
+        // Filter by unit_id if selected (optional)
+        if (step3.unit && position.unitId !== step3.unit) {
+          return false;
+        }
+        
+        return true;
+      })
+      .map((position) => ({
+        label: position.name,
+        value: position.id
+      }));
+  }, [
+    employeePositions,
+    step3.jabatan,
+    step3.jabatanStruktural,
+    step3.direktorat,
+    step3.divisi,
+    step3.departemen,
+    step3.unit
+  ]);
+
+  // Update position options when filtered options change
+  useEffect(() => {
+    setPositionOptions(filteredPositionOptions);
+  }, [filteredPositionOptions]);
 
   useEffect(() => {
     if (isOpen === false) return;

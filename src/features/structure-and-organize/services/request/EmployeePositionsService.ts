@@ -1,4 +1,5 @@
 import { apiService } from '../../../../services/api';
+import { EmployeePositionsApiResponse } from '../../types/dto/PositionType';
 
 class EmployeePositionsService {
   private readonly basePath = '/organizational-structure/position-master-data/';
@@ -8,7 +9,7 @@ class EmployeePositionsService {
    * @param filter - Filter parameters
    * @returns Promise dengan data posisi
    */
-  async getList(filter: any): Promise<any> {
+  async getList(filter: any): Promise<EmployeePositionsApiResponse> {
     const qs = apiService.buildQueryString(filter);
     return apiService.get<any>(`${this.basePath}positions${qs ? `?${qs}` : ''}`);
   }

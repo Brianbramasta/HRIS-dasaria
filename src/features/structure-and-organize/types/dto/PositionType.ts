@@ -1,5 +1,43 @@
 import { FileSummary } from '../../../../types/SharedType';
 
+// API Response DTOs for Employee Positions
+export interface EmployeePositionResponse {
+  id: string;
+  position_name: string;
+  job_title_id: string;
+  job_title_name: string;
+  structural_job_id: string;
+  mt_structural_job_name: string;
+  directorate_id: string;
+  directorate_name: string;
+  division_id: string;
+  division_name: string;
+  department_id: string;
+  department_name: string;
+  unit_id: string;
+  unit_name: string;
+  position_description: string;
+  position_decree_file: string;
+}
+
+export interface EmployeePositionsListResponse {
+  current_page: number;
+  data: EmployeePositionResponse[];
+  per_page: number;
+  to: number;
+  total: number;
+}
+
+export interface EmployeePositionsMetaResponse {
+  status: number;
+  message: string;
+}
+
+export interface EmployeePositionsApiResponse {
+  meta: EmployeePositionsMetaResponse;
+  data: EmployeePositionsListResponse;
+}
+
 export interface PositionListItem {
   id: string;
   name: string;

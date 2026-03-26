@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { employeePositionsService } from '../../services/request/EmployeePositionsService';
-import { EmployeePositionListItem, TableFilter } from '../../types/OrganizationApiTypes';
+import { EmployeePositionListItem, TableFilter, EmployeePositionsApiResponse } from '../../types/OrganizationApiTypes';
 import useFilterStore from '../../../../stores/filterStore';
 import { toFileSummary } from '../../utils/shared/toFileSummary';
 import { formatFilterValue } from '@/utils/formatFilterValue';
@@ -134,20 +134,12 @@ export const useApiEmployeePositions = (): UseEmployeePositionsReturn => {
       }
       const result = await employeePositionsService.getList(params);
       
-      const payload = (result as any);
-      const topData = payload?.data;
-      const items = Array.isArray(topData)
-        ? topData
-        : Array.isArray(topData?.data)
-          ? topData.data
-          : Array.isArray(payload?.data?.data)
-            ? payload.data.data
-            : [];
-      const pagination = payload?.pagination ?? (Array.isArray(topData) ? undefined : topData) ?? {};
+      const payload = result as EmployeePositionsApiResponse;
+      const items = payload?.data?.data ?? [];
+      const pagination = payload?.data ?? {};
       const total = pagination?.total ?? items.length ?? 0;
-      // const currentPage = pagination?.current_page ?? filter?.page ?? page ?? 1;
       const perPage = pagination?.per_page ?? filter?.pageSize ?? pageSize ?? items.length;
-      const totalPagesCount = pagination?.last_page ?? (perPage ? Math.ceil(total / perPage) : 1);
+      const totalPagesCount = Math.ceil(total / perPage);
       
       setEmployeePositions((items || []).map(mapToEmployeePosition));
       setTotal(total);
