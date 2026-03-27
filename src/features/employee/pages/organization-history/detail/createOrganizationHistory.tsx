@@ -41,9 +41,16 @@ const CreateOrganizationHistoryPage: React.FC = () => {
   } = useCreateOrganizationHistory();
 
   return (
-    <div className="p-6 space-y-6">
+    <form
+      className="p-6 space-y-6"
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSubmit();
+      }}
+    >
       <div className="flex items-center gap-3">
         <button
+          type="button"
           onClick={() => navigate(-1)}
           className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
         >
@@ -461,14 +468,14 @@ const CreateOrganizationHistoryPage: React.FC = () => {
               />
             </div>
             <div className="col-span-1 md:col-span-2 flex justify-end gap-3">
-              <Button variant="outline" size="sm" onClick={() => navigate(-1)}>
+              <Button variant="outline" size="sm" type="button" onClick={() => navigate(-1)}>
                 Batal
               </Button>
               <Button
                 variant="custom"
                 size="sm"
                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2"
-                onClick={handleSubmit}
+                type="submit"
                 disabled={!!isSubmitting}
               >
                 Simpan
@@ -477,7 +484,7 @@ const CreateOrganizationHistoryPage: React.FC = () => {
           </div>
         </PayrollCard>
       </div>
-    </div>
+    </form>
   );
 };
 

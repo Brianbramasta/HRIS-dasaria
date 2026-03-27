@@ -129,7 +129,7 @@ export function useAdd() {
   const handleAdd = (summary: ContractEntry, personalData?: any) => {
     const editingData: ContractEntry = {
       full_name: personalData?.Personal_Data?.full_name || summary.full_name,
-      contract_status: '',
+      contract_status: 'Aktif',
       last_contract_signed_date: '',
       end_date: '',
       contract_type_id: '',
@@ -154,14 +154,15 @@ export function useAddSubmit(createContract: (payload: CreateContractPayload) =>
     selectedFile: File | null,
     onSuccess: () => void
   ) => {
-    // For add mode, file is required
     if (!selectedFile) {
       alert('Please select a contract file');
       return;
     }
 
+    // console.log()
+
     const payload: CreateContractPayload = {
-      contract_status: entry.contract_status,
+      contract_status: entry.contract_status || 'Aktif',
       last_contract_signed_date: entry.last_contract_signed_date,
       contract_type_id: entry.contract_type_id,
       contract_number: String(entry.contract_number),
@@ -422,7 +423,7 @@ export function useContractTab({ employeeIdProp, data }: UseContractTabProps): U
   // State management
   const [summary, setSummary] = useState<ContractEntry>({
     full_name: defaultName || 'Megawati',
-    contract_status: '',
+    contract_status: 'Aktif',
     last_contract_signed_date: '',
     end_date: '',
     contract_type_id: '',

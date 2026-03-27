@@ -76,7 +76,7 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
           label="Status Kontrak"
           options={optionsContractStatus}
           placeholder="Select"
-          defaultValue= 'Aktif'
+          defaultValue={form.contract_status || 'Aktif'}
           onChange={(v) => onInputChange('contract_status', v)}
           disabled={!isReadonly}
           required={!isReadonly}

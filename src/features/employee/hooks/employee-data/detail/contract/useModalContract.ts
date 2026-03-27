@@ -24,7 +24,7 @@ export interface UseModalContractReturn {
 
 const emptyForm: ContractEntry = {
   full_name: '',
-  contract_status: '',
+  contract_status: 'Aktif',
   last_contract_signed_date: '',
   end_date: '',
   contract_type_id: '',
