@@ -8,12 +8,17 @@ interface UseApiEmployeeReturn {
   employeesNearContractEnd: EmployeeNearContractEndItem[];
   fetchEmployeesNearContractEnd: (params?: any) => Promise<void>;
   resetEmployeesNearContractEnd: () => void;
+  checkActiveLoading: boolean;
+  checkActiveError: string | null;
+  checkActiveEmployee: (payload: { email: string; national_id: string }) => Promise<any>;
 }
 
 export const useApiEmployee = (): UseApiEmployeeReturn => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [employeesNearContractEnd, setEmployeesNearContractEnd] = useState<EmployeeNearContractEndItem[]>([]);
+  const [checkActiveLoading, setCheckActiveLoading] = useState<boolean>(false);
+  const [checkActiveError, setCheckActiveError] = useState<string | null>(null);
 
   const fetchEmployeesNearContractEnd = useCallback(async (params?: any) => {
     setLoading(true);
@@ -55,11 +60,30 @@ export const useApiEmployee = (): UseApiEmployeeReturn => {
     setError(null);
   }, []);
 
+  const checkActiveEmployee = useCallback(async (payload: { email: string; national_id: string }) => {
+    setCheckActiveLoading(true);
+    setCheckActiveError(null);
+    try {
+      const response = await employeeMasterDataService.checkActiveEmployee(payload);
+      return response?.data ?? null;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Failed to check active employee';
+      setCheckActiveError(msg);
+      console.error('Error checking active employee:', err);
+      throw err;
+    } finally {
+      setCheckActiveLoading(false);
+    }
+  }, []);
+
   return {
     loading,
     error,
     employeesNearContractEnd,
     fetchEmployeesNearContractEnd,
     resetEmployeesNearContractEnd,
+    checkActiveLoading,
+    checkActiveError,
+    checkActiveEmployee,
   };
 };

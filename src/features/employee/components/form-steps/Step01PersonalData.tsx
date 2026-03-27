@@ -10,7 +10,12 @@ import { useStep1Data } from '../../hooks/employee-data/form/useFromStep';
 
 
 
-export const Step01PersonalData: React.FC = () => {
+interface Step01PersonalDataProps {
+  fieldErrors?: { [key: string]: string };
+  onClearFieldError?: (fieldName: string) => void;
+}
+
+export const Step01PersonalData: React.FC<Step01PersonalDataProps> = ({ fieldErrors = {}, onClearFieldError }) => {
  
   const { agamaOptions, pendidikanOptions, step1, handleChange, handleFileChange } = useStep1Data();
   
@@ -45,8 +50,13 @@ export const Step01PersonalData: React.FC = () => {
               type="email"
               placeholder="email@contoh.com"
               value={step1.email}
-              onChange={(e) => handleChange('email', e.target.value)}
+              onChange={(e) => {
+                handleChange('email', e.target.value);
+                onClearFieldError?.('email');
+              }}
               required
+              error={!!fieldErrors.email}
+              hint={fieldErrors.email}
             />
           </div>
 
@@ -61,8 +71,11 @@ export const Step01PersonalData: React.FC = () => {
               onChange={(e) => {
                 const value = e.target.value.replace(/\D/g, '').slice(0, 16);
                 handleChange('nik', value);
+                onClearFieldError?.('nik');
               }}
               required
+              error={!!fieldErrors.nik}
+              hint={fieldErrors.nik}
             />
           </div>
 

@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import ProgressBarWithOutsideLabel from '../../../../components/ui/progressbar/ProgressBarWithOutsideLabel';
 import Step01PersonalData from '../../components/form-steps/Step01PersonalData';
 import Step02EducationalBackground from '../../components/form-steps/Step02EducationalBackground';
@@ -10,6 +10,7 @@ import Button from '../../../../components/ui/button/Button';
 // import { ChevronLeft } from 'react-feather';
 import useFormulirKaryawan from '../../hooks/employee-data/form/useFormulirKaryawan';
 import { useFormulirKaryawanStore } from '../../stores/useFormulirKaryawanStore';
+import { useApiEmployee } from '../../hooks/api/useApiEmployee';
 
 const TITLES_WITH_LOGIN = [
   'Data Pribadi',
@@ -43,6 +44,73 @@ export default function FormulirKaryawanPage() {
   } = useFormulirKaryawan();
 
   const { formData } = useFormulirKaryawanStore();
+  const { checkActiveEmployee, checkActiveLoading } = useApiEmployee();
+  const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
+
+  // Custom handleNext function with active employee check for step 1
+  const handleNextWithActiveCheck = useCallback(async () => {
+    // Clear previous field errors
+    setFieldErrors({});
+    
+    // If we're on step 1, check active employee first
+    if (currentStep === 1) {
+      const { email, nik } = formData.step1;
+      
+      // Validate required fields for API call
+      if (!email || !nik) {
+        alert('Email dan NIK harus diisi sebelum melanjutkan');
+        return;
+      }
+
+      try {
+        await checkActiveEmployee({ email, national_id: nik });
+        // If successful, proceed with normal next step
+        handleNextWithFileCheck();
+      } catch (error: any) {
+        console.error('Error checking active employee:', error);
+        
+        // Handle 422 validation errors
+        if (error?.errors && typeof error.errors === 'object') {
+          const errors: { [key: string]: string } = {};
+          
+          Object.entries(error.errors).forEach(([field, messages]) => {
+            if (Array.isArray(messages) && messages.length > 0) {
+              // Map API field names to form field names
+              let formFieldName = field;
+              if (field === 'national_id') {
+                formFieldName = 'nik';
+              }
+              
+              // Take the first error message for each field
+              errors[formFieldName] = messages[0];
+            }
+          });
+          
+          setFieldErrors(errors);
+          
+          // Show general message if there are errors
+          if (error?.meta?.message) {
+            alert(error.meta.message);
+          }
+        } else {
+          // Show generic error message for other types of errors
+          alert('Terjadi kesalahan saat memvalidasi data karyawan. Silakan coba lagi.');
+        }
+      }
+    } else {
+      // For other steps, use normal next function
+      handleNextWithFileCheck();
+    }
+  }, [currentStep, formData.step1, checkActiveEmployee, handleNextWithFileCheck]);
+
+  // Clear field error function
+  const handleClearFieldError = useCallback((fieldName: string) => {
+    setFieldErrors(prev => {
+      const newErrors = { ...prev };
+      delete newErrors[fieldName];
+      return newErrors;
+    });
+  }, []);
 
   // Check localStorage and reset if no draft data exists
   useEffect(() => {
@@ -118,7 +186,7 @@ export default function FormulirKaryawanPage() {
   const renderStep = () => {
     switch (currentStep) {
       case 1:
-        return <Step01PersonalData />;
+        return <Step01PersonalData fieldErrors={fieldErrors} onClearFieldError={handleClearFieldError} />;
       case 2:
         return <Step02EducationalBackground />;
       case 3:
@@ -193,12 +261,12 @@ export default function FormulirKaryawanPage() {
                 </Button>
               ) : (
                 <Button
-                  onClick={handleNextWithFileCheck}
-                  disabled={isLoading}
+                  onClick={handleNextWithActiveCheck}
+                  disabled={isLoading || (currentStep === 1 && checkActiveLoading)}
                   variant="primary"
                   className="flex items-center gap-2"
                 >
-                  Next <span><svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  {currentStep === 1 && checkActiveLoading ? 'Memvalidasi...' : 'Next'} <span><svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M17.3635 7.37629C17.5509 7.18876 17.6562 6.93445 17.6562 6.66929C17.6562 6.40412 17.5509 6.14982 17.3635 5.96229L11.7065 0.305288C11.6142 0.209778 11.5039 0.133596 11.3819 0.0811869C11.2599 0.0287779 11.1286 0.00119157 10.9959 3.77564e-05C10.8631 -0.00111606 10.7314 0.0241859 10.6085 0.0744668C10.4856 0.124748 10.374 0.199001 10.2801 0.292893C10.1862 0.386786 10.1119 0.498438 10.0616 0.621334C10.0114 0.744231 9.98606 0.87591 9.98721 1.00869C9.98837 1.14147 10.016 1.27269 10.0684 1.39469C10.1208 1.5167 10.197 1.62704 10.2925 1.71929L14.2425 5.66929L0.999464 5.66929C0.734247 5.66929 0.479893 5.77465 0.292356 5.96218C0.10482 6.14972 -0.000535965 6.40407 -0.000535965 6.66929C-0.000535965 6.9345 0.10482 7.18886 0.292356 7.37639C0.479893 7.56393 0.734247 7.66929 0.999464 7.66929L14.2425 7.66929L10.2925 11.6193C10.1103 11.8079 10.0095 12.0605 10.0118 12.3227C10.0141 12.5849 10.1192 12.8357 10.3046 13.0211C10.4901 13.2065 10.7409 13.3117 11.0031 13.314C11.2653 13.3162 11.5179 13.2154 11.7065 13.0333L17.3635 7.37629Z" fill="white"/>
 </svg>
 </span>

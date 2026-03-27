@@ -309,6 +309,15 @@ class EmployeeMasterDataService {
     return apiService.get<ApiPaginatedResponse<any>>(url);
   }
 
+  /**
+   * Check Active Employee - Mengecek status aktif karyawan berdasarkan email dan national_id
+   * @param payload - Object berisi email dan national_id
+   * @returns Promise dengan response API
+   */
+  async checkActiveEmployee(payload: { email: string; national_id: string }): Promise<ApiResponse<any>> {
+    return apiService.post<any>(`${this.basePath}/employees/check-active`, payload);
+  }
+
  
 }
 
