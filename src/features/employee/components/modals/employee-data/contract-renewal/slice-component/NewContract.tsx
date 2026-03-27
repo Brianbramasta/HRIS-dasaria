@@ -71,6 +71,7 @@ export default function NewContract({
     unitOptions,
     isNonStaffOrMitraCategory,
     isStaffCategory,
+    visibleFields,
     salaryLabel,
     setCompanySearch,
     setOfficeSearch,
@@ -107,7 +108,6 @@ export default function NewContract({
   return (
     <PayrollCard title="Kontrak Baru" headerColor="green" border={false}>
       <div className="space-y-6">
-        {/* Row 1: Jenis Perubahan, Kategori Karyawan, Perusahaan */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <SelectField
             label="Jenis Perubahan"
@@ -115,15 +115,10 @@ export default function NewContract({
             disabled={!isEditing}
             onChange={(value) => {
               handleInputChange("new_change_type_id", value);
-              // Find and store label as well
               const selectedOption = changeTypeOptions.find(
                 (option) => option.value === value,
               );
-              handleInputChange(
-                "new_change_type_name",
-                selectedOption?.label,
-              );
-            
+              handleInputChange("new_change_type_name", selectedOption?.label);
             }}
             containerClassName="space-y-2"
             options={[
@@ -134,10 +129,10 @@ export default function NewContract({
           <SelectField
             label="Kategori Karyawan"
             options={kategoriKaryawanOptions}
-            defaultValue={selectedEmployeeCategory} // ✅ ganti value -> defaultValue
+            defaultValue={selectedEmployeeCategory}
             disabled={!isEditing}
             onChange={(value) => {
-              setSelectedEmployeeCategory(value); // update state
+              setSelectedEmployeeCategory(value);
               handleInputChange("new_employee_category_name", value);
               const selectedOption = kategoriKaryawanOptions.find(
                 (option) => option.value === value,
@@ -150,102 +145,7 @@ export default function NewContract({
             containerClassName="space-y-2"
             placeholder="Select"
           />
-          <SelectField
-            label="Perusahaan"
-            options={companyOptions}
-            defaultValue={data?.new_company_name}
-            disabled={!isEditing}
-            onChange={(value) => handleInputChange("new_company_name", value)}
-            onSearch={setCompanySearch}
-            containerClassName="space-y-2"
-            placeholder="Select"
-          />
 
-          {/* Row 2: Kantor, Direktorat, Divisi */}
-          <SelectField
-            label="Kantor"
-            options={
-              officeOptions.length > 0
-                ? officeOptions
-                : [{ label: "Pilih perusahaan terlebih dahulu", value: "" }]
-            }
-            defaultValue={data?.new_office_name}
-            disabled={!isEditing || officeOptions.length === 0}
-            onChange={(value) => handleInputChange("new_office_name", value)}
-            onSearch={setOfficeSearch}
-            containerClassName="space-y-2"
-            placeholder="Select"
-          />
-          <SelectField
-            label="Direktorat"
-            options={directorateOptions}
-            defaultValue={data?.new_directorate_name}
-            disabled={!isEditing}
-            onChange={(value) =>
-              handleInputChange("new_directorate_name", value)
-            }
-            onSearch={setDirectorateSearch}
-            containerClassName="space-y-2"
-            placeholder="Select"
-          />
-          <SelectField
-            label="Divisi"
-            options={
-              divisionOptions.length > 0
-                ? divisionOptions
-                : [{ label: "Pilih direktorat terlebih dahulu", value: "" }]
-            }
-            defaultValue={data?.new_division_name}
-            disabled={!isEditing || divisionOptions.length === 0}
-            onChange={(value) => handleInputChange("new_division_name", value)}
-            onSearch={setDivisionSearch}
-            containerClassName="space-y-2"
-            placeholder="Select"
-          />
-
-          {/* Row 3: Departemen, Unit, Position */}
-          <SelectField
-            label="Departemen"
-            options={
-              departmentOptions.length > 0
-                ? departmentOptions
-                : [{ label: "Pilih divisi terlebih dahulu", value: "" }]
-            }
-            defaultValue={data?.new_department_name}
-            disabled={!isEditing || departmentOptions.length === 0}
-            onChange={(value) =>
-              handleInputChange("new_department_name", value)
-            }
-            onSearch={setDepartmentSearch}
-            containerClassName="space-y-2"
-            placeholder="Select"
-          />
-          <SelectField
-            label="Unit"
-            options={
-              unitOptions.length > 0
-                ? unitOptions
-                : [{ label: "Pilih departemen terlebih dahulu", value: "" }]
-            }
-            defaultValue={data?.new_unit_name}
-            disabled={!isEditing || unitOptions.length === 0}
-            onChange={(value) => handleInputChange("new_unit_name", value)}
-            onSearch={setUnitSearch}
-            containerClassName="space-y-2"
-            placeholder="Select"
-          />
-          <SelectField
-            label="Position"
-            options={positionOptions}
-            defaultValue={data?.new_position_name}
-            disabled={!isEditing}
-            onChange={(value) => handleInputChange("new_position_name", value)}
-            onSearch={setPositionSearch}
-            containerClassName="space-y-2"
-            placeholder="Select"
-          />
-
-          {/* Row 4: Jabatan Kepangkatan, Jabatan Struktural, Jenjang Jabatan */}
           <SelectField
             label="Jabatan Kepangkatan"
             options={jobTitleOptions}
@@ -269,6 +169,98 @@ export default function NewContract({
             containerClassName="space-y-2"
             placeholder="Select"
           />
+
+          <SelectField
+            label="Perusahaan"
+            options={companyOptions}
+            defaultValue={data?.new_company_name}
+            disabled={!isEditing}
+            onChange={(value) => handleInputChange("new_company_name", value)}
+            onSearch={setCompanySearch}
+            containerClassName="space-y-2"
+            placeholder="Select"
+          />
+          <SelectField
+            label="Kantor"
+            options={
+              officeOptions.length > 0
+                ? officeOptions
+                : [{ label: "Pilih perusahaan terlebih dahulu", value: "" }]
+            }
+            defaultValue={data?.new_office_name}
+            disabled={!isEditing || officeOptions.length === 0}
+            onChange={(value) => handleInputChange("new_office_name", value)}
+            onSearch={setOfficeSearch}
+            containerClassName="space-y-2"
+            placeholder="Select"
+          />
+
+          {visibleFields.direktorat && (
+            <SelectField
+              label="Direktorat"
+              options={directorateOptions}
+              defaultValue={data?.new_directorate_name}
+              disabled={!isEditing}
+              onChange={(value) =>
+                handleInputChange("new_directorate_name", value)
+              }
+              onSearch={setDirectorateSearch}
+              containerClassName="space-y-2"
+              placeholder="Select"
+            />
+          )}
+          {visibleFields.divisi && (
+            <SelectField
+              label="Divisi"
+              options={
+                divisionOptions.length > 0
+                  ? divisionOptions
+                  : [{ label: "Pilih direktorat terlebih dahulu", value: "" }]
+              }
+              defaultValue={data?.new_division_name}
+              disabled={!isEditing || divisionOptions.length === 0}
+              onChange={(value) => handleInputChange("new_division_name", value)}
+              onSearch={setDivisionSearch}
+              containerClassName="space-y-2"
+              placeholder="Select"
+            />
+          )}
+
+          {visibleFields.departemen && (
+            <SelectField
+              label="Departemen"
+              options={
+                departmentOptions.length > 0
+                  ? departmentOptions
+                  : [{ label: "Pilih divisi terlebih dahulu", value: "" }]
+              }
+              defaultValue={data?.new_department_name}
+              disabled={!isEditing || departmentOptions.length === 0}
+              onChange={(value) =>
+                handleInputChange("new_department_name", value)
+              }
+              onSearch={setDepartmentSearch}
+              containerClassName="space-y-2"
+              placeholder="Select"
+            />
+          )}
+          {visibleFields.unit && (
+            <SelectField
+              label="Unit"
+              options={
+                unitOptions.length > 0
+                  ? unitOptions
+                  : [{ label: "Pilih departemen terlebih dahulu", value: "" }]
+              }
+              defaultValue={data?.new_unit_name}
+              disabled={!isEditing || unitOptions.length === 0}
+              onChange={(value) => handleInputChange("new_unit_name", value)}
+              onSearch={setUnitSearch}
+              containerClassName="space-y-2"
+              placeholder="Select"
+            />
+          )}
+
           <SelectField
             label="Jenjang Jabatan"
             options={positionLevelOptions}
@@ -281,8 +273,19 @@ export default function NewContract({
             containerClassName="space-y-2"
             placeholder="Select"
           />
+          {visibleFields.position && (
+            <SelectField
+              label="Position"
+              options={positionOptions}
+              defaultValue={data?.new_position_name}
+              disabled={!isEditing}
+              onChange={(value) => handleInputChange("new_position_name", value)}
+              onSearch={setPositionSearch}
+              containerClassName="space-y-2"
+              placeholder="Select"
+            />
+          )}
 
-          {/* Row 5: Golongan, Gaji Pokok */}
           <InputField
             label="Golongan"
             value={selectedGrade || data?.new_grade}
@@ -302,33 +305,25 @@ export default function NewContract({
             containerClassName="space-y-2"
           />
 
-          {/* Row 6: Tunjangan Pernikahan, Tunjangan Jabatan */}
           {!isNonStaffOrMitraCategory && (
-            <>
-              <InputField
-                label="Tunjangan Jabatan"
-                type="text"
-                value={formatInputCurrency(
-                  String(data?.new_tunjangan_jabatan),
-                )}
-                disabled
-                onChange={(e) => {
-                  const cleaned = e.target.value.replace(/[^0-9]/g, "");
-                  handleInputChange("new_tunjangan_jabatan", cleaned);
-                }}
-                containerClassName="space-y-2"
-              />
-            </>
+            <InputField
+              label="Tunjangan Jabatan"
+              type="text"
+              value={formatInputCurrency(String(data?.new_tunjangan_jabatan))}
+              disabled
+              onChange={(e) => {
+                const cleaned = e.target.value.replace(/[^0-9]/g, "");
+                handleInputChange("new_tunjangan_jabatan", cleaned);
+              }}
+              containerClassName="space-y-2"
+            />
           )}
 
-          {/* Row 7: Tunjangan Lama Kerja */}
           {!isNonStaffOrMitraCategory && (
             <InputField
               label="Tunjangan Lama Kerja"
               type="text"
-              value={formatInputCurrency(
-                String(data?.new_tunjangan_lama_kerja),
-              )}
+              value={formatInputCurrency(String(data?.new_tunjangan_lama_kerja))}
               disabled
               onChange={(e) => {
                 const cleaned = e.target.value.replace(/[^0-9]/g, "");
@@ -338,7 +333,6 @@ export default function NewContract({
             />
           )}
 
-          {/* Row 8: Tunjangan Diskresi (Dynamic) */}
           {isStaffCategory && (
             <div className="md:col-span-2">
               <div className="space-y-4">
@@ -431,17 +425,16 @@ export default function NewContract({
             />
           )}
 
-          {/* Row 9: Gaji Bersih */}
           <InputField
             label="Gaji Bersih"
             type="text"
             value={formatInputCurrency(
               String(
                 Number(data?.new_gaji_bersih || 0) +
-                (data?.new_tunjangan_diskresi || [])
-                  .filter(item => item.id && item.amount > 0)
-                  .reduce((total, item) => total + (item.amount || 0), 0)
-              )
+                  (data?.new_tunjangan_diskresi || [])
+                    .filter((item) => item.id && item.amount > 0)
+                    .reduce((total, item) => total + (item.amount || 0), 0),
+              ),
             )}
             disabled
             onChange={(e) => {

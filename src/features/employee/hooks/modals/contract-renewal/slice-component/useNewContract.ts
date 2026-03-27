@@ -8,6 +8,7 @@ import {
   getUnitDropdownByDepartmentIdOptions,
 } from "@/features/employee/hooks/employee-data/form/useFormulirKaryawan";
 import { payrollPreviewService } from "@/features/employee/services/PayrollPreviewService";
+import { useApiEmployeePositions } from "@/features/structure-and-organize/hooks/api/useApiEmployeePositions";
 
 type Params = {
   data?: {
@@ -76,7 +77,192 @@ export function useNewContract({
 
   const { changeTypeOptions, fetchChangeTypes } = useApiContractExtension();
 
+  // Initialize employee positions hook
+  const {
+    employeePositions,
+    fetchEmployeePositions
+  } = useApiEmployeePositions();
+
   // Category checking logic
+  const selectedCategoryLabel = useMemo(() => {
+    if (!data?.new_employee_category_name) return "";
+    return kategoriKaryawanOptions.find(opt => String(opt.value) === String(data.new_employee_category_name))?.label || "";
+  }, [data?.new_employee_category_name, kategoriKaryawanOptions]);
+
+  const selectedJobLabel = useMemo(() => {
+    if (!data?.new_job_title_name) return "";
+    return jobTitleOptions.find(opt => String(opt.value) === String(data.new_job_title_name))?.label || "";
+  }, [data?.new_job_title_name, jobTitleOptions]);
+
+  const selectedStructuralJobLabel = useMemo(() => {
+    if (!data?.new_structural_position_name) return "";
+    return jabatanStrukturalOptions.find(opt => String(opt.value) === String(data.new_structural_position_name))?.label || "";
+  }, [data?.new_structural_position_name, jabatanStrukturalOptions]);
+
+  // Filter job title options based on selected category
+  const filteredJobTitleOptions = useMemo(() => {
+    if (!selectedCategoryLabel) return jobTitleOptions;
+
+    const lowerCategory = selectedCategoryLabel.toLowerCase();
+
+    if (lowerCategory.includes("non-staff") || lowerCategory.includes("non staff")) {
+      return jobTitleOptions.filter(opt => opt.label.includes('PKL') || opt.label.includes('Internship'));
+    }
+    if (lowerCategory.includes("mitra")) {
+      return jobTitleOptions.filter(opt => opt.label.includes('Kemitraan'));
+    }
+    if (lowerCategory.includes("staff")) {
+      const staffLabels = [
+        'Entry Level',
+        'Officer',
+        'Principal',
+        'Supervisor',
+        'Manager',
+        'Direktur'
+      ];
+      return jobTitleOptions.filter(opt => staffLabels.some(label => opt.label.includes(label)));
+    }
+    return jobTitleOptions;
+  }, [jobTitleOptions, selectedCategoryLabel]);
+
+  // Determine field visibility based on job title and structural job
+  const visibleFields = useMemo(() => {
+    // Default visibility
+    const fields = {
+      direktorat: true,
+      divisi: true,
+      departemen: true,
+      unit: true,
+      position: true,
+    };
+
+    if (!selectedCategoryLabel) return fields;
+
+    const lowerCategory = selectedCategoryLabel.toLowerCase();
+
+    if (lowerCategory.includes("non-staff") || lowerCategory.includes("non staff") || lowerCategory.includes("mitra")) {
+      // tampilkan pilihan lengkap Departmen sampai position
+      return fields;
+    }
+
+    if (lowerCategory.includes("staff")) {
+      if (['Entry Level', 'Officer'].some(l => selectedJobLabel.includes(l))) {
+        return fields;
+      }
+      
+      // Reset defaults for higher level staff
+      fields.divisi = false;
+      fields.departemen = false;
+      fields.unit = false;
+      fields.position = false;
+
+      if (selectedJobLabel.includes('Principal')) {
+        fields.direktorat = true;
+        fields.divisi = true;
+        fields.departemen = true;
+        if (['Branch Leader', 'Kepala Branch'].includes(selectedStructuralJobLabel)) {
+          fields.unit = true;
+        }
+      } else if (selectedJobLabel.includes('Supervisor')) {
+        fields.direktorat = true;
+        fields.divisi = true;
+        fields.departemen = true;
+      } else if (selectedJobLabel.includes('Manager')) {
+        fields.direktorat = true;
+        fields.divisi = true;
+      } else if (['Direktur', 'Director'].includes(selectedJobLabel)) {
+        fields.direktorat = true;
+      } else {
+        // Fallback for staff with no specific job title selected yet
+        fields.direktorat = true;
+        fields.divisi = true;
+        fields.departemen = true;
+        fields.unit = true;
+        fields.position = true;
+      }
+    }
+
+    return fields;
+  }, [selectedCategoryLabel, selectedJobLabel, selectedStructuralJobLabel]);
+
+  // Fetch filtered employee positions based on selected criteria
+  useEffect(() => {
+    const fetchFilteredPositions = async () => {
+      try {
+        const filterParams: any = {
+          get_all: 1
+        };
+        
+        if (positionSearch) {
+          filterParams.search = positionSearch;
+        }
+        
+        await fetchEmployeePositions(filterParams);
+      } catch (error) {
+        console.error('Error fetching filtered positions:', error);
+      }
+    };
+    
+    fetchFilteredPositions();
+  }, [positionSearch, fetchEmployeePositions]);
+
+  // Filter positions on client side based on selected criteria
+  const filteredPositionOptions = useMemo(() => {
+    if (!employeePositions.length) return [];
+    
+    return employeePositions
+      .filter((position) => {
+        // Filter by job_title_id if selected
+        if (data?.new_job_title_name && position.positionId !== data.new_job_title_name) {
+          return false;
+        }
+        
+        // Filter by structural_job_id if selected
+        if (data?.new_structural_position_name && position.structuralJobId !== data.new_structural_position_name) {
+          return false;
+        }
+        
+        // Filter by directorate_id if selected
+        if (data?.new_directorate_name && position.directorateId !== data.new_directorate_name) {
+          return false;
+        }
+        
+        // Filter by division_id if selected
+        if (data?.new_division_name && position.divisionId !== data.new_division_name) {
+          return false;
+        }
+        
+        // Filter by department_id if selected
+        if (data?.new_department_name && position.departmentId !== data.new_department_name) {
+          return false;
+        }
+        
+        // Filter by unit_id if selected (optional)
+        if (data?.new_unit_name && position.unitId !== data.new_unit_name) {
+          return false;
+        }
+        
+        return true;
+      })
+      .map((position) => ({
+        label: position.name,
+        value: position.id
+      }));
+  }, [
+    employeePositions,
+    data?.new_job_title_name,
+    data?.new_structural_position_name,
+    data?.new_directorate_name,
+    data?.new_division_name,
+    data?.new_department_name,
+    data?.new_unit_name
+  ]);
+
+  // Update position options when filtered options change
+  useEffect(() => {
+    setPositionOptions(filteredPositionOptions);
+  }, [filteredPositionOptions]);
+
   const isNonStaffOrMitraCategory = useMemo(() => {
     if (!data?.new_employee_category_name) return false; // ❌ langsung return false kalau masih kosong
     const categoryOption = kategoriKaryawanOptions.find(
@@ -130,12 +316,40 @@ export function useNewContract({
   const handleInputChange = useCallback(
     (field: string, value: any) => {
       if (onChange) {
+        // handle dependent resets atomically
+        if (field === "new_employee_category_name") {
+          onChange("new_job_title_name", "");
+          onChange("new_structural_position_name", "");
+        } else if (field === "new_company_name") {
+          onChange("new_office_name", "");
+        } else if (field === "new_directorate_name") {
+          onChange("new_division_name", "");
+          onChange("new_department_name", "");
+        } else if (field === "new_division_name") {
+          onChange("new_department_name", "");
+        } else if (field === "new_department_name") {
+          onChange("new_unit_name", "");
+        } else if (field === "new_structural_position_name") {
+          onChange("new_unit_name", "");
+        } else if (field === "new_job_title_name") {
+          onChange("new_structural_position_name", "");
+          onChange("new_unit_name", "");
+          onChange("new_department_name", "");
+          onChange("new_division_name", ""); // Corrected field name
+          onChange("new_position_name", "");
+        }
+
         onChange(field, value);
       }
     },
     [onChange],
   );
   const [newContractData, setNewContractData] = useState(data || {});
+
+  // Sync local data with props data
+  useEffect(() => {
+    setNewContractData(data || {});
+  }, [data]);
 
   // helper
   const handleNewContractChange = useCallback(
@@ -451,17 +665,16 @@ export function useNewContract({
         const res = await payrollPreviewService.getPreviewPayroll(params);
         const pp = res.data;
 
-        handleNewContractChange("new_gaji_pokok", pp.basic_salary);
-        handleNewContractChange("new_tunjangan_jabatan", pp.position_allowance);
-        // handleNewContractChange(
-        //   "new_tunjangan_pernikahan",
-        //   pp.marital_allowance || 0,
-        // );
-        // handleNewContractChange(
-        //   "new_tunjangan_lama_kerja",
-        //   pp.length_of_service || 0,
-        // );
-
+        // Use local updates for immediate preview, then let parent sync back
+        setNewContractData(prev => ({
+          ...prev,
+          new_gaji_pokok: pp.basic_salary,
+          new_tunjangan_jabatan: pp.position_allowance,
+        }));
+        
+        handleInputChange("new_gaji_pokok", pp.basic_salary);
+        handleInputChange("new_tunjangan_jabatan", pp.position_allowance);
+        
         // Calculate total tunjangan diskresi
         const totalTunjanganDiskresi = (newContractData.new_tunjangan_diskresi || [])
           .filter(item => item.id && item.amount > 0)
@@ -473,7 +686,9 @@ export function useNewContract({
           (newContractData.new_tunjangan_pernikahan || 0) +
           (pp.position_allowance || 0) +
           totalTunjanganDiskresi;
-        handleNewContractChange("new_gaji_bersih", gajiBersih);
+        
+        setNewContractData(prev => ({ ...prev, new_gaji_bersih: gajiBersih }));
+        handleInputChange("new_gaji_bersih", gajiBersih);
       } catch (err) {
         console.error("Failed to fetch payroll preview", err);
       }
@@ -486,7 +701,7 @@ export function useNewContract({
     newContractData?.new_employee_category_name,
     newContractData?.marital_status, // pastikan sudah ada
     newContractData?.dependents,
-    handleNewContractChange,
+    handleInputChange, // Change dependency to handleInputChange
   ]);
 
   // Calculate Gaji Bersih when tunjangan diskresi or other salary components change
@@ -505,14 +720,15 @@ export function useNewContract({
       Number(newContractData.new_tunjangan_jabatan || 0) +
       totalTunjanganDiskresi;
     
-    handleNewContractChange("new_gaji_bersih", gajiBersih);
+    setNewContractData(prev => ({ ...prev, new_gaji_bersih: gajiBersih }));
+    handleInputChange("new_gaji_bersih", gajiBersih);
   }, [
     newContractData?.new_gaji_pokok,
     newContractData?.new_tunjangan_lama_kerja,
     newContractData?.new_tunjangan_pernikahan,
     newContractData?.new_tunjangan_jabatan,
     newContractData?.new_tunjangan_diskresi,
-    handleNewContractChange,
+    handleInputChange, // Change dependency to handleInputChange
   ]);
 
   return {
@@ -524,7 +740,7 @@ export function useNewContract({
     directorateOptions,
     divisionOptions,
     departmentOptions,
-    jobTitleOptions,
+    jobTitleOptions: filteredJobTitleOptions,
     positionOptions,
     kategoriKaryawanOptions,
     selectedGrade,
@@ -534,6 +750,7 @@ export function useNewContract({
     diskresiOptions,
     isNonStaffOrMitraCategory,
     isStaffCategory,
+    visibleFields,
     salaryLabel,
     setCompanySearch,
     setOfficeSearch,
