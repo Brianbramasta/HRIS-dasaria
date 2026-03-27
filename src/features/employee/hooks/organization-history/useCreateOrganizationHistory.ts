@@ -5,6 +5,7 @@ import { useEditOrganizationHistoryModal } from '@/features/employee/hooks/modal
 import { useApiPayrollPreview } from '@/features/employee/hooks/api/useApiPayrollPreview';
 import { payrollPreviewService } from '@/features/employee/services/PayrollPreviewService';
 import { formatIndonesianToISO, formatDateToISO } from '@/utils/formatDate';
+import { useApiEmployeePositions } from '@/features/structure-and-organize/hooks/api/useApiEmployeePositions';
 
 export const useCreateOrganizationHistory = () => {
   const navigate = useNavigate();
@@ -20,6 +21,12 @@ export const useCreateOrganizationHistory = () => {
 
   // Modal state for add mode
   const addState = useEditOrganizationHistoryModal({ isOpen: true, initialData: null });
+
+  // Initialize employee positions hook
+  const {
+    employeePositions,
+    fetchEmployeePositions
+  } = useApiEmployeePositions();
 
   // Local state
   const [detailForm, setDetailForm] = useState<any>({});
@@ -49,6 +56,124 @@ export const useCreateOrganizationHistory = () => {
   const title = 'Tambah Perubahan Organisasi';
   const disableAll = false;
   const infoSalaryLabel = 'Gaji Pokok';
+
+  // Derive selected labels for visibility logic
+  const selectedCategoryLabel = useMemo(() => 
+    addState.kategoriKaryawanOptions.find(opt => String(opt.value) === String(detailForm.employee_category_id))?.label || '', 
+    [addState.kategoriKaryawanOptions, detailForm.employee_category_id]
+  );
+  
+  const selectedJobLabel = useMemo(() => 
+    addState.jobTitleOptions.find(opt => String(opt.value) === String(detailForm.job_title_id))?.label || '', 
+    [addState.jobTitleOptions, detailForm.job_title_id]
+  );
+  
+  const selectedStructuralJobLabel = useMemo(() => 
+    addState.structuralJobOptions.find(opt => String(opt.value) === String(detailForm.structural_job_id))?.label || '', 
+    [addState.structuralJobOptions, detailForm.structural_job_id]
+  );
+
+  // Filter job title options based on selected category (Brief Requirement 1)
+  const filteredJobTitleOptions = useMemo(() => {
+    if (!selectedCategoryLabel) return addState.jobTitleOptions;
+
+    if (selectedCategoryLabel === 'Non-Staff') {
+      return addState.jobTitleOptions.filter(opt => ['PKL', 'Internship'].some(label => opt.label.includes(label)));
+    }
+    if (selectedCategoryLabel === 'Mitra') {
+      return addState.jobTitleOptions.filter(opt => ['Kemitraan'].some(label => opt.label.includes(label)));
+    }
+    if (selectedCategoryLabel === 'Staff') {
+      const staffLabels = [
+        'Entry Level',
+        'Officer',
+        'Principal',
+        'Supervisor',
+        'Manager',
+        'Direktur'
+      ];
+      return addState.jobTitleOptions.filter(opt => staffLabels.some(label => opt.label.includes(label)));
+    }
+    return addState.jobTitleOptions;
+  }, [addState.jobTitleOptions, selectedCategoryLabel]);
+
+  // Determine field visibility (Brief Requirement 1)
+  const visibleFields = useMemo(() => {
+    const fields = {
+      direktorat: true,
+      divisi: true,
+      departemen: true,
+      unit: true,
+      position: true,
+    };
+
+    if (!selectedCategoryLabel) return fields;
+
+    if (selectedCategoryLabel === 'Non-Staff' || selectedCategoryLabel === 'Mitra') {
+      // Tampilkan pilihan lengkap Departmen sampai position
+      return fields;
+    }
+
+    if (selectedCategoryLabel === 'Staff') {
+      if (['Entry Level', 'Officer'].some(l => selectedJobLabel.includes(l))) {
+        return fields;
+      }
+      
+      fields.divisi = false;
+      fields.departemen = false;
+      fields.unit = false;
+      fields.position = false;
+
+      if (selectedJobLabel.includes('Principal')) {
+        fields.divisi = true;
+        fields.departemen = true;
+        if (['Branch Leader', 'Kepala Branch'].includes(selectedStructuralJobLabel)) {
+          fields.unit = true;
+        }
+      } else if (selectedJobLabel.includes('Supervisor')) {
+        fields.divisi = true;
+        fields.departemen = true;
+      } else if (selectedJobLabel.includes('Manager')) {
+        fields.divisi = true;
+      } else if (['Direktur', 'Director'].includes(selectedJobLabel)) {
+        // Only direktorat
+      } else {
+        fields.divisi = true;
+        fields.departemen = true;
+        fields.unit = true;
+        fields.position = true;
+      }
+    }
+
+    return fields;
+  }, [selectedCategoryLabel, selectedJobLabel, selectedStructuralJobLabel]);
+
+  // Fetch all positions for client-side filtering (Brief Requirement 2)
+  useEffect(() => {
+    fetchEmployeePositions({ get_all: 1 });
+  }, [fetchEmployeePositions]);
+  
+
+  // Filter positions on client side based on selected criteria
+  const filteredPositionOptions = useMemo(() => {
+    console.log(employeePositions,'employeePositions filtered');
+    if (!employeePositions.length) return [];
+    
+    return employeePositions
+      .filter((position) => {
+        if (detailForm.job_title_id && position.positionId !== detailForm.job_title_id) return false;
+        if (detailForm.structural_job_id && position.structuralJobId !== detailForm.structural_job_id) return false;
+        if (detailForm.directorate_id && position.directorateId !== detailForm.directorate_id) return false;
+        if (detailForm.division_id && position.divisionId !== detailForm.division_id) return false;
+        if (detailForm.department_id && position.departmentId !== detailForm.department_id) return false;
+        if (detailForm.unit_id && position.unitId !== detailForm.unit_id) return false;
+        return true;
+      })
+      .map((position) => ({
+        label: position.name,
+        value: position.id
+      }));
+  }, [employeePositions, detailForm.job_title_id, detailForm.structural_job_id, detailForm.directorate_id, detailForm.division_id, detailForm.department_id, detailForm.unit_id]);
 
   // Category checks
   const isNonStaffOrMitraCategory = useMemo(() => {
@@ -192,6 +317,10 @@ export const useCreateOrganizationHistory = () => {
       }
       
       // Cascading logic: reset children when parent changes
+      if (field === 'employee_category_id') {
+        next.job_title_id = '';
+        next.structural_job_id = '';
+      }
       if (field === 'company_id') {
         next.office_id = '';
       }
@@ -207,8 +336,22 @@ export const useCreateOrganizationHistory = () => {
       if (field === 'department_id') {
         next.unit_id = '';
       }
+      if (field === 'structural_job_id') {
+        next.unit_id = '';
+      }
       if (field === 'job_title_id') {
         next.structural_job_id = '';
+        next.unit_id = '';
+        next.department_id = '';
+        next.division_id = '';
+        next.position_id = '';
+        
+        const selectedJob = addState.jobTitleOptions.find(job => String(job.value) === String(value));
+        if (selectedJob?.grade) {
+          next.golongan = selectedJob.grade;
+        } else {
+          next.golongan = '';
+        }
       }
       
       return next;
@@ -220,6 +363,10 @@ export const useCreateOrganizationHistory = () => {
         const next = { ...prev, [field]: value };
         
         // Cascading logic for modal hook state
+        if (field === 'employee_category_id') {
+          next.job_title_id = '';
+          next.structural_job_id = '';
+        }
         if (field === 'company_id') {
           next.office_id = '';
         }
@@ -235,8 +382,22 @@ export const useCreateOrganizationHistory = () => {
         if (field === 'department_id') {
           next.unit_id = '';
         }
+        if (field === 'structural_job_id') {
+          next.unit_id = '';
+        }
         if (field === 'job_title_id') {
           next.structural_job_id = '';
+          next.unit_id = '';
+          next.department_id = '';
+          next.division_id = '';
+          next.position_id = '';
+
+          const selectedJob = addState.jobTitleOptions.find(job => String(job.value) === String(value));
+          if (selectedJob?.grade) {
+            next.golongan = selectedJob.grade;
+          } else {
+            next.golongan = '';
+          }
         }
         
         return next;
@@ -433,6 +594,9 @@ export const useCreateOrganizationHistory = () => {
     salaryLabel,
     diskresiOptions,
     isFromAtasan,
+    visibleFields,
+    filteredJobTitleOptions,
+    filteredPositionOptions,
     handleInput,
     handleNIPChange,
     handleSubmit,

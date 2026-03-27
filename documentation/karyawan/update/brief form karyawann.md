@@ -1,4 +1,4 @@
-Kategori Karyawan
+1. Kategori Karyawan
 
 NON-STAFF: 
 
@@ -21,3 +21,12 @@ STAFF:
     - Supervisor hanya bisa Pilih : Departmen, divisi, direktorat
     - Manager  hanya bisa Pilih : Divisi, Direktorat
     - Direktur hanya bisa  Pilih :  Direktorat
+
+2. batasi pilihan position tampilkan option sesuai dengan : Jabatan Kepangkatan, direktorat,divisi,departemen, unit yang di pilih :
+    - Filters are applied on the client side based on selected criteria:
+    - job_title_id (required)
+    - structural_job_id (optional)
+    - directorate_id (optional)
+    - division_id (optional)
+    - department_id (optional)
+    - unit_id (optional)

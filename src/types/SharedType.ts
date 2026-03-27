@@ -21,6 +21,7 @@ export interface TableFilter {
   page: number;
   pageSize: number;
   type?: 'Mitra' | 'Staff' | string;
+  get_all?: number;
 }
 
 export interface ApiPagination {

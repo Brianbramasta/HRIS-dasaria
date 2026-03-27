@@ -125,7 +125,14 @@ export const useApiEmployeePositions = (): UseEmployeePositionsReturn => {
       const effectiveSortBy = filter?.sortBy ?? sortBy;
       const effectiveSortOrder = filter?.sortOrder ?? sortOrder;
       const effectiveFilter = filter?.filter ?? filterValue;
-      const params: any = { page: effectivePage, per_page: effectivePageSize };
+      const effectiveGetAll = filter?.get_all;
+      const params: any = {};
+      if (effectiveGetAll) {
+        params.get_all = effectiveGetAll;
+      } else {
+        params.page = effectivePage;
+        params.per_page = effectivePageSize;
+      }
       if (effectiveSearch) params.search = effectiveSearch;
       if (effectiveFilter) params.filter = effectiveFilter;
       if (effectiveSortBy) {
@@ -135,8 +142,25 @@ export const useApiEmployeePositions = (): UseEmployeePositionsReturn => {
       const result = await employeePositionsService.getList(params);
       
       const payload = result as EmployeePositionsApiResponse;
-      const items = payload?.data?.data ?? [];
-      const pagination = payload?.data ?? {};
+      console.log('API Response:', payload); // Debug log
+      
+      // Handle both paginated and non-paginated responses
+      let items = [];
+      let pagination: any = {};
+      
+      if (Array.isArray(payload?.data)) {
+        // Direct array response (get_all=1 case)
+        console.log('Direct array response detected');
+        items = payload.data;
+      } else {
+        // Paginated response
+        console.log('Paginated response detected');
+        items = payload?.data?.data ?? [];
+        pagination = payload?.data ?? {};
+      }
+      
+      console.log('Items count:', items.length); // Debug log
+      
       const total = pagination?.total ?? items.length ?? 0;
       const perPage = pagination?.per_page ?? filter?.pageSize ?? pageSize ?? items.length;
       const totalPagesCount = Math.ceil(total / perPage);

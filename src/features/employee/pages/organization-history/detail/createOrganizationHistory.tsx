@@ -28,6 +28,9 @@ const CreateOrganizationHistoryPage: React.FC = () => {
     salaryLabel,
     diskresiOptions,
     isFromAtasan,
+    visibleFields,
+    filteredJobTitleOptions,
+    filteredPositionOptions,
     handleInput,
     handleNIPChange,
     handleSubmit,
@@ -162,6 +165,29 @@ const CreateOrganizationHistoryPage: React.FC = () => {
             </div>
             <div>
               <SelectField
+                label="Jabatan Kepangkatan"
+                required
+                options={filteredJobTitleOptions.length > 0 ? filteredJobTitleOptions : [{ label: 'Memuat opsi...', value: '' }]}
+                defaultValue={detailForm.job_title_id || ''}
+                onChange={(v) => handleInput('job_title_id' as any, v)}
+                onSearch={addState.handleJobTitleSearch}
+                placeholder="Select"
+                disabled={disableAll || filteredJobTitleOptions.length === 0}
+              />
+            </div>
+            <div>
+              <SelectField
+                label="Jabatan Struktural"
+                options={addState.structuralJobOptions.length > 0 ? addState.structuralJobOptions : [{ label: 'Pilih jabatan terlebih dahulu', value: '' }]}
+                defaultValue={detailForm.structural_job_id || ''}
+                onChange={(v) => handleInput('structural_job_id' as any, v)}
+                onSearch={addState.handleStructuralJobSearch}
+                placeholder="Select"
+                disabled={disableAll || !detailForm.job_title_id || addState.structuralJobOptions.length === 0}
+              />
+            </div>
+            <div>
+              <SelectField
                 label="Perusahaan"
                 required
                 options={addState.companyOptions.length > 0 ? addState.companyOptions : [{ label: 'Memuat opsi...', value: '' }]}
@@ -184,88 +210,75 @@ const CreateOrganizationHistoryPage: React.FC = () => {
                 disabled={disableAll || !detailForm.company_id || addState.officeOptions.length === 0}
               />
             </div>
-            <div>
-              <SelectField
-                label="Direktorat"
-                required
-                options={addState.directorateOptions.length > 0 ? addState.directorateOptions : [{ label: 'Memuat opsi...', value: '' }]}
-                defaultValue={detailForm.directorate_id || ''}
-                onChange={(v) => handleInput('directorate_id' as any, v)}
-                onSearch={addState.handleDirectorateSearch}
-                placeholder="Select"
-                disabled={disableAll || addState.directorateOptions.length === 0}
-              />
-            </div>
-            <div>
-              <SelectField
-                label="Divisi"
-                required
-                options={addState.divisionOptions.length > 0 ? addState.divisionOptions : [{ label: 'Pilih direktorat terlebih dahulu', value: '' }]}
-                defaultValue={detailForm.division_id || ''}
-                onChange={(v) => handleInput('division_id' as any, v)}
-                onSearch={addState.handleDivisionSearch}
-                placeholder="Select"
-                disabled={disableAll || !detailForm.directorate_id || addState.divisionOptions.length === 0}
-              />
-            </div>
-            <div>
-              <SelectField
-                label="Departemen"
-                required
-                options={addState.departmentOptions.length > 0 ? addState.departmentOptions : [{ label: 'Pilih divisi terlebih dahulu', value: '' }]}
-                defaultValue={detailForm.department_id || ''}
-                onChange={(v) => handleInput('department_id' as any, v)}
-                onSearch={addState.handleDepartmentSearch}
-                placeholder="Select"
-                disabled={disableAll || !detailForm.division_id || addState.departmentOptions.length === 0}
-              />
-            </div>
-            <div>
-              <SelectField
-                label="Posisi"
-                required
-                options={addState.positionOptions.length > 0 ? addState.positionOptions : [{ label: 'Memuat opsi...', value: '' }]}
-                defaultValue={detailForm.position_id || ''}
-                onChange={(v) => handleInput('position_id' as any, v)}
-                onSearch={addState.handlePositionSearch}
-                placeholder="Select"
-                disabled={disableAll || addState.positionOptions.length === 0}
-              />
-            </div>
-            <div>
-              <SelectField
-                label="Jabatan Kepangkatan"
-                required
-                options={addState.jobTitleOptions.length > 0 ? addState.jobTitleOptions : [{ label: 'Memuat opsi...', value: '' }]}
-                defaultValue={detailForm.job_title_id || ''}
-                onChange={(v) => handleInput('job_title_id' as any, v)}
-                onSearch={addState.handleJobTitleSearch}
-                placeholder="Select"
-                disabled={disableAll || addState.jobTitleOptions.length === 0}
-              />
-            </div>
-            <div>
-              <SelectField
-                label="Jabatan Struktural"
-                options={addState.structuralJobOptions.length > 0 ? addState.structuralJobOptions : [{ label: 'Pilih jabatan terlebih dahulu', value: '' }]}
-                defaultValue={detailForm.structural_job_id || ''}
-                onChange={(v) => handleInput('structural_job_id' as any, v)}
-                onSearch={addState.handleStructuralJobSearch}
-                placeholder="Select"
-                disabled={disableAll || !detailForm.job_title_id || addState.structuralJobOptions.length === 0}
-              />
-            </div>
-            <div>
-              <SelectField
-                label="Unit"
-                options={addState.unitOptions.length > 0 ? addState.unitOptions : [{ label: 'Pilih departemen terlebih dahulu', value: '' }]}
-                defaultValue={detailForm.unit_id || ''}
-                onChange={(v) => handleInput('unit_id' as any, v)}
-                onSearch={addState.handleUnitSearch}
-                placeholder="Select"
-                disabled={disableAll || !detailForm.department_id || addState.unitOptions.length === 0}
-              />
-            </div>
+            {visibleFields.direktorat && (
+              <div>
+                <SelectField
+                  label="Direktorat"
+                  required
+                  options={addState.directorateOptions.length > 0 ? addState.directorateOptions : [{ label: 'Memuat opsi...', value: '' }]}
+                  defaultValue={detailForm.directorate_id || ''}
+                  onChange={(v) => handleInput('directorate_id' as any, v)}
+                  onSearch={addState.handleDirectorateSearch}
+                  placeholder="Select"
+                  disabled={disableAll || addState.directorateOptions.length === 0}
+                />
+              </div>
+            )}
+            {visibleFields.divisi && (
+              <div>
+                <SelectField
+                  label="Divisi"
+                  required
+                  options={addState.divisionOptions.length > 0 ? addState.divisionOptions : [{ label: 'Pilih direktorat terlebih dahulu', value: '' }]}
+                  defaultValue={detailForm.division_id || ''}
+                  onChange={(v) => handleInput('division_id' as any, v)}
+                  onSearch={addState.handleDivisionSearch}
+                  placeholder="Select"
+                  disabled={disableAll || !detailForm.directorate_id || addState.divisionOptions.length === 0}
+                />
+              </div>
+            )}
+            {visibleFields.departemen && (
+              <div>
+                <SelectField
+                  label="Departemen"
+                  required
+                  options={addState.departmentOptions.length > 0 ? addState.departmentOptions : [{ label: 'Pilih divisi terlebih dahulu', value: '' }]}
+                  defaultValue={detailForm.department_id || ''}
+                  onChange={(v) => handleInput('department_id' as any, v)}
+                  onSearch={addState.handleDepartmentSearch}
+                  placeholder="Select"
+                  disabled={disableAll || !detailForm.division_id || addState.departmentOptions.length === 0}
+                />
+              </div>
+            )}
+            {visibleFields.unit && (
+              <div>
+                <SelectField
+                  label="Unit"
+                  options={addState.unitOptions.length > 0 ? addState.unitOptions : [{ label: 'Pilih departemen terlebih dahulu', value: '' }]}
+                  defaultValue={detailForm.unit_id || ''}
+                  onChange={(v) => handleInput('unit_id' as any, v)}
+                  onSearch={addState.handleUnitSearch}
+                  placeholder="Select"
+                  disabled={disableAll || !detailForm.department_id || addState.unitOptions.length === 0}
+                />
+              </div>
+            )}
+            {visibleFields.position && (
+              <div>
+                <SelectField
+                  label="Posisi"
+                  required
+                  options={filteredPositionOptions.length > 0 ? filteredPositionOptions : [{ label: 'Memuat opsi...', value: '' }]}
+                  defaultValue={detailForm.position_id || ''}
+                  onChange={(v) => handleInput('position_id' as any, v)}
+                  onSearch={addState.handlePositionSearch}
+                  placeholder="Select"
+                  disabled={disableAll || filteredPositionOptions.length === 0}
+                />
+              </div>
+            )}
             <div>
               <SelectField
                 label="Jenjang Jabatan"
@@ -284,6 +297,8 @@ const CreateOrganizationHistoryPage: React.FC = () => {
                 placeholder="Otomatis"
                 value={detailForm.golongan || ''}
                 disabled
+                onChange={() => {}}
+                required
               />
             </div>
             <div>
