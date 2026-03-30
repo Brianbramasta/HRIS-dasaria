@@ -3,7 +3,7 @@
 // - Field disabled: Nomor/Id Karyawan, Nama Lengkap, Perusahaan, Direktorat, Divisi, Departement, Posisi
 // - Field aktif: Tanggal Pengajuan (DatePicker), Alasan Pengunduran Diri (TextArea), Surat Pengunduran Diri (FileInput)
 // - Submit akan mengirim seluruh nilai form melalui `onSave` lalu menutup modal
-import React from 'react';
+import React, { useEffect } from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
 import Input from '@/components/form/input/InputField';
@@ -12,6 +12,8 @@ import TextArea from '@/components/form/input/TextArea';
 import FileInput from '@/components/shared/form/FileInput';
 import PopupBerhasil from '../../shared/modals/SuccessModal';
 import { useAddResignationSubmission, PengunduranDiriForm } from '@/features/submission-type/hooks/resignation-submission/useAddResignationSubmission';
+import { useApiSubmissionType } from '@/features/submission-type/hooks/api/useApiSubmissionType';
+import { useSearchParams } from 'react-router-dom';
 
 interface Props {
   isOpen: boolean;
@@ -25,6 +27,29 @@ interface Props {
 const AddPengajuanPengunduranDiriModal: React.FC<Props> = ({ isOpen, onClose, defaultValues, onSave, onSuccessClose }) => {
   const { form, submitting, showSuccessPopup, setField, handleSubmit, handleCloseSuccessPopup } =
     useAddResignationSubmission({ isOpen, onClose, defaultValues, onSave });
+
+  const { fetchSelfServiceResignation, selfServiceResignationInfo } = useApiSubmissionType();
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get('token');
+
+  useEffect(() => {
+    if (token && isOpen) {
+      fetchSelfServiceResignation(token);
+    }
+  }, [token, isOpen, fetchSelfServiceResignation]);
+
+  useEffect(() => {
+    if (selfServiceResignationInfo) {
+      // Populate form with self-service data
+      setField('idKaryawan', selfServiceResignationInfo.nip || '');
+      setField('namaLengkap', selfServiceResignationInfo.full_name || '');
+      setField('perusahaan', selfServiceResignationInfo.company_name || '');
+      setField('direktorat', selfServiceResignationInfo.directorate_name || '');
+      setField('divisi', selfServiceResignationInfo.division_name || '');
+      setField('departement', selfServiceResignationInfo.department_name || '');
+      setField('posisi', selfServiceResignationInfo.position_name || '');
+    }
+  }, [selfServiceResignationInfo, setField]);
 
   const content = (
     <div className="space-y-6">
@@ -83,6 +108,13 @@ const AddPengajuanPengunduranDiriModal: React.FC<Props> = ({ isOpen, onClose, de
         <Label>Surat Pengunduran Diri</Label>
         <FileInput skFileName={form.suratPengunduranDiri ? form.suratPengunduranDiri.name : ''} onChange={(e) => setField('suratPengunduranDiri', e.target.files?.[0] || null)} isLabel={false} />
       </div>
+
+      {selfServiceResignationInfo?.status_kasbon && (
+        <div>
+          <Label>Surat Komitmen Pelunasan</Label>
+          <FileInput skFileName={form.suratKomitmenPelunasan ? form.suratKomitmenPelunasan.name : ''} onChange={(e) => setField('suratKomitmenPelunasan', e.target.files?.[0] || null)} isLabel={false} />
+        </div>
+      )}
     </div>
   );
 

@@ -1,33 +1,74 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import SelectField from '@/components/shared/field/SelectField';
 import InputField from '@/components/form/input/InputField';
 import DateField from '@/components/shared/field/DateField';
 import Label from '@/components/form/Label';
+import { useOrganizationChange } from '@/features/employee/hooks/organization-history/useOrganizationChange';
+import { useApiSubmissionType } from '../../hooks/api/useApiSubmissionType';
 
 interface BaseGenerateModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: () => void;
+  onSuccess: (token: string) => void;
   submitting: boolean;
   title: string;
   showWarning?: boolean;
+  submissionType: string;
 }
 
 const BaseGenerateModal: React.FC<BaseGenerateModalProps> = ({
   isOpen,
   onClose,
-  onSubmit,
+  onSuccess,
   submitting,
   title,
-  showWarning = false
+  showWarning = false,
+  submissionType
 }) => {
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<string>('');
+  const [submissionDate, setSubmissionDate] = useState<string>(new Date().toISOString().split('T')[0]);
+  const { employeeOptions, fetchEmployeeOptions } = useOrganizationChange();
+  const { popupDetail, fetchPopupDetail, resetDetail, storeSubmission, fetchIndex } = useApiSubmissionType();
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchEmployeeOptions();
+      setSubmissionDate(new Date().toISOString().split('T')[0]);
+    } else {
+      resetDetail();
+      setSelectedEmployeeId('');
+    }
+  }, [isOpen, fetchEmployeeOptions, resetDetail]);
+
+  const handleEmployeeSelect = (value: string) => {
+    setSelectedEmployeeId(value);
+    if (value) {
+      fetchPopupDetail(value);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (selectedEmployeeId && submissionType) {
+      const payload = {
+        submission: submissionType,
+        tanggal_pengajuan: submissionDate
+      };
+      
+      const token = await storeSubmission(selectedEmployeeId, payload);
+      if (token) {
+        await fetchIndex();
+        onSuccess(token);
+      }
+    }
+  };
+
   return (
     <ModalAddEdit
       title={title}
       isOpen={isOpen}
       onClose={onClose}
-      handleSubmit={onSubmit}
+      handleSubmit={handleSubmit}
       submitting={submitting}
       confirmTitleButton="Generate Form"
       closeTitleButton="Tutup"
@@ -39,8 +80,9 @@ const BaseGenerateModal: React.FC<BaseGenerateModalProps> = ({
               label="Nomer/NIP"
               placeholder="Pilih NIP"
               required
-              options={[]}
-              onChange={() => {}}
+              options={employeeOptions}
+              onChange={handleEmployeeSelect}
+              defaultValue={selectedEmployeeId}
             />
           </div>
 
@@ -51,6 +93,7 @@ const BaseGenerateModal: React.FC<BaseGenerateModalProps> = ({
               name="namaLengkap"
               placeholder="Nama Lengkap"
               disabled
+              value={popupDetail?.full_name || ''}
             />
           </div>
 
@@ -61,6 +104,7 @@ const BaseGenerateModal: React.FC<BaseGenerateModalProps> = ({
               name="perusahaan"
               placeholder="Perusahaan"
               disabled
+              value={popupDetail?.company_name || ''}
             />
           </div>
 
@@ -71,6 +115,7 @@ const BaseGenerateModal: React.FC<BaseGenerateModalProps> = ({
               name="direktorat"
               placeholder="Direktorat"
               disabled
+              value={popupDetail?.directorate_name || ''}
             />
           </div>
 
@@ -81,6 +126,7 @@ const BaseGenerateModal: React.FC<BaseGenerateModalProps> = ({
               name="divisi"
               placeholder="Divisi"
               disabled
+              value={popupDetail?.division_name || ''}
             />
           </div>
 
@@ -91,6 +137,7 @@ const BaseGenerateModal: React.FC<BaseGenerateModalProps> = ({
               name="departement"
               placeholder="Departement"
               disabled
+              value={popupDetail?.department_name || ''}
             />
           </div>
 
@@ -101,6 +148,7 @@ const BaseGenerateModal: React.FC<BaseGenerateModalProps> = ({
               name="posisi"
               placeholder="Posisi"
               disabled
+              value={popupDetail?.position_name || ''}
             />
           </div>
 
@@ -110,6 +158,7 @@ const BaseGenerateModal: React.FC<BaseGenerateModalProps> = ({
               id="tanggalPengajuan"
               placeholder="28 Januari 1999"
               disabled
+              defaultDate={submissionDate}
             />
           </div>
 

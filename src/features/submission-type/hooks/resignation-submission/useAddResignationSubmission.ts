@@ -11,6 +11,7 @@ export type PengunduranDiriForm = {
   tanggalPengajuan: string;
   alasan: string;
   suratPengunduranDiri?: File | null;
+  suratKomitmenPelunasan?: File | null;
 };
 
 export interface UseAddResignationSubmissionParams {
@@ -38,6 +39,7 @@ export function useAddResignationSubmission({
       tanggalPengajuan: defaultValues?.tanggalPengajuan ?? '',
       alasan: defaultValues?.alasan ?? '',
       suratPengunduranDiri: defaultValues?.suratPengunduranDiri ?? null,
+      suratKomitmenPelunasan: defaultValues?.suratKomitmenPelunasan ?? null,
     }),
     [defaultValues],
   );

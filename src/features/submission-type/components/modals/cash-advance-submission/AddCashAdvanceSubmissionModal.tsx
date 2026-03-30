@@ -17,6 +17,7 @@ import Alert from '@/components/ui/alert/Alert';
 import { useAddCashAdvanceSubmission, PengajuanKasbonForm } from '@/features/submission-type/hooks/cash-advance-submission/useAddCashAdvanceSubmission';
 import { useApiSubmissionType } from '@/features/submission-type/hooks/api/useApiSubmissionType';
 import { formatCurrency, parseCurrency } from '@/utils/formatCurrency';
+import { useSearchParams } from 'react-router-dom';
 
 interface Props {
   isOpen: boolean;
@@ -39,10 +40,30 @@ const AddPengajuanKasbonModal: React.FC<Props> = ({ isOpen, onClose, defaultValu
     handleCloseSuccessPopup,
   } = useAddCashAdvanceSubmission({ isOpen, onClose, defaultValues, onSave });
  
-  const { loanTypes, fetchLoanTypes } = useApiSubmissionType();
+  const { loanTypes, fetchLoanTypes, fetchSelfServiceLoan, selfServiceLoanInfo } = useApiSubmissionType();
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get('token');
+
   useEffect(() => {
     fetchLoanTypes();
   }, [fetchLoanTypes]);
+
+  useEffect(() => {
+    if (token && isOpen) {
+      fetchSelfServiceLoan(token);
+    }
+  }, [token, isOpen, fetchSelfServiceLoan]);
+
+  useEffect(() => {
+    if (selfServiceLoanInfo) {
+      // Populate form with self-service data
+      setField('idKaryawan', selfServiceLoanInfo.nip || '');
+      setField('namaLengkap', selfServiceLoanInfo.full_name || '');
+      setField('departemen', selfServiceLoanInfo.department_name || '');
+      setField('posisi', selfServiceLoanInfo.position_name || '');
+      setField('gajiPokok', selfServiceLoanInfo.basic_salary || 0);
+    }
+  }, [selfServiceLoanInfo, setField]);
   const jenisKasbonOptionsFromApi = useMemo(
     () => loanTypes.map((t) => ({ value: t.id, label: t.name })),
     [loanTypes]

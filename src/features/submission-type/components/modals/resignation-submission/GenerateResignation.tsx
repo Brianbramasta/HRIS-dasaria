@@ -4,24 +4,25 @@ import BaseGenerateModal from '../BaseGenerateModal';
 interface GenerateResignationProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: () => void;
+  onSuccess: (token: string) => void;
   submitting: boolean;
 }
 
 const GenerateResignation: React.FC<GenerateResignationProps> = ({
   isOpen,
   onClose,
-  onSubmit,
+  onSuccess,
   submitting
 }) => {
   return (
     <BaseGenerateModal
       isOpen={isOpen}
       onClose={onClose}
-      onSubmit={onSubmit}
+      onSuccess={onSuccess}
       submitting={submitting}
       title="Pengajuan Pengunduran Diri"
       showWarning={false}
+      submissionType="Pengunduran Diri"
     />
   );
 };

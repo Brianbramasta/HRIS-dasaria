@@ -4,7 +4,7 @@
 //   Jenis Kasbon (Select), Nominal Kasbon (maks 25% dari gaji pokok), Periode Cicilan (Select),
 //   Nominal Cicilan (otomatis), Surat Persetujuan Atasan (FileInput), Dokumen Pendukung (FileInput multiple), Keterangan (TextArea)
 // - Validasi: Nominal Kasbon dibatasi 25% dari Gaji Pokok; Nominal Cicilan dihitung otomatis dari periode
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Label from '@/components/form/Label';
 import Input from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
@@ -16,7 +16,7 @@ import Alert from '@/components/ui/alert/Alert';
 import { useAddCashAdvanceSubmission } from '@/features/submission-type/hooks/cash-advance-submission/useAddCashAdvanceSubmission';
 import { useApiSubmissionType } from '@/features/submission-type/hooks/api/useApiSubmissionType';
 import { formatCurrency, parseCurrency } from '@/utils/formatCurrency';
-import { useNavigate } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 
 const AddCashAdvanceSubmission: React.FC = () => {
   const navigate = useNavigate();
@@ -24,28 +24,79 @@ const AddCashAdvanceSubmission: React.FC = () => {
     periodeOptions,
     form,
     submitting,
-    showSuccessPopup,
     setField,
     isFormValid,
-    handleSubmit,
-    handleCloseSuccessPopup,
   } = useAddCashAdvanceSubmission({ 
     isOpen: true, 
     onClose: () => navigate('/submission-types'),
     onSave: undefined 
   });
 
-  const { loanTypes, fetchLoanTypes } = useApiSubmissionType();
+  const { loanTypes, fetchLoanTypes, fetchSelfServiceLoan, selfServiceLoanInfo, updateLoanDetail } = useApiSubmissionType();
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get('token');
+
   useEffect(() => {
     fetchLoanTypes();
   }, [fetchLoanTypes]);
+
+  useEffect(() => {
+    if (token) {
+      fetchSelfServiceLoan(token);
+    }
+  }, [token, fetchSelfServiceLoan]);
+
+  useEffect(() => {
+    if (selfServiceLoanInfo) {
+      // Populate form with self-service data
+      setField('idKaryawan', selfServiceLoanInfo.nip || '');
+      setField('namaLengkap', selfServiceLoanInfo.full_name || '');
+      setField('departemen', selfServiceLoanInfo.department_name || '');
+      setField('posisi', selfServiceLoanInfo.position_name || '');
+      setField('gajiPokok', selfServiceLoanInfo.basic_salary || 0);
+      setField('tanggalPengajuan', selfServiceLoanInfo.tanggal_pengajuan || '');
+    }
+  }, [selfServiceLoanInfo, setField]);
+
   const jenisKasbonOptionsFromApi = useMemo(
     () => loanTypes.map((t) => ({ value: t.id, label: t.name })),
     [loanTypes]
   );
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  const handleFormSubmit = async () => {
+    if (!token) {
+      console.error('No token found');
+      return;
+    }
+    
+    setIsSubmitting(true);
+    try {
+      const payload = {
+        loan_type_id: form.jenisKasbon || '',
+        nominal_loan: form.nominalKasbon || 0,
+        loan_period: form.periodeCicilan || '',
+        loan_description: form.keterangan || '',
+        supervisor_approval_file: form.suratPersetujuanAtasan || null,
+        supporting_documents: form.dokumenPendukung?.[0] || null,
+      };
+      
+      const success = await updateLoanDetail(token, payload);
+      if (success) {
+        navigate('/submission-types');
+        setTimeout(() => setShowSuccess(true), 300);
+      }
+    } catch (error) {
+      console.error('Failed to submit loan:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const handleSuccessClose = () => {
-    handleCloseSuccessPopup();
+    setShowSuccess(false);
     navigate('/submission-types');
   };
 
@@ -101,7 +152,7 @@ const AddCashAdvanceSubmission: React.FC = () => {
                   <Input placeholder="Masukkan gaji pokok" value={formatCurrency(form.gajiPokok || 0)} onChange={(e) => setField('gajiPokok', parseCurrency(e.target.value) || 0)} disabled/>
                 </div>
                 <div>
-                  <DatePicker id="tanggal-pengajuan-kasbon" label="Tanggal Pengajuan" placeholder="Pilih tanggal" onChange={(_, dateStr) => setField('tanggalPengajuan', dateStr)} />
+                  <DatePicker id="tanggal-pengajuan-kasbon" label="Tanggal Pengajuan" placeholder="Pilih tanggal" defaultDate={form.tanggalPengajuan} disabled />
                 </div>
                 <div>
                   <Label>Jenis Kasbon</Label>
@@ -141,18 +192,18 @@ const AddCashAdvanceSubmission: React.FC = () => {
             </button>
             <button
               type="button"
-              onClick={handleSubmit}
-              disabled={submitting || !isFormValid}
+              onClick={handleFormSubmit}
+              disabled={submitting || !isFormValid || isSubmitting}
               className="px-4 py-2 bg-brand-500 text-white rounded-md hover:bg-brand-600 disabled:opacity-50"
             >
-              {submitting ? 'Mengirim...' : 'Submit'}
+              {isSubmitting ? 'Mengirim...' : 'Submit'}
             </button>
           </div>
         </div>
       </div>
 
       <PopupBerhasil
-        isOpen={showSuccessPopup}
+        isOpen={showSuccess}
         onClose={handleSuccessClose}
         title="Pengajuan Kasbon Berhasil Dikirim"
         description='"Terima kasih, pengajuan Kasbon Anda telah berhasil dikirim dan kini Menunggu Persetujuan. Jika pengajuan diterima maka akan dikonfirmasi Secepatnya oleh HR."'

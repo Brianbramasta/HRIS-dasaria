@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 import DataTable from "../../../components/shared/datatable/DataTable";
 import Select from "../../../components/form/Select";
 // import { FileText } from "react-feather";
-import { IconFileDetail as FileText } from "@/icons/components/icons";
+import { IconFileDetail as FileText, IconShare as CopyIcon } from "@/icons/components/icons";
 // Dokumentasi: Import modal Kasbon & Pengunduran Diri
 import GenerateCashAdvance from "@/features/submission-type/components/modals/cash-advance-submission/GenerateCashAddvance";
 import GenerateResignation from "@/features/submission-type/components/modals/resignation-submission/GenerateResignation";
@@ -23,6 +23,8 @@ interface RowPengajuan {
   lampiran: string | null;
   status: string;
   catatan: string;
+  token: string;
+  submission_type: string;
 }
 
 export default function JenisPengajuanPage() {
@@ -65,6 +67,8 @@ export default function JenisPengajuanPage() {
         lampiran: s.attachment_document,
         status: s.status,
         catatan: s.note ?? "-",
+        token: s.token ?? "",
+        submission_type: s.submission_type ?? "",
       })),
     [submissions]
   );
@@ -117,13 +121,69 @@ export default function JenisPengajuanPage() {
   ];
 
   const actions = [
+    // {
+    //   icon: <FileText />,
+    //   onClick: (_row: RowPengajuan) => {
+    //     //console.log("Preview pengajuan", _row);
+    //   },
+    //   className: "text-gray-600",
+    //   condition: () => false, // Hanya tampilkan jika ada lampiran
+    // },
     {
       icon: <FileText />,
-      onClick: (_row: RowPengajuan) => {
-        //console.log("Preview pengajuan", _row);
+      onClick: (row: RowPengajuan) => {
+        if (row.token) {
+          const baseUrl = window.location.origin;
+          let url = '';
+          
+          if (row.submission_type === 'Kasbon') {
+            url = `${baseUrl}/submission-types/cash-advance/add?token=${row.token}`;
+          } else if (row.submission_type === 'Pengunduran Diri') {
+            url = `${baseUrl}/submission-types/resignation/add?token=${row.token}`;
+          }
+          
+          if (url) {
+            window.open(url, '_blank');
+          }
+        }
       },
-      className: "text-gray-600",
-      condition: () => false, // Hanya tampilkan jika ada lampiran
+      className: "text-blue-600",
+      // label: "Detail"
+    },
+    {
+      icon: <CopyIcon />,
+      onClick: (row: RowPengajuan) => {
+        if (row.token) {
+          const baseUrl = window.location.origin;
+          let url = '';
+          
+          if (row.submission_type === 'Kasbon') {
+            url = `${baseUrl}/submission-types/cash-advance/add?token=${row.token}`;
+          } else if (row.submission_type === 'Pengunduran Diri') {
+            url = `${baseUrl}/submission-types/resignation/add?token=${row.token}`;
+          }
+          
+          if (url) {
+            navigator.clipboard.writeText(url)
+              .then(() => {
+                addNotification({
+                  variant: 'success',
+                  title: 'Link berhasil disalin!',
+                  hideDuration: 3000,
+                });
+              })
+              .catch(() => {
+                addNotification({
+                  variant: 'error',
+                  title: 'Gagal menyalin link!',
+                  hideDuration: 3000,
+                });
+              });
+          }
+        }
+      },
+      className: "text-green-600",
+      // label: "Copy"
     },
   ];
 
@@ -180,10 +240,10 @@ export default function JenisPengajuanPage() {
       <GenerateCashAdvance
         isOpen={openKasbonModal}
         onClose={() => setOpenKasbonModal(false)}
-        onSubmit={async () => {
+        onSuccess={async (token) => {
           setSubmitting(true);
           // Handle form submission logic here
-          console.log("Generate Cash Advance form submitted");
+          console.log("Generate Cash Advance form submitted with token:", token);
           setSubmitting(false);
           setOpenKasbonModal(false);
         }}
@@ -192,10 +252,10 @@ export default function JenisPengajuanPage() {
       <GenerateResignation
         isOpen={openResignModal}
         onClose={() => setOpenResignModal(false)}
-        onSubmit={async () => {
+        onSuccess={async (token) => {
           setSubmitting(true);
           // Handle form submission logic here
-          console.log("Generate Resignation form submitted");
+          console.log("Generate Resignation form submitted with token:", token);
           setSubmitting(false);
           setOpenResignModal(false);
         }}
