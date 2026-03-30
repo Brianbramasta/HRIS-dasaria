@@ -16,10 +16,9 @@ import Alert from '@/components/ui/alert/Alert';
 import { useAddCashAdvanceSubmission } from '@/features/submission-type/hooks/cash-advance-submission/useAddCashAdvanceSubmission';
 import { useApiSubmissionType } from '@/features/submission-type/hooks/api/useApiSubmissionType';
 import { formatCurrency, parseCurrency } from '@/utils/formatCurrency';
-import { useNavigate, useSearchParams } from 'react-router';
+import { useSearchParams } from 'react-router';
 
 const AddCashAdvanceSubmission: React.FC = () => {
-  const navigate = useNavigate();
   const {
     periodeOptions,
     form,
@@ -28,7 +27,7 @@ const AddCashAdvanceSubmission: React.FC = () => {
     isFormValid,
   } = useAddCashAdvanceSubmission({ 
     isOpen: true, 
-    onClose: () => navigate('/submission-types'),
+    onClose: () => window.location.href = '/submission-types',
     onSave: undefined 
   });
 
@@ -85,8 +84,7 @@ const AddCashAdvanceSubmission: React.FC = () => {
       
       const success = await updateLoanDetail(token, payload);
       if (success) {
-        navigate('/submission-types');
-        setTimeout(() => setShowSuccess(true), 300);
+        setShowSuccess(true);
       }
     } catch (error) {
       console.error('Failed to submit loan:', error);
@@ -97,7 +95,7 @@ const AddCashAdvanceSubmission: React.FC = () => {
 
   const handleSuccessClose = () => {
     setShowSuccess(false);
-    navigate('/submission-types');
+    window.location.href = '/submission-types';
   };
 
   return (
@@ -185,7 +183,7 @@ const AddCashAdvanceSubmission: React.FC = () => {
           <div className="flex justify-end space-x-3">
             <button
               type="button"
-              onClick={() => navigate('/submission-types')}
+              onClick={() => window.location.href = '/submission-types'}
               className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
             >
               Tutup

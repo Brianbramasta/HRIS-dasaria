@@ -315,7 +315,7 @@ class EmployeeMasterDataService {
    * @returns Promise dengan response API
    */
   async checkActiveEmployee(payload: { email: string; national_id: string }): Promise<ApiResponse<any>> {
-    return apiService.post<any>(`${this.basePath}/employees/check-active`, payload);
+    return apiService.post<any>(`${this.basePath}/employees/check-active`, payload, { showNotification: false });
   }
 
  

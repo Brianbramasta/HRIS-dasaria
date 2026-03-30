@@ -13,7 +13,7 @@ import GenerateCashAdvance from "@/features/submission-type/components/modals/ca
 import GenerateResignation from "@/features/submission-type/components/modals/resignation-submission/GenerateResignation";
 import { addNotification } from "@/stores/notificationStore";
 import { useApiSubmissionType } from "@/features/submission-type/hooks/api/useApiSubmissionType";
-import { PopupStatus } from "@/features/submission-type/types/dto/SubmissionType";
+// import { PopupStatus } from "@/features/submission-type/types/dto/SubmissionType";
 import { formatDateToIndonesian } from "@/utils/formatDate";
 import { formatUrlFile } from "@/utils/formatUrlFile";
 
@@ -33,7 +33,7 @@ export default function JenisPengajuanPage() {
   const [openKasbonModal, setOpenKasbonModal] = useState(false);
   const [openResignModal, setOpenResignModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const { submissions, fetchIndex, fetchPopupDetail } = useApiSubmissionType();
+  const { submissions, fetchIndex } = useApiSubmissionType();
 
   useEffect(() => {
     fetchIndex();
@@ -210,7 +210,7 @@ export default function JenisPengajuanPage() {
             });
             return;
           }
-          fetchPopupDetail(jenis as PopupStatus);
+          // fetchPopupDetail(jenis as PopupStatus);
           if (jenis === "Kasbon") {
             setOpenKasbonModal(true);
           } else if (jenis === "Pengunduran Diri") {
@@ -244,6 +244,7 @@ export default function JenisPengajuanPage() {
           setSubmitting(true);
           // Handle form submission logic here
           console.log("Generate Cash Advance form submitted with token:", token);
+          await fetchIndex();
           setSubmitting(false);
           setOpenKasbonModal(false);
         }}
@@ -256,6 +257,7 @@ export default function JenisPengajuanPage() {
           setSubmitting(true);
           // Handle form submission logic here
           console.log("Generate Resignation form submitted with token:", token);
+          await fetchIndex();
           setSubmitting(false);
           setOpenResignModal(false);
         }}

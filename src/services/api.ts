@@ -169,28 +169,31 @@ class ApiService {
     return response.data;
   }
 
-  public async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+  public async post<T>(url: string, data?: any, config?: AxiosRequestConfig & { showNotification?: boolean }): Promise<ApiResponse<T>> {
     const response = await this.instance.post(url, data, config);
-    handleApiSuccess(response.data);
+    const showNotification = config?.showNotification !== false; // default true
+    handleApiSuccess(response.data, showNotification);
     return response.data;
   }
 
-  public async put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+  public async put<T>(url: string, data?: any, config?: AxiosRequestConfig & { showNotification?: boolean }): Promise<ApiResponse<T>> {
     const response = await this.instance.put(url, data, config);
-    handleApiSuccess(response.data);
+    const showNotification = config?.showNotification !== false; // default true
+    handleApiSuccess(response.data, showNotification);
     return response.data;
   }
 
-  public async patch<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+  public async patch<T>(url: string, data?: any, config?: AxiosRequestConfig & { showNotification?: boolean }): Promise<ApiResponse<T>> {
     const response = await this.instance.patch(url, data, config);
-    // const response = {data:{}}
-    handleApiSuccess(response.data);
+    const showNotification = config?.showNotification !== false; // default true
+    handleApiSuccess(response.data, showNotification);
     return response.data;
   }
 
-  public async delete<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+  public async delete<T>(url: string, config?: AxiosRequestConfig & { showNotification?: boolean }): Promise<ApiResponse<T>> {
     const response = await this.instance.delete(url, config);
-    handleApiSuccess(response.data);
+    const showNotification = config?.showNotification !== false; // default true
+    handleApiSuccess(response.data, showNotification);
     return response.data;
   }
 

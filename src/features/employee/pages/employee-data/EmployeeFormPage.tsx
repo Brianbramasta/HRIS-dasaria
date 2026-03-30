@@ -58,7 +58,7 @@ export default function FormulirKaryawanPage() {
       
       // Validate required fields for API call
       if (!email || !nik) {
-        alert('Email dan NIK harus diisi sebelum melanjutkan');
+        // alert('Email dan NIK harus diisi sebelum melanjutkan');
         return;
       }
 
@@ -90,7 +90,7 @@ export default function FormulirKaryawanPage() {
           
           // Show general message if there are errors
           if (error?.meta?.message) {
-            alert(error.meta.message);
+            // alert(error.meta.message);
           }
         } else {
           // Show generic error message for other types of errors

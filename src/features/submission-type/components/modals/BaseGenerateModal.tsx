@@ -44,6 +44,7 @@ const BaseGenerateModal: React.FC<BaseGenerateModalProps> = ({
   const handleEmployeeSelect = (value: string) => {
     setSelectedEmployeeId(value);
     if (value) {
+      
       fetchPopupDetail(value);
     }
   };

@@ -45,7 +45,7 @@ class SubmissionTypeService {
   }
 
   async updateSelfServiceResignation(token: string, formData: FormData): Promise<ApiResponse<any>> {
-    return apiService.post<any>(`${this.selfServiceBasePath}/pengunduran-diri/${token}/employee-information/update-personal-data`, formData);
+    return apiService.post<any>(`${this.selfServiceBasePath}/pengunduran-diri/${token}/employee-information/update-personal-data`, formData,{ headers: { 'Content-Type': 'multipart/form-data' } });
   }
 }
 

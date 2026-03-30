@@ -133,7 +133,6 @@ export const Step01PersonalData: React.FC<Step01PersonalDataProps> = ({ fieldErr
               options={pendidikanOptions}
               defaultValue={step1.pendidikanTerakhir}
               onChange={(value) => handleChange('pendidikanTerakhir', value)}
-              
               required
             />
           </div>

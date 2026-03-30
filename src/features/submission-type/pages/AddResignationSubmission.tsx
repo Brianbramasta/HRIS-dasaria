@@ -11,15 +11,14 @@ import TextArea from '@/components/form/input/TextArea';
 import FIleField from '@/components/shared/field/FIleField';
 import PopupBerhasil from '../components/shared/modals/SuccessModal';
 import { useAddResignationSubmission } from '@/features/submission-type/hooks/resignation-submission/useAddResignationSubmission';
-import { useNavigate, useSearchParams } from 'react-router';
+import { useSearchParams } from 'react-router';
 import { useApiSubmissionType } from '@/features/submission-type/hooks/api/useApiSubmissionType';
 
 const AddResignationSubmission: React.FC = () => {
-  const navigate = useNavigate();
   const { form, setField } =
     useAddResignationSubmission({ 
       isOpen: true, 
-      onClose: () => navigate('/submission-types'),
+      onClose: () => window.location.href = '/submission-types',
       onSave: undefined 
     });
 
@@ -64,18 +63,23 @@ const AddResignationSubmission: React.FC = () => {
     
     setIsSubmitting(true);
     try {
-      const payload = {
+      const payload: any = {
         resignation_reason: form.alasan,
-        letter_of_commitment: form.suratKomitmenPelunasan,
-        document_lampiran: form.suratPengunduranDiri,
       };
+      
+      if (form.suratKomitmenPelunasan) {
+        payload.letter_of_commitment = form.suratKomitmenPelunasan;
+      }
+      
+      if (form.suratPengunduranDiri) {
+        payload.document_lampiran = form.suratPengunduranDiri;
+      }
       
       console.log('Payload yang akan dikirim:', payload);
       
       const success = await updateResignationDetail(token, payload);
       if (success) {
-        navigate('/submission-types');
-        setTimeout(() => setShowSuccess(true), 300);
+        setShowSuccess(true);
       }
     } catch (error) {
       console.error('Failed to submit resignation:', error);
@@ -86,7 +90,7 @@ const AddResignationSubmission: React.FC = () => {
 
   const handleSuccessClose = () => {
     setShowSuccess(false);
-    navigate('/submission-types');
+    window.location.href = '/submission-types';
   };
 
   return (
@@ -169,7 +173,7 @@ const AddResignationSubmission: React.FC = () => {
           <div className="flex justify-end space-x-3">
             <button
               type="button"
-              onClick={() => navigate('/submission-types')}
+              onClick={() => window.location.href = '/submission-types'}
               className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
             >
               Tutup
