@@ -41,7 +41,7 @@ class SubmissionTypeService {
   }
 
   async updateSelfServiceLoan(token: string, formData: FormData): Promise<ApiResponse<any>> {
-    return apiService.post<any>(`${this.selfServiceBasePath}/kasbon/${token}/employee-information/update-personal-data`, formData);
+    return apiService.post<any>(`${this.selfServiceBasePath}/kasbon/${token}/employee-information/update-personal-data`, formData,{ headers: { 'Content-Type': 'multipart/form-data' } });
   }
 
   async updateSelfServiceResignation(token: string, formData: FormData): Promise<ApiResponse<any>> {

@@ -21,6 +21,7 @@ export interface UseAddCashAdvanceSubmissionParams {
   onClose: () => void;
   defaultValues?: Partial<PengajuanKasbonForm> | null;
   onSave?: (values: PengajuanKasbonForm) => boolean | Promise<boolean>;
+  limitLoan?: number;
 }
 
 export function useAddCashAdvanceSubmission({
@@ -28,6 +29,7 @@ export function useAddCashAdvanceSubmission({
   onClose,
   defaultValues,
   onSave,
+  limitLoan,
 }: UseAddCashAdvanceSubmissionParams) {
   const jenisKasbonOptions = useMemo(
     () => [
@@ -80,15 +82,29 @@ export function useAddCashAdvanceSubmission({
   };
 
   useEffect(() => {
-    const maxKasbon = (form.gajiPokok || 0) * 0.25;
+    // Use limitLoan if available, otherwise fallback to 25% of gaji pokok
+    const maxKasbon = limitLoan || 0;
+    console.log('maxKasbon', maxKasbon)
     let nominalKasbon = form.nominalKasbon || 0;
+    
+    // Auto-adjust nominalKasbon if it exceeds the limit
     if (nominalKasbon > maxKasbon) {
       nominalKasbon = Math.floor(maxKasbon);
     }
-    const periode = parseInt(form.periodeCicilan || '0', 10);
+    
+    // Calculate periode cicilan: Nominal kasbon / limitLoan, round up
+    let periodeCicilan = '';
+    if (maxKasbon > 0 && nominalKasbon > 0) {
+      const calculatedPeriode = Math.ceil(nominalKasbon / ((form.gajiPokok || 0) * 0.25));
+      periodeCicilan = calculatedPeriode.toString();
+    }
+    console.log('periode  cicilan', periodeCicilan)
+    
+    const periode = parseInt(periodeCicilan || '0', 10);
     const nominalCicilan = periode > 0 ? Math.ceil(nominalKasbon / periode) : 0;
-    setForm((prev) => ({ ...prev, nominalKasbon, nominalCicilan }));
-  }, [form.gajiPokok, form.nominalKasbon, form.periodeCicilan]);
+    
+    setForm((prev) => ({ ...prev, nominalKasbon, periodeCicilan, nominalCicilan }));
+  }, [form.gajiPokok, form.nominalKasbon, limitLoan]);
 
   const isFormValid = useMemo(() => {
     // be:sesuikan jika api sudah ada/jadi

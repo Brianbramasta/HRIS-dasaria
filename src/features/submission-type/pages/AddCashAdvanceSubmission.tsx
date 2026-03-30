@@ -13,14 +13,15 @@ import FileInput from '@/components/form/input/FileInput';
 import TextArea from '@/components/form/input/TextArea';
 import PopupBerhasil from '../components/shared/modals/SuccessModal';
 import Alert from '@/components/ui/alert/Alert';
-import { useAddCashAdvanceSubmission } from '@/features/submission-type/hooks/cash-advance-submission/useAddCashAdvanceSubmission';
 import { useApiSubmissionType } from '@/features/submission-type/hooks/api/useApiSubmissionType';
+import { useAddCashAdvanceSubmission } from '@/features/submission-type/hooks/cash-advance-submission/useAddCashAdvanceSubmission';
 import { formatCurrency, parseCurrency } from '@/utils/formatCurrency';
 import { useSearchParams } from 'react-router';
 
 const AddCashAdvanceSubmission: React.FC = () => {
+  const { loanTypes, fetchLoanTypes, fetchSelfServiceLoan, selfServiceLoanInfo, updateLoanDetail } = useApiSubmissionType();
+  
   const {
-    periodeOptions,
     form,
     submitting,
     setField,
@@ -28,10 +29,9 @@ const AddCashAdvanceSubmission: React.FC = () => {
   } = useAddCashAdvanceSubmission({ 
     isOpen: true, 
     onClose: () => window.location.href = '/submission-types',
-    onSave: undefined 
+    onSave: undefined,
+    limitLoan: selfServiceLoanInfo?.limit_loan ? parseFloat(selfServiceLoanInfo.limit_loan) : undefined
   });
-
-  const { loanTypes, fetchLoanTypes, fetchSelfServiceLoan, selfServiceLoanInfo, updateLoanDetail } = useApiSubmissionType();
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
 
@@ -53,7 +53,7 @@ const AddCashAdvanceSubmission: React.FC = () => {
       setField('departemen', selfServiceLoanInfo.department_name || '');
       setField('posisi', selfServiceLoanInfo.position_name || '');
       setField('gajiPokok', selfServiceLoanInfo.basic_salary || 0);
-      setField('tanggalPengajuan', selfServiceLoanInfo.tanggal_pengajuan || '');
+      setField('tanggalPengajuan', selfServiceLoanInfo.tanggal_pengajuan || selfServiceLoanInfo.tangal_pengajuan || '');
     }
   }, [selfServiceLoanInfo, setField]);
 
@@ -105,7 +105,7 @@ const AddCashAdvanceSubmission: React.FC = () => {
           <h2 className="text-3xl font-bold text-start mb-4">Pengajuan Kasbon</h2>
           <div className="mb-6 rounded-lg bg-[#BCBCBC80] bg-opacity-50 p-4 ">
             <p className="text-center text-sm font-medium">Limit Kasbon Tersedia</p>
-            <p className="text-center text-2xl font-bold text-blue-700">Rp.2.000.000</p>
+            <p className="text-center text-2xl font-bold text-blue-700">{formatCurrency(selfServiceLoanInfo?.limit_loan ? parseFloat(selfServiceLoanInfo.limit_loan) : 0)}</p>
           </div>
           
           <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
@@ -157,12 +157,12 @@ const AddCashAdvanceSubmission: React.FC = () => {
                   <Select options={jenisKasbonOptionsFromApi} placeholder="Select" defaultValue={form.jenisKasbon} onChange={(v) => setField('jenisKasbon', v)} />
                 </div>
                 <div>
-                  <Label>Nominal Kasbon <span className="text-xs text-gray-500">(maksimal 25% dari gaji pokok)</span></Label>
+                  <Label>Nominal Kasbon <span className="text-xs text-gray-500">(maksimal sesuai limit tersedia)</span></Label>
                   <Input placeholder="Inputan" value={formatCurrency(form.nominalKasbon || 0)} onChange={(e) => setField('nominalKasbon', parseCurrency(e.target.value) || 0)} />
                 </div>
                 <div>
                   <Label>Periode Cicilan</Label>
-                  <Select options={periodeOptions} placeholder="Pilihan Menyesuaikan sisa kontrak" defaultValue={form.periodeCicilan} onChange={(v) => setField('periodeCicilan', v)} />
+                  <Input placeholder="Otomatis terhitung" value={form.periodeCicilan} disabled />
                 </div>
                 <div>
                   <Label>Surat Persetujuan Atasan</Label>
