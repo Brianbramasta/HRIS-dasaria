@@ -74,19 +74,19 @@ export default function useEmployeeDataCard(data: any, employeeId?: string) {
 
     const requiredFields = [
       { value: payload.employee_category_id, label: 'Kategori Karyawan' },
-      { value: payload.employment_status_id, label: 'Status Karyawan' },
-      { value: payload.start_date, label: 'Tanggal Masuk' },
-      { value: payload.company_id, label: 'Perusahaan' },
-      { value: payload.office_id, label: 'Kantor' },
-      { value: payload.directorate_id, label: 'Direktorat' },
-      { value: payload.division_id, label: 'Divisi' },
-      { value: payload.department_id, label: 'Departemen' },
-      { value: payload.unit_id, label: 'Unit' },
-      { value: payload.position_id, label: 'Position' },
-      { value: payload.job_title_id, label: 'Jabatan' },
-      { value: payload.position_level_id, label: 'Jenjang Jabatan' },
-      { value: payload.payroll_status, label: 'Status PayRoll' },
-      { value: payload.structural_job_id, label: 'Jabatan Struktural' },
+      // { value: payload.employment_status_id, label: 'Status Karyawan' },
+      // // { value: payload.start_date, label: 'Tanggal Masuk' },
+      // { value: payload.company_id, label: 'Perusahaan' },
+      // { value: payload.office_id, label: 'Kantor' },
+      // { value: payload.directorate_id, label: 'Direktorat' },
+      // { value: payload.division_id, label: 'Divisi' },
+      // { value: payload.department_id, label: 'Departemen' },
+      // { value: payload.unit_id, label: 'Unit' },
+      // { value: payload.position_id, label: 'Position' },
+      // { value: payload.job_title_id, label: 'Jabatan' },
+      // { value: payload.position_level_id, label: 'Jenjang Jabatan' },
+      // { value: payload.payroll_status, label: 'Status PayRoll' },
+      // { value: payload.structural_job_id, label: 'Jabatan Struktural' },
     ];
     const emptyFields = requiredFields.filter((field) => !field.value);
 

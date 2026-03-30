@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import ExpandCard from '@/features/structure-and-organize/components/card/ExpandCard';
 import Label from '@/components/form/Label';
 import InputField from '@/components/form/input/InputField';
@@ -21,6 +22,59 @@ export default function EmployeeDataCard({ data, employeeId }: Props & { employe
     isEditHidden,
     handleSubmit,
   } = useEmployeeDataCard(data, employeeId);
+
+  const visibleFields = useMemo(() => {
+    const fields = {
+      direktorat: true,
+      divisi: true,
+      departemen: true,
+      unit: true,
+      position: true,
+    };
+
+    const category = data?.employee_category || '';
+    const jobTitle = data?.job_title_name || '';
+    const structuralJob = data?.employee_structural_job_name || '';
+
+    if (!category) return fields;
+
+    if (category === 'Non-Staff' || category === 'Mitra') {
+      return fields;
+    }
+
+    if (category === 'Staff') {
+      if (['Entry Level', 'Officer'].some((l) => jobTitle.includes(l))) {
+        return fields;
+      }
+
+      fields.divisi = false;
+      fields.departemen = false;
+      fields.unit = false;
+      fields.position = false;
+
+      if (jobTitle.includes('Principal')) {
+        fields.divisi = true;
+        fields.departemen = true;
+        if (['Kepala Branch', 'Branch Leader'].includes(structuralJob)) {
+          fields.unit = true;
+        }
+      } else if (jobTitle.includes('Supervisor')) {
+        fields.divisi = true;
+        fields.departemen = true;
+      } else if (jobTitle.includes('Manager')) {
+        fields.divisi = true;
+      } else if (['Direktur', 'Director'].includes(jobTitle)) {
+        // Only direktorat
+      } else {
+        fields.divisi = true;
+        fields.departemen = true;
+        fields.unit = true;
+        fields.position = true;
+      }
+    }
+
+    return fields;
+  }, [data]);
 
   return (
     <ExpandCard title="Data Karyawan" leftIcon={isComplete ? <IconLengkap /> : <IconTidakLengkap />} withHeaderDivider>
@@ -49,26 +103,36 @@ export default function EmployeeDataCard({ data, employeeId }: Props & { employe
           <Label>Kantor</Label>
           <InputField value={data?.office_name || ''} readonly={true} />
         </div>
-        <div>
-          <Label>Direktorat</Label>
-          <InputField value={data?.directorate_name || ''} readonly={true} />
-        </div>
-        <div>
-          <Label>Divisi</Label>
-          <InputField value={data?.division_name || ''} readonly={true} />
-        </div>
-        <div>
-          <Label>Departemen</Label>
-          <InputField value={data?.department_name || ''} readonly={true} />
-        </div>
-        <div>
-          <Label>Unit</Label>
-          <InputField value={data?.unit_name || ''} readonly={true} />
-        </div>
-        <div>
-          <Label>Position</Label>
-          <InputField value={data?.position_name || ''} readonly={true} />
-        </div>
+        {visibleFields.direktorat && (
+          <div>
+            <Label>Direktorat</Label>
+            <InputField value={data?.directorate_name || ''} readonly={true} />
+          </div>
+        )}
+        {visibleFields.divisi && (
+          <div>
+            <Label>Divisi</Label>
+            <InputField value={data?.division_name || ''} readonly={true} />
+          </div>
+        )}
+        {visibleFields.departemen && (
+          <div>
+            <Label>Departemen</Label>
+            <InputField value={data?.department_name || ''} readonly={true} />
+          </div>
+        )}
+        {visibleFields.unit && (
+          <div>
+            <Label>Unit</Label>
+            <InputField value={data?.unit_name || ''} readonly={true} />
+          </div>
+        )}
+        {visibleFields.position && (
+          <div>
+            <Label>Position</Label>
+            <InputField value={data?.position_name || ''} readonly={true} />
+          </div>
+        )}
         <div>
           <Label>Jabatan Kepangkatan</Label>
           <InputField value={data?.job_title_name || ''} readonly={true} />

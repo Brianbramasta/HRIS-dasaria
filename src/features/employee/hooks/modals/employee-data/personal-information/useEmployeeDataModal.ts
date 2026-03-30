@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { employeeMasterDataService } from '@/features/employee/services/EmployeeMasterData.service';
 import { getStructuralJobDropdownOptions } from '@/features/employee/hooks/employee-data/form/useFormulirKaryawan';
+import { useApiEmployeePositions } from '@/features/structure-and-organize/hooks/api/useApiEmployeePositions';
 
 export type EmployeeDataForm = {
   employment_status?: string;
@@ -56,6 +57,11 @@ export function useEmployeeDataModal({ isOpen, initialData }: Params) {
   const [positionLevelSearch, setPositionLevelSearch] = useState<string>('');
   const [employeeCategorySearch, setEmployeeCategorySearch] = useState<string>('');
 
+  const {
+    employeePositions,
+    fetchEmployeePositions
+  } = useApiEmployeePositions();
+
   useEffect(() => {
     if (isOpen && initialData) {
       setForm(initialData);
@@ -78,6 +84,93 @@ export function useEmployeeDataModal({ isOpen, initialData }: Params) {
     };
     fetchInitial();
   }, [isOpen]);
+
+  // Derive selected labels
+  const selectedCategoryLabel = useMemo(() => 
+    kategoriKaryawanOptions.find(opt => opt.value === form.employee_category_id)?.label || '',
+  [kategoriKaryawanOptions, form.employee_category_id]);
+
+  const selectedJobLabel = useMemo(() => 
+    jobTitleOptions.find(opt => opt.value === form.job_title_id)?.label || '',
+  [jobTitleOptions, form.job_title_id]);
+
+  const selectedStructuralJobLabel = useMemo(() => 
+    structuralJobOptions.find(opt => opt.value === form.structural_job_id)?.label || '',
+  [structuralJobOptions, form.structural_job_id]);
+
+  // Filter job title options based on selected category
+  const filteredJobTitleOptions = useMemo(() => {
+    if (!selectedCategoryLabel) return jobTitleOptions;
+
+    if (selectedCategoryLabel === 'Non-Staff') {
+      return jobTitleOptions.filter(opt => ['PKL', 'Internship'].some(keyword => opt.label.includes(keyword)));
+    }
+    if (selectedCategoryLabel === 'Mitra') {
+      return jobTitleOptions.filter(opt => opt.label.includes('Kemitraan'));
+    }
+    if (selectedCategoryLabel === 'Staff') {
+      const staffLabels = [
+        'Entry Level',
+        'Officer',
+        'Principal',
+        'Supervisor',
+        'Manager',
+        'Direktur'
+      ];
+      return jobTitleOptions.filter(opt => staffLabels.some(label => opt.label.includes(label)));
+    }
+    return jobTitleOptions;
+  }, [jobTitleOptions, selectedCategoryLabel]);
+
+  // Determine field visibility based on job title and structural job
+  const visibleFields = useMemo(() => {
+    const fields = {
+      direktorat: true,
+      divisi: true,
+      departemen: true,
+      unit: true,
+      position: true,
+    };
+
+    if (!selectedCategoryLabel) return fields;
+
+    if (selectedCategoryLabel === 'Non-Staff' || selectedCategoryLabel === 'Mitra') {
+      return fields;
+    }
+
+    if (selectedCategoryLabel === 'Staff') {
+      if (['Entry Level', 'Officer'].some(l => selectedJobLabel.includes(l))) {
+        return fields;
+      }
+      
+      fields.divisi = false;
+      fields.departemen = false;
+      fields.unit = false;
+      fields.position = false;
+
+      if (selectedJobLabel.includes('Principal')) {
+        fields.divisi = true;
+        fields.departemen = true;
+        if (['Kepala Branch', 'Branch Leader'].includes(selectedStructuralJobLabel)) {
+          fields.unit = true;
+        }
+      } else if (selectedJobLabel.includes('Supervisor')) {
+        fields.divisi = true;
+        fields.departemen = true;
+      } else if (selectedJobLabel.includes('Manager')) {
+        fields.divisi = true;
+      } else if (['Direktur', 'Director'].includes(selectedJobLabel)) {
+        // Only direktorat
+      } else {
+        fields.divisi = true;
+        fields.departemen = true;
+        fields.unit = true;
+        fields.position = true;
+      }
+    }
+
+    return fields;
+  }, [selectedCategoryLabel, selectedJobLabel, selectedStructuralJobLabel]);
 
   // Debounced Search Effects
   useEffect(() => {
@@ -160,23 +253,66 @@ export function useEmployeeDataModal({ isOpen, initialData }: Params) {
     return () => clearTimeout(handler);
   }, [jobTitleSearch, isOpen]);
 
+  // Fetch all positions for client-side filtering
   useEffect(() => {
     if (!isOpen) return;
-    const handler = setTimeout(async () => {
+    
+    const fetchPositions = async () => {
       try {
-        const items = await employeeMasterDataService.getPositionDropdown(positionSearch || undefined);
-        setPositionOptions((items || []).map((i: any) => ({ label: i.position_name, value: i.id })));
-      } catch { setPositionOptions([]); }
-    }, 400);
-    return () => clearTimeout(handler);
-  }, [positionSearch, isOpen]);
+        const filterParams: any = {
+          get_all: 1
+        };
+        if (positionSearch) {
+          filterParams.search = positionSearch;
+        }
+        await fetchEmployeePositions(filterParams);
+      } catch (error) {
+        console.error('Error fetching filtered positions:', error);
+      }
+    };
+    
+    fetchPositions();
+  }, [positionSearch, isOpen, fetchEmployeePositions]);
+
+  // Filter positions on client side based on selected criteria
+  const filteredPositionOptions = useMemo(() => {
+    if (!employeePositions.length) return [];
+    
+    return employeePositions
+      .filter((position) => {
+        if (form.job_title_id && position.positionId !== form.job_title_id) return false;
+        if (form.structural_job_id && position.structuralJobId !== form.structural_job_id) return false;
+        if (form.directorate_id && position.directorateId !== form.directorate_id) return false;
+        if (form.division_id && position.divisionId !== form.division_id) return false;
+        if (form.department_id && position.departmentId !== form.department_id) return false;
+        if (form.unit_id && position.unitId !== form.unit_id) return false;
+        return true;
+      })
+      .map((position) => ({
+        label: position.name,
+        value: position.id
+      }));
+  }, [
+    employeePositions,
+    form.job_title_id,
+    form.structural_job_id,
+    form.directorate_id,
+    form.division_id,
+    form.department_id,
+    form.unit_id
+  ]);
+
+  // Update position options when filtered options change
+  useEffect(() => {
+    setPositionOptions(filteredPositionOptions);
+  }, [filteredPositionOptions]);
 
   useEffect(() => {
     if (!isOpen) return;
     const handler = setTimeout(async () => {
       try {
         const items = await employeeMasterDataService.getPositionLevelDropdown(positionLevelSearch || undefined);
-        setPositionLevelOptions((items || []).map((i: any) => ({ label: i.position_level_name, value: i.id })));
+        setPositionLevelOptions((items || []).map((i: any) => ({ label: i.name, value: i.id })));
       } catch { setPositionLevelOptions([]); }
     }, 400);
     return () => clearTimeout(handler);
@@ -225,12 +361,23 @@ export function useEmployeeDataModal({ isOpen, initialData }: Params) {
       const next = { ...prev, [key]: value };
       
       // Reset logic
+      if (key === 'employee_category_id') {
+        next.job_title_id = '';
+        next.structural_job_id = '';
+      }
       if (key === 'company_id') { next.office_id = ''; }
       if (key === 'directorate_id') { next.division_id = ''; next.department_id = ''; next.unit_id = ''; }
       if (key === 'division_id') { next.department_id = ''; next.unit_id = ''; }
       if (key === 'department_id') { next.unit_id = ''; }
+      if (key === 'structural_job_id') { next.unit_id = ''; }
       
       if (key === 'job_title_id') {
+        next.structural_job_id = '';
+        next.unit_id = '';
+        next.department_id = '';
+        next.division_id = '';
+        next.position_id = '';
+        
         const selectedJob = jobTitleOptions.find((j: any) => j.value === value);
         if (selectedJob?.grade) {
           setSelectedGrade(selectedJob.grade);
@@ -239,37 +386,36 @@ export function useEmployeeDataModal({ isOpen, initialData }: Params) {
           setSelectedGrade('');
           next.golongan = '';
         }
-        next.structural_job_id = '';
       }
       return next;
     });
   };
-
-  const isDisabledField = useMemo(() => {
-    const base = initialData || {};
-    const values = Object.values(base || {});
-    const allEmpty = values.length === 0 || values.every((v) => v === undefined || v === null || v === '');
-    const requiredKeys: Array<keyof EmployeeDataForm> = [
-      'employment_status_id',
-      'start_date',
-      'company_id',
-      'office_id',
-      'directorate_id',
-      'division_id',
-      'department_id',
-      'unit_id',
-      'position_id',
-      'job_title_id',
-      'position_level_id',
-      'employee_category_id',
-      'structural_job_id',
-    ];
-    const missingRequired = requiredKeys.some((k) => {
-      const v = (base as any)?.[k];
-      return v === undefined || v === null || v === '';
-    });
-    return base?.employment_status === 'Aktif' || allEmpty || !missingRequired;
-  }, [initialData]);
+  const isDisabledField = false;
+  // const isDisabledField = useMemo(() => {
+  //   const base = initialData || {};
+  //   const values = Object.values(base || {});
+  //   const allEmpty = values.length === 0 || values.every((v) => v === undefined || v === null || v === '');
+  //   const requiredKeys: Array<keyof EmployeeDataForm> = [
+  //     'employment_status_id',
+  //     'start_date',
+  //     'company_id',
+  //     'office_id',
+  //     'directorate_id',
+  //     'division_id',
+  //     'department_id',
+  //     'unit_id',
+  //     'position_id',
+  //     'job_title_id',
+  //     'position_level_id',
+  //     'employee_category_id',
+  //     'structural_job_id',
+  //   ];
+  //   const missingRequired = requiredKeys.some((k) => {
+  //     const v = (base as any)?.[k];
+  //     return v === undefined || v === null || v === '';
+  //   });
+  //   return base?.employment_status === 'Aktif' || allEmpty || !missingRequired;
+  // }, [initialData]);
 
   const handleCompanySearch = useCallback((q: string) => setCompanySearch(q), []);
   const handleOfficeSearch = useCallback((q: string) => setOfficeSearch(q), []);
@@ -291,13 +437,15 @@ export function useEmployeeDataModal({ isOpen, initialData }: Params) {
     divisionOptions,
     departmentOptions,
     unitOptions,
-    jobTitleOptions,
+    jobTitleOptions: filteredJobTitleOptions,
     positionOptions,
     structuralJobOptions,
     kategoriKaryawanOptions,
     positionLevelOptions,
     employeeStatusOptions,
     selectedGrade,
+    visibleFields,
+
     handleInput,
     isDisabledField,
     handleCompanySearch,
