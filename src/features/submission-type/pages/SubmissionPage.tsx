@@ -9,11 +9,11 @@ import Select from "../../../components/form/Select";
 // import { FileText } from "react-feather";
 import { IconFileDetail as FileText } from "@/icons/components/icons";
 // Dokumentasi: Import modal Kasbon & Pengunduran Diri
-import AddPengajuanKasbonModal from "@/features/submission-type/components/modals/cash-advance-submission/AddCashAdvanceSubmissionModal";
-import AddPengajuanPengunduranDiriModal from "@/features//submission-type/components/modals/resignation-submission/AddResignationSubmissionModal";
+import GenerateCashAdvance from "@/features/submission-type/components/modals/cash-advance-submission/GenerateCashAddvance";
+import GenerateResignation from "@/features/submission-type/components/modals/resignation-submission/GenerateResignation";
 import { addNotification } from "@/stores/notificationStore";
 import { useApiSubmissionType } from "@/features/submission-type/hooks/api/useApiSubmissionType";
-import { PopupApplicationDetailResult, PopupStatus } from "@/features/submission-type/types/dto/SubmissionType";
+import { PopupStatus } from "@/features/submission-type/types/dto/SubmissionType";
 import { formatDateToIndonesian } from "@/utils/formatDate";
 import { formatUrlFile } from "@/utils/formatUrlFile";
 
@@ -30,7 +30,8 @@ export default function JenisPengajuanPage() {
   // Dokumentasi: State kontrol untuk membuka/menutup modal pengajuan
   const [openKasbonModal, setOpenKasbonModal] = useState(false);
   const [openResignModal, setOpenResignModal] = useState(false);
-  const { submissions, fetchIndex, popupDetail, fetchPopupDetail, storeSubmission } = useApiSubmissionType();
+  const [submitting, setSubmitting] = useState(false);
+  const { submissions, fetchIndex, fetchPopupDetail } = useApiSubmissionType();
 
   useEffect(() => {
     fetchIndex();
@@ -130,36 +131,6 @@ export default function JenisPengajuanPage() {
     { value: "Pengunduran Diri", label: "Pengunduran Diri" },
     { value: "Kasbon", label: "Kasbon" },
   ];
-
-  const kasbonDefaults = useMemo(() => {
-    const detail: PopupApplicationDetailResult | null = popupDetail;
-    if (detail && "basic_salary" in detail) {
-      return {
-        idKaryawan: detail.nip,
-        namaLengkap: detail.full_name,
-        departemen: detail.department_name,
-        posisi: detail.position_name,
-        gajiPokok: detail.basic_salary,
-      };
-    }
-    return null;
-  }, [popupDetail]);
-
-  const resignDefaults = useMemo(() => {
-    const detail: PopupApplicationDetailResult | null = popupDetail;
-    if (detail && "company_name" in detail) {
-      return {
-        idKaryawan: detail.nip,
-        namaLengkap: detail.full_name,
-        perusahaan: detail.company_name,
-        direktorat: detail.directorate_name,
-        divisi: detail.division_name,
-        departement: detail.department_name,
-        posisi: detail.position_name,
-      };
-    }
-    return null;
-  }, [popupDetail]);
   return (
     <div className="p-4">
       <DataTable<RowPengajuan>
@@ -206,56 +177,29 @@ export default function JenisPengajuanPage() {
         }
       />
       {/* Dokumentasi: Render modal pengajuan */}
-      <AddPengajuanKasbonModal
+      <GenerateCashAdvance
         isOpen={openKasbonModal}
         onClose={() => setOpenKasbonModal(false)}
-        defaultValues={kasbonDefaults ?? undefined}
-        onSuccessClose={() => fetchIndex()}
-        // isFormValid={true}
-        onSave={async (values) => {
-          const ok = await storeSubmission({
-            submission: "Kasbon",
-            tanggal_pengajuan: values.tanggalPengajuan,
-            loan_type_id: "fd854227-c6e1-4359-8c42-e9e6a042fec0",
-            nominal_loan: values.nominalKasbon,
-            loan_period: values.periodeCicilan,
-            supervisor_approval_file: values.suratPersetujuanAtasan || null,
-            supporting_documents:
-              values.dokumenPendukung && values.dokumenPendukung.length > 0
-                ? values.dokumenPendukung[0]
-                : null,
-            loan_description: values.keterangan,
-            nominal_installment: values.nominalCicilan,
-          });
-          if (ok) {
-            fetchIndex();
-          }
-          return ok;
+        onSubmit={async () => {
+          setSubmitting(true);
+          // Handle form submission logic here
+          console.log("Generate Cash Advance form submitted");
+          setSubmitting(false);
+          setOpenKasbonModal(false);
         }}
+        submitting={submitting}
       />
-      <AddPengajuanPengunduranDiriModal
+      <GenerateResignation
         isOpen={openResignModal}
         onClose={() => setOpenResignModal(false)}
-        defaultValues={resignDefaults ?? undefined}
-        onSuccessClose={() => fetchIndex()}
-        onSave={async (values) => {
-          const ok = await storeSubmission({
-            submission: "Pengunduran Diri",
-            tanggal_pengajuan: values.tanggalPengajuan,
-            document_lampiran: values.suratPengunduranDiri || null,
-            loan_type_id: "",
-            nominal_loan: 0,
-            loan_period: 0,
-            supervisor_approval_file: null,
-            supporting_documents: null,
-            loan_description: values.alasan,
-            nominal_installment: 0,
-          });
-          if (ok) {
-            fetchIndex();
-          }
-          return ok;
+        onSubmit={async () => {
+          setSubmitting(true);
+          // Handle form submission logic here
+          console.log("Generate Resignation form submitted");
+          setSubmitting(false);
+          setOpenResignModal(false);
         }}
+        submitting={submitting}
       />
     </div>
   );

@@ -87,6 +87,8 @@ import NonAEDistributionTab from "@/features/payroll/pages/distribution-payroll/
 import AEDistributionTab from "@/features/payroll/pages/distribution-payroll/tab/AEPages";
 import THRDistributionTab from "@/features/payroll/pages/distribution-payroll/tab/THRPages";
 import JenisPengajuanPage from "@/features/submission-type/pages/SubmissionPage";
+import AddCashAdvanceSubmission from "@/features/submission-type/pages/AddCashAdvanceSubmission";
+import AddResignationSubmission from "@/features/submission-type/pages/AddResignationSubmission";
 
 
 
@@ -220,6 +222,7 @@ export default function AppRoutes() {
           <Route path="contract-extension/detail/:id" element={<PerpanjangKontrakEdit />} />
 
           <Route path="/submission-types" element={<JenisPengajuanPage />} />
+          
           <Route path="/organization-history" element={<OrganizationHistoryPage />} />
           <Route path="/organization-history/atasan" element={<OrganizationHistoryAtasanPage />} />
           <Route path="/organization-history/detail" element={<DetailOrganizationHistoryPage />} />
@@ -252,6 +255,8 @@ export default function AppRoutes() {
       <Route path="/set-contact-admin" element={<SetContactAdmin />} />
       <Route path="/generate-payroll" element={<GeneratePayrollPage />} />
       <Route path="/temporary-api" element={<TemporaryApiPage />} />
+      <Route path="/submission-types/cash-advance/add" element={<AddCashAdvanceSubmission />} />
+      <Route path="/submission-types/resignation/add" element={<AddResignationSubmission />} />
 
 
       {/* Fallback Route */}
