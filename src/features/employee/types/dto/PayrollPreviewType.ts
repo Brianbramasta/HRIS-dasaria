@@ -14,6 +14,7 @@ export interface PreviewPayrollQueryParams {
 }
 
 export interface PreviewPayrollApiResponse {
+  ptkp_id: string;
   ptkp_status: string;
   basic_salary: number;
   position_allowance: number;
@@ -27,6 +28,7 @@ export interface PreviewPayrollApiResponse {
 }
 
 export interface PreviewPayrollResult {
+  ptkpId: string;
   ptkpStatus: string;
   basicSalary: number;
   positionAllowance: number;

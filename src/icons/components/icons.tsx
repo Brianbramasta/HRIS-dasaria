@@ -40,3 +40,4 @@ export * from './icons/IconFacebook';
 export * from './icons/IconInstagram';
 export * from './icons/IconLinkedin';
 export * from './icons/IconX';
+export * from './icons/IconCopy';

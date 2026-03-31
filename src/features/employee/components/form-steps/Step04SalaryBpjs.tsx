@@ -146,7 +146,7 @@ export const Step04SalaryBpjs: React.FC = () => {
           </div>
 
           {/* PTKP Status */}
-          {isAuthenticated && getCategoryLabel() === 'Staff' && (
+          {getCategoryLabel() === 'Staff' && (
             <div>
               <InputField
                 label="PTKP Status"

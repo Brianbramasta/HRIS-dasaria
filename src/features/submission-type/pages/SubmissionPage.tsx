@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 import DataTable from "../../../components/shared/datatable/DataTable";
 import Select from "../../../components/form/Select";
 // import { FileText } from "react-feather";
-import { IconFileDetail as FileText, IconShare as CopyIcon } from "@/icons/components/icons";
+import { IconFileDetail as FileText, IconCopy } from "@/icons/components/icons";
 // Dokumentasi: Import modal Kasbon & Pengunduran Diri
 import GenerateCashAdvance from "@/features/submission-type/components/modals/cash-advance-submission/GenerateCashAddvance";
 import GenerateResignation from "@/features/submission-type/components/modals/resignation-submission/GenerateResignation";
@@ -151,7 +151,9 @@ export default function JenisPengajuanPage() {
       // label: "Detail"
     },
     {
-      icon: <CopyIcon />,
+      icon: <>
+      <IconCopy />
+      </>,
       onClick: (row: RowPengajuan) => {
         if (row.token) {
           const baseUrl = window.location.origin;

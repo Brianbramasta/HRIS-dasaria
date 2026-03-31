@@ -32,6 +32,7 @@ interface UseApiPayrollPreviewReturn {
 
 // Mapper Helper
 const mapToPreviewResult = (data: PreviewPayrollApiResponse): PreviewPayrollResult => ({
+  ptkpId: data.ptkp_id,
   ptkpStatus: data.ptkp_status,
   basicSalary: data.basic_salary,
   positionAllowance: data.position_allowance,

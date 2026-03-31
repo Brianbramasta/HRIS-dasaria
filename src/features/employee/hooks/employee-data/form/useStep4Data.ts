@@ -52,13 +52,13 @@ export const useStep4Data = (isOpen?: boolean) => {
     const { statusMenikah, jumlahTanggungan } = step1;
     const { jenjangJabatan, jabatan, kategoriKaryawan } = step3Employee;
 
-    if (isAuthenticated && jenjangJabatan && jabatan && statusMenikah && jumlahTanggungan && kategoriKaryawan) {
+    if (statusMenikah) {
       const params: PreviewPayrollQueryParams = {
-        Position_level_id: jenjangJabatan,
+        Position_level_id: jenjangJabatan || '',
         category: statusMenikah,
-        dependents: Number(jumlahTanggungan),
-        job_title_id: jabatan,
-        employee_categories_id: kategoriKaryawan,
+        dependents: Number(jumlahTanggungan) || 0,
+        job_title_id: jabatan || '',
+        employee_categories_id: kategoriKaryawan || '',
       };
       fetchPreviewPayroll(params);
     }
@@ -69,9 +69,15 @@ export const useStep4Data = (isOpen?: boolean) => {
     step3Employee.jabatan,
     step3Employee.kategoriKaryawan,
     fetchPreviewPayroll,
-    isAuthenticated,
     isOpen
   ]);
+
+  // Store ptkpId in form data when preview data is available
+  useEffect(() => {
+    if (previewData?.ptkpId) {
+      updateStep3({ ptkpStatus: previewData.ptkpId } as any);
+    }
+  }, [previewData?.ptkpId, updateStep3]);
 
   // Calculate Net Salary Manually
   const netSalary = useMemo(() => {
