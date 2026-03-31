@@ -9,6 +9,7 @@ interface SelectFieldProps extends InnerProps {
   labelClassName?: string;
   containerClassName?: string;
   htmlFor?: string;
+  error?: string;
 }
 
 const generatePlaceholder = (label?: ReactNode): string => {
@@ -24,6 +25,7 @@ const SelectField: FC<SelectFieldProps> = ({
   htmlFor,
   required,
   placeholder,
+  error,
   ...rest
 }) => {
   const defaultPlaceholder = placeholder || generatePlaceholder(label);
@@ -38,7 +40,12 @@ const SelectField: FC<SelectFieldProps> = ({
           </>
         </Label>
       )}
-      <Select required={required} placeholder={defaultPlaceholder} {...rest} />
+      <Select required={required} placeholder={defaultPlaceholder} className={error ? 'border-red-500' : ''} {...rest} />
+      {error && (
+        <p className="mt-1 text-sm text-red-600">
+          {error}
+        </p>
+      )}
     </div>
   );
 };

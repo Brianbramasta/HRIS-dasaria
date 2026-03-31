@@ -18,6 +18,7 @@ import {
 interface UseApiSubmissionTypeReturn {
   loading: boolean;
   error: string | null;
+  setError: (error: string | null) => void;
   submissions: SubmissionItem[];
   popupDetail: PopupApplicationDetail | null;
   loanInstallment: CalculateLoanInstallmentResult | null;
@@ -135,8 +136,41 @@ export const useApiSubmissionType = (): UseApiSubmissionTypeReturn => {
       const response = await submissionTypeService.store(employeeId, formData);
       return response.data.dataTypeOfApplication.token;
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Gagal menyimpan pengajuan';
-      setError(msg);
+      // Build comprehensive error message
+      let errorMessage = 'Gagal menyimpan pengajuan';
+      
+      if (err && typeof err === 'object') {
+        const anyErr = err as any;
+        
+        // Handle ApiError structure
+        if (anyErr.meta?.message) {
+          errorMessage = String(anyErr.meta.message);
+        }
+        
+        // Add errors field if present
+        if (anyErr.errors) {
+          if (typeof anyErr.errors === 'string') {
+            errorMessage += '\n' + anyErr.errors;
+          } else if (Array.isArray(anyErr.errors)) {
+            errorMessage += '\n' + anyErr.errors.join('\n');
+          } else if (typeof anyErr.errors === 'object') {
+            const errorMessages = Object.values(anyErr.errors).flat();
+            if (errorMessages.length > 0) {
+              errorMessage += '\n' + errorMessages.join('\n');
+            }
+          }
+        }
+      } else if (typeof err === 'string') {
+        errorMessage = err;
+      } else if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
+      
+      // Show alert with complete error message
+      // alert(errorMessage);
+      
       return null;
     } finally {
       setLoading(false);
@@ -220,11 +254,13 @@ export const useApiSubmissionType = (): UseApiSubmissionTypeReturn => {
     setPopupDetail(null);
     setSelfServiceLoanInfo(null);
     setSelfServiceResignationInfo(null);
+    setError(null);
   }, []);
 
   return {
     loading,
     error,
+    setError,
     submissions,
     popupDetail,
     loanInstallment,

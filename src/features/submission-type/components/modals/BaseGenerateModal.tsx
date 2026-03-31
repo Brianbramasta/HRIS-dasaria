@@ -29,7 +29,7 @@ const BaseGenerateModal: React.FC<BaseGenerateModalProps> = ({
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string>('');
   const [submissionDate, setSubmissionDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const { employeeOptions, fetchEmployeeOptions } = useOrganizationChange();
-  const { popupDetail, fetchPopupDetail, resetDetail, storeSubmission, fetchIndex } = useApiSubmissionType();
+  const { popupDetail, fetchPopupDetail, resetDetail, storeSubmission, fetchIndex, error } = useApiSubmissionType();
 
   useEffect(() => {
     if (isOpen) {
@@ -80,6 +80,15 @@ const BaseGenerateModal: React.FC<BaseGenerateModalProps> = ({
       maxWidth="max-w-2xl"
       content={
         <div className="grid grid-cols-2 gap-4">
+          {/* {error && (
+            <div className="col-span-2 bg-red-50 border border-red-200 rounded-md p-4">
+              <div className="text-sm">
+                <div className="font-medium text-red-800 mb-1">Error Pengajuan:</div>
+                <div className="text-red-700 whitespace-pre-wrap">{error}</div>
+              </div>
+            </div>
+          )} */}
+
           <div className="">
             <SelectField
               label="Nomer/NIP"
@@ -89,6 +98,7 @@ const BaseGenerateModal: React.FC<BaseGenerateModalProps> = ({
               onChange={handleEmployeeSelect}
               onSearch={handleEmployeeSearch}
               defaultValue={selectedEmployeeId}
+              error={error || undefined}
             />
           </div>
 
