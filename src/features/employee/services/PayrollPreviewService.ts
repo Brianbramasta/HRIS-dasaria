@@ -12,7 +12,7 @@ class PayrollPreviewService {
    * GET /api/payroll/payrollpreview
    */
   async getPreviewPayroll(params: PreviewPayrollQueryParams): Promise<any> {
-    const qs = apiService.buildQueryString(params as any);
+    const qs = apiService.buildQueryString(params as any, { sendAll: true });
     return apiService.get<any>(`${this.basePath}${qs ? `?${qs}` : ''}`);
   }
 

@@ -223,7 +223,7 @@ class ApiService {
    * @param params - Object containing query parameters
    * @returns Query string ready to append to URL
    */
-  public buildQueryString(params?: Record<string, any>): string {
+  public buildQueryString(params?: Record<string, any>, options?: { sendAll?: boolean }): string {
     if (!params) return '';
 
     const queryParams = new URLSearchParams();
@@ -263,8 +263,9 @@ class ApiService {
       else if (Array.isArray(value)) {
         value.forEach((v) => queryParams.append(`${key}[]`, v));
       }
+
       // Handle regular parameters
-      else if (value !== undefined && value !== null && value !== '') {
+      else if (value !== undefined && value !== null && value !== '' || options?.sendAll) {
         queryParams.append(key, value.toString());
       }
     });

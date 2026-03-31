@@ -60,6 +60,7 @@ export const useStep4Data = (isOpen?: boolean) => {
         job_title_id: jabatan || '',
         employee_categories_id: kategoriKaryawan || '',
       };
+      console.log(params, ' params');
       fetchPreviewPayroll(params);
     }
   }, [
