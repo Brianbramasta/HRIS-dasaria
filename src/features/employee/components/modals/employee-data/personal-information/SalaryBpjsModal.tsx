@@ -22,12 +22,12 @@ const SalaryBpjsModal: React.FC<Props> = ({
   employeeId = '',
   initialData,
   onClose,
-  onSubmitSalary,
+  // onSubmitSalary,
   onSubmitBpjs,
   submitting = false,
 }) => {
-  const { title, form, bankOptions, ptkpOptions, ptkpLoading, fetchPTKPOptions, handleInput, handleSubmit, isSubmitting } =
-    useSalaryBpjsModal({ isOpen, employeeId, initialData, onClose, onSubmitSalary, onSubmitBpjs });
+  const { title, form, /*bankOptions, ptkpOptions, ptkpLoading, fetchPTKPOptions,*/ handleInput, handleSubmit, isSubmitting } =
+    useSalaryBpjsModal({ isOpen, employeeId, initialData, onClose, /*onSubmitSalary,*/ onSubmitBpjs });
   
   const { bpjsHealthTypeOptions } = useStep4Data(isOpen);
   
@@ -70,7 +70,7 @@ const SalaryBpjsModal: React.FC<Props> = ({
         <h2 className="text-3xl font-bold text-start">{title}</h2>
         <p className="text-sm text-grey-200 font-semibold">Update your details to keep your profile up-to-date.</p>
       </div>
-      <div>
+      {/* <div>
         <h3 className="text-xl text-[grey] font-semibold">Gaji</h3>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div className="md:col-span-2">
@@ -120,7 +120,7 @@ const SalaryBpjsModal: React.FC<Props> = ({
             />
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div>
         <h3 className="text-xl text-[grey] font-semibold">BPJS</h3>

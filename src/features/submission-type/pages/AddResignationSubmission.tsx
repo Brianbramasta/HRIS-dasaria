@@ -4,11 +4,10 @@
 // - Field aktif: Tanggal Pengajuan (DatePicker), Alasan Pengunduran Diri (TextArea), Surat Pengunduran Diri (FileInput)
 // - Submit akan mengirim seluruh nilai form dan menampilkan popup sukses
 import React, { useEffect, useState } from 'react';
-import Label from '@/components/form/Label';
-import Input from '@/components/form/input/InputField';
-import DatePicker from '@/components/form/date-picker';
-import TextArea from '@/components/form/input/TextArea';
+import InputField from '@/components/shared/field/InputField';
+import TextAreaField from '@/components/shared/field/TextAreaField';
 import FIleField from '@/components/shared/field/FIleField';
+import DatePicker from '@/components/form/date-picker';
 import PopupBerhasil from '../components/shared/modals/SuccessModal';
 import { useAddResignationSubmission } from '@/features/submission-type/hooks/resignation-submission/useAddResignationSubmission';
 import { useSearchParams } from 'react-router';
@@ -49,7 +48,9 @@ const AddResignationSubmission: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const handleFormSubmit = async () => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
     if (!token) {
       console.error('No token found');
       return;
@@ -96,7 +97,7 @@ const AddResignationSubmission: React.FC = () => {
   return (
     <>
       <div className="p-6">
-        <div className="space-y-6">
+        <form id="resignation-form" onSubmit={handleFormSubmit} className="space-y-6">
           <h2 className="text-3xl font-bold text-start mb-4">Pengunduran Diri</h2>
           <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
             {/* Dokumentasi: Konten ketentuan pengunduran diri diperbarui sesuai permintaan */}
@@ -109,43 +110,57 @@ const AddResignationSubmission: React.FC = () => {
             </ul>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div>
-              <Label>NIP</Label>
-              <Input placeholder="-" value={form.idKaryawan} disabled />
-            </div>
-            <div>
-              <Label>Nama Lengkap</Label>
-              <Input placeholder="-" value={form.namaLengkap} disabled />
-            </div>
-            <div>
-              <Label>Perusahaan</Label>
-              <Input placeholder="-" value={form.perusahaan} disabled />
-            </div>
-            <div>
-              <Label>Direktorat</Label>
-              <Input placeholder="-" value={form.direktorat} disabled />
-            </div>
-            <div>
-              <Label>Divisi</Label>
-              <Input placeholder="-" value={form.divisi} disabled />
-            </div>
-            <div>
-              <Label>Departement</Label>
-              <Input placeholder="-" value={form.departement} disabled />
-            </div>
-            <div>
-              <Label>Posisi</Label>
-              <Input placeholder="-" value={form.posisi} disabled />
-            </div>
+            <InputField
+              label="NIP"
+              placeholder="-"
+              value={form.idKaryawan}
+              disabled
+            />
+            <InputField
+              label="Nama Lengkap"
+              placeholder="-"
+              value={form.namaLengkap}
+              disabled
+            />
+            <InputField
+              label="Perusahaan"
+              placeholder="-"
+              value={form.perusahaan}
+              disabled
+            />
+            <InputField
+              label="Direktorat"
+              placeholder="-"
+              value={form.direktorat}
+              disabled
+            />
+            <InputField
+              label="Divisi"
+              placeholder="-"
+              value={form.divisi}
+              disabled
+            />
+            <InputField
+              label="Departement"
+              placeholder="-"
+              value={form.departement}
+              disabled
+            />
+            <InputField
+              label="Posisi"
+              placeholder="-"
+              value={form.posisi}
+              disabled
+            />
             <div>
               <DatePicker id="tanggal-pengajuan-resign" label="Tanggal Pengajuan" placeholder="Pilih tanggal" defaultDate={form.tanggalPengajuan} disabled />
             </div>
-            <div>
             <FIleField
               label="Surat Pengunduran Diri"
-              onChange={(e) => setField('suratPengunduranDiri', e.target.files?.[0] || null)}
-              acceptedFormats={['application/pdf', 'image/jpeg', 'image/png']}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setField('suratPengunduranDiri', e.target.files?.[0] || null)}
+              acceptedFormats={['application/pdf']}
               required
+              aria-required="true"
             />
           </div>
 
@@ -153,41 +168,46 @@ const AddResignationSubmission: React.FC = () => {
             <div>
               <FIleField
                 label="Surat Komitmen Pelunasan"
-                onChange={(e) => setField('suratKomitmenPelunasan', e.target.files?.[0] || null)}
-                acceptedFormats={['application/pdf', 'image/jpeg', 'image/png']}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setField('suratKomitmenPelunasan', e.target.files?.[0] || null)}
+                acceptedFormats={['application/pdf']}
                 required
+                aria-required="true"
               />
             </div>
           )}
-          </div>
           
           
 
-          <div>
-            <Label>Alasan Pengunduran diri</Label>
-            <TextArea placeholder="Tuliskan alasan secara mendetail..." value={form.alasan} onChange={(v) => setField('alasan', v)} rows={5} />
-          </div>
+          <TextAreaField
+            label="Alasan Pengunduran diri"
+            placeholder="Tuliskan alasan secara mendetail..."
+            value={form.alasan}
+            onChange={(v) => setField('alasan', v)}
+            rows={5}
+            required
+            aria-required="true"
+          />
 
           
 
           <div className="flex justify-end space-x-3">
-            <button
+            {/* <button
               type="button"
               onClick={() => window.location.href = '/submission-types'}
               className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
             >
               Tutup
-            </button>
+            </button> */}
             <button
-              type="button"
-              onClick={handleFormSubmit}
+              type="submit"
+              form="resignation-form"
               disabled={isSubmitting}
               className="px-4 py-2 bg-brand-500 text-white rounded-md hover:bg-brand-600 disabled:opacity-50"
             >
               {isSubmitting ? 'Mengirim...' : 'Submit'}
             </button>
           </div>
-        </div>
+        </form>
       </div>
 
       <PopupBerhasil

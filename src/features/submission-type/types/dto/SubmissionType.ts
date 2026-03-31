@@ -17,6 +17,7 @@ export interface SubmissionItem {
   status: string;
   note: string | null;
   token: string | null;
+  is_filled: number;
 }
 
 export interface SubmissionIndexData {

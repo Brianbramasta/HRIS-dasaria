@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { usePTKPDropdown, useStep4Data } from '@/features/employee/hooks/employee-data/form/useFromStep';
-import { UpdateSalaryDataPayload, UpdateBpjsDataPayload } from '@/features/employee/types/detail/PersonalInformation';
+import { /*UpdateSalaryDataPayload,*/ UpdateBpjsDataPayload } from '@/features/employee/types/detail/PersonalInformation';
 
 export type SalaryBpjsForm = {
   gaji?: string;
@@ -22,11 +22,11 @@ type Params = {
   employeeId?: string;
   initialData?: SalaryBpjsForm | null;
   onClose: () => void;
-  onSubmitSalary?: (employeeId: string, payload: UpdateSalaryDataPayload) => Promise<void>;
+  // onSubmitSalary?: (employeeId: string, payload: UpdateSalaryDataPayload) => Promise<void>;
   onSubmitBpjs?: (employeeId: string, payload: UpdateBpjsDataPayload) => Promise<void>;
 };
 
-export function useSalaryBpjsModal({ isOpen, employeeId = '', initialData, onClose, onSubmitSalary, onSubmitBpjs }: Params) {
+export function useSalaryBpjsModal({ isOpen, employeeId = '', initialData, onClose, /*onSubmitSalary,*/ onSubmitBpjs }: Params) {
   const [form, setForm] = useState<SalaryBpjsForm>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const title = useMemo(() => 'Edit Salary & BPJS', []);
@@ -47,13 +47,13 @@ export function useSalaryBpjsModal({ isOpen, employeeId = '', initialData, onClo
     }
     setIsSubmitting(true);
     try {
-      const salaryPayload: UpdateSalaryDataPayload = {
-        bank_id: form.bank,
-        bank_account_number: form.noRekening,
-        bank_account_holder: form.namaAkunBank,
-        npwp: form.npwp,
-        ptkp_id: form.ptkpStatus,
-      };
+      // const salaryPayload: UpdateSalaryDataPayload = {
+      //   bank_id: form.bank,
+      //   bank_account_number: form.noRekening,
+      //   bank_account_holder: form.namaAkunBank,
+      //   npwp: form.npwp,
+      //   ptkp_id: form.ptkpStatus,
+      // };
       const bpjsPayload: UpdateBpjsDataPayload = {
         bpjs_employment_number: form.noBpjsTK,
         bpjs_employment_status: form.statusBpjsTK,
@@ -61,9 +61,9 @@ export function useSalaryBpjsModal({ isOpen, employeeId = '', initialData, onClo
         bpjs_health_status: form.statusBpjsKS,
         bpjs_health_type_id: form.tipeBpjsKesehatan,
       };
-      if (onSubmitSalary) {
-        await onSubmitSalary(employeeId, salaryPayload);
-      }
+      // if (onSubmitSalary) {
+      //   await onSubmitSalary(employeeId, salaryPayload);
+      // }
       if (onSubmitBpjs) {
         await onSubmitBpjs(employeeId, bpjsPayload);
       }

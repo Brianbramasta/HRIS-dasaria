@@ -49,6 +49,10 @@ const BaseGenerateModal: React.FC<BaseGenerateModalProps> = ({
     }
   };
 
+  const handleEmployeeSearch = (query: string) => {
+    fetchEmployeeOptions(query);
+  };
+
   const handleSubmit = async () => {
     if (selectedEmployeeId && submissionType) {
       const payload = {
@@ -83,6 +87,7 @@ const BaseGenerateModal: React.FC<BaseGenerateModalProps> = ({
               required
               options={employeeOptions}
               onChange={handleEmployeeSelect}
+              onSearch={handleEmployeeSearch}
               defaultValue={selectedEmployeeId}
             />
           </div>

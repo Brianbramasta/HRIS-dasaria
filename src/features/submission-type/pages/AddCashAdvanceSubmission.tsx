@@ -5,12 +5,11 @@
 //   Nominal Cicilan (otomatis), Surat Persetujuan Atasan (FileInput), Dokumen Pendukung (FileInput multiple), Keterangan (TextArea)
 // - Validasi: Nominal Kasbon dibatasi 25% dari Gaji Pokok; Nominal Cicilan dihitung otomatis dari periode
 import React, { useEffect, useMemo, useState } from 'react';
-import Label from '@/components/form/Label';
-import Input from '@/components/form/input/InputField';
-import Select from '@/components/form/Select';
+import InputField from '@/components/shared/field/InputField';
+import SelectField from '@/components/shared/field/SelectField';
+import FIleField from '@/components/shared/field/FIleField';
+import TextAreaField from '@/components/shared/field/TextAreaField';
 import DatePicker from '@/components/form/date-picker';
-import FileInput from '@/components/form/input/FileInput';
-import TextArea from '@/components/form/input/TextArea';
 import PopupBerhasil from '../components/shared/modals/SuccessModal';
 import Alert from '@/components/ui/alert/Alert';
 import { useApiSubmissionType } from '@/features/submission-type/hooks/api/useApiSubmissionType';
@@ -65,7 +64,9 @@ const AddCashAdvanceSubmission: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const handleFormSubmit = async () => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
     if (!token) {
       console.error('No token found');
       return;
@@ -101,7 +102,7 @@ const AddCashAdvanceSubmission: React.FC = () => {
   return (
     <>
       <div className="p-6">
-        <div className="space-y-6">
+        <form id="cash-advance-form" onSubmit={handleFormSubmit} className="space-y-6">
           <h2 className="text-3xl font-bold text-start mb-4">Pengajuan Kasbon</h2>
           <div className="mb-6 rounded-lg bg-[#BCBCBC80] bg-opacity-50 p-4 ">
             <p className="text-center text-sm font-medium">Limit Kasbon Tersedia</p>
@@ -129,75 +130,113 @@ const AddCashAdvanceSubmission: React.FC = () => {
           ) : (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div>
-                  <Label>NIP</Label>
-                  <Input placeholder="Masukkan NIP" value={form.idKaryawan} onChange={(e) => setField('idKaryawan', e.target.value)} disabled/>
-                </div>
-                <div>
-                  <Label>Nama Lengkap</Label>
-                  <Input placeholder="Masukkan nama lengkap" value={form.namaLengkap} onChange={(e) => setField('namaLengkap', e.target.value)} disabled/>
-                </div>
-                <div>
-                  <Label>Departemen</Label>
-                  <Input placeholder="Masukkan departemen" value={form.departemen} onChange={(e) => setField('departemen', e.target.value)} disabled/>
-                </div>
-                <div>
-                  <Label>Posisi</Label>
-                  <Input placeholder="Masukkan posisi" value={form.posisi} onChange={(e) => setField('posisi', e.target.value)} disabled/>
-                </div>
-                <div>
-                  <Label>Gaji Pokok</Label>
-                  <Input placeholder="Masukkan gaji pokok" value={formatCurrency(form.gajiPokok || 0)} onChange={(e) => setField('gajiPokok', parseCurrency(e.target.value) || 0)} disabled/>
-                </div>
+                <InputField
+                  label="NIP"
+                  placeholder="Masukkan NIP"
+                  value={form.idKaryawan}
+                  onChange={(e) => setField('idKaryawan', e.target.value)}
+                  disabled
+                />
+                <InputField
+                  label="Nama Lengkap"
+                  placeholder="Masukkan nama lengkap"
+                  value={form.namaLengkap}
+                  onChange={(e) => setField('namaLengkap', e.target.value)}
+                  disabled
+                />
+                <InputField
+                  label="Departemen"
+                  placeholder="Masukkan departemen"
+                  value={form.departemen}
+                  onChange={(e) => setField('departemen', e.target.value)}
+                  disabled
+                />
+                <InputField
+                  label="Posisi"
+                  placeholder="Masukkan posisi"
+                  value={form.posisi}
+                  onChange={(e) => setField('posisi', e.target.value)}
+                  disabled
+                />
+                <InputField
+                  label="Gaji Pokok"
+                  placeholder="Masukkan gaji pokok"
+                  value={formatCurrency(form.gajiPokok || 0)}
+                  onChange={(e) => setField('gajiPokok', parseCurrency(e.target.value) || 0)}
+                  disabled
+                />
                 <div>
                   <DatePicker id="tanggal-pengajuan-kasbon" label="Tanggal Pengajuan" placeholder="Pilih tanggal" defaultDate={form.tanggalPengajuan} disabled />
                 </div>
-                <div>
-                  <Label>Jenis Kasbon</Label>
-                  <Select options={jenisKasbonOptionsFromApi} placeholder="Select" defaultValue={form.jenisKasbon} onChange={(v) => setField('jenisKasbon', v)} />
-                </div>
-                <div>
-                  <Label>Nominal Kasbon <span className="text-xs text-gray-500">(maksimal sesuai limit tersedia)</span></Label>
-                  <Input placeholder="Inputan" value={formatCurrency(form.nominalKasbon || 0)} onChange={(e) => setField('nominalKasbon', parseCurrency(e.target.value) || 0)} />
-                </div>
-                <div>
-                  <Label>Periode Cicilan</Label>
-                  <Input placeholder="Otomatis terhitung" value={form.periodeCicilan} disabled />
-                </div>
-                <div>
-                  <Label>Surat Persetujuan Atasan</Label>
-                  <FileInput onChange={(e) => setField('suratPersetujuanAtasan', e.target.files?.[0] || null)} />
-                </div>
+                <SelectField
+                  label="Jenis Kasbon"
+                  options={jenisKasbonOptionsFromApi}
+                  placeholder="Pilih jenis kasbon"
+                  defaultValue={form.jenisKasbon}
+                  onChange={(v) => setField('jenisKasbon', v)}
+                  required
+                  aria-required="true"
+                />
+                <InputField
+                  label="Nominal Kasbon"
+                  placeholder="Masukkan nominal kasbon (maksimal sesuai limit tersedia)"
+                  value={formatCurrency(form.nominalKasbon || 0)}
+                  onChange={(e) => setField('nominalKasbon', parseCurrency(e.target.value) || 0)}
+                  required
+                  aria-required="true"
+                />
+                <InputField
+                  label="Periode Cicilan"
+                  placeholder="Otomatis terhitung"
+                  value={form.periodeCicilan}
+                  disabled
+                />
+                <FIleField
+                  label="Surat Persetujuan Atasan"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setField('suratPersetujuanAtasan', e.target.files?.[0] || null)}
+                  acceptedFormats={['application/pdf']}
+                  required
+                  aria-required="true"
+                />
                 <div className='col-span-2'>
-                  <Label>Unggah Dokumen Pendukung (Opsional)</Label>
-                  <FileInput multiple onChange={(e) => setField('dokumenPendukung', e.target.files ? Array.from(e.target.files) : [])} />
+                  <FIleField
+                    label="Unggah Dokumen Pendukung (Opsional)"
+                    // multiple
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setField('dokumenPendukung', e.target.files ? Array.from(e.target.files) : [])}
+                    acceptedFormats={['application/pdf']}
+                  />
                 </div>
               </div>
-              <div>
-                <Label>Keterangan</Label>
-                <TextArea placeholder="Berikan alasan mendetail..." value={form.keterangan} onChange={(value) => setField('keterangan', value)} rows={4} />
-              </div>
+              <TextAreaField
+                label="Keterangan"
+                placeholder="Berikan alasan mendetail..."
+                value={form.keterangan}
+                onChange={(value) => setField('keterangan', value)}
+                rows={4}
+                required
+                aria-required="true"
+              />
             </>
           )}
 
           <div className="flex justify-end space-x-3">
-            <button
+            {/* <button
               type="button"
               onClick={() => window.location.href = '/submission-types'}
               className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
             >
               Tutup
-            </button>
+            </button> */}
             <button
-              type="button"
-              onClick={handleFormSubmit}
+              type="submit"
+              form="cash-advance-form"
               disabled={submitting || !isFormValid || isSubmitting}
               className="px-4 py-2 bg-brand-500 text-white rounded-md hover:bg-brand-600 disabled:opacity-50"
             >
               {isSubmitting ? 'Mengirim...' : 'Submit'}
             </button>
           </div>
-        </div>
+        </form>
       </div>
 
       <PopupBerhasil

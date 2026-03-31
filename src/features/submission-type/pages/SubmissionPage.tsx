@@ -15,16 +15,17 @@ import { addNotification } from "@/stores/notificationStore";
 import { useApiSubmissionType } from "@/features/submission-type/hooks/api/useApiSubmissionType";
 // import { PopupStatus } from "@/features/submission-type/types/dto/SubmissionType";
 import { formatDateToIndonesian } from "@/utils/formatDate";
-import { formatUrlFile } from "@/utils/formatUrlFile";
 
 interface RowPengajuan {
+  nip: string;
+  name: string;
   jenisPengajuan: string;
   tanggalPengajuan: string;
-  lampiran: string | null;
   status: string;
   catatan: string;
   token: string;
   submission_type: string;
+  is_filled: number;
 }
 
 export default function JenisPengajuanPage() {
@@ -62,13 +63,15 @@ export default function JenisPengajuanPage() {
   const apiData: RowPengajuan[] = useMemo(
     () =>
       (submissions || []).map((s) => ({
+        nip: s.nip,
+        name: s.name,
         jenisPengajuan: s.submission_type,
         tanggalPengajuan: s.submission_date,
-        lampiran: s.attachment_document,
         status: s.status,
         catatan: s.note ?? "-",
         token: s.token ?? "",
         submission_type: s.submission_type ?? "",
+        is_filled: s.is_filled ?? 0,
       })),
     [submissions]
   );
@@ -80,11 +83,10 @@ export default function JenisPengajuanPage() {
 
   const columns = [
     { id: "no", label: "No.", align: "center" as const, sortable: false },
+    { id: "nip", label: "NIP" },
+    { id: "name", label: "Nama" },
     { id: "jenisPengajuan", label: "Jenis Pengajuan" },
     { id: "tanggalPengajuan", label: "Tanggal Pengajuan", dateRangeFilter: true, format: (value: RowPengajuan["tanggalPengajuan"]) => formatDateToIndonesian(value) },
-    { id: "lampiran", label: "Lampiran", align: "center" as const, isAction: true, format: (value: RowPengajuan["lampiran"]) => (
-      value ? <a href={formatUrlFile(value)} target="_blank" rel="noopener noreferrer" className="flex justify-center items-center"><FileText  /></a> : "—"
-    ) },
     {
       id: "status",
       label: "Status",
@@ -109,15 +111,15 @@ export default function JenisPengajuanPage() {
         </span>
       ),
     },
-    {
-      id: "catatan",
-      label: "Catatan",
-      format: (value: RowPengajuan["catatan"]) => {
-        if (typeof value !== "string") return value as unknown as string;
-        const formatted = formatDateToIndonesian(value);
-        return formatted || value;
-      },
-    },
+    // {
+    //   id: "catatan",
+    //   label: "Catatan",
+    //   format: (value: RowPengajuan["catatan"]) => {
+    //     if (typeof value !== "string") return value as unknown as string;
+    //     const formatted = formatDateToIndonesian(value);
+    //     return formatted || value;
+    //   },
+    // },
   ];
 
   const actions = [
@@ -131,6 +133,7 @@ export default function JenisPengajuanPage() {
     // },
     {
       icon: <FileText />,
+      condition: (row: RowPengajuan) => row.is_filled!==1,
       onClick: (row: RowPengajuan) => {
         if (row.token) {
           const baseUrl = window.location.origin;
@@ -154,6 +157,7 @@ export default function JenisPengajuanPage() {
       icon: <>
       <IconCopy />
       </>,
+      condition: (row: RowPengajuan) => row.is_filled!==1,
       onClick: (row: RowPengajuan) => {
         if (row.token) {
           const baseUrl = window.location.origin;
