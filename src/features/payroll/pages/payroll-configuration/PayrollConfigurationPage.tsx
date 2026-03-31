@@ -16,7 +16,7 @@ export default function KonfigurasiPenggajianPage() {
     { id: 'deduction-reference', label: 'Acuan Potongan', link: '/payroll-configuration/deduction-reference' },
     { id: 'fixed-allowance', label: 'Tunjangan Tetap', link: '/payroll-configuration/fixed-allowance' },
     { id: 'non-recurring-allowance', label: 'Tunjangan Tidak Tetap', link: '/payroll-configuration/non-recurring-allowance' },
-    { id: 'non-recurring-deduction', label: 'Potongan Tidak Tetap', link: '/payroll-configuration/non-recurring-deduction' },
+    { id: 'non-recurring-deduction', label: 'Potongan', link: '/payroll-configuration/non-recurring-deduction' },
     { id: 'thr', label: 'THR', link: '/payroll-configuration/thr' },
   ];
 
