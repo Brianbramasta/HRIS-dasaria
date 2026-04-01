@@ -212,7 +212,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               onSearch={handleUnitSearch}
               placeholder="Select"
               disabled={unitOptions.length === 0 || isDisabledField}
-              required
+              // required
             />
           </div>
         )}
