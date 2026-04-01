@@ -3,7 +3,7 @@
 // - Menyediakan Select (Pengunduran Diri/Kasbon) di toolbar atas
 // - Menampilkan tombol "Tambah Pengajuan" menggunakan Button bawaan DataTable
 // - Integrasi: Buka popup Pengajuan Kasbon saat memilih "Kasbon" di Select atau klik tombol Tambah
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import DataTable from "../../../components/shared/datatable/DataTable";
 import Select from "../../../components/form/Select";
 // import { FileText } from "react-feather";
@@ -12,7 +12,7 @@ import { IconFileDetail as FileText, IconCopy } from "@/icons/components/icons";
 import GenerateCashAdvance from "@/features/submission-type/components/modals/cash-advance-submission/GenerateCashAddvance";
 import GenerateResignation from "@/features/submission-type/components/modals/resignation-submission/GenerateResignation";
 import { addNotification } from "@/stores/notificationStore";
-import { useApiSubmissionType } from "@/features/submission-type/hooks/api/useApiSubmissionType";
+import useSubmissionTypeData from "../hooks/useSubmissionTypeData";
 // import { PopupStatus } from "@/features/submission-type/types/dto/SubmissionType";
 import { formatDateToIndonesian } from "@/utils/formatDate";
 
@@ -34,62 +34,57 @@ export default function JenisPengajuanPage() {
   const [openKasbonModal, setOpenKasbonModal] = useState(false);
   const [openResignModal, setOpenResignModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const { submissions, fetchIndex } = useApiSubmissionType();
+  
+  const {
+    data,
+    loading,
+    total,
+    page,
+    limit,
+    handleSearchChange,
+    handleSortChange,
+    handlePageChange,
+    handleRowsPerPageChange,
+    handleColumnFilterChange,
+    handleDateRangeFilterChange,
+    handleRefresh,
+    columnFilters,
+    dateRangeFilters,
+  } = useSubmissionTypeData({
+    initialPage: 1,
+    initialLimit: 10,
+    autoFetch: true,
+  });
 
-  useEffect(() => {
-    fetchIndex();
-  }, [fetchIndex]);
-
-  const allData: RowPengajuan[] = useMemo(
-    () => [
-      // {
-      //   jenisPengajuan: "Pengunduran Diri",
-      //   tanggalPengajuan: "2025-11-20",
-      //   lampiran: null,
-      //   status: "Pending",
-      //   catatan: "Lorem ipsum dolor sit amet consectetur.",
-      // },
-      // {
-      //   jenisPengajuan: "Kasbon",
-      //   tanggalPengajuan: "2025-11-20",
-      //   lampiran: null,
-      //   status: "Disetujui",
-      //   catatan: "Lorem ipsum dolor sit amet consectetur.",
-      // },
-    ],
-    []
-  );
-
-  const apiData: RowPengajuan[] = useMemo(
-    () =>
-      (submissions || []).map((s) => ({
-        nip: s.nip,
-        name: s.name,
-        jenisPengajuan: s.submission_type,
-        tanggalPengajuan: s.submission_date,
-        status: s.status,
-        catatan: s.note ?? "-",
-        token: s.token ?? "",
-        submission_type: s.submission_type ?? "",
-        is_filled: s.is_filled ?? 0,
-      })),
-    [submissions]
-  );
 
   const filteredData = useMemo(() => {
-    const source = apiData.length > 0 ? apiData : allData;
-    return source;
-  }, [allData, apiData]);
+    return data;
+  }, [data]);
 
   const columns = [
     { id: "no", label: "No.", align: "center" as const, sortable: false },
-    { id: "nip", label: "NIP" },
-    { id: "name", label: "Nama" },
-    { id: "jenisPengajuan", label: "Jenis Pengajuan" },
-    { id: "tanggalPengajuan", label: "Tanggal Pengajuan", dateRangeFilter: true, format: (value: RowPengajuan["tanggalPengajuan"]) => formatDateToIndonesian(value) },
+    { id: "nip", label: "NIP", sortable: true },
+    { id: "name", label: "Nama", sortable: true },
+    { 
+      id: "jenisPengajuan", 
+      label: "Jenis Pengajuan", 
+      sortable: true,
+      filterOptions: [
+        { label: "Kasbon", value: "Kasbon" },
+        { label: "Pengunduran Diri", value: "Pengunduran Diri" },
+      ],
+    },
+    { 
+      id: "tanggalPengajuan", 
+      label: "Tanggal Pengajuan", 
+      sortable: true,
+      dateRangeFilter: true, 
+      format: (value: RowPengajuan["tanggalPengajuan"]) => formatDateToIndonesian(value) 
+    },
     {
       id: "status",
       label: "Status",
+      sortable: true,
       filterOptions: [
         { label: "Pending", value: "Pending" },
         { label: "Disetujui", value: "Disetujui" },
@@ -241,6 +236,23 @@ export default function JenisPengajuanPage() {
             />
           </div>
         }
+        searchable={true}
+        filterable={true}
+        loading={loading}
+        emptyMessage="Tidak ada data pengajuan"
+        onSearchChange={handleSearchChange}
+        onSortChange={handleSortChange}
+        onPageChangeExternal={handlePageChange}
+        onRowsPerPageChangeExternal={handleRowsPerPageChange}
+        useExternalPagination={true}
+        externalPage={page}
+        externalTotal={total}
+        pageSize={limit}
+        onColumnFilterChange={handleColumnFilterChange}
+        columnFilters={columnFilters}
+        onDateRangeFilterChange={handleDateRangeFilterChange}
+        dateRangeFilters={dateRangeFilters}
+        resetKey="SubmissionPage"
       />
       {/* Dokumentasi: Render modal pengajuan */}
       <GenerateCashAdvance
@@ -250,7 +262,7 @@ export default function JenisPengajuanPage() {
           setSubmitting(true);
           // Handle form submission logic here
           console.log("Generate Cash Advance form submitted with token:", token);
-          await fetchIndex();
+          await handleRefresh();
           setSubmitting(false);
           setOpenKasbonModal(false);
         }}
@@ -263,7 +275,7 @@ export default function JenisPengajuanPage() {
           setSubmitting(true);
           // Handle form submission logic here
           console.log("Generate Resignation form submitted with token:", token);
-          await fetchIndex();
+          await handleRefresh();
           setSubmitting(false);
           setOpenResignModal(false);
         }}
