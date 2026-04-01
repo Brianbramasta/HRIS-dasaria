@@ -66,7 +66,14 @@ export default function useEmployeeDataCard(data: any, employeeId?: string) {
       const v = (base as any)?.[k];
       return v === undefined || v === null || v === '';
     });
-    return base?.employment_status === 'Aktif' || allEmpty || !missingRequired;
+    // console.log(requiredKeys,values,allEmpty,'test');
+    // console.log(missingRequired,'missingRequired');
+    // console.log(allEmpty,'allEmpty');
+    // console.log(!missingRequired,'!missingRequired');
+
+    // base?.employment_status === 'Aktif' ||
+
+    return  allEmpty || !missingRequired;
   }, [initialForm]);
 
   const handleSubmit = async (payload: EmployeeDataForm) => {
