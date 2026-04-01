@@ -85,11 +85,11 @@ export default function DetailSubmissionPage() {
             placeholder="Otomatis"
           />
 
-          <DateField
-            label="Bulan Mulai Potongan"
-            defaultDate={cashAdvanceData.deductionStartPeriod}
-            disabled
-            placeholder="Pilih tanggal"
+          <InputField
+            label="Limit Kasbon"
+            value={cashAdvanceData.limitKasbon ? formatCurrencyValue(cashAdvanceData.limitKasbon) : ''}
+            readonly
+            placeholder="Limit Kasbon"
           />
         </div>
       </PayrollCard>
@@ -119,13 +119,6 @@ export default function DetailSubmissionPage() {
             value={`${cashAdvanceData.loanPeriod} bulan`}
             readonly
             placeholder="Periode Cicilan"
-          />
-
-          <InputField
-            label="Nominal Cicilan"
-            value={formatCurrencyValue(cashAdvanceData.nominalInstallment)}
-            readonly
-            placeholder="Nominal Cicilan"
           />
 
           <div>

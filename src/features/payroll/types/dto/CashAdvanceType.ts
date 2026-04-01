@@ -30,6 +30,7 @@ export interface CashAdvanceDetail {
     nominalLoan: number;
     loanPeriod: number;
     nominalInstallment: number;
+    limitKasbon: number;
     supervisorApprovalFile: string | null;
     supportingDocuments: string | null;
     loanDescription: string;
