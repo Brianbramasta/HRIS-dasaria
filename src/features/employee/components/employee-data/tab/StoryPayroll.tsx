@@ -23,7 +23,7 @@ function SummaryItem({ label, children }: { label: string; children: ReactNode }
 }
 
 export default function StoryPayrollTab({ employeeId, isEditable }: Props) {
-  const { title, payrollInfo, payrollDetailCards, historyRows, historyColumns, employeeSalaryShow, refetch } = useStoryPayrollTab(
+  const { title, payrollInfo, payrollDetailCards, historyRows, historyColumns, employeeSalaryShow, refetch, error } = useStoryPayrollTab(
     employeeId,
     isEditable,
   );
@@ -54,36 +54,48 @@ export default function StoryPayrollTab({ employeeId, isEditable }: Props) {
           // )
         }
       >
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-1">
-            <h5 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Informasi Penggajian</h5>
-            <div className="grid grid-cols-1 gap-3">
-              <SummaryItem label="Bank">{payrollInfo.bank || '-'}</SummaryItem>
-              <SummaryItem label="Nama Akun Bank">{payrollInfo.namaAkunBank || '-'}</SummaryItem>
-              <SummaryItem label="No. Rekening">{payrollInfo.noRekening || '-'}</SummaryItem>
-              <SummaryItem label="NPWP">{payrollInfo.npwp || '-'}</SummaryItem>
-              <SummaryItem label="PTKP Status">{payrollInfo.ptkpStatus || '-'}</SummaryItem>
-              <SummaryItem label="Gaji Bersih">{formatCurrency(payrollInfo.gajiBersih)}</SummaryItem>
-            </div>
-          </div>
-          
-          <div className="lg:col-span-2 space-y-4 md:border-l-[2px] md:border-gray-200 md:dark:border-gray-800 md:pl-4">
-            <h5 className="mb-2 text-sm font-semibold text-gray-900 dark:text-white">Detail Gaji</h5>
-            {payrollDetailCards.map((card) => (
-              <PayrollDetailCard key={card.id} title={card.title} variant={card.id} items={card.items} />
-            ))}
-          </div>
-        </div>
+         {error ? (
+              <div className="h-fit rounded-lg border border-red-200 bg-red-50 p-3 dark:border-red-800 dark:bg-red-900/20">
+                {/* <div className="text-xs font-semibold text-red-600 dark:text-red-400">Error</div> */}
+                <div className="mt-1 text-sm font-semibold text-red-800 dark:text-red-300 text-center">{error}</div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+                
+                <div className="lg:col-span-1">
+                  <h5 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Informasi Penggajian</h5>
+                
+                    <div className="grid grid-cols-1 gap-3">
+                      <SummaryItem label="Bank">{payrollInfo.bank || '-'}</SummaryItem>
+                      <SummaryItem label="Nama Akun Bank">{payrollInfo.namaAkunBank || '-'}</SummaryItem>
+                      <SummaryItem label="No. Rekening">{payrollInfo.noRekening || '-'}</SummaryItem>
+                      <SummaryItem label="NPWP">{payrollInfo.npwp || '-'}</SummaryItem>
+                      <SummaryItem label="PTKP Status">{payrollInfo.ptkpStatus || '-'}</SummaryItem>
+                      <SummaryItem label="Gaji Bersih">{formatCurrency(payrollInfo.gajiBersih)}</SummaryItem>
+                    </div>
+                  
+                </div>
+                
+                <div className="lg:col-span-2 space-y-4 md:border-l-[2px] md:border-gray-200 md:dark:border-gray-800 md:pl-4">
+                  <h5 className="mb-2 text-sm font-semibold text-gray-900 dark:text-white">Detail Gaji</h5>
+                  {payrollDetailCards.map((card) => (
+                    <PayrollDetailCard key={card.id} title={card.title} variant={card.id} items={card.items} />
+                  ))}
+                </div>
+              </div>
+              )}
       </SectionCard>
 
-      <DataTable
-        resetKey='riwayat-penggajian'
-        data={historyRows}
-        columns={historyColumns}
-        title="Riwayat Penggajian"
-        isNewLine
-        emptyMessage="Belum ada riwayat penggajian."
-      />
+      {!error && (
+        <DataTable
+          resetKey='riwayat-penggajian'
+          data={historyRows}
+          columns={historyColumns}
+          title="Riwayat Penggajian"
+          isNewLine
+          emptyMessage="Belum ada riwayat penggajian."
+        />
+      )}
 
       {employeeId && (
         <EditStoryPayrollModal

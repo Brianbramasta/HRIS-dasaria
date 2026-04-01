@@ -59,8 +59,13 @@ export const useApiEmployeeSalary = (): UseApiEmployeeSalaryReturn => {
     try {
       const response = await employeeSalaryService.getEmployeeSalaryShow(employeeId);
       setEmployeeSalaryShow(response || null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch employee salary details');
+    } catch (err: any) {
+      // Handle specific API error structure
+      if (err?.meta?.status === 422) {
+        setError(err.meta.message);
+      } else {
+        setError(err instanceof Error ? err.message : 'Failed to fetch employee salary details');
+      }
       console.error('Error fetching employee salary details:', err);
     } finally {
       setLoading(false);
