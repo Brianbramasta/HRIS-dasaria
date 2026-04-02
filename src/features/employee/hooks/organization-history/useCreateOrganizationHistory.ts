@@ -265,7 +265,7 @@ export const useCreateOrganizationHistory = () => {
           gaji_pokok: String(pp.basic_salary || 0),
           tunjangan_jabatan: String(pp.position_allowance || 0),
           tunjangan_pernikahan: String(pp.marital_allowance || 0),
-          tunjangan_lama_kerja: String(pp.length_of_service_allowance || 0),
+          // tunjangan_lama_kerja: String(pp.length_of_service_allowance || 0),
         }));
       } catch (err) {
         console.error('Failed to fetch payroll preview', err);
@@ -515,7 +515,7 @@ export const useCreateOrganizationHistory = () => {
           gaji_pokok: '',
           tunjangan_pernikahan: '',
           tunjangan_jabatan: '',
-          tunjangan_lama_kerja: '',
+          tunjangan_lama_kerja: String(prev.tunjangan_lama_kerja || 0),
           gaji_bersih: '',
         });
         
