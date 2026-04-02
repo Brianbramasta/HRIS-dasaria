@@ -15,6 +15,7 @@ export const useDetailSubmission = () => {
             if (!id) return;
 
             const detail = await getCashAdvanceDetail(id);
+            console.log('detail', detail);
             if (detail) {
                 setCashAdvanceData(detail);
             }

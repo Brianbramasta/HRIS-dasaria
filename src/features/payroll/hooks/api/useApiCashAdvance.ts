@@ -207,7 +207,7 @@ export const useApiCashAdvance = (): UseApiCashAdvanceReturn => {
                 nominalLoan: item.nominal_loan,
                 loanPeriod: item.loan_period,
                 nominalInstallment: item.nominal_installment,
-                limitKasbon: item.limit_kasbon || 0,
+                limitKasbon: item.limit_loan || 0,
                 supervisorApprovalFile: item.supervisor_approval_file,
                 supportingDocuments: item.supporting_documents,
                 loanDescription: item.loan_description,
