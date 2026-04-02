@@ -348,6 +348,7 @@ export const useCreateOrganizationHistory = () => {
         console.log('test job title id', value);
         
         const selectedJob = addState.jobTitleOptions.find(job => String(job.value) === String(value));
+        console.log(addState,'addState');
         console.log('jobTitleOptions', addState.jobTitleOptions);
         console.log('selectedJob', selectedJob);
         if (selectedJob?.grade) {
