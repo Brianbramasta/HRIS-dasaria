@@ -6,6 +6,7 @@ import { useApiPayrollPreview } from '@/features/employee/hooks/api/useApiPayrol
 import { payrollPreviewService } from '@/features/employee/services/PayrollPreviewService';
 import { formatIndonesianToISO, formatDateToISO } from '@/utils/formatDate';
 import { useApiEmployeePositions } from '@/features/structure-and-organize/hooks/api/useApiEmployeePositions';
+import { employeeMasterDataService } from '@/features/employee/services/EmployeeMasterData.service';
 
 export const useCreateOrganizationHistory = () => {
   const navigate = useNavigate();
@@ -280,6 +281,16 @@ export const useCreateOrganizationHistory = () => {
     dependents,
   ]);
 
+  // Auto-fill golongan when jobTitleOptions are loaded and job_title_id is already set
+  useEffect(() => {
+    if (detailForm.job_title_id && addState.jobTitleOptions.length > 0 && !detailForm.golongan) {
+      const selectedJob = addState.jobTitleOptions.find(job => String(job.value) === String(detailForm.job_title_id));
+      if (selectedJob?.grade) {
+        setDetailForm((prev: any) => ({ ...prev, golongan: selectedJob.grade }));
+      }
+    }
+  }, [detailForm.job_title_id, addState.jobTitleOptions, detailForm.golongan]);
+
   // Calculate Gaji Bersih when salary components change
   useEffect(() => {
     if (!salaryFields.gaji_pokok) return; // wait for basic salary to be calculated
@@ -345,18 +356,29 @@ export const useCreateOrganizationHistory = () => {
         next.department_id = '';
         next.division_id = '';
         next.position_id = '';
-        console.log('test job title id', value);
         
         const selectedJob = addState.jobTitleOptions.find(job => String(job.value) === String(value));
-        console.log(addState,'addState');
-        console.log('jobTitleOptions', addState.jobTitleOptions);
-        console.log('selectedJob', selectedJob);
+        console.log('selectedJob from options', selectedJob);
+        
         if (selectedJob?.grade) {
           next.golongan = selectedJob.grade;
         } else {
+          // If job title options are not loaded yet, fetch the specific job title
+          if (value && addState.jobTitleOptions.length === 0) {
+            // Fetch specific job title to get grade
+            employeeMasterDataService.getJobTitleDropdown()
+              .then((items: any) => {
+                const jobWithTitle = items?.find((job: any) => String(job.id) === String(value));
+                if (jobWithTitle?.grade) {
+                  setDetailForm((prev: any) => ({ ...prev, golongan: jobWithTitle.grade }));
+                }
+              })
+              .catch((err: any) => {
+                console.error('Failed to fetch job title details:', err);
+              });
+          }
           next.golongan = '';
         }
-        console.log('next golongan', next.golongan);
       }
       
       return next;
@@ -401,6 +423,20 @@ export const useCreateOrganizationHistory = () => {
           if (selectedJob?.grade) {
             next.golongan = selectedJob.grade;
           } else {
+            // If job title options are not loaded yet, fetch the specific job title
+            if (value && addState.jobTitleOptions.length === 0) {
+              // Fetch specific job title to get grade
+              employeeMasterDataService.getJobTitleDropdown()
+                .then((items: any) => {
+                  const jobWithTitle = items?.find((job: any) => String(job.id) === String(value));
+                  if (jobWithTitle?.grade) {
+                    addState.setForm((prev: any) => ({ ...prev, golongan: jobWithTitle.grade }));
+                  }
+                })
+                .catch((err: any) => {
+                  console.error('Failed to fetch job title details:', err);
+                });
+            }
             next.golongan = '';
           }
         }
