@@ -5,6 +5,7 @@ import InputField from '@/components/shared/field/InputField';
 import DateField from '@/components/shared/field/DateField';
 import TextAreaField from '@/components/shared/field/TextAreaField';
 import { formatCurrencyValue } from '@/utils/formatCurrency';
+import { handleViewFileByUrl } from '@/utils/viewFileHandle';
 import { useDetailSubmission } from '@/features/payroll/hooks/cash-advance/useDetailSubmission';
 
 export default function DetailSubmissionPage() {
@@ -128,6 +129,7 @@ export default function DetailSubmissionPage() {
             <LinkPreview
               url={cashAdvanceData.supervisorApprovalFile || ''}
               label="Lihat Detail"
+              onClick={() => handleViewFileByUrl(cashAdvanceData.supervisorApprovalFile || '')}
             />
           </div>
 
@@ -138,6 +140,7 @@ export default function DetailSubmissionPage() {
             <LinkPreview
               url={cashAdvanceData.supportingDocuments || ''}
               label="Lihat Detail"
+              onClick={() => handleViewFileByUrl(cashAdvanceData.supportingDocuments || '')}
             />
           </div>
 

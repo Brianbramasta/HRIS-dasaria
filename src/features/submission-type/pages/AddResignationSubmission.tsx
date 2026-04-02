@@ -43,7 +43,7 @@ const AddResignationSubmission: React.FC = () => {
       setField('posisi', selfServiceResignationInfo.position_name || '');
       setField('tanggalPengajuan', selfServiceResignationInfo.tangal_pengajuan || '');
     }
-  }, [selfServiceResignationInfo, setField]);
+  }, [selfServiceResignationInfo]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);

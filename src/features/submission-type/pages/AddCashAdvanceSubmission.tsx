@@ -54,7 +54,7 @@ const AddCashAdvanceSubmission: React.FC = () => {
       setField('gajiPokok', selfServiceLoanInfo.basic_salary || 0);
       setField('tanggalPengajuan', selfServiceLoanInfo.tanggal_pengajuan || selfServiceLoanInfo.tangal_pengajuan || '');
     }
-  }, [selfServiceLoanInfo, setField]);
+  }, [selfServiceLoanInfo]);
 
   const jenisKasbonOptionsFromApi = useMemo(
     () => loanTypes.map((t) => ({ value: t.id, label: t.name })),
