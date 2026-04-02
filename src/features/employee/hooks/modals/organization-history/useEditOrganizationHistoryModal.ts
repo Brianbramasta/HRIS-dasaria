@@ -290,8 +290,10 @@ export function useEditOrganizationHistoryModal({ isOpen, initialData }: Params)
           next.nama = '';
         }
       }
+      // console.log('test', key, value)
       if (key === 'job_title_id') {
         const selectedJob = jobTitleOptions.find((j: any) => j.value === value);
+        // console.log('test', selectedJob)
         if (selectedJob?.grade) {
           setSelectedGrade(selectedJob.grade);
           next.golongan = selectedJob.grade;

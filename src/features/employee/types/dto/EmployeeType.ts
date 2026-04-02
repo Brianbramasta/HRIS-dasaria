@@ -296,9 +296,9 @@ export interface ResignationStatusDropdownItem {
 }
 
 export interface BankDropdownItem {
-  id_bank: string;
-  bank_code: string;
-  bank_name: string;
+  id: string;
+  code: string;
+  name: string;
 }
 
 export interface BpjsHealthTypeDropdownItem {

@@ -35,6 +35,7 @@ const EditStoryPayrollModal: FC<EditStoryPayrollModalProps> = (props) => {
     setNpwp,
     nonFixAllowances,
     allowanceOptions,
+    bankOptions,
     handleAddAllowance,
     handleRemoveAllowance,
     handleChangeAllowance,
@@ -54,11 +55,12 @@ const EditStoryPayrollModal: FC<EditStoryPayrollModalProps> = (props) => {
         <div>
           <h4 className="mb-4 text-sm font-bold text-gray-900 dark:text-white">Informasi Penggajian</h4>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <InputField
+            <SelectField
               label="Bank" 
-              value={bankName}
-              onChange={(e) => setBankName(e.target.value)}
-              placeholder="BCA"
+              options={bankOptions}
+              defaultValue={bankName}
+              onChange={(value) => setBankName(value)}
+              placeholder="Pilih Bank"
             />
             
             <InputField

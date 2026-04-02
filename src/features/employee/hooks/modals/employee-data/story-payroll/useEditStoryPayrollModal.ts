@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useApiEmployeeSalary } from '@/features/employee/hooks/api/useApiEmployeeSalary';
 import { useApiPayrollPreview } from '@/features/employee/hooks/api/useApiPayrollPreview';
+import { useBankDropdown } from '@/features/employee/hooks/api/useBankDropdown';
 import { UpdateNonFixAllowancePayload, EmployeeSalaryShowResponse } from '@/features/employee/types/dto/EmployeeSalaryType';
 
 interface Props {
@@ -20,6 +21,7 @@ export interface NonFixAllowanceFormItem {
 export const useEditStoryPayrollModal = ({ isOpen, onClose, employeeId, data, onSuccess }: Props) => {
   const { updateNonFixAllowance, loading } = useApiEmployeeSalary();
   const { nonFixAllowanceOptions, fetchNonFixAllowanceDropdown } = useApiPayrollPreview();
+  const { bankOptions, fetchBankDropdown } = useBankDropdown();
 
   // Form State
   const [bankName, setBankName] = useState('');
@@ -39,8 +41,9 @@ export const useEditStoryPayrollModal = ({ isOpen, onClose, employeeId, data, on
   useEffect(() => {
     if (isOpen) {
       fetchNonFixAllowanceDropdown();
+      fetchBankDropdown();
     }
-  }, [isOpen, fetchNonFixAllowanceDropdown]);
+  }, [isOpen, fetchNonFixAllowanceDropdown, fetchBankDropdown]);
 
   // Initialize data
   useEffect(() => {
@@ -110,6 +113,7 @@ export const useEditStoryPayrollModal = ({ isOpen, onClose, employeeId, data, on
     setNpwp,
     nonFixAllowances,
     allowanceOptions,
+    bankOptions,
     handleAddAllowance,
     handleRemoveAllowance,
     handleChangeAllowance,
