@@ -345,13 +345,16 @@ export const useCreateOrganizationHistory = () => {
         next.department_id = '';
         next.division_id = '';
         next.position_id = '';
+        console.log('test job title id', value);
         
         const selectedJob = addState.jobTitleOptions.find(job => String(job.value) === String(value));
+        console.log('selectedJob', selectedJob);
         if (selectedJob?.grade) {
           next.golongan = selectedJob.grade;
         } else {
           next.golongan = '';
         }
+        console.log('next golongan', next.golongan);
       }
       
       return next;
