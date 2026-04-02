@@ -67,6 +67,7 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
           value={form.full_name}
           onChange={(e) => onInputChange('full_name', e.target.value)}
           required={!isReadonly}
+          disabled={true}
         />
       </div>
 
@@ -80,6 +81,37 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
           onChange={(v) => onInputChange('contract_status', v)}
           disabled={!isReadonly}
           required={!isReadonly}
+        />
+      </div>
+      
+      {/* Jenis Kontrak */}
+      <div>
+        <SelectField
+          label="Jenis Kontrak"
+          options={jenisKontrakOptions}
+          placeholder="Select"
+          defaultValue={form.contract_type_id}
+          onChange={(v) => {
+            onInputChange('contract_type_id', v);
+            const selectedOption = jenisKontrakOptions.find(option => option.value === v);
+            if (selectedOption) {
+              onInputChange('contract_type_name', selectedOption.label);
+            }
+          }}
+          disabled={isReadonly}
+          required={!isReadonly}
+        />
+      </div>
+
+      {/* Kontrak ke */}
+      <div>
+        <InputField
+          label="Kontrak ke"
+          type="number"
+          min="0"
+          value={form.contract_number}
+          onChange={(e) => onInputChange('contract_number', Number(e.target.value))}
+          readonly={true}
         />
       </div>
 
@@ -110,30 +142,7 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
         />
       </div>}
 
-      {/* Jenis Kontrak */}
-      <div>
-        <SelectField
-          label="Jenis Kontrak"
-          options={jenisKontrakOptions}
-          placeholder="Select"
-          defaultValue={form.contract_type_id}
-          onChange={(v) => onInputChange('contract_type_id', v)}
-          disabled={isReadonly}
-          required={!isReadonly}
-        />
-      </div>
-
-      {/* Kontrak ke */}
-      <div>
-        <InputField
-          label="Kontrak ke"
-          type="number"
-          min="0"
-          value={form.contract_number}
-          onChange={(e) => onInputChange('contract_number', Number(e.target.value))}
-          readonly={true}
-        />
-      </div>
+      
 
       {/* Status Berakhir - hanya tampil untuk edit dan jika showStatusBerakhir true */}
       {showStatusBerakhir && (
