@@ -49,6 +49,8 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
     handleEmployeeCategorySearch,
   } = useEmployeeDataModal({ isOpen, initialData });
 
+  const isEmployeeCategoryNotSelected = !form.employee_category_id;
+
 
   const content = (
     <div className="space-y-8">
@@ -93,7 +95,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             defaultValue={form.employment_status_id || ''}
             onChange={(v) => handleInput('employment_status_id', v)}
             placeholder="Select"
-            disabled={true}
+            disabled={isEmployeeCategoryNotSelected || isDisabledField}
             required
           />
         </div>
@@ -108,7 +110,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             onChange={(v) => handleInput('job_title_id', v)}
             onSearch={handleJobTitleSearch}
             placeholder="Select"
-            disabled={isDisabledField}
+            disabled={isEmployeeCategoryNotSelected || isDisabledField}
             required
           />
         </div>
@@ -120,7 +122,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             defaultValue={form.structural_job_id || ''}
             onChange={(v) => handleInput('structural_job_id', v)}
             placeholder="Select"
-            disabled={!form.job_title_id || isDisabledField}
+            disabled={isEmployeeCategoryNotSelected || !form.job_title_id || isDisabledField}
             required
           />
         </div>
@@ -135,7 +137,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             onChange={(v) => handleInput('company_id', v)}
             onSearch={handleCompanySearch}
             placeholder="Select"
-            disabled={isDisabledField}
+            disabled={isEmployeeCategoryNotSelected || isDisabledField}
             required
           />
         </div>
@@ -147,7 +149,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             defaultValue={form.office_id || ''}
             onChange={(v) => handleInput('office_id', v)}
             onSearch={handleOfficeSearch}
-            disabled={officeOptions.length === 0 || isDisabledField}
+            disabled={isEmployeeCategoryNotSelected || officeOptions.length === 0 || isDisabledField}
             placeholder="Select"
             required
           />
@@ -164,7 +166,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               onChange={(v) => handleInput('directorate_id', v)}
               onSearch={handleDirectorateSearch}
               placeholder="Select"
-              disabled={isDisabledField}
+              disabled={isEmployeeCategoryNotSelected || isDisabledField}
               required
             />
           </div>
@@ -178,7 +180,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               defaultValue={form.division_id || ''}
               onChange={(v) => handleInput('division_id', v)}
               onSearch={handleDivisionSearch}
-              disabled={divisionOptions.length === 0 || isDisabledField}
+              disabled={isEmployeeCategoryNotSelected || divisionOptions.length === 0 || isDisabledField}
               placeholder="Select"
               required
             />
@@ -195,7 +197,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               defaultValue={form.department_id || ''}
               onChange={(v) => handleInput('department_id', v)}
               onSearch={handleDepartmentSearch}
-              disabled={departmentOptions.length === 0 || isDisabledField}
+              disabled={isEmployeeCategoryNotSelected || departmentOptions.length === 0 || isDisabledField}
               placeholder="Select"
               required
             />
@@ -211,7 +213,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               onChange={(v) => handleInput('unit_id', v)}
               onSearch={handleUnitSearch}
               placeholder="Select"
-              disabled={unitOptions.length === 0 || isDisabledField}
+              disabled={isEmployeeCategoryNotSelected || unitOptions.length === 0 || isDisabledField}
               // required
             />
           </div>
@@ -227,7 +229,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             onChange={(v) => handleInput('position_level_id', v)}
             onSearch={handlePositionLevelSearch}
             placeholder="Select"
-            disabled={isDisabledField}
+            disabled={isEmployeeCategoryNotSelected || isDisabledField}
             required
           />
         </div>
@@ -241,7 +243,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
               onChange={(v) => handleInput('position_id', v)}
               onSearch={handlePositionSearch}
               placeholder="Select"
-              disabled={isDisabledField}
+              disabled={isEmployeeCategoryNotSelected || isDisabledField}
               required
             />
           </div>
@@ -256,7 +258,7 @@ const EmployeeDataModal: React.FC<Props> = ({ isOpen, initialData, onClose, onSu
             defaultValue={form.payroll_status || ''}
             onChange={(v) => handleInput('payroll_status', v)}
             placeholder="Select"
-            disabled={isDisabledField}
+            disabled={isEmployeeCategoryNotSelected || isDisabledField}
             required
           />
         </div>

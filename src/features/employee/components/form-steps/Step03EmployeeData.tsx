@@ -36,6 +36,8 @@ export const Step03EmployeeData: React.FC = () => {
     handleEmployeeCategorySearch,
   } = useStep3Data();
 
+  const isEmployeeCategoryNotSelected = !step3.kategoriKaryawan;
+
   return (
     <div className="space-y-6">
       <div>
@@ -75,7 +77,7 @@ export const Step03EmployeeData: React.FC = () => {
               defaultValue={step3.employmentStatus}
               onChange={(value) => handleChange('employmentStatus', value)}
               required
-              disabled
+              disabled={isEmployeeCategoryNotSelected}
             />
           </div>
 
@@ -88,6 +90,7 @@ export const Step03EmployeeData: React.FC = () => {
               onChange={(value) => handleChange('jabatan', value)}
               onSearch={handleJobTitleSearch}
               required
+              disabled={isEmployeeCategoryNotSelected}
             />
           </div>
           <div>
@@ -97,7 +100,7 @@ export const Step03EmployeeData: React.FC = () => {
               defaultValue={step3.jabatanStruktural}
               onChange={(value) => handleChange('jabatanStruktural', value)}
               required
-              disabled={!step3.jabatan}
+              disabled={isEmployeeCategoryNotSelected || !step3.jabatan}
             />
           </div>
 
@@ -110,6 +113,7 @@ export const Step03EmployeeData: React.FC = () => {
               onChange={(value) => handleChange('company', value)}
               onSearch={handleCompanySearch}
               required
+              disabled={isEmployeeCategoryNotSelected}
             />
           </div>
           <div>
@@ -119,7 +123,7 @@ export const Step03EmployeeData: React.FC = () => {
               defaultValue={step3.kantor}
               onChange={(value) => handleChange('kantor', value)}
               onSearch={handleOfficeSearch}
-              disabled={officeOptions.length === 0}
+              disabled={isEmployeeCategoryNotSelected || officeOptions.length === 0}
               required
             />
           </div>
@@ -134,6 +138,7 @@ export const Step03EmployeeData: React.FC = () => {
                 onChange={(value) => handleChange('direktorat', value)}
                 onSearch={handleDirectorateSearch}
                 required
+                disabled={isEmployeeCategoryNotSelected}
               />
             </div>
           )}
@@ -145,7 +150,7 @@ export const Step03EmployeeData: React.FC = () => {
                 defaultValue={step3.divisi}
                 onChange={(value) => handleChange('divisi', value)}
                 onSearch={handleDivisionSearch}
-                disabled={divisionOptions.length === 0}
+                disabled={isEmployeeCategoryNotSelected || divisionOptions.length === 0}
                 required
               />
             </div>
@@ -159,7 +164,7 @@ export const Step03EmployeeData: React.FC = () => {
                 options={departmentOptions.length > 0 ? departmentOptions : [{ label: 'Pilih divisi terlebih dahulu', value: '' }]}
                 defaultValue={step3.departemen}
                 onChange={(value) => handleChange('departemen', value)}
-                disabled={departmentOptions.length === 0}
+                disabled={isEmployeeCategoryNotSelected || departmentOptions.length === 0}
                 onSearch={handleDepartmentSearch}
                 required
               />
@@ -173,7 +178,7 @@ export const Step03EmployeeData: React.FC = () => {
                 defaultValue={step3.unit}
                 onChange={(value) => handleChange('unit', value)}
                 onSearch={handleUnitSearch}
-                disabled={unitOptions.length === 0}
+                disabled={isEmployeeCategoryNotSelected || unitOptions.length === 0}
               />
             </div>
           )}
@@ -187,6 +192,7 @@ export const Step03EmployeeData: React.FC = () => {
               onChange={(value) => handleChange('jenjangJabatan', value)}
               onSearch={handlePositionLevelSearch}
               required
+              disabled={isEmployeeCategoryNotSelected}
             />
           </div>
           {visibleFields.position && (
@@ -198,6 +204,7 @@ export const Step03EmployeeData: React.FC = () => {
                 onChange={(value) => handleChange('position', value)}
                 onSearch={handlePositionSearch}
                 required
+                disabled={isEmployeeCategoryNotSelected}
               />
             </div>
           )}
@@ -210,6 +217,7 @@ export const Step03EmployeeData: React.FC = () => {
               defaultValue={step3.statusPayroll}
               onChange={(value) => handleChange('statusPayroll', value)}
               required
+              disabled={isEmployeeCategoryNotSelected}
             />
           </div>
           <div>
