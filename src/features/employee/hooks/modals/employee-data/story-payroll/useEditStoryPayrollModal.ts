@@ -24,6 +24,7 @@ export const useEditStoryPayrollModal = ({ isOpen, onClose, employeeId, data, on
   const { bankOptions, fetchBankDropdown } = useBankDropdown();
 
   // Form State
+  const [bankId, setBankId] = useState('');
   const [bankName, setBankName] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
   const [accountHolder, setAccountHolder] = useState('');
@@ -51,6 +52,10 @@ export const useEditStoryPayrollModal = ({ isOpen, onClose, employeeId, data, on
       const employeeInfo = data.data.employee_information;
       const payrollInfo = data.data.payroll_information;
       
+      console.log('Setting bankId from API:', employeeInfo.bank_id);
+      console.log('Available bankOptions:', bankOptions);
+      
+      setBankId(employeeInfo.bank_id || '');
       setBankName(employeeInfo.bank_name || '');
       setAccountNumber(employeeInfo.bank_account_number || '');
       setAccountHolder(employeeInfo.bank_account_holder || '');
@@ -66,7 +71,7 @@ export const useEditStoryPayrollModal = ({ isOpen, onClose, employeeId, data, on
         })) || [];
       setNonFixAllowances(nonFixedAllowances);
     }
-  }, [data, isOpen]);
+  }, [data, isOpen, bankOptions]);
 
   const handleAddAllowance = () => {
     setNonFixAllowances([...nonFixAllowances, { id: '', amount: 0 }]);
@@ -91,6 +96,10 @@ export const useEditStoryPayrollModal = ({ isOpen, onClose, employeeId, data, on
         non_fix_id: item.id,
         amount: item.amount,
       })),
+      bank_account_number: accountNumber,
+      bank_id: bankId,
+      bank_account_holder: accountHolder,
+      npwp: npwp,
     };
 
     const success = await updateNonFixAllowance(payload);
@@ -103,6 +112,8 @@ export const useEditStoryPayrollModal = ({ isOpen, onClose, employeeId, data, on
 
   return {
     loading,
+    bankId,
+    setBankId,
     bankName,
     setBankName,
     accountNumber,

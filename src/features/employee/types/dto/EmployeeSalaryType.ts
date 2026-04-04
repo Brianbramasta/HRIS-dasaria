@@ -24,6 +24,10 @@ export interface UpdateNonFixAllowanceItem {
 export interface UpdateNonFixAllowancePayload {
   employee_id: string;
   data_update: UpdateNonFixAllowanceItem[];
+  bank_account_number?: string;
+  bank_id?: string;
+  bank_account_holder?: string;
+  npwp?: string;
 }
 
 export interface BpjsDetail {
@@ -82,6 +86,7 @@ export interface EmployeeSalaryDeduction {
 
 export interface EmployeeInformation {
   ptkp: string;
+  bank_id: string;
   bank_name: string;
   bank_account_holder: string;
   bank_account_number: string;

@@ -25,6 +25,8 @@ const EditStoryPayrollModal: FC<EditStoryPayrollModalProps> = (props) => {
 
   const {
     loading,
+    bankId,
+    setBankId,
     bankName,
     setBankName,
     accountNumber,
@@ -58,8 +60,8 @@ const EditStoryPayrollModal: FC<EditStoryPayrollModalProps> = (props) => {
             <SelectField
               label="Bank" 
               options={bankOptions}
-              defaultValue={bankName}
-              onChange={(value) => setBankName(value)}
+              defaultValue={bankId}
+              onChange={(value) => setBankId(value)}
               placeholder="Pilih Bank"
             />
             
