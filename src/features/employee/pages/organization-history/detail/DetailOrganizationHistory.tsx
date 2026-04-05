@@ -16,6 +16,7 @@ const DetailOrganizationHistoryPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const id = searchParams.get('id') || '';
+  const atasan = searchParams.get('atasan') || '';
   
   // API Hook
   const {
@@ -269,7 +270,7 @@ const DetailOrganizationHistoryPage: React.FC = () => {
                 />
               </div>
             ) : (
-              <FIleField label="Upload Sk Perubahan" onChange={(e) => setSkFile(e.target.files?.[0] || null)} />
+              <FIleField label="Upload Sk Perubahan" onChange={(e) => setSkFile(e.target.files?.[0] || null)} disabled={atasan === 'true'} />
             )}
           </div>
           <div className="col-span-1">
@@ -286,7 +287,7 @@ const DetailOrganizationHistoryPage: React.FC = () => {
               <FIleField 
                 label="Upload Adendum" 
                 onChange={(e) => setAdendumFile(e.target.files?.[0] || null)} 
-                disabled={!!organizationChangeDetail?.decree_file}
+                disabled={!!organizationChangeDetail?.decree_file || atasan === 'true'}
               />
             )}
           </div>
@@ -301,7 +302,7 @@ const DetailOrganizationHistoryPage: React.FC = () => {
               onChange={() => {}}
             />
           </div>
-          {!organizationChangeDetail?.decree_file && (
+          {!organizationChangeDetail?.decree_file && atasan !== 'true' && (
             <div className="col-span-1 md:col-span-2 flex justify-end">
               <Button
                 variant="custom"

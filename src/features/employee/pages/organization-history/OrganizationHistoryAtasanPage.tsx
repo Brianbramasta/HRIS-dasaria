@@ -137,10 +137,11 @@ export default function OrganizationHistoryAtasanPage() {
       {
         icon: <IconFileDetail />,
         className: 'text-gray-700',
-        condition: (row) => Boolean((row as any)?.decree_file),
+        // condition: (row) => Boolean((row as any)?.decree_file),
         onClick: (row) => {
           // navigate(`/organization-history/preview?id=${row.id}`);
-          window.open(formatUrlFile((row as any)?.decree_file), '_blank');
+          navigate(`/organization-history/detail?id=${row.id}&atasan=true`);
+          // window.open(formatUrlFile((row as any)?.decree_file), '_blank');
           // navigate(`/employee-data/${row.employee_id}?mode=view&tab=organization-history`);
         },
       }
