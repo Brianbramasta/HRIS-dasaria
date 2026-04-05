@@ -19,17 +19,11 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
     name,
     setName,
     jabatan,
-    setJabatan,
     structuralJob,
-    setStructuralJob,
     direktorat,
-    setDirektorat,
     divisi,
-    setDivisi,
     departemen,
-    setDepartemen,
     unit,
-    setUnit,
     memoNumber,
     setMemoNumber,
     description,
@@ -42,9 +36,12 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
     divisionOptions,
     departmentOptions,
     unitOptions,
+    visibleFields,
+    isDisabledField,
     handleFileChange,
     handleSubmit,
     handleClose,
+    handleInput,
     searchPositions,
     searchDirectorates,
     searchDivisions,
@@ -74,7 +71,7 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
             options={positionOptions}
             placeholder="Pilih Jabatan Kepangkatan"
             defaultValue={jabatan}
-            onChange={(v) => { setJabatan(v); setStructuralJob(''); }}
+            onChange={(v) => handleInput('jabatan', v)}
             onSearch={async (q) => {
               await searchPositions(q);
             }}
@@ -86,55 +83,66 @@ const AddEmployeePositionModal: React.FC<AddEmployeePositionModalProps> = ({ isO
             options={structuralJobOptions}
             placeholder="Pilih Jabatan Struktural"
             defaultValue={structuralJob}
-            onChange={(v) => setStructuralJob(v)}
-            disabled={!jabatan}
+            onChange={(v) => handleInput('structuralJob', v)}
+            disabled={!jabatan || isDisabledField}
           />
-          <SelectField
-            containerClassName="space-y-2"
-            label="Direktorat"
-            required
-            options={directorateOptions}
-            placeholder="Pilih Direktorat"
-            defaultValue={direktorat}
-            onChange={(v) => setDirektorat(v)}
-            onSearch={async (q) => {
-              await searchDirectorates(q);
-            }}
-          />
-          <SelectField
-            containerClassName="space-y-2"
-            label="Divisi"
-            required
-            options={divisionOptions}
-            placeholder="Pilih Divisi"
-            defaultValue={divisi}
-            onChange={(v) => { setDivisi(v); setDepartemen(''); setUnit(''); }}
-            onSearch={async (q) => {
-              await searchDivisions(q);
-            }}
-          />
-          <SelectField
-            containerClassName="space-y-2"
-            label="Departemen"
-            required
-            options={departmentOptions}
-            placeholder="Pilih Departemen"
-            defaultValue={departemen}
-            onChange={(v) => { setDepartemen(v); setUnit(''); }}
-            onSearch={async (q) => {
-              await searchDepartments(q);
-            }}
-          />
-          <SelectField
-            containerClassName="space-y-2"
-            label="Unit"
-            required={false}
-            options={unitOptions}
-            placeholder="Pilih Unit"
-            defaultValue={unit}
-            onChange={(v) => setUnit(v)}
-            disabled={!departemen}
-          />
+          {visibleFields.direktorat && (
+            <SelectField
+              containerClassName="space-y-2"
+              label="Direktorat"
+              required
+              options={directorateOptions}
+              placeholder="Pilih Direktorat"
+              defaultValue={direktorat}
+              onChange={(v) => handleInput('direktorat', v)}
+              onSearch={async (q) => {
+                await searchDirectorates(q);
+              }}
+              disabled={isDisabledField}
+            />
+          )}
+          {visibleFields.divisi && (
+            <SelectField
+              containerClassName="space-y-2"
+              label="Divisi"
+              required
+              options={divisionOptions.length > 0 ? divisionOptions : [{ label: 'Pilih direktorat terlebih dahulu', value: '' }]}
+              placeholder="Pilih Divisi"
+              defaultValue={divisi}
+              onChange={(v) => handleInput('divisi', v)}
+              onSearch={async (q) => {
+                await searchDivisions(q);
+              }}
+              disabled={!direktorat || isDisabledField}
+            />
+          )}
+          {visibleFields.departemen && (
+            <SelectField
+              containerClassName="space-y-2"
+              label="Departemen"
+              required
+              options={departmentOptions.length > 0 ? departmentOptions : [{ label: 'Pilih divisi terlebih dahulu', value: '' }]}
+              placeholder="Pilih Departemen"
+              defaultValue={departemen}
+              onChange={(v) => handleInput('departemen', v)}
+              onSearch={async (q) => {
+                await searchDepartments(q);
+              }}
+              disabled={!divisi || isDisabledField}
+            />
+          )}
+          {visibleFields.unit && (
+            <SelectField
+              containerClassName="space-y-2"
+              label="Unit"
+              required={false}
+              options={unitOptions.length > 0 ? unitOptions : [{ label: 'Pilih departemen terlebih dahulu', value: '' }]}
+              placeholder="Pilih Unit"
+              defaultValue={unit}
+              onChange={(v) => handleInput('unit', v)}
+              disabled={!departemen || isDisabledField}
+            />
+          )}
           <InputField
             containerClassName="space-y-2"
             label="No. Surat Keputusan / Memo Internal"

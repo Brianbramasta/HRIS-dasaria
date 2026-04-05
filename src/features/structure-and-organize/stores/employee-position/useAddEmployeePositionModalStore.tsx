@@ -2,8 +2,6 @@ import { useState, useMemo, useCallback, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useApiJobTitles } from '../../hooks/api/useApiJobTitles';
 import { useApiDirectorates } from '../../hooks/api/useApiDirectorates';
-import { useApiDivisions } from '../../hooks/api/useApiDivisions';
-import { useApiDepartments } from '../../hooks/api/useApiDepartments';
 import { employeeMasterDataService } from '../../../employee/services/EmployeeMasterData.service';
 
 interface DropdownOption {
@@ -26,6 +24,8 @@ interface UseAddEmployeePositionModalStoreState {
   searchDepartments: (query: string) => void;
   fetchStructuralJobs: (jabatanId: string) => void;
   fetchUnits: (departmentId: string) => void;
+  fetchDivisions: (directorateId: string) => void;
+  fetchDepartments: (divisionId: string) => void;
   clearDropdowns: () => void;
 }
 
@@ -36,6 +36,8 @@ export const useAddEmployeePositionModalStore = (): UseAddEmployeePositionModalS
   const [departmentQuery, setDepartmentQuery] = useState('');
   const [selectedJabatan, setSelectedJabatan] = useState('');
   const [selectedDepartment, setSelectedDepartment] = useState('');
+  const [selectedDirectorate, setSelectedDirectorate] = useState('');
+  const [selectedDivision, setSelectedDivision] = useState('');
 
   const searchPositionsTimeout = useRef<any>(null);
   const searchDirectoratesTimeout = useRef<any>(null);
@@ -44,8 +46,6 @@ export const useAddEmployeePositionModalStore = (): UseAddEmployeePositionModalS
 
   const { getDropdown: getPositionDropdown } = useApiJobTitles();
   const { getDropdown: getDirectorateDropdown } = useApiDirectorates();
-  const { getDropdown: getDivisionDropdown } = useApiDivisions();
-  const { getDropdown: getDepartmentDropdown } = useApiDepartments();
 
   // Query for positions
   const {
@@ -75,31 +75,35 @@ export const useAddEmployeePositionModalStore = (): UseAddEmployeePositionModalS
     staleTime: 5 * 60 * 1000,
   });
 
-  // Query for divisions
+  // Query for divisions (based on selected direktorat)
   const {
     data: divisionsData,
     isLoading: divisionsLoading,
     error: divisionsError,
   } = useQuery({
-    queryKey: ['divisions-dropdown', divisionQuery],
+    queryKey: ['divisions-dropdown', selectedDirectorate, divisionQuery],
     queryFn: async () => {
-      const items = await getDivisionDropdown(divisionQuery);
+      if (!selectedDirectorate) return [];
+      const items = await employeeMasterDataService.getDivisionsByDirectorate(selectedDirectorate, divisionQuery);
       return (items || []).map((d: any) => ({ value: d.id, label: d.division_name }));
     },
+    enabled: !!selectedDirectorate,
     staleTime: 5 * 60 * 1000,
   });
 
-  // Query for departments
+  // Query for departments (based on selected division)
   const {
     data: departmentsData,
     isLoading: departmentsLoading,
     error: departmentsError,
   } = useQuery({
-    queryKey: ['departments-dropdown', departmentQuery],
+    queryKey: ['departments-dropdown', selectedDivision, departmentQuery],
     queryFn: async () => {
-      const items = await getDepartmentDropdown(departmentQuery);
+      if (!selectedDivision) return [];
+      const items = await employeeMasterDataService.getDepartmentsByDivision(selectedDivision, departmentQuery);
       return (items || []).map((d: any) => ({ value: d.id, label: d.department_name }));
     },
+    enabled: !!selectedDivision,
     staleTime: 5 * 60 * 1000,
   });
 
@@ -171,6 +175,14 @@ export const useAddEmployeePositionModalStore = (): UseAddEmployeePositionModalS
     setSelectedDepartment(departmentId);
   }, []);
 
+  const fetchDivisions = useCallback((directorateId: string) => {
+    setSelectedDirectorate(directorateId);
+  }, []);
+
+  const fetchDepartments = useCallback((divisionId: string) => {
+    setSelectedDivision(divisionId);
+  }, []);
+
   const clearDropdowns = useCallback(() => {
     setPositionQuery('');
     setDirectorateQuery('');
@@ -178,6 +190,8 @@ export const useAddEmployeePositionModalStore = (): UseAddEmployeePositionModalS
     setDepartmentQuery('');
     setSelectedJabatan('');
     setSelectedDepartment('');
+    setSelectedDirectorate('');
+    setSelectedDivision('');
   }, []);
 
   const isLoading = positionsLoading || directoratesLoading || divisionsLoading || departmentsLoading || structuralJobsLoading || unitsLoading;
@@ -199,6 +213,8 @@ export const useAddEmployeePositionModalStore = (): UseAddEmployeePositionModalS
       searchDepartments,
       fetchStructuralJobs,
       fetchUnits,
+      fetchDivisions,
+      fetchDepartments,
       clearDropdowns,
     }),
     [
@@ -216,6 +232,8 @@ export const useAddEmployeePositionModalStore = (): UseAddEmployeePositionModalS
       searchDepartments,
       fetchStructuralJobs,
       fetchUnits,
+      fetchDivisions,
+      fetchDepartments,
       clearDropdowns,
     ]
   );

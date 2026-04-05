@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import type { EmployeePositionListItem } from '../../../types/OrganizationApiTypes';
 import { useFileStore, clearSkFile } from '@/stores/fileStore';
 import { addNotification } from '@/stores/notificationStore';
@@ -38,8 +38,109 @@ export function useAddEmployeePositionModal({ isOpen, onClose, onSuccess }: UseA
     searchDepartments,
     fetchStructuralJobs,
     fetchUnits,
+    fetchDivisions,
+    fetchDepartments,
     clearDropdowns,
   } = useAddEmployeePositionModalStore();
+
+  // Get selected labels for visibility logic
+  const selectedJabatanLabel = useMemo(() => {
+    const selected = positionOptions.find(opt => opt.value === jabatan);
+    return selected?.label || '';
+  }, [positionOptions, jabatan]);
+
+  const selectedStructuralJobLabel = useMemo(() => {
+    const selected = structuralJobOptions.find(opt => opt.value === structuralJob);
+    return selected?.label || '';
+  }, [structuralJobOptions, structuralJob]);
+
+  // Determine field visibility based on job title and structural job
+  const visibleFields = useMemo(() => {
+    const fields = {
+      direktorat: true,
+      divisi: true,
+      departemen: true,
+      unit: true,
+    };
+
+    if (!selectedJabatanLabel) return fields;
+
+    // Similar logic to EmployeeDataModal
+    if (selectedJabatanLabel.includes('PKL') || selectedJabatanLabel.includes('Internship')) {
+      return fields;
+    }
+
+    if (selectedJabatanLabel.includes('Kemitraan')) {
+      return fields;
+    }
+
+    // Staff category logic
+    if (['Entry Level', 'Officer'].some(l => selectedJabatanLabel.includes(l))) {
+      return fields;
+    }
+    
+    fields.divisi = false;
+    fields.departemen = false;
+    fields.unit = false;
+
+    if (selectedJabatanLabel.includes('Principal')) {
+      fields.divisi = true;
+      fields.departemen = true;
+      if (['Kepala Branch', 'Branch Leader'].includes(selectedStructuralJobLabel)) {
+        fields.unit = true;
+      }
+    } else if (selectedJabatanLabel.includes('Supervisor')) {
+      fields.divisi = true;
+      fields.departemen = true;
+    } else if (selectedJabatanLabel.includes('Manager')) {
+      fields.divisi = true;
+    } else if (['Direktur', 'Director'].includes(selectedJabatanLabel)) {
+      // Only direktorat
+    } else {
+      fields.divisi = true;
+      fields.departemen = true;
+      fields.unit = true;
+    }
+
+    return fields;
+  }, [selectedJabatanLabel, selectedStructuralJobLabel]);
+
+  const isDisabledField = false; // Can be adjusted based on requirements
+
+  // Handle input changes with reset logic
+  const handleInput = useCallback((key: string, value: string) => {
+    switch (key) {
+      case 'jabatan':
+        setJabatan(value);
+        setStructuralJob('');
+        fetchStructuralJobs(value);
+        break;
+      case 'structuralJob':
+        setStructuralJob(value);
+        break;
+      case 'direktorat':
+        setDirektorat(value);
+        setDivisi('');
+        setDepartemen('');
+        setUnit('');
+        fetchDivisions(value);
+        break;
+      case 'divisi':
+        setDivisi(value);
+        setDepartemen('');
+        setUnit('');
+        fetchDepartments(value);
+        break;
+      case 'departemen':
+        setDepartemen(value);
+        setUnit('');
+        fetchUnits(value);
+        break;
+      case 'unit':
+        setUnit(value);
+        break;
+    }
+  }, [fetchStructuralJobs, fetchDivisions, fetchDepartments, fetchUnits]);
 
   const handleFileChange = () => {};
 
@@ -136,17 +237,11 @@ export function useAddEmployeePositionModal({ isOpen, onClose, onSuccess }: UseA
     name,
     setName,
     jabatan,
-    setJabatan,
     structuralJob,
-    setStructuralJob,
     direktorat,
-    setDirektorat,
     divisi,
-    setDivisi,
     departemen,
-    setDepartemen,
     unit,
-    setUnit,
     memoNumber,
     setMemoNumber,
     description,
@@ -159,9 +254,12 @@ export function useAddEmployeePositionModal({ isOpen, onClose, onSuccess }: UseA
     divisionOptions,
     departmentOptions,
     unitOptions,
+    visibleFields,
+    isDisabledField,
     handleFileChange,
     handleSubmit,
     handleClose,
+    handleInput,
     searchPositions,
     searchDirectorates,
     searchDivisions,
