@@ -20,6 +20,7 @@ interface UseDatatableProps<T> {
   columnFilters?: Record<string, string[]>;
   onDateRangeFilterChange?: (columnId: string, startDate: string, endDate: string | null) => void;
   dateRangeFilters?: Record<string, { startDate: string; endDate: string | null }>;
+  clientSide?: boolean;
 }
 
 export function useDatatable<T = any>({
@@ -39,6 +40,7 @@ export function useDatatable<T = any>({
   columnFilters = {},
   onDateRangeFilterChange,
   dateRangeFilters = {},
+  clientSide = false,
 }: UseDatatableProps<T>) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(pageSize);
@@ -96,6 +98,11 @@ export function useDatatable<T = any>({
 
   // Filter data based on search term and column filters
   const filteredData = useMemo(() => {
+    // If server-side filtering, return data as-is
+    if (!clientSide) {
+      return data;
+    }
+
     let result = data;
     
     // Apply search filter (client-side only when no external search handler)

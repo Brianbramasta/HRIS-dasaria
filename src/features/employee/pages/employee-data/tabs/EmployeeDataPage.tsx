@@ -481,6 +481,7 @@ export default function DataKaryawanPage() {
         onDateRangeFilterChange={handleDateRangeFilterChange}
         dateRangeFilters={dateRangeFilters}
         resetKey="DataMasterKaryawan"
+        // clientSide={false}
       />
 
       {/* Add Karyawan Modal */}

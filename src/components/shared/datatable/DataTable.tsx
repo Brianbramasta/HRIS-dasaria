@@ -95,6 +95,7 @@ interface DataTableProps<T = any> {
   dateRangeFilters?: Record<string, { startDate: string; endDate: string | null }>;
   maxHeight?: string;
   disablePagination?: boolean;
+  clientSide?: boolean;
 }
 
 export function DataTable<T = any>({
@@ -137,6 +138,7 @@ export function DataTable<T = any>({
   dateRangeFilters = {},
   maxHeight = 'max-h-[calc(100vh-500px)]',
   disablePagination = false,
+  clientSide = false,
 }: DataTableProps<T>) {
 
   // Internal state for client-side column filtering
@@ -208,7 +210,8 @@ export function DataTable<T = any>({
         [columnId]: { startDate, endDate }
       }));
     }),
-    dateRangeFilters: effectiveDateRangeFilters
+    dateRangeFilters: effectiveDateRangeFilters,
+    clientSide
   });
 
   // Use all data when pagination is disabled, otherwise use paginated data
