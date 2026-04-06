@@ -37,6 +37,11 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
   const [deleteSubmitting, setDeleteSubmitting] = useState(false);
   const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/employee-data/form` : '/employee-data/form';
 
+  // Debug: Log data changes
+  useEffect(() => {
+    console.log('useKaryawan - data updated:', data);
+  }, [data]);
+
   /**
    * Transform API response data to Karyawan interface
    */

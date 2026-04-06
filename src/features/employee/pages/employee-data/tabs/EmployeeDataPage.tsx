@@ -182,6 +182,13 @@ export default function DataKaryawanPage() {
 
   const [employmentStatusFilterOptions, setEmploymentStatusFilterOptions] = useState<DropdownOption[]>([]);
 
+  // Debug: Log data in EmployeeDataPage
+  useEffect(() => {
+    console.log('EmployeeDataPage - data:', data);
+    console.log('EmployeeDataPage - loading:', loading);
+    console.log('EmployeeDataPage - total:', total);
+  }, [data, loading, total]);
+
   useEffect(() => {
     const loadStatusOptions = async () => {
       const opts = await getEmployeeStatusDropdownOptions();

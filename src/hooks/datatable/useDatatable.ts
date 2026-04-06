@@ -131,14 +131,27 @@ export function useDatatable<T = any>({
             const value = row[columnId as keyof T];
             if (!value) return false;
             const rowDate = new Date(value as string);
-            const startDate = new Date(dateRange.startDate);
-            const endDate = dateRange.endDate ? new Date(dateRange.endDate) : new Date();
             
-            return rowDate >= startDate && rowDate <= endDate;
+            let isAfterStartDate = true;
+            if (dateRange.startDate) {
+              const startDate = new Date(dateRange.startDate);
+              isAfterStartDate = rowDate >= startDate;
+            }
+
+            let isBeforeEndDate = true;
+            if (dateRange.endDate) {
+              const endDate = new Date(dateRange.endDate);
+              isBeforeEndDate = rowDate <= endDate;
+            }
+            
+            return isAfterStartDate && isBeforeEndDate;
           });
         }
       });
     }
+    
+    console.log('useDatatable - filteredData:', result);
+    console.log('useDatatable - dateRangeFilters:', dateRangeFilters);
     
     return result;
   }, [data, appliedSearchTerm, columns, visibleColumns, onSearchChange, columnFilters, onColumnFilterChange, dateRangeFilters, onDateRangeFilterChange]);
