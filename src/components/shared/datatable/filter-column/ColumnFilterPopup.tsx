@@ -75,20 +75,52 @@ export const ColumnFilterPopup: React.FC<ColumnFilterPopupProps> = ({
     onClose();
   };
 
-  // Calculate position based on anchor element
+  // Calculate position based on anchor element and viewport
   const getPosition = () => {
     if (!anchorEl) return {};
     const rect = anchorEl.getBoundingClientRect();
-    return {
-      top: rect.bottom + 4,
-      left: rect.left,
-    };
+    const viewportHeight = window.innerHeight;
+    const viewportWidth = window.innerWidth;
+    
+    // Estimate popup height (rough calculation based on content)
+    const estimatedPopupHeight = Math.max(200, Math.min(400, options.length * 30 + 100));
+    
+    // Check if popup would go beyond viewport bottom
+    const spaceBelow = viewportHeight - rect.bottom - 4;
+    const spaceAbove = rect.top - 4;
+    
+    let top = rect.bottom + 4; // Default: position below
+    let left = rect.left;
+    
+    // If not enough space below and there's more space above, position above
+    if (spaceBelow < estimatedPopupHeight && spaceAbove > estimatedPopupHeight) {
+      top = rect.top - estimatedPopupHeight - 4;
+    }
+    
+    // Ensure popup doesn't go beyond viewport edges
+    if (top < 4) {
+      top = 4;
+    }
+    if (top + estimatedPopupHeight > viewportHeight - 4) {
+      top = viewportHeight - estimatedPopupHeight - 4;
+    }
+    
+    // Adjust horizontal position to prevent going off screen
+    const popupWidth = maxRows ? 400 : 256; // w-auto min-w-[320px] or w-64
+    if (left + popupWidth > viewportWidth - 4) {
+      left = viewportWidth - popupWidth - 4;
+    }
+    if (left < 4) {
+      left = 4;
+    }
+    
+    return { top, left };
   };
 
   return (
     <div
       ref={popupRef}
-      className={`fixed z-50 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 ${maxRows ? 'w-auto min-w-[320px]' : 'w-64'}`}
+      className={`fixed z-50 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 ${maxRows ? 'w-auto min-w-[320px]' : 'w-64'} max-h-[70vh] overflow-hidden`}
       style={getPosition()}
     >
       <div className="p-4">
@@ -97,7 +129,7 @@ export const ColumnFilterPopup: React.FC<ColumnFilterPopupProps> = ({
         </div>
 
         <div
-          className={maxRows ? "grid grid-flow-col gap-x-8 gap-y-2" : `space-y-2 ${options.length > 6 ? 'max-h-60 overflow-y-auto grid md:grid-cols-2' : ''}`}
+          className={maxRows ? "grid grid-flow-col gap-x-8 gap-y-2 max-h-96 overflow-y-auto" : `space-y-2 ${options.length > 6 ? 'max-h-60 overflow-y-auto grid md:grid-cols-2' : ''}`}
           style={maxRows ? { gridTemplateRows: `repeat(${maxRows}, minmax(0, 1fr))` } : {}}
         >
           {options.map((option) => (

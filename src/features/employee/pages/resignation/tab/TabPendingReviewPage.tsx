@@ -98,8 +98,8 @@ export default function TabPendingReview() {
       minWidth: 130,
       sortable: true,
       filterOptions: [
-        { label: 'In Progress', value: 'In Progress' },
-        { label: 'Pending', value: 'Pending' },
+        // { label: 'In Progress', value: 'In Progress' },
+        // { label: 'Pending', value: 'Pending' },
         { label: 'Dalam peninjauan', value: 'Dalam peninjauan' },
         { label: 'Menunggu Diproses', value: 'Menunggu Diproses' },
         { label: 'Disetujui', value: 'Disetujui' },
