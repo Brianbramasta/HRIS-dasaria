@@ -169,6 +169,7 @@ export default function PersonalDocumentsCard({ documents, employeeId }: Props) 
           searchPlaceholder="Cari dokumen..."
           emptyMessage="Tidak ada data dokumen"
           disablePagination={true}
+          clientSide={true}
         />
       </div>
       {/* <div className="mt-4 flex justify-end">
