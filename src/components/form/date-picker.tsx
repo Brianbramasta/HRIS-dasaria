@@ -494,6 +494,12 @@ export default function DatePicker({
       const dateStr = fmtYMD(year, month, day);
       const isDateDisabled = !isDateAllowed(dateStr, minDate, maxDate);
       
+      // Check if this date is today
+      const today = new Date();
+      const isToday = year === today.getFullYear() && 
+                     month === today.getMonth() && 
+                     day === today.getDate();
+      
       const isStartDate = activeMode === "range" && isSameDate(rangeStart, year, month, day);
       const isEndDate = activeMode === "range" && isSameDate(rangeEnd, year, month, day);
       const inRange = activeMode === "range" && isInRange(year, month, day);
@@ -510,9 +516,10 @@ export default function DatePicker({
           className={`
             h-8 w-8 rounded-full text-sm flex items-center justify-center
             ${active ? "bg-[#004969] text-white font-medium" : ""}
+            ${isToday && !active ? "bg-red-400 text-white font-medium" : ""}
             ${inRange && !isStartDate && !isEndDate ? "bg-blue-100 text-blue-900 dark:bg-blue-900/30" : ""}
             ${isDateDisabled ? "text-gray-300 dark:text-gray-600 cursor-not-allowed opacity-50" : ""}
-            ${!active && !inRange && !isDateDisabled ? "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300" : ""}
+            ${!active && !isToday && !inRange && !isDateDisabled ? "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300" : ""}
           `}
         >
           {day}

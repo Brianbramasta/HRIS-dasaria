@@ -303,7 +303,7 @@ export default function DetailTerminationAdministrationPage() {
               {(adminDetail?.resignation_details?.status_terminasi !== 'Selesai' ) && (
                 <div className="flex items-center justify-end">
                   <div className="flex items-center gap-3">
-                    <Button variant="custom" className="border border-gray-300">
+                    <Button variant="custom" className="border border-gray-300" onClick={() => navigate('/resignation/termination-administration')}>
                       Tutup
                     </Button>
                     <Button
