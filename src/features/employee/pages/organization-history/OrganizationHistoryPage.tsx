@@ -15,6 +15,8 @@ type OrgHistoryListRow = OrganizationChangeListItem & { statusPerubahan: string 
 export default function OrganizationHistoryPage() {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
+  const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
   
   const {
     organizationChanges: data,
@@ -28,38 +30,72 @@ export default function OrganizationHistoryPage() {
     fetchOrganizationChanges({});
   }, [fetchOrganizationChanges]);
 
+  // Helper function to build query params
+  const buildQueryParams = useCallback((baseParams: any = {}) => {
+    const params: any = { ...baseParams };
+    
+    // Add column filters (multiple values)
+    Object.entries(columnFilters).forEach(([key, values]) => {
+      if (values && values.length > 0 && key === 'statusPerubahan') {
+        params['filter_column[in][org_change_status][]'] = values;
+      }
+    });
+    
+    // Add date range filters
+    Object.entries(dateRangeFilters).forEach(([key, range]) => {
+      if (key === 'effective_date' && (range.startDate || range.endDate)) {
+        const dateRange = [];
+        if (range.startDate) dateRange.push(range.startDate);
+        if (range.endDate) dateRange.push(range.endDate);
+        if (dateRange.length > 0) {
+          params['filter_column[range][effective_date][]'] = dateRange;
+        }
+      }
+    });
+    
+    return params;
+  }, [columnFilters, dateRangeFilters]);
+
   // Event handlers
   const handleSearchChange = useCallback((searchValue: string) => {
-    fetchOrganizationChanges({ 
-      'filter[employee_name]': searchValue 
-    });
-  }, [fetchOrganizationChanges]);
+    const params = buildQueryParams({ search: searchValue });
+    fetchOrganizationChanges(params);
+  }, [fetchOrganizationChanges, buildQueryParams]);
 
   const handleSortChange = useCallback((sortValue: string) => {
-    fetchOrganizationChanges({ 
-      sort: sortValue 
-    });
-  }, [fetchOrganizationChanges]);
+    const params = buildQueryParams({ sort: sortValue });
+    fetchOrganizationChanges(params);
+  }, [fetchOrganizationChanges, buildQueryParams]);
 
   const handlePageChange = useCallback((page: number) => {
-    fetchOrganizationChanges({ 
-      page 
-    });
-  }, [fetchOrganizationChanges]);
+    const params = buildQueryParams({ page });
+    fetchOrganizationChanges(params);
+  }, [fetchOrganizationChanges, buildQueryParams]);
 
   const handleRowsPerPageChange = useCallback((perPage: number) => {
-    fetchOrganizationChanges({ 
-      per_page: perPage 
-    });
-  }, [fetchOrganizationChanges]);
+    const params = buildQueryParams({ per_page: perPage });
+    fetchOrganizationChanges(params);
+  }, [fetchOrganizationChanges, buildQueryParams]);
 
-  const handleDateRangeFilterChange = useCallback((columnId: string, startDate: string, endDate: string | null) => {
-    // Note: API doesn't seem to support date range filtering in the contract
-    // This would need to be implemented on the backend
-    console.log('Date range filter:', columnId, startDate, endDate);
+  const handleColumnFilterChange = useCallback((columnId: string, values: string[]) => {
+    setColumnFilters(prev => ({
+      ...prev,
+      [columnId]: values
+    }));
   }, []);
 
-  const dateRangeFilters: Record<string, { startDate: string; endDate: string | null }> = {};
+  const handleDateRangeFilterChange = useCallback((columnId: string, startDate: string, endDate: string | null) => {
+    setDateRangeFilters(prev => ({
+      ...prev,
+      [columnId]: { startDate, endDate }
+    }));
+  }, []);
+
+  // Refetch data when filters change
+  useEffect(() => {
+    const params = buildQueryParams();
+    fetchOrganizationChanges(params);
+  }, [columnFilters, dateRangeFilters, buildQueryParams, fetchOrganizationChanges]);
 
   const handleDropdownToggle = useCallback(() => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -174,6 +210,8 @@ export default function OrganizationHistoryPage() {
         onRowsPerPageChangeExternal={handleRowsPerPageChange}
         onDateRangeFilterChange={handleDateRangeFilterChange}
         dateRangeFilters={dateRangeFilters}
+        onColumnFilterChange={handleColumnFilterChange}
+        columnFilters={columnFilters}
         emptyMessage="Belum ada perubahan organisasi"
         addButtonLabel="Tambah Organisasi"
         onAdd={() => navigate('/organization-history/create')}

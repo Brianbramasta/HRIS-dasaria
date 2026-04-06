@@ -233,8 +233,11 @@ export interface EmployeeDetailResponse {
 // --- Query Parameters ---
 export interface OrganizationChangeQueryParams {
   category?: string;
-  'filter[employee_name]'?: string;
+  search?: string;
   sort?: string;
+  column?: string;
   page?: number;
   per_page?: number;
+  'filter_column[in][org_change_status][]'?: string[];
+  'filter_column[range][effective_date][]'?: string[];
 }
