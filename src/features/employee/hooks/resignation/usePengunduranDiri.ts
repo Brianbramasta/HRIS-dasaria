@@ -30,8 +30,8 @@ export function usePengunduranDiri(options: UsePengunduranDiriOptions = {}) {
         setError(null);
 
         const response = await pengunduranDiriService.getPengunduranDiri({
-          page,
-          limit,
+          page: params?.page ?? page,
+          limit: params?.limit ?? limit,
           status: currentStatus,
           filter: params?.filter ?? filterValue,
           ...params,
@@ -59,7 +59,15 @@ export function usePengunduranDiri(options: UsePengunduranDiriOptions = {}) {
     if (autoFetch) {
       fetchPengunduranDiri();
     }
-  }, [fetchPengunduranDiri, autoFetch, filterValue]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (autoFetch) {
+      fetchPengunduranDiri();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterValue, autoFetch]);
 
   const createPengunduranDiri = useCallback(
     async (data: any) => {
@@ -209,16 +217,18 @@ export function usePengunduranDiri(options: UsePengunduranDiriOptions = {}) {
   const handlePageChange = useCallback(
     (newPage: number) => {
       setPage(newPage);
+      fetchPengunduranDiri({ page: newPage });
     },
-    []
+    [fetchPengunduranDiri]
   );
 
   const handleRowsPerPageChange = useCallback(
     (newLimit: number) => {
       setLimit(newLimit);
       setPage(1);
+      fetchPengunduranDiri({ page: 1, limit: newLimit });
     },
-    []
+    [fetchPengunduranDiri]
   );
 
   const setStatusFilter = useCallback((newStatus: ResignStatus | 'all') => {

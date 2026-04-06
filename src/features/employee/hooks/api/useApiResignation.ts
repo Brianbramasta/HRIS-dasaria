@@ -136,8 +136,8 @@ export const useApiResignation = (): UseApiResignationReturn => {
     try {
       // Build query params
       const queryParams: any = {
-        page: appPagination.currentPage,
-        per_page: appPagination.perPage,
+        page: params?.page ?? appPagination.currentPage,
+        per_page: params?.pageSize ?? appPagination.perPage,
       };
 
       if (params?.search) queryParams.search = params.search;
@@ -181,8 +181,8 @@ export const useApiResignation = (): UseApiResignationReturn => {
       const data = resp.data as ResignationApplicationListResponse;
       setApplications(data?.data || []);
       setAppPagination({
-        currentPage: data?.current_page || 1,
-        perPage: data?.per_page || 10,
+        currentPage: data?.current_page || params?.page || 1,
+        perPage: data?.per_page || params?.pageSize || appPagination.perPage,
         total: data?.total || 0,
       });
     } catch (err) {
@@ -192,7 +192,7 @@ export const useApiResignation = (): UseApiResignationReturn => {
     } finally {
       setLoading(false);
     }
-  }, [appPagination.currentPage, appPagination.perPage, applicationFilterValue, applicationColumnFilters, applicationDateRangeFilters]);
+  }, [applicationFilterValue, applicationColumnFilters, applicationDateRangeFilters, appPagination.perPage]);
 
   const fetchApplicationDetail = useCallback(async (id: string) => {
     setLoading(true);
@@ -339,8 +339,8 @@ export const useApiResignation = (): UseApiResignationReturn => {
     try {
       // Build query params
       const queryParams: any = {
-        page: adminPagination.currentPage,
-        per_page: adminPagination.perPage,
+        page: params?.page ?? adminPagination.currentPage,
+        per_page: params?.pageSize ?? adminPagination.perPage,
       };
 
       if (params?.search) queryParams.search = params.search;
@@ -384,8 +384,8 @@ export const useApiResignation = (): UseApiResignationReturn => {
       const data = resp.data as ResignationAdministrationListResponse;
       setAdminList(data?.data || []);
       setAdminPagination({
-        currentPage: data?.current_page || 1,
-        perPage: data?.per_page || 10,
+        currentPage: data?.current_page || params?.page || 1,
+        perPage: data?.per_page || params?.pageSize || adminPagination.perPage,
         total: data?.total || 0,
       });
     } catch (err) {
@@ -395,7 +395,7 @@ export const useApiResignation = (): UseApiResignationReturn => {
     } finally {
       setLoading(false);
     }
-  }, [adminPagination.currentPage, adminPagination.perPage, adminFilterValue, adminColumnFilters, adminDateRangeFilters]);
+  }, [adminFilterValue, adminColumnFilters, adminDateRangeFilters, adminPagination.perPage]);
 
   const fetchAdministrationDetail = useCallback(async (id: string) => {
     setLoading(true);

@@ -31,7 +31,7 @@ export default function TabPendingReview() {
 
   // Auto-fetch when pagination changes
   useEffect(() => {
-    fetchApplications();
+    // fetchApplications();
   }, [appPagination.currentPage, appPagination.perPage]);
 
   // Define columns untuk DataTable

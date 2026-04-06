@@ -42,11 +42,13 @@ export default function TerminationAdministrationPage() {
   // Auto-fetch when filters change
   useEffect(() => {
     fetchAdministrationIndex();
-  }, [adminColumnFilters, adminDateRangeFilters, fetchAdministrationIndex]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [adminColumnFilters, adminDateRangeFilters]);
 
   // Auto-fetch when pagination changes
   useEffect(() => {
-    fetchAdministrationIndex();
+    // fetchAdministrationIndex();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [adminPagination.currentPage, adminPagination.perPage]);
 
   // Transform API data to table format
