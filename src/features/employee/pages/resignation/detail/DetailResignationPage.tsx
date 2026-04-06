@@ -5,7 +5,7 @@ import TextArea from '../../../../../components/form/input/TextArea';
 import FileInput from '../../../../../components/form/input/FileInput';
 import SelectField from '../../../../../components/shared/field/SelectField';
 import { Table, TableHeader, TableBody, TableRow, TableCell } from '../../../../../components/ui/table';
-import { IconHapus, IconPlus } from '@/icons/components/icons';
+import { IconFileDetail, IconHapus, IconPlus } from '@/icons/components/icons';
 import { useDetailResignation } from '../../../hooks/resignation/useDetailResignation';
 import EffectiveResignationDateModal from '../../../components/modals/resignation/EffectiveResignationDateModal';
 import RejectionConfirmtionResignnationModal from '../../../components/modals/resignation/RejectionConfirmtionResignnationModal';
@@ -13,6 +13,7 @@ import { useApiResignation } from '../../../hooks/api/useApiResignation';
 import { useEffect } from 'react';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 import {  useNavigate } from 'react-router';
+import { handleViewFileByUrl } from '@/utils/viewFileHandle';
 
 
 export default function DetailPengunduranDiriPage() {
@@ -235,33 +236,40 @@ export default function DetailPengunduranDiriPage() {
                   <TableCell className="px-4 py-3">{(d as any)?.file_type_name}</TableCell>
                   <TableCell className="px-4 py-3">{(d as any)?.document_name}</TableCell>
                   <TableCell className="px-4 py-3">
+                    {!['Disetujui', 'Ditolak'].includes(applicationDetail?.resignation_details?.status_name) ? (
+                      <Button
+                        variant="custom"
+                        size="sm"
+                        className="btn-primary"
+                        onClick={() => {
+                          const resignationId = applicationDetail?.resignation_details?.resignation_id;
+                          if (resignationId && d.id) {
+                            deleteDocument(resignationId, d.id);
+                            fetchApplicationDetail(id as string);
+                          }
+                        }}
+                      >
+                        <IconHapus  />
+                      </Button>
+                    ) : null}
                     <Button
                       variant="custom"
                       size="sm"
                       className="btn-primary"
                       onClick={() => {
-                        // const path = (d as any)?.document_path;
-                        // if (path) {
-                        //   const url = `${import.meta.env.VITE_API_URL}/${path}`;
-                        //   window.open(url, '_blank');
-                        // }
-                        const resignationId = applicationDetail?.resignation_details?.resignation_id;
-                        if (resignationId && d.id) {
-                          deleteDocument(resignationId, d.id);
-                          fetchApplicationDetail(id as string);
+                        const documentPath = (d as any)?.document_path;
+                        if (documentPath) {
+                          handleViewFileByUrl(documentPath);
                         }
-
-                          
-                       
                       }}
                     >
-                      <IconHapus  />
+                      <IconFileDetail  />
                     </Button>
                   </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
         </div>
       </div>
 

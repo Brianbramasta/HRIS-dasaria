@@ -6,10 +6,11 @@ import TextArea from '../../../../../components/form/input/TextArea';
 import FileInput from '../../../../../components/form/input/FileInput';
 import SelectField from '../../../../../components/shared/field/SelectField';
 import { Table, TableHeader, TableBody, TableRow, TableCell } from '../../../../../components/ui/table';
-import { IconHapus, IconPlus } from '@/icons/components/icons';
+import { IconFileDetail, IconHapus, IconPlus } from '@/icons/components/icons';
 import DoneOffBoardingModal from '../../../components/modals/termination/DoneOffBoardingModal';
 import { useApiResignation } from '@/features/employee/hooks/api/useApiResignation';
 import { formatDateToIndonesian } from '@/utils/formatDate';
+import { handleViewFileByUrl } from '@/utils/viewFileHandle';
 
 type DetailData = {
   name: string;
@@ -279,6 +280,19 @@ export default function DetailTerminationAdministrationPage() {
                       <IconHapus  />
                     </Button>
                     )}
+                    <Button
+                      variant="custom"
+                      size="sm"
+                      className="btn-primary"
+                      onClick={() => {
+                        const documentPath = (d as any)?.document_path;
+                        if (documentPath) {
+                          handleViewFileByUrl(documentPath);
+                        }
+                      }}
+                    >
+                      <IconFileDetail  />
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
