@@ -213,8 +213,9 @@ export default function AppRoutes() {
           <Route path="/resignation" element={<PengunduranDiri />}>
             <Route index element={<ResignationListPage />} />
             <Route path="termination-administration" element={<TerminationAdministrationPage />} />
-            <Route path="termination-administration/:id" element={<DetailTerminationAdministrationPage />} />
           </Route>
+
+          <Route path="/resignation/termination-administration/:id" element={<DetailTerminationAdministrationPage />} />
 
           <Route path="/resignation/:id" element={<DetailPengunduranDiriPage />} />
           <Route path="/contract-extension" element={<PerpanjanganKontrak />} />
