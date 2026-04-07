@@ -157,14 +157,16 @@ export default function ContractRenewalDetail({
               onChange={(_dates, dateStr) => handleInputChange('new_contract_date', dateStr)}
               containerClassName="space-y-2"
             />
-            <DateField
-              label="Tanggal Berakhir Kontrak Baru"
-              defaultDate={data?.new_contract_end_date || ''}
-              required
-              // disabled={!isEditing}
-              onChange={(_dates, dateStr) => handleInputChange('new_contract_end_date', dateStr)}
-              containerClassName="space-y-2"
-            />
+            {data?.contract_type_name !== 'PKWTT' && (
+              <DateField
+                label="Tanggal Berakhir Kontrak Baru"
+                defaultDate={data?.new_contract_end_date || ''}
+                required
+                // disabled={!isEditing}
+                onChange={(_dates, dateStr) => handleInputChange('new_contract_end_date', dateStr)}
+                containerClassName="space-y-2"
+              />
+            )}
           </div>
         )}
 

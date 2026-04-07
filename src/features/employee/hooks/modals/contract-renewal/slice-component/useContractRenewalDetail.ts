@@ -77,8 +77,16 @@ export function useContractRenewalDetail({
         const label = selectedOption ? selectedOption.label : value;
         setChangeTypeName(label);
       }
+      if (field === 'contract_type_id') {
+        const selectedOption = effectiveContractTypeOptions.find((opt) => opt.value === value);
+        const label = selectedOption ? selectedOption.label : value;
+        // Update contract_type_name when contract_type_id changes
+        if (onChange) {
+          onChange('contract_type_name', label);
+        }
+      }
     },
-    [onChange, statusOptions, setChangeTypeName]
+    [onChange, statusOptions, setChangeTypeName, effectiveContractTypeOptions]
   );
 
   const processedStatusOptions = useMemo(() => {
