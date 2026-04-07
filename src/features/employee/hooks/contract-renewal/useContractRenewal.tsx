@@ -53,6 +53,10 @@ export function useContractRenewal(): UseContractRenewalReturn {
   const [data, setData] = useState<ContractRenewalListItem[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   
+  // State for pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
+
   // Filter states
   const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
   const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
@@ -117,23 +121,62 @@ export function useContractRenewal(): UseContractRenewalReturn {
   }, [apiError, addNotification]);
 
   const handleFetchContractRenewals = useCallback(async (params?: ContractRenewalFilterParams) => {
-    // Convert UI filters to API params if needed
-    // For now passing params directly or constructing a basic object
-    const apiParams = {
-      page: params?.page || 1,
-      per_page: params?.per_page || 10,
-      search: params?.search || '',
-      ...params // Spread other params
+    // Build query params following the API specification
+    const queryParams: any = {
+      page: currentPage,
+      per_page: perPage,
     };
-    await fetchContractExtensions(apiParams);
-  }, [fetchContractExtensions]);
+
+    if (params?.search) queryParams.search = params.search;
+    if (params?.column) queryParams.column = params.column;
+    if (params?.sort) queryParams.sort = params.sort;
+    if (params?.page) queryParams.page = params.page;
+    if (params?.per_page) queryParams.per_page = params.per_page;
+
+    // Handle filter[] - multiple values
+    if (params?.filter) {
+      queryParams.filter = Array.isArray(params.filter) ? params.filter : [params.filter];
+    }
+
+    // Add column filters - format: filter_column[column_name][in][]=value
+    Object.entries(columnFilters).forEach(([columnId, values]) => {
+      if (values && values.length > 0) {
+        values.forEach((value) => {
+          const key = `filter_column[${columnId}][in][]`;
+          if (!queryParams[key]) {
+            queryParams[key] = [];
+          }
+          queryParams[key].push(value);
+        });
+      }
+    });
+
+    // Add date range filters - format: filter_column[column_name][range][]=start_date & filter_column[column_name][range][]=end_date
+    Object.entries(dateRangeFilters).forEach(([columnId, dateRange]) => {
+      if (dateRange && dateRange.startDate) {
+        const key = `filter_column[${columnId}][range][]`;
+        if (!queryParams[key]) {
+          queryParams[key] = [];
+        }
+        queryParams[key].push(dateRange.startDate);
+        if (dateRange.endDate) {
+          queryParams[key].push(dateRange.endDate);
+        }
+      }
+    });
+
+    await fetchContractExtensions(queryParams);
+  }, [currentPage, perPage, columnFilters, dateRangeFilters, fetchContractExtensions, setCurrentPage, setPerPage]);
 
   const handlePageChange = useCallback((page: number) => {
+    setCurrentPage(page);
     handleFetchContractRenewals({ page });
   }, [handleFetchContractRenewals]);
 
-  const handleRowsPerPageChange = useCallback((perPage: number) => {
-    handleFetchContractRenewals({ per_page: perPage, page: 1 });
+  const handleRowsPerPageChange = useCallback((newPerPage: number) => {
+    setPerPage(newPerPage);
+    setCurrentPage(1); // Reset to first page when changing page size
+    handleFetchContractRenewals({ per_page: newPerPage, page: 1 });
   }, [handleFetchContractRenewals]);
 
   const handleNavigateToApproval = useCallback(() => {
@@ -158,8 +201,8 @@ export function useContractRenewal(): UseContractRenewalReturn {
       ...prev,
       [columnId]: values,
     }));
-    // Trigger fetch with new filters
-    handleFetchContractRenewals({ filter_column: { [columnId]: values } } as any);
+    // Trigger fetch with new filters - will be handled by handleFetchContractRenewals
+    handleFetchContractRenewals();
   };
 
   const handleDateRangeFilterChange = (columnId: string, startDate: string, endDate: string | null) => {
@@ -168,14 +211,9 @@ export function useContractRenewal(): UseContractRenewalReturn {
       [columnId]: { startDate, endDate },
     }));
     
+    // Trigger fetch with date range - will be handled by handleFetchContractRenewals
     if (startDate) {
-      // Trigger fetch with date range
-      // This is simplified, real implementation depends on backend filter format
-      handleFetchContractRenewals({ 
-        filter_column: { 
-          [columnId]: { range: endDate ? [startDate, endDate] : [startDate] } 
-        } 
-      } as any);
+      handleFetchContractRenewals();
     }
   };
 
@@ -278,10 +316,10 @@ export function useContractRenewal(): UseContractRenewalReturn {
     data,
     isLoading: apiLoading,
     isDropdownOpen,
-    currentPage: pagination.currentPage,
+    currentPage,
     totalPages: Math.ceil(pagination.total / pagination.perPage) || 1,
     totalItems: pagination.total,
-    perPage: pagination.perPage,
+    perPage,
     columns,
     actions,
     columnFilters,

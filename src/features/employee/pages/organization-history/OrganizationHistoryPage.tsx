@@ -37,7 +37,7 @@ export default function OrganizationHistoryPage() {
     // Add column filters (multiple values)
     Object.entries(columnFilters).forEach(([key, values]) => {
       if (values && values.length > 0 && key === 'statusPerubahan') {
-        params['filter_column[in][org_change_status][]'] = values;
+        params['filter_column[org_change_status][in][]'] = values;
       }
     });
     
@@ -48,7 +48,7 @@ export default function OrganizationHistoryPage() {
         if (range.startDate) dateRange.push(range.startDate);
         if (range.endDate) dateRange.push(range.endDate);
         if (dateRange.length > 0) {
-          params['filter_column[range][effective_date][]'] = dateRange;
+          params['filter_column[effective_date][range][]'] = dateRange;
         }
       }
     });
@@ -149,6 +149,7 @@ export default function OrganizationHistoryPage() {
         align: 'center',
         filterOptions: [
           { label: 'Rekomendasi', value: 'Rekomendasi' },
+          { label: 'Upload Dokumen', value: 'Upload Dokumen' },
           { label: 'Selesai', value: 'Selesai' },
         ],
         format: (v: string) => {
