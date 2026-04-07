@@ -96,7 +96,7 @@ export const useStep3Data = (isOpen?: boolean) => {
       fields.divisi = false;
       fields.departemen = false;
       fields.unit = false;
-      fields.position = false;
+      fields.position = true;
 
       if (selectedJobLabel.includes('Principal')) {
         fields.divisi = true;
