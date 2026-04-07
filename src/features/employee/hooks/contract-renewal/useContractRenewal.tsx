@@ -94,7 +94,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
         current_contract_end: item.current_contract_end,
         remaining_contract: `${item.remaining_month}`,
         renewal_status: 0 as any, // Default/Placeholder
-        renewal_status_name: item.extension_status_name,
+        extension_status_name: item.extension_status_name,
         supervisor_approval_status: 0 as any, // Default/Placeholder
         supervisor_approval_status_name: '-',
         contract_submission_detail: null,
@@ -191,7 +191,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
 
   const handleEdit = useCallback((row: ContractRenewalListItem) => {
     // Dispatch renewal status to store based on status perpanjangan
-    setChangeTypeName(row.renewal_status_name);
+    setChangeTypeName(row.extension_status_name);
     // Use row.id (Extension ID) for navigation
     navigate(`/contract-extension/detail/${row.id}`);
   }, [navigate, setChangeTypeName]);
@@ -279,7 +279,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
     { id: 'remaining_contract', label: 'Sisa Kontrak', minWidth: 120, sortable: true },
     { id: 'notes', label: 'Catatan', minWidth: 150, sortable: true },
     {
-      id: 'renewal_status_name',
+      id: 'extension_status_name',
       label: 'Status Perpanjangan',
       minWidth: 180,
       sortable: true,

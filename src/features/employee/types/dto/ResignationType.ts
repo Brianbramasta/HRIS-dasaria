@@ -75,16 +75,15 @@ export interface UploadDocumentsPayload {
 
 // --- Administration ---
 export interface ResignationAdministrationListItem {
-  id?: string;
-  NIP: string;
+  termination_id: string;
+  employee_id: string;
   employee_name: string;
   tanggal_pengajuan_terminasi: string;
   tanggal_efektif_terminasi: string;
-  position_name: string;
+  position_name: string | null;
   description: string | null;
   end_status: string | null;
   status_terminasi: string;
-  termination_id: string;
 }
 
 export interface ResignationAdministrationListResponse {

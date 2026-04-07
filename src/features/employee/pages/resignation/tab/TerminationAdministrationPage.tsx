@@ -5,17 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import AddUserTermination, { AddTerminationForm } from '@/features/employee/components/modals/termination/AddUserTermination';
 import { useApiResignation } from '@/features/employee/hooks/api/useApiResignation';
 import { formatDateToIndonesian } from '@/utils/formatDate';
+import { ResignationAdministrationListItem } from '@/features/employee/types/dto/ResignationType';
 
-type TerminationItem = {
-  id: string;
-  termination_id: string;
-  nip: string;
-  name: string;
-  tanggalPengajuan: string;
-  tanggalEfektif: string;
-  posisi: string;
-  catatan: string;
-  statusBerakhir: string;
+type TerminationItem = ResignationAdministrationListItem & {
   statusTerminasi: 'Selesai' | 'Sedang diproses';
 };
 
@@ -54,17 +46,9 @@ export default function TerminationAdministrationPage() {
   // Transform API data to table format
   const data: TerminationItem[] = useMemo(
     () =>
-      adminList.map((item, idx) => ({
-        id: item.id || `${item.NIP}-${idx}`,
-        nip: item.NIP || '',
-        name: item.employee_name || '',
-        tanggalPengajuan: item.tanggal_pengajuan_terminasi || '',
-        tanggalEfektif: item.tanggal_efektif_terminasi || '',
-        posisi: item.position_name || '',
-        catatan: item.description || '-',
-        statusBerakhir: item.end_status || '-',
+      adminList.map((item) => ({
+        ...item,
         statusTerminasi: (item.status_terminasi === 'Selesai' ? 'Selesai' : 'Sedang diproses') as 'Selesai' | 'Sedang diproses',
-        termination_id: item.termination_id || '',
       })),
     [adminList]
   );
@@ -93,21 +77,21 @@ export default function TerminationAdministrationPage() {
         sortable: false,
         format: (_, row) => data.indexOf(row) + 1 + (adminPagination.currentPage - 1) * adminPagination.perPage,
       },
-      { id: 'nip', label: 'NIP', minWidth: 100, sortable: true },
-      { id: 'name', label: 'Pengguna', minWidth: 160, sortable: true },
-      { id: 'tanggalPengajuan', label: 'Tanggal Pengajuan', minWidth: 140, sortable: true, dateRangeFilter: true, format: (v) => formatDateToIndonesian(v) || v },
-      { id: 'tanggalEfektif', label: 'Tanggal Efektif', minWidth: 140, sortable: true, dateRangeFilter: true, format: (v) => formatDateToIndonesian(v) || v },
-      { id: 'posisi', label: 'Posisi', minWidth: 180, sortable: true },
+      { id: 'employee_id', label: 'NIP', minWidth: 100, sortable: true },
+      { id: 'employee_name', label: 'Pengguna', minWidth: 160, sortable: true },
+      { id: 'tanggal_pengajuan_terminasi', label: 'Tanggal Pengajuan', minWidth: 140, sortable: true, dateRangeFilter: true, format: (v) => formatDateToIndonesian(v) || v },
+      { id: 'tanggal_efektif_terminasi', label: 'Tanggal Efektif', minWidth: 140, sortable: true, dateRangeFilter: true, format: (v) => formatDateToIndonesian(v) || v },
+      { id: 'position_name', label: 'Posisi', minWidth: 180, sortable: true },
       {
-        id: 'catatan',
+        id: 'description',
         label: 'Catatan',
         minWidth: 180,
         sortable: true,
         format: (v) => <span className="text-sm text-gray-600">{v}</span>,
       },
-      { id: 'statusBerakhir', label: 'Status Berakhir', minWidth: 160, sortable: true },
+      { id: 'end_status', label: 'Status Berakhir', minWidth: 160, sortable: true },
       {
-        id: 'statusTerminasi',
+        id: 'status_terminasi',
         label: 'Status Terminasi',
         minWidth: 160,
         sortable: true,

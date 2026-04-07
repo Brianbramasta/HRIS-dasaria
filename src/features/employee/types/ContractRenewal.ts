@@ -26,7 +26,7 @@ export interface ContractRenewalListItem {
   current_contract_end: string;
   remaining_contract: string;
   renewal_status: RenewalStatus;
-  renewal_status_name: string;
+  extension_status_name: string;
   supervisor_approval_status: SupervisorApprovalStatus;
   supervisor_approval_status_name: string;
   contract_submission_detail: string | null;
