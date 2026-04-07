@@ -10,6 +10,8 @@ import { formatDateToIndonesian } from '@/utils/formatDate';
 // import { formatUrlFile } from '@/utils/formatUrlFile';
 import { formatImage } from '@/utils/formatImage';
 import { useNavigate } from 'react-router-dom';
+import useFilterStore from '@/stores/filterStore';
+import { formatFilterValue } from '@/utils/formatFilterValue';
 
 type OrgHistoryListRow = OrganizationChangeListItem & { statusPerubahan: string };
 
@@ -18,6 +20,8 @@ export default function OrganizationHistoryAtasanPage() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
   const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
+    
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters['OrganizationHistoryAtasan']));
   
   const {
     organizationChanges: data,
@@ -54,8 +58,13 @@ export default function OrganizationHistoryAtasanPage() {
       }
     });
     
+    // Add filter items from filter modal
+    if (filterValue) {
+      params.filter = Array.isArray(filterValue) ? filterValue : [filterValue];
+    }
+    
     return params;
-  }, [columnFilters, dateRangeFilters]);
+  }, [columnFilters, dateRangeFilters, filterValue]);
 
   // Event handlers
   const handleSearchChange = useCallback((searchValue: string) => {
@@ -92,11 +101,12 @@ export default function OrganizationHistoryAtasanPage() {
     }));
   }, []);
 
+
   // Refetch data when filters change
   useEffect(() => {
     const params = buildQueryParams();
     fetchOrganizationChanges(params);
-  }, [columnFilters, dateRangeFilters, buildQueryParams, fetchOrganizationChanges]);
+  }, [columnFilters, dateRangeFilters, filterValue, buildQueryParams, fetchOrganizationChanges]);
 
   const handleDropdownToggle = useCallback(() => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -190,6 +200,7 @@ export default function OrganizationHistoryAtasanPage() {
     <div className="p-4">
       <DataTable
         title="Perubahan Organisasi & Rekomendasi"
+        resetKey='OrganizationHistoryAtasan'
         data={rowsWithStatus}
         columns={columns}
         actions={actions}
