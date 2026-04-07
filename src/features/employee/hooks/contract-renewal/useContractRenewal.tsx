@@ -90,8 +90,8 @@ export function useContractRenewal(): UseContractRenewalReturn {
         full_name: item.employee_name,
         position_name: '-', // Not available in API list response
         department_name: item.department_name,
-        join_date: item.current_contract_start,
-        end_date: item.current_contract_end,
+        current_contract_start: item.current_contract_start,
+        current_contract_end: item.current_contract_end,
         remaining_contract: `${item.remaining_month}`,
         renewal_status: 0 as any, // Default/Placeholder
         renewal_status_name: item.extension_status_name,
@@ -253,7 +253,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
     },
     { id: 'department_name', label: 'Departemen', minWidth: 180, sortable: true },
     { 
-      id: 'join_date', 
+      id: 'current_contract_start', 
       label: 'Mulai Kontrak', 
       minWidth: 140, 
       sortable: true,
@@ -265,7 +265,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
       ),
     },
     { 
-      id: 'end_date', 
+      id: 'current_contract_end', 
       label: 'Berakhir Kontrak', 
       minWidth: 150, 
       sortable: true,

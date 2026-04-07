@@ -22,8 +22,8 @@ export interface ContractRenewalListItem {
   full_name: string;
   position_name: string;
   department_name: string;
-  join_date: string;
-  end_date: string;
+  current_contract_start: string;
+  current_contract_end: string;
   remaining_contract: string;
   renewal_status: RenewalStatus;
   renewal_status_name: string;
@@ -44,8 +44,8 @@ export interface ContractRenewalApprovalListItem {
   full_name: string;
   position_name: string;
   department_name: string;
-  join_date: string;
-  end_date: string;
+  current_contract_start: string;
+  current_contract_end: string;
   remaining_contract: string;
   status: RenewalStatus;
   status_name: string;
@@ -63,8 +63,8 @@ export interface StatusPerpanjangan {
   full_name: string;
   position_name: string;
   department_name: string;
-  join_date: string;
-  end_date: string;
+  current_contract_start: string;
+  current_contract_end: string;
   remaining_contract: string;
   renewal_status: RenewalStatus;
   renewal_status_name: string;
