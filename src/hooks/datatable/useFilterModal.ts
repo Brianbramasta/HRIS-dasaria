@@ -148,7 +148,7 @@ export function useFilterModal<T>({
     setModalFilterItems([]);
     setModalFilterTerm('');
     setIsFilterActive(false);
-    setFilterFor(title ?? 'global', []);
+    setFilterFor(pageKey ?? 'global', []);
     
     // Reset all columns to be visible (check all checkboxes)
     const allVisibleColumns = columns.filter((c) => !c.isAction).map((c) => c.id);
