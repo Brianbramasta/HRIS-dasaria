@@ -368,6 +368,14 @@ export const breadcrumbRoutes: Record<string, RouteConfig> = {
       { label: 'Detail' }
     ]
   },
+  '/cash-advance/detail-status/:id': {
+    title: 'Penggajian',
+    breadcrumbs: () => [
+      { label: 'Kasbon', path: '/cash-advance' },
+      { label: 'Status Kasbon', path: '/cash-advance/cash-advance-status' },
+      { label: 'Detail' }
+    ]
+  },
 
   // Payroll Dashboard
   '/payroll-dashboard': {

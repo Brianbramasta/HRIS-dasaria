@@ -67,46 +67,30 @@ export default function StatusKasbonPage() {
         </div>
       ),
     },
-    {
-      id: 'tanggalPengajuan',
-      label: 'Tanggal Pengajuan',
-      sortable: true,
-      dateRangeFilter: true,
-      format: (val) => formatDateToIndonesian(val) || val
-    },
     { id: 'posisi', label: 'Posisi', sortable: true },
     { id: 'departemen', label: 'Departemen', sortable: true },
     {
       id: 'tanggalMulaiPotongan',
-      label: 'Tanggal Mulai Potongan',
+      label: 'Bulan Mulai Potongan',
       sortable: true,
       dateRangeFilter: true,
       format: (val) => formatDateToIndonesian(val) || val
     },
     {
       id: 'tanggalPencairan',
-      label: 'Tanggal Pencairan',
+      label: 'Bulan Selesai Potongan',
       sortable: true,
       dateRangeFilter: true,
       format: (val) => formatDateToIndonesian(val) || val
     },
-    { id: 'jenisKasbon', label: 'Jenis Kasbon', sortable: true },
-    {
-      id: 'nominalKasbon',
-      label: 'Nominal Kasbon',
-      align: 'right',
-      sortable: true,
-      format: (val) => formatCurrencyValue(parseCurrency(val))
-    },
     {
       id: 'nominalCicilan',
-      label: 'Nominal Cicilan',
+      label: 'Sisa Nominal Cicilan',
       align: 'right',
       sortable: true,
       format: (val) => formatCurrencyValue(parseCurrency(val))
     },
     { id: 'sisaPeriodeCicilan', label: 'Sisa Periode Cicilan', sortable: true },
-    { id: 'periodeCicilan', label: 'Periode Cicilan', sortable: true },
     {
       id: 'statusKasbon',
       label: 'Status Kasbon',
@@ -123,7 +107,7 @@ export default function StatusKasbonPage() {
             value === 'Menunggu Cicilan' ? 'bg-warning-100 text-warning-700' :
               value === 'Masa Cicilan' ? 'bg-blue-100 text-blue-700' :
                 'bg-error-100 text-error-700';
-        return <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${color}`}>{value}</span>;
+        return <span className={`status-styling inline-flex rounded-full px-3 py-1 text-xs font-semibold ${color}`}>{value}</span>;
       },
     },
     {
@@ -133,7 +117,7 @@ export default function StatusKasbonPage() {
       sortable: false,
       format: (_, row) => (
         <button
-          onClick={() => navigate(`/cash-advance/detail/${row.loanId}`)}
+          onClick={() => navigate(`/cash-advance/detail-status/${row.loanId}`)}
           className="inline-flex items-center justify-center rounded-md p-2 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-white/[0.06]"
         >
           <IconFileDetail />

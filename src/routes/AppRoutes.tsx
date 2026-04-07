@@ -78,6 +78,7 @@ import StatusKasbonPage from "@/features/payroll/pages/cash-advance/tab/StatusCa
 import RiwayatPengajuanPage from "@/features/payroll/pages/cash-advance/tab/HistorySubmissionPage";
 import CashAdvanceApprovalPage from "@/features/payroll/pages/cash-advance/tab/CashAdvanceApprovalPage";
 import DetailSubmissionPage from "@/features/payroll/pages/cash-advance/detail/DetailSubmissionPage";
+import DetailSubmissionStatusCashAdvancePage from "@/features/payroll/pages/cash-advance/detail/DetailSubmissionStatusCashAdvancePage";
 import DashboardPenggajianPage from "@/features/payroll/pages/dashboard-payroll/DashboardPayrollPage";
 
 import ApprovalPeriodeGajianPage from "@/features/payroll/pages/payroll-period-approval/PayrollPeriodApprovalPage";
@@ -182,6 +183,7 @@ export default function AppRoutes() {
           </Route>
           {/* Dokumentasi: Route untuk Detail Kasbon */}
           <Route path="/cash-advance/detail/:id" element={<DetailSubmissionPage />} />
+          <Route path="/cash-advance/detail-status/:id" element={<DetailSubmissionStatusCashAdvancePage />} />
           <Route path="/payroll-dashboard" element={<DashboardPenggajianPage />} />
           <Route path="/payroll-period-approval" element={<ApprovalPeriodeGajianPage />}>
             {/* Dokumentasi: index default Non-AE untuk /payroll-period-approval */}
