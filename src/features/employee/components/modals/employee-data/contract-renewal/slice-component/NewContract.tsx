@@ -430,10 +430,7 @@ export default function NewContract({
             type="text"
             value={formatInputCurrency(
               String(
-                Number(data?.new_gaji_bersih || 0) +
-                  (data?.new_tunjangan_diskresi || [])
-                    .filter((item) => item.id && item.amount > 0)
-                    .reduce((total, item) => total + (item.amount || 0), 0),
+                Number(data?.new_gaji_bersih || 0) 
               ),
             )}
             disabled

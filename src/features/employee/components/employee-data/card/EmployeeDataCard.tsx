@@ -50,6 +50,7 @@ export default function EmployeeDataCard({ data, employeeId }: Props & { employe
       fields.divisi = false;
       fields.departemen = false;
       fields.unit = false;
+      // fixing 07/04/2026 tampilkan semua field position
       fields.position = true;
 
       if (jobTitle.includes('Principal')) {
