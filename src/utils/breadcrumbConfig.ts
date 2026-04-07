@@ -492,6 +492,14 @@ export const breadcrumbRoutes: Record<string, RouteConfig> = {
     ]
   },
 
+  'resignation/termination-administration/:id': {
+    title: 'Data Master Karyawan',
+    breadcrumbs: () => [
+      { label: 'Terminasi Administrasi', path: '/resignation/termination-administration' },
+      { label: 'Detail Terminasi Administrasi' }
+    ]
+  },
+
   // Contract Extension
   '/contract-extension': {
     title: 'Data Master Karyawan',
