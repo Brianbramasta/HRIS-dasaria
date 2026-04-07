@@ -4,16 +4,16 @@ import type { DataTableColumn, DataTableAction } from '@/components/shared/datat
 import { IconFileDetail } from '@/icons/components/icons';
 // import { IconPencil, IconFileDetail } from '@/icons/components/icons';
 import type { ContractHistoryItem } from '@/features/employee/types/dto/ContractType';
-import { handleViewFile } from "@/utils/viewFileHandle";
 
 interface Params {
   rows: ContractHistoryItem[];
-  // handleViewDetail: (row: ContractHistoryItem) => void;
+  setDetailModalOpen: (open: boolean) => void;
+  setDetailData: (data: any) => void;
   // handleEditRow: (row: ContractHistoryItem) => void;
 }
 
-// export function useContractTabConfig({ rows, handleViewDetail, handleEditRow }: Params) {
-export function useContractTabConfig({ rows }: Params) {
+// export function useContractTabConfig({ rows, setDetailModalOpen, setDetailData, handleEditRow }: Params) {
+export function useContractTabConfig({ rows, setDetailModalOpen, setDetailData }: Params) {
   const columns: DataTableColumn<ContractHistoryItem>[] = useMemo(
     () => [
       { id: 'no', label: 'No.', align: 'center', format: (_v, row) => rows.findIndex((r) => r.id === row.id) + 1, sortable: false },
@@ -33,8 +33,8 @@ export function useContractTabConfig({ rows }: Params) {
         color: 'error',
         icon: <IconFileDetail />,
         onClick: (row) => {
-          const payload = { fileUrl: row.file_contract };
-          handleViewFile(payload);
+          setDetailData(row);
+          setDetailModalOpen(true);
         },
       },
       // {
@@ -44,8 +44,8 @@ export function useContractTabConfig({ rows }: Params) {
       //   onClick: (row) => handleEditRow(row),
       // },
     ],
-    // [handleViewDetail, handleEditRow],
-    [],
+    // [setDetailModalOpen, setDetailData, handleEditRow],
+    [setDetailModalOpen, setDetailData],
   );
 
   return { columns, actions };
