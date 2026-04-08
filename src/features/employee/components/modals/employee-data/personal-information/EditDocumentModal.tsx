@@ -110,7 +110,7 @@ export default function EditDocumentModal({
       />
 
       <FileInput
-        label="Unggah File SK"
+        label="Unggah Dokumen"
         onChange={handleFileChange}
         acceptedFormats={['application/pdf']}
         dragText="Letakkan File ke Sini"
