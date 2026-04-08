@@ -87,6 +87,7 @@ export interface EmployeeDocumentItem {
   jenis_file: string;
   file_type: string;
   description: string;
+  note: string | null;
   file: string | null;
   status: string;
 }

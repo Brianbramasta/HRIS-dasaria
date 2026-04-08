@@ -8,6 +8,7 @@ import { ColumnFilterOption } from '@/components/shared/datatable/filter-column/
 import { EmployeeDocumentItem } from '@/features/employee/types/detail/PersonalInformation';
 import { usePersonalInformation } from '@/features/employee/hooks/employee-data/detail/contract/usePersonalInformation';
 import { handleViewFile } from '@/utils/viewFileHandle';
+import { addNotification } from '@/stores/notificationStore';
 
 interface Props {
   documents: EmployeeDocumentItem[];
@@ -26,7 +27,7 @@ export default function PersonalDocumentsCard({ documents, employeeId }: Props) 
     id: doc.file_type_id,
     tipeFile: doc.file_type,
     jenisFile: doc.jenis_file,
-    catatan: doc.description,
+    catatan: doc.note,
     statusDokumen: doc.status === 'Sudah Upload' ? 'sudah_upload' : 'belum_upload',
     fileUrl: doc.file,
     _index: index
@@ -56,7 +57,7 @@ export default function PersonalDocumentsCard({ documents, employeeId }: Props) 
       id: originalDocument?.file_type_id,
       jenisFile: originalDocument?.jenis_file || row.jenisFile,
       tipeFile: originalDocument?.file_type || row.tipeFile,
-      catatan: originalDocument?.description || row.catatan,
+      catatan: originalDocument?.note || row.catatan,
       fileUrl: originalDocument?.file || row.fileUrl,
       file_type_id: originalDocument?.file_type_id,
       statusDokumen: row.statusDokumen
@@ -73,11 +74,12 @@ export default function PersonalDocumentsCard({ documents, employeeId }: Props) 
     console.log('Submitting document data:', data);
     
     try {
-      if (data.document && data.file_type_id) {
-        // Upload new document
+      if (data.file_type_id && (data.document || data.note)) {
+        // Upload new document or update note
         const uploadResult = await uploadEmployeeDocument(employeeId, {
           file_type_id: data.file_type_id,
-          document: data.document
+          document: data.document,
+          note: data.note
         });
         console.log(uploadResult,'uploadResult')
         
@@ -86,13 +88,25 @@ export default function PersonalDocumentsCard({ documents, employeeId }: Props) 
           // Modal will be closed and data will be refetched automatically
           handleCloseModal();
         } else {
-          console.error('Failed to upload document');
+          addNotification({
+            variant: 'error',
+            title: 'Gagal Mengunggah Dokumen',
+            description: 'Terjadi kesalahan saat mengunggah dokumen. Silakan coba lagi.'
+          });
         }
       } else {
-        console.error('Missing required data for upload');
+        addNotification({
+          variant: 'warning',
+          title: 'Data Tidak Lengkap',
+          description: 'Harap unggah dokumen atau isi catatan sebelum menyimpan.'
+        });
       }
     } catch (error) {
-      console.error('Error submitting document:', error);
+      addNotification({
+        variant: 'error',
+        title: 'Error',
+        description: 'Terjadi kesalahan saat memproses dokumen. Silakan coba lagi.'
+      });
     }
   };
 

@@ -953,8 +953,13 @@ const mapSocialMediaModalToPayload = useCallback(
         return null;
       }
 
-      if (!payload.file_type_id || !payload.document) {
-        setError('File type ID and document are required');
+      if (!payload.file_type_id) {
+        setError('File type ID is required');
+        return null;
+      }
+
+      if (!payload.document && !payload.note) {
+        setError('Either document or note is required');
         return null;
       }
 
@@ -965,7 +970,16 @@ const mapSocialMediaModalToPayload = useCallback(
         const formData = new FormData();
         formData.append('_method', 'PATCH');
         formData.append('file_type_id', payload.file_type_id);
-        formData.append('document', payload.document);
+        
+        // Only append document if it exists
+        if (payload.document) {
+          formData.append('document', payload.document);
+        }
+        
+        // Append note if it exists
+        if (payload.note) {
+          formData.append('note', payload.note);
+        }
 
         const response = await personalInformationService.updateEmployeeDocument(id, formData);
         
@@ -980,7 +994,7 @@ const mapSocialMediaModalToPayload = useCallback(
             employee_id: id,
             document_id: uploadedDoc.employee_document_id || '',
             file_type_id: payload.file_type_id,
-            file_name: payload.document.name,
+            file_name: payload.document?.name || 'note-only-update',
             file_path: uploadedDoc.file || '',
             uploaded_at: new Date().toISOString(),
           };

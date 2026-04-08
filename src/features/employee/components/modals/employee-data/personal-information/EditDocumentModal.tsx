@@ -78,7 +78,8 @@ export default function EditDocumentModal({
     onSubmit({
       ...formData,
       file_type_id: initialData?.id,
-      document: formData.file
+      document: formData.file,
+      note: formData.catatan
     });
   };
 
@@ -115,7 +116,6 @@ export default function EditDocumentModal({
         dragText="Letakkan File ke Sini"
         formatText="Hanya menerima format PDF"
         browseText="Pilih File"
-        required
       />
     </div>
   );

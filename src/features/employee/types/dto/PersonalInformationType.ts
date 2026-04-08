@@ -94,7 +94,8 @@ export interface GetTemporaryUrlResponse {
 
 export interface UpdateEmployeeDocumentRequest {
   file_type_id: string;
-  document: File;
+  document?: File;
+  note?: string;
 }
 
 export interface UpdateEmployeeDocumentResponse {

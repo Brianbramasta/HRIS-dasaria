@@ -125,18 +125,25 @@ export default function OrganizationHistoryPage() {
   }, [navigate]);
 
   // Add statusPerubahan to data for compatibility
-  const rowsWithStatus = useMemo(() => 
-    data.map(item => ({
+  const rowsWithStatus = useMemo(() => {
+    // Debug: log the data structure
+    console.log('Data type:', typeof data);
+    console.log('Data value:', data);
+    console.log('Is array:', Array.isArray(data));
+    
+    // Ensure data is an array
+    const dataArray = Array.isArray(data) ? data : [];
+    
+    return dataArray.map(item => ({
       ...item,
       statusPerubahan: item.org_change_status
-    })),
-    [data]
-  );
+    }));
+  }, [data]);
 
   // Define columns
   const columns: DataTableColumn<OrgHistoryListRow>[] = useMemo(
     () => [
-      { id: 'no', label: 'No.', align: 'center', format: (_v, row) => data.findIndex((r) => r.id === row.id) + 1 },
+      { id: 'no', label: 'No.', align: 'center', format: (_v, row) => Array.isArray(data) ? data.findIndex((r) => r.id === row.id) + 1 : 1 },
       { id: 'employee_id', label: 'NIP' },
       {
         id: 'employee_name',
