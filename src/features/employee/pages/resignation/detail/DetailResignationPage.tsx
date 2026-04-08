@@ -10,15 +10,17 @@ import { useDetailResignation } from '../../../hooks/resignation/useDetailResign
 import EffectiveResignationDateModal from '../../../components/modals/resignation/EffectiveResignationDateModal';
 import RejectionConfirmtionResignnationModal from '../../../components/modals/resignation/RejectionConfirmtionResignnationModal';
 import { useApiResignation } from '../../../hooks/api/useApiResignation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 import {  useNavigate } from 'react-router';
-import { handleViewFileByUrl } from '@/utils/viewFileHandle';
+import { handleViewFileByUrl, getTemporaryUrl } from '@/utils/viewFileHandle';
+import PdfPreviewEmbed from '@/components/shared/modal/PdfPreviewEmbed';
 
 
 export default function DetailPengunduranDiriPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [temporaryFileUrl, setTemporaryFileUrl] = useState<string>('');
   const {
     data,
     loading,
@@ -58,6 +60,25 @@ export default function DetailPengunduranDiriPage() {
   useEffect(() => {
     fetchDocumentTypes();
   }, []);
+
+  // Fetch temporary URL for contract document
+  useEffect(() => {
+    const fetchTemporaryUrl = async () => {
+      const documentUrl = applicationDetail?.resignation_details?.file_contract;
+      if (documentUrl) {
+        try {
+          const temporaryUrlData = await getTemporaryUrl(documentUrl);
+          if (temporaryUrlData?.temporary_url) {
+            setTemporaryFileUrl(temporaryUrlData.temporary_url);
+          }
+        } catch (error) {
+          console.error('Error fetching temporary URL:', error);
+        }
+      }
+    };
+
+    fetchTemporaryUrl();
+  }, [applicationDetail?.resignation_details?.file_contract]);
   if (apiLoading || loading) {
     return <div>Memuat...</div>;
   }
@@ -76,14 +97,9 @@ export default function DetailPengunduranDiriPage() {
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {/* Left: Preview image + button */}
           <div className="flex flex-col items-center gap-3">
-            <img
-              src={
-                (applicationDetail as any)?.resignation_details?.avatar ||
-                data?.avatar ||
-                'https://images.unsplash.com/photo-1544511852-3dfd9dcbf5a0?q=80&w=540&auto=format&fit=crop'
-              }
-              alt="Preview"
-              className="h-full w-40 rounded object-cover"
+            <PdfPreviewEmbed
+              fileUrl={temporaryFileUrl || undefined}
+              className="w-full md:h-full min-h-[300px] md:min-h-max"
             />
             <Button size="sm" variant="primary" onClick={() => handlePreviewPDF(applicationDetail?.resignation_details?.file_contract || '')}>
               Preview PDF

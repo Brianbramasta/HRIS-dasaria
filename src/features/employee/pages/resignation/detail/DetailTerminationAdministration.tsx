@@ -10,7 +10,8 @@ import { IconFileDetail, IconHapus, IconPlus } from '@/icons/components/icons';
 import DoneOffBoardingModal from '../../../components/modals/termination/DoneOffBoardingModal';
 import { useApiResignation } from '@/features/employee/hooks/api/useApiResignation';
 import { formatDateToIndonesian } from '@/utils/formatDate';
-import { handleViewFileByUrl } from '@/utils/viewFileHandle';
+import { handleViewFileByUrl, getTemporaryUrl } from '@/utils/viewFileHandle';
+import PdfPreviewEmbed from '@/components/shared/modal/PdfPreviewEmbed';
 
 type DetailData = {
   name: string;
@@ -30,6 +31,7 @@ export default function DetailTerminationAdministrationPage() {
   const [uploadRows, setUploadRows] = useState<UploadRow[]>([{ id: crypto.randomUUID(), type: '' }]);
   const [isDoneOpen, setIsDoneOpen] = useState(false);
   const [comment, setComment] = useState('');
+  const [temporaryFileUrl, setTemporaryFileUrl] = useState<string>('');
   const navigate = useNavigate();
 
   const {
@@ -51,6 +53,25 @@ export default function DetailTerminationAdministrationPage() {
       fetchDocumentTypes();
     }
   }, [id]);
+
+  // Fetch temporary URL for contract document
+  useEffect(() => {
+    const fetchTemporaryUrl = async () => {
+      const documentUrl = adminDetail?.resignation_details?.file_contract;
+      if (documentUrl) {
+        try {
+          const temporaryUrlData = await getTemporaryUrl(documentUrl);
+          if (temporaryUrlData?.temporary_url) {
+            setTemporaryFileUrl(temporaryUrlData.temporary_url);
+          }
+        } catch (error) {
+          console.error('Error fetching temporary URL:', error);
+        }
+      }
+    };
+
+    fetchTemporaryUrl();
+  }, [adminDetail?.resignation_details?.file_contract]);
 
   // Transform API data to component format
   const data: DetailData | null = useMemo(() => {
@@ -137,13 +158,9 @@ export default function DetailTerminationAdministrationPage() {
       <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           <div className="flex flex-col items-center gap-3">
-            <img
-              src={
-                data.avatar ||
-                'https://images.unsplash.com/photo-1544511852-3dfd9dcbf5a0?q=80&w=540&auto=format&fit=crop'
-              }
-              alt="Preview"
-              className="h-full w-40 rounded object-cover"
+            <PdfPreviewEmbed
+              fileUrl={temporaryFileUrl || undefined}
+              className="w-full md:h-full min-h-[300px] md:min-h-max"
             />
             <Button size="sm" variant="primary" onClick={handlePreviewPDF}>
               Pratinjau PDF

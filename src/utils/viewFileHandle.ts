@@ -1,7 +1,7 @@
 import personalInformationService from "@/features/employee/services/detail/PersonalInformationService";
 import { GetTemporaryUrlResponse } from "@/features/employee/types/dto/PersonalInformationType";
 
-const getTemporaryUrl = async (path: string): Promise<GetTemporaryUrlResponse | null> => {
+export const getTemporaryUrl = async (path: string): Promise<GetTemporaryUrlResponse | null> => {
   if (!path) {
     console.error('Document path is required');
     return null;
