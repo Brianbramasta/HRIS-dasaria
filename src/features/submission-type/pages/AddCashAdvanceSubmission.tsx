@@ -10,6 +10,7 @@ import SelectField from '@/components/shared/field/SelectField';
 import FIleField from '@/components/shared/field/FIleField';
 import TextAreaField from '@/components/shared/field/TextAreaField';
 import DatePicker from '@/components/form/date-picker';
+import Checkbox from '@/components/form/input/Checkbox';
 import PopupBerhasil from '../components/shared/modals/SuccessModal';
 import Alert from '@/components/ui/alert/Alert';
 import { useApiSubmissionType } from '@/features/submission-type/hooks/api/useApiSubmissionType';
@@ -63,6 +64,7 @@ const AddCashAdvanceSubmission: React.FC = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -216,6 +218,27 @@ const AddCashAdvanceSubmission: React.FC = () => {
                 required
                 aria-required="true"
               />
+              <div className="mt-6">
+                <Checkbox
+                  id="terms-checkbox"
+                  checked={termsAccepted}
+                  onChange={setTermsAccepted}
+                  label={
+                    <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                      Anda menyetujui{' '}
+                      <a
+                        href="https://docs.google.com/document/d/1O0Tl5GuN8M8Q6KqIQrVl8nY97RX5IhKV-0Lc3cMAvGw/edit?tab=t.0"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-brand-600 underline hover:text-brand-700"
+                      >
+                        Syarat dan Ketentuan
+                      </a>
+                      {' '}untuk mengajukan kasbon.
+                    </span>
+                  }
+                />
+              </div>
             </>
           )}
 
@@ -230,7 +253,7 @@ const AddCashAdvanceSubmission: React.FC = () => {
             <button
               type="submit"
               form="cash-advance-form"
-              disabled={submitting || !isFormValid || isSubmitting}
+              disabled={submitting || !isFormValid || isSubmitting || !termsAccepted}
               className="px-4 py-2 bg-brand-500 text-white rounded-md hover:bg-brand-600 disabled:opacity-50"
             >
               {isSubmitting ? 'Mengirim...' : 'Submit'}

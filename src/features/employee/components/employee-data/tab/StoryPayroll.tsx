@@ -41,6 +41,12 @@ export default function StoryPayrollTab({ employeeId, isEditable }: Props) {
 
   return (
     <div className="space-y-6">
+      {!error ?<div className="h-fit rounded-lg border border-l-8 border-[#EE0017] bg-[#F1AEB580]/60 p-4 dark:border-red-800 dark:bg-red-900/20 mb-6 shadow-lg">
+        <div className="text-lg font-semibold text-[#212529] dark:text-red-300 mb-2 text-center">Skema Baru Belum Digunakan</div>
+        <div className="text-xs text-[#626262] dark:text-red-400 text-center">
+          Perhitungan di bawah adalah skema terbaru, namun belum berlaku secara resmi. Harap tetap mengacu pada kebijakan yang saat ini berjalan.
+        </div>
+      </div>:null}
       <SectionCard
         title={title}
         withHeaderDivider
@@ -60,7 +66,10 @@ export default function StoryPayrollTab({ employeeId, isEditable }: Props) {
                 <div className="mt-1 text-sm font-semibold text-red-800 dark:text-red-300 text-center">{error}</div>
               </div>
             ) : (
-              <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+              <>
+                
+                
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                 
                 <div className="lg:col-span-1">
                   <h5 className="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Informasi Penggajian</h5>
@@ -85,6 +94,7 @@ export default function StoryPayrollTab({ employeeId, isEditable }: Props) {
                   ))}
                 </div>
               </div>
+              </>
               )}
       </SectionCard>
 
