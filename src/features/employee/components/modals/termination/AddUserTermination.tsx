@@ -74,6 +74,17 @@ const AddUserTermination: React.FC<Props> = ({ isOpen, onClose, onSubmit, submit
     }
   }, [selectedEmployeeData]);
 
+  // Auto-set tanggal efektif when status is "Berakhir" or "Kontrak Selesai"
+  useEffect(() => {
+    if (statusBerakhir && selectedEmployeeData?.Latest_Contract?.end_date) {
+      // Find the selected status option to get the label
+      const selectedStatus = contractEndStatusOptions.find(option => option.value === statusBerakhir);
+      if (selectedStatus && (selectedStatus.label === 'Berakhir' || selectedStatus.label === 'Kontrak Selesai')) {
+        setTanggalEfektif(selectedEmployeeData.Latest_Contract.end_date);
+      }
+    }
+  }, [statusBerakhir, selectedEmployeeData, contractEndStatusOptions]);
+
   // Reset form when modal closes
   useEffect(() => {
     if (!isOpen) {
@@ -138,7 +149,7 @@ const AddUserTermination: React.FC<Props> = ({ isOpen, onClose, onSubmit, submit
         onChange={(value) => setStatusBerakhir(value)}
         defaultValue={statusBerakhir}
         required
-        disabled={submitting || loading}
+        disabled={submitting || loading || !nip}
       />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <DateField
@@ -152,7 +163,7 @@ const AddUserTermination: React.FC<Props> = ({ isOpen, onClose, onSubmit, submit
               setTanggalEfektif(null);
             }
           }}
-          disabled={submitting}
+          disabled={submitting || !nip}
           required
         />
         <DateField
@@ -160,7 +171,7 @@ const AddUserTermination: React.FC<Props> = ({ isOpen, onClose, onSubmit, submit
           // placeholder="Select a date"
           defaultDate={tanggalEfektif || undefined}
           onChange={(_dates, dateStr) => setTanggalEfektif(dateStr || null)}
-          disabled={submitting}
+          disabled={submitting || !nip}
           required
           minDate={tanggalPengajuan || undefined}
         />
@@ -169,6 +180,7 @@ const AddUserTermination: React.FC<Props> = ({ isOpen, onClose, onSubmit, submit
         label="Upload Dokumen"
         onChange={handleFileChange}
         required
+        disabled={!nip}
       />
       <TextAreaField
         label="Catatan"
@@ -176,7 +188,7 @@ const AddUserTermination: React.FC<Props> = ({ isOpen, onClose, onSubmit, submit
         value={catatan}
         onChange={(v) => setCatatan(v)}
         rows={4}
-        disabled={submitting}
+        disabled={submitting || !nip}
       />
     </div>
   );

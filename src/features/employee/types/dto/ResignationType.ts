@@ -13,6 +13,7 @@ export type {
   EmploymentPositionData,
   PersonalDataResponse,
   PersonalInformationFullData,
+  LatestContract,
 } from './PersonalInformationType';
 
 // --- Applications ---

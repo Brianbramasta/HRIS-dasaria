@@ -54,6 +54,22 @@ export interface PersonalDataResponse {
   ktp_address: string;
 }
 
+export interface LatestContract {
+  id: string;
+  employee_id: string;
+  contract_number: number;
+  contract_type: string;
+  contract_status: string;
+  last_contract_signed_date: string;
+  end_date: string;
+  note: string | null;
+  file_for_resign: string | null;
+  file_contract: string | null;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+}
+
 export interface PersonalInformationFullData {
   Personal_Data: PersonalDataResponse;
   Employment_Position_Data: EmploymentPositionData;
@@ -62,6 +78,7 @@ export interface PersonalInformationFullData {
   Salary_Data?: any;
   BPJS_Data?: any;
   Document_Data?: any;
+  Latest_Contract?: LatestContract;
 }
 
 // ===================== Upload Document Types =====================
