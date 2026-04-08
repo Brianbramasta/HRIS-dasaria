@@ -74,6 +74,7 @@ interface UseApiResignationReturn {
   uploadAdministrationDocuments: (id: string, payload: UploadDocumentsPayload) => Promise<boolean>;
   submitAdministration: (id: string) => Promise<boolean>;
   fetchDocumentTypes: () => Promise<void>;
+  deleteAdministrationDocument: (administrationId: string, documentId: string) => Promise<boolean>;
 
   // Employee List & Personal Data
   fetchEmployeeList: (search?: string) => Promise<void>;
@@ -467,6 +468,22 @@ export const useApiResignation = (): UseApiResignationReturn => {
     }
   }, []);
 
+  const deleteAdministrationDocument = useCallback(async (administrationId: string, documentId: string): Promise<boolean> => {
+    setLoading(true);
+    setError(null);
+    try {
+      await resignationAdministrationService.deleteDocument(administrationId, documentId);
+      return true;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Gagal menghapus dokumen terminasi';
+      setError(msg);
+      console.error('Error deleteAdministrationDocument:', err);
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   const fetchEmployeeList = useCallback(async (search?: string) => {
     setLoading(true);
     setError(null);
@@ -596,6 +613,7 @@ export const useApiResignation = (): UseApiResignationReturn => {
     uploadAdministrationDocuments,
     submitAdministration,
     fetchDocumentTypes,
+    deleteAdministrationDocument,
     fetchEmployeeList,
     fetchEmployeePersonalData,
     fetchContractEndStatusList,

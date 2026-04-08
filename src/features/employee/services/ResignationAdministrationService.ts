@@ -45,6 +45,17 @@ class ResignationAdministrationService {
   async getDocumentTypes(): Promise<ApiResponse<DocumentTypeItem[]>> {
     return apiService.get<DocumentTypeItem[]>('/employee-master-data/resignation/dropdown-type-file');
   }
+   async deleteDocument(applicationId: string, documentId: string): Promise<ApiResponse<any>> {
+    const form = new FormData();
+    form.append('_method', 'DELETE');
+    return apiService.post<any>(
+      `${this.basePath}/${applicationId}/delete-document/${documentId}`,
+      form,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }
+    );
+  }
 }
 
 export const resignationAdministrationService = new ResignationAdministrationService();

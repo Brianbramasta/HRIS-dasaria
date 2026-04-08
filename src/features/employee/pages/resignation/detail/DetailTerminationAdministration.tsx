@@ -41,7 +41,7 @@ export default function DetailTerminationAdministrationPage() {
     fetchDocumentTypes,
     uploadAdministrationDocuments,
     submitAdministration,
-    deleteDocument,
+    deleteAdministrationDocument,
   } = useApiResignation();
 
   // Fetch detail and document types on mount
@@ -84,8 +84,17 @@ export default function DetailTerminationAdministrationPage() {
     setUploadRows((rows) => rows.map((r) => (r.id === rowId ? { ...r, file } : r)));
   };
 
-  const handlePreviewPDF = () => {
-    // TODO: Implement PDF preview
+  const handlePreviewPDF = async () => {
+    const documentUrl = adminDetail?.resignation_details?.file_contract;
+    if (!documentUrl) {
+      return;
+    }
+    
+    try {
+      await handleViewFileByUrl(documentUrl);
+    } catch (error) {
+      console.error('Error viewing file:', error);
+    }
   };
 
   const handleOpenDone = () => setIsDoneOpen(true);
@@ -272,7 +281,7 @@ export default function DetailTerminationAdministrationPage() {
                       className="btn-primary"
                       onClick={() => {
                         if (id && d.id) {
-                          deleteDocument(id, d.id);
+                          deleteAdministrationDocument(id, d.id);
                           fetchAdministrationDetail(id);
                         }
                       }}

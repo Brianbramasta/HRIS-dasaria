@@ -5,6 +5,7 @@ import pengunduranDiriService from '../../services/ResignationService';
 import { addNotification } from '../../../../stores/notificationStore';
 // import { error } from 'console';
 import errorHandle from '@/utils/errorHandle';
+import { handleViewFileByUrl } from '@/utils/viewFileHandle';
 
 interface UploadRow {
   id: number;
@@ -178,12 +179,25 @@ export const useDetailResignation = (id: string | undefined) => {
   };
 
   // Handle preview PDF
-  const handlePreviewPDF = () => {
-    addNotification({
-      title: 'Preview PDF',
-      description: 'Static preview only.',
-      variant: 'info',
-    });
+  const handlePreviewPDF = async (fileContract: string) => {
+    if (!fileContract) {
+      addNotification({
+        title: 'Preview PDF',
+        description: 'No file contract available.',
+        variant: 'warning',
+      });
+      return;
+    }
+    
+    try {
+      await handleViewFileByUrl(fileContract);
+    } catch (error) {
+      addNotification({
+        title: 'Preview PDF',
+        description: 'Failed to open file.',
+        variant: 'error',
+      });
+    }
   };
 
   return {

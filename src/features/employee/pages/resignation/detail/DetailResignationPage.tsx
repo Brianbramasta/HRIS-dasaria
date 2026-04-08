@@ -85,7 +85,7 @@ export default function DetailPengunduranDiriPage() {
               alt="Preview"
               className="h-full w-40 rounded object-cover"
             />
-            <Button size="sm" variant="primary" onClick={handlePreviewPDF}>
+            <Button size="sm" variant="primary" onClick={() => handlePreviewPDF(applicationDetail?.resignation_details?.file_contract || '')}>
               Preview PDF
             </Button>
           </div>

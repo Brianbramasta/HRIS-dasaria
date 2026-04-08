@@ -49,6 +49,7 @@ export interface ResignationDetails {
   resignation_reason: string | null;
   document_lampiran: string | null;
   status_name: string;
+  file_contract: string | null;
   sisa_kontrak_bulan: number;
 }
 
@@ -107,6 +108,7 @@ export interface ResignationAdministrationDetails {
   document: string | null;
   end_status: string | null;
   sisa_kontrak_bulan: number;
+  file_contract: string | null;
 }
 
 export interface ResignationAdministrationDetailResult {
