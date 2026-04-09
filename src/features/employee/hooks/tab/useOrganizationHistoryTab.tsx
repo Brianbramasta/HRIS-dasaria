@@ -7,48 +7,183 @@ import { useOrganizationHistory, type OrgHistoryRow } from '@/features/employee/
 import { handleViewFileByUrl } from '@/utils/viewFileHandle';
 
 export function useOrganizationHistoryTab(employeeId?: string) {
-  const { rows } = useOrganizationHistory(employeeId);
+  const {
+    rows,
+    loading,
+    total,
+    page,
+    limit,
+    handleSearchChange,
+    handleSortChange,
+    handlePageChange,
+    handleRowsPerPageChange,
+    handleColumnFilterChange,
+    handleDateRangeFilterChange,
+    columnFilters,
+    dateRangeFilters,
+  } = useOrganizationHistory(employeeId, {
+    initialPage: 1,
+    initialLimit: 10,
+    autoFetch: true,
+  });
 
   const columns: DataTableColumn<OrgHistoryRow>[] = useMemo(
     () => [
-      { id: 'no', label: 'No.', align: 'center', format: (v, row) => { void v; return rows.findIndex((r) => r.id === row.id) + 1; }, sortable: false },
-      { id: 'jenisPerubahan', label: 'Jenis Perubahan' },
-      { id: 'tanggalEfektif', label: 'Tanggal Efektif', format: (v) => formatDateToIndonesian(v) },
-      { id: 'perusahaanLama', label: 'Perusahaan Lama' },
-      { id: 'perusahaanBaru', label: 'Perusahaan Baru' },
-      { id: 'direktoratLama', label: 'Direktorat Lama' },
-      { id: 'direktoratBaru', label: 'Direktorat Baru' },
-      { id: 'posisiLama', label: 'Posisi Lama' },
-      { id: 'posisiBaru', label: 'Posisi Baru' },
-      { id: 'divisiLama', label: 'Divisi Lama' },
-      { id: 'divisiBaru', label: 'Divisi Baru' },
-      { id: 'departemenLama', label: 'Departemen Lama' },
-      { id: 'departemenBaru', label: 'Departemen Baru' },
-      { id: 'unitLama', label: 'Unit Lama' },
-      { id: 'unitBaru', label: 'Unit Baru' },
-      { id: 'jabatanLama', label: 'Jabatan Kepangkatan Lama' },
-      { id: 'jabatanBaru', label: 'Jabatan Kepangkatan Baru' },
-      { id: 'jabatanStrukturalLama', label: 'Jabatan Struktural Lama' },
-      { id: 'jabatanStrukturalBaru', label: 'Jabatan Struktural Baru' },
-      { id: 'jenjangJabatanLama', label: 'Jenjang Jabatan Lama' },
-      { id: 'jenjangJabatanBaru', label: 'Jenjang Jabatan Baru' },
-      { id: 'kategoriKaryawanLama', label: 'Kategori Karyawan Lama' },
-      { id: 'kategoriKaryawanBaru', label: 'Kategori Karyawan Baru' },
-      { id: 'alasanPerubahan', label: 'Alasan Perubahan' },
       { 
-        id: 'detailSK', 
+        id: 'no', 
+        label: 'No.', 
+        align: 'center', 
+        format: (_, row) => { 
+          const index = rows.findIndex((r) => r.id === row.id) + 1 + (page - 1) * limit;
+          return index;
+        }, 
+        sortable: false 
+      },
+      { 
+        id: 'change_type_name', 
+        label: 'Jenis Perubahan',
+        sortable: true,
+        filterOptions: [
+          { label: 'Promosi', value: 'Promosi' },
+          { label: 'Mutasi', value: 'Mutasi' },
+          { label: 'Demosi', value: 'Demosi' },
+          { label: 'Rotasi', value: 'Rotasi' },
+        ],
+      },
+      { 
+        id: 'effective_date', 
+        label: 'Tanggal Efektif', 
+        format: (_, row) => formatDateToIndonesian(row.new_position?.effective_date),
+        sortable: true,
+        dateRangeFilter: true,
+      },
+      { 
+        id: 'old_company', 
+        label: 'Perusahaan Lama', 
+        format: (_, row) => row.previous_position?.company || '',
+        sortable: true 
+      },
+      { 
+        id: 'new_company', 
+        label: 'Perusahaan Baru', 
+        format: (_, row) => row.new_position?.company || '',
+        sortable: true 
+      },
+      { 
+        id: 'old_directorate', 
+        label: 'Direktorat Lama', 
+        format: (_, row) => row.previous_position?.directorate || '',
+        sortable: true 
+      },
+      { 
+        id: 'new_directorate', 
+        label: 'Direktorat Baru', 
+        format: (_, row) => row.new_position?.directorate || '',
+        sortable: true 
+      },
+      { 
+        id: 'old_rank_position', 
+        label: 'Posisi Lama', 
+        format: (_, row) => row.previous_position?.rank_position || '',
+        sortable: true 
+      },
+      { 
+        id: 'new_rank_position', 
+        label: 'Posisi Baru', 
+        format: (_, row) => row.new_position?.rank_position || '',
+        sortable: true 
+      },
+      { 
+        id: 'old_division', 
+        label: 'Divisi Lama', 
+        format: (_, row) => row.previous_position?.division || '',
+        sortable: true 
+      },
+      { 
+        id: 'new_division', 
+        label: 'Divisi Baru', 
+        format: (_, row) => row.new_position?.division || '',
+        sortable: true 
+      },
+      { 
+        id: 'old_department', 
+        label: 'Departemen Lama', 
+        format: (_, row) => row.previous_position?.department || '',
+        sortable: true 
+      },
+      { 
+        id: 'new_department', 
+        label: 'Departemen Baru', 
+        format: (_, row) => row.new_position?.department || '',
+        sortable: true 
+      },
+      { 
+        id: 'old_unit', 
+        label: 'Unit Lama', 
+        format: (_, row) => row.previous_position?.unit || '-',
+        sortable: true 
+      },
+      { 
+        id: 'new_unit', 
+        label: 'Unit Baru', 
+        format: (_, row) => row.new_position?.unit || '-',
+        sortable: true 
+      },
+      { 
+        id: 'old_structural_position', 
+        label: 'Jabatan Struktural Lama', 
+        format: (_, row) => row.previous_position?.structural_position || '',
+        sortable: true 
+      },
+      { 
+        id: 'new_structural_position', 
+        label: 'Jabatan Struktural Baru', 
+        format: (_, row) => row.new_position?.structural_position || '',
+        sortable: true 
+      },
+      { 
+        id: 'old_position_level', 
+        label: 'Jenjang Jabatan Lama', 
+        format: (_, row) => row.previous_position?.position_level || '',
+        sortable: true 
+      },
+      { 
+        id: 'new_position_level', 
+        label: 'Jenjang Jabatan Baru', 
+        format: (_, row) => row.new_position?.position_level || '',
+        sortable: true 
+      },
+      { 
+        id: 'old_employee_category', 
+        label: 'Kategori Karyawan Lama', 
+        format: (_, row) => row.previous_position?.employee_category || '',
+        sortable: true 
+      },
+      { 
+        id: 'new_employee_category', 
+        label: 'Kategori Karyawan Baru', 
+        format: (_, row) => row.new_position?.employee_category || '',
+        sortable: true 
+      },
+      { 
+        id: 'reason_change', 
+        label: 'Alasan Perubahan', 
+        sortable: true 
+      },
+      { 
+        id: 'decree_file', 
         label: 'Detail SK', 
         sortable: false, 
         format: (v) => v!=null?<span onClick={() => handleViewFileByUrl(v)} className="cursor-pointer flex items-center justify-center"><IconFileDetail /></span> : null 
       },
       { 
-        id: 'detailAdendum', 
+        id: 'adendum_file', 
         label: 'Detail Adendum', 
         sortable: false, 
         format: (v) => v!=null?<span onClick={() => handleViewFileByUrl(v)} className="cursor-pointer flex items-center justify-center"><IconFileDetail /></span> : null 
       },
     ],
-    [rows],
+    [rows, page, limit],
   );
 
   const actions: DataTableAction<OrgHistoryRow>[] = [
@@ -62,6 +197,22 @@ export function useOrganizationHistoryTab(employeeId?: string) {
     // },
   ];
 
-  return { rows, columns, actions };
+  return { 
+    rows, 
+    columns, 
+    actions,
+    loading,
+    total,
+    page,
+    limit,
+    handleSearchChange,
+    handleSortChange,
+    handlePageChange,
+    handleRowsPerPageChange,
+    handleColumnFilterChange,
+    handleDateRangeFilterChange,
+    columnFilters,
+    dateRangeFilters,
+  };
 }
 

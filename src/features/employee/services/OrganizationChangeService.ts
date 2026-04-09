@@ -45,12 +45,13 @@ export interface OrganizationChangeListItemRaw {
   id: string;
   employee_id: string;
   employee_name: string;
+  change_type_id: string;
+  change_type_name: string;
   marital_status: string;
   dependents: number;
   reason_change: string;
   decree_file?: string | null;
   adendum_file?: string | null;
-  change_type_name?: string | null;
   previous_position: {
     employee_category: string;
     employee_category_id: string;
@@ -59,8 +60,8 @@ export interface OrganizationChangeListItemRaw {
     directorate: string;
     division: string;
     department: string;
-    unit: string;
-    position: string;
+    unit: string | null;
+    position: string | null;
     rank_position: string;
     structural_position: string;
     position_level: string;
@@ -84,9 +85,9 @@ export interface OrganizationChangeListItemRaw {
     office: string;
     directorate: string;
     division: string;
-    department: string;
-    unit: string;
-    position: string;
+    department: string | null;
+    unit: string | null;
+    position: string | null;
     rank_position: string;
     structural_position: string;
     position_level: string;

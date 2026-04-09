@@ -19,7 +19,23 @@ interface Props {
 
 export default function OrganizationHistoryTab({employeeId,  isEditable }: Props) {
   void isEditable;
-  const { rows, columns, actions } = useOrganizationHistoryTab(employeeId);
+  const {
+    rows,
+    columns,
+    actions,
+    loading,
+    total,
+    page,
+    limit,
+    handleSearchChange,
+    handleSortChange,
+    handlePageChange,
+    handleRowsPerPageChange,
+    handleColumnFilterChange,
+    handleDateRangeFilterChange,
+    columnFilters,
+    dateRangeFilters,
+  } = useOrganizationHistoryTab(employeeId);
 
   return (
       <DataTable<OrgHistoryRow>
@@ -29,7 +45,22 @@ export default function OrganizationHistoryTab({employeeId,  isEditable }: Props
         columns={columns}
         actions={actions ? actions : []}
         filterable
+        searchable={true}
+        searchPlaceholder="Cari berdasarkan kata kunci"
+        loading={loading}
         emptyMessage="Belum ada riwayat organisasi"
+        pageSize={limit}
+        onSearchChange={handleSearchChange}
+        onSortChange={handleSortChange}
+        onPageChangeExternal={handlePageChange}
+        onRowsPerPageChangeExternal={handleRowsPerPageChange}
+        useExternalPagination={true}
+        externalPage={page}
+        externalTotal={total}
+        onColumnFilterChange={handleColumnFilterChange}
+        columnFilters={columnFilters}
+        onDateRangeFilterChange={handleDateRangeFilterChange}
+        dateRangeFilters={dateRangeFilters}
         // addButtonLabel="Tambah Riwayat"
         // onAdd={() => //console.log('Add Org History')}
       />
