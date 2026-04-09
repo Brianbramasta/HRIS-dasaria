@@ -199,6 +199,7 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
                         <FIleField
                           label="Upload file"
                           onChange={(e) => updateEducationField(idx, 'fileSertifikat', e.target.files?.[0])}
+                          required
                         />
                       </div>
                     </>
