@@ -245,7 +245,8 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
       isOpen={isOpen}
       onClose={onClose}
       content={content}
-      handleSubmit={() => onSubmit(form)}
+      handleSubmit={() => {
+        onSubmit(form)}}
       submitting={!!submitting}
       maxWidth="max-w-5xl"
     />

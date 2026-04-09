@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { EducationItem as EducationItemType } from '@/features/employee/types/FormEmployee';
 import { getEducationDropdownOptions } from '@/features/employee/hooks/employee-data/form/useFormulirKaryawan';
-import { formatIndonesianToISO } from '@/utils/formatDate';
 
 export type EducationModalForm = {
   education: EducationItemType[];
@@ -56,9 +55,6 @@ export function useEducationalBackgroundModal({ isOpen, initialData }: Params) {
   }, [isOpen]);
 
   const updateEducationField = (index: number, field: keyof EducationItemType, value: any) => {
-    if (field === 'tanggalPenerbitan' || field === 'tanggalKedaluwarsa') {
-      value = formatIndonesianToISO(value);
-    }
     setForm((prev) => {
       const next = [...prev.education];
       next[index] = { ...next[index], [field]: value } as EducationItemType;
