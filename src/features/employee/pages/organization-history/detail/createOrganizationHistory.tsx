@@ -40,6 +40,39 @@ const CreateOrganizationHistoryPage: React.FC = () => {
     setSalaryFields,
   } = useCreateOrganizationHistory();
 
+  // Filter position level options based on job title
+  const filteredPositionLevelOptions = (() => {
+    const selectedJobTitle = addState.jobTitleOptions.find((opt: any) => opt.value === detailForm.job_title_id);
+    const selectedJobTitleLabel = selectedJobTitle?.label;
+    
+    // Job titles that can only select "General" level
+    const generalOnlyTitles = [
+      'Account Executive (AE)',
+      'Non-Staff PKL Griyanet',
+      'Partnership',
+      'Non-Staff Internship',
+      'Non-Staff PKL Dasarata'
+    ];
+    
+    // Job titles that can select "Junior, Middle, Senior" levels
+    const juniorMiddleSeniorTitles = [
+      'Entry Level',
+      'Officer',
+      'Principal Officer',
+      'Supervisor',
+      'Manager',
+      'Direktur'
+    ];
+    
+    if (selectedJobTitleLabel && generalOnlyTitles.includes(selectedJobTitleLabel)) {
+      return addState.positionLevelOptions.filter((opt: any) => opt.label === 'General');
+    } else if (selectedJobTitleLabel && juniorMiddleSeniorTitles.includes(selectedJobTitleLabel)) {
+      return addState.positionLevelOptions.filter((opt: any) => ['Junior', 'Middle', 'Senior'].includes(opt.label));
+    }
+    
+    return addState.positionLevelOptions;
+  })();
+
   return (
     <form
       className="p-6 space-y-6"
@@ -290,12 +323,12 @@ const CreateOrganizationHistoryPage: React.FC = () => {
               <SelectField
                 label="Jenjang Jabatan"
                 required
-                options={addState.positionLevelOptions.length > 0 ? addState.positionLevelOptions : [{ label: 'Pilih jabatan terlebih dahulu', value: '' }]}
+                options={filteredPositionLevelOptions.length > 0 ? filteredPositionLevelOptions : [{ label: 'Pilih jabatan terlebih dahulu', value: '' }]}
                 defaultValue={detailForm.position_level_id || ''}
                 onChange={(v) => handleInput('position_level_id' as any, v)}
                 onSearch={addState.handlePositionLevelSearch}
                 placeholder="Select"
-                disabled={disableAll || addState.positionLevelOptions.length === 0}
+                disabled={disableAll || !detailForm.job_title_id || filteredPositionLevelOptions.length === 0}
               />
             </div>
             <div>

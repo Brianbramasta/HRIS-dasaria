@@ -103,15 +103,13 @@ export function useNewContract({
   const filteredJobTitleOptions = useMemo(() => {
     if (!selectedCategoryLabel) return jobTitleOptions;
 
-    const lowerCategory = selectedCategoryLabel.toLowerCase();
-
-    if (lowerCategory.includes("non-staff") || lowerCategory.includes("non staff")) {
-      return jobTitleOptions.filter(opt => opt.label.includes('PKL') || opt.label.includes('Internship'));
+    if (selectedCategoryLabel === 'Non-Staff') {
+      return jobTitleOptions.filter(opt => opt.label.includes('Non-Staff'));
     }
-    if (lowerCategory.includes("mitra")) {
-      return jobTitleOptions.filter(opt => opt.label.includes('Kemitraan'));
+    if (selectedCategoryLabel === 'Mitra') {
+      return jobTitleOptions.filter(opt => ['Kemitraan', 'Partnership'].some(keyword => opt.label.includes(keyword)));
     }
-    if (lowerCategory.includes("staff")) {
+    if (selectedCategoryLabel === 'Staff') {
       const staffLabels = [
         'Entry Level',
         'Officer',
@@ -120,6 +118,7 @@ export function useNewContract({
         'Manager',
         'Direktur'
       ];
+      // Use includes for flexibility in labels
       return jobTitleOptions.filter(opt => staffLabels.some(label => opt.label.includes(label)));
     }
     return jobTitleOptions;

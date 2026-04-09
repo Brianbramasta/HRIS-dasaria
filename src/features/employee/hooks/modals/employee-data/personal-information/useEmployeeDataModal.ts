@@ -103,10 +103,10 @@ export function useEmployeeDataModal({ isOpen, initialData }: Params) {
     if (!selectedCategoryLabel) return jobTitleOptions;
 
     if (selectedCategoryLabel === 'Non-Staff') {
-      return jobTitleOptions.filter(opt => ['PKL', 'Internship'].some(keyword => opt.label.includes(keyword)));
+      return jobTitleOptions.filter(opt => opt.label.includes('Non-Staff'));
     }
     if (selectedCategoryLabel === 'Mitra') {
-      return jobTitleOptions.filter(opt => opt.label.includes('Kemitraan'));
+      return jobTitleOptions.filter(opt => ['Kemitraan', 'Partnership'].some(keyword => opt.label.includes(keyword)));
     }
     if (selectedCategoryLabel === 'Staff') {
       const staffLabels = [
@@ -117,6 +117,7 @@ export function useEmployeeDataModal({ isOpen, initialData }: Params) {
         'Manager',
         'Direktur'
       ];
+      // Use includes for flexibility in labels
       return jobTitleOptions.filter(opt => staffLabels.some(label => opt.label.includes(label)));
     }
     return jobTitleOptions;

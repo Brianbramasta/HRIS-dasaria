@@ -38,6 +38,39 @@ export const Step03EmployeeData: React.FC = () => {
 
   const isEmployeeCategoryNotSelected = !step3.kategoriKaryawan;
 
+  // Filter position level options based on job title
+  const filteredPositionLevelOptions = (() => {
+    const selectedJobTitle = jobTitleOptions.find((opt: any) => opt.value === step3.jabatan);
+    const selectedJobTitleLabel = selectedJobTitle?.label;
+    
+    // Job titles that can only select "General" level
+    const generalOnlyTitles = [
+      'Account Executive (AE)',
+      'Non-Staff PKL Griyanet',
+      'Partnership',
+      'Non-Staff Internship',
+      'Non-Staff PKL Dasarata'
+    ];
+    
+    // Job titles that can select "Junior, Middle, Senior" levels
+    const juniorMiddleSeniorTitles = [
+      'Entry Level',
+      'Officer',
+      'Principal Officer',
+      'Supervisor',
+      'Manager',
+      'Direktur'
+    ];
+    
+    if (selectedJobTitleLabel && generalOnlyTitles.includes(selectedJobTitleLabel)) {
+      return positionLevelOptions.filter((opt: any) => opt.label === 'General');
+    } else if (selectedJobTitleLabel && juniorMiddleSeniorTitles.includes(selectedJobTitleLabel)) {
+      return positionLevelOptions.filter((opt: any) => ['Junior', 'Middle', 'Senior'].includes(opt.label));
+    }
+    
+    return positionLevelOptions;
+  })();
+
   return (
     <div className="space-y-6">
       <div>
@@ -187,12 +220,12 @@ export const Step03EmployeeData: React.FC = () => {
           <div>
             <SelectField
               label="Jenjang Jabatan"
-              options={positionLevelOptions}
+              options={filteredPositionLevelOptions}
               defaultValue={step3.jenjangJabatan}
               onChange={(value) => handleChange('jenjangJabatan', value)}
               onSearch={handlePositionLevelSearch}
               required
-              disabled={isEmployeeCategoryNotSelected}
+              disabled={isEmployeeCategoryNotSelected || !step3.jabatan}
             />
           </div>
           {visibleFields.position && (

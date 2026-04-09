@@ -79,10 +79,10 @@ export const useCreateOrganizationHistory = () => {
     if (!selectedCategoryLabel) return addState.jobTitleOptions;
 
     if (selectedCategoryLabel === 'Non-Staff') {
-      return addState.jobTitleOptions.filter(opt => ['PKL', 'Internship'].some(label => opt.label.includes(label)));
+      return addState.jobTitleOptions.filter(opt => opt.label.includes('Non-Staff'));
     }
     if (selectedCategoryLabel === 'Mitra') {
-      return addState.jobTitleOptions.filter(opt => ['Kemitraan'].some(label => opt.label.includes(label)));
+      return addState.jobTitleOptions.filter(opt => ['Kemitraan', 'Partnership'].some(keyword => opt.label.includes(keyword)));
     }
     if (selectedCategoryLabel === 'Staff') {
       const staffLabels = [
@@ -93,6 +93,7 @@ export const useCreateOrganizationHistory = () => {
         'Manager',
         'Direktur'
       ];
+      // Use includes for flexibility in labels
       return addState.jobTitleOptions.filter(opt => staffLabels.some(label => opt.label.includes(label)));
     }
     return addState.jobTitleOptions;
