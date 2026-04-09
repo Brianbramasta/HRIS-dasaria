@@ -146,6 +146,11 @@ export default function ContractTab({
           onAdd={showAddButton ? handleAdd : undefined}
           addButtonLabel={showAddButton ? "Tambah Dokumen" : undefined}
           emptyMessage="Belum ada riwayat kontrak"
+          filterable={false}
+          searchable={true}
+          searchPlaceholder="Cari riwayat kontrak..."
+          disablePagination={false}
+          clientSide={true}
         />
       </div>
       {showAddButton && (

@@ -110,7 +110,16 @@ export function useDatatable<T = any>({
       result = result.filter((row) =>
         columns.some((column) => {
           if (!visibleColumns.includes(column.id)) return false;
-          const value = row[column.id as keyof T];
+          let value: any;
+          
+          // Use formatted value if format function is available, otherwise use raw value
+          if (column.format) {
+            const formattedValue = column.format(row[column.id as keyof T], row);
+            value = typeof formattedValue === 'string' ? formattedValue : formattedValue?.toString();
+          } else {
+            value = row[column.id as keyof T];
+          }
+          
           if (value === null || value === undefined) return false;
           return value.toString().toLowerCase().includes(appliedSearchTerm.toLowerCase());
         })
