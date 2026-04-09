@@ -57,16 +57,37 @@ export function useMediaSosialModal({ isOpen, initialData }: Params) {
     
     let finalValue = value;
     
-    // Hanya tambahkan https:// jika user sedang mengetik (bukan menghapus)
+    // Hanya tambahkan default URL jika user sedang mengetik (bukan menghapus)
     if (!isDeleting) {
       // Hapus semua protocol yang ada di awal
       let cleanedValue = value.replace(/^(https?:\/\/)+/, '');
       
-      // Tambahkan https:// di awal hanya jika belum ada protocol
-      if (!cleanedValue.startsWith('https://') && !cleanedValue.startsWith('http://')) {
-        finalValue = `https://${cleanedValue}`;
+      // Default URLs untuk setiap platform
+      const defaultUrls: Record<string, string> = {
+        instagram: 'https://instagram.com/',
+        xCom: 'https://X.com/',
+        linkedin: 'https://www.linkedin.com/in/',
+        facebook: 'https://facebook.com/',
+      };
+      
+      // Jika field adalah social media dan user mulai mengetik tanpa default URL
+      if (defaultUrls[field] && !cleanedValue.startsWith(defaultUrls[field])) {
+        // Jika user hanya mengetik username tanpa URL lengkap
+        if (!cleanedValue.includes('instagram.com/') && 
+            !cleanedValue.includes('X.com/') && 
+            !cleanedValue.includes('linkedin.com/') && 
+            !cleanedValue.includes('facebook.com/')) {
+          finalValue = defaultUrls[field] + cleanedValue;
+        } else {
+          finalValue = cleanedValue.startsWith('https://') || cleanedValue.startsWith('http://') 
+            ? cleanedValue 
+            : `https://${cleanedValue}`;
+        }
       } else {
-        finalValue = cleanedValue;
+        // Untuk field lain atau jika sudah ada default URL
+        finalValue = cleanedValue.startsWith('https://') || cleanedValue.startsWith('http://') 
+          ? cleanedValue 
+          : `https://${cleanedValue}`;
       }
     }
     

@@ -183,7 +183,7 @@ const EducationalBackgroundModal: React.FC<Props> = ({ isOpen, initialData, onCl
                           placeholder="Pilih tanggal"
                           defaultDate={edu.tanggalKedaluwarsa || undefined}
                           onChange={(_d, dateStr) => updateEducationField(idx, 'tanggalKedaluwarsa', dateStr)}
-                          required
+                          // required
                         />
                       </div>
                       <div className="md:col-span-2">
