@@ -25,6 +25,7 @@ export function useOrganizationHistoryTab(employeeId?: string) {
     initialPage: 1,
     initialLimit: 10,
     autoFetch: true,
+    resetKey: 'riwayat-organisasi',
   });
 
   const columns: DataTableColumn<OrgHistoryRow>[] = useMemo(

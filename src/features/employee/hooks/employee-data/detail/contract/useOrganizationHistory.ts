@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { organizationHistoryService } from '@/features/employee/services/detail/organzationHistory';
 import { OrganizationChangeListParams, OrganizationChangeListItemRaw } from '@/features/employee/services/OrganizationChangeService';
+import useFilterStore from '@/stores/filterStore';
+import { formatFilterValue } from '@/utils/formatFilterValue';
 
 export type OrgHistoryRow = {
   id: string;
@@ -71,6 +73,7 @@ export interface UseOrganizationHistoryOptions {
   initialPage?: number;
   initialLimit?: number;
   autoFetch?: boolean;
+  resetKey?: string;
 }
 
 export interface UseOrganizationHistoryReturn {
@@ -96,7 +99,7 @@ function mapToRow(item: OrganizationChangeListItemRaw): OrgHistoryRow {
 }
 
 export function useOrganizationHistory(employeeId?: string, options: UseOrganizationHistoryOptions = {}): UseOrganizationHistoryReturn {
-  const { initialPage = 1, initialLimit = 10, autoFetch = true } = options;
+  const { initialPage = 1, initialLimit = 10, autoFetch = true, resetKey = 'riwayat-organisasi' } = options;
   
   const [rows, setRows] = useState<OrgHistoryRow[]>([]);
   const [loading, setLoading] = useState(false);
@@ -104,6 +107,7 @@ export function useOrganizationHistory(employeeId?: string, options: UseOrganiza
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(initialPage);
   const [limit, setLimit] = useState(initialLimit);
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters[resetKey]));
   const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
   const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
 
@@ -130,6 +134,12 @@ export function useOrganizationHistory(employeeId?: string, options: UseOrganiza
         if (params?.column) queryParams.column = params.column;
         if (params?.sort) queryParams.sort = params.sort;
         if (params?.filter) queryParams.filter = Array.isArray(params.filter) ? params.filter : [params.filter];
+        
+        // Handle filter - convert to array if needed
+        const filterParam = params?.filter ?? filterValue;
+        if (filterParam) {
+          queryParams.filter = Array.isArray(filterParam) ? filterParam : [filterParam];
+        }
 
         // Add column filters - format: filter_column[column_name][in][]=value
         Object.entries(columnFilters).forEach(([columnId, values]) => {
@@ -194,7 +204,7 @@ export function useOrganizationHistory(employeeId?: string, options: UseOrganiza
         setLoading(false);
       }
     },
-    [employeeId, page, limit, columnFilters, dateRangeFilters]
+    [employeeId, page, limit, columnFilters, dateRangeFilters, filterValue, resetKey]
   );
 
   // Auto-fetch when page, limit, or filters change
