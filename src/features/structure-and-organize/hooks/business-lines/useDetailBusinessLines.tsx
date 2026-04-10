@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 import { businessLinesService } from '../../services/request/BusinessLinesService';
-import { formatUrlFile } from '@/utils/formatUrlFile';
 import { FileSummary } from '../../types/OrganizationApiTypes';
 
 type PersonalFileRow = {
