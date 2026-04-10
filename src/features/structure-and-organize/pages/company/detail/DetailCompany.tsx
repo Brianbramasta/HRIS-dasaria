@@ -10,7 +10,6 @@ import Button from '@/components/ui/button/Button';
 import { IconPencil, IconHapus, IconPlus, IconFileDetail } from '@/icons/components/icons';
 import DocumentsTable from '../../../components/table/TableGlobal';
 import { formatImage } from '@/utils/formatImage';
-import { formatUrlFile } from '@/utils/formatUrlFile';
 import { handleViewFileByUrl } from '@/utils/viewFileHandle';
 
 const DetailPerusahaan: React.FC = () => {

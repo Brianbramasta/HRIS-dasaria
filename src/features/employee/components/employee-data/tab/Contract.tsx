@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import type { Karyawan } from "@/features/employee/types/dto/EmployeeType";
 import Button from "@/components/ui/button/Button";
 import { DataTable } from "@/components/shared/datatable/DataTable";
@@ -8,12 +8,11 @@ import DetailContractModal from "@/features/employee/components/modals/employee-
 import { useContractTab } from "@/features/employee/hooks/employee-data/detail/contract/useContract";
 import ComponentCard from "@/components/common/ComponentCard";
 import type { ContractHistoryItem } from "@/features/employee/types/dto/ContractType";
-import { formatUrlFile } from "@/utils/formatUrlFile";
 import PdfPreviewEmbed from "@/components/shared/modal/PdfPreviewEmbed";
 import { clearSkFile } from "@/stores/fileStore";
 import { formatDateToIndonesian } from "@/utils/formatDate";
 import { useContractTabConfig } from "@/features/employee/hooks/tab/useContractTabConfig";
-import { handleViewFile } from "@/utils/viewFileHandle";
+import { handleViewFileByUrl, getTemporaryUrl } from "@/utils/viewFileHandle";
 
 interface Props {
   employeeId?: string;
@@ -60,6 +59,8 @@ export default function ContractTab({
     isSubmitting,
   } = useContractTab({ employeeIdProp, data });
 
+  const [temporaryFileUrl, setTemporaryFileUrl] = useState<string>('');
+
   const { columns, actions } = useContractTabConfig({
     rows,
     setDetailModalOpen,
@@ -68,9 +69,38 @@ export default function ContractTab({
   });
   const showAddButton = rows.length === 0;
 
-  const rowUrl = {
-    fileUrl: summary?.file_contract || null,
+  const handlePreviewPDF = async () => {
+    const documentUrl = summary?.file_contract;
+    if (!documentUrl) {
+      return;
+    }
+    
+    try {
+      await handleViewFileByUrl(documentUrl);
+    } catch (error) {
+      console.error('Error viewing file:', error);
+    }
   };
+
+  // Fetch temporary URL for contract document
+  useEffect(() => {
+    const fetchTemporaryUrl = async () => {
+      const documentUrl = summary?.file_contract;
+      if (documentUrl) {
+        try {
+          const temporaryUrlData = await getTemporaryUrl(documentUrl);
+          if (temporaryUrlData?.temporary_url) {
+            setTemporaryFileUrl(temporaryUrlData.temporary_url);
+          }
+        } catch (error) {
+          console.error('Error fetching temporary URL:', error);
+        }
+      }
+    };
+
+    fetchTemporaryUrl();
+  }, [summary?.file_contract]);
+
   return (
     <>
       <ComponentCard title="Kontrak">
@@ -78,23 +108,13 @@ export default function ContractTab({
           {/* Left PDF Preview */}
           <div className="col-span-1 flex flex-col mb-6 md:mb-0">
             <PdfPreviewEmbed
-              fileUrl={
-                summary?.file_contract
-                  ? formatUrlFile(summary?.file_contract as string)
-                  : undefined
-              }
+              fileUrl={temporaryFileUrl || undefined}
               className="w-full md:h-full min-h-[300px] md:min-h-max"
             />
             <div className="mt-3 w-full flex justify-center">
               <Button
                 variant="primary"
-                onClick={() =>
-                  // window.open(
-                  //   formatUrlFile(summary?.file_contract as string),
-                  //   "_blank",
-                  // )
-                  handleViewFile(rowUrl)
-                }
+                onClick={handlePreviewPDF}
                 disabled={
                   summary?.file_contract === null ||
                   summary?.file_contract === undefined

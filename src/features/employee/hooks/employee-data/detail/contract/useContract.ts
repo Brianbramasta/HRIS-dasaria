@@ -460,6 +460,7 @@ export function useContractTab({ employeeIdProp, data }: UseContractTabProps): U
         contract_type_name: contractData.summary?.jenis_kontrak || '',
         contract_number: contractData.summary?.kontrak_ke,
         contract_end_status_id: contractData.summary?.contract_end_status_id || '',
+        contract_end_status_name: contractData.summary?.status_berakhir || '',
         sisa_kontrak: contractData.summary?.sisa_kontrak || '',
         deskripsi: '',
         file_contract: contractData.summary?.kontrak_aktif,
