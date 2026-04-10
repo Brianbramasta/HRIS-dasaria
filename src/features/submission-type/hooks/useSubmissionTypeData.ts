@@ -40,12 +40,11 @@ export function useSubmissionTypeData(options: UseSubmissionTypeOptions = {}) {
     return {
       nip: apiData.nip || '',
       name: apiData.name || '',
-      jenisPengajuan: apiData.submission_type || '',
-      tanggalPengajuan: apiData.submission_date || '',
+      submission_type: apiData.submission_type || '',
+      submission_date: apiData.submission_date || '',
       status: apiData.status || '',
-      catatan: apiData.note ?? '-',
+      note: apiData.note ?? '-',
       token: apiData.token ?? '',
-      submission_type: apiData.submission_type ?? '',
       is_filled: apiData.is_filled ?? 0,
     };
   };

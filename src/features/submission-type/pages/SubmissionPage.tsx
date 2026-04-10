@@ -19,12 +19,11 @@ import { formatDateToIndonesian } from "@/utils/formatDate";
 interface RowPengajuan {
   nip: string;
   name: string;
-  jenisPengajuan: string;
-  tanggalPengajuan: string;
-  status: string;
-  catatan: string;
-  token: string;
   submission_type: string;
+  submission_date: string;
+  status: string;
+  note: string;
+  token: string;
   is_filled: number;
 }
 
@@ -66,7 +65,7 @@ export default function JenisPengajuanPage() {
     { id: "nip", label: "NIP", sortable: true },
     { id: "name", label: "Nama", sortable: true },
     { 
-      id: "jenisPengajuan", 
+      id: "submission_type", 
       label: "Jenis Pengajuan", 
       sortable: true,
       filterOptions: [
@@ -75,27 +74,30 @@ export default function JenisPengajuanPage() {
       ],
     },
     { 
-      id: "tanggalPengajuan", 
+      id: "submission_date", 
       label: "Tanggal Pengajuan", 
       sortable: true,
       dateRangeFilter: true, 
-      format: (value: RowPengajuan["tanggalPengajuan"]) => formatDateToIndonesian(value) 
+      format: (value: RowPengajuan["submission_date"]) => formatDateToIndonesian(value) 
     },
     {
       id: "status",
       label: "Status",
       sortable: true,
       filterOptions: [
-        { label: "Pending", value: "Pending" },
+        { label: "Menunggu Diproses", value: "Menunggu Diproses" },
+        { label: "Dalam peninjauan", value: "Dalam peninjauan" },
+        { label: "Masa Cicilan", value: "Masa Cicilan" },
         { label: "Disetujui", value: "Disetujui" },
         { label: "Ditolak", value: "Ditolak" },
+        { label: "Menunggu Persetujuan FAT", value: "Menunggu Persetujuan FAT" },
       ],
       format: (value: RowPengajuan["status"]) => (
         <span
           className={`inline-block rounded-full px-3 py-1 text-xs font-medium status-styling ${
-            value === "Pending"
+            value === "Menunggu Diproses" || value === "Menunggu Persetujuan FAT" || value === "Dalam peninjauan"
               ? "bg-orange-100 text-orange-700"
-              : value === "Disetujui"
+              : value === "Disetujui" || value === "Masa Cicilan"
               ? "bg-green-100 text-green-700"
               : value === "Ditolak"
               ? "bg-red-100 text-red-700"
