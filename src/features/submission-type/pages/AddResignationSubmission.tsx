@@ -162,10 +162,7 @@ const AddResignationSubmission: React.FC = () => {
               required
               aria-required="true"
             />
-          </div>
-
-          {selfServiceResignationInfo?.status_kasbon && (
-            <div>
+            {selfServiceResignationInfo?.status_kasbon && (
               <FIleField
                 label="Surat Komitmen Pelunasan"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setField('suratKomitmenPelunasan', e.target.files?.[0] || null)}
@@ -173,8 +170,10 @@ const AddResignationSubmission: React.FC = () => {
                 required
                 aria-required="true"
               />
-            </div>
           )}
+          </div>
+
+          
           
           
 
