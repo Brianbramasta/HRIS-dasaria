@@ -5,7 +5,7 @@ import type { PositionRow } from '../../types/OrganizationTableTypes';
 import { AddPositionModal } from '../../components/modals/job-title/AddPositionModal';
 import { EditPositionModal } from '../../components/modals/job-title/EditPositionModal';
 import { DeletePositionModal } from '../../components/modals/job-title/DeletePositionModal';
-import { formatUrlFile } from '@/utils/formatUrlFile';
+import { handleViewFileByUrl } from '@/utils/viewFileHandle';
 
 type Props = { resetKey: string };
 
@@ -15,7 +15,7 @@ const positionColumns: DataTableColumn<PositionRow>[] = [
   { id: 'jabatan-struktural', label: 'Jabatan Struktural', sortable: true },
   { id: 'grade', label: 'Golongan', sortable: true },
   { id: 'deskripsi-tugas', label: 'Deskripsi Tugas', sortable: true },
-  { id: 'file-sk-dan-mou', label: 'File SK & MoU', sortable: false, isAction: true, format: (row: PositionRow) => (row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer" className='flex items-center justify-center'><FileText size={16} /></a> : '—' )},
+  { id: 'file-sk-dan-mou', label: 'File SK & MoU', sortable: false, isAction: true, format: (row: PositionRow) => (row.fileUrl ? <button onClick={() => handleViewFileByUrl((row.fileUrl as string))} className='flex items-center justify-center w-full'><FileText size={16} /></button> : '—' )},
 ];
 
 // Dokumentasi: Halaman Jabatan menggunakan pagination eksternal agar kompatibel dengan DataTable

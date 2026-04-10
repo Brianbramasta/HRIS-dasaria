@@ -11,6 +11,7 @@ import { IconPencil, IconHapus, IconPlus, IconFileDetail } from '@/icons/compone
 import DocumentsTable from '../../../components/table/TableGlobal';
 import { formatImage } from '@/utils/formatImage';
 import { formatUrlFile } from '@/utils/formatUrlFile';
+import { handleViewFileByUrl } from '@/utils/viewFileHandle';
 
 const DetailPerusahaan: React.FC = () => {
   const {
@@ -53,8 +54,8 @@ const DetailPerusahaan: React.FC = () => {
           className: 'h-9 w-9 flex items-center justify-center rounded-lg  text-white ',
           onClick: (r: any) => {
             //console.log('Detail Dokumen', r);
-            const url = formatUrlFile(r?.fileUrl || r?.url || r?.link);
-            if (url) window.open(url, '_blank');
+            const url = (r?.fileUrl || r?.url || r?.link);
+            if (url) handleViewFileByUrl(url);
           },
         };
 

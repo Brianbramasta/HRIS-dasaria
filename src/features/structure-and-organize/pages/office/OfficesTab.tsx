@@ -6,7 +6,8 @@ import AddOfficeModal from '../../components/modals/office/AddOfficeModal';
 import EditOfficeModal from '../../components/modals/office/EditOfficeModal';
 import DeleteOfficeModal from '../../components/modals/office/DeleteOfficeModal';
 import { FileText } from '@/icons/components/icons';
-import { formatUrlFile } from '@/utils/formatUrlFile';
+// import { formatUrlFile } from '@/utils/formatUrlFile';
+import { handleViewFileByUrl } from '@/utils/viewFileHandle';
 
 type Props = { resetKey: string };
 
@@ -16,7 +17,7 @@ const officeColumns: DataTableColumn<OfficeRow>[] = [
   { id: 'deskripsi-umum', label: 'Deskripsi Umum', sortable: true },
   { id: 'file-sk-dan-memo', label: 'File SK dan Memo', sortable: false, align: 'center', isAction: true, format: ( row: OfficeRow) => (
    
-    row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer" className='flex justify-center items-center'><FileText size={16} /></a> : '—'
+    row.fileUrl ? <button onClick={() => handleViewFileByUrl((row.fileUrl as string))} className='flex justify-center items-center w-full'><FileText size={16} /></button> : '—'
   ) },
 ];
 

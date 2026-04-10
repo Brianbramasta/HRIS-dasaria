@@ -9,7 +9,7 @@ import EditEmployeePositionModal from '../../components/modals/employee-position
 import DeleteEmployeePositionModal from '../../components/modals/employee-position/DeleteEmployeePositionModal';
 // import { addNotification } from '@/stores/notificationStore';
 import { FileText } from '@/icons/components/icons';
-import { formatUrlFile } from '@/utils/formatUrlFile';
+import { handleViewFileByUrl } from '@/utils/viewFileHandle';
 
 type Props = { resetKey: string };
 
@@ -23,7 +23,7 @@ const employeePositionColumns: DataTableColumn<EmployeePositionRow>[] = [
   { id: 'departemen', label: 'Departemen', sortable: true },
   { id: 'unit', label: 'Unit', sortable: true },
   { id: 'deskripsi-tugas', label: 'Deskripsi Tugas', sortable: true },
-  { id: 'file-sk-dan-mou', label: 'File SK & MoU', sortable: false, align: 'center', isAction: true, format: (row: EmployeePositionRow) => (row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer" className='flex items-center justify-center'><FileText size={16} /></a> : '—')},
+  { id: 'file-sk-dan-mou', label: 'File SK & MoU', sortable: false, align: 'center', isAction: true, format: (row: EmployeePositionRow) => (row.fileUrl ? <button onClick={() => handleViewFileByUrl((row.fileUrl as string))} className='flex items-center justify-center w-full'><FileText size={16} /></button> : '—')},
 ];
 
 export default function EmployeePositionsTab({ resetKey }: Props) {

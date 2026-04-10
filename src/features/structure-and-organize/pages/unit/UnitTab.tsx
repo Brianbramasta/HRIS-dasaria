@@ -6,7 +6,7 @@ import AddUnitModal from '../../components/modals/unit/AddUnitModal';
 import EditUnitModal from '../../components/modals/unit/EditUnitModal';
 import DeleteUnitmodal from '../../components/modals/unit/DeleteUnitmodal';
 import { useFileStore } from '@/stores/fileStore';
-import { formatUrlFile } from '@/utils/formatUrlFile';
+import { handleViewFileByUrl } from '@/utils/viewFileHandle';
 
 type Props = { resetKey: string };
 
@@ -23,14 +23,12 @@ const unitColumns: DataTableColumn<UnitRow>[] = [
     isAction: true,
     format: (row: UnitRow) =>
       row.fileUrl ? (
-        <a
-          href={formatUrlFile(row.fileUrl as string)}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex justify-center items-center"
+        <button
+          onClick={() => handleViewFileByUrl((row.fileUrl as string))}
+          className="flex justify-center items-center w-full"
         >
           <FileText size={16} />
-        </a>
+        </button>
       ) : (
         '—'
       ),

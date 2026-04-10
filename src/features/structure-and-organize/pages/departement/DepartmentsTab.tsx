@@ -5,7 +5,7 @@ import type { DepartmentRow } from '../../types/OrganizationTableTypes';
 import AddDepartmentModal from '../../components/modals/department/AddDepartmentModal';
 import EditDepartmentModal from '../../components/modals/department/EditDepartmentModal';
 import DeleteDepartmentModal from '../../components/modals/department/DeleteDepartmentModal';
-import { formatUrlFile } from '@/utils/formatUrlFile';
+import { handleViewFileByUrl } from '@/utils/viewFileHandle';
 
 type Props = { resetKey: string };
 
@@ -15,7 +15,7 @@ const departmentColumns: DataTableColumn<DepartmentRow>[] = [
   { id: 'nama-divisi', label: 'Divisi', sortable: true },
   { id: 'deskripsi', label: 'Deskripsi Umum', sortable: true },
   { id: 'file-sk-dan-memo', label: 'File SK dan Memo', sortable: false, align: 'center', isAction: true, format: (row: DepartmentRow) => (
-    row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer" className='flex items-center justify-center'><FileText size={16} /></a> : '—' )},
+    row.fileUrl ? <button onClick={() => handleViewFileByUrl((row.fileUrl as string))} className='flex items-center justify-center w-full'><FileText size={16} /></button> : '—' )},
 ];
 
 export default function DepartmentsTab({ resetKey }: Props) {

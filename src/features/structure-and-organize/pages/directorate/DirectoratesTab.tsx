@@ -6,7 +6,7 @@ import AddDirectorateModal from '../../components/modals/directorate/AddDirector
 import EditDirectorateModal from '../../components/modals/directorate/EditDirectorateModal';
 import DeleteDirectorateModal from '../../components/modals/directorate/DeleteDirectorateModal';
 import { FileText } from '@/icons/components/icons';
-import { formatUrlFile } from '@/utils/formatUrlFile';
+import { handleViewFileByUrl } from '@/utils/viewFileHandle';
 
 type Props = { resetKey: string };
 
@@ -15,7 +15,7 @@ const directorateColumns: DataTableColumn<DirectorateRow>[] = [
   { id: 'direktorat-name', label: 'Nama Direktorat', sortable: true },
   { id: 'deskripsi-umum', label: 'Deskripsi Umum', sortable: true },
   { id: 'file-sk-dan-memo', label: 'File SK dan Memo', sortable: false, align: 'center', isAction: true, format: (row: DirectorateRow) => (
-    row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer" className='flex justify-center items-center'><FileText size={16} /></a> : '—' )},  
+    row.fileUrl ? <button onClick={() => handleViewFileByUrl((row.fileUrl as string))} className='flex justify-center items-center w-full'><FileText size={16} /></button> : '—' )},  
 ];
 
 export default function DirectoratesTab({ resetKey }: Props) {

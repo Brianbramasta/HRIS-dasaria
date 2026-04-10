@@ -5,7 +5,7 @@ import type { DivisionRow } from '../../types/OrganizationTableTypes';
 import AddDivisionModal from '../../components/modals/division/AddDivisionModal';
 import EditDivisionModal from '../../components/modals/division/EditDivisionModal';
 import DeleteDivisionModal from '../../components/modals/division/DeleteDivisionModal';
-import { formatUrlFile } from '@/utils/formatUrlFile';
+import { handleViewFileByUrl } from '@/utils/viewFileHandle';
 
 type Props = { resetKey: string };
 
@@ -15,7 +15,7 @@ const divisionColumns: DataTableColumn<DivisionRow>[] = [
   { id: 'direktorat', label: 'Direktorat', sortable: true },
   { id: 'deskripsi-umum', label: 'Deskripsi Umum', sortable: true },
   { id: 'file-sk-dan-memo', label: 'File SK dan Memo', sortable: false, isAction: true, align: 'center', format: (row: DivisionRow) => (
-      row.fileUrl ? <a href={formatUrlFile(row.fileUrl as string)} target="_blank" rel="noopener noreferrer" className='flex items-center justify-center'><FileText size={16} /></a> : '—'
+      row.fileUrl ? <button onClick={() => handleViewFileByUrl((row.fileUrl as string))} className='flex items-center justify-center w-full'><FileText size={16} /></button> : '—'
     )  },
 ];
 

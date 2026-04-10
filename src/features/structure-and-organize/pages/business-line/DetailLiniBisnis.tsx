@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router';
 import ExpandCard from '../../components/card/ExpandCard';
 import DocumentsTable from '../../components/table/TableGlobal';
 import useDetailBusinessLines from '../../hooks/business-lines/useDetailBusinessLines';
+import { handleViewFileByUrl } from '@/utils/viewFileHandle';
 export default function DetailLiniBisnis() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ export default function DetailLiniBisnis() {
           actions={[
             {
               icon: <IconFileDetail  />,
-              onClick: (row: any) => { window.open(row.fileUrl, '_blank'); /* preview */ },
+              onClick: (row: any) => { handleViewFileByUrl(row.fileUrl); },
             }
           ]}
         />
