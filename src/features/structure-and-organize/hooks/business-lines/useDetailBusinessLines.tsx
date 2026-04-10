@@ -85,7 +85,7 @@ export default function useDetailBusinessLines(id?: string | undefined) {
           namaFile: f.fileName || '—',
           dokumen: f.fileName || '—',
           memoNumber: businessLine?.memoNumber || '—',
-          fileUrl: formatUrlFile(f.fileUrl) || '—',
+          fileUrl: (f.fileUrl) || '—',
         }))
       );
 
