@@ -186,6 +186,18 @@ export const useApiSubmissionType = (): UseApiSubmissionTypeReturn => {
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Gagal mengambil info self-service kasbon';
       setError(msg);
+      
+      // Check for invalid token error and redirect to NotFound
+      if (err && typeof err === 'object') {
+        const anyErr = err as any;
+        if (
+          anyErr.meta?.status === 500 &&
+          anyErr.meta?.message === 'error retrieving application detail' &&
+          anyErr.errors === 'Invalid or already used token.'
+        ) {
+          window.location.href = '/not-found';
+        }
+      }
     } finally {
       setLoading(false);
     }
@@ -200,6 +212,18 @@ export const useApiSubmissionType = (): UseApiSubmissionTypeReturn => {
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Gagal mengambil info self-service resign';
       setError(msg);
+      
+      // Check for invalid token error and redirect to NotFound
+      if (err && typeof err === 'object') {
+        const anyErr = err as any;
+        if (
+          anyErr.meta?.status === 500 &&
+          anyErr.meta?.message === 'error retrieving application detail' &&
+          anyErr.errors === 'Invalid or already used token.'
+        ) {
+          window.location.href = '/not-found';
+        }
+      }
     } finally {
       setLoading(false);
     }
