@@ -4,7 +4,7 @@ import { formatUrlFile } from '@/utils/formatUrlFile';
 import type { DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
 import { IconPencil, IconHapus, FileText } from '@/icons/components/icons';
 import { useFraudContract } from '@/features/employee/hooks/employee-data/detail/contract/useFraudContract';
-import type { ViolationItem, CreateViolationPayload, UpdateViolationPayload } from '@/features/employee/types/dto/FraudType';
+import type { CreateViolationPayload, UpdateViolationPayload, ViolationItem } from '@/features/employee/types/dto/FraudType';
 import { clearSkFile, useFileStore } from '@/stores/fileStore';
 import type { PelanggaranEntry } from '@/features/employee/components/modals/employee-data/fraud/FraudModal';
 
@@ -34,7 +34,7 @@ export function useFraudTab({ employeeId }: Params) {
     dateRangeFilters,
     handleColumnFilterChange,
     columnFilters,
-  } = useFraudContract({ employeeId, autoFetch: true, initialPage: 1, initialLimit: 10 });
+  } = useFraudContract({ employeeId, autoFetch: true, initialPage: 1, initialLimit: 10, resetKey: 'pelanggaran' });
 
   const [list, setList] = useState<PelanggaranEntry[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -45,14 +45,14 @@ export function useFraudTab({ employeeId }: Params) {
   useEffect(() => {
     const mapped: PelanggaranEntry[] = (violations || []).map((v: ViolationItem) => ({
       id: v.id,
-      jenisPelanggaran: v.violation,
-      tanggalKejadian: v.violation_date,
-      jenisTindakan: v.disciplinary_name || '',
-      masaBerlaku: '',
-      tanggalMulaiTindakan: v.start_date || '',
-      tanggalBerakhirTindakan: v.end_date || '',
-      deskripsi: v.description || '',
-      fileName: v.file || undefined,
+      jenis_pelanggaran: v.violation,
+      tanggal_pelanggaran: v.violation_date,
+      jenis_tindakan: v.disciplinary_name || '',
+      masa_berlaku: '',
+      tanggal_mulai_hukuman: v.start_date || '',
+      tanggal_selesai_hukuman: v.end_date || '',
+      deskripsi_pelanggaran: v.description || '',
+      file: v.file || undefined,
     }));
     setList(mapped);
   }, [violations]);
@@ -60,14 +60,14 @@ export function useFraudTab({ employeeId }: Params) {
   const columns: DataTableColumn<PelanggaranEntry>[] = useMemo(
     () => [
       { id: 'no', label: 'No.', align: 'center', format: (v, row) => { void v; return list.findIndex((r) => r.id === row.id) + 1 + (page - 1) * limit; } },
-      { id: 'jenisPelanggaran', label: 'Jenis Pelanggaran' },
-      { id: 'tanggalKejadian', label: 'Tanggal Kejadian', dateRangeFilter: true, format: (v) => formatDateToIndonesian(v) },
-      { id: 'deskripsi', label: 'deskripsi Pelanggaran' },
-      { id: 'jenisTindakan', label: 'Jenis Tindakan' },
-      { id: 'tanggalMulaiTindakan', label: 'Tanggal Mulai Tindakan', dateRangeFilter: true, format: (v) => (v === '-' ? '-' : formatDateToIndonesian(v)) },
-      { id: 'tanggalBerakhirTindakan', label: 'Tanggal Berakhir Tindakan', dateRangeFilter: true, format: (v) => (v === '-' ? '-' : formatDateToIndonesian(v)) },
+      { id: 'jenis_pelanggaran', label: 'Jenis Pelanggaran' },
+      { id: 'tanggal_pelanggaran', label: 'Tanggal Kejadian', dateRangeFilter: true, format: (v) => formatDateToIndonesian(v) },
+      { id: 'deskripsi_pelanggaran', label: 'deskripsi Pelanggaran' },
+      { id: 'jenis_tindakan', label: 'Jenis Tindakan' },
+      { id: 'tanggal_mulai_hukuman', label: 'Tanggal Mulai Tindakan', dateRangeFilter: true, format: (v) => (v === '-' ? '-' : formatDateToIndonesian(v)) },
+      { id: 'tanggal_selesai_hukuman', label: 'Tanggal Berakhir Tindakan', dateRangeFilter: true, format: (v) => (v === '-' ? '-' : formatDateToIndonesian(v)) },
       {
-        id: 'fileName',
+        id: 'file',
         label: 'Dokumen Terkait',
         align: 'center',
         format: (v) =>
@@ -89,14 +89,14 @@ export function useFraudTab({ employeeId }: Params) {
         if (detail) {
           const mappedDetail: PelanggaranEntry = {
             id: detail.id,
-            jenisPelanggaran: detail.violation,
-            tanggalKejadian: detail.violation_date,
-            jenisTindakan: detail.disciplinary_id || '',
-            masaBerlaku: '',
-            tanggalMulaiTindakan: detail.start_date || '',
-            tanggalBerakhirTindakan: detail.end_date || '',
-            deskripsi: detail.description || '',
-            fileName: detail.file || undefined,
+            jenis_pelanggaran: detail.violation,
+            tanggal_pelanggaran: detail.violation_date,
+            jenis_tindakan: detail.disciplinary_name || '',
+            masa_berlaku: '',
+            tanggal_mulai_hukuman: detail.start_date || '',
+            tanggal_selesai_hukuman: detail.end_date || '',
+            deskripsi_pelanggaran: detail.description || '',
+            file: detail.file || undefined,
           };
           setEditing(mappedDetail);
           setIsOpen(true);
@@ -132,12 +132,12 @@ export function useFraudTab({ employeeId }: Params) {
     const file = skFile?.file || null;
     if (editing && editing.id) {
       const payload: UpdateViolationPayload = {
-        violation: entry.jenisPelanggaran,
-        violation_date: entry.tanggalKejadian,
-        disciplinary_id: entry.jenisTindakan || undefined,
-        start_date: entry.tanggalMulaiTindakan || undefined,
-        end_date: entry.tanggalBerakhirTindakan || undefined,
-        description: entry.deskripsi || undefined,
+        violation: entry.jenis_pelanggaran,
+        violation_date: entry.tanggal_pelanggaran,
+        disciplinary_id: entry.jenis_tindakan || undefined,
+        start_date: entry.tanggal_mulai_hukuman || undefined,
+        end_date: entry.tanggal_selesai_hukuman || undefined,
+        description: entry.deskripsi_pelanggaran || undefined,
         file,
       };
       const ok = await updateViolation(String(editing.id), payload);
@@ -146,12 +146,12 @@ export function useFraudTab({ employeeId }: Params) {
       }
     } else {
       const payload: CreateViolationPayload = {
-        violation: entry.jenisPelanggaran,
-        violation_date: entry.tanggalKejadian,
-        disciplinary_id: entry.jenisTindakan,
-        start_date: entry.tanggalMulaiTindakan || undefined,
-        end_date: entry.tanggalBerakhirTindakan || undefined,
-        description: entry.deskripsi || undefined,
+        violation: entry.jenis_pelanggaran,
+        violation_date: entry.tanggal_pelanggaran,
+        disciplinary_id: entry.jenis_tindakan,
+        start_date: entry.tanggal_mulai_hukuman || undefined,
+        end_date: entry.tanggal_selesai_hukuman || undefined,
+        description: entry.deskripsi_pelanggaran || undefined,
         file,
       };
       const ok = await createViolation(payload);

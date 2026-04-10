@@ -4,25 +4,25 @@ import { useDetailDataKaryawanPersonalInfo } from '@/features/employee/stores/us
 export type PelanggaranEntry = {
   id?: string;
   namaLengkap?: string;
-  jenisPelanggaran: string;
-  tanggalKejadian: string;
-  jenisTindakan: string;
-  masaBerlaku: string;
-  tanggalMulaiTindakan?: string;
-  tanggalBerakhirTindakan?: string;
-  deskripsi: string;
-  fileName?: string;
+  jenis_pelanggaran: string;
+  tanggal_pelanggaran: string;
+  jenis_tindakan: string;
+  masa_berlaku: string;
+  tanggal_mulai_hukuman: string;
+  tanggal_selesai_hukuman: string;
+  deskripsi_pelanggaran: string;
+  file?: string;
 };
 
 const emptyForm: PelanggaranEntry = {
   namaLengkap: '',
-  jenisPelanggaran: '',
-  tanggalKejadian: '',
-  jenisTindakan: '',
-  masaBerlaku: '',
-  tanggalMulaiTindakan: '',
-  tanggalBerakhirTindakan: '',
-  deskripsi: '',
+  jenis_pelanggaran: '',
+  tanggal_pelanggaran: '',
+  jenis_tindakan: '',
+  masa_berlaku: '',
+  tanggal_mulai_hukuman: '',
+  tanggal_selesai_hukuman: '',
+  deskripsi_pelanggaran: '',
 };
 
 type Params = {
@@ -49,7 +49,7 @@ export function useFraudModal(params: Params) {
 
   const handleFileChange = (file: File | null) => {
     if (file) {
-      setForm((prev) => ({ ...prev, fileName: file.name }));
+      setForm((prev) => ({ ...prev, file: file.name }));
     }
     onFileChange?.(file ?? null);
   };

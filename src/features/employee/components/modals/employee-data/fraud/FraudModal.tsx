@@ -39,18 +39,18 @@ const PelanggaranModal: React.FC<PelanggaranModalProps> = ({ isOpen, mode, initi
         <InputField
           label="Jenis Pelanggaran"
           placeholder="Masukkan jenis pelanggaran"
-          value={form.jenisPelanggaran}
-          onChange={(e) => handleInput('jenisPelanggaran', e.target.value)}
+          value={form.jenis_pelanggaran}
+          onChange={(e) => handleInput('jenis_pelanggaran', e.target.value)}
           required
         />
       </div>
       <div className='col-span-2'>
         <DateField
           label="Tanggal Kejadian"
-          id="tanggalKejadian"
+          id="tanggal_pelanggaran"
           placeholder="hh/bb/tttt"
-          defaultDate={form.tanggalKejadian}
-          onChange={(_, dateStr) => handleInput('tanggalKejadian', dateStr)}
+          defaultDate={form.tanggal_pelanggaran}
+          onChange={(_, dateStr) => handleInput('tanggal_pelanggaran', dateStr)}
           required
         />
       </div>
@@ -60,28 +60,28 @@ const PelanggaranModal: React.FC<PelanggaranModalProps> = ({ isOpen, mode, initi
           label="Jenis Tindakan"
           options={disciplinaryOptions}
           placeholder="Select"
-          defaultValue={form.jenisTindakan}
-          onChange={(v) => handleInput('jenisTindakan', v)}
+          defaultValue={form.jenis_tindakan}
+          onChange={(v) => handleInput('jenis_tindakan', v)}
           required
         />
       </div>
       <div className='col-span-2 md:col-span-1'>
         <DateField
           label="Tanggal Mulai Tindakan"
-          id="tanggalMulaiTindakan"
+          id="tanggal_mulai_hukuman"
           placeholder="hh/bb/tttt"
-          defaultDate={form.tanggalMulaiTindakan}
-          onChange={(_, dateStr) => handleInput('tanggalMulaiTindakan', dateStr)}
+          defaultDate={form.tanggal_mulai_hukuman}
+          onChange={(_, dateStr) => handleInput('tanggal_mulai_hukuman', dateStr)}
           required
         />
       </div>
       <div className='col-span-2 md:col-span-1'>
         <DateField
           label="Tanggal Berakhir Tindakan"
-          id="tanggalBerakhirTindakan"
+          id="tanggal_selesai_hukuman"
           placeholder="hh/bb/tttt"
-          defaultDate={form.tanggalBerakhirTindakan}
-          onChange={(_, dateStr) => handleInput('tanggalBerakhirTindakan', dateStr)}
+          defaultDate={form.tanggal_selesai_hukuman}
+          onChange={(_, dateStr) => handleInput('tanggal_selesai_hukuman', dateStr)}
           required
         />
       </div>
@@ -91,15 +91,15 @@ const PelanggaranModal: React.FC<PelanggaranModalProps> = ({ isOpen, mode, initi
           label="Description Pelanggaran"
           placeholder="Ketik deskripsi …"
           rows={4}
-          value={form.deskripsi}
-          onChange={(v) => handleInput('deskripsi', v)}
+          value={form.deskripsi_pelanggaran}
+          onChange={(v) => handleInput('deskripsi_pelanggaran', v)}
           required
         />
       </div>
 
       <div className="col-span-2">
         <FileInput
-          skFileName={form.fileName || ''}
+          skFileName={form.file || ''}
           onChange={(e) => {
             const file = e.target.files?.[0] ?? null;
             handleFileChange(file);

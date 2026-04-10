@@ -36,6 +36,7 @@ export default function PelanggaranTab({ employeeId }: Props) {
     <>
       <DataTable<PelanggaranEntry>
         title="Pelanggaran"
+        resetKey='pelanggaran'
         data={list}
         columns={columns}
         actions={actions}

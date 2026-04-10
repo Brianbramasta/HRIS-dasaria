@@ -2,12 +2,15 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { addNotification } from '@/stores/notificationStore';
 import fraudService from '../../../../services/detail/FraudService';
 import {  type ViolationItem, type CreateViolationPayload, type UpdateViolationPayload, type ViolationListItemRaw, type ViolationDetailRaw, type ViolationListParams } from '@/features/employee/types/dto/FraudType';
+import useFilterStore from '@/stores/filterStore';
+import { formatFilterValue } from '@/utils/formatFilterValue';
 
 export interface UseFraudContractOptions {
   employeeId: string;
   autoFetch?: boolean;
   initialPage?: number;
   initialLimit?: number;
+  resetKey?: string;
 }
 
 export interface DropdownOption {
@@ -41,7 +44,7 @@ export interface UseFraudContractReturn {
   columnFilters: Record<string, string[]>;
 }
 
-export function useFraudContract({ employeeId, autoFetch = true, initialPage = 1, initialLimit = 10 }: UseFraudContractOptions): UseFraudContractReturn {
+export function useFraudContract({ employeeId, autoFetch = true, initialPage = 1, initialLimit = 10, resetKey = 'pelanggaran' }: UseFraudContractOptions): UseFraudContractReturn {
   const [violations, setViolations] = useState<ViolationItem[]>([]);
   const [detail, setDetail] = useState<ViolationItem | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -56,6 +59,7 @@ export function useFraudContract({ employeeId, autoFetch = true, initialPage = 1
   const [sortConfig, setSortConfig] = useState<{ column: string; order: 'asc' | 'desc' } | null>(null);
   const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
   const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters[resetKey]));
 
   const canFetch = useMemo(() => !!employeeId, [employeeId]);
 
@@ -73,6 +77,12 @@ export function useFraudContract({ employeeId, autoFetch = true, initialPage = 1
         search,
         ...params
       };
+
+      // Handle filter - convert to array if needed
+      const filterParam = params?.filter ?? filterValue;
+      if (filterParam) {
+        queryParams.filter = Array.isArray(filterParam) ? filterParam : [filterParam];
+      }
 
       if (sortConfig) {
         queryParams.column = sortConfig.column;
@@ -136,7 +146,7 @@ export function useFraudContract({ employeeId, autoFetch = true, initialPage = 1
     } finally {
       setIsLoading(false);
     }
-  }, [employeeId, page, limit, search, sortConfig, dateRangeFilters, columnFilters]);
+  }, [employeeId, page, limit, search, sortConfig, dateRangeFilters, columnFilters, filterValue, resetKey]);
 
   // Handlers
   const handleSearchChange = useCallback((value: string) => {
