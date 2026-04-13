@@ -29,6 +29,7 @@ export default function PerpanjanganKontrak() {
       <DataTable
         data={data}
         columns={columns}
+        resetKey='Perpanjangan Kontrak'
         actions={actions}
         title="Perpanjangan Kontrak"
         searchable={true}

@@ -9,6 +9,8 @@ import { formatDateToIndonesian } from '@/utils/formatDate';
 import { useApiContractExtension } from '../api/useApiContractExtension';
 import { ContractExtensionListItem } from '../../types/dto/ContractExtensionType';
 import { formatImage } from '@/utils/formatImage';
+import useFilterStore from '@/stores/filterStore';
+import { formatFilterValue } from '@/utils/formatFilterValue';
 
 interface UseContractRenewalReturn {
   data: ContractRenewalListItem[];
@@ -40,6 +42,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
   const navigate = useNavigate();
   const { addNotification } = useNotificationStore();
   const { setChangeTypeName } = useContractRenewalStore();
+  const filterValue = formatFilterValue(useFilterStore((s) => s.filters[s.resetKey]));
   
   // Integration with API Hook
   const { 
@@ -87,12 +90,12 @@ export function useContractRenewal(): UseContractRenewalReturn {
         // or keep it as empty if we don't have real employee_id but navigation uses row.id
         employee_id: item.id, 
         nip: item.nip,
-        full_name: item.employee_name,
+        employee_name: item.employee_name,
         position_name: '-', // Not available in API list response
         department_name: item.department_name,
         current_contract_start: item.current_contract_start,
         current_contract_end: item.current_contract_end,
-        remaining_contract: `${item.remaining_month}`,
+        remaining_month: item.remaining_month,
         renewal_status: 0 as any, // Default/Placeholder
         extension_status_name: item.extension_status_name,
         supervisor_approval_status: 0 as any, // Default/Placeholder
@@ -133,10 +136,8 @@ export function useContractRenewal(): UseContractRenewalReturn {
     if (params?.page) queryParams.page = params.page;
     if (params?.per_page) queryParams.per_page = params.per_page;
 
-    // Handle filter[] - multiple values
-    if (params?.filter) {
-      queryParams.filter = Array.isArray(params.filter) ? params.filter : [params.filter];
-    }
+    if (params?.filter) queryParams.filter = Array.isArray(params.filter) ? params.filter : [params.filter];
+    else if (filterValue) queryParams.filter = filterValue;
 
     // Add column filters - format: filter_column[column_name][in][]=value
     Object.entries(columnFilters).forEach(([columnId, values]) => {
@@ -166,7 +167,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
     });
 
     await fetchContractExtensions(queryParams);
-  }, [currentPage, perPage, columnFilters, dateRangeFilters, fetchContractExtensions, setCurrentPage, setPerPage]);
+  }, [currentPage, perPage, columnFilters, dateRangeFilters, fetchContractExtensions, setCurrentPage, setPerPage, filterValue]);
 
   const handlePageChange = useCallback((page: number) => {
     setCurrentPage(page);
@@ -235,7 +236,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
     },
     { id: 'nip', label: 'NIP', minWidth: 120, sortable: true },
     {
-      id: 'full_name',
+      id: 'employee_name',
       label: 'Pengguna',
       minWidth: 180,
       sortable: true,
@@ -276,7 +277,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
         </div>
       ),
     },
-    { id: 'remaining_contract', label: 'Sisa Kontrak', minWidth: 120, sortable: true },
+    { id: 'remaining_month', label: 'Sisa Kontrak', minWidth: 120, sortable: true },
     { id: 'notes', label: 'Catatan', minWidth: 150, sortable: true },
     {
       id: 'extension_status_name',
@@ -311,6 +312,11 @@ export function useContractRenewal(): UseContractRenewalReturn {
   useEffect(() => {
     handleFetchContractRenewals();
   }, [handleFetchContractRenewals]);
+
+  // Fetch when filterValue changes
+  useEffect(() => {
+    handleFetchContractRenewals();
+  }, [filterValue]);
 
   return {
     data,

@@ -17,7 +17,7 @@ export interface ContractExtensionListItem {
   department_name: string;
   current_contract_start: string;
   current_contract_end: string;
-  remaining_month: number;
+  remaining_month: string;
   extension_note: string | null;
   extension_status_name: string;
 }

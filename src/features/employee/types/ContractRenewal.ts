@@ -19,12 +19,12 @@ export interface ContractRenewalListItem {
   id: string;
   employee_id: string;
   nip: string;
-  full_name: string;
+  employee_name: string;
   position_name: string;
   department_name: string;
   current_contract_start: string;
   current_contract_end: string;
-  remaining_contract: string;
+  remaining_month: string;
   renewal_status: RenewalStatus;
   extension_status_name: string;
   supervisor_approval_status: SupervisorApprovalStatus;
@@ -41,12 +41,12 @@ export interface ContractRenewalApprovalListItem {
   id: string;
   employee_id: string;
   nip: string;
-  full_name: string;
+  employee_name: string;
   position_name: string;
   department_name: string;
   current_contract_start: string;
   current_contract_end: string;
-  remaining_contract: string;
+  remaining_month: string;
   status: RenewalStatus;
   status_name: string;
   renewal_detail: string | null;
@@ -60,12 +60,12 @@ export interface ContractRenewalApprovalListItem {
 
 export interface StatusPerpanjangan {
   nip: string;
-  full_name: string;
+  employee_name: string;
   position_name: string;
   department_name: string;
   current_contract_start: string;
   current_contract_end: string;
-  remaining_contract: string;
+  remaining_month: string;
   renewal_status: RenewalStatus;
   renewal_status_name: string;
   supervisor_approval_status: SupervisorApprovalStatus;

@@ -91,7 +91,7 @@ export default function PersetujuanPerpanjanganKontrak() {
             onSubmit={handleUpdateContractRequest}
             kontrakData={{
               idKaryawan: selectedKontrak.employee_id,
-              pengguna: selectedKontrak.full_name,
+              pengguna: selectedKontrak.employee_name,
               jenisPerubahan: 'Tidak ada',
               perusahaan: 'Dasaria',
               kantor: 'Head Kantor',
@@ -113,7 +113,7 @@ export default function PersetujuanPerpanjanganKontrak() {
             isOpen={isRejectModalOpen}
             onClose={handleRejectModalClose}
             idKaryawan={selectedKontrak.nip}
-            nama={selectedKontrak.full_name}
+            nama={selectedKontrak.employee_name}
             onSubmit={handleRejectSubmit}
           />
         </>
