@@ -47,6 +47,68 @@ export function useEditEmployeePositionModal({
   const [unitOptions, setUnitOptions] = useState<{ value: string; label: string }[]>([]);
   const departmentOptions = useMemo(() => departmentOptionsAll, [departmentOptionsAll]);
 
+  // Get selected labels for visibility logic
+  const selectedJabatanLabel = useMemo(() => {
+    const selected = positionOptions.find(opt => opt.value === jabatan);
+    return selected?.label || '';
+  }, [jabatan, positionOptions]);
+
+  const selectedStructuralJobLabel = useMemo(() => {
+    const selected = structuralJobOptions.find(opt => opt.value === structuralJob);
+    return selected?.label || '';
+  }, [structuralJob, structuralJobOptions]);
+
+  // Determine field visibility based on job title and structural job
+  const visibleFields = useMemo(() => {
+    const fields = {
+      direktorat: true,
+      divisi: true,
+      departemen: true,
+      unit: true,
+    };
+
+    if (!selectedJabatanLabel) return fields;
+
+    // Similar logic to EmployeeDataModal
+    if (selectedJabatanLabel.includes('PKL') || selectedJabatanLabel.includes('Internship')) {
+      return fields;
+    }
+
+    if (selectedJabatanLabel.includes('Kemitraan')) {
+      return fields;
+    }
+
+    // Staff category logic
+    if (['Entry Level', 'Officer'].some(l => selectedJabatanLabel.includes(l))) {
+      return fields;
+    }
+    
+    fields.divisi = false;
+    fields.departemen = false;
+    fields.unit = false;
+
+    if (selectedJabatanLabel.includes('Principal')) {
+      fields.divisi = true;
+      fields.departemen = true;
+      if (['Kepala Branch', 'Branch Leader'].includes(selectedStructuralJobLabel)) {
+        fields.unit = true;
+      }
+    } else if (selectedJabatanLabel.includes('Supervisor')) {
+      fields.divisi = true;
+      fields.departemen = true;
+    } else if (selectedJabatanLabel.includes('Manager')) {
+      fields.divisi = true;
+    } else if (['Direktur', 'Director'].includes(selectedJabatanLabel)) {
+      // Only direktorat
+    } else {
+      fields.divisi = true;
+      fields.departemen = true;
+      fields.unit = true;
+    }
+
+    return fields;
+  }, [selectedJabatanLabel, selectedStructuralJobLabel]);
+
   const handleFileChange = () => {};
 
   useEffect(() => {
@@ -274,6 +336,7 @@ export function useEditEmployeePositionModal({
     divisionOptions,
     departmentOptions,
     unitOptions,
+    visibleFields,
     handleFileChange,
     handleSubmit,
     searchPositions,

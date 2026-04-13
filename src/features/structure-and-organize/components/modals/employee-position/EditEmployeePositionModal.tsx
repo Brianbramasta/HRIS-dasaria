@@ -43,6 +43,7 @@ const EditEmployeePositionModal: React.FC<EditEmployeePositionModalProps> = ({ i
     unit,
     setUnit,
     unitOptions,
+    visibleFields,
     handleFileChange,
     handleSubmit,
     searchPositions,
@@ -88,51 +89,59 @@ const EditEmployeePositionModal: React.FC<EditEmployeePositionModalProps> = ({ i
             onChange={(v) => setStructuralJob(v)}
             disabled={!jabatan}
           />
-          <SelectField
-            label="Direktorat"
-            required
-            options={directorateOptions}
-            placeholder="Pilih Direktorat"
-            defaultValue={direktorat}
-            onChange={(v) => setDirektorat(v)}
-            onSearch={async (q) => {
-              await searchDirectorates(q);
-            }}
-          />
-          <SelectField
-            label="Divisi"
-            required
-            options={divisionOptions}
-            placeholder="Pilih Divisi"
-            defaultValue={divisi}
-            onChange={(v) => {
-              setDivisi(v);
-              setDepartemen('');
-            }}
-            onSearch={async (q) => {
-              await searchDivisions(q);
-            }}
-          />
-          <SelectField
-            label="Departemen"
-            required
-            options={departmentOptions}
-            placeholder="Pilih Departemen"
-            defaultValue={departemen}
-            onChange={(v) => setDepartemen(v)}
-            onSearch={async (q) => {
-              await searchDepartments(q);
-            }}
-          />
-          <SelectField
-            label="Unit"
-            required={false}
-            options={unitOptions}
-            placeholder="Pilih Unit"
-            defaultValue={unit}
-            onChange={(v) => setUnit(v)}
-            disabled={!departemen}
-          />
+          {visibleFields.direktorat && (
+            <SelectField
+              label="Direktorat"
+              required
+              options={directorateOptions}
+              placeholder="Pilih Direktorat"
+              defaultValue={direktorat}
+              onChange={(v) => setDirektorat(v)}
+              onSearch={async (q) => {
+                await searchDirectorates(q);
+              }}
+            />
+          )}
+          {visibleFields.divisi && (
+            <SelectField
+              label="Divisi"
+              required
+              options={divisionOptions}
+              placeholder="Pilih Divisi"
+              defaultValue={divisi}
+              onChange={(v) => {
+                setDivisi(v);
+                setDepartemen('');
+              }}
+              onSearch={async (q) => {
+                await searchDivisions(q);
+              }}
+            />
+          )}
+          {visibleFields.departemen && (
+            <SelectField
+              label="Departemen"
+              required
+              options={departmentOptions}
+              placeholder="Pilih Departemen"
+              defaultValue={departemen}
+              onChange={(v) => setDepartemen(v)}
+              onSearch={async (q) => {
+                await searchDepartments(q);
+              }}
+            />
+          )}
+          {visibleFields.unit && (
+            <SelectField
+              label="Unit"
+              required={false}
+              options={unitOptions}
+              placeholder="Pilih Unit"
+              defaultValue={unit}
+              onChange={(v) => setUnit(v)}
+              disabled={!departemen}
+            />
+          )}
           <InputField
             label="No. Surat Keputusan / Memo Internal"
             required
