@@ -99,14 +99,21 @@ const AddResignationSubmission: React.FC = () => {
       <div className="p-6">
         <form id="resignation-form" onSubmit={handleFormSubmit} className="space-y-6">
           <h2 className="text-3xl font-bold text-start mb-4">Pengunduran Diri</h2>
-          <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-            {/* Dokumentasi: Konten ketentuan pengunduran diri diperbarui sesuai permintaan */}
-            <p>Ketentuan Unggah Dokumen:</p>
-            <ul className="list-disc ml-5 space-y-1">
-              <li>Harap menyerahkan dokumen wajib yang diminta, yaitu: <span className="font-semibold">Surat Pengunduran Diri</span>, <span className="font-semibold">Surat Keterangan Bebas Hutang</span> dan <span className="font-semibold">Surat Keterangan Bebas Aset Perusahaan</span>.</li>
-              <li>Hanya format JPG dan PDF yang diperbolehkan. Ukuran maksimum masing-masing dokumen <span className="font-semibold">10MB</span>.</li>
-              <li>Contoh <span className="font-semibold">SURAT PENGUNDURAN DIRI</span> bisa{' '} 
-              <a href="#" className="text-brand-600 underline">klik disini</a>.</li>
+          <div className="text-sm text-gray-600 dark:text-gray-400 space-y-2">
+            <p className="font-semibold">Ketentuan Pengajuan Pengunduran Diri</p>
+            <ul className="list-disc ml-5 space-y-2">
+              <li>Harap melampirkan dokumen Surat Pengunduran Diri dengan template <span className="font-semibold"><a href="https://docs.google.com/document/d/12qhK_EnSgxFvrOvKe0w9mrTTWPTqJHlc/edit?usp=sharing&ouid=110001047973938417860&rtpof=true&sd=true" target="_blank" rel="noopener noreferrer" className="text-brand-600 underline">sesuai tautan berikut.</a></span>{' '}
+              
+              </li>
+              {selfServiceResignationInfo?.status_kasbon && (
+                <li>Harap melampirkan dokumen Komitmen Pelunasan Kasbon dengan template <span className="font-semibold"><a href="https://docs.google.com/document/d/1f9_IC1hI1Ag0mJ6TVAZdggM_W7DsFmdhXJYnULdBLdY/edit?usp=sharing" target="_blank" rel="noopener noreferrer" className="text-brand-600 underline">sesuai tautan berikut.</a></span>{' '}
+                
+                </li>
+              )} 
+              <li>Dokumen wajib berformat PDF dengan ukuran maksimal 10 MB.</li>
+              <li>Jika pengajuan pengunduran diri Anda disetujui, berikut panduan Exit Clearance yang perlu Anda lakukan ke depannya. Silakan akses dengan{' '}
+              <a href="https://docs.google.com/document/d/1wPLRFsx8WeBlYzwvmKuM-0Yipkg8P8j4-rjT88rUYJs/edit?usp=sharing" target="_blank" rel="noopener noreferrer" className="text-brand-600 underline font-semibold">klik disini</a>.
+              </li>
             </ul>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
