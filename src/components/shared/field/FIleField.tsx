@@ -90,9 +90,6 @@ const FIleField: FC<FileFieldProps> = ({
                 const [coords, setCoords] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
 
                 const onEnter = () => {
-                  // If onInfoClick is provided, don't show tooltip
-                  if (onInfoClick) return;
-                  
                   const el = iconRef.current;
                   if (!el) return;
                   const rect = el.getBoundingClientRect();
@@ -120,8 +117,6 @@ const FIleField: FC<FileFieldProps> = ({
                   setVisible(true);
                 };
                 const onLeave = () => {
-                  // If onInfoClick is provided, don't hide tooltip
-                  if (onInfoClick) return;
                   setVisible(false);
                 };
                 const onIconClick = () => {
@@ -141,7 +136,7 @@ const FIleField: FC<FileFieldProps> = ({
                     >
                       <IconInfo size={16} color={onInfoClick ? "#465fff" : "#98A2B3"} />
                     </span>
-                    {!onInfoClick && visible && (
+                    {visible && (
                       <div
                         style={{ top: coords.top, left: coords.left }}
                         className={`fixed z-50 ${placement === "right" ? "-translate-y-1/2" : ""} ${
