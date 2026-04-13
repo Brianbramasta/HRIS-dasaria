@@ -111,14 +111,13 @@ const AddCashAdvanceSubmission: React.FC = () => {
             <p className="text-center text-2xl font-bold text-blue-700">{formatCurrency(selfServiceLoanInfo?.limit_loan ? parseFloat(selfServiceLoanInfo.limit_loan) : 0)}</p>
           </div>
           
-          <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-            {/* Dokumentasi: Konten ketentuan pengajuan kasbon diperbarui sesuai permintaan */}
-            <p>Ketentuan Pengajuan Kasbon :</p>
-            <ul className="list-disc ml-5 space-y-1">
-              <li>Harap melapirkan dokumen yang diminta, yaitu: <span className="font-semibold">Surat Persetujuan Atasan</span> dan <span className="font-semibold">Surat Dokumen Pendukung</span>.</li>
-              <li>Hanya format JPG dan PDF yang diperbolehkan. Ukuran maksimum masing-masing dokumen <span className="font-semibold">10MB</span>.</li>
-              <li>Contoh <span className="font-semibold">Surat Persetujuan Atasan</span> bisa {' '}
-              <a href="#" className="text-brand-600 underline">klik disini</a>.</li>
+          <div className="text-sm text-gray-600 dark:text-gray-400 space-y-2">
+            <p className="font-semibold">Ketentuan Pengajuan Kasbon</p>
+            <ul className="list-disc ml-5 space-y-2">
+              <li>Harap membaca <strong> <a href="https://docs.google.com/document/d/1xOCbJhupWD_zKq63osciENhlApJblwa4NnD_C9G8uqE/edit?usp=sharing" target="_blank" rel="noopener noreferrer" className="text-brand-600 underline hover:text-brand-700">syarat dan ketentuan berikut.</a></strong> </li>
+              <li>Harap melampirkan dokumen Surat Persetujuan Atasan dengan template <strong> <a href="https://docs.google.com/document/d/1O0Tl5GuN8M8Q6KqIQrVl8nY97RX5IhKV-0Lc3cMAvGw/edit?usp=sharing" target="_blank" rel="noopener noreferrer" className="text-brand-600 underline hover:text-brand-700">sesuai tautan berikut.</a></strong> </li>
+              <li>Harap mengunggah dokumen pendukung berupa bukti pembayaran atau tagihan, jika ada, untuk memperkuat pengajuan kasbon.</li>
+              <li>Dokumen wajib berformat PDF dengan ukuran maksimal 10 MB.</li>
             </ul>
           </div>
           
