@@ -12,6 +12,26 @@ export const Step05UploadDocument: React.FC = () => {
 
   const renderDocumentField = (doc: any) => {
     // const existingFile = getFileForField(doc.id);
+    
+    // Check if this is the "Foto KTP" document
+    const isFotoKTP = doc.document_name.toLowerCase().includes('foto ktp') || 
+                     doc.document_name.toLowerCase().includes('ktp');
+    
+    // Check if this is a photo-related document
+    const isPhotoDocument = doc.document_name.toLowerCase().includes('foto') || 
+                           doc.document_name.toLowerCase().includes('photo');
+    
+    // Set accepted formats based on document type
+    const acceptedFormats = isPhotoDocument 
+      ? ['image/png', 'image/jpeg', 'image/jpg']
+      : ['application/pdf'];
+    
+    const handleInfoClick = () => {
+      if (isFotoKTP) {
+        window.open('https://docs.google.com/document/d/1sA5mq1WdDW_lriE4MEXYN7vIxKCAODjIYcw61Vs4gjE/edit?usp=sharing', '_blank');
+      }
+    };
+    
     return (
       <div key={doc.id} className="w-full">
         <div className="relative">
@@ -29,7 +49,9 @@ export const Step05UploadDocument: React.FC = () => {
             // multiple={false}
             multiple={false}
             // required={doc.is_mandatory === 1}
+            acceptedFormats={acceptedFormats}
             onChange={(e) => handleFileChange(doc.id, e)}
+            onInfoClick={isFotoKTP ? handleInfoClick : undefined}
           />
           {/* {existingFile && (
             <p className="text-xs text-green-600 mt-1 truncate">

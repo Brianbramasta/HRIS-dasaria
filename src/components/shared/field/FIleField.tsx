@@ -15,6 +15,7 @@ interface FileFieldProps {
   className?: string;
   maxFileSize?: number; // in bytes
   disabled?: boolean;
+  onInfoClick?: () => void;
 }
 
 const FIleField: FC<FileFieldProps> = ({
@@ -30,6 +31,7 @@ const FIleField: FC<FileFieldProps> = ({
   className = "",
   maxFileSize = 5 * 1024 * 1024, // 5MB default
   disabled = false,
+  onInfoClick,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState<string>("");
@@ -88,6 +90,9 @@ const FIleField: FC<FileFieldProps> = ({
                 const [coords, setCoords] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
 
                 const onEnter = () => {
+                  // If onInfoClick is provided, don't show tooltip
+                  if (onInfoClick) return;
+                  
                   const el = iconRef.current;
                   if (!el) return;
                   const rect = el.getBoundingClientRect();
@@ -114,19 +119,29 @@ const FIleField: FC<FileFieldProps> = ({
                   }
                   setVisible(true);
                 };
-                const onLeave = () => setVisible(false);
+                const onLeave = () => {
+                  // If onInfoClick is provided, don't hide tooltip
+                  if (onInfoClick) return;
+                  setVisible(false);
+                };
+                const onIconClick = () => {
+                  if (onInfoClick) {
+                    onInfoClick();
+                  }
+                };
 
                 return (
                   <>
                     <span
                       ref={iconRef}
-                      className={`inline-block ml-2 align-middle ${disabled ? 'cursor-not-allowed' : 'cursor-default'}`}
+                      className={`inline-block ml-2 align-middle ${disabled ? 'cursor-not-allowed' : onInfoClick ? 'cursor-pointer hover:text-blue-500 text-blue-500' : 'cursor-default'}`}
                       onMouseEnter={onEnter}
                       onMouseLeave={onLeave}
+                      onClick={onIconClick}
                     >
-                      <IconInfo size={16} />
+                      <IconInfo size={16} color={onInfoClick ? "#465fff" : "#98A2B3"} />
                     </span>
-                    {visible && (
+                    {!onInfoClick && visible && (
                       <div
                         style={{ top: coords.top, left: coords.left }}
                         className={`fixed z-50 ${placement === "right" ? "-translate-y-1/2" : ""} ${
