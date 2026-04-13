@@ -105,6 +105,10 @@ export default function DetailTerminationAdministrationPage() {
     setUploadRows((rows) => rows.map((r) => (r.id === rowId ? { ...r, file } : r)));
   };
 
+  const handleResetUploadRows = () => {
+    setUploadRows([{ id: crypto.randomUUID(), type: '' }]);
+  };
+
   const handlePreviewPDF = async () => {
     const documentUrl = adminDetail?.resignation_details?.file_contract;
     if (!documentUrl) {
@@ -217,8 +221,18 @@ export default function DetailTerminationAdministrationPage() {
                 <Label>Tipe File</Label>
                 <SelectField
                   options={(documentTypes || [])
-                    .filter((t: any) => !((adminDetail?.resignation_documents || [])
-                      .some((d: any) => d?.document_type_id === t?.id)))
+                    .filter((t: any) => {
+                      // Exclude types already uploaded
+                      const isUploaded = (adminDetail?.resignation_documents || [])
+                        .some((d: any) => d?.document_type_id === t?.id);
+                      
+                      // Exclude types already selected in other rows (excluding current row)
+                      const isSelectedInOtherRow = uploadRows
+                        .filter((r) => r.id !== row.id)
+                        .some((r) => r.type === t?.id);
+                      
+                      return !isUploaded && !isSelectedInOtherRow;
+                    })
                     .map((t: any) => ({
                       value: t.id,
                       label: t.file_type_name || t.name,
@@ -259,6 +273,8 @@ export default function DetailTerminationAdministrationPage() {
               const ok = await uploadAdministrationDocuments(id, { document_type_ids: typeIds, files });
               if (ok) {
                 await fetchAdministrationDetail(id);
+                // Clear all upload rows and reset to single empty row
+                handleResetUploadRows();
               }
             }}
           >

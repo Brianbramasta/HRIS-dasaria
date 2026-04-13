@@ -150,6 +150,11 @@ export const useDetailResignation = (id: string | undefined) => {
     setUploadRows((prev) => prev.map((r) => (r.id === rowId ? { ...r, file } : r)));
   };
 
+  // Handle reset upload rows
+  const handleResetUploadRows = () => {
+    setUploadRows([{ id: 1, type: '' }]);
+  };
+
   // Handle upload rows
   const handleUploadRows = () => {
     const newItems = uploadRows
@@ -223,6 +228,7 @@ export const useDetailResignation = (id: string | undefined) => {
     handleRemoveRow,
     handleRowTypeChange,
     handleRowFileChange,
+    handleResetUploadRows,
     handleUploadRows,
     handleRemoveDocument,
     handlePreviewPDF,

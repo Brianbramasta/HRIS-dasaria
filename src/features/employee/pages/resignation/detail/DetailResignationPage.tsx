@@ -37,6 +37,7 @@ export default function DetailPengunduranDiriPage() {
     handleRemoveRow,
     handleRowTypeChange,
     handleRowFileChange,
+    handleResetUploadRows,
   } = useDetailResignation(id);
   const {
     approveApplication,
@@ -176,8 +177,18 @@ export default function DetailPengunduranDiriPage() {
                 <Label>Tipe File</Label>
                 <SelectField
                   options={(documentTypes || [])
-                    .filter((t: any) => !((applicationDetail?.resignation_documents || [])
-                      .some((d: any) => d?.document_type_id === t?.id)))
+                    .filter((t: any) => {
+                      // Exclude types already uploaded
+                      const isUploaded = (applicationDetail?.resignation_documents || [])
+                        .some((d: any) => d?.document_type_id === t?.id);
+                      
+                      // Exclude types already selected in other rows (excluding current row)
+                      const isSelectedInOtherRow = uploadRows
+                        .filter((r) => r.id !== row.id)
+                        .some((r) => r.type === t?.id);
+                      
+                      return !isUploaded && !isSelectedInOtherRow;
+                    })
                     .map((t: any) => ({
                       value: t.id,
                       label: t.file_type_name || t.name,
@@ -220,6 +231,8 @@ export default function DetailPengunduranDiriPage() {
               const ok = await uploadApplicationDocuments(resignationId, { document_type_ids: typeIds, files });
               if (ok) {
                 await fetchApplicationDetail(id);
+                // Clear all upload rows and reset to single empty row
+                handleResetUploadRows();
               }
             }}
           >
