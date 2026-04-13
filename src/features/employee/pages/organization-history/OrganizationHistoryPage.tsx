@@ -71,8 +71,8 @@ export default function OrganizationHistoryPage() {
     fetchOrganizationChanges(params);
   }, [fetchOrganizationChanges, buildQueryParams]);
 
-  const handleSortChange = useCallback((sortValue: string) => {
-    const params = buildQueryParams({ sort: sortValue });
+  const handleSortChange = useCallback((columnId: string, order: 'asc' | 'desc') => {
+    const params = buildQueryParams({ sort: order, column: columnId });
     fetchOrganizationChanges(params);
   }, [fetchOrganizationChanges, buildQueryParams]);
 
