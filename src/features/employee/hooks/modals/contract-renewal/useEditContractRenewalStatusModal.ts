@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useApiContractExtension } from "@/features/employee/hooks/api/useApiContractExtension";
 import { useContractRenewalStore } from "@/features/employee/stores/useContractRenewalStore";
 import { addNotification } from "@/stores/notificationStore";
-import { validateNewContractEndDateFn, validateNewContractStartDateFn, validateContractSequenceFn } from "./slice-component/useContractRenewalDetail";
+import { validateNewContractEndDateFn, validateNewContractStartDateFn } from "./slice-component/useContractRenewalDetail";
 
 type EditStatusPerpanjanganModalParams = {
   isOpen: boolean;
@@ -263,16 +263,7 @@ export function useEditContractRenewalStatusModal({
       errors.push(...validationErrors);
     }
     
-    // Validasi Kontrak Ke
-    if (data?.contract_sequence && data?.contract_sequence) {
-      const oldSequence = parseInt(data.contract_sequence.toString());
-      const newSequence = parseInt(data.contract_sequence.toString());
-      if (!isNaN(newSequence) && !isNaN(oldSequence)) {
-        const validationErrors = validateContractSequenceFn(newSequence, oldSequence);
-        errors.push(...validationErrors);
-      }
-    }
-    
+        
     return errors;
   }, []);
 
@@ -292,7 +283,6 @@ export function useEditContractRenewalStatusModal({
         setSubmitting(false);
         return; // Stop submit jika ada error
       }
-      return
       
       const formData = new FormData();
       formData.append("_method", "PATCH");

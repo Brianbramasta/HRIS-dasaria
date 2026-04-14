@@ -150,10 +150,7 @@ export default function ContractRenewalDetail({
                 onChange={(e) => handleInputChange('contract_sequence', e.target.value)}
                 containerClassName="space-y-2"
               />
-              {validationErrors?.contract_sequence && (
-                <p className="text-sm text-red-500 mt-1">{validationErrors.contract_sequence}</p>
-              )}
-            </div>
+                          </div>
             <div className="space-y-2">
               <DateField
                 label="Tanggal TTD Kontrak Baru"

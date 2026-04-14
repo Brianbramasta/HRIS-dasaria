@@ -56,16 +56,6 @@ export const validateNewContractStartDateFn = (newStartDate: string, oldEndDate:
   return errors;
 };
 
-export const validateContractSequenceFn = (newSequence: number, oldSequence: number) => {
-  const errors: string[] = [];
-  
-  // Validasi C: Nomor Kontrak ke harus lebih besar dari kontrak sebelumnya
-  if (newSequence <= oldSequence) {
-    errors.push(`Nomor kontrak ke harus lebih besar dari kontrak sebelumnya (${oldSequence}).`);
-  }
-  
-  return errors;
-};
 
 type StatusOption = { value: string; label: string; disabled?: boolean };
 type ContractTypeOption = { value: string; label: string };
@@ -73,8 +63,6 @@ type ContractTypeOption = { value: string; label: string };
 interface ValidationErrors {
   new_contract_end_date?: string;
   new_contract_date?: string;
-  contract_sequence?: string;
-  remaining_contract?: string;
   end_date?: string;
 }
 
@@ -128,30 +116,8 @@ export function useContractRenewalDetail({
     return validateNewContractStartDateFn(newStartDate, oldEndDate);
   }, []);
 
-  const validateContractSequence = useCallback((newSequence: number, oldSequence: number) => {
-    return validateContractSequenceFn(newSequence, oldSequence);
-  }, []);
 
-  const validateRemainingContract = useCallback((endDate: string) => {
-    const errors: string[] = [];
-    
-    const endDateObj = new Date(endDate);
-    const today = new Date();
-    const daysRemaining = Math.ceil((endDateObj.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-    
-    // Edge case: Sisa kontrak aktif <= 1 hari
-    if (daysRemaining <= 1) {
-      errors.push("Masa kontrak aktif terlalu singkat untuk memproses perubahan organisasi. Lakukan perpanjangan kontrak terlebih dahulu sebelum mengajukan perubahan organisasi.");
-    }
-    
-    // Edge case: Kontrak aktif sudah berakhir
-    if (daysRemaining < 0) {
-      errors.push("Kontrak karyawan ini telah berakhir. Lakukan perpanjangan kontrak terlebih dahulu sebelum mengajukan perubahan organisasi.");
-    }
-    
-    return errors;
-  }, []);
-
+  
   const showValidationError = useCallback((errors: string[]) => {
     if (errors.length > 0) {
       errors.forEach(error => {
@@ -224,36 +190,13 @@ export function useContractRenewalDetail({
             }
             break;
             
-          case 'contract_sequence':
-            if (data?.contract_sequence) {
-              const oldSequence = parseInt(data.contract_sequence.toString());
-              const newSequence = parseInt(value.toString());
-              if (!isNaN(newSequence) && !isNaN(oldSequence)) {
-                const errors = validateContractSequence(newSequence, oldSequence);
-                shouldProceed = !showValidationError(errors);
-                
-                // Update validation errors state
-                setValidationErrors(prev => ({
-                  ...prev,
-                  contract_sequence: errors.length > 0 ? errors[0] : undefined
-                }));
-              }
-            }
-            break;
         }
       }
       
-      // Validasi untuk sisa kontrak saat data dimuat
-      if (field === 'remaining_contract' && data?.end_date) {
-        const errors = validateRemainingContract(data.end_date);
-        if (errors.length > 0) {
-          showValidationError(errors);
-        }
-      }
       
       // SELALU kirim value ke parent component untuk field tanggal kontrak, 
       // agar parent bisa melakukan validasi lengkap
-      if (onChange && (field === 'new_contract_end_date' || field === 'new_contract_date' || field === 'contract_sequence')) {
+      if (onChange && (field === 'new_contract_end_date' || field === 'new_contract_date')) {
         onChange(field, value);
       } else if (shouldProceed && onChange) {
         // Untuk field lain, hanya kirim jika validasi berhasil
@@ -275,7 +218,7 @@ export function useContractRenewalDetail({
         }
       }
     },
-    [onChange, statusOptions, setChangeTypeName, effectiveContractTypeOptions, isEditing, data, validateNewContractEndDate, validateNewContractStartDate, validateContractSequence, validateRemainingContract, showValidationError]
+    [onChange, statusOptions, setChangeTypeName, effectiveContractTypeOptions, isEditing, data, validateNewContractEndDate, validateNewContractStartDate, showValidationError]
   );
 
   const processedStatusOptions = useMemo(() => {
@@ -311,15 +254,6 @@ export function useContractRenewalDetail({
     return !showLimitedFields && shouldShowAllDetailFields();
   }, [showLimitedFields, shouldShowAllDetailFields]);
 
-  // Validasi awal saat data dimuat
-  useEffect(() => {
-    if (data?.end_date && data?.remaining_contract) {
-      const errors = validateRemainingContract(data.end_date);
-      if (errors.length > 0) {
-        showValidationError(errors);
-      }
-    }
-  }, [data?.end_date, data?.remaining_contract, validateRemainingContract, showValidationError]);
 
   return {
     isEditing,

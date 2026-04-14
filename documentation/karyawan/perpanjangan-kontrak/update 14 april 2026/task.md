@@ -7,34 +7,31 @@
 - [x] Error message: "Tanggal berakhir kontrak baru minimal harus lebih dari [tanggal hari ini + 2 bulan]. Hal ini untuk memastikan notifikasi perpanjangan tidak terus muncul."
 - [x] Error message: "Tanggal berakhir kontrak baru harus lebih dari tanggal berakhir kontrak sebelumnya ([tanggal berakhir lama])."
 
-## ✅ Validasi B — Tanggal Mulai Kontrak Baru
+## Validasi B — Tanggal Mulai Kontrak Baru
 - [x] Tanggal Mulai Kontrak Baru harus ≥ Tanggal Berakhir Kontrak Lama
 - [x] Tidak boleh overlap mundur dengan kontrak yang masih berjalan
 - [x] Implementasi validasi di `validateNewContractStartDate()`
 - [x] Error message: "Tanggal mulai kontrak baru tidak boleh sebelum tanggal berakhir kontrak sebelumnya ([tanggal berakhir lama])."
 
-## ✅ Validasi C — Kontrak ke
-- [x] Nomor Kontrak ke harus lebih besar dari kontrak sebelumnya
-- [x] Tidak boleh input kontrak ke-2 jika sudah di kontrak ke-3
-- [x] Implementasi validasi di `validateContractSequence()`
-- [x] Error message: "Nomor kontrak ke harus lebih besar dari kontrak sebelumnya ([nomor lama])."
+## Validasi C — Kontrak ke
+- [ ] Nomor Kontrak ke harus lebih besar dari kontrak sebelumnya (DIHAPUS)
+- [ ] Tidak boleh input kontrak ke-2 jika sudah di kontrak ke-3 (DIHAPUS)
+- [ ] Implementasi validasi di `validateContractSequence()` (DIHAPUS)
+- [ ] Error message: "Nomor kontrak ke harus lebih besar dari kontrak sebelumnya ([nomor lama])." (DIHAPUS)
 
-## ✅ Edge Cases
+## Edge Cases
 - [x] Tanggal Berakhir Baru = Tanggal Berakhir Lama → tidak valid
 - [x] Tanggal Berakhir Baru tepat 2 bulan dari hari ini → tidak valid
 - [x] Tanggal Mulai Baru sebelum Tanggal Berakhir Lama → tidak valid (overlap)
-- [x] Sisa kontrak aktif ≤ 1 hari → validasi awal
-- [x] Kontrak aktif sudah berakhir → validasi awal
 
 ## Implementasi Teknis
 
 ### Hook Layer (`useContractRenewalDetail.ts`)
 - [x] Import `addNotification` dari `notificationStore.ts`
 - [x] Interface `ValidationErrors` untuk state error
-- [x] Fungsi validasi: `validateNewContractEndDate()`, `validateNewContractStartDate()`, `validateContractSequence()`, `validateRemainingContract()`
+- [x] Fungsi validasi: `validateNewContractEndDate()`, `validateNewContractStartDate()`
 - [x] Fungsi `showValidationError()` untuk menampilkan notification
 - [x] Update `handleInputChange()` dengan validasi real-time
-- [x] Validasi awal saat data dimuat (useEffect)
 - [x] Return `validationErrors` untuk UI consumption
 
 ### Modal Layer (`useEditContractRenewalStatusModal.ts`)
@@ -47,7 +44,7 @@
 - [x] Import `validationErrors` dari hook
 - [x] Error display di bawah field yang relevan
 - [x] Styling error dengan `text-sm text-red-500`
-- [x] Field yang divalidasi: Kontrak Ke, Tanggal TTD Kontrak Baru, Tanggal Berakhir Kontrak Baru
+- [x] Field yang divalidasi: Tanggal TTD Kontrak Baru, Tanggal Berakhir Kontrak Baru
 
 ### Page Layer (`ContractRenewalPage.tsx`)
 - [x] Memanfaatkan notification system global yang sudah ada
@@ -76,7 +73,7 @@
 - Validasi hanya berjalan saat `isEditing = true` dan `value` tidak kosong
 - Notification system menggunakan global store yang sudah ada di `App.tsx`
 - Error messages dinamis dengan format tanggal Indonesia
-- Validasi sisa kontrak berjalan otomatis saat data dimuat
+- Validasi sisa kontrak dan validasi sequence kontrak telah dihapus sesuai permintaan
 
 ## 🎯 Status: COMPLETED
 Semua requirement dari brief telah diimplementasikan dengan mengikuti clean architecture principles yang ada di codebase.
