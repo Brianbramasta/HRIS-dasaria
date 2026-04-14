@@ -24,8 +24,7 @@ Tanggal: 14 april 2026 14:27
 ## Edge Cases
 - [x] Tanggal Efektif = Tanggal Berakhir Kontrak Aktif -> tidak valid
 - [x] Karyawan tidak memiliki kontrak aktif -> blokir form
-<!-- ini belllummm -->
-- [ ] Kontrak aktif berakhir dalam 1 hari -> peringatan khusus (TODO: Implement warning logic)
+- [x] Kontrak aktif berakhir dalam 1 hari -> peringatan khusus dan form disable
 - [x] SK belum diupload saat submit -> tidak valid
 
 ## Implementasi Teknis
@@ -34,8 +33,8 @@ Tanggal: 14 april 2026 14:27
 - [x] Import `addNotification` dari `notificationStore.ts`
 - [x] Interface `ValidationErrors` untuk state error
 - [x] State untuk menyimpan data kontrak aktif karyawan
-- [x] Fungsi validasi: `validateEffectiveDate()`, `validateActiveContract()`, `validateDocumentUpload()`
-- [x] Update `handleNIPChange()` untuk fetch data kontrak aktif
+- [x] Fungsi validasi: `validateEffectiveDate()`, `validateActiveContract()`, `validateDocumentUpload()`, `validateContractExpiringSoon()`
+- [x] Update `handleNIPChange()` untuk fetch data kontrak aktif dan validasi sisa kontrak
 - [x] Update `handleInput()` dengan validasi real-time untuk efektif_date
 - [x] Update `handleSubmit()` dengan validasi complete sebelum submit
 - [x] Return `validationErrors` dan `activeContractData` untuk UI consumption
@@ -46,6 +45,9 @@ Tanggal: 14 april 2026 14:27
 - [x] Styling error dengan `text-sm text-red-500`
 - [x] Disable form jika tidak ada kontrak aktif
 - [x] Tampilkan warning jika tidak ada kontrak aktif
+- [x] Disable form jika kontrak akan berakhir dalam 1 hari
+- [x] Banner peringatan untuk kontrak yang akan segera berakhir
+- [x] Tooltip pada tombol submit "Perpanjang kontrak terlebih dahulu"
 
 ### Type Safety
 - [x] Interface untuk data kontrak aktif karyawan
@@ -74,5 +76,7 @@ Semua requirement dari brief telah diimplementasikan dengan mengikuti clean arch
 - Validasi hanya berjalan saat ada data karyawan dan kontrak aktif
 - Notification system menggunakan global store yang sudah ada
 - Error messages dinamis dengan format tanggal Indonesia
-- Form akan dinonaktifkan secara otomatis jika tidak ada kontrak aktif
-- Satu edge case yang belum diimplementasi: peringatan khusus untuk kontrak yang akan berakhir dalam 1 hari
+- Form akan dinonaktifkan secara otomatis jika tidak ada kontrak aktif atau kontrak akan berakhir dalam 1 hari
+- Banner peringatan muncul untuk kontrak yang akan segera berakhir (warna kuning)
+- Tombol submit memiliki tooltip "Perpanjang kontrak terlebih dahulu" saat form disabled
+- Semua edge cases telah diimplementasikan sesuai brief

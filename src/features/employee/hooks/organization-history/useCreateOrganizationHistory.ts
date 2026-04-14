@@ -27,6 +27,7 @@ interface ValidationErrors {
   efektif_date?: string;
   no_active_contract?: string;
   document_upload?: string;
+  contract_expiring_soon?: string;
 }
 
 export const useCreateOrganizationHistory = () => {
@@ -410,7 +411,41 @@ export const useCreateOrganizationHistory = () => {
     return true;
   }, [isFromAtasan, addState.form.skFile]);
 
-  
+  const validateContractExpiringSoon = useCallback((contractEndDate: string) => {
+    if (!contractEndDate) return true;
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set to start of day for accurate comparison
+    
+    const contractEnd = new Date(contractEndDate);
+    contractEnd.setHours(0, 0, 0, 0); // Set to start of day for accurate comparison
+    
+    // Calculate difference in days
+    const timeDiff = contractEnd.getTime() - today.getTime();
+    const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    
+    // Check if contract expires in 1 day or less
+    if (daysDiff <= 1) {
+      const errorMsg = "Perubahan organisasi tidak dapat diproses. Silakan perpanjang kontrak karyawan terlebih dahulu.";
+      setValidationErrors(prev => ({ ...prev, contract_expiring_soon: errorMsg }));
+      addNotification({
+        variant: 'warning',
+        title: 'Kontrak Akan Segera Berakhir',
+        description: errorMsg,
+        hideDuration: 5000
+      });
+      return false;
+    }
+    
+    // Clear contract_expiring_soon error if it exists
+    setValidationErrors(prev => {
+      const { contract_expiring_soon, ...rest } = prev;
+      return rest;
+    });
+    
+    return true;
+  }, []);
+
   // Event handlers
   const handleInput = useCallback((field: string, value: any) => {
     setDetailForm((prev: any) => {
@@ -582,6 +617,9 @@ export const useCreateOrganizationHistory = () => {
           return;
         }
         
+        // Validate if contract is expiring soon
+        validateContractExpiringSoon(data.end_date);
+        
         // Update marital_status and dependents for payroll calculation
         const newMaritalStatus = data.marital_status || "Tidak Menikah";
         const newDependents = Number(data.dependents) || 0;
@@ -656,7 +694,7 @@ export const useCreateOrganizationHistory = () => {
     } catch (error) {
       console.error('Failed to fetch employee data:', error);
     }
-  }, [fetchOrganizationChangesByEmployee]);
+  }, [fetchOrganizationChangesByEmployee, validateActiveContract, validateContractExpiringSoon]);
 
   const handleSubmit = useCallback(async () => {
     setIsSubmitting(true);

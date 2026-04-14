@@ -42,8 +42,8 @@ const CreateOrganizationHistoryPage: React.FC = () => {
     activeContractData,
   } = useCreateOrganizationHistory();
 
-  // Check if form should be disabled (no active contract)
-  const shouldDisableForm = disableAll || !activeContractData;
+  // Check if form should be disabled (no active contract or contract expiring soon)
+  const shouldDisableForm = disableAll || !activeContractData || !!validationErrors.contract_expiring_soon;
 
   // Filter position level options based on job title
   const filteredPositionLevelOptions = (() => {
@@ -111,6 +111,26 @@ const CreateOrganizationHistoryPage: React.FC = () => {
               </h3>
               <div className="mt-2 text-sm text-red-700">
                 <p>{validationErrors.no_active_contract}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {validationErrors.contract_expiring_soon && (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-yellow-400 mt-3" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-yellow-800">
+                Kontrak Akan Segera Berakhir
+              </h3>
+              <div className="mt-2 text-sm text-yellow-700">
+                <p>{validationErrors.contract_expiring_soon}</p>
               </div>
             </div>
           </div>
@@ -508,10 +528,10 @@ const CreateOrganizationHistoryPage: React.FC = () => {
             {!isFromAtasan && (
               <>
                 <div>
-                  <FIleField label="Upload Sk Perubahan" required onChange={addState.handleFileChange as any} />
+                  <FIleField label="Upload Sk Perubahan" required onChange={addState.handleFileChange as any} disabled={shouldDisableForm} />
                 </div>
                 <div>
-                  <FIleField label="Upload Adendum" onChange={addState.handleAdendumFileChange as any} />
+                  <FIleField label="Upload Adendum" onChange={addState.handleAdendumFileChange as any} disabled={shouldDisableForm} />
                 </div>
               </>
             )}
@@ -530,15 +550,23 @@ const CreateOrganizationHistoryPage: React.FC = () => {
               <Button variant="outline" size="sm" type="button" onClick={() => navigate(-1)}>
                 Batal
               </Button>
-              <Button
-                variant="custom"
-                size="sm"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2"
-                type="submit"
-                disabled={!!isSubmitting}
-              >
-                Simpan
-              </Button>
+              <div className="relative">
+                <Button
+                  variant="custom"
+                  size="sm"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2"
+                  type="submit"
+                  disabled={!!isSubmitting || shouldDisableForm}
+                >
+                  Simpan
+                </Button>
+                {shouldDisableForm && (
+                  <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 whitespace-nowrap z-10">
+                    Perpanjang kontrak terlebih dahulu.
+                    <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </PayrollCard>
