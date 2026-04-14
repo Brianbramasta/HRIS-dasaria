@@ -45,6 +45,15 @@ class ContractService {
     return apiService.get<ContractData>(`${this.basePath}/${employeeId}/contract-for-edit`);
   }
 
+  /**
+   * Get Contract Detail - Mendapatkan detail kontrak spesifik untuk popup detail
+   * @param contractId - ID kontrak
+   * @returns Promise dengan data detail kontrak
+   */
+  async getContractDetail(contractId: string): Promise<ApiResponse<any>> {
+    return apiService.get<any>(`${this.basePath}/contracts/${contractId}/show-contract`);
+  }
+
    /**
    * Dropdown: Status Kontrak
    * @param search - Optional search query untuk filter status kontrak

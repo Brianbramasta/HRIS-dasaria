@@ -241,23 +241,31 @@ export function useEdit(fetchContractData?: () => Promise<void>) {
  */
 export function useDetail() {
   const handleViewDetail = async (row: ContractHistoryItem, detail: any) => {
-    const response = await getContractForEdit(row.id as unknown as string);
+    const response = await contractService.getContractDetail(row.id);
     const data = response.data as any;
     //console.log('Detail row:', row);
+    //console.log('Detail API response:', data);
+    
     const detailData: ContractEntry = {
       id: row.id,
-      full_name: data.full_name || detail?.Data_Pribadi.full_name,
+      full_name: data.employee?.full_name || detail?.Data_Pribadi?.full_name || '',
       contract_status: data.contract_status,
       last_contract_signed_date: data.last_contract_signed_date,
       end_date: data.end_date,
       contract_type_id: data.contract_type_id,
-      contract_type_name: data.contract_type_name,
+      contract_type_name: data.contract_type?.name || '',
       contract_number: data.contract_number,
-      contract_end_status_id: data.contract_end_status_id,
+      contract_end_status_id: data.contract_end_status_name ? '1' : '',
       contract_end_status_name: data.contract_end_status_name,
       file_contract: data.file_contract,
       note: data.note,
       file_for_resign: data.file_for_resign,
+      // New fields from API response
+      document_lampiran: data.document_lampiran,
+      document: data.document,
+      note_hr: data.note_hr,
+      description: data.description,
+      remaining_month: data.remaining_month,
     };
 
     return detailData;

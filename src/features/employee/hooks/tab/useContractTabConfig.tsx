@@ -9,11 +9,12 @@ interface Params {
   rows: ContractHistoryItem[];
   setDetailModalOpen: (open: boolean) => void;
   setDetailData: (data: any) => void;
+  handleViewDetail: (row: ContractHistoryItem) => Promise<void>;
   // handleEditRow: (row: ContractHistoryItem) => void;
 }
 
 // export function useContractTabConfig({ rows, setDetailModalOpen, setDetailData, handleEditRow }: Params) {
-export function useContractTabConfig({ rows, setDetailModalOpen, setDetailData }: Params) {
+export function useContractTabConfig({ rows, setDetailModalOpen, setDetailData, handleViewDetail }: Params) {
   const columns: DataTableColumn<ContractHistoryItem>[] = useMemo(
     () => [
       { id: 'no', label: 'No.', align: 'center', format: (_v, row) => rows.findIndex((r) => r.id === row.id) + 1, sortable: false },
@@ -32,8 +33,8 @@ export function useContractTabConfig({ rows, setDetailModalOpen, setDetailData }
         variant: 'outline',
         color: 'error',
         icon: <IconFileDetail />,
-        onClick: (row) => {
-          setDetailData(row);
+        onClick: async (row) => {
+          await handleViewDetail(row);
           setDetailModalOpen(true);
         },
       },
@@ -45,7 +46,7 @@ export function useContractTabConfig({ rows, setDetailModalOpen, setDetailData }
       // },
     ],
     // [setDetailModalOpen, setDetailData, handleEditRow],
-    [setDetailModalOpen, setDetailData],
+    [setDetailModalOpen, setDetailData, handleViewDetail],
   );
 
   return { columns, actions };

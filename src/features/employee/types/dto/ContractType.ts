@@ -19,6 +19,12 @@ export type ContractEntry = {
   lama_bekerja?: string;
   sisa_kontrak?: string;
   employee_join_date?: string; // Added for validation
+  // New fields from API response
+  document_lampiran?: string;
+  document?: string;
+  note_hr?: string;
+  description?: string;
+  remaining_month?: string;
 };
 
 export interface DropdownOption {

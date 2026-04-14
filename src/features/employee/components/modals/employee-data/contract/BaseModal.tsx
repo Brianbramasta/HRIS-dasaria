@@ -5,6 +5,7 @@ import Label from '@/components/form/Label';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 import LinkPreview from '@/components/shared/form/LinkPreview';
 import { formatUrlFile } from '@/utils/formatUrlFile';
+import { handleViewFileByUrl } from '@/utils/viewFileHandle';
 import { useContractModalConfig } from '@/features/employee/hooks/modals/employee-data/contract/useContractModalConfig';
 import SelectField from '@/components/shared/field/SelectField';
 import DateField from '@/components/shared/field/DateField';
@@ -85,7 +86,7 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
           placeholder="Select"
           defaultValue={form.contract_status || 'Aktif'}
           onChange={(v) => onInputChange('contract_status', v)}
-          disabled={!isReadonly}
+          disabled={true}
           required={!isReadonly}
         />
       </div>
@@ -170,10 +171,14 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
       <div className="md:col-span-2">
         {/* <Label>Dokumen Kontrak</Label> */}
         {form.file_contract ? (
+          <>
+        <Label>Dokumen Kontrak</Label> 
+
           <LinkPreview
             label="Lihat Detail"
-            url={form.file_contract ? formatUrlFile(form.file_contract) : undefined}
-          />
+            url={form.file_contract}
+            onClick={() => form.file_contract && handleViewFileByUrl(form.file_contract)}
+          /></>
         ) : (
           <FileInput
             skFileName={form.fileName || ''}
@@ -184,6 +189,91 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
           />
         )}
       </div>
+
+      {/* Document Lampiran */}
+      {form.document_lampiran && (
+        <div className="md:col-span-2">
+          <Label>Dokumen Lampiran</Label>
+          <LinkPreview
+            label="Lihat Detail"
+            url={form.document_lampiran}
+            onClick={() => form.document_lampiran && handleViewFileByUrl(form.document_lampiran)}
+          />
+        </div>
+      )}
+
+      {/* Document Berakhir */}
+      {form.document && (
+        <div className="md:col-span-2">
+          <Label>Dokumen Berakhir</Label>
+          <LinkPreview
+            label="Lihat Detail"
+            url={form.document}
+            onClick={() => form.document && handleViewFileByUrl(form.document)}
+          />
+        </div>
+      )}
+
+      {/* Note HR - tampil untuk detail modal */}
+      {form.note_hr && (
+        <div className="col-span-2">
+          <TextAreaField
+            label="Catatan HR"
+            placeholder="Catatan HR..."
+            rows={3}
+            value={form.note_hr || ''}
+            onChange={() => {}}
+            disabled={true}
+          />
+        </div>
+      )}
+
+      {/* Description - tampil untuk detail modal */}
+      {form.description && (
+        <div className="col-span-2">
+          <TextAreaField
+            label="Deskripsi"
+            placeholder="Deskripsi..."
+            rows={3}
+            value={form.description || ''}
+            onChange={() => {}}
+            disabled={true}
+          />
+        </div>
+      )}
+
+      {/* Remaining Month - tampil untuk detail modal */}
+      {/* {form.remaining_month && (
+        <div className="md:col-span-2">
+          <InputField
+            label="Sisa Kontrak"
+            placeholder="Sisa Kontrak"
+            value={form.remaining_month}
+            onChange={() => {}}
+            disabled={true}
+          />
+        </div>
+      )} */}
+
+      {/* Document Lampiran - tampil untuk detail modal */}
+      {form.document_lampiran && (
+        <div className="col-span-2">
+          <LinkPreview
+            label="Dokumen Lampiran"
+            url={formatUrlFile(form.document_lampiran)}
+          />
+        </div>
+      )}
+
+      {/* Document - tampil untuk detail modal */}
+      {form.document && (
+        <div className="col-span-2">
+          <LinkPreview
+            label="Dokumen Berakhir"
+            url={formatUrlFile(form.document)}
+          />
+        </div>
+      )}
 
       {/* Catatan - hanya tampil saat edit mode dan Status Berakhir diisi */}
       {showStatusBerakhir && form.contract_end_status_id && form.contract_end_status_id !== '' && (
