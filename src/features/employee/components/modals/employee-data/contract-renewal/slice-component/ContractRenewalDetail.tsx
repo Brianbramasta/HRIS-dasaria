@@ -40,7 +40,7 @@ export default function ContractRenewalDetail({
   statusOptions = [],
   contractTypeOptions = [],
 }: ContractRenewalDetailProps) {
-  const { effectiveContractTypeOptions, processedStatusOptions, handleInputChange, showAllDetailFields } = useContractRenewalDetail({
+  const { effectiveContractTypeOptions, processedStatusOptions, handleInputChange, showAllDetailFields, validationErrors } = useContractRenewalDetail({
     data,
     isEditing,
     onChange,
@@ -141,31 +141,42 @@ export default function ContractRenewalDetail({
         {/* Row 4: Kontrak Ke, Tanggal TTD Kontrak Baru, Tanggal Berakhir Kontrak Baru */}
         {showAllDetailFields && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <InputField
-              label="Kontrak Ke"
-              type="number"
-              value={data?.contract_sequence || ''}
-              disabled={!isEditing}
-              onChange={(e) => handleInputChange('contract_sequence', e.target.value)}
-              containerClassName="space-y-2"
-            />
-            <DateField
-              label="Tanggal TTD Kontrak Baru"
-              defaultDate={data?.new_contract_date || ''}
-              required
-              // disabled={!isEditing}
-              onChange={(_dates, dateStr) => handleInputChange('new_contract_date', dateStr)}
-              containerClassName="space-y-2"
-            />
-            {data?.contract_type_name !== 'PKWTT' && (
-              <DateField
-                label="Tanggal Berakhir Kontrak Baru"
-                defaultDate={data?.new_contract_end_date || ''}
-                required
-                // disabled={!isEditing}
-                onChange={(_dates, dateStr) => handleInputChange('new_contract_end_date', dateStr)}
+            <div className="space-y-2">
+              <InputField
+                label="Kontrak Ke"
+                type="number"
+                value={data?.contract_sequence || ''}
+                disabled={!isEditing}
+                onChange={(e) => handleInputChange('contract_sequence', e.target.value)}
                 containerClassName="space-y-2"
               />
+              {validationErrors?.contract_sequence && (
+                <p className="text-sm text-red-500 mt-1">{validationErrors.contract_sequence}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <DateField
+                label="Tanggal TTD Kontrak Baru"
+                defaultDate={data?.new_contract_date || ''}
+                required
+                // disabled={!isEditing}
+                onChange={(_dates, dateStr) => handleInputChange('new_contract_date', dateStr)}
+                containerClassName="space-y-2"
+                error={validationErrors?.new_contract_date}
+              />
+            </div>
+            {data?.contract_type_name !== 'PKWTT' && (
+              <div className="space-y-2">
+                <DateField
+                  label="Tanggal Berakhir Kontrak Baru"
+                  defaultDate={data?.new_contract_end_date || ''}
+                  required
+                  // disabled={!isEditing}
+                  onChange={(_dates, dateStr) => handleInputChange('new_contract_end_date', dateStr)}
+                  containerClassName="space-y-2"
+                  error={validationErrors?.new_contract_end_date}
+                />
+              </div>
             )}
           </div>
         )}

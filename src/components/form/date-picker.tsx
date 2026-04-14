@@ -40,6 +40,7 @@ export type DatePickerProps = {
   // Date constraints
   minDate?: Date | string;
   maxDate?: Date | string;
+  error?: string;
 };
 
 // Util: konversi ke string ISO yyyy-mm-dd
@@ -114,6 +115,7 @@ export default function DatePicker({
   view = "date",
   minDate,
   maxDate,
+  error,
 }: DatePickerProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
@@ -776,7 +778,11 @@ export default function DatePicker({
             onClick={() => {
               if (!disabled) setIsOpen(true);
             }}
-            className="h-11 w-full rounded-lg border appearance-none px-4 pr-12 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30  bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20 dark:border-gray-700  dark:focus:border-brand-800 dark:focus:ring-brand-800/30 disabled:cursor-not-allowed disabled:opacity-50"
+            className={`h-11 w-full rounded-lg border appearance-none px-4 pr-12 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30  bg-transparent text-gray-800 focus:border-brand-300 focus:ring-brand-500/20 dark:focus:border-brand-800 dark:focus:ring-brand-800/30 disabled:cursor-not-allowed disabled:opacity-50 ${
+                error 
+                  ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20 dark:border-red-500 dark:focus:border-red-500 dark:focus:ring-red-500/30' 
+                  : 'border-gray-300 dark:border-gray-700'
+              }`}
           />
           <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
             <CalenderIcon className="size-6" />

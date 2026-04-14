@@ -1,8 +1,6 @@
 import { DataTable } from '../../../../../components/shared/datatable/DataTable';
 import { useContractRenewal } from '../../../hooks/contract-renewal/useContractRenewal';
 
-
-
 export default function PerpanjanganKontrak() {
   const {
     data,

@@ -1,9 +1,82 @@
-import { useEffect, useMemo, useCallback } from 'react';
+import React, { useEffect, useMemo, useCallback } from 'react';
 import { useContractRenewalStore } from '@/features/employee/stores/useContractRenewalStore';
 import { useApiContractExtension } from '@/features/employee/hooks/api/useApiContractExtension';
+import { addNotification } from '@/stores/notificationStore';
+
+// Export validation functions untuk digunakan di file lain
+export const validateNewContractEndDateFn = (newEndDate: string, oldEndDate: string) => {
+  const errors: string[] = [];
+  
+  // Get today + 2 months
+  const today = new Date();
+  const minDate = new Date(today.getFullYear(), today.getMonth() + 2, today.getDate());
+  
+  const newEndDateObj = new Date(newEndDate);
+  const oldEndDateObj = new Date(oldEndDate);
+  
+  // Validasi A: Tanggal Berakhir Baru harus > (hari ini + 2 bulan)
+  if (newEndDateObj <= minDate) {
+    const formattedMinDate = minDate.toLocaleDateString('id-ID', { 
+      day: 'numeric', 
+      month: 'long', 
+      year: 'numeric' 
+    });
+    errors.push(`Tanggal berakhir kontrak baru minimal harus lebih dari ${formattedMinDate}. Hal ini untuk memastikan notifikasi perpanjangan tidak terus muncul.`);
+  }
+  
+  // Validasi A: Tanggal Berakhir Baru harus > Tanggal Berakhir Kontrak Lama
+  if (newEndDateObj <= oldEndDateObj) {
+    const formattedOldDate = oldEndDateObj.toLocaleDateString('id-ID', { 
+      day: 'numeric', 
+      month: 'long', 
+      year: 'numeric' 
+    });
+    errors.push(`Tanggal berakhir kontrak baru harus lebih dari tanggal berakhir kontrak sebelumnya (${formattedOldDate}).`);
+  }
+  
+  return errors;
+};
+
+export const validateNewContractStartDateFn = (newStartDate: string, oldEndDate: string) => {
+  const errors: string[] = [];
+  
+  const newStartDateObj = new Date(newStartDate);
+  const oldEndDateObj = new Date(oldEndDate);
+  
+  // Validasi B: Tanggal Mulai Kontrak Baru harus >= Tanggal Berakhir Kontrak Lama
+  if (newStartDateObj < oldEndDateObj) {
+    const formattedOldDate = oldEndDateObj.toLocaleDateString('id-ID', { 
+      day: 'numeric', 
+      month: 'long', 
+      year: 'numeric' 
+    });
+    errors.push(`Tanggal mulai kontrak baru tidak boleh sebelum tanggal berakhir kontrak sebelumnya (${formattedOldDate}).`);
+  }
+  
+  return errors;
+};
+
+export const validateContractSequenceFn = (newSequence: number, oldSequence: number) => {
+  const errors: string[] = [];
+  
+  // Validasi C: Nomor Kontrak ke harus lebih besar dari kontrak sebelumnya
+  if (newSequence <= oldSequence) {
+    errors.push(`Nomor kontrak ke harus lebih besar dari kontrak sebelumnya (${oldSequence}).`);
+  }
+  
+  return errors;
+};
 
 type StatusOption = { value: string; label: string; disabled?: boolean };
 type ContractTypeOption = { value: string; label: string };
+
+interface ValidationErrors {
+  new_contract_end_date?: string;
+  new_contract_date?: string;
+  contract_sequence?: string;
+  remaining_contract?: string;
+  end_date?: string;
+}
 
 type Params = {
   data?: {
@@ -18,6 +91,7 @@ type Params = {
     contract_type_id?: string;
     contract_type_name?: string;
     contract_number?: string;
+    contract_sequence?: string;
     new_contract_date?: string;
     new_contract_end_date?: string;
     contract_document?: string;
@@ -41,6 +115,56 @@ export function useContractRenewalDetail({
 }: Params) {
   const { shouldShowAllDetailFields, setChangeTypeName } = useContractRenewalStore();
   const { contractTypeOptions: apiContractTypeOptions, fetchContractTypes } = useApiContractExtension();
+
+  // Validation state
+  const [validationErrors, setValidationErrors] = React.useState<ValidationErrors>({});
+
+  // Validation functions
+  const validateNewContractEndDate = useCallback((newEndDate: string, oldEndDate: string) => {
+    return validateNewContractEndDateFn(newEndDate, oldEndDate);
+  }, []);
+
+  const validateNewContractStartDate = useCallback((newStartDate: string, oldEndDate: string) => {
+    return validateNewContractStartDateFn(newStartDate, oldEndDate);
+  }, []);
+
+  const validateContractSequence = useCallback((newSequence: number, oldSequence: number) => {
+    return validateContractSequenceFn(newSequence, oldSequence);
+  }, []);
+
+  const validateRemainingContract = useCallback((endDate: string) => {
+    const errors: string[] = [];
+    
+    const endDateObj = new Date(endDate);
+    const today = new Date();
+    const daysRemaining = Math.ceil((endDateObj.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    
+    // Edge case: Sisa kontrak aktif <= 1 hari
+    if (daysRemaining <= 1) {
+      errors.push("Masa kontrak aktif terlalu singkat untuk memproses perubahan organisasi. Lakukan perpanjangan kontrak terlebih dahulu sebelum mengajukan perubahan organisasi.");
+    }
+    
+    // Edge case: Kontrak aktif sudah berakhir
+    if (daysRemaining < 0) {
+      errors.push("Kontrak karyawan ini telah berakhir. Lakukan perpanjangan kontrak terlebih dahulu sebelum mengajukan perubahan organisasi.");
+    }
+    
+    return errors;
+  }, []);
+
+  const showValidationError = useCallback((errors: string[]) => {
+    if (errors.length > 0) {
+      errors.forEach(error => {
+        addNotification({
+          variant: 'error',
+          title: 'Validasi Gagal',
+          description: error,
+        });
+      });
+      return true;
+    }
+    return false;
+  }, []);
 
   useEffect(() => {
     if (contractTypeOptions.length === 0) {
@@ -69,9 +193,74 @@ export function useContractRenewalDetail({
 
   const handleInputChange = useCallback(
     (field: string, value: any) => {
-      if (onChange) {
+      let shouldProceed = true;
+      
+      // Validasi untuk field yang spesifik - selalu jalankan validasi jika ada value
+      if (value) {
+        switch (field) {
+          case 'new_contract_end_date':
+            if (data?.end_date) {
+              const errors = validateNewContractEndDate(value, data.end_date);
+              shouldProceed = !showValidationError(errors);
+              
+              // Update validation errors state
+              setValidationErrors(prev => ({
+                ...prev,
+                new_contract_end_date: errors.length > 0 ? errors[0] : undefined
+              }));
+            }
+            break;
+            
+          case 'new_contract_date':
+            if (data?.end_date) {
+              const errors = validateNewContractStartDate(value, data.end_date);
+              shouldProceed = !showValidationError(errors);
+              
+              // Update validation errors state
+              setValidationErrors(prev => ({
+                ...prev,
+                new_contract_date: errors.length > 0 ? errors[0] : undefined
+              }));
+            }
+            break;
+            
+          case 'contract_sequence':
+            if (data?.contract_sequence) {
+              const oldSequence = parseInt(data.contract_sequence.toString());
+              const newSequence = parseInt(value.toString());
+              if (!isNaN(newSequence) && !isNaN(oldSequence)) {
+                const errors = validateContractSequence(newSequence, oldSequence);
+                shouldProceed = !showValidationError(errors);
+                
+                // Update validation errors state
+                setValidationErrors(prev => ({
+                  ...prev,
+                  contract_sequence: errors.length > 0 ? errors[0] : undefined
+                }));
+              }
+            }
+            break;
+        }
+      }
+      
+      // Validasi untuk sisa kontrak saat data dimuat
+      if (field === 'remaining_contract' && data?.end_date) {
+        const errors = validateRemainingContract(data.end_date);
+        if (errors.length > 0) {
+          showValidationError(errors);
+        }
+      }
+      
+      // SELALU kirim value ke parent component untuk field tanggal kontrak, 
+      // agar parent bisa melakukan validasi lengkap
+      if (onChange && (field === 'new_contract_end_date' || field === 'new_contract_date' || field === 'contract_sequence')) {
+        onChange(field, value);
+      } else if (shouldProceed && onChange) {
+        // Untuk field lain, hanya kirim jika validasi berhasil
         onChange(field, value);
       }
+      
+      // Logic existing untuk field lain
       if (field === 'renewal_status_name') {
         const selectedOption = statusOptions.find((opt) => opt.value === value);
         const label = selectedOption ? selectedOption.label : value;
@@ -86,7 +275,7 @@ export function useContractRenewalDetail({
         }
       }
     },
-    [onChange, statusOptions, setChangeTypeName, effectiveContractTypeOptions]
+    [onChange, statusOptions, setChangeTypeName, effectiveContractTypeOptions, isEditing, data, validateNewContractEndDate, validateNewContractStartDate, validateContractSequence, validateRemainingContract, showValidationError]
   );
 
   const processedStatusOptions = useMemo(() => {
@@ -122,6 +311,16 @@ export function useContractRenewalDetail({
     return !showLimitedFields && shouldShowAllDetailFields();
   }, [showLimitedFields, shouldShowAllDetailFields]);
 
+  // Validasi awal saat data dimuat
+  useEffect(() => {
+    if (data?.end_date && data?.remaining_contract) {
+      const errors = validateRemainingContract(data.end_date);
+      if (errors.length > 0) {
+        showValidationError(errors);
+      }
+    }
+  }, [data?.end_date, data?.remaining_contract, validateRemainingContract, showValidationError]);
+
   return {
     isEditing,
     data,
@@ -129,5 +328,6 @@ export function useContractRenewalDetail({
     processedStatusOptions,
     handleInputChange,
     showAllDetailFields,
+    validationErrors,
   };
 }

@@ -1,6 +1,8 @@
 import { useEffect, useState, useCallback } from "react";
 import { useApiContractExtension } from "@/features/employee/hooks/api/useApiContractExtension";
 import { useContractRenewalStore } from "@/features/employee/stores/useContractRenewalStore";
+import { addNotification } from "@/stores/notificationStore";
+import { validateNewContractEndDateFn, validateNewContractStartDateFn, validateContractSequenceFn } from "./slice-component/useContractRenewalDetail";
 
 type EditStatusPerpanjanganModalParams = {
   isOpen: boolean;
@@ -244,12 +246,56 @@ export function useEditContractRenewalStatusModal({
     });
   }, []);
 
+  // Fungsi validasi untuk submit - menggunakan fungsi export dari useContractRenewalDetail
+  const validateAllFields = useCallback((data: any) => {
+    const errors: string[] = [];
+    console.log('test', data)
+    
+    // Validasi Tanggal Berakhir Kontrak Baru
+    if (data?.new_contract_end_date && data?.end_date) {
+      const validationErrors = validateNewContractEndDateFn(data.new_contract_end_date, data.end_date);
+      errors.push(...validationErrors);
+    }
+    
+    // Validasi Tanggal Mulai Kontrak Baru
+    if (data?.new_contract_date && data?.end_date) {
+      const validationErrors = validateNewContractStartDateFn(data.new_contract_date, data.end_date);
+      errors.push(...validationErrors);
+    }
+    
+    // Validasi Kontrak Ke
+    if (data?.contract_sequence && data?.contract_sequence) {
+      const oldSequence = parseInt(data.contract_sequence.toString());
+      const newSequence = parseInt(data.contract_sequence.toString());
+      if (!isNaN(newSequence) && !isNaN(oldSequence)) {
+        const validationErrors = validateContractSequenceFn(newSequence, oldSequence);
+        errors.push(...validationErrors);
+      }
+    }
+    
+    return errors;
+  }, []);
+
   const handleSubmit = useCallback(async () => {
     setSubmitting(true);
     try {
+      // Validasi semua field sebelum submit (Opsi Pertama)
+      const errors = validateAllFields(contractRenewalData);
+      if (errors.length > 0) {
+        errors.forEach(error => {
+          addNotification({
+            variant: 'error',
+            title: 'Validasi Gagal',
+            description: error,
+          });
+        });
+        setSubmitting(false);
+        return; // Stop submit jika ada error
+      }
+      return
+      
       const formData = new FormData();
       formData.append("_method", "PATCH");
-      //console.log(contractRenewalData,'contractRenewalData');
       if (contractRenewalData?.renewal_status_name) {
         formData.append(
           "extension_status_id",
@@ -386,6 +432,7 @@ export function useEditContractRenewalStatusModal({
     onSuccess,
     onClose,
     shouldShowAllComponents,
+    validateAllFields,
   ]);
 
   const handleClose = useCallback(() => {
