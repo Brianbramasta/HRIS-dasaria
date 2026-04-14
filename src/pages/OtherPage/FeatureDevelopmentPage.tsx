@@ -32,13 +32,13 @@ export default function FeatureDevelopmentPage() {
           </div>
 
           {/* Main heading */}
-          <h1 className="mb-6 font-bold text-gray-900 text-4xl sm:text-5xl leading-tight text-center" 
+          <h1 className="mb-3 font-bold text-gray-900 text-4xl sm:text-5xl leading-tight text-center" 
               style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
             Fitur baru sedang dalam proses pengembangan
           </h1>
 
           {/* Subtitle */}
-          <p className="mb-12 text-gray-600 max-w-lg text-xl sm:text-2xl leading-none text-center"
+          <p className="mb-12 text-gray-600 text-xl sm:text-2xl leading-none text-center"
              style={{ fontFamily: 'Outfit, sans-serif' }}>
             kami akan segera merilisnya untuk mempermudah pekerjaan Anda.
           </p>
@@ -53,8 +53,8 @@ export default function FeatureDevelopmentPage() {
         </div>
 
         {/* Additional decorative elements */}
-        <div className="absolute top-20 right-20 w-20 h-20 bg-blue-200 rounded-full opacity-30 animate-pulse"></div>
-        <div className="absolute bottom-20 left-20 w-16 h-16 bg-orange-200 rounded-full opacity-30 animate-pulse"></div>
+        {/* <div className="absolute top-20 right-20 w-20 h-20 bg-blue-200 rounded-full opacity-30 animate-pulse"></div>
+        <div className="absolute bottom-20 left-20 w-16 h-16 bg-orange-200 rounded-full opacity-30 animate-pulse"></div> */}
       </div>
 
       <style>{`
