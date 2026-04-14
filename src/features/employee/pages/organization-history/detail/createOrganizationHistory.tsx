@@ -38,7 +38,12 @@ const CreateOrganizationHistoryPage: React.FC = () => {
     removeNonFixAllowance,
     updateNonFixAllowance,
     setSalaryFields,
+    validationErrors,
+    activeContractData,
   } = useCreateOrganizationHistory();
+
+  // Check if form should be disabled (no active contract)
+  const shouldDisableForm = disableAll || !activeContractData;
 
   // Filter position level options based on job title
   const filteredPositionLevelOptions = (() => {
@@ -91,6 +96,26 @@ const CreateOrganizationHistoryPage: React.FC = () => {
         </button>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{title}</h1>
       </div>
+      
+      {validationErrors.no_active_contract && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-red-800">
+                Perubahan Organisasi Tidak Dapat Diproses
+              </h3>
+              <div className="mt-2 text-sm text-red-700">
+                <p>{validationErrors.no_active_contract}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <div className='grid grid-cols-2'>
         <PayrollCard title="Informasi Karyawan" headerColor="slate" border={false}>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -188,7 +213,7 @@ const CreateOrganizationHistoryPage: React.FC = () => {
                 onChange={(v) => handleInput('change_type_id' as any, v)}
                 onSearch={addState.handleEmployeeSearch}
                 placeholder="Select"
-                disabled={disableAll || addState.changeTypeOptions.length === 0}
+                disabled={shouldDisableForm || addState.changeTypeOptions.length === 0}
               />
             </div>
             <div>
@@ -200,7 +225,7 @@ const CreateOrganizationHistoryPage: React.FC = () => {
                 onChange={(v) => handleInput('employee_category_id' as any, v)}
                 onSearch={addState.handleEmployeeCategorySearch}
                 placeholder="Pilih Kategori Karyawan"
-                disabled={disableAll || addState.kategoriKaryawanOptions.length === 0}
+                disabled={shouldDisableForm || addState.kategoriKaryawanOptions.length === 0}
               />
             </div>
             <div>
@@ -212,7 +237,7 @@ const CreateOrganizationHistoryPage: React.FC = () => {
                 onChange={(v) => handleInput('job_title_id' as any, v)}
                 onSearch={addState.handleJobTitleSearch}
                 placeholder="Select"
-                disabled={disableAll || filteredJobTitleOptions.length === 0}
+                disabled={shouldDisableForm || filteredJobTitleOptions.length === 0}
               />
             </div>
             <div>
@@ -223,7 +248,7 @@ const CreateOrganizationHistoryPage: React.FC = () => {
                 onChange={(v) => handleInput('structural_job_id' as any, v)}
                 onSearch={addState.handleStructuralJobSearch}
                 placeholder="Select"
-                disabled={disableAll || !detailForm.job_title_id || addState.structuralJobOptions.length === 0}
+                disabled={shouldDisableForm || !detailForm.job_title_id || addState.structuralJobOptions.length === 0}
               />
             </div>
             <div>
@@ -235,7 +260,7 @@ const CreateOrganizationHistoryPage: React.FC = () => {
                 onChange={(v) => handleInput('company_id' as any, v)}
                 onSearch={addState.handleCompanySearch}
                 placeholder="Select"
-                disabled={disableAll || addState.companyOptions.length === 0}
+                disabled={shouldDisableForm || addState.companyOptions.length === 0}
               />
             </div>
             <div>
@@ -247,7 +272,7 @@ const CreateOrganizationHistoryPage: React.FC = () => {
                 onChange={(v) => handleInput('office_id' as any, v)}
                 onSearch={addState.handleOfficeSearch}
                 placeholder="Select"
-                disabled={disableAll || !detailForm.company_id || addState.officeOptions.length === 0}
+                disabled={shouldDisableForm || !detailForm.company_id || addState.officeOptions.length === 0}
               />
             </div>
             {visibleFields.direktorat && (
@@ -260,7 +285,7 @@ const CreateOrganizationHistoryPage: React.FC = () => {
                   onChange={(v) => handleInput('directorate_id' as any, v)}
                   onSearch={addState.handleDirectorateSearch}
                   placeholder="Select"
-                  disabled={disableAll || addState.directorateOptions.length === 0}
+                  disabled={shouldDisableForm || addState.directorateOptions.length === 0}
                 />
               </div>
             )}
@@ -274,7 +299,7 @@ const CreateOrganizationHistoryPage: React.FC = () => {
                   onChange={(v) => handleInput('division_id' as any, v)}
                   onSearch={addState.handleDivisionSearch}
                   placeholder="Select"
-                  disabled={disableAll || !detailForm.directorate_id || addState.divisionOptions.length === 0}
+                  disabled={shouldDisableForm || !detailForm.directorate_id || addState.divisionOptions.length === 0}
                 />
               </div>
             )}
@@ -288,7 +313,7 @@ const CreateOrganizationHistoryPage: React.FC = () => {
                   onChange={(v) => handleInput('department_id' as any, v)}
                   onSearch={addState.handleDepartmentSearch}
                   placeholder="Select"
-                  disabled={disableAll || !detailForm.division_id || addState.departmentOptions.length === 0}
+                  disabled={shouldDisableForm || !detailForm.division_id || addState.departmentOptions.length === 0}
                 />
               </div>
             )}
@@ -301,7 +326,7 @@ const CreateOrganizationHistoryPage: React.FC = () => {
                   onChange={(v) => handleInput('unit_id' as any, v)}
                   onSearch={addState.handleUnitSearch}
                   placeholder="Select"
-                  disabled={disableAll || !detailForm.department_id || addState.unitOptions.length === 0}
+                  disabled={shouldDisableForm || !detailForm.department_id || addState.unitOptions.length === 0}
                 />
               </div>
             )}
@@ -315,7 +340,7 @@ const CreateOrganizationHistoryPage: React.FC = () => {
                   onChange={(v) => handleInput('position_id' as any, v)}
                   onSearch={addState.handlePositionSearch}
                   placeholder="Select"
-                  disabled={disableAll || filteredPositionOptions.length === 0}
+                  disabled={shouldDisableForm || filteredPositionOptions.length === 0}
                 />
               </div>
             )}
@@ -328,7 +353,7 @@ const CreateOrganizationHistoryPage: React.FC = () => {
                 onChange={(v) => handleInput('position_level_id' as any, v)}
                 onSearch={addState.handlePositionLevelSearch}
                 placeholder="Select"
-                disabled={disableAll || !detailForm.job_title_id || filteredPositionLevelOptions.length === 0}
+                disabled={shouldDisableForm || !detailForm.job_title_id || filteredPositionLevelOptions.length === 0}
               />
             </div>
             <div>
@@ -347,7 +372,8 @@ const CreateOrganizationHistoryPage: React.FC = () => {
                 required
                 defaultDate={detailForm.efektif_date || ''}
                 onChange={(_, dateStr) => handleInput('efektif_date' as any, dateStr)}
-                disabled={disableAll}
+                disabled={shouldDisableForm}
+                error={validationErrors.efektif_date}
               />
             </div>
             {!isNonStaffOrMitraCategory && (
@@ -428,7 +454,7 @@ const CreateOrganizationHistoryPage: React.FC = () => {
                           defaultValue={allowance.id}
                           onChange={(value) => updateNonFixAllowance(index, 'id', value)}
                           placeholder="Pilih Tunjangan Tidak Tetap"
-                          disabled={disableAll}
+                          disabled={shouldDisableForm}
                         />
                       </div>
                       <div className="md:col-span-6 flex items-end gap-2">
@@ -438,11 +464,11 @@ const CreateOrganizationHistoryPage: React.FC = () => {
                             value={formatInputCurrency(String(allowance.amount))}
                             onChange={(e) => updateNonFixAllowance(index, 'amount', parseCurrency(e.target.value) || 0)}
                             placeholder="Rp 0"
-                            disabled={disableAll}
+                            disabled={shouldDisableForm}
                           />
                         </div>
                         <div>
-                          {!disableAll && (index === nonFixAllowances.length - 1 ? (
+                          {!shouldDisableForm && (index === nonFixAllowances.length - 1 ? (
                             <button
                               className="p-2.5 rounded-lg bg-success-500 hover:bg-success-600 text-white w-11 h-11 flex items-center justify-center"
                               onClick={addNonFixAllowance}
@@ -496,7 +522,7 @@ const CreateOrganizationHistoryPage: React.FC = () => {
                 placeholder="Masukkan alasan perubahan"
                 value={detailForm.reason || ''}
                 onChange={(e) => handleInput('reason' as any, e)}
-                disabled={disableAll}
+                disabled={shouldDisableForm}
                 rows={4}
               />
             </div>

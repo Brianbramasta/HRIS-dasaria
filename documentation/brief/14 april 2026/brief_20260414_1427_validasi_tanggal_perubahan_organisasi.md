@@ -2,10 +2,6 @@
 Tanggal: 14 april 2026 14:27
 
 ---
-Validasi A — Tanggal Efektif harus di masa depan:
-Tanggal Efektif > hari ini
-(tidak boleh input perubahan organisasi dengan tanggal yang sudah lewat)
-
 Validasi B — Tanggal Efektif harus sebelum kontrak aktif berakhir:
 Tanggal Efektif < Tanggal Berakhir Kontrak Aktif
 (perubahan organisasi tidak boleh melebihi masa kontrak yang sedang berjalan)
@@ -20,7 +16,6 @@ Validasi D — Dokumen wajib tersedia:
 
 ### Edge Cases
 
-- Tanggal Efektif = hari ini → tidak valid (harus lebih dari hari ini)
 - Tanggal Efektif = Tanggal Berakhir Kontrak Aktif → tidak valid
 (harus kurang dari, bukan sama dengan)
 - Karyawan tidak memiliki kontrak aktif → blokir seluruh form perubahan organisasi
@@ -30,11 +25,6 @@ tidak bisa diisi valid → tampilkan peringatan khusus
 
 
 ## kondisi dan pesan yang ditampilkan
-1. Tanggal Efektif = hari ini
-"Tanggal efektif perubahan organisasi harus lebih dari hari ini."
-
-2. Tanggal Efektif < hari ini
-"Tanggal efektif tidak boleh di masa lalu. Masukkan tanggal yang akan datang."
 
 3. Tanggal Efektif ≥ Tanggal Berakhir Kontrak Aktif
 "Tanggal efektif harus sebelum tanggal berakhir kontrak aktif karyawan ([tanggal berakhir kontrak])."
@@ -47,3 +37,10 @@ tidak bisa diisi valid → tampilkan peringatan khusus
 
 6. SK belum diupload
 "Dokumen SK wajib diunggah sebelum menyimpan perubahan organisasi."
+
+## teknis
+- tampilkan error di bawah field tanggal (gunakan hint)
+- triggernya tampil pesan error  adalah ketika user menginputakan data di fieldnya
+- blokir submit jika validasi gagal
+- gunakan src\stores\notificationStore.ts untuk menampilkan pesan errornya 
+-  

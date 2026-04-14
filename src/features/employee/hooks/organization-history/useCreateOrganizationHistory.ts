@@ -4,9 +4,30 @@ import { useApiOrganizationChange } from '@/features/employee/hooks/api/useApiOr
 import { useEditOrganizationHistoryModal } from '@/features/employee/hooks/modals/organization-history/useEditOrganizationHistoryModal';
 import { useApiPayrollPreview } from '@/features/employee/hooks/api/useApiPayrollPreview';
 import { payrollPreviewService } from '@/features/employee/services/PayrollPreviewService';
-import { formatIndonesianToISO, formatDateToISO } from '@/utils/formatDate';
+import { formatIndonesianToISO, formatDateToISO, formatDateToIndonesian } from '@/utils/formatDate';
 import { useApiEmployeePositions } from '@/features/structure-and-organize/hooks/api/useApiEmployeePositions';
 import { employeeMasterDataService } from '@/features/employee/services/EmployeeMasterData.service';
+import { addNotification } from '@/stores/notificationStore';
+
+// Interface for active contract data
+interface ActiveContractData {
+  employee_code: string;
+  employee_id: string;
+  employee_name: string;
+  start_date: string;
+  end_date: string;
+  remaining_contract: string;
+  contract_type: string;
+  extension_status: string;
+  contract_sequence: number;
+}
+
+// Interface for validation errors
+interface ValidationErrors {
+  efektif_date?: string;
+  no_active_contract?: string;
+  document_upload?: string;
+}
 
 export const useCreateOrganizationHistory = () => {
   const navigate = useNavigate();
@@ -49,6 +70,8 @@ export const useCreateOrganizationHistory = () => {
   });
   const [maritalStatus, setMaritalStatus] = useState<string>('Tidak Menikah');
   const [dependents, setDependents] = useState<number>(0);
+  const [activeContractData, setActiveContractData] = useState<ActiveContractData | null>(null);
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
 
   // API Hooks
   const { nonFixAllowanceOptions, fetchNonFixAllowanceDropdown } = useApiPayrollPreview();
@@ -317,6 +340,77 @@ export const useCreateOrganizationHistory = () => {
     nonFixAllowances,
   ]);
 
+  // Validation functions
+  const validateActiveContract = useCallback((employeeData: any) => {
+    if (!employeeData.end_date) {
+      const errorMsg = "Karyawan ini tidak memiliki kontrak aktif. Perubahan organisasi tidak dapat diproses sebelum kontrak aktif tersedia.";
+      setValidationErrors(prev => ({ ...prev, no_active_contract: errorMsg }));
+      addNotification({
+        variant: 'error',
+        title: 'Validasi Gagal',
+        description: errorMsg,
+        hideDuration: 5000
+      });
+      return false;
+    }
+    
+    // Clear no_active_contract error if it exists
+    setValidationErrors(prev => {
+      const { no_active_contract, ...rest } = prev;
+      return rest;
+    });
+    
+    return true;
+  }, []);
+
+  const validateEffectiveDate = useCallback((effectiveDate: string, contractEndDate: string) => {
+    if (!effectiveDate || !contractEndDate) return true;
+    
+    // Convert dates to comparable format
+    const effective = new Date(effectiveDate);
+    const contractEnd = new Date(contractEndDate);
+    console.log('effective', effective, 'contractEnd', contractEnd)
+    console.log(effective >= contractEnd)
+    
+    // Check if effective date is after or equal to contract end date
+    if (effective >= contractEnd) {
+      const errorMsg = `Tanggal efektif harus sebelum tanggal berakhir kontrak aktif karyawan (${formatDateToIndonesian(contractEndDate)}).`;
+      setValidationErrors(prev => ({ ...prev, efektif_date: errorMsg }));
+      return false;
+    }
+    
+    // Clear efektif_date error if it exists
+    setValidationErrors(prev => {
+      const { efektif_date, ...rest } = prev;
+      return rest;
+    });
+    
+    return true;
+  }, []);
+
+  const validateDocumentUpload = useCallback(() => {
+    if (!isFromAtasan && !addState.form.skFile) {
+      const errorMsg = "Dokumen SK wajib diunggah sebelum menyimpan perubahan organisasi.";
+      setValidationErrors(prev => ({ ...prev, document_upload: errorMsg }));
+      addNotification({
+        variant: 'error',
+        title: 'Validasi Gagal',
+        description: errorMsg,
+        hideDuration: 5000
+      });
+      return false;
+    }
+    
+    // Clear document_upload error if it exists
+    setValidationErrors(prev => {
+      const { document_upload, ...rest } = prev;
+      return rest;
+    });
+    
+    return true;
+  }, [isFromAtasan, addState.form.skFile]);
+
+  
   // Event handlers
   const handleInput = useCallback((field: string, value: any) => {
     setDetailForm((prev: any) => {
@@ -380,6 +474,13 @@ export const useCreateOrganizationHistory = () => {
           }
           next.golongan = '';
         }
+      }
+      
+      // Validate effective date if it's being updated
+      console.log('test',field)
+      if (field === 'efektif_date' && activeContractData?.end_date) {
+        console.log('efektive date validation', value, activeContractData.end_date);
+        validateEffectiveDate(value, activeContractData.end_date);
       }
       
       return next;
@@ -458,6 +559,29 @@ export const useCreateOrganizationHistory = () => {
       
       if (employeeData) {
         const data = employeeData;
+        
+        // Store active contract data and validate
+        const contractData: ActiveContractData = {
+          employee_code: data.employee_code,
+          employee_id: data.employee_id,
+          employee_name: data.employee_name,
+          start_date: data.start_date,
+          end_date: data.end_date,
+          remaining_contract: data.remaining_contract,
+          contract_type: data.contract_type,
+          extension_status: data.extension_status,
+          contract_sequence: data.contract_sequence,
+        };
+        
+        setActiveContractData(contractData);
+        
+        // Validate active contract exists
+        const hasActiveContract = validateActiveContract(data);
+        if (!hasActiveContract) {
+          // Don't proceed if no active contract
+          return;
+        }
+        
         // Update marital_status and dependents for payroll calculation
         const newMaritalStatus = data.marital_status || "Tidak Menikah";
         const newDependents = Number(data.dependents) || 0;
@@ -537,6 +661,22 @@ export const useCreateOrganizationHistory = () => {
   const handleSubmit = useCallback(async () => {
     setIsSubmitting(true);
     try {
+      // Validate document upload before submit
+      const isDocumentValid = validateDocumentUpload();
+      if (!isDocumentValid) {
+        setIsSubmitting(false);
+        return;
+      }
+      
+      // Validate effective date if contract data exists
+      if (activeContractData?.end_date && detailForm.efektif_date) {
+        const isEffectiveDateValid = validateEffectiveDate(detailForm.efektif_date, activeContractData.end_date);
+        if (!isEffectiveDateValid) {
+          setIsSubmitting(false);
+          return;
+        }
+      }
+      
       // Robustly find change_type_name
       let changeTypeName = detailForm.change_type_name || '';
       if (!changeTypeName && detailForm.change_type_id) {
@@ -604,7 +744,7 @@ export const useCreateOrganizationHistory = () => {
     } finally {
       setIsSubmitting(false);
     }
-  }, [detailForm, nonFixAllowances, storeOrganizationChange, navigate, salaryFields, addState.form]);
+  }, [detailForm, nonFixAllowances, storeOrganizationChange, navigate, salaryFields, addState.form, validateDocumentUpload, validateEffectiveDate, activeContractData]);
 
   const addNonFixAllowance = useCallback(() => {
     setNonFixAllowances(prev => [...prev, { id: '', amount: 0 }]);
@@ -646,5 +786,7 @@ export const useCreateOrganizationHistory = () => {
     removeNonFixAllowance,
     updateNonFixAllowance,
     setSalaryFields,
+    validationErrors,
+    activeContractData,
   };
 };
