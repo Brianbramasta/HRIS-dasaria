@@ -9,7 +9,9 @@ const __dirname = path.dirname(__filename);
 // Mengambil argumen dari terminal
 const args = process.argv.slice(2);
 const command = args[0];
-const documentName = args.slice(1).join('_');
+
+// Handle quoted strings - if the original input had quotes, preserve spaces
+const documentName = args.slice(1).join(' ');
 
 if (!command || !documentName) {
   console.error("Gunakan format:");
@@ -43,7 +45,7 @@ function createFile(type, name) {
 
     // 2. Isi konten default file
     const title = type === 'brief' ? 'Brief' : 'Task';
-    const content = `# ${title}: ${name.replace(/_/g, ' ')}\nTanggal: ${date} ${monthName} ${year} ${hours}:${minutes}\n\n---`;
+    const content = `# ${title}: ${name}\nTanggal: ${date} ${monthName} ${year} ${hours}:${minutes}\n\n---`;
 
     // 3. Tulis file
     fs.writeFileSync(filePath, content);

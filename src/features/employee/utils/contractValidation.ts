@@ -47,12 +47,12 @@ export function validateContractDates(
     }
 
     // Tanggal Mulai Kontrak harus lebih dari atau sama dengan hari ini
-    if (start < todayDate) {
-      errors.push({
-        field: 'start_date',
-        message: 'Tanggal mulai kontrak tidak boleh sebelum hari ini.'
-      });
-    }
+    // if (start < todayDate) {
+    //   errors.push({
+    //     field: 'start_date',
+    //     message: 'Tanggal mulai kontrak tidak boleh sebelum hari ini.'
+    //   });
+    // }
   }
 
   // Validasi B - Tanggal Berakhir Kontrak
@@ -68,12 +68,19 @@ export function validateContractDates(
     }
 
     // Tanggal Berakhir Kontrak harus lebih besar dari hari ini
+    // if (end <= todayDate) {
+    //   errors.push({
+    //     field: 'end_date',
+    //     message: end.getTime() === todayDate.getTime()
+    //       ? 'Tanggal berakhir kontrak harus lebih dari hari ini.'
+    //       : 'Tanggal berakhir kontrak tidak boleh di masa lalu. Masukkan tanggal yang akan datang.'
+    //   });
+    // }
+    // Tanggal Berakhir Kontrak harus lebih besar dari hari ini
     if (end <= todayDate) {
       errors.push({
         field: 'end_date',
-        message: end.getTime() === todayDate.getTime()
-          ? 'Tanggal berakhir kontrak harus lebih dari hari ini.'
-          : 'Tanggal berakhir kontrak tidak boleh di masa lalu. Masukkan tanggal yang akan datang.'
+        message: 'Tanggal berakhir kontrak tidak boleh di masa lalu. Masukkan tanggal yang akan datang.'
       });
     }
   }
