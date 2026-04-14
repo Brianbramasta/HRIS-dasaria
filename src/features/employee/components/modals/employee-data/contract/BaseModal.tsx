@@ -33,6 +33,9 @@ interface BaseContractModalProps {
   isLoading?: boolean;
   maxWidth?: string;
   isEditStatusBerakhir?: boolean;
+  getFieldError?: (field: 'start_date' | 'end_date') => string | null;
+  validation?: { isValid: boolean; errors: any[] };
+  isFormComplete?: boolean;
 }
 
 const BaseContractModal: React.FC<BaseContractModalProps> = ({
@@ -53,6 +56,9 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
   isLoading = false,
   maxWidth = 'max-w-3xl',
   isEditStatusBerakhir = false,
+  getFieldError,
+  validation,
+  isFormComplete,
 }) => {
   const { optionsJenisKontrak: defaultJenisKontrakOptions } = useContractModalConfig();
   const jenisKontrakOptions = optionsJenisKontrak ?? defaultJenisKontrakOptions;
@@ -111,7 +117,7 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
           min="0"
           value={form.contract_number}
           onChange={(e) => onInputChange('contract_number', Number(e.target.value))}
-          readonly={true}
+          disabled={true}
         />
       </div>
 
@@ -125,6 +131,7 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
           onChange={isReadonly ? () => {} : onDateChange('last_contract_signed_date')}
           disabled={isReadonly}
           required={!isReadonly}
+          error={getFieldError?.('start_date') || undefined}
         />
       </div>
 
@@ -139,6 +146,7 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
           onChange={isReadonly ? () => {} : onDateChange('end_date')}
           disabled={isReadonly}
           required={!isReadonly}
+          error={getFieldError?.('end_date') || undefined}
         />
       </div>}
 
@@ -160,7 +168,7 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
 
       {/* Dokumen Kontrak */}
       <div className="md:col-span-2">
-        <Label>Dokumen Kontrak</Label>
+        {/* <Label>Dokumen Kontrak</Label> */}
         {form.file_contract ? (
           <LinkPreview
             label="Lihat Detail"
@@ -170,7 +178,8 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
           <FileInput
             skFileName={form.fileName || ''}
             onChange={onFileChange || (() => {})}
-            isLabel={false}
+            // isLabel={false}
+            label='Dokumen Kontrak'
             required={!isReadonly}
           />
         )}
@@ -227,7 +236,7 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
       handleSubmit={onSubmit}
       submitting={submitting || isLoading}
       maxWidth={maxWidth}
-      isSubmit={isReadonly && !isEditStatusBerakhir? false : true}
+      isSubmit={isReadonly && !isEditStatusBerakhir? false : (isFormComplete && (validation?.isValid ?? true))}
     />
   );
 };

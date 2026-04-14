@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { getContractEndStatusDropdownOptions, getContractTypeDropdownOptions } from './useContract';
 import type { ContractEntry } from '@/features/employee/types/dto/ContractType';
+import { validateContractDates, getErrorMessage, type ValidationResult } from '@/features/employee/utils/contractValidation';
 
 export interface ModalContractOptions {
   isOpen: boolean;
   initialData?: ContractEntry | null;
   isEditable?: boolean;
   isEditStatusBerakhir?: boolean;
+  employeeJoinDate?: string;
 }
 
 export interface UseModalContractReturn {
@@ -20,6 +22,8 @@ export interface UseModalContractReturn {
   handleDateChange: (key: keyof ContractEntry) => (selectedDates: Date[]) => void;
   handleFileChange: (e: React.ChangeEvent<HTMLInputElement>, fileFieldName?: string) => File | null;
   resetForm: (data?: ContractEntry) => void;
+  validation: ValidationResult;
+  getFieldError: (field: 'start_date' | 'end_date') => string | null;
 }
 
 const emptyForm: ContractEntry = {
@@ -40,12 +44,13 @@ const emptyForm: ContractEntry = {
  * Hook untuk mengelola state dan handlers semua contract modals
  * Digunakan oleh AddContractModal, EditContractModal, dan DetailContractModal
  */
-export function useModalContract({ isOpen, initialData, isEditable = true }: ModalContractOptions): UseModalContractReturn {
+export function useModalContract({ isOpen, initialData, isEditable = true, employeeJoinDate }: ModalContractOptions): UseModalContractReturn {
   const [form, setForm] = useState<ContractEntry>(emptyForm);
   const [optionsContractStatus, setContractStatus] = useState<{ label: string; value: string }[]>([]);
   const [optionsContractEndStatus, setOptionsContractEndStatus] = useState<{ label: string; value: string }[]>([]);
   const [optionsJenisKontrak, setOptionsJenisKontrak] = useState<{ label: string; value: string }[]>([]);
   const [isLoadingDropdowns, setIsLoadingDropdowns] = useState(false);
+  const [validation, setValidation] = useState<ValidationResult>({ isValid: true, errors: [] });
 
   // Load dropdowns when modal opens
   useEffect(() => {
@@ -85,6 +90,13 @@ export function useModalContract({ isOpen, initialData, isEditable = true }: Mod
     };
   }, [isOpen]);
 
+  // Reset validation when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      setValidation({ isValid: true, errors: [] });
+    }
+  }, [isOpen]);
+
   // Set form data after dropdowns are loaded
   useEffect(() => {
     if (!isLoadingDropdowns) {
@@ -92,13 +104,17 @@ export function useModalContract({ isOpen, initialData, isEditable = true }: Mod
         setForm({
           ...emptyForm,
           ...initialData,
+          employee_join_date: employeeJoinDate || '',
         });
       } else {
-        setForm(emptyForm);
+        setForm({
+          ...emptyForm,
+          employee_join_date: employeeJoinDate || '',
+        });
       }
       //console.log('Initial Data:', initialData);
     }
-  }, [initialData, isOpen, isLoadingDropdowns]);
+  }, [initialData, isOpen, isLoadingDropdowns, employeeJoinDate]);
 
   /**
    * Handle input change untuk form fields
@@ -114,16 +130,28 @@ export function useModalContract({ isOpen, initialData, isEditable = true }: Mod
   const handleDateChange = (key: keyof ContractEntry) => (selectedDates: Date[]) => {
     if (!isEditable) return;
     
+    let newDate = '';
     if (selectedDates.length > 0) {
       const date = selectedDates[0];
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
-      const isoDate = `${year}-${month}-${day}`;
-      handleInput(key, isoDate);
-    } else {
-      handleInput(key, '');
+      newDate = `${year}-${month}-${day}`;
     }
+    
+    // Update form first
+    setForm((prev) => ({ ...prev, [key]: newDate }));
+    
+    // Trigger validation after date change
+    setTimeout(() => {
+      const updatedForm = { ...form, [key]: newDate };
+      const validationResult = validateContractDates(
+        updatedForm.last_contract_signed_date,
+        updatedForm.end_date,
+        updatedForm.employee_join_date || ''
+      );
+      setValidation(validationResult);
+    }, 0);
   };
 
   /**
@@ -146,6 +174,13 @@ export function useModalContract({ isOpen, initialData, isEditable = true }: Mod
   };
 
   /**
+   * Get error message for a specific field
+   */
+  const getFieldError = (field: 'start_date' | 'end_date'): string | null => {
+    return getErrorMessage(validation, field);
+  };
+
+  /**
    * Reset form ke state awal
    */
   const resetForm = (data?: ContractEntry) => {
@@ -153,10 +188,16 @@ export function useModalContract({ isOpen, initialData, isEditable = true }: Mod
       setForm({
         ...emptyForm,
         ...data,
+        employee_join_date: employeeJoinDate || '',
       });
     } else {
-      setForm(emptyForm);
+      setForm({
+        ...emptyForm,
+        employee_join_date: employeeJoinDate || '',
+      });
     }
+    // Reset validation
+    setValidation({ isValid: true, errors: [] });
   };
 
   return {
@@ -170,6 +211,8 @@ export function useModalContract({ isOpen, initialData, isEditable = true }: Mod
     handleDateChange,
     handleFileChange,
     resetForm,
+    validation,
+    getFieldError,
   };
 }
 

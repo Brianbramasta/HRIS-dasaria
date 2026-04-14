@@ -18,6 +18,7 @@ export type ContractEntry = {
   dokumenBerakhir?: string;
   lama_bekerja?: string;
   sisa_kontrak?: string;
+  employee_join_date?: string; // Added for validation
 };
 
 export interface DropdownOption {

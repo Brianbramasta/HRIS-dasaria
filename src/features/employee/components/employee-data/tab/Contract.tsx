@@ -13,6 +13,7 @@ import { clearSkFile } from "@/stores/fileStore";
 import { formatDateToIndonesian } from "@/utils/formatDate";
 import { useContractTabConfig } from "@/features/employee/hooks/tab/useContractTabConfig";
 import { handleViewFileByUrl, getTemporaryUrl } from "@/utils/viewFileHandle";
+import { useDetailDataKaryawanPersonalInfo } from "@/features/employee/stores/useDetailDataKaryawanPersonalInfo";
 
 interface Props {
   employeeId?: string;
@@ -38,6 +39,9 @@ export default function ContractTab({
   employeeId: employeeIdProp,
   data,
 }: Props) {
+  const { detail } = useDetailDataKaryawanPersonalInfo();
+  const employeeJoinDate = detail?.Employment_Position_Data?.start_date;
+
   const {
     summary,
     rows,
@@ -185,6 +189,7 @@ export default function ContractTab({
           onSubmit={handleAddSubmit}
           submitting={isSubmitting}
           onFileChange={setSelectedFile}
+          employeeJoinDate={employeeJoinDate}
         />
       )}
 
