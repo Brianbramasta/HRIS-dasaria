@@ -13,8 +13,7 @@
     "test:coverage": "jest --coverage",
     "test:verbose": "jest --verbose",
     "prepare": "husky",
-    "create_brief": "node create_brief.js",
-    "create_task": "node create_task.js"
+    "create": "node create_document.js"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
