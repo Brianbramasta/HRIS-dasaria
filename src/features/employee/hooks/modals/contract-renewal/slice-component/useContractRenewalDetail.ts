@@ -9,7 +9,7 @@ export const validateNewContractEndDateFn = (newEndDate: string, oldEndDate: str
   
   // Get today + 2 months
   const today = new Date();
-  const minDate = new Date(today.getFullYear(), today.getMonth() + 2, today.getDate());
+  const minDate = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
   
   const newEndDateObj = new Date(newEndDate);
   const oldEndDateObj = new Date(oldEndDate);
@@ -21,7 +21,8 @@ export const validateNewContractEndDateFn = (newEndDate: string, oldEndDate: str
       month: 'long', 
       year: 'numeric' 
     });
-    errors.push(`Tanggal berakhir kontrak baru minimal harus lebih dari ${formattedMinDate}. Hal ini untuk memastikan notifikasi perpanjangan tidak terus muncul.`);
+    errors.push(`Tanggal berakhir kontrak baru minimal harus lebih dari ${formattedMinDate}. `);
+    // Hal ini untuk memastikan notifikasi perpanjangan tidak terus muncul.
   }
   
   // Validasi A: Tanggal Berakhir Baru harus > Tanggal Berakhir Kontrak Lama
