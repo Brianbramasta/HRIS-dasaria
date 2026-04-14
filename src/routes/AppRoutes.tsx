@@ -102,6 +102,7 @@ import FormKasbonPage from "@/features/payroll/pages/cash-advance/form-cash-adva
 import TemporaryApiPage from "@/pages/OtherPage/TemporaryApiPage";
 import SetContactAdmin from "@/pages/OtherPage/SetContactAdmin";
 import GeneratePayrollPage from "@/pages/OtherPage/generatePayroll";
+import FeatureDevelopmentPage from "@/pages/OtherPage/FeatureDevelopmentPage";
 import NotFound from "@/pages/OtherPage/NotFound";
 
 function PelanggaranRoute() {
@@ -258,6 +259,7 @@ export default function AppRoutes() {
       <Route path="/set-contact-admin" element={<SetContactAdmin />} />
       <Route path="/generate-payroll" element={<GeneratePayrollPage />} />
       <Route path="/temporary-api" element={<TemporaryApiPage />} />
+      <Route path="/feature-development" element={<FeatureDevelopmentPage />} />
       <Route path="/submission-types/cash-advance/add" element={<AddCashAdvanceSubmission />} />
       <Route path="/submission-types/resignation/add" element={<AddResignationSubmission />} />
 
