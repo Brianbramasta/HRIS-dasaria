@@ -1,6 +1,7 @@
 import React from 'react';
 import ModalAddEdit from '@/components/shared/modal/ModalAddEdit';
 import Label from '@/components/form/Label';
+import Alert from '@/components/ui/alert/Alert';
 
 import { formatDateToIndonesian } from '@/utils/formatDate';
 import LinkPreview from '@/components/shared/form/LinkPreview';
@@ -37,6 +38,8 @@ interface BaseContractModalProps {
   getFieldError?: (field: 'start_date' | 'end_date') => string | null;
   validation?: { isValid: boolean; errors: any[] };
   isFormComplete?: boolean;
+  alertMessage?: string;
+  showAlert?: boolean;
 }
 
 const BaseContractModal: React.FC<BaseContractModalProps> = ({
@@ -60,11 +63,26 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
   getFieldError,
   validation,
   isFormComplete,
+  showAlert,
+  alertMessage,
 }) => {
   const { optionsJenisKontrak: defaultJenisKontrakOptions } = useContractModalConfig();
   const jenisKontrakOptions = optionsJenisKontrak ?? defaultJenisKontrakOptions;
   const content = (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+    <>
+      {/* Show Alert if validation fails */}
+      {showAlert && alertMessage && (
+        <div className="mb-4">
+          <Alert
+            variant="error"
+            title="Validasi Gagal"
+            message={alertMessage}
+          />
+        </div>
+      )}
+      
+      {!showAlert && (
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
       {/* Nama Lengkap */}
       <div className="col-span-1 md:col-span-2">
         <InputField
@@ -186,6 +204,7 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
             // isLabel={false}
             label='Dokumen Kontrak'
             required={!isReadonly}
+            maxFileSize = {10 * 1024 * 1024}
           />
         )}
       </div>
@@ -314,7 +333,8 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
           }
         </div>
       )}
-    </div>
+    </div>)}
+    </>
   );
 
   return (

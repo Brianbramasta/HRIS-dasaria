@@ -192,6 +192,7 @@ export default function ContractTab({
           submitting={isSubmitting}
           onFileChange={setSelectedFile}
           employeeJoinDate={employeeJoinDate}
+          employeeId={employeeIdProp}
         />
       )}
 

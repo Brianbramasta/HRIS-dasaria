@@ -10,6 +10,7 @@ interface AddContractModalProps {
   submitting?: boolean;
   onFileChange?: (file: File | null) => void;
   employeeJoinDate?: string;
+  employeeId?: string;
 }
 
 const AddContractModal: React.FC<AddContractModalProps> = ({
@@ -20,6 +21,7 @@ const AddContractModal: React.FC<AddContractModalProps> = ({
   submitting = false,
   onFileChange,
   employeeJoinDate,
+  employeeId,
 }) => {
   const {
     form,
@@ -33,12 +35,14 @@ const AddContractModal: React.FC<AddContractModalProps> = ({
     handleSubmit,
     validation,
     getFieldError,
+    positionValidation,
   } = useAddContractModal({
     isOpen,
     initialData,
     onSubmit,
     onFileChange,
     employeeJoinDate,
+    employeeId,
   });
 
   // Check if all required fields are filled
@@ -69,7 +73,9 @@ const AddContractModal: React.FC<AddContractModalProps> = ({
       isLoading={isLoadingDropdowns}
       getFieldError={getFieldError}
       validation={validation}
-      isFormComplete={isFormComplete}
+      isFormComplete={isFormComplete && positionValidation.isValid}
+      showAlert={isOpen && !positionValidation.isValid}
+      alertMessage={positionValidation.errorMessage}
     />
   );
 };
