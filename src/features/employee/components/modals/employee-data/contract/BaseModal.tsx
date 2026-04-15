@@ -235,7 +235,7 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
 
       {form.evaluation_doc && (
         <div className="md:col-span-2">
-          <Label>Evaluation Dokumen</Label>
+          <Label>Dokumen Evaluasi</Label>
           <LinkPreview
             label="Lihat Detail"
             url={form.evaluation_doc}
