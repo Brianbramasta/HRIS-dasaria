@@ -263,6 +263,7 @@ export function useDetail() {
       // New fields from API response
       document_lampiran: data.document_lampiran,
       document: data.document,
+      evaluation_doc: data.evaluation_doc,
       note_hr: data.note_hr,
       description: data.description,
       remaining_month: data.remaining_month,

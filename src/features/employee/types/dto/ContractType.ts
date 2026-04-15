@@ -22,6 +22,7 @@ export type ContractEntry = {
   // New fields from API response
   document_lampiran?: string;
   document?: string;
+  evaluation_doc?: string;
   note_hr?: string;
   description?: string;
   remaining_month?: string;

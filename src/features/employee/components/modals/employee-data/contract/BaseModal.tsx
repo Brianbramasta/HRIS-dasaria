@@ -233,6 +233,19 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
         </div>
       )}
 
+      {form.evaluation_doc && (
+        <div className="md:col-span-2">
+          <Label>Evaluation Dokumen</Label>
+          <LinkPreview
+            label="Lihat Detail"
+            url={form.evaluation_doc}
+            onClick={() => form.evaluation_doc && handleViewFileByUrl(form.evaluation_doc)}
+          />
+        </div>
+      )}
+
+      {/* ambil dari  */}
+
       {/* Note HR - tampil untuk detail modal */}
       {form.note_hr && (
         <div className="col-span-2">
