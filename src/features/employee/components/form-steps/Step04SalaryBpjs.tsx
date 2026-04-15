@@ -364,7 +364,7 @@ export const Step04SalaryBpjs: React.FC = () => {
           {/* Tipe BPJS Kesehatan */}
           <div>
             <SelectField
-              label="Tipe BPJS Kesehatan (Mandiri/PBI)"
+              label="Tipe BPJS Kesehatan"
               options={bpjsHealthTypeOptions}
               defaultValue={step3.tipeBpjsKesehatan}
               onChange={(value) => handleFieldChange('tipeBpjsKesehatan', value)}
@@ -376,7 +376,7 @@ export const Step04SalaryBpjs: React.FC = () => {
           {/* Status BPJS Kesehatan */}
           <div>
             <SelectField
-              label="Status BPJS Kesehatan (Mandiri/PBI)"
+              label="Status BPJS Kesehatan"
               options={getBpjsKesehatanStatusOptions()}
               defaultValue={step3.statusBpjsKesehatan}
               onChange={(value) => handleChange('statusBpjsKesehatan', value)}
