@@ -250,9 +250,7 @@ class ApiService {
       // Handle `filter` which can be string (comma-separated) or array and should become multiple `filter[]` entries
       else if (key === 'filter') {
         if (value === undefined || value === null || value === '') return;
-        const values = Array.isArray(value)
-          ? value
-          : String(value)
+        const values = String(value)
               .split('~!@')
               .map((s) => s.trim())
               .filter(Boolean);
