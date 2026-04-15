@@ -92,6 +92,7 @@ export const STATUS_MENIKAH_OPTIONS = [
 ];
 
 export const GOLONGAN_DARAH_OPTIONS = [
+  { label: 'Belum Diketahui', value: 'Belum Diketahui' },
   { label: 'A', value: 'A' },
   { label: 'B', value: 'B' },
   { label: 'AB', value: 'AB' },
