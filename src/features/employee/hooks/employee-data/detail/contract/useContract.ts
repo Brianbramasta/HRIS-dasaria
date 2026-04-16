@@ -267,6 +267,9 @@ export function useDetail() {
       note_hr: data.note_hr,
       description: data.description,
       remaining_month: data.remaining_month,
+      extention_note: data.extention_note,
+      extention_name: data.extention_name,
+      extention_change_type: data.extention_change_type,
     };
 
     return detailData;

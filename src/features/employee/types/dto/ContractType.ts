@@ -26,6 +26,9 @@ export type ContractEntry = {
   note_hr?: string;
   description?: string;
   remaining_month?: string;
+  extention_note?: string;
+  extention_name?: string;
+  extention_change_type?: string;
 };
 
 export interface DropdownOption {

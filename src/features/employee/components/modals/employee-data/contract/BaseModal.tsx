@@ -244,6 +244,19 @@ const BaseContractModal: React.FC<BaseContractModalProps> = ({
         </div>
       )}
 
+      {form.extention_note && (
+        <div className="col-span-2">
+          <TextAreaField
+            label="Catatan"
+            placeholder="Catatan..."
+            rows={3}
+            value={form.extention_note || ''}
+            onChange={() => {}}
+            disabled={true}
+          />
+        </div>
+      )}
+
       {/* ambil dari  */}
 
       {/* Note HR - tampil untuk detail modal */}
