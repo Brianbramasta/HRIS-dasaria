@@ -152,14 +152,15 @@ export default function DetailPengunduranDiriPage() {
                 </div>
               </div>
             </div>
-            <div className="mt-6">
+            {applicationDetail?.resignation_details?.letter_of_commitment && (<div className="mt-6">
               <Label>Surat Komitmen Pelunasan</Label>
               <LinkPreview 
-                url={applicationDetail?.resignation_details?.surat_komitmen_pelunasan}
+                url={applicationDetail?.resignation_details?.letter_of_commitment}
                 label="Lihat Detail"
-                disabled={!applicationDetail?.resignation_details?.surat_komitmen_pelunasan}
+                disabled={!applicationDetail?.resignation_details?.letter_of_commitment}
+                onClick={() => applicationDetail?.resignation_details?.letter_of_commitment && handleViewFileByUrl(applicationDetail.resignation_details.letter_of_commitment)}
               />
-            </div>
+            </div>)}
             <div className="mt-6">
               <Label>Alasan Pengunduran Diri</Label>
               <TextArea

@@ -52,6 +52,7 @@ export interface ResignationDetails {
   file_contract: string | null;
   sisa_kontrak_bulan: number;
   surat_komitmen_pelunasan: string | undefined;
+  letter_of_commitment: string | undefined;
 }
 
 export interface ResignationDocumentItem {
