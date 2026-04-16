@@ -15,6 +15,7 @@ import { formatDateToIndonesian } from '@/utils/formatDate';
 import {  useNavigate } from 'react-router';
 import { handleViewFileByUrl, getTemporaryUrl } from '@/utils/viewFileHandle';
 import PdfPreviewEmbed from '@/components/shared/modal/PdfPreviewEmbed';
+import LinkPreview from '@/components/shared/form/LinkPreview';
 
 
 export default function DetailPengunduranDiriPage() {
@@ -150,6 +151,14 @@ export default function DetailPengunduranDiriPage() {
                   {applicationDetail?.resignation_details?.jenis_kontrak || 'PKWT'}
                 </div>
               </div>
+            </div>
+            <div className="mt-6">
+              <Label>Surat Komitmen Pelunasan</Label>
+              <LinkPreview 
+                url={applicationDetail?.resignation_details?.surat_komitmen_pelunasan}
+                label="Lihat Detail"
+                disabled={!applicationDetail?.resignation_details?.surat_komitmen_pelunasan}
+              />
             </div>
             <div className="mt-6">
               <Label>Alasan Pengunduran Diri</Label>
