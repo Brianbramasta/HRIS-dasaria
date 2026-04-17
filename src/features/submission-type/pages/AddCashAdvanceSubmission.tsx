@@ -114,8 +114,8 @@ const AddCashAdvanceSubmission: React.FC = () => {
           <div className="text-sm text-gray-600 dark:text-gray-400 space-y-2">
             <p className="font-semibold">Ketentuan Pengajuan Kasbon</p>
             <ul className="list-disc ml-5 space-y-2">
-              <li>Harap membaca <strong> <a href="https://docs.google.com/document/d/1xOCbJhupWD_zKq63osciENhlApJblwa4NnD_C9G8uqE/edit?usp=sharing" target="_blank" rel="noopener noreferrer" className="text-brand-600 underline hover:text-brand-700">syarat dan ketentuan berikut.</a></strong> </li>
-              <li>Harap melampirkan dokumen Surat Persetujuan Atasan dengan template <strong> <a href="https://docs.google.com/document/d/1O0Tl5GuN8M8Q6KqIQrVl8nY97RX5IhKV-0Lc3cMAvGw/edit?usp=sharing" target="_blank" rel="noopener noreferrer" className="text-brand-600 underline hover:text-brand-700">sesuai tautan berikut.</a></strong> </li>
+              <li>Harap membaca <strong> <a href="https://docs.google.com/document/d/1O0Tl5GuN8M8Q6KqIQrVl8nY97RX5IhKV-0Lc3cMAvGw/edit?usp=sharing" target="_blank" rel="noopener noreferrer" className="text-brand-600 underline hover:text-brand-700">syarat dan ketentuan berikut.</a></strong> </li>
+              <li>Harap melampirkan dokumen Surat Persetujuan Atasan dengan template <strong> <a href="https://docs.google.com/document/d/1xOCbJhupWD_zKq63osciENhlApJblwa4NnD_C9G8uqE/edit?usp=sharing " target="_blank" rel="noopener noreferrer" className="text-brand-600 underline hover:text-brand-700">sesuai tautan berikut.</a></strong> </li>
               <li>Harap mengunggah dokumen pendukung berupa bukti pembayaran atau tagihan, jika ada, untuk memperkuat pengajuan kasbon.</li>
               <li>Dokumen wajib berformat PDF dengan ukuran maksimal 10 MB.</li>
             </ul>
