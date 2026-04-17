@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 import { useFormulirKaryawanStore } from '@/features/employee/stores/useFormulirKaryawanStore';
 import { getFieldDocument } from './useFormulirKaryawan';
 import { DocumentItem } from '../../../types/FormEmployee';
+import { useAuthStore } from '../../../../auth/stores/AuthStore';
 
 // digunakan di form 5
 export const useStep5Data = () => {
   const { formData, updateStep4 } = useFormulirKaryawanStore();
+  const { isAuthenticated } = useAuthStore();
   const step3 = formData.step3Employee;
   const step4 = formData.step4;
   const categoryId = step3.kategoriKaryawan;
@@ -16,14 +18,16 @@ export const useStep5Data = () => {
   useEffect(() => {
     if (!categoryId) {
       // console.warn('useStep5Data: No categoryId found (step3Employee.kategoriKaryawan is empty). Cannot fetch documents.');
-      // return;
+      return;
     }
+    
+   
     
     let mounted = true;
     setLoading(true);
     //console.log(`useStep5Data: Fetching documents for categoryId: ${categoryId}`);
     
-    getFieldDocument(categoryId)
+    getFieldDocument(isAuthenticated ? categoryId : '')
       .then((data) => {
         if (mounted) {
            //console.log('useStep5Data: Documents fetched:', data);
@@ -36,7 +40,7 @@ export const useStep5Data = () => {
       });
       
     return () => { mounted = false; };
-  }, [categoryId]);
+  }, [categoryId, isAuthenticated]);
 
   const handleFileChange = (fieldId: string, event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
