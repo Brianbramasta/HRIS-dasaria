@@ -19,7 +19,9 @@ class OrganizationChangeNewService {
    * GET /api/employee-master-data/organization-changes
    */
   async getOrganizationChanges(params?: OrganizationChangeQueryParams): Promise<ApiResponse<OrganizationChangeListResponse>> {
-    return apiService.get<OrganizationChangeListResponse>(this.basePath, { params });
+    const qs = apiService.buildQueryString(params);
+    const url = qs ? `${this.basePath}?${qs}` : this.basePath;
+    return apiService.get<OrganizationChangeListResponse>(url);
   }
 
   /**

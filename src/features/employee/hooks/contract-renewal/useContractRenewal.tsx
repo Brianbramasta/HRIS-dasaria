@@ -44,6 +44,7 @@ export function useContractRenewal(): UseContractRenewalReturn {
   const { setChangeTypeName } = useContractRenewalStore();
   const filterValue = formatFilterValue(useFilterStore((s) => s.filters[s.resetKey]));
   
+  
   // Integration with API Hook
   const { 
     loading: apiLoading, 
@@ -136,8 +137,13 @@ export function useContractRenewal(): UseContractRenewalReturn {
     if (params?.page) queryParams.page = params.page;
     if (params?.per_page) queryParams.per_page = params.per_page;
 
-    if (params?.filter) queryParams.filter = Array.isArray(params.filter) ? params.filter : [params.filter];
-    else if (filterValue) queryParams.filter = filterValue;
+    const filterParam = params?.filter ?? filterValue;
+        if (filterParam) {
+          queryParams.filter = Array.isArray(filterParam) ? filterParam : [filterParam];
+        }
+    console.log(filterParam,'filterParam')
+        console.log(filterValue,'filterValue')
+
 
     // Add column filters - format: filter_column[column_name][in][]=value
     Object.entries(columnFilters).forEach(([columnId, values]) => {

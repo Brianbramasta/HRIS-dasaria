@@ -224,6 +224,7 @@ class ApiService {
    * @returns Query string ready to append to URL
    */
   public buildQueryString(params?: Record<string, any>, options?: { sendAll?: boolean }): string {
+    console.log('test', params);
     if (!params) return '';
 
     const queryParams = new URLSearchParams();
@@ -250,10 +251,14 @@ class ApiService {
       // Handle `filter` which can be string (comma-separated) or array and should become multiple `filter[]` entries
       else if (key === 'filter') {
         if (value === undefined || value === null || value === '') return;
+        console.log(value, 'value4');
         const values = String(value)
               .split('~!@')
               .map((s) => s.trim())
               .filter(Boolean);
+        console.log(values, 'value5');
+        console.log(String(value).split('~!@'), 'value6');
+
 
         values.forEach((v) => queryParams.append('filter[]', v));
       }

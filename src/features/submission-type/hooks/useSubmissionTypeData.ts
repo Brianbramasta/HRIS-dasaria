@@ -70,6 +70,8 @@ export function useSubmissionTypeData(options: UseSubmissionTypeOptions = {}) {
         if (filterParam) {
           queryParams.filter = Array.isArray(filterParam) ? filterParam : [filterParam];
         }
+        console.log(filterParam,'filterParam')
+        console.log(filterValue,'filterValue')
 
         // Add column filters - format: filter_column[column_name][in][]=value
         Object.entries(columnFilters).forEach(([columnId, values]) => {
