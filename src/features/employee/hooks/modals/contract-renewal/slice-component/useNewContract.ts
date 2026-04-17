@@ -107,7 +107,7 @@ export function useNewContract({
       return jobTitleOptions.filter(opt => opt.label.includes('Non-Staff'));
     }
     if (selectedCategoryLabel === 'Mitra') {
-      return jobTitleOptions.filter(opt => ['Kemitraan', 'Partnership'].some(keyword => opt.label.includes(keyword)));
+      return jobTitleOptions.filter(opt => ['Kemitraan', 'Partnership', 'AE'].some(keyword => opt.label.includes(keyword)));
     }
     if (selectedCategoryLabel === 'Staff') {
       const staffLabels = [

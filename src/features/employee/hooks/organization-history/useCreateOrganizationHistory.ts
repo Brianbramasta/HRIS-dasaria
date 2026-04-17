@@ -106,7 +106,7 @@ export const useCreateOrganizationHistory = () => {
       return addState.jobTitleOptions.filter(opt => opt.label.includes('Non-Staff'));
     }
     if (selectedCategoryLabel === 'Mitra') {
-      return addState.jobTitleOptions.filter(opt => ['Kemitraan', 'Partnership'].some(keyword => opt.label.includes(keyword)));
+      return addState.jobTitleOptions.filter(opt => ['Kemitraan', 'Partnership', 'AE'].some(keyword => opt.label.includes(keyword)));
     }
     if (selectedCategoryLabel === 'Staff') {
       const staffLabels = [
