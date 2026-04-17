@@ -84,6 +84,7 @@ export default function JenisPengajuanPage() {
       id: "status",
       label: "Status",
       sortable: true,
+      gridColumns: 1,
       filterOptions: [
         { label: "Menunggu Diproses", value: "Menunggu Diproses" },
         { label: "Dalam peninjauan", value: "Dalam peninjauan" },
@@ -91,6 +92,8 @@ export default function JenisPengajuanPage() {
         { label: "Disetujui", value: "Disetujui" },
         { label: "Ditolak", value: "Ditolak" },
         { label: "Menunggu Persetujuan FAT", value: "Menunggu Persetujuan FAT" },
+        { label: "Menunggu Pengisian Form", value: "Menunggu Pengisian Form" },
+        
       ],
       format: (value: RowPengajuan["status"]) => (
         <span

@@ -16,6 +16,7 @@ interface ColumnFilterPopupProps {
   onReset: () => void;
   anchorEl?: HTMLElement | null;
   maxRows?: number;
+  gridColumns?: number;
 }
 
 export const ColumnFilterPopup: React.FC<ColumnFilterPopupProps> = ({
@@ -27,6 +28,7 @@ export const ColumnFilterPopup: React.FC<ColumnFilterPopupProps> = ({
   onReset,
   anchorEl,
   maxRows,
+  gridColumns = 2,
 }) => {
   const [tempSelectedValues, setTempSelectedValues] = useState<string[]>(selectedValues);
   const popupRef = useRef<HTMLDivElement>(null);
@@ -129,7 +131,7 @@ export const ColumnFilterPopup: React.FC<ColumnFilterPopupProps> = ({
         </div>
 
         <div
-          className={maxRows ? "grid grid-flow-col gap-x-8 gap-y-2 max-h-96 overflow-y-auto" : `space-y-2 ${options.length > 6 ? 'max-h-60 overflow-y-auto grid md:grid-cols-2' : ''}`}
+          className={maxRows ? "grid grid-flow-col gap-x-8 gap-y-2 max-h-96 overflow-y-auto" : `space-y-2 ${options.length > 6 ? 'max-h-60 overflow-y-auto grid ' : ''} md:grid-cols-${gridColumns ? gridColumns : '2'}`}
           style={maxRows ? { gridTemplateRows: `repeat(${maxRows}, minmax(0, 1fr))` } : {}}
         >
           {options.map((option) => (

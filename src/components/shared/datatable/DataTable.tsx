@@ -33,6 +33,7 @@ export interface DataTableColumn<T = any> {
   filterOptions?: ColumnFilterOption[];
   dateRangeFilter?: boolean;
   filterMaxRows?: number;
+  gridColumns?: number;
 }
 
 export interface DataTableAction<T = any> {
@@ -552,6 +553,7 @@ const rowCount = displayData.length;
           onClose={handleFilterPopupClose}
           options={columns.find((col) => col.id === activeFilterColumn)?.filterOptions || []}
           maxRows={columns.find((col) => col.id === activeFilterColumn)?.filterMaxRows}
+          gridColumns={columns.find((col) => col.id === activeFilterColumn)?.gridColumns}
           selectedValues={effectiveColumnFilters[activeFilterColumn] || []}
           onApply={(values) => handleColumnFilterApply(activeFilterColumn, values)}
           onReset={() => handleColumnFilterReset(activeFilterColumn)}
