@@ -17,7 +17,9 @@ class ContractExtensionsService {
    * GET /api/employee-master-data/contract-extensions/index
    */
   async getContractExtensions(params?: any): Promise<ApiResponse<ContractExtensionListResponse>> {
-    return apiService.get<ContractExtensionListResponse>(`${this.basePath}/index`, { params });
+    const qs = apiService.buildQueryString(params);
+    const url = qs ? `${this.basePath}/index?${qs}` : `${this.basePath}/index`;
+    return apiService.get<ContractExtensionListResponse>(url);
   }
 
   /**
