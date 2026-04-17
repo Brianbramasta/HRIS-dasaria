@@ -26,7 +26,7 @@ export const useStep5Data = () => {
     let mounted = true;
     setLoading(true);
     //console.log(`useStep5Data: Fetching documents for categoryId: ${categoryId}`);
-    
+    console.log('isAuthenticated', isAuthenticated);
     getFieldDocument(isAuthenticated ? categoryId : '')
       .then((data) => {
         if (mounted) {
