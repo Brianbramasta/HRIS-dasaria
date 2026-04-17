@@ -16,10 +16,10 @@ export const useStep5Data = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!categoryId) {
-      // console.warn('useStep5Data: No categoryId found (step3Employee.kategoriKaryawan is empty). Cannot fetch documents.');
-      return;
-    }
+    // if (!categoryId) {
+    //   // console.warn('useStep5Data: No categoryId found (step3Employee.kategoriKaryawan is empty). Cannot fetch documents.');
+    //   return;
+    // }
     
    
     
@@ -27,7 +27,8 @@ export const useStep5Data = () => {
     setLoading(true);
     //console.log(`useStep5Data: Fetching documents for categoryId: ${categoryId}`);
     console.log('isAuthenticated', isAuthenticated);
-    getFieldDocument(isAuthenticated ? categoryId : '')
+    console.log('categoryId', categoryId);
+    getFieldDocument(isAuthenticated? categoryId?categoryId:'' : '')
       .then((data) => {
         if (mounted) {
            //console.log('useStep5Data: Documents fetched:', data);
