@@ -13,20 +13,21 @@ import { useCashAdvanceHistory } from '@/features/payroll/hooks/cash-advance/use
 
 type KasbonRiwayatRow = {
   no?: number;
-  idKaryawan: string;
-  loanId: string;
-  pengguna: string;
+  employee_id: string;
+  loan_id: string;
+  full_name: string;
   avatar?: string;
-  tanggalPengajuan: string;
-  posisi: string;
-  departemen: string;
-  bulanMulaiPotongan: string;
-  tanggalPencairan: string;
-  jenisKasbon: string;
-  nominalKasbon: string;
-  nominalCicilan: string;
-  periodeCicilan: string;
-  statusKasbon: 'Menunggu Persetujuan HR' | 'Disetujui' | 'Ditolak';
+  application_date: string;
+  position_name: string;
+  department_name: string;
+  deduction_start_period: string;
+  disbursed_at: string;
+  loan_type_name: string;
+  nominal_loan: string;
+  nominal_installment: string;
+  loan_period: string;
+  loan_status_name: 'Menunggu Persetujuan HR' | 'Disetujui' | 'Ditolak';
+  rejection_reason?: string;
   detail?: string;
 };
 
@@ -67,9 +68,9 @@ export default function RiwayatPengajuanPage() {
       align: 'center',
       sortable: false,
     },
-    { id: 'idKaryawan', label: 'NIP', sortable: true },
+    { id: 'employee_id', label: 'NIP', sortable: true },
     {
-      id: 'pengguna',
+      id: 'full_name',
       label: 'Pengguna',
       sortable: true,
       format: (value, row) => (
@@ -84,46 +85,46 @@ export default function RiwayatPengajuanPage() {
       ),
     },
     {
-      id: 'tanggalPengajuan',
+      id: 'application_date',
       label: 'Tanggal Pengajuan',
       sortable: true,
       dateRangeFilter: true,
       format: (val) => formatDateToIndonesian(val) || val
     },
-    { id: 'posisi', label: 'Posisi', sortable: true },
-    { id: 'departemen', label: 'Departemen', sortable: true },
+    { id: 'position_name', label: 'Posisi', sortable: true },
+    { id: 'department_name', label: 'Departemen', sortable: true },
     {
-      id: 'bulanMulaiPotongan',
+      id: 'deduction_start_period',
       label: 'Bulan Mulai Potongan',
       sortable: true,
       dateRangeFilter: true,
       format: (val) => formatDateToIndonesian(val) || val
     },
     {
-      id: 'tanggalPencairan',
+      id: 'disbursed_at',
       label: 'Tanggal Pencairan',
       sortable: true,
       dateRangeFilter: true,
       format: (val) => formatDateToIndonesian(val) || val
     },
-    { id: 'jenisKasbon', label: 'Jenis Kasbon', sortable: true },
+    { id: 'loan_type_name', label: 'Jenis Kasbon', sortable: true },
     {
-      id: 'nominalKasbon',
+      id: 'nominal_loan',
       label: 'Nominal Kasbon',
       align: 'right',
       sortable: true,
       format: (val) => formatCurrencyValue(parseCurrency(val))
     },
     {
-      id: 'nominalCicilan',
+      id: 'nominal_installment',
       label: 'Nominal Cicilan',
       align: 'right',
       sortable: true,
       format: (val) => formatCurrencyValue(parseCurrency(val))
     },
-    { id: 'periodeCicilan', label: 'Periode Cicilan', sortable: true },
+    { id: 'loan_period', label: 'Periode Cicilan', sortable: true },
     {
-      id: 'statusKasbon',
+      id: 'loan_status_name',
       label: 'Status Kasbon',
       sortable: true,
       filterOptions: [
@@ -131,7 +132,7 @@ export default function RiwayatPengajuanPage() {
         { label: 'Disetujui', value: 'Disetujui' },
         { label: 'Ditolak', value: 'Ditolak' },
       ],
-      format: (value: KasbonRiwayatRow['statusKasbon']) => {
+      format: (value: KasbonRiwayatRow['loan_status_name']) => {
         const color =
           value === 'Disetujui' ? 'bg-success-100 text-success-700' :
             value === 'Ditolak' ? 'bg-error-100 text-error-700' :
@@ -140,7 +141,7 @@ export default function RiwayatPengajuanPage() {
       },
     },
     {
-      id: 'rejectionReason',
+      id: 'rejection_reason',
       label: 'Alasan Penolakkan',
       sortable: true,
       format: (val) => val || '—'
@@ -152,7 +153,7 @@ export default function RiwayatPengajuanPage() {
       sortable: false,
       format: (_, row) => (
         <button
-          onClick={() => navigate(`/cash-advance/detail/${row.loanId}`)}
+          onClick={() => navigate(`/cash-advance/detail/${row.loan_id}`)}
           className="inline-flex items-center justify-center rounded-md p-2 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-white/[0.06]"
         >
           <IconFileDetail />

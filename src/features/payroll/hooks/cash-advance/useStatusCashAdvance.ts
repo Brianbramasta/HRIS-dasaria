@@ -61,21 +61,20 @@ export const useStatusCashAdvance = () => {
     const rows = useMemo(() => {
         return loans.map((item, index) => ({
             no: (page - 1) * pageSize + index + 1,
-            idKaryawan: item.employeeId,
-            loanId: item.loanId,
-            pengguna: item.fullName,
+            employee_id: item.employeeId,
+            loan_id: item.loanId,
+            full_name: item.fullName,
             avatar: item.avatar,
-            tanggalPengajuan: item.applicationDate,
-            posisi: item.positionName,
-            departemen: item.departmentName,
-            tanggalMulaiPotongan: item.deductionStartPeriod,
-            tanggalPencairan: item.disbursedAt,
-            jenisKasbon: item.loanTypeName,
-            nominalKasbon: String(item.nominalLoan),
-            nominalCicilan: String(item.nominalInstallment),
-            sisaPeriodeCicilan: `${item.loanPeriod} bulan`, // TODO: Update when API provides remaining installments
-            periodeCicilan: `${item.loanPeriod} bulan`,
-            statusKasbon: item.loanStatusName as any,
+            application_date: item.applicationDate,
+            position_name: item.positionName,
+            department_name: item.departmentName,
+            deduction_start_period: item.deductionStartPeriod,
+            disbursed_at: item.disbursedAt,
+            loan_type_name: item.loanTypeName,
+            nominal_loan: String(item.nominalLoan),
+            nominal_installment: String(item.nominalInstallment),
+            loan_period: `${item.loanPeriod} bulan`, // TODO: Update when API provides remaining installments
+            loan_status_name: item.loanStatusName as any,
         }));
     }, [loans, page, pageSize]);
 

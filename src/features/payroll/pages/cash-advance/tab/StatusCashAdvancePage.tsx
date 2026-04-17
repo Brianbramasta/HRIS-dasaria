@@ -7,21 +7,20 @@ import { useStatusCashAdvance } from '@/features/payroll/hooks/cash-advance/useS
 
 type StatusKasbonRow = {
   no?: number;
-  idKaryawan: string;
-  loanId: string;
-  pengguna: string;
+  employee_id: string;
+  loan_id: string;
+  full_name: string;
   avatar?: string;
-  tanggalPengajuan: string;
-  posisi: string;
-  departemen: string;
-  tanggalMulaiPotongan: string;
-  tanggalPencairan: string;
-  jenisKasbon: string;
-  nominalKasbon: string;
-  nominalCicilan: string;
-  sisaPeriodeCicilan: string;
-  periodeCicilan: string;
-  statusKasbon: 'Menunggu Cicilan' | 'Selesai' | 'New Cicilan' | 'Masa Cicilan';
+  application_date: string;
+  position_name: string;
+  department_name: string;
+  deduction_start_period: string;
+  disbursed_at: string;
+  loan_type_name: string;
+  nominal_loan: string;
+  nominal_installment: string;
+  loan_period: string;
+  loan_status_name: 'Menunggu Cicilan' | 'Selesai' | 'New Cicilan' | 'Masa Cicilan';
   detail?: string;
 };
 
@@ -51,9 +50,9 @@ export default function StatusKasbonPage() {
       align: 'center',
       sortable: false,
     },
-    { id: 'idKaryawan', label: 'NIP', sortable: true },
+    { id: 'employee_id', label: 'NIP', sortable: true },
     {
-      id: 'pengguna',
+      id: 'full_name',
       label: 'Pengguna',
       sortable: true,
       format: (value, row) => (
@@ -67,32 +66,32 @@ export default function StatusKasbonPage() {
         </div>
       ),
     },
-    { id: 'posisi', label: 'Posisi', sortable: true },
-    { id: 'departemen', label: 'Departemen', sortable: true },
+    { id: 'position_name', label: 'Posisi', sortable: true },
+    { id: 'department_name', label: 'Departemen', sortable: true },
     {
-      id: 'tanggalMulaiPotongan',
+      id: 'deduction_start_period',
       label: 'Bulan Mulai Potongan',
       sortable: true,
       dateRangeFilter: true,
       format: (val) => formatDateToIndonesian(val) || val
     },
     {
-      id: 'tanggalPencairan',
+      id: 'disbursed_at',
       label: 'Bulan Selesai Potongan',
       sortable: true,
       dateRangeFilter: true,
       format: (val) => formatDateToIndonesian(val) || val
     },
     {
-      id: 'nominalCicilan',
+      id: 'nominal_installment',
       label: 'Sisa Nominal Cicilan',
       align: 'right',
       sortable: true,
       format: (val) => formatCurrencyValue(parseCurrency(val))
     },
-    { id: 'sisaPeriodeCicilan', label: 'Sisa Periode Cicilan', sortable: true },
+    { id: 'loan_period', label: 'Sisa Periode Cicilan', sortable: true },
     {
-      id: 'statusKasbon',
+      id: 'loan_status_name',
       label: 'Status Kasbon',
       sortable: true,
       filterOptions: [
@@ -101,7 +100,7 @@ export default function StatusKasbonPage() {
         { label: 'Selesai', value: 'Selesai' },
         { label: 'New Cicilan', value: 'New Cicilan' },
       ],
-      format: (value: StatusKasbonRow['statusKasbon']) => {
+      format: (value: StatusKasbonRow['loan_status_name']) => {
         const color =
           value === 'Selesai' ? 'bg-success-100 text-success-700' :
             value === 'Menunggu Cicilan' ? 'bg-warning-100 text-warning-700' :
@@ -117,7 +116,7 @@ export default function StatusKasbonPage() {
       sortable: false,
       format: (_, row) => (
         <button
-          onClick={() => navigate(`/cash-advance/detail-status/${row.loanId}`)}
+          onClick={() => navigate(`/cash-advance/detail-status/${row.loan_id}`)}
           className="inline-flex items-center justify-center rounded-md p-2 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-white/[0.06]"
         >
           <IconFileDetail />
