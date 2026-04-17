@@ -35,10 +35,10 @@ export default function StatusKasbonPage() {
     columnFilters,
     handleDateRangeFilterChange,
     handleColumnFilterChange,
-    setPage,
-    setPageSize,
-    setSearch,
-    setSort,
+    handleSearchChange,
+    handleSortChange,
+    handlePageChange,
+    handleRowsPerPageChange,
     navigate,
   } = useStatusCashAdvance();
 
@@ -138,10 +138,10 @@ export default function StatusKasbonPage() {
         useExternalPagination
         externalPage={page}
         externalTotal={total}
-        onSearchChange={setSearch}
-        onSortChange={setSort}
-        onPageChangeExternal={setPage}
-        onRowsPerPageChangeExternal={setPageSize}
+        onSearchChange={handleSearchChange}
+        onSortChange={handleSortChange}
+        onPageChangeExternal={handlePageChange}
+        onRowsPerPageChangeExternal={handleRowsPerPageChange}
         onDateRangeFilterChange={handleDateRangeFilterChange}
         dateRangeFilters={dateRangeFilters}
         onColumnFilterChange={handleColumnFilterChange}

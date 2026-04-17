@@ -80,7 +80,7 @@ interface UseApiCashAdvanceReturn {
     fetchCashAdvances: (filter?: Partial<TableFilter>) => Promise<void>;
     getCashAdvanceDetail: (id: string) => Promise<CashAdvanceDetail | null>;
     getEmployeeInfo: (employeeId: string) => Promise<CashAdvanceEmployeeInfo | null>;
-    getActiveAndCompletedLoans: (employeeId?: string) => Promise<ActiveAndCompletedLoansListItem[] | null>;
+    getActiveAndCompletedLoans: (employeeId?: string, filter?: Partial<TableFilter>) => Promise<ActiveAndCompletedLoansListItem[] | null>;
     approveCashAdvance: (id: string, payload: CashAdvanceApprovePayload) => Promise<CashAdvanceResponse | null>;
     rejectCashAdvance: (id: string, payload: CashAdvanceRejectPayload) => Promise<CashAdvanceResponse | null>;
 
@@ -242,16 +242,71 @@ export const useApiCashAdvance = (): UseApiCashAdvanceReturn => {
         }
     }, []);
 
-    const getActiveAndCompletedLoans = useCallback(async (employeeId?: string): Promise<ActiveAndCompletedLoansListItem[] | null> => {
+    const getActiveAndCompletedLoans = useCallback(async (employeeId?: string, filter?: Partial<TableFilter>): Promise<ActiveAndCompletedLoansListItem[] | null> => {
         setLoading(true);
         setError(null);
         try {
             const params: any = {};
             if (employeeId) params.employee_id = employeeId;
 
+            // Add pagination parameters
+            const effectivePage = filter?.page ?? page;
+            const effectivePageSize = filter?.pageSize ?? pageSize;
+            const effectiveSearch = filter?.search ?? search;
+            const effectiveSortBy = filter?.sortBy ?? sortBy;
+            const effectiveSortOrder = filter?.sortOrder ?? sortOrder;
+
+            params.page = effectivePage;
+            params.per_page = effectivePageSize;
+            if (effectiveSearch) params.search = effectiveSearch;
+            if (effectiveSortBy) {
+                params.column = toSortField(effectiveSortBy);
+                if (effectiveSortOrder) params.sort = effectiveSortOrder;
+            }
+
+            // Add column filters - format: filter_column[column_name][in][]=value
+            Object.entries(columnFilters).forEach(([columnId, values]) => {
+                if (values && values.length > 0) {
+                    values.forEach((value) => {
+                        const key = `filter_column[${columnId}][in][]`;
+                        if (!params[key]) {
+                            params[key] = [];
+                        }
+                        params[key].push(value);
+                    });
+                }
+            });
+
+            // Add date range filters - format: filter_column[column_name][range][]=start_date & filter_column[column_name][range][]=end_date
+            Object.entries(dateRangeFilters).forEach(([columnId, dateRange]) => {
+                if (dateRange && dateRange.startDate) {
+                    const key = `filter_column[${columnId}][range][]`;
+                    if (!params[key]) {
+                        params[key] = [];
+                    }
+                    params[key].push(dateRange.startDate);
+                    if (dateRange.endDate) {
+                        params[key].push(dateRange.endDate);
+                    }
+                }
+            });
+
             const resp = await cashAdvanceServices.getActiveAndCompletedLoans(params);
             const payload = (resp as any)?.data ?? {};
             const items = payload?.data ?? [];
+            const totalCount = payload?.total ?? (items?.length || 0);
+            const perPage = payload?.per_page ?? filter?.pageSize ?? pageSize;
+            const totalPagesCalc = perPage ? Math.ceil(totalCount / perPage) : 1;
+
+            // Update state with pagination info
+            setTotal(totalCount);
+            setTotalPages(totalPagesCalc);
+
+            if (filter?.page) setPage(filter.page);
+            if (filter?.pageSize) setPageSize(filter.pageSize);
+            if (filter?.search !== undefined) setSearch(filter.search);
+            if (filter?.sortBy) setSortBy(filter.sortBy);
+            if (filter?.sortOrder) setSortOrder(filter.sortOrder);
 
             return (items || []).map(mapToActiveAndCompletedLoansListItem);
         } catch (err) {
@@ -261,7 +316,7 @@ export const useApiCashAdvance = (): UseApiCashAdvanceReturn => {
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [page, pageSize, search, sortBy, sortOrder, columnFilters, dateRangeFilters]);
 
     const approveCashAdvance = useCallback(async (id: string, payload: CashAdvanceApprovePayload): Promise<CashAdvanceResponse | null> => {
         setLoading(true);

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useApiCashAdvance } from '../api/useApiCashAdvance';
 import { useNavigate } from 'react-router-dom';
+import { TableFilter } from '@/types/SharedType';
 
 export const useStatusCashAdvance = () => {
     const navigate = useNavigate();
@@ -23,26 +24,18 @@ export const useStatusCashAdvance = () => {
 
     const [loans, setLoans] = useState<any[]>([]);
 
-    useEffect(() => {
-        const fetchLoans = async () => {
-            const result = await getActiveAndCompletedLoans();
-            if (result) {
-                setLoans(result);
-            }
-        };
-        fetchLoans();
+    // Fetch data with pagination, search, and filters
+    const fetchLoans = useCallback(async (filter?: Partial<TableFilter>) => {
+        const result = await getActiveAndCompletedLoans(undefined, filter);
+        if (result) {
+            setLoans(result);
+        }
     }, [getActiveAndCompletedLoans]);
 
-    // Fetch when filters change
+    // Auto-fetch when page, pageSize, columnFilters, or dateRangeFilters change
     useEffect(() => {
-        const fetchLoans = async () => {
-            const result = await getActiveAndCompletedLoans();
-            if (result) {
-                setLoans(result);
-            }
-        };
         fetchLoans();
-    }, [columnFilters, dateRangeFilters, getActiveAndCompletedLoans]);
+    }, [page, pageSize, columnFilters, dateRangeFilters, fetchLoans]);
 
     const handleDateRangeFilterChange = useCallback((columnId: string, startDate: string, endDate: string | null) => {
         setDateRangeFilters({
@@ -57,6 +50,23 @@ export const useStatusCashAdvance = () => {
             [columnId]: values,
         });
     }, [columnFilters, setColumnFilters]);
+
+    const handleSearchChange = useCallback((search: string) => {
+        fetchLoans({ search });
+    }, [fetchLoans]);
+
+    const handleSortChange = useCallback((columnId: string, order: 'asc' | 'desc') => {
+        fetchLoans({ sortBy: columnId, sortOrder: order });
+    }, [fetchLoans]);
+
+    const handlePageChange = useCallback((newPage: number) => {
+        setPage(newPage);
+    }, []);
+
+    const handleRowsPerPageChange = useCallback((newPageSize: number) => {
+        setPageSize(newPageSize);
+        setPage(1); // Reset to first page when changing page size
+    }, []);
 
     const rows = useMemo(() => {
         return loans.map((item, index) => ({
@@ -88,6 +98,10 @@ export const useStatusCashAdvance = () => {
         columnFilters,
         handleDateRangeFilterChange,
         handleColumnFilterChange,
+        handleSearchChange,
+        handleSortChange,
+        handlePageChange,
+        handleRowsPerPageChange,
         setPage,
         setPageSize,
         setSearch,
