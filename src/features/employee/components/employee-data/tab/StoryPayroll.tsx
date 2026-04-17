@@ -23,7 +23,18 @@ function SummaryItem({ label, children }: { label: string; children: ReactNode }
 }
 
 export default function StoryPayrollTab({ employeeId, isEditable }: Props) {
-  const { title, payrollInfo, payrollDetailCards, historyRows, historyColumns, employeeSalaryShow, refetch, error } = useStoryPayrollTab(
+  const { 
+    title, 
+    payrollInfo, 
+    payrollDetailCards, 
+    historyRows, 
+    historyColumns, 
+    kasbonHistoryRows, 
+    kasbonHistoryColumns,
+    employeeSalaryShow, 
+    refetch, 
+    error 
+  } = useStoryPayrollTab(
     employeeId,
     isEditable,
   );
@@ -106,6 +117,17 @@ export default function StoryPayrollTab({ employeeId, isEditable }: Props) {
           title="Riwayat Penggajian"
           isNewLine
           emptyMessage="Belum ada riwayat penggajian."
+        />
+      )}
+
+      {!error && (
+        <DataTable
+          resetKey='riwayat-kasbon'
+          data={kasbonHistoryRows}
+          columns={kasbonHistoryColumns}
+          title="Riwayat Kasbon"
+          isNewLine
+          emptyMessage="Belum ada riwayat kasbon."
         />
       )}
 

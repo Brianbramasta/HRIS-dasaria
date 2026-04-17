@@ -33,6 +33,15 @@ export type PayrollHistoryRow = {
   file?: string;
 };
 
+export type KasbonHistoryRow = {
+  no: number;
+  bulanMulai: string;
+  bulanSelesai: string;
+  nominal: string;
+  periode: string;
+  hasDetail: boolean;
+};
+
 export function useStoryPayrollTab(employeeId?: string, isEditable?: boolean) {
   const { detail, loading: detailLoading, error: detailError, fetchDetail } = useDetailDataKaryawanPersonalInfo();
   const { 
@@ -252,6 +261,66 @@ export function useStoryPayrollTab(employeeId?: string, isEditable?: boolean) {
     [historyRows],
   );
 
+  // Kasbon History Data
+  const kasbonHistoryRows: KasbonHistoryRow[] = useMemo(
+    () => [
+      {
+        no: 1,
+        bulanMulai: 'Januari 2024',
+        bulanSelesai: 'Juni 2024',
+        nominal: formatCurrency(5000000),
+        periode: '6 bulan',
+        hasDetail: true,
+      },
+      {
+        no: 2,
+        bulanMulai: 'Juli 2024',
+        bulanSelesai: 'Desember 2024',
+        nominal: formatCurrency(3000000),
+        periode: '6 bulan',
+        hasDetail: true,
+      },
+      {
+        no: 3,
+        bulanMulai: 'Januari 2025',
+        bulanSelesai: 'Mei 2025',
+        nominal: formatCurrency(2500000),
+        periode: '5 bulan',
+        hasDetail: false,
+      },
+    ],
+    [],
+  );
+
+  const kasbonHistoryColumns: DataTableColumn<KasbonHistoryRow>[] = useMemo(
+    () => [
+      { id: 'no', key: 'no', label: 'No.' },
+      { id: 'bulanMulai', key: 'bulanMulai', label: 'Bulan Mulai Potongan' },
+      { id: 'bulanSelesai', key: 'bulanSelesai', label: 'Bulan Selesai Potongan' },
+      { id: 'nominal', key: 'nominal', label: 'Nominal Kasbon' },
+      { id: 'periode', key: 'periode', label: 'Periode Cicilan' },
+      { 
+        id: 'hasDetail', 
+        key: 'hasDetail', 
+        label: 'Detail Kasbon',
+        align: 'center' as const,
+        sortable: false,
+        format: (value: boolean) =>
+          value
+            ? React.createElement(
+                'button',
+                {
+                  type: 'button',
+                  className: '',
+                },
+                React.createElement(IconFileDetail),
+              )
+            : '—',
+      },
+    ],
+    [],
+  );
+
   const title = isEditable ? 'Gaji (Edit)' : 'Gaji';
 
   return {
@@ -260,6 +329,8 @@ export function useStoryPayrollTab(employeeId?: string, isEditable?: boolean) {
     payrollDetailCards,
     historyRows,
     historyColumns,
+    kasbonHistoryRows,
+    kasbonHistoryColumns,
     loading,
     error,
     employeeSalaryShow,
