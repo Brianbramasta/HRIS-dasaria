@@ -69,6 +69,9 @@ export const useStep3Data = (isOpen?: boolean) => {
     return jobTitleOptions;
   }, [jobTitleOptions, selectedCategoryLabel]);
 
+  // Check if employee category is selected
+  const isEmployeeCategoryNotSelected = !step3.kategoriKaryawan;
+
   // Determine field visibility based on job title and structural job
   const visibleFields = useMemo(() => {
     // Default visibility
@@ -249,6 +252,39 @@ export const useStep3Data = (isOpen?: boolean) => {
     
     fetchFilteredPositions();
   }, [positionSearch, isOpen, fetchEmployeePositions]);
+
+  // Filter position level options based on job title
+  const filteredPositionLevelOptions = useMemo(() => {
+    const selectedJobTitle = jobTitleOptions.find((opt: any) => opt.value === step3.jabatan);
+    const selectedJobTitleLabel = selectedJobTitle?.label;
+    
+    // Job titles that can only select "General" level
+    const generalOnlyTitles = [
+      'Account Executive (AE)',
+      'Non-Staff PKL Griyanet',
+      'Partnership',
+      'Non-Staff Internship',
+      'Non-Staff PKL Dasarata'
+    ];
+    
+    // Job titles that can select "Junior, Middle, Senior" levels
+    const juniorMiddleSeniorTitles = [
+      'Entry Level',
+      'Officer',
+      'Principal Officer',
+      'Supervisor',
+      'Manager',
+      'Direktur'
+    ];
+    
+    if (selectedJobTitleLabel && generalOnlyTitles.includes(selectedJobTitleLabel)) {
+      return positionLevelOptions.filter((opt: any) => opt.label === 'General');
+    } else if (selectedJobTitleLabel && juniorMiddleSeniorTitles.includes(selectedJobTitleLabel)) {
+      return positionLevelOptions.filter((opt: any) => ['Junior', 'Middle', 'Senior'].includes(opt.label));
+    }
+    
+    return positionLevelOptions;
+  }, [jobTitleOptions, step3.jabatan, positionLevelOptions]);
 
   // Filter positions on client side based on selected criteria
   const filteredPositionOptions = useMemo(() => {
@@ -437,13 +473,14 @@ export const useStep3Data = (isOpen?: boolean) => {
     positionOptions,
     kategoriKaryawanOptions,
     selectedGrade,
-    positionLevelOptions,
+    positionLevelOptions: filteredPositionLevelOptions,
     employeeStatusOptions,
     setSelectedGrade,
     handleChange,
     jabatanStrukturalOptions,
     unitOptions,
     visibleFields,
+    isEmployeeCategoryNotSelected,
     handleCompanySearch,
     handleOfficeSearch,
     handleDirectorateSearch,

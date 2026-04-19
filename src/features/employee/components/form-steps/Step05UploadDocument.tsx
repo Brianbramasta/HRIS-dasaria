@@ -20,25 +20,14 @@ export const Step05UploadDocument: React.FC = () => {
             label={
               <>
                 Upload {doc.document_name}
-                {/* {doc.is_mandatory === 1 ? null : (
-                  <span className="text-gray-400 ml-1 font-normal text-sm">(opsional)</span>
-                )} */}
               </>
             }
             infoText={doc.description}
-            // required={doc.is_mandatory === 1}
-            // multiple={false}
             multiple={false}
-            // required={doc.is_mandatory === 1}
             acceptedFormats={fieldConfig.acceptedFormats}
             onChange={(e) => handleFileChange(doc.id, e)}
             onInfoClick={fieldConfig.handleInfoClick}
           />
-          {/* {existingFile && (
-            <p className="text-xs text-green-600 mt-1 truncate">
-              File terpilih: {existingFile.namaFile}
-            </p>
-          )} */}
         </div>
       </div>
     );

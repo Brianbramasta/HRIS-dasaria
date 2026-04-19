@@ -39,7 +39,7 @@ export const Step04SalaryBpjs: React.FC = () => {
        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           
-             {/* Bank */}
+        {/* Bank */}
         {isAuthenticated &&  
         (<div className="grid grid-cols-1  mb-4">
             <SelectField
