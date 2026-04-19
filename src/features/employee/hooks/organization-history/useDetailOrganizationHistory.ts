@@ -2,14 +2,14 @@ import { useState, useCallback, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useApiOrganizationChange } from '../api/useApiOrganizationChange';
 import { formatCurrency } from '@/utils/formatCurrency';
-import { OrganizationChangeDetail } from '../../types/dto/OrganizationChangeType';
+import { OrganizationChangeDetailEntity } from '../../types/entity/OrganizationChangeEntity';
 
 interface UseDetailOrganizationHistoryReturn {
   // State
   skFile: File | null;
   adendumFile: File | null;
   loading: boolean;
-  organizationChangeDetail: OrganizationChangeDetail | null;
+  organizationChangeDetail: OrganizationChangeDetailEntity | null;
   
   // URL params
   id: string;

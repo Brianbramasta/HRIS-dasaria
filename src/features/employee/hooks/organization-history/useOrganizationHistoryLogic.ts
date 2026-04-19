@@ -128,20 +128,10 @@ export const useOrganizationHistoryLogic = () => {
     navigate('/organization-history/atasan');
   }, [navigate]);
 
-  // Add statusPerubahan to data for compatibility
+  // Data is already transformed with statusPerubahan in Model layer
   const rowsWithStatus = useMemo(() => {
-    // Debug: log the data structure
-    console.log('Data type:', typeof data);
-    console.log('Data value:', data);
-    console.log('Is array:', Array.isArray(data));
-    
     // Ensure data is an array
-    const dataArray = Array.isArray(data) ? data : [];
-    
-    return dataArray.map(item => ({
-      ...item,
-      statusPerubahan: item.org_change_status
-    }));
+    return Array.isArray(data) ? data : [];
   }, [data]);
 
   return {

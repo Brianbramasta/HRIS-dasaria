@@ -1,5 +1,5 @@
 import { DataTable, DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
-import { OrganizationChangeListItem } from '@/features/employee/types/dto/OrganizationChangeType';
+import { OrganizationChangeEntity } from '@/features/employee/types/entity/OrganizationChangeEntity';
 import Button from '@/components/ui/button/Button';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { ChevronDown } from 'react-feather';
@@ -10,7 +10,7 @@ import { formatDateToIndonesian } from '@/utils/formatDate';
 import { formatImage } from '@/utils/formatImage';
 import { useOrganizationHistoryLogic } from '@/features/employee/hooks/organization-history/useOrganizationHistoryLogic';
 
-type OrgHistoryListRow = OrganizationChangeListItem & { statusPerubahan: string };
+type OrgHistoryListRow = OrganizationChangeEntity;
 
 export default function OrganizationHistoryPage() {
   const navigate = useNavigate();
@@ -55,7 +55,7 @@ export default function OrganizationHistoryPage() {
       { id: 'change_type_name', label: 'Jenis Perubahan' },
       { id: 'effective_date', label: 'Tanggal Efektif', dateRangeFilter: true, format: (v: string) => formatDateToIndonesian(v || '') },
       {
-        id: 'statusPerubahan',
+        id: 'status_perubahan',
         label: 'Status Perubahan',
         align: 'center',
         filterOptions: [

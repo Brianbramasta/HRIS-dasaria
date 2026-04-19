@@ -1,15 +1,17 @@
 import { useState, useCallback } from 'react';
-import { OrganizationChangeListItem, OrganizationChangeDetail, StoreOrganizationChangePayload, UploadDocumentPayload, EmployeeOrganizationChangeHistory, OrganizationChangeQueryParams } from '../../types/dto/OrganizationChangeType';
+import { StoreOrganizationChangePayload, UploadDocumentPayload, OrganizationChangeQueryParams } from '../../types/dto/OrganizationChangeType';
+import { OrganizationChangeEntity, OrganizationChangeDetailEntity, EmployeeOrganizationChangeHistoryEntity } from '../../types/entity/OrganizationChangeEntity';
 import { organizationChangeNewService } from '../../services/OrganizationChangeNewService';
+import { OrganizationChangeModel } from '../../models/OrganizationChangeModel';
 
 interface UseApiOrganizationChangeReturn {
   loading: boolean;
   error: string | null;
 
   // Data State
-  organizationChanges: OrganizationChangeListItem[];
-  organizationChangeDetail: OrganizationChangeDetail | null;
-  employeeOrganizationChanges: EmployeeOrganizationChangeHistory[];
+  organizationChanges: OrganizationChangeEntity[];
+  organizationChangeDetail: OrganizationChangeDetailEntity | null;
+  employeeOrganizationChanges: EmployeeOrganizationChangeHistoryEntity[];
   pagination: {
     currentPage: number;
     perPage: number;
@@ -33,9 +35,9 @@ export const useApiOrganizationChange = (): UseApiOrganizationChangeReturn => {
   const [error, setError] = useState<string | null>(null);
 
   // Data States
-  const [organizationChanges, setOrganizationChanges] = useState<OrganizationChangeListItem[]>([]);
-  const [organizationChangeDetail, setOrganizationChangeDetail] = useState<OrganizationChangeDetail | null>(null);
-  const [employeeOrganizationChanges, setEmployeeOrganizationChanges] = useState<EmployeeOrganizationChangeHistory[]>([]);
+  const [organizationChanges, setOrganizationChanges] = useState<OrganizationChangeEntity[]>([]);
+  const [organizationChangeDetail, setOrganizationChangeDetail] = useState<OrganizationChangeDetailEntity | null>(null);
+  const [employeeOrganizationChanges, setEmployeeOrganizationChanges] = useState<EmployeeOrganizationChangeHistoryEntity[]>([]);
   const [pagination, setPagination] = useState({
     currentPage: 1,
     perPage: 10,
@@ -62,7 +64,8 @@ export const useApiOrganizationChange = (): UseApiOrganizationChangeReturn => {
       const response = await organizationChangeNewService.getOrganizationChanges(params);
       
       if (response.meta.status === 200) {
-        setOrganizationChanges(response.data.data);
+        const transformedData = OrganizationChangeModel.transformListFromApi(response.data.data);
+        setOrganizationChanges(transformedData);
         setPagination({
           currentPage: response.data.current_page,
           perPage: response.data.per_page,
@@ -87,7 +90,8 @@ export const useApiOrganizationChange = (): UseApiOrganizationChangeReturn => {
       const response = await organizationChangeNewService.getOrganizationChangeDetail(changeId);
       
       if (response.meta.status === 200) {
-        setOrganizationChangeDetail(response.data);
+        const transformedData = OrganizationChangeModel.transformDetailFromApi(response.data);
+        setOrganizationChangeDetail(transformedData);
       } else {
         setError(response.meta.message || 'Failed to fetch organization change detail');
       }
@@ -110,13 +114,15 @@ export const useApiOrganizationChange = (): UseApiOrganizationChangeReturn => {
         // Handle both response types - employee detail or organization history
         if (Array.isArray(response.data)) {
           // This is organization history response
-          setEmployeeOrganizationChanges(response.data);
+          const transformedData = OrganizationChangeModel.transformEmployeeHistoryListFromApi(response.data);
+          setEmployeeOrganizationChanges(transformedData);
+          return response.data;
         } else {
           // This is employee detail response, extract organization changes if available
           // For now, set empty array as the structure is different
           setEmployeeOrganizationChanges([]);
+          return response.data;
         }
-        return response.data;
       } else {
         setError(response.meta.message || 'Failed to fetch employee organization changes');
         return null;

@@ -130,14 +130,8 @@ export const useOrganizationHistoryAtasanLogic = () => {
     navigate('/organization-history/atasan');
   }, [navigate]);
 
-  // Add statusPerubahan to data for compatibility
-  const rowsWithStatus = useMemo(() => 
-    data.map(item => ({
-      ...item,
-      statusPerubahan: item.org_change_status
-    })),
-    [data]
-  );
+  // Data is already transformed with statusPerubahan in Model layer
+  const rowsWithStatus = useMemo(() => data, [data]);
 
   return {
     // State
