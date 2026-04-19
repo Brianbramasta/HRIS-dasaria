@@ -1,7 +1,7 @@
 
 
 import { DataTable, DataTableColumn, DataTableAction } from '../../../../../components/shared/datatable/DataTable';
-import {  Karyawan } from '../../../types/dto/EmployeeType';
+import { EmployeeEntity } from '../../../types/entity/EmployeeEntity';
 import useKaryawan from '../../../hooks/employee-data/list/useKaryawan';
 // import Button from '../../../../../components/ui/button/Button';
 import AddKaryawanModal from '../../../components/modals/AddEmployeeModal';
@@ -12,125 +12,9 @@ import { formatDateToIndonesian } from '@/utils/formatDate';
 import { formatImage } from '@/utils/formatImage';
 
 
-// Helper function for rendering remaining contract badge
-const renderSisaKontrakBadge = (sisaKontrak: string | undefined) => {
-  //console.log('sisaKontrak:', sisaKontrak);
-  if (!sisaKontrak) {
-    return <span className="status-styling rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-800">-</span>;
-  }
 
-  const sisaKontrakStr = sisaKontrak.toString().toLowerCase().trim();
 
-  // Determine badge color based on the value
-  let bgClass = '';
-  let textClass = '';
 
-  if (sisaKontrakStr === 'berakhir') {
-    // Merah = Berakhir
-    bgClass = 'bg-red-100';
-    textClass = 'text-red-800';
-  } else if (sisaKontrakStr.includes('hari')) {
-    // Merah = Kurang dari 1 bulan (1-6 hari)
-    bgClass = 'bg-pink-100';
-    textClass = 'text-pink-800';
-  } else if (sisaKontrakStr.includes('minggu')) {
-    // Merah/Pink = Kurang dari 1 bulan (1-4 minggu)
-    bgClass = 'bg-pink-100';
-    textClass = 'text-pink-800';
-  } else if (sisaKontrakStr.includes('bulan')) {
-    // Extract bulan number to determine color
-    const match = sisaKontrakStr.match(/(\d+)/);
-    if (match) {
-      const bulanNum = parseInt(match[1]);
-      if (bulanNum <= 2) {
-        // Orange = 1-2 Bulan
-        bgClass = 'bg-orange-100';
-        textClass = 'text-orange-800';
-      } else if (bulanNum >= 3 && bulanNum <= 6) {
-        // Biru = 3-6 Bulan
-        bgClass = 'bg-blue-100';
-        textClass = 'text-blue-800';
-      } else if (bulanNum > 6) {
-        // Hijau = Lebih dari 6 Bulan
-        bgClass = 'bg-green-100';
-        textClass = 'text-green-800';
-      }
-    }
-  } else {
-    bgClass = 'bg-gray-300';
-    textClass = 'text-[#404040]';
-  }
-
-  return <span className={`status-styling rounded-full px-3 py-1 text-xs font-medium ${bgClass} ${textClass}`}>{sisaKontrak}</span>;
-};
-
-// Helper function for employment status badge with color mapping
-const renderEmploymentStatusBadge = (value: string | undefined) => {
-  if (!value) {
-    return <span className="inline-block rounded-full p-[10px] w-full text-center text-xs font-medium bg-gray-100 text-gray-800">-</span>;
-  }
-
-  const statusValue = value.toLowerCase().trim();
-  let bgClass = '';
-  let textClass = '';
-
-  if (statusValue === 'aktif' || statusValue === 'active') {
-    bgClass = 'bg-green-100';
-    textClass = 'text-green-800';
-  } else if (statusValue === 'pengunduran diri' || statusValue === 'resign') {
-    bgClass = 'bg-blue-100';
-    textClass = 'text-blue-800';
-  } else if (statusValue === 'tidak aktif' || statusValue === 'inactive') {
-    bgClass = 'bg-red-100';
-    textClass = 'text-red-800';
-  } else if (statusValue === 'evaluasi' || statusValue === 'evaluation') {
-    bgClass = 'bg-orange-100';
-    textClass = 'text-orange-800';
-  } else {
-    bgClass = 'bg-gray-100';
-    textClass = 'text-gray-800';
-  }
-
-  return (
-    <span className={`inline-block rounded-full p-[10px] w-full text-center text-xs font-medium ${bgClass} ${textClass}`}>
-      {value}
-    </span>
-  );
-};
-
-// Helper function for payroll status badge
-const renderPayrollStatusBadge = (value: string | undefined) => {
-  if (!value) {
-    return <span className="inline-block rounded-full p-[10px] w-full text-center text-xs font-medium bg-gray-100 text-gray-800">-</span>;
-  }
-
-  const statusValue = value.toLowerCase().trim();
-  const bgClass = (statusValue === 'aktif' || statusValue === 'active') ? 'bg-green-100' : 'bg-red-100';
-  const textClass = (statusValue === 'aktif' || statusValue === 'active') ? 'text-green-800' : 'text-red-800';
-
-  return (
-    <span className={`inline-block rounded-full p-[10px] w-full text-center text-xs font-medium ${bgClass} ${textClass}`}>
-      {value}
-    </span>
-  );
-};
-
-// Helper function for employee data status badge
-const renderEmployeeDataStatusBadge = (value: string | undefined) => {
-  if (!value) {
-    return <span className="inline-block rounded-full p-[10px] w-full text-center text-xs font-medium bg-gray-100 text-gray-800">-</span>;
-  }
-
-  const statusValue = value.toLowerCase().trim();
-  const bgClass = (statusValue === 'lengkap' || statusValue === 'complete') ? 'bg-green-100' : 'bg-red-100';
-  const textClass = (statusValue === 'lengkap' || statusValue === 'complete') ? 'text-green-800' : 'text-red-800';
-
-  return (
-    <span className={`inline-block rounded-full p-[10px] w-full text-center text-xs font-medium ${bgClass} ${textClass}`}>
-      {value}
-    </span>
-  );
-};
 
 export default function DataKaryawanPage() {
   const {
@@ -174,6 +58,11 @@ export default function DataKaryawanPage() {
     handleDateRangeFilterChange,
     // Employment status filter options
     employmentStatusFilterOptions,
+    // Badge rendering functions
+    renderSisaKontrakBadge,
+    renderEmploymentStatusBadge,
+    renderPayrollStatusBadge,
+    renderEmployeeDataStatusBadge,
   } = useKaryawan({
     initialPage: 1,
     initialLimit: 10,
@@ -182,7 +71,7 @@ export default function DataKaryawanPage() {
 
 
   // Define columns and actions for DataTable
-  const columns: DataTableColumn<Karyawan>[] = [
+  const columns: DataTableColumn<EmployeeEntity>[] = [
     {
       id: 'no',
       label: 'No.',
@@ -266,14 +155,17 @@ export default function DataKaryawanPage() {
       id: 'contract_remaining',
       label: 'Sisa Kontrak',
       minWidth: 130,
-      sortable: false,
+      sortable: true,
       filterOptions: [
         { label: '< 1 Bulan', value: 'less_than_1_month' },
         { label: '1–2 Bulan', value: '1_to_2_months' },
         { label: '3–6 Bulan', value: '3_to_6_months' },
         { label: '> 6 Bulan', value: 'more_than_6_months' },
       ],
-      format: (value) => renderSisaKontrakBadge(value),
+      format: (value) => {
+        const badge = renderSisaKontrakBadge(value);
+        return <span className={badge.className}>{badge.text}</span>;
+      },
     },
     {
       id: 'company',
@@ -357,7 +249,10 @@ export default function DataKaryawanPage() {
       minWidth: 130,
       sortable: true,
       filterOptions: employmentStatusFilterOptions,
-      format: (_, row) => renderEmploymentStatusBadge(row.employment_status as string),
+      format: (_, row) => {
+        const badge = renderEmploymentStatusBadge(row.employment_status as string);
+        return <span className={badge.className}>{badge.text}</span>;
+      },
     },
     {
       id: 'payroll_status',
@@ -368,7 +263,10 @@ export default function DataKaryawanPage() {
         { label: 'Aktif', value: 'Aktif' },
         { label: 'Tidak Aktif', value: 'Tidak Aktif' },
       ],
-      format: (value) => renderPayrollStatusBadge(value),
+      format: (value) => {
+        const badge = renderPayrollStatusBadge(value);
+        return <span className={badge.className}>{badge.text}</span>;
+      },
     },
     {
       id: 'employee_data_status',
@@ -379,7 +277,10 @@ export default function DataKaryawanPage() {
         { label: 'Lengkap', value: 'Lengkap' },
         { label: 'Belum Lengkap', value: 'Belum Lengkap' },
       ],
-      format: (value) => renderEmployeeDataStatusBadge(value),
+      format: (value) => {
+        const badge = renderEmployeeDataStatusBadge(value);
+        return <span className={badge.className}>{badge.text}</span>;
+      },
     },
     {
       id: 'employee_category',
@@ -413,7 +314,7 @@ export default function DataKaryawanPage() {
     },
   ];
 
-  const actions: DataTableAction<Karyawan>[] = [
+  const actions: DataTableAction<EmployeeEntity>[] = [
     // {
     //   icon: <IconHapus />,
     //   onClick: handleDeleteClick,

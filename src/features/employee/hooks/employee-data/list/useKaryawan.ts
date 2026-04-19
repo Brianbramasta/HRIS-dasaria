@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Karyawan, EmployeeListItem } from '../../../types/dto/EmployeeType';
+import { EmployeeEntity } from '../../../types/entity/EmployeeEntity';
 import { TableFilter } from '../../../../../types/SharedType';
 import employeeMasterDataService from '../../../services/EmployeeMasterData.service';
 import useFilterStore from '../../../../../stores/filterStore';
@@ -8,6 +8,7 @@ import { addNotification } from '../../../../../stores/notificationStore';
 import errorHandle from '@/utils/errorHandle';
 import { formatFilterValue } from '@/utils/formatFilterValue';
 import { getEmployeeStatusDropdownOptions, DropdownOption } from '../form/useFormulirKaryawan';
+import { EmployeeModel } from '../../../models/EmployeeModel';
 
 export interface UseKaryawanOptions {
   initialPage?: number;
@@ -19,7 +20,7 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
   const { initialPage = 1, initialLimit = 10, autoFetch = true } = options;
   const navigate = useNavigate();
 
-  const [data, setData] = useState<Karyawan[]>([]);
+  const [data, setData] = useState<EmployeeEntity[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [total, setTotal] = useState(0);
@@ -31,7 +32,7 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
   const [employmentStatusFilterOptions, setEmploymentStatusFilterOptions] = useState<DropdownOption[]>([]);
 
   // Modal states
-  const [selectedKaryawan, setSelectedKaryawan] = useState<Karyawan | null>(null);
+  const [selectedKaryawan, setSelectedKaryawan] = useState<EmployeeEntity | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
@@ -45,54 +46,122 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
   }, [data]);
 
   /**
-   * Transform API response data to Karyawan interface
+   * Helper function for rendering remaining contract badge
    */
-  const transformApiDataToKaryawan = (apiData: EmployeeListItem): Karyawan => {
-    //console.log('Transforming API data:', apiData);
+  const renderSisaKontrakBadge = useCallback((sisaKontrak: string | undefined) => {
+    if (!sisaKontrak) {
+      return { className: 'status-styling rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-800', text: '-' };
+    }
+
+    const sisaKontrakStr = sisaKontrak.toString().toLowerCase().trim();
+    let bgClass = '';
+    let textClass = '';
+
+    if (sisaKontrakStr === 'berakhir') {
+      bgClass = 'bg-red-100';
+      textClass = 'text-red-800';
+    } else if (sisaKontrakStr.includes('hari')) {
+      bgClass = 'bg-pink-100';
+      textClass = 'text-pink-800';
+    } else if (sisaKontrakStr.includes('minggu')) {
+      bgClass = 'bg-pink-100';
+      textClass = 'text-pink-800';
+    } else if (sisaKontrakStr.includes('bulan')) {
+      const match = sisaKontrakStr.match(/(\d+)/);
+      if (match) {
+        const bulanNum = parseInt(match[1]);
+        if (bulanNum <= 2) {
+          bgClass = 'bg-orange-100';
+          textClass = 'text-orange-800';
+        } else if (bulanNum >= 3 && bulanNum <= 6) {
+          bgClass = 'bg-blue-100';
+          textClass = 'text-blue-800';
+        } else if (bulanNum > 6) {
+          bgClass = 'bg-green-100';
+          textClass = 'text-green-800';
+        }
+      }
+    } else {
+      bgClass = 'bg-gray-300';
+      textClass = 'text-[#404040]';
+    }
+
+    return { 
+      className: `status-styling rounded-full px-3 py-1 text-xs font-medium ${bgClass} ${textClass}`, 
+      text: sisaKontrak 
+    };
+  }, []);
+
+  /**
+   * Helper function for employment status badge
+   */
+  const renderEmploymentStatusBadge = useCallback((value: string | undefined) => {
+    if (!value) {
+      return { className: 'inline-block rounded-full p-[10px] w-full text-center text-xs font-medium bg-gray-100 text-gray-800', text: '-' };
+    }
+
+    const statusValue = value.toLowerCase().trim();
+    let bgClass = '';
+    let textClass = '';
+
+    if (statusValue === 'aktif' || statusValue === 'active') {
+      bgClass = 'bg-green-100';
+      textClass = 'text-green-800';
+    } else if (statusValue === 'pengunduran diri' || statusValue === 'resign') {
+      bgClass = 'bg-blue-100';
+      textClass = 'text-blue-800';
+    } else if (statusValue === 'tidak aktif' || statusValue === 'inactive') {
+      bgClass = 'bg-red-100';
+      textClass = 'text-red-800';
+    } else if (statusValue === 'evaluasi' || statusValue === 'evaluation') {
+      bgClass = 'bg-orange-100';
+      textClass = 'text-orange-800';
+    } else {
+      bgClass = 'bg-gray-100';
+      textClass = 'text-gray-800';
+    }
 
     return {
-      // Core Identity
-      id: apiData.employee_id || apiData.id || '',
-      employee_id: apiData.employee_id || apiData.id,
-      full_name: apiData.full_name,
-      name: apiData.full_name,
-      email: apiData.email,
-      avatar: apiData.avatar || undefined,
-      
-      // Personal Information
-      birth_date: apiData.birth_date,
-      
-      // Position & Organization
-      position: apiData.position || '',
-      job_title: apiData.job_title || '',
-      jabatan: apiData.job_title || '',
-
-      structural_job: apiData.structural_job || '',
-      position_level: apiData.position_level || '',
-      grade: apiData.grade || '',
-      
-      // Company & Structure
-      company: apiData.company || '',
-      office: apiData.office || '',
-      department: apiData.department || '',
-      unit: apiData.unit ?? null,
-      division: apiData.division || '',
-      directorate: apiData.directorate || '',
-      
-      // Employment Details
-      start_date: apiData.start_date,
-      tanggalJoin: apiData.start_date || '',
-      end_date: apiData.end_date,
-      employment_status: apiData.employment_status,
-      payroll_status: apiData.payroll_status || '-',
-      employee_data_status: apiData.employee_data_status,
-      employee_category: apiData.employee_category,
-      contract_remaining: apiData.contract_remaining,
-      
-      // Access & Permissions
-      user_access: apiData.user_access || undefined,
+      className: `inline-block rounded-full p-[10px] w-full text-center text-xs font-medium ${bgClass} ${textClass}`,
+      text: value
     };
-  };
+  }, []);
+
+  /**
+   * Helper function for payroll status badge
+   */
+  const renderPayrollStatusBadge = useCallback((value: string | undefined) => {
+    if (!value) {
+      return { className: 'inline-block rounded-full p-[10px] w-full text-center text-xs font-medium bg-gray-100 text-gray-800', text: '-' };
+    }
+
+    const statusValue = value.toLowerCase().trim();
+    const bgClass = (statusValue === 'aktif' || statusValue === 'active') ? 'bg-green-100' : 'bg-red-100';
+    const textClass = (statusValue === 'aktif' || statusValue === 'active') ? 'text-green-800' : 'text-red-800';
+
+    return {
+      className: `inline-block rounded-full p-[10px] w-full text-center text-xs font-medium ${bgClass} ${textClass}`,
+      text: value
+    };
+  }, []);
+
+  /**
+   * Helper function for employee data status badge
+   */
+  const renderEmployeeDataStatusBadge = useCallback((value: string | undefined) => {
+    if (!value) {
+      return { className: 'inline-block rounded-full p-[10px] w-full text-center text-xs font-medium bg-gray-100 text-gray-800', text: '-' };
+    }
+
+    const statusValue = value.toLowerCase().trim();
+    const bgClass = (statusValue === 'lengkap' || statusValue === 'complete') ? 'bg-green-100' : 'bg-red-100';
+    const textClass = (statusValue === 'lengkap' || statusValue === 'complete') ? 'text-green-800' : 'text-red-800';
+
+    return {
+      className: `inline-block rounded-full p-[10px] w-full text-center text-xs font-medium ${bgClass} ${textClass}`,
+      text: value
+    };
+  }, []);
 
   const fetchKaryawan = useCallback(
     async (params?: Partial<TableFilter>) => {
@@ -148,8 +217,8 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
         if (response && response.meta?.status === 200 && response.data) {
           const apiResponse = response.data;
           
-          // Transform API data to Karyawan interface
-          const transformedData = apiResponse.data.map(transformApiDataToKaryawan);
+          // Transform API data to Karyawan interface using Model
+          const transformedData = EmployeeModel.transformListFromApi(apiResponse.data);
           
           setData(transformedData);
           setTotal(apiResponse.total || 0);
@@ -362,7 +431,7 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
     await exportKaryawan('csv');
   }, [exportKaryawan]);
 
-  const handleDeleteClick = useCallback((row: Karyawan) => {
+  const handleDeleteClick = useCallback((row: EmployeeEntity) => {
     setSelectedKaryawan(row);
     setShowDeleteModal(true);
   }, []);
@@ -469,6 +538,11 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
     handleDateRangeFilterChange,
     // Employment status filter options
     employmentStatusFilterOptions,
+    // Badge rendering functions
+    renderSisaKontrakBadge,
+    renderEmploymentStatusBadge,
+    renderPayrollStatusBadge,
+    renderEmployeeDataStatusBadge,
   };
 }
 

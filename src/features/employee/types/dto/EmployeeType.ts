@@ -195,7 +195,7 @@ export interface EmployeeListItem {
   avatar?: string | null;
   birth_date?: string;
   company?: string;
-  contract_remaining?: number | null;
+  contract_remaining?: string | null;
   department?: string;
   unit?: string | null;
   directorate?: string;

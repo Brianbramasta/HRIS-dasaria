@@ -3,7 +3,6 @@ import apiService, { ApiResponse } from '../../../services/api';
 import { ApiPaginatedResponse } from '../../../types/SharedType';
 import {
   EmployeeListParams,
-  EmployeeListItem,
   CompanyDropdownItem,
   OfficeDropdownItem,
   DirectorateDropdownItem,
@@ -21,6 +20,7 @@ import {
   BankDropdownItem,
   BpjsHealthTypeDropdownItem,
 } from '../types/dto/EmployeeType';
+import { EmployeeDto } from '../types/dto/EmployeeDto';
 
 class EmployeeMasterDataService {
   private readonly basePath = 'employee-master-data';
@@ -52,12 +52,12 @@ class EmployeeMasterDataService {
    * @param params - Query parameters untuk filtering, sorting, dan pagination
    * @returns Promise dengan data karyawan dan pagination info
    */
-  async getEmployees(params?: EmployeeListParams): Promise<ApiResponse<ApiPaginatedResponse<EmployeeListItem>>> {
+  async getEmployees(params?: EmployeeListParams): Promise<ApiResponse<ApiPaginatedResponse<EmployeeDto>>> {
     // Use ApiService buildQueryString to handle all query params including filter_column
     const queryString = apiService.buildQueryString(params);
     const url = queryString ? `${this.basePath}/employees/index?${queryString}` : `${this.basePath}/employees`;
     
-    return apiService.get<ApiPaginatedResponse<EmployeeListItem>>(url);
+    return apiService.get<ApiPaginatedResponse<EmployeeDto>>(url);
   }
 
   /**
