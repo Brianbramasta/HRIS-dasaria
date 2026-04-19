@@ -1,5 +1,4 @@
 import { DataTable, DataTableColumn, DataTableAction } from '@/components/shared/datatable/DataTable';
-import { OrganizationChangeEntity } from '@/features/employee/types/entity/OrganizationChangeEntity';
 import Button from '@/components/ui/button/Button';
 import { Dropdown } from '@/components/ui/dropdown/Dropdown';
 import { ChevronDown } from 'react-feather';
@@ -9,6 +8,7 @@ import { IconFileDetail } from '@/icons/components/icons';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 import { formatImage } from '@/utils/formatImage';
 import { useOrganizationHistoryLogic } from '@/features/employee/hooks/organization-history/useOrganizationHistoryLogic';
+import { OrganizationChangeEntity } from '@/features/employee/types/entity/OrganizationChangeEntity';
 
 type OrgHistoryListRow = OrganizationChangeEntity;
 

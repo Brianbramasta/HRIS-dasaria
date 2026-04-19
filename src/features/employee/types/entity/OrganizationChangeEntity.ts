@@ -18,6 +18,9 @@ export interface OrganizationChangeEntity {
   status: string;
   category: string;
   
+  // API Compatibility
+  org_change_status: string;
+  
   // Additional computed fields
   status_perubahan: string;
 }
@@ -32,6 +35,9 @@ export interface OrganizationChangeDetailEntity {
   marital_status: string;
   dependents: number;
   reason_change: string;
+  
+  // Change Information
+  change_type_name?: string;
   
   // Documents
   decree_file?: string | null;

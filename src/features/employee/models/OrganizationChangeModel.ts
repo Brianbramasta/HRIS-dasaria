@@ -33,6 +33,7 @@ export class OrganizationChangeModel {
       effective_date: dto.effective_date,
       status: dto.org_change_status,
       category: dto.category,
+      org_change_status: dto.org_change_status, // API compatibility
       status_perubahan: dto.org_change_status, // For UI compatibility
     };
   }
@@ -50,6 +51,7 @@ export class OrganizationChangeModel {
       marital_status: dto.marital_status,
       dependents: dto.dependents,
       reason_change: dto.reason_change,
+      change_type_name: dto.change_type_name,
       decree_file: dto.decree_file,
       adendum_file: dto.adendum_file,
       previous_position: this.transformPositionFromApi(dto.previous_position),

@@ -10,7 +10,7 @@ import Button from '@/components/ui/button/Button';
 import { handleViewFile } from '@/utils/viewFileHandle';
 import { useNavigate } from 'react-router-dom';
 import { formatDateToIndonesian } from '@/utils/formatDate';
-import { NonFixAllowanceItem } from '@/features/employee/types/dto/OrganizationChangeType';
+import { NonFixAllowanceItemEntity } from '@/features/employee/types/entity/OrganizationChangeEntity';
 
 const DetailOrganizationHistoryPage: React.FC = () => {
   const navigate = useNavigate();
@@ -89,20 +89,20 @@ const DetailOrganizationHistoryPage: React.FC = () => {
             </div>
             
             <div>
-              <InputField label="Gaji Pokok" placeholder="Otomatis" value={currency(organizationChangeDetail?.previous_position?.gaji_pokok || 0)} disabled />
+              <InputField label="Gaji Pokok" placeholder="Otomatis" value={currency(organizationChangeDetail?.previous_position?.base_salary || 0)} disabled />
             </div>
             <div>
-              <InputField label="Tunjangan Pernikahan" placeholder="Otomatis" value={currency(organizationChangeDetail?.previous_position?.tunjangan_pernikahan || 0)} disabled />
+              <InputField label="Tunjangan Pernikahan" placeholder="Otomatis" value={currency(organizationChangeDetail?.previous_position?.marriage_allowance || 0)} disabled />
             </div>
             <div>
-              <InputField label="Tunjangan Jabatan" placeholder="Otomatis" value={currency(organizationChangeDetail?.previous_position?.tunjangan_jabatan || 0)} disabled />
+              <InputField label="Tunjangan Jabatan" placeholder="Otomatis" value={currency(organizationChangeDetail?.previous_position?.position_allowance || 0)} disabled />
             </div>
             <div>
-              <InputField label="Tunjangan Lama Kerja" placeholder="Otomatis" value={currency(organizationChangeDetail?.previous_position?.tunjangan_lama_kerja || 0)} disabled />
+              <InputField label="Tunjangan Lama Kerja" placeholder="Otomatis" value={currency(organizationChangeDetail?.previous_position?.tenure_allowance || 0)} disabled />
             </div>
             <div className="md:col-span-2">
             <div className="space-y-4">
-              {organizationChangeDetail?.previous_position?.tunjangan_dekresi?.map((allowance: NonFixAllowanceItem, index: number) => (
+              {organizationChangeDetail?.previous_position?.non_fix_allowance?.map((allowance: NonFixAllowanceItemEntity, index: number) => (
                 <div key={index} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                   <div className="md:col-span-6">
                     <InputField
@@ -184,20 +184,20 @@ const DetailOrganizationHistoryPage: React.FC = () => {
             />
           </div>
           <div>
-            <InputField label="Gaji Pokok" placeholder="Input" value={currency(organizationChangeDetail?.new_position?.gaji_pokok || 0)} disabled onChange={() => {}} />
+            <InputField label="Gaji Pokok" placeholder="Input" value={currency(organizationChangeDetail?.new_position?.base_salary || 0)} disabled onChange={() => {}} />
           </div>
           <div>
-            <InputField label="Tunjangan Pernikahan" placeholder="Input" value={currency(organizationChangeDetail?.new_position?.tunjangan_pernikahan || 0)} disabled onChange={() => {}} />
+            <InputField label="Tunjangan Pernikahan" placeholder="Input" value={currency(organizationChangeDetail?.new_position?.marriage_allowance || 0)} disabled onChange={() => {}} />
           </div>
           <div>
-            <InputField label="Tunjangan Jabatan" placeholder="Input" value={currency(organizationChangeDetail?.new_position?.tunjangan_jabatan || 0)} disabled onChange={() => {}} />
+            <InputField label="Tunjangan Jabatan" placeholder="Input" value={currency(organizationChangeDetail?.new_position?.position_allowance || 0)} disabled onChange={() => {}} />
           </div>
           <div>
-            <InputField label="Tunjangan Lama Kerja" placeholder="Input" value={currency(organizationChangeDetail?.new_position?.tunjangan_lama_kerja || 0)} disabled onChange={() => {}} />
+            <InputField label="Tunjangan Lama Kerja" placeholder="Input" value={currency(organizationChangeDetail?.new_position?.tenure_allowance || 0)} disabled onChange={() => {}} />
           </div>
           <div className="md:col-span-2">
             <div className="space-y-4">
-              {organizationChangeDetail?.new_position?.tunjangan_dekresi?.map((allowance: NonFixAllowanceItem, index: number) => (
+              {organizationChangeDetail?.new_position?.non_fix_allowance?.map((allowance: NonFixAllowanceItemEntity, index: number) => (
                 <div key={index} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                   <div className="md:col-span-6">
                     <InputField
