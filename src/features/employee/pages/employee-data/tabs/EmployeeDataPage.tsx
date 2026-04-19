@@ -9,9 +9,7 @@ import DeleteKaryawanModal from '../../../components/modals/employee-data/Delete
 import ShareLinkModal from '../../../components/modals/sharelink/ShareLinkModal';
 import { IconFileDetail } from '@/icons/components/icons';
 import { formatDateToIndonesian } from '@/utils/formatDate';
-import { useEffect, useState } from 'react';
 import { formatImage } from '@/utils/formatImage';
-import { getEmployeeStatusDropdownOptions, DropdownOption } from '../../../hooks/employee-data/form/useFormulirKaryawan';
 
 
 // Helper function for rendering remaining contract badge
@@ -174,29 +172,14 @@ export default function DataKaryawanPage() {
     // Date range filters
     dateRangeFilters,
     handleDateRangeFilterChange,
+    // Employment status filter options
+    employmentStatusFilterOptions,
   } = useKaryawan({
     initialPage: 1,
     initialLimit: 10,
     autoFetch: true,
   });
 
-  const [employmentStatusFilterOptions, setEmploymentStatusFilterOptions] = useState<DropdownOption[]>([]);
-
-  // Debug: Log data in EmployeeDataPage
-  useEffect(() => {
-    console.log('EmployeeDataPage - data:', data);
-    console.log('EmployeeDataPage - loading:', loading);
-    console.log('EmployeeDataPage - total:', total);
-  }, [data, loading, total]);
-
-  useEffect(() => {
-    const loadStatusOptions = async () => {
-      const opts = await getEmployeeStatusDropdownOptions();
-      const mapped = (opts || []).map((o) => ({ label: o.label, value: o.value }));
-      setEmploymentStatusFilterOptions(mapped);
-    };
-    loadStatusOptions();
-  }, []);
 
   // Define columns and actions for DataTable
   const columns: DataTableColumn<Karyawan>[] = [

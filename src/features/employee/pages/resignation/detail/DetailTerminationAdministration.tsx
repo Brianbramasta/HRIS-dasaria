@@ -1,5 +1,5 @@
-import { useMemo, useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import Button from '../../../../../components/ui/button/Button';
 import Label from '../../../../../components/form/Label';
 import TextArea from '../../../../../components/form/input/TextArea';
@@ -8,131 +8,38 @@ import SelectField from '../../../../../components/shared/field/SelectField';
 import { Table, TableHeader, TableBody, TableRow, TableCell } from '../../../../../components/ui/table';
 import { IconFileDetail, IconHapus, IconPlus } from '@/icons/components/icons';
 import DoneOffBoardingModal from '../../../components/modals/termination/DoneOffBoardingModal';
-import { useApiResignation } from '@/features/employee/hooks/api/useApiResignation';
 import { formatDateToIndonesian } from '@/utils/formatDate';
-import { handleViewFileByUrl, getTemporaryUrl } from '@/utils/viewFileHandle';
 import PdfPreviewEmbed from '@/components/shared/modal/PdfPreviewEmbed';
-
-type DetailData = {
-  name: string;
-  idKaryawan: string;
-  posisi: string;
-  statusBerakhir: string;
-  tanggalPengajuan: string;
-  tanggalEfektif: string;
-  catatan: string;
-  avatar?: string;
-};
-
-type UploadRow = { id: string; type: string; file?: File | null };
+import { useDetailTerminationAdministration } from '../../../hooks/resignation/useDetailTerminationAdministration';
 
 export default function DetailTerminationAdministrationPage() {
   const { id } = useParams();
-  const [uploadRows, setUploadRows] = useState<UploadRow[]>([{ id: crypto.randomUUID(), type: '' }]);
-  const [isDoneOpen, setIsDoneOpen] = useState(false);
   const [comment, setComment] = useState('');
-  const [temporaryFileUrl, setTemporaryFileUrl] = useState<string>('');
-  const navigate = useNavigate();
 
   const {
     loading,
     error,
-    adminDetail,
+    isDoneOpen,
+    uploadRows,
+    temporaryFileUrl,
+    data,
     documentTypes,
+    adminDetail,
+    handleAddRow,
+    handleRemoveRow,
+    handleRowTypeChange,
+    handleRowFileChange,
+    handleResetUploadRows,
+    handlePreviewPDF,
+    handleOpenDone,
+    handleCloseDone,
+    handleConfirmDone,
     fetchAdministrationDetail,
-    fetchDocumentTypes,
     uploadAdministrationDocuments,
-    submitAdministration,
     deleteAdministrationDocument,
-  } = useApiResignation();
-
-  // Fetch detail and document types on mount
-  useEffect(() => {
-    if (id) {
-      fetchAdministrationDetail(id);
-      fetchDocumentTypes();
-    }
-  }, [id]);
-
-  // Fetch temporary URL for contract document
-  useEffect(() => {
-    const fetchTemporaryUrl = async () => {
-      const documentUrl = adminDetail?.resignation_details?.file_contract;
-      if (documentUrl) {
-        try {
-          const temporaryUrlData = await getTemporaryUrl(documentUrl);
-          if (temporaryUrlData?.temporary_url) {
-            setTemporaryFileUrl(temporaryUrlData.temporary_url);
-          }
-        } catch (error) {
-          console.error('Error fetching temporary URL:', error);
-        }
-      }
-    };
-
-    fetchTemporaryUrl();
-  }, [adminDetail?.resignation_details?.file_contract]);
-
-  // Transform API data to component format
-  const data: DetailData | null = useMemo(() => {
-    if (!adminDetail) return null;
-    return {
-      name: adminDetail.resignation_details?.full_name || '',
-      idKaryawan: adminDetail.resignation_details?.NIP || '',
-      posisi: adminDetail.resignation_details?.position_name || '',
-      statusBerakhir: adminDetail.resignation_details?.end_status || '',
-      tanggalPengajuan: adminDetail.resignation_details?.tanggal_pengajuan_terminasi || '',
-      tanggalEfektif: adminDetail.resignation_details?.tanggal_efektif_terminasi || '',
-      catatan: adminDetail.resignation_details?.id || '',
-      avatar: undefined,
-    };
-  }, [adminDetail]);
-
-  const handleAddRow = () => {
-    setUploadRows((rows) => [...rows, { id: crypto.randomUUID(), type: '' }]);
-  };
-
-  const handleRemoveRow = (rowId: string) => {
-    setUploadRows((rows) => rows.filter((r) => r.id !== rowId));
-  };
-
-  const handleRowTypeChange = (rowId: string, value: string) => {
-    setUploadRows((rows) => rows.map((r) => (r.id === rowId ? { ...r, type: value } : r)));
-  };
-
-  const handleRowFileChange = (rowId: string, e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    setUploadRows((rows) => rows.map((r) => (r.id === rowId ? { ...r, file } : r)));
-  };
-
-  const handleResetUploadRows = () => {
-    setUploadRows([{ id: crypto.randomUUID(), type: '' }]);
-  };
-
-  const handlePreviewPDF = async () => {
-    const documentUrl = adminDetail?.resignation_details?.file_contract;
-    if (!documentUrl) {
-      return;
-    }
-    
-    try {
-      await handleViewFileByUrl(documentUrl);
-    } catch (error) {
-      console.error('Error viewing file:', error);
-    }
-  };
-
-  const handleOpenDone = () => setIsDoneOpen(true);
-  const handleCloseDone = () => setIsDoneOpen(false);
-
-  const handleConfirmDone = async () => {
-    if (!id) return;
-    const success = await submitAdministration(id);
-    if (success) {
-      setIsDoneOpen(false);
-      navigate(`/resignation/termination-administration`);
-    }
-  };
+    navigate,
+    handleViewFileByUrl,
+  } = useDetailTerminationAdministration(id);
 
   if (!data) {
     return (

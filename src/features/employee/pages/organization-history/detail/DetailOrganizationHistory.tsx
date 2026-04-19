@@ -1,64 +1,35 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React from 'react';
 import { ChevronLeft } from 'react-feather';
 import PayrollCard from '@/features/payroll/components/cards/Cards';
-import { useApiOrganizationChange } from '@/features/employee/hooks/api/useApiOrganizationChange';
+import { useDetailOrganizationHistory } from '@/features/employee/hooks/organization-history/useDetailOrganizationHistory';
 import InputField from '@/components/shared/field/InputField';
 import TextAreaField from '@/components/shared/field/TextAreaField';
 import FIleField from '@/components/shared/field/FIleField';
 import LinkPreview from '@/components/shared/form/LinkPreview';
 import Button from '@/components/ui/button/Button';
 import { handleViewFile } from '@/utils/viewFileHandle';
-import { formatCurrency } from '@/utils/formatCurrency';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { formatDateToIndonesian } from '@/utils/formatDate';
+import { NonFixAllowanceItem } from '@/features/employee/types/dto/OrganizationChangeType';
 
 const DetailOrganizationHistoryPage: React.FC = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const id = searchParams.get('id') || '';
-  const atasan = searchParams.get('atasan') || '';
   
-  // API Hook
+  // Custom hook for business logic
   const {
-    organizationChangeDetail,
-    fetchOrganizationChangeDetail,
-    uploadDocument,
+    skFile,
+    adendumFile,
     loading,
-  } = useApiOrganizationChange();
-
-  const [skFile, setSkFile] = useState<File | null>(null);
-  const [adendumFile, setAdendumFile] = useState<File | null>(null);
-
-  const handleSubmit = useCallback(async () => {
-    if (!id) return;
-    
-    const payload = {
-      decree_file: skFile || undefined,
-      adendum_file: adendumFile || undefined,
-    };
-
-    const success = await uploadDocument(id, payload);
-    if (success) {
-      navigate('/organization-history');
-    }
-  }, [id, skFile, adendumFile, uploadDocument, navigate]);
+    organizationChangeDetail,
+    atasan,
+    setSkFile,
+    setAdendumFile,
+    handleSubmit,
+    title,
+    currency,
+  } = useDetailOrganizationHistory();
 
   console.log(organizationChangeDetail,'organizationChangeDetail');
-
-  // Fetch detail data
-  useEffect(() => {
-    const loadDetail = async () => {
-      if (!id) return;
-      await fetchOrganizationChangeDetail(id);
-    };
-    loadDetail();
-  }, [id, fetchOrganizationChangeDetail]);
-
-  // Format currency
-  const currency = formatCurrency;
-
-  // Computed values
-  const title = 'Detail Perubahan Organisasi';
 
   return (
     <div className="p-6 space-y-6">
@@ -131,7 +102,7 @@ const DetailOrganizationHistoryPage: React.FC = () => {
             </div>
             <div className="md:col-span-2">
             <div className="space-y-4">
-              {organizationChangeDetail?.previous_position?.tunjangan_dekresi?.map((allowance, index) => (
+              {organizationChangeDetail?.previous_position?.tunjangan_dekresi?.map((allowance: NonFixAllowanceItem, index: number) => (
                 <div key={index} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                   <div className="md:col-span-6">
                     <InputField
@@ -226,7 +197,7 @@ const DetailOrganizationHistoryPage: React.FC = () => {
           </div>
           <div className="md:col-span-2">
             <div className="space-y-4">
-              {organizationChangeDetail?.new_position?.tunjangan_dekresi?.map((allowance, index) => (
+              {organizationChangeDetail?.new_position?.tunjangan_dekresi?.map((allowance: NonFixAllowanceItem, index: number) => (
                 <div key={index} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                   <div className="md:col-span-6">
                     <InputField

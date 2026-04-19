@@ -21,7 +21,6 @@ const CreateOrganizationHistoryPage: React.FC = () => {
     salaryFields,
     prevSalaryFields,
     title,
-    disableAll,
     infoSalaryLabel,
     isNonStaffOrMitraCategory,
     isStaffCategory,
@@ -31,6 +30,8 @@ const CreateOrganizationHistoryPage: React.FC = () => {
     visibleFields,
     filteredJobTitleOptions,
     filteredPositionOptions,
+    shouldDisableForm,
+    filteredPositionLevelOptions,
     handleInput,
     handleNIPChange,
     handleSubmit,
@@ -39,45 +40,9 @@ const CreateOrganizationHistoryPage: React.FC = () => {
     updateNonFixAllowance,
     setSalaryFields,
     validationErrors,
-    activeContractData,
   } = useCreateOrganizationHistory();
 
-  // Check if form should be disabled (no active contract or contract expiring soon)
-  const shouldDisableForm = disableAll || !activeContractData || !!validationErrors.contract_expiring_soon;
-
-  // Filter position level options based on job title
-  const filteredPositionLevelOptions = (() => {
-    const selectedJobTitle = addState.jobTitleOptions.find((opt: any) => opt.value === detailForm.job_title_id);
-    const selectedJobTitleLabel = selectedJobTitle?.label;
-    
-    // Job titles that can only select "General" level
-    const generalOnlyTitles = [
-      'Account Executive (AE)',
-      'Non-Staff PKL Griyanet',
-      'Partnership',
-      'Non-Staff Internship',
-      'Non-Staff PKL Dasarata'
-    ];
-    
-    // Job titles that can select "Junior, Middle, Senior" levels
-    const juniorMiddleSeniorTitles = [
-      'Entry Level',
-      'Officer',
-      'Principal Officer',
-      'Supervisor',
-      'Manager',
-      'Direktur'
-    ];
-    
-    if (selectedJobTitleLabel && generalOnlyTitles.includes(selectedJobTitleLabel)) {
-      return addState.positionLevelOptions.filter((opt: any) => opt.label === 'General');
-    } else if (selectedJobTitleLabel && juniorMiddleSeniorTitles.includes(selectedJobTitleLabel)) {
-      return addState.positionLevelOptions.filter((opt: any) => ['Junior', 'Middle', 'Senior'].includes(opt.label));
-    }
-    
-    return addState.positionLevelOptions;
-  })();
-
+  
   return (
     <form
       className="p-6 space-y-6"

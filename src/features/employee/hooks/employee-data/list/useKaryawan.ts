@@ -7,6 +7,7 @@ import useFilterStore from '../../../../../stores/filterStore';
 import { addNotification } from '../../../../../stores/notificationStore';
 import errorHandle from '@/utils/errorHandle';
 import { formatFilterValue } from '@/utils/formatFilterValue';
+import { getEmployeeStatusDropdownOptions, DropdownOption } from '../form/useFormulirKaryawan';
 
 export interface UseKaryawanOptions {
   initialPage?: number;
@@ -27,6 +28,7 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
   const filterValue = formatFilterValue(useFilterStore((s) => s.filters[s.resetKey]));
   const [columnFilters, setColumnFilters] = useState<Record<string, string[]>>({});
   const [dateRangeFilters, setDateRangeFilters] = useState<Record<string, { startDate: string; endDate: string | null }>>({});
+  const [employmentStatusFilterOptions, setEmploymentStatusFilterOptions] = useState<DropdownOption[]>([]);
 
   // Modal states
   const [selectedKaryawan, setSelectedKaryawan] = useState<Karyawan | null>(null);
@@ -173,6 +175,16 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
       fetchKaryawan();
     }
   }, [autoFetch, fetchKaryawan]);
+
+  // Load employment status filter options
+  useEffect(() => {
+    const loadStatusOptions = async () => {
+      const opts = await getEmployeeStatusDropdownOptions();
+      const mapped = (opts || []).map((o) => ({ label: o.label, value: o.value }));
+      setEmploymentStatusFilterOptions(mapped);
+    };
+    loadStatusOptions();
+  }, []);
 
   const createKaryawan = useCallback(
     async (formData: FormData) => {
@@ -455,6 +467,8 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
     // Date range filters
     dateRangeFilters,
     handleDateRangeFilterChange,
+    // Employment status filter options
+    employmentStatusFilterOptions,
   };
 }
 

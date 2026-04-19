@@ -1,4 +1,3 @@
-import { useEffect, useCallback, useState } from 'react';
 import ProgressBarWithOutsideLabel from '../../../../components/ui/progressbar/ProgressBarWithOutsideLabel';
 import Step01PersonalData from '../../components/form-steps/Step01PersonalData';
 import Step02EducationalBackground from '../../components/form-steps/Step02EducationalBackground';
@@ -9,8 +8,6 @@ import SuccessModal from '../../components/SuccessModal';
 import Button from '../../../../components/ui/button/Button';
 // import { ChevronLeft } from 'react-feather';
 import useFormulirKaryawan from '../../hooks/employee-data/form/useFormulirKaryawan';
-import { useFormulirKaryawanStore } from '../../stores/useFormulirKaryawanStore';
-import { useApiEmployee } from '../../hooks/api/useApiEmployee';
 
 const TITLES_WITH_LOGIN = [
   'Data Pribadi',
@@ -35,154 +32,17 @@ export default function FormulirKaryawanPage() {
     showSuccessModal,
     setShowSuccessModal,
     formRef,
-    handleNextWithFileCheck,
+    fieldErrors,
+    checkActiveLoading,
+    handleNextWithActiveCheck,
     handlePreviousStep,
     handleSubmit,
     handleBackToHome,
-    handleBackToDataPage,
-    resetForm,
+    handleBackWithConfirmation,
+    handleClearFieldError,
   } = useFormulirKaryawan();
 
-  const { formData } = useFormulirKaryawanStore();
-  const { checkActiveEmployee, checkActiveLoading } = useApiEmployee();
-  const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
-
-  // Custom handleNext function with active employee check for step 1
-  const handleNextWithActiveCheck = useCallback(async () => {
-    // Clear previous field errors
-    setFieldErrors({});
-    
-    // If we're on step 1, check active employee first
-    if (currentStep === 1) {
-      const { email, nik } = formData.step1;
-      
-      // Validate required fields for API call
-      if (!email || !nik) {
-        // alert('Email dan NIK harus diisi sebelum melanjutkan');
-        return;
-      }
-
-      try {
-        await checkActiveEmployee({ email, national_id: nik });
-        // If successful, proceed with normal next step
-        handleNextWithFileCheck();
-      } catch (error: any) {
-        console.error('Error checking active employee:', error);
-        
-        // Handle 422 validation errors
-        if (error?.errors && typeof error.errors === 'object') {
-          const errors: { [key: string]: string } = {};
-          
-          Object.entries(error.errors).forEach(([field, messages]) => {
-            if (Array.isArray(messages) && messages.length > 0) {
-              // Map API field names to form field names
-              let formFieldName = field;
-              if (field === 'national_id') {
-                formFieldName = 'nik';
-              }
-              
-              // Take the first error message for each field
-              errors[formFieldName] = messages[0];
-            }
-          });
-          
-          setFieldErrors(errors);
-          
-          // Show general message if there are errors
-          if (error?.meta?.message) {
-            // alert(error.meta.message);
-          }
-        } else {
-          // Show generic error message for other types of errors
-          alert('Terjadi kesalahan saat memvalidasi data karyawan. Silakan coba lagi.');
-        }
-      }
-    } else {
-      // For other steps, use normal next function
-      handleNextWithFileCheck();
-    }
-  }, [currentStep, formData.step1, checkActiveEmployee, handleNextWithFileCheck]);
-
-  // Clear field error function
-  const handleClearFieldError = useCallback((fieldName: string) => {
-    setFieldErrors(prev => {
-      const newErrors = { ...prev };
-      delete newErrors[fieldName];
-      return newErrors;
-    });
-  }, []);
-
-  // Check localStorage and reset if no draft data exists
-  useEffect(() => {
-    const hasDraftData = localStorage.getItem('formulir_karyawan_draft');
-    if (!hasDraftData) {
-      resetForm();
-    }
-  }, [resetForm]);
-
-  // Handle page navigation/refresh confirmation
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      // Check if there are any files uploaded
-      const hasFiles = checkForUploadedFiles();
-      
-      if (hasFiles) {
-        const message = 'Apakah Anda yakin ingin pindah halaman? Progress file tidak akan tersimpan.';
-        e.preventDefault();
-        e.returnValue = message;
-        return message;
-      }
-    };
-
-    const checkForUploadedFiles = () => {
-      // Check if foto profil is uploaded
-      // if (formData.step1.fotoProfil && formData.step1.fotoProfil instanceof File) {
-      //   return true;
-      // }
-      
-      // Check if any documents are uploaded
-      if (formData.step4.documents && Array.isArray(formData.step4.documents)) {
-        return formData.step4.documents.some((doc: any) => doc.file && doc.file instanceof File);
-      }
-      
-      return false;
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
-  }, [formData]);
-
-  const handleBackWithConfirmation = useCallback(() => {
-    // Check if there are any files uploaded
-    const hasFiles = checkForUploadedFiles();
-    
-    if (hasFiles) {
-      const message = 'Apakah Anda yakin ingin pindah halaman? Progress file tidak akan tersimpan.';
-      if (window.confirm(message)) {
-        handleBackToDataPage();
-      }
-    } else {
-      handleBackToDataPage();
-    }
-  }, [handleBackToDataPage]);
-
-  const checkForUploadedFiles = () => {
-    // Check if foto profil is uploaded
-    if (formData.step1.fotoProfil && formData.step1.fotoProfil instanceof File) {
-      return true;
-    }
-    
-    // Check if any documents are uploaded
-    if (formData.step4.documents && Array.isArray(formData.step4.documents)) {
-      return formData.step4.documents.some((doc: any) => doc.file && doc.file instanceof File);
-    }
-    
-    return false;
-  };
-
+  
   const renderStep = () => {
     switch (currentStep) {
       case 1:
