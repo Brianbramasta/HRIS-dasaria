@@ -219,10 +219,12 @@ export default function DetailTerminationAdministrationPage() {
                       variant="custom"
                       size="sm"
                       className="btn-primary"
-                      onClick={() => {
+                      onClick={async () => {
                         if (id && d.id) {
-                          deleteAdministrationDocument(id, d.id);
-                          fetchAdministrationDetail(id);
+                          const success = await deleteAdministrationDocument(id, d.id);
+                          if (success) {
+                            await fetchAdministrationDetail(id);
+                          }
                         }
                       }}
                     >

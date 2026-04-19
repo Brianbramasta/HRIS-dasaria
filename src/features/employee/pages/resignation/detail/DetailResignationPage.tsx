@@ -280,11 +280,13 @@ export default function DetailPengunduranDiriPage() {
                         variant="custom"
                         size="sm"
                         className="btn-primary"
-                        onClick={() => {
+                        onClick={async () => {
                           const resignationId = applicationDetail?.resignation_details?.resignation_id;
                           if (resignationId && d.id) {
-                            deleteDocument(resignationId, d.id);
-                            fetchApplicationDetail(id as string);
+                            const success = await deleteDocument(resignationId, d.id);
+                            if (success) {
+                              await fetchApplicationDetail(id as string);
+                            }
                           }
                         }}
                       >

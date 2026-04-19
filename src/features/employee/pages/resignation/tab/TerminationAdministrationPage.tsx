@@ -52,6 +52,24 @@ export default function TerminationAdministrationPage() {
     [adminList]
   );
 
+   const handleAddSubmit = async (payload: AddTerminationForm) => {
+    // //console.log('Submitting termination administration:', payload);
+    // return
+    const storePayload = {
+      employee_id: payload.nip,
+      tanggal_pengajuan_terminasi: payload.tanggalPengajuan || '',
+      tanggal_efektif_terminasi: payload.tanggalEfektif || '',
+      description: payload.catatan || '',
+      document: payload.file as File,
+      end_status_id: payload.statusBerakhir,
+    };
+    const success = await storeAdministration(storePayload);
+    if (success) {
+      setIsAddOpen(false);
+      await fetchAdministrationIndex();
+    }
+  };
+
   const actions: DataTableAction<TerminationItem>[] = [
     {
       icon: <IconFileDetail />,
@@ -112,23 +130,7 @@ export default function TerminationAdministrationPage() {
     [data, adminPagination]
   );
 
-  const handleAddSubmit = async (payload: AddTerminationForm) => {
-    // //console.log('Submitting termination administration:', payload);
-    // return
-    const storePayload = {
-      employee_id: payload.nip,
-      tanggal_pengajuan_terminasi: payload.tanggalPengajuan || '',
-      tanggal_efektif_terminasi: payload.tanggalEfektif || '',
-      description: payload.catatan || '',
-      document: payload.file as File,
-      end_status_id: payload.statusBerakhir,
-    };
-    const success = await storeAdministration(storePayload);
-    if (success) {
-      setIsAddOpen(false);
-      await fetchAdministrationIndex();
-    }
-  };
+ 
 
 
   return (
