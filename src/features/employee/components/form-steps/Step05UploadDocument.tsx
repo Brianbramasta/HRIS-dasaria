@@ -4,33 +4,14 @@ import { useStep5Data } from '../../hooks/employee-data/form/useFromStep';
 
 export const Step05UploadDocument: React.FC = () => {
   
-  const { personalDocuments, legalDocuments, loading, handleFileChange } = useStep5Data();
+  const { personalDocuments, legalDocuments, loading, handleFileChange, renderDocumentField } = useStep5Data();
 
   if (loading) {
     return <div className="p-4 text-center text-gray-500">Memuat data dokumen...</div>;
   }
 
-  const renderDocumentField = (doc: any) => {
-    // const existingFile = getFileForField(doc.id);
-    
-    // Check if this is the "Foto KTP" document
-    const isFotoKTP = doc.document_name.toLowerCase().includes('foto ktp') || 
-                     doc.document_name.toLowerCase().includes('ktp');
-    
-    // Check if this is a photo-related document
-    const isPhotoDocument = doc.document_name.toLowerCase().includes('foto') || 
-                           doc.document_name.toLowerCase().includes('photo');
-    
-    // Set accepted formats based on document type
-    const acceptedFormats = isPhotoDocument 
-      ? ['image/png', 'image/jpeg', 'image/jpg']
-      : ['application/pdf'];
-    
-    const handleInfoClick = () => {
-      if (isFotoKTP) {
-        window.open('https://docs.google.com/document/d/1sA5mq1WdDW_lriE4MEXYN7vIxKCAODjIYcw61Vs4gjE/edit?usp=sharing', '_blank');
-      }
-    };
+  const renderDocumentFieldJSX = (doc: any) => {
+    const fieldConfig = renderDocumentField(doc);
     
     return (
       <div key={doc.id} className="w-full">
@@ -49,9 +30,9 @@ export const Step05UploadDocument: React.FC = () => {
             // multiple={false}
             multiple={false}
             // required={doc.is_mandatory === 1}
-            acceptedFormats={acceptedFormats}
+            acceptedFormats={fieldConfig.acceptedFormats}
             onChange={(e) => handleFileChange(doc.id, e)}
-            onInfoClick={isFotoKTP ? handleInfoClick : undefined}
+            onInfoClick={fieldConfig.handleInfoClick}
           />
           {/* {existingFile && (
             <p className="text-xs text-green-600 mt-1 truncate">
@@ -69,7 +50,7 @@ export const Step05UploadDocument: React.FC = () => {
         <div>
           <h4 className="text-lg font-semibold text-gray-500 dark:text-white mb-4">Berkas / Dokumen Karyawan</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {personalDocuments.map(renderDocumentField)}
+            {personalDocuments.map(renderDocumentFieldJSX)}
           </div>
         </div>
       )}
@@ -78,7 +59,7 @@ export const Step05UploadDocument: React.FC = () => {
         <div>
           <h4 className="text-lg font-semibold text-gray-500 dark:text-white mb-4">Berkas / Dokumen Legal</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-             {legalDocuments.map(renderDocumentField)}
+             {legalDocuments.map(renderDocumentFieldJSX)}
           </div>
         </div>
       )}

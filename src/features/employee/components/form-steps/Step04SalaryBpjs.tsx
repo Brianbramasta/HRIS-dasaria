@@ -1,7 +1,7 @@
 import React from 'react';
 import InputField from '../../../../components/shared/field/InputField';
 import SelectField from '../../../../components/shared/field/SelectField';
-import {  BPJS_STATUS_OPTIONS, BPJS_TK_STATUS_OPTIONS } from '../../utils/EmployeeMappings';
+import {  BPJS_TK_STATUS_OPTIONS } from '../../utils/EmployeeMappings';
 import { useStep4Data } from '../../hooks/employee-data/form/useFromStep';
 import { IconPlus as PlusIcon, IconHapus as TrashBinIcon } from '@/icons/components/icons';
 import { formatCurrency, parseCurrency } from '@/utils/formatCurrency';
@@ -9,7 +9,6 @@ import { formatCurrency, parseCurrency } from '@/utils/formatCurrency';
 export const Step04SalaryBpjs: React.FC = () => {
   const {
     bankOptions,
-    categoriKaryawanOptions,
     bpjsHealthTypeOptions,
     step3,
     isAuthenticated,
@@ -21,56 +20,13 @@ export const Step04SalaryBpjs: React.FC = () => {
     addNonFixAllowance,
     removeNonFixAllowance,
     updateNonFixAllowance,
-    step3Employee
+    getCategoryLabel,
+    getSalaryLabel,
+    getBpjsKesehatanStatusOptions,
+    handleFieldChange
   } = useStep4Data(true);
 
-  // Get category label based on ID
-  const getCategoryLabel = () => {
-    if (!step3Employee?.kategoriKaryawan || !categoriKaryawanOptions?.length) return null;
-    const category = categoriKaryawanOptions.find((opt: any) => opt.value === step3Employee.kategoriKaryawan);
-    return category?.label || null;
-  };
 
-  // Get salary label based on employee category
-  const getSalaryLabel = () => {
-    const categoryLabel = getCategoryLabel();
-    if (categoryLabel === 'Non-Staff') return 'Uang Saku';
-    if (categoryLabel === 'Mitra') return 'Fee';
-    return 'Gaji Pokok';
-  };
-
-  // Get dynamic options for Status BPJS Kesehatan based on Tipe BPJS Kesehatan
-  const getBpjsKesehatanStatusOptions = () => {
-    // Find the selected option to get its label
-    const selectedType = bpjsHealthTypeOptions.find((opt: any) => opt.value === step3.tipeBpjsKesehatan);
-    if (selectedType?.label !== 'PBI') { // Not PBI
-      return [{ label: 'Tidak Aktif', value: 'Tidak Aktif' }];
-    }
-    return BPJS_STATUS_OPTIONS; // PBI can choose Aktif or Tidak Aktif
-  };
-
-  // Handle field changes with auto-setting logic
-  const handleFieldChange = (field: string, value: any) => {
-    // Auto-set Status BPJS Kesehatan when Tipe BPJS Kesehatan changes
-    if (field === 'tipeBpjsKesehatan') {
-      // Find the selected option to get its label
-      const selectedType = bpjsHealthTypeOptions.find((opt: any) => opt.value === value);
-      if (selectedType?.label === 'PBI') {
-        // Auto-set to Aktif when PBI is selected
-        handleChange('statusBpjsKesehatan', 'Aktif');
-      } else {
-        // Auto-set to Tidak Aktif for all non-PBI types
-        handleChange('statusBpjsKesehatan', 'Tidak Aktif');
-      }
-    }
-    
-    // Auto-set Status BPJS Ketenagakerjaan to Aktif when No. BPJS Ketenagakerjaan is filled
-    if (field === 'noBpjsKetenagakerjaan' && value) {
-      handleChange('statusBpjsKetenagakerjaan', 'Aktif');
-    }
-    
-    handleChange(field, value);
-  };
 
   return (
     <div className="space-y-6">
