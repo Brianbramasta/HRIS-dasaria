@@ -203,15 +203,20 @@ const AddUserTermination: React.FC<Props> = ({ isOpen, onClose, onSubmit, submit
         disabled={!nip}
       />
       {adminPopup?.has_active_loan && (
-        <FIleField
-          label="Surat Komitmen Pelunasan Kasbon"
-          onChange={(e) => {
-            const f = e.target.files?.[0];
-            setLetterOfCommitment(f);
-          }}
-          required
-          disabled={!nip}
-        />
+        <>
+          <FIleField
+            label="Surat Komitmen Pelunasan Kasbon"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              setLetterOfCommitment(f);
+            }}
+            required
+            disabled={!nip}
+          />
+          <p className="text-sm text-gray-600 mt-1">
+            Harap melampirkan dokumen Komitmen Pelunasan Kasbon dengan template <span className="font-semibold"><a href="https://docs.google.com/document/d/1f9_IC1hI1Ag0mJ6TVAZdggM_W7DsFmdhXJYnULdBLdY/edit?tab=t.0" target="_blank" rel="noopener noreferrer" className="text-brand-600 underline">sesuai tautan berikut.</a></span>{' '}
+          </p>
+        </>
       )}
       <TextAreaField
         label="Catatan"
