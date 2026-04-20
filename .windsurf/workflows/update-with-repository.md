@@ -298,16 +298,16 @@ export const mapUser = (data) => ({
 src/
   repositories/
     userRepository.ts
-    employeeRepository.ts
-    contractRepository.ts
+    EmployeeRepository.ts
+    ContractRepository.ts
   services/
-    userService.ts
-    employeeService.ts
-    contractService.ts
+    IUserService.ts
+    EmployeeService.ts
+    ContractService.ts
   models/
-    userModel.ts
-    employeeModel.ts
-    contractModel.ts
+    UserModel.ts
+    EmployeeModel.ts
+    ContractModel.ts
   hooks/
     useUsers.ts
     useEmployees.ts

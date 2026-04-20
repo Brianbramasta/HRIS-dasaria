@@ -1,8 +1,7 @@
 import { useState, useCallback } from 'react';
 import { StoreOrganizationChangePayload, UploadDocumentPayload, OrganizationChangeQueryParams } from '../../types/dto/OrganizationChangeType';
 import { OrganizationChangeEntity, OrganizationChangeDetailEntity, EmployeeOrganizationChangeHistoryEntity } from '../../types/entity/OrganizationChangeEntity';
-import { organizationChangeNewService } from '../../services/OrganizationChangeNewService';
-import { OrganizationChangeModel } from '../../models/OrganizationChangeModel';
+import { organizationChangeRepository } from '../../repositories/organizationChangeRepository';
 
 interface UseApiOrganizationChangeReturn {
   loading: boolean;
@@ -61,19 +60,10 @@ export const useApiOrganizationChange = (): UseApiOrganizationChangeReturn => {
       setLoading(true);
       setError(null);
 
-      const response = await organizationChangeNewService.getOrganizationChanges(params);
+      const result = await organizationChangeRepository.getOrganizationChanges(params);
       
-      if (response.meta.status === 200) {
-        const transformedData = OrganizationChangeModel.transformListFromApi(response.data.data);
-        setOrganizationChanges(transformedData);
-        setPagination({
-          currentPage: response.data.current_page,
-          perPage: response.data.per_page,
-          total: response.data.total,
-        });
-      } else {
-        setError(response.meta.message || 'Failed to fetch organization changes');
-      }
+      setOrganizationChanges(result.data);
+      setPagination(result.pagination);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred while fetching organization changes');
     } finally {
@@ -87,14 +77,8 @@ export const useApiOrganizationChange = (): UseApiOrganizationChangeReturn => {
       setLoading(true);
       setError(null);
 
-      const response = await organizationChangeNewService.getOrganizationChangeDetail(changeId);
-      
-      if (response.meta.status === 200) {
-        const transformedData = OrganizationChangeModel.transformDetailFromApi(response.data);
-        setOrganizationChangeDetail(transformedData);
-      } else {
-        setError(response.meta.message || 'Failed to fetch organization change detail');
-      }
+      const transformedData = await organizationChangeRepository.getOrganizationChangeDetail(changeId);
+      setOrganizationChangeDetail(transformedData);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred while fetching organization change detail');
     } finally {
@@ -108,25 +92,9 @@ export const useApiOrganizationChange = (): UseApiOrganizationChangeReturn => {
       setLoading(true);
       setError(null);
 
-      const response = await organizationChangeNewService.getOrganizationChangesByEmployee(employeeId);
-      
-      if (response.meta.status === 200) {
-        // Handle both response types - employee detail or organization history
-        if (Array.isArray(response.data)) {
-          // This is organization history response
-          const transformedData = OrganizationChangeModel.transformEmployeeHistoryListFromApi(response.data);
-          setEmployeeOrganizationChanges(transformedData);
-          return response.data;
-        } else {
-          // This is employee detail response, extract organization changes if available
-          // For now, set empty array as the structure is different
-          setEmployeeOrganizationChanges([]);
-          return response.data;
-        }
-      } else {
-        setError(response.meta.message || 'Failed to fetch employee organization changes');
-        return null;
-      }
+      const transformedData = await organizationChangeRepository.getOrganizationChangesByEmployee(employeeId);
+      setEmployeeOrganizationChanges(transformedData);
+      return transformedData;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred while fetching employee organization changes');
       return null;
@@ -141,14 +109,8 @@ export const useApiOrganizationChange = (): UseApiOrganizationChangeReturn => {
       setLoading(true);
       setError(null);
 
-      const response = await organizationChangeNewService.storeOrganizationChange(payload);
-      
-      if (response.meta.status === 200) {
-        return true;
-      } else {
-        setError(response.meta.message || 'Failed to store organization change');
-        return false;
-      }
+      const success = await organizationChangeRepository.storeOrganizationChange(payload);
+      return success;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred while storing organization change');
       return false;
@@ -163,14 +125,8 @@ export const useApiOrganizationChange = (): UseApiOrganizationChangeReturn => {
       setLoading(true);
       setError(null);
 
-      const response = await organizationChangeNewService.uploadDocument(changeId, payload);
-      
-      if (response.meta.status === 200) {
-        return true;
-      } else {
-        setError(response.meta.message || 'Failed to upload document');
-        return false;
-      }
+      const success = await organizationChangeRepository.uploadDocument(changeId, payload);
+      return success;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred while uploading document');
       return false;
