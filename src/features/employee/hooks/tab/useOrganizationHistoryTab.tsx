@@ -59,7 +59,7 @@ export function useOrganizationHistoryTab(employeeId?: string) {
         dateRangeFilter: true,
       },
       { 
-        id: 'old_company', 
+        id: 'previous_company', 
         label: 'Perusahaan Lama', 
         format: (_, row) => row.previous_position?.company || '',
         sortable: true 
@@ -71,7 +71,7 @@ export function useOrganizationHistoryTab(employeeId?: string) {
         sortable: true 
       },
       { 
-        id: 'old_directorate', 
+        id: 'previous_directorate', 
         label: 'Direktorat Lama', 
         format: (_, row) => row.previous_position?.directorate || '',
         sortable: true 
@@ -83,7 +83,7 @@ export function useOrganizationHistoryTab(employeeId?: string) {
         sortable: true 
       },
       { 
-        id: 'old_rank_position', 
+        id: 'previous_rank_position', 
         label: 'Posisi Lama', 
         format: (_, row) => row.previous_position?.rank_position || '',
         sortable: true 
@@ -95,7 +95,7 @@ export function useOrganizationHistoryTab(employeeId?: string) {
         sortable: true 
       },
       { 
-        id: 'old_division', 
+        id: 'previous_division', 
         label: 'Divisi Lama', 
         format: (_, row) => row.previous_position?.division || '',
         sortable: true 
@@ -107,7 +107,7 @@ export function useOrganizationHistoryTab(employeeId?: string) {
         sortable: true 
       },
       { 
-        id: 'old_department', 
+        id: 'previous_department', 
         label: 'Departemen Lama', 
         format: (_, row) => row.previous_position?.department || '',
         sortable: true 
@@ -119,7 +119,7 @@ export function useOrganizationHistoryTab(employeeId?: string) {
         sortable: true 
       },
       { 
-        id: 'old_unit', 
+        id: 'previous_unit', 
         label: 'Unit Lama', 
         format: (_, row) => row.previous_position?.unit || '-',
         sortable: true 
@@ -131,7 +131,7 @@ export function useOrganizationHistoryTab(employeeId?: string) {
         sortable: true 
       },
       { 
-        id: 'old_structural_position', 
+        id: 'previous_structural_position', 
         label: 'Jabatan Struktural Lama', 
         format: (_, row) => row.previous_position?.structural_position || '',
         sortable: true 
@@ -143,7 +143,7 @@ export function useOrganizationHistoryTab(employeeId?: string) {
         sortable: true 
       },
       { 
-        id: 'old_position_level', 
+        id: 'previous_position_level', 
         label: 'Jenjang Jabatan Lama', 
         format: (_, row) => row.previous_position?.position_level || '',
         sortable: true 
@@ -155,7 +155,7 @@ export function useOrganizationHistoryTab(employeeId?: string) {
         sortable: true 
       },
       { 
-        id: 'old_employee_category', 
+        id: 'previous_employee_category', 
         label: 'Kategori Karyawan Lama', 
         format: (_, row) => row.previous_position?.employee_category || '',
         sortable: true 
