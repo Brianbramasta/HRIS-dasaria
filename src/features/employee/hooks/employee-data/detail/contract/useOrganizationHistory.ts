@@ -144,16 +144,9 @@ export function useOrganizationHistory(employeeId?: string, options: UseOrganiza
         // Add column filters - format: filter_column[column_name][in][]=value
         Object.entries(columnFilters).forEach(([columnId, values]) => {
           if (values && values.length > 0) {
-            // Map new column IDs back to API parameter names
-            let filterKey = columnId;
-            if (columnId.startsWith('old_')) {
-              filterKey = 'previous_position';
-            } else if (columnId.startsWith('new_')) {
-              filterKey = 'new_position';
-            }
-            
+            // Use column ID directly as API parameter
             values.forEach((value) => {
-              const key = `filter_column[${filterKey}][in][]`;
+              const key = `filter_column[${columnId}][in][]`;
               if (!queryParams[key]) {
                 queryParams[key] = [];
               }
@@ -165,15 +158,8 @@ export function useOrganizationHistory(employeeId?: string, options: UseOrganiza
         // Add date range filters - format: filter_column[column_name][range][]=start_date & filter_column[column_name][range][]=end_date
         Object.entries(dateRangeFilters).forEach(([columnId, dateRange]) => {
           if (dateRange && dateRange.startDate) {
-            // Map new column IDs back to API parameter names
-            let filterKey = columnId;
-            if (columnId.startsWith('old_')) {
-              filterKey = 'previous_position';
-            } else if (columnId.startsWith('new_')) {
-              filterKey = 'new_position';
-            }
-            
-            const key = `filter_column[${filterKey}][range][]`;
+            // Use column ID directly as API parameter
+            const key = `filter_column[${columnId}][range][]`;
             if (!queryParams[key]) {
               queryParams[key] = [];
             }
@@ -224,14 +210,8 @@ export function useOrganizationHistory(employeeId?: string, options: UseOrganiza
 
   const handleSortChange = useCallback(
     (columnId: string, order: 'asc' | 'desc') => {
-      // Map new column IDs back to API parameter names
-      let sortColumn = columnId;
-      if (columnId.startsWith('old_')) {
-        sortColumn = 'previous_position';
-      } else if (columnId.startsWith('new_')) {
-        sortColumn = 'new_position';
-      }
-      fetch({ column: sortColumn, sort: order });
+      // Use column ID directly as API parameter
+      fetch({ column: columnId, sort: order });
     },
     [fetch]
   );
