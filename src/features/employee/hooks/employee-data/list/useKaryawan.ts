@@ -2,13 +2,12 @@ import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { EmployeeEntity } from '../../../types/entity/EmployeeEntity';
 import { TableFilter } from '../../../../../types/SharedType';
-import employeeMasterDataService from '../../../services/EmployeeMasterData.service';
+import employeeRepository from '../../../repositories/employeeRepository';
 import useFilterStore from '../../../../../stores/filterStore';
 import { addNotification } from '../../../../../stores/notificationStore';
 import errorHandle from '@/utils/errorHandle';
 import { formatFilterValue } from '@/utils/formatFilterValue';
 import { getEmployeeStatusDropdownOptions, DropdownOption } from '../form/useFormulirKaryawan';
-import { EmployeeModel } from '../../../models/EmployeeModel';
 
 export interface UseKaryawanOptions {
   initialPage?: number;
@@ -169,7 +168,7 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
         setLoading(true);
         setError(null);
 
-        // Build query params for employeeMasterDataService
+        // Build query params for repository
         const queryParams: any = {
           page,
           per_page: limit,
@@ -212,20 +211,12 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
           }
         });
 
-        const response = await employeeMasterDataService.getEmployees(queryParams);
+        // Call repository instead of service directly
+        const result = await employeeRepository.getEmployees(queryParams);
         
-        if (response && response.meta?.status === 200 && response.data) {
-          const apiResponse = response.data;
-          
-          // Transform API data to Karyawan interface using Model
-          const transformedData = EmployeeModel.transformListFromApi(apiResponse.data);
-          
-          setData(transformedData);
-          setTotal(apiResponse.total || 0);
-          // Don't update page/limit from response to avoid conflicts
-        } else {
-          setError('Gagal memuat data karyawan');
-        }
+        setData(result.data);
+        setTotal(result.total);
+        // Don't update page/limit from response to avoid conflicts
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan saat memuat data';
         setError(errorMessage);
@@ -261,24 +252,14 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
         setLoading(true);
         setError(null);
 
-        const response = await employeeMasterDataService.createEmployee(formData);
+        const response = await employeeRepository.createEmployee(formData);
 
-        if (response && response.meta?.status === 200) {
-          addNotification({
-            variant: 'success',
-            title: response?.meta?.message || 'Karyawan berhasil ditambahkan',
-          });
-          await fetchKaryawan();
-          return response.data;
-        } else {
-          const errorMsg = response?.meta?.message || 'Gagal membuat karyawan';
-          setError(errorMsg);
-          addNotification({
-            variant: 'error',
-            title: errorMsg,
-          });
-          throw new Error(errorMsg);
-        }
+        addNotification({
+          variant: 'success',
+          title: 'Karyawan berhasil ditambahkan',
+        });
+        await fetchKaryawan();
+        return response;
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan saat membuat karyawan';
         setError(errorMessage);
@@ -300,24 +281,10 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
         setLoading(true);
         setError(null);
 
-        const response = await employeeMasterDataService.updateEmployee(id, formData);
+        const response = await employeeRepository.updateEmployee(id, formData);
 
-        if (response && response.meta?.status === 200) {
-          // addNotification({
-          //   variant: 'success',
-          //   title: response?.meta?.message || 'Karyawan berhasil diperbarui',
-          // });
-          await fetchKaryawan();
-          return response.data;
-        } else {
-          const errorMsg = response?.meta?.message || 'Gagal memperbarui karyawan';
-          setError(errorMsg);
-          addNotification({
-            variant: 'error',
-            title: errorMsg,
-          });
-          throw new Error(errorMsg);
-        }
+        await fetchKaryawan();
+        return response;
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan saat memperbarui karyawan';
         setError(errorMessage);
@@ -339,23 +306,9 @@ export function useKaryawan(options: UseKaryawanOptions = {}) {
         setLoading(true);
         setError(null);
 
-        const response = await employeeMasterDataService.deleteEmployee(id);
+        await employeeRepository.deleteEmployee(id);
 
-        if (response && response.meta.status === 200) {
-          // addNotification({
-          //   variant: 'success',
-          //   title: response?.meta?.message || 'Karyawan berhasil dihapus',
-          // });
-          await fetchKaryawan();
-        } else {
-          const errorMsg = response?.meta?.message || 'Gagal menghapus karyawan';
-          setError(errorMsg);
-          addNotification({
-            variant: 'error',
-            title: errorMsg,
-          });
-          throw new Error(errorMsg);
-        }
+        await fetchKaryawan();
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Terjadi kesalahan saat menghapus karyawan';
         setError(errorMessage);
