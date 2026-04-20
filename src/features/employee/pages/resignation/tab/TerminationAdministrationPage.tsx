@@ -61,6 +61,7 @@ export default function TerminationAdministrationPage() {
       tanggal_efektif_terminasi: payload.tanggalEfektif || '',
       description: payload.catatan || '',
       document: payload.file as File,
+      letter_of_commitment: payload.letter_of_commitment as File | undefined,
       end_status_id: payload.statusBerakhir,
     };
     const success = await storeAdministration(storePayload);
@@ -169,4 +170,4 @@ export default function TerminationAdministrationPage() {
       />
     </div>
   );
-}
+} 

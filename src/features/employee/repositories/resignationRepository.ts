@@ -231,11 +231,15 @@ export const resignationRepository = {
       form.append('tanggal_efektif_terminasi', payload.tanggal_efektif_terminasi);
       form.append('description', payload.description);
       form.append('document', payload.document);
+      if (payload.letter_of_commitment) {
+        form.append('letter_of_commitment', payload.letter_of_commitment);
+      }
       form.append('end_status_id', payload.end_status_id);
       
       const response = await resignationAdministrationService.store(form);
       
-      if (response && response.meta?.status === 200) {
+      // Check if response is successful (status 200 or if message contains "berhasil")
+      if (response && (response.meta?.status === 200 || response.meta?.message?.includes('berhasil'))) {
         return response.data;
       } else {
         throw new Error(response?.meta?.message || 'Gagal menyimpan terminasi administrasi');

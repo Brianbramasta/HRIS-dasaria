@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Button from '../../../../../components/ui/button/Button';
 import Label from '../../../../../components/form/Label';
@@ -10,6 +10,7 @@ import { IconFileDetail, IconHapus, IconPlus } from '@/icons/components/icons';
 import DoneOffBoardingModal from '../../../components/modals/termination/DoneOffBoardingModal';
 import { formatDateToIndonesian } from '@/utils/formatDate';
 import PdfPreviewEmbed from '@/components/shared/modal/PdfPreviewEmbed';
+import LinkPreview from '@/components/shared/form/LinkPreview';
 import { useDetailTerminationAdministration } from '../../../hooks/resignation/useDetailTerminationAdministration';
 
 export default function DetailTerminationAdministrationPage() {
@@ -105,6 +106,17 @@ export default function DetailTerminationAdministrationPage() {
                 <div className="font-medium">{formatDateToIndonesian(data.tanggalEfektif) || data.tanggalEfektif}</div>
               </div>
             </div>
+             {adminDetail?.resignationDetails?.letter_of_commitment && (
+              <div className="mt-6">
+                <Label>Surat Komitmen Pelunasan</Label>
+                <LinkPreview 
+                  url={adminDetail?.resignationDetails?.letter_of_commitment}
+                  label="Lihat Detail"
+                  disabled={!adminDetail?.resignationDetails?.letter_of_commitment}
+                  onClick={() => adminDetail?.resignationDetails?.letter_of_commitment && handleViewFileByUrl(adminDetail.resignationDetails.letter_of_commitment)}
+                />
+              </div>
+            )}
             <div className="mt-6">
               <Label>Catatan</Label>
               <TextArea
@@ -115,6 +127,7 @@ export default function DetailTerminationAdministrationPage() {
                 rows={3}
               />
             </div>
+           
           </div>
         </div>
       </div>

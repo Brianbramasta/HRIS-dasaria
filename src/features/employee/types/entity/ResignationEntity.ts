@@ -75,6 +75,7 @@ export interface ResignationAdministrationDetailsEntity {
   end_status: string | null;
   sisa_kontrak_bulan: number;
   file_contract: string | null;
+  letter_of_commitment: string | null;
 }
 
 export interface ResignationAdministrationDetailEntity {
@@ -83,14 +84,12 @@ export interface ResignationAdministrationDetailEntity {
 }
 
 export interface AdministrationPopupEntity {
-  employee_id: string;
-  nip?: string;
-  employee_name: string;
-  company_name?: string;
-  directorate_name?: string;
-  department_name?: string;
-  division_name?: string;
-  position_name: string;
+  employee_data: {
+    employee_id: string;
+    employee_name: string;
+    position_name: string;
+  };
+  has_active_loan: boolean;
 }
 
 export interface DocumentTypeEntity {

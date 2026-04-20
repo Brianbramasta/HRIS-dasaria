@@ -15,6 +15,7 @@ export type AddTerminationForm = {
   tanggalPengajuan: string | null;
   tanggalEfektif: string | null;
   file?: File;
+  letter_of_commitment?: File;
   catatan?: string;
 };
 
@@ -34,6 +35,7 @@ const AddUserTermination: React.FC<Props> = ({ isOpen, onClose, onSubmit, submit
   const [tanggalPengajuan, setTanggalPengajuan] = useState<string | null>(null);
   const [tanggalEfektif, setTanggalEfektif] = useState<string | null>(null);
   const [file, setFile] = useState<File | undefined>(undefined);
+  const [letterOfCommitment, setLetterOfCommitment] = useState<File | undefined>(undefined);
   const [catatan, setCatatan] = useState('');
 
   const {
@@ -41,9 +43,10 @@ const AddUserTermination: React.FC<Props> = ({ isOpen, onClose, onSubmit, submit
     employeeOptions,
     contractEndStatusOptions,
     selectedEmployeeData,
+    adminPopup,
     fetchEmployeeList,
-    fetchEmployeePersonalData,
     fetchContractEndStatusList,
+    fetchAdminPopup,
   } = useApiResignation();
 
   // Fetch employee list and contract end status on mount
@@ -54,18 +57,24 @@ const AddUserTermination: React.FC<Props> = ({ isOpen, onClose, onSubmit, submit
     }
   }, [isOpen]);
 
-  // Handle employee search
+  // Handle employee search with popup data enhancement
   const handleEmployeeSearch = (search: string) => {
     fetchEmployeeList(search);
+    
+    // If we have a selected NIP and search is empty, fetch popup data
+    if (nip && !search.trim()) {
+      fetchAdminPopup(nip);
+    }
   };
 
-  // Auto-fill pengguna and posisi when employee is selected
+  // Fetch admin popup data when NIP is selected
   useEffect(() => {
     if (nip && isOpen) {
-      fetchEmployeePersonalData(nip);
+      fetchAdminPopup(nip);
     }
-  }, [nip, isOpen]);
+  }, [nip, isOpen, fetchAdminPopup]);
 
+  
   // Update pengguna dan posisi from selected employee data
   useEffect(() => {
     if (selectedEmployeeData?.Personal_Data && selectedEmployeeData?.Employment_Position_Data) {
@@ -73,6 +82,15 @@ const AddUserTermination: React.FC<Props> = ({ isOpen, onClose, onSubmit, submit
       setPosisi(selectedEmployeeData.Employment_Position_Data.position_name || '');
     }
   }, [selectedEmployeeData]);
+
+  // Use popup data to auto-fill form fields when available
+  useEffect(() => {
+    if (adminPopup?.employee_data) {
+      // Use popup data from employee_data nested object
+      setPengguna(adminPopup.employee_data.employee_name || '');
+      setPosisi(adminPopup.employee_data.position_name || '');
+    }
+  }, [adminPopup]);
 
   // Auto-set tanggal efektif when status is "Berakhir" or "Kontrak Selesai"
   useEffect(() => {
@@ -95,6 +113,7 @@ const AddUserTermination: React.FC<Props> = ({ isOpen, onClose, onSubmit, submit
       setTanggalPengajuan(null);
       setTanggalEfektif(null);
       setFile(undefined);
+      setLetterOfCommitment(undefined);
       setCatatan('');
     }
   }, [isOpen]);
@@ -113,6 +132,7 @@ const AddUserTermination: React.FC<Props> = ({ isOpen, onClose, onSubmit, submit
       tanggalPengajuan,
       tanggalEfektif,
       file,
+      letter_of_commitment: letterOfCommitment,
       catatan,
     };
     onSubmit(payload);
@@ -182,6 +202,17 @@ const AddUserTermination: React.FC<Props> = ({ isOpen, onClose, onSubmit, submit
         required
         disabled={!nip}
       />
+      {adminPopup?.has_active_loan && (
+        <FIleField
+          label="Surat Komitmen Pelunasan Kasbon"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            setLetterOfCommitment(f);
+          }}
+          required
+          disabled={!nip}
+        />
+      )}
       <TextAreaField
         label="Catatan"
         placeholder="Deskripsi..."

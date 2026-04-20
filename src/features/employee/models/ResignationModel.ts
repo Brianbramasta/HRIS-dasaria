@@ -161,6 +161,7 @@ export class ResignationModel {
       end_status: dto.end_status,
       sisa_kontrak_bulan: dto.sisa_kontrak_bulan,
       file_contract: dto.file_contract,
+      letter_of_commitment: dto.letter_of_commitment,
     };
   }
 
@@ -173,14 +174,12 @@ export class ResignationModel {
 
   static transformAdministrationPopupFromApi(dto: AdministrationPopupResult): AdministrationPopupEntity {
     return {
-      employee_id: dto.employee_id,
-      nip: dto.nip,
-      employee_name: dto.employee_name,
-      company_name: dto.company_name,
-      directorate_name: dto.directorate_name,
-      department_name: dto.department_name,
-      division_name: dto.division_name,
-      position_name: dto.position_name,
+      employee_data: {
+        employee_id: dto.employee_data.employee_id,
+        employee_name: dto.employee_data.employee_name,
+        position_name: dto.employee_data.position_name,
+      },
+      has_active_loan: dto.has_active_loan,
     };
   }
 
