@@ -59,7 +59,7 @@ export function useFraudTab({ employeeId }: Params) {
 
   const columns: DataTableColumn<PelanggaranEntry>[] = useMemo(
     () => [
-      { id: 'no', label: 'No.', align: 'center', format: (v, row) => { void v; return list.findIndex((r) => r.id === row.id) + 1 + (page - 1) * limit; } },
+      { id: 'no', label: 'No.', align: 'center', format: (v, row) => { void v; return list.findIndex((r) => r.id === row.id) + 1 + (page - 1) * limit; },sortable:false },
       { id: 'jenis_pelanggaran', label: 'Jenis Pelanggaran' },
       { id: 'tanggal_pelanggaran', label: 'Tanggal Kejadian', dateRangeFilter: true, format: (v) => formatDateToIndonesian(v) },
       { id: 'deskripsi_pelanggaran', label: 'deskripsi Pelanggaran' },

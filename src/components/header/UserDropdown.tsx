@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { useAuthStore } from "@/features/auth/stores/AuthStore";
@@ -8,6 +9,7 @@ const isDev = import.meta.env.VITE_APP_ENV === 'dev';
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
   const { user, logout } = useAuthStore((state) => state);
 
   function toggleDropdown() {
@@ -20,6 +22,7 @@ export default function UserDropdown() {
   function handleLogout() {
     clearAllFilterPersistence();
     logout();
+    navigate('/login');
   }
 
 
