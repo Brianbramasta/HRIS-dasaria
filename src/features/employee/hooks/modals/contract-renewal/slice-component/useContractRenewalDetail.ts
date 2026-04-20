@@ -30,7 +30,7 @@ export const validateNewContractEndDateFn = (newEndDate: string, oldEndDate: str
       month: 'long', 
       year: 'numeric' 
     });
-    const referenceDate = newStartDate ? 'tanggal mulai kontrak baru' : 'hari ini';
+    // const referenceDate = newStartDate ? 'tanggal mulai kontrak baru' : 'hari ini';
     errors.push(`Tanggal berakhir kontrak baru minimal harus lebih dari  ${formattedMinDate}. `);
     // Hal ini untuk memastikan notifikasi perpanjangan tidak terus muncul.
   }
