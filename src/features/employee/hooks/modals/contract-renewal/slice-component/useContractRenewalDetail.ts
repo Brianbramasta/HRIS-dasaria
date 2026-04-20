@@ -4,24 +4,34 @@ import { useApiContractExtension } from '@/features/employee/hooks/api/useApiCon
 import { addNotification } from '@/stores/notificationStore';
 
 // Export validation functions untuk digunakan di file lain
-export const validateNewContractEndDateFn = (newEndDate: string, oldEndDate: string) => {
+export const validateNewContractEndDateFn = (newEndDate: string, oldEndDate: string, newStartDate?: string) => {
   const errors: string[] = [];
-  
-  // Get today + 2 months
-  const today = new Date();
-  const minDate = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
   
   const newEndDateObj = new Date(newEndDate);
   const oldEndDateObj = new Date(oldEndDate);
   
-  // Validasi A: Tanggal Berakhir Baru harus > (hari ini + 2 bulan)
+  // Calculate minDate as (newStartDate + 1 month) if provided, otherwise use (today + 1 month)
+  let minDate: Date;
+  if (newStartDate) {
+    const newStartDateObj = new Date(newStartDate);
+    minDate = new Date(newStartDateObj.getFullYear(), newStartDateObj.getMonth() + 1, newStartDateObj.getDate());
+  } else {
+    const today = new Date();
+    minDate = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
+  }
+
+  console.log('newEndDateObj', newEndDateObj);
+  console.log('minDate', minDate);
+  console.log('newEndDateObj <= minDate', newEndDateObj <= minDate);
+  // Validasi A: Tanggal Berakhir Baru harus > (Tanggal Mulai Kontrak Baru + 1 bulan)
   if (newEndDateObj <= minDate) {
     const formattedMinDate = minDate.toLocaleDateString('id-ID', { 
       day: 'numeric', 
       month: 'long', 
       year: 'numeric' 
     });
-    errors.push(`Tanggal berakhir kontrak baru minimal harus lebih dari ${formattedMinDate}. `);
+    const referenceDate = newStartDate ? 'tanggal mulai kontrak baru' : 'hari ini';
+    errors.push(`Tanggal berakhir kontrak baru minimal harus lebih dari  ${formattedMinDate}. `);
     // Hal ini untuk memastikan notifikasi perpanjangan tidak terus muncul.
   }
   
@@ -32,7 +42,7 @@ export const validateNewContractEndDateFn = (newEndDate: string, oldEndDate: str
       month: 'long', 
       year: 'numeric' 
     });
-    errors.push(`Tanggal berakhir kontrak baru harus lebih dari tanggal berakhir kontrak sebelumnya (${formattedOldDate}).`);
+    errors.push(`Tanggal berakhir kontrak baru harus lebih dari tanggal berakhir kontrak sebelumnya ${formattedOldDate}.`);
   }
   
   return errors;
@@ -51,7 +61,7 @@ export const validateNewContractStartDateFn = (newStartDate: string, oldEndDate:
       month: 'long', 
       year: 'numeric' 
     });
-    errors.push(`Tanggal mulai kontrak baru tidak boleh sebelum tanggal berakhir kontrak sebelumnya (${formattedOldDate}).`);
+    errors.push(`Tanggal mulai kontrak baru tidak boleh sebelum tanggal berakhir kontrak sebelumnya ${formattedOldDate}.`);
   }
   
   return errors;
@@ -109,8 +119,8 @@ export function useContractRenewalDetail({
   const [validationErrors, setValidationErrors] = React.useState<ValidationErrors>({});
 
   // Validation functions
-  const validateNewContractEndDate = useCallback((newEndDate: string, oldEndDate: string) => {
-    return validateNewContractEndDateFn(newEndDate, oldEndDate);
+  const validateNewContractEndDate = useCallback((newEndDate: string, oldEndDate: string, newStartDate?: string) => {
+    return validateNewContractEndDateFn(newEndDate, oldEndDate, newStartDate);
   }, []);
 
   const validateNewContractStartDate = useCallback((newStartDate: string, oldEndDate: string) => {
@@ -167,7 +177,7 @@ export function useContractRenewalDetail({
         switch (field) {
           case 'new_contract_end_date':
             if (data?.end_date) {
-              const errors = validateNewContractEndDate(value, data.end_date);
+              const errors = validateNewContractEndDate(value, data.end_date, data?.new_contract_date);
               shouldProceed = !showValidationError(errors);
               
               // Update validation errors state
