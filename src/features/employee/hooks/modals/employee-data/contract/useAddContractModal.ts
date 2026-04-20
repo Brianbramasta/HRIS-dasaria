@@ -73,10 +73,10 @@ export function useAddContractModal({
     // Check required position fields
     const requiredFields = [
       'directorate_id',
-      'division_id', 
-      'department_id',
-      'job_title_id',
-      'position_id'
+      // 'division_id', 
+      // 'department_id',
+      // 'job_title_id',
+      // 'position_id'
     ];
 
     const missingFields = requiredFields.filter(field => !positionData[field as keyof typeof positionData]);
