@@ -21,62 +21,155 @@ Tooling & utilitas:
 
 - Node.js + npm (manajer paket). Periksa `package.json` untuk script yang tersedia.
 
-## Struktur Folder & Arsitektur
+## Struktur Folder & Arsitektur (Repository WAJIB)
 
-Proyek ini mengikuti prinsip **Clean Architecture** dengan pemisahan tanggung jawab yang jelas pada setiap folder. Struktur ini berlaku baik di level root (`src/`) maupun di dalam setiap fitur (`src/features/<feature>/`).
+Proyek ini mengikuti prinsip **Clean Architecture dengan Repository Pattern** untuk memastikan semua akses data melalui satu pintu. Struktur ini berlaku baik di level root (`src/`) maupun di dalam setiap fitur (`src/features/<feature>/`).
 
-Mengacu pada dokumentasi rules dan standarisasi:
+### Core Architecture Flow
+```
+User Action  
+  Page (UI)  
+  Hook (State & Logic)  
+  Repository (PusatData)  
+  Service (API Call)  
+  Model (Mapping)  
+  Backend
+```
+
+### Prinsip Utama
+- **Repository sebagai pusat data**
+- **Tidak ada akses API langsung dari hook/UI**
+- **Semua perubahan API cukup di Repository dan Model**
 
 ### 1. `pages/` (UI Orchestrator)
 
-- **Fungsi**: Merender UI tanpa harus mengetahui detail logic-nya.
-- **Tanggung Jawab**: Merangkai tampilan halaman, menangani event UI, dan memanggil hook.
-- **Aturan**: Tidak boleh ada business logic kompleks atau fetch API langsung di sini.
+- **Fungsi**: Render data tanpa logic dan tanpa mengetahui API.
+- **Tanggung Jawab**: Menyusun layout halaman, menangani event dari user, memanggil hook.
+- **DO**: Gunakan hook untuk logic, fokus pada rendering UI.
+- **DON'T**: Melakukan API call, menyimpan business logic.
 
 ### 2. `hooks/` (Business Logic Layer)
 
-- **Fungsi**: Menampung logic yang digunakan pada halaman terkait.
-- **Tanggung Jawab**: Validasi, decision making, pemanggilan service, dan mapping data.
-- **Aturan**: Pastikan semua logic termasuk kebutuhan variable UI berasal dari sini.
+- **Fungsi**: Manage state (loading, error, data), trigger action, **hanya komunikasi ke Repository**.
+- **Tanggung Jawab**: Validasi, pengambilan keputusan, mengelola loading dan error state, menggabungkan data dari berbagai sumber.
+- **DO**: Hanya panggil Repository, simpan state dan aturan bisnis.
+- **DON'T**: Mengolah response API mentah, melakukan mapping data API.
 
-### 3. `services/` (Data Access Layer)
+### 3. `repositories/` (Pusat Utama Data)
 
-- **Fungsi**: Request endpoint ke API.
-- **Tanggung Jawab**: Komunikasi dengan backend, definisi endpoint.
-- **Aturan**: Tidak boleh menyimpan state UI.
+- **Fungsi**: Pusat utama data, ambil data dari Service, gunakan Model untuk mapping.
+- **Tanggung Jawab**: Gabungkan beberapa API jika perlu, return data yang sudah siap pakai.
+- **Contoh**:
+```javascript
+// repositories/userRepository.js
+import { fetchUsers } from '@/services/userService'
+import { mapUser } from '@/models/userModel'
 
-### 4. `components/` (Reusable UI Component)
+export const userRepository = {
+  async getUsers() {
+    const res = await fetchUsers()
+    return res.map(mapUser)
+  }
+}
+```
 
-- **Fungsi**: Element UI yang dapat digunakan ulang.
-- **Tanggung Jawab**: Menampilkan data via props (Presentational).
-- **Aturan**: Jangan melakukan fetch API di dalam komponen reusable.
+### 4. `services/` (Data Access Layer - API Only)
 
-### 5. `store/` (Global State)
+- **Fungsi**: Pure API call, tidak ada logic tambahan.
+- **Tanggung Jawab**: Komunikasi dengan API backend, definisi endpoint, pengaturan header & auth.
+- **DO**: Return response mentah (Promise), pisahkan service per domain.
+- **DON'T**: Melakukan transformasi data, menyimpan state.
 
-- **Fungsi**: Menampung state global.
-- **Tanggung Jawab**: Menyimpan data yang dibutuhkan lintas halaman (misal: Auth, User Info).
-- **Aturan**: Jika state hanya dipakai di satu halaman, gunakan local state atau hook, bukan store.
+### 5. `models/` (WAJIB - Mapping Layer)
+
+- **Fungsi**: Mapping response API format internal.
+- **Tanggung Jawab**: Mengubah DTO (dari backend) menjadi Entity (format internal aplikasi), menyamakan struktur data.
+- **DO**: Menjadi satu-satunya tempat yang terdampak jika API berubah.
+- **DON'T**: Menyimpan business logic, melakukan validasi.
 
 ### 6. `types/` (Contract Layer)
 
 - **Fungsi**: Mendefinisikan type di TypeScript.
-- **Tanggung Jawab**: Kontrak interface request & response backend.
+- **Tanggung Jawab**: Kontrak frontend ↔ backend, DTO, Meta, Error response.
+- **Struktur**: `types/dto` → untuk kontrak dari backend, `types/entity` → untuk struktur internal aplikasi.
 
-### 7. `utils/` (Helper / Utility)
+### 7. `components/` (Reusable UI Component)
+
+- **Fungsi**: Element UI yang dapat digunakan ulang, presentational component.
+- **Tanggung Jawab**: Stateless atau minim logic, menggunakan props, mengirim event melalui callback.
+- **DO**: Terima data via props, emit event via callback.
+- **DON'T**: Fetch API, business logic, akses global state langsung.
+
+### 8. `store/` (Global State)
+
+- **Fungsi**: Menampung state global.
+- **Tanggung Jawab**: Menyimpan data yang dibutuhkan lintas halaman (Auth, User Info, Theme).
+- **DO**: Gunakan untuk data global.
+- **DON'T**: Menyimpan business logic kompleks.
+- **Rule**: Jika hanya dipakai satu halaman, jangan gunakan store.
+
+### 9. `utils/` (Helper / Utility)
 
 - **Fungsi**: Menampung fungsi helper.
-- **Tanggung Jawab**: Fungsi kecil, pure, dan reusable (misal: format tanggal).
+- **Tanggung Jawab**: Fungsi kecil, pure, dan reusable.
+- **DO**: Helper umum (format tanggal, helper math, dsb).
+- **DON'T**: Akses API, akses state, akses UI.
 
 ---
 
 ## Aturan Penamaan & Konvensi
 
-1.  **Bahasa**: Selalu gunakan **Bahasa Inggris** untuk penulisan fungsi, variable, folder, dan file.
-2.  **File Component**: Gunakan PascalCase (huruf depan besar). Contoh: `AddStaffModals.tsx`.
-3.  **Folder**: Gunakan huruf kecil. Jika lebih dari satu kata, gunakan tanda hubung (`-`). Contoh: `structure-and-organize`.
-4.  **Penamaan Fungsi**:
-    - Gunakan PascalCase untuk nama fungsi Component/Hook. Contoh: `FormatDate()` (jika dianggap sebagai utilitas utama atau komponen) atau sesuai konvensi React.
-    - Gunakan camelCase untuk variabel dan fungsi umum.
+### Bahasa & Format
+- Gunakan **bahasa Inggris** untuk fungsi, variable, folder, file.
+
+### File Naming
+- **File component/hook**: **PascalCase** contoh: `AddStaffModal.tsx`
+- **Folder**: **kebab-case** contoh: `structure-and-organize`
+- **Function**: **camelCase** contoh: `formatDate()`
+- **Variable**: **snake_case** contoh: `staff_status`
+
+## Rules (Penting)
+
+### Yang harus dilakukan
+- **Gunakan model untuk semua transformasi data API**
+- **Pisahkan DTO dan Entity**
+- **Simpan business logic di hook**
+- **Pastikan UI tidak tergantung struktur API**
+- **Repository sebagai pusat data**
+
+### Yang tidak boleh dilakukan
+- **Mapping API di hook**
+- **Menggunakan DTO langsung di UI**
+- **Mencampur naming backend ke frontend**
+- **Lompat layer**
+- **Akses API langsung dari hook/UI**
+
+## Golden Rule
+
+**Perubahan backend hanya boleh berdampak ke:**
+- DTO
+- Model
+- Service
+- Repository
+
+**Tidak boleh berdampak ke:**
+- Hook
+- UI
+
+## Quick Reference
+
+| Kebutuhan              | Tempat              |
+| ---------------------- | ------------------- |
+| Fetch API              | `services/`         |
+| **Data Access**        | **`repositories/`**  |
+| **Data Mapping**       | **`models/`**       |
+| Business rule          | `hooks/`            |
+| Event UI               | `pages/`            |
+| Validasi form          | `hooks/`            |
+| UI reusable            | `components/`       |
+| Kontrak data           | `types/`            |
+| State global           | `store/`            |
+| Helper umum            | `utils/`            |
 
 ## Cara Menjalankan
 
