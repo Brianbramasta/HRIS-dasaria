@@ -46,7 +46,7 @@ export const useDetailTerminationAdministration = (id?: string) => {
   // Fetch temporary URL for contract document
   useEffect(() => {
     const fetchTemporaryUrl = async () => {
-      const documentUrl = adminDetail?.resignation_details?.file_contract;
+      const documentUrl = adminDetail?.resignationDetails?.file_contract;
       if (documentUrl) {
         try {
           const temporaryUrlData = await getTemporaryUrl(documentUrl);
@@ -60,19 +60,19 @@ export const useDetailTerminationAdministration = (id?: string) => {
     };
 
     fetchTemporaryUrl();
-  }, [adminDetail?.resignation_details?.file_contract]);
+  }, [adminDetail?.resignationDetails?.file_contract]);
 
   // Transform API data to component format
   const data: DetailData | null = useMemo(() => {
     if (!adminDetail) return null;
     return {
-      name: adminDetail.resignation_details?.full_name || '',
-      idKaryawan: adminDetail.resignation_details?.NIP || '',
-      posisi: adminDetail.resignation_details?.position_name || '',
-      statusBerakhir: adminDetail.resignation_details?.end_status || '',
-      tanggalPengajuan: adminDetail.resignation_details?.tanggal_pengajuan_terminasi || '',
-      tanggalEfektif: adminDetail.resignation_details?.tanggal_efektif_terminasi || '',
-      catatan: adminDetail.resignation_details?.id || '',
+      name: adminDetail.resignationDetails?.full_name || '',
+      idKaryawan: adminDetail.resignationDetails?.NIP || '',
+      posisi: adminDetail.resignationDetails?.position_name || '',
+      statusBerakhir: adminDetail.resignationDetails?.end_status || '',
+      tanggalPengajuan: adminDetail.resignationDetails?.tanggal_pengajuan_terminasi || '',
+      tanggalEfektif: adminDetail.resignationDetails?.tanggal_efektif_terminasi || '',
+      catatan: adminDetail.resignationDetails?.id || '',
       avatar: undefined,
     };
   }, [adminDetail]);
@@ -99,7 +99,7 @@ export const useDetailTerminationAdministration = (id?: string) => {
   };
 
   const handlePreviewPDF = async () => {
-    const documentUrl = adminDetail?.resignation_details?.file_contract;
+    const documentUrl = adminDetail?.resignationDetails?.file_contract;
     if (!documentUrl) {
       return;
     }

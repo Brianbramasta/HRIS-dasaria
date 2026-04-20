@@ -2,24 +2,21 @@ import { useState, useCallback } from 'react';
 import { TableFilter } from '../../../../types/SharedType';
 import useFilterStore from '../../../../stores/filterStore';
 import {
-  ResignationApplicationListItem,
-  ResignationApplicationDetailResult,
-  ResignationApplicationListResponse,
   UploadDocumentsPayload,
-  ResignationAdministrationListItem,
-  ResignationAdministrationDetailResult,
-  ResignationAdministrationListResponse,
-  AdministrationPopupResult,
-  DocumentTypeItem,
   StoreAdministrationPayload,
-  ContractEndStatusItem,
   PersonalInformationFullData,
 } from '../../types/dto/ResignationType';
-import { resignationApplicationsService } from '../../services/ResignationApplicationsService';
-import { resignationAdministrationService } from '../../services/ResignationAdministrationService';
-import { organizationChangeService } from '../../services/OrganizationChangeService';
-import { personalInformationService } from '../../services/detail/PersonalInformationService';
-import { contractService } from '../../services/detail/ContractService';
+import {
+  ResignationApplicationEntity,
+  ResignationApplicationDetailEntity,
+  ResignationAdministrationEntity,
+  ResignationAdministrationDetailEntity,
+  AdministrationPopupEntity,
+  DocumentTypeEntity,
+  EmployeeOptionEntity,
+  ContractEndStatusOptionEntity,
+} from '../../types/entity/ResignationEntity';
+import { resignationRepository } from '../../repositories/resignationRepository';
 import { formatFilterValue } from '@/utils/formatFilterValue';
 
 interface UseApiResignationReturn {
@@ -27,8 +24,8 @@ interface UseApiResignationReturn {
   error: string | null;
 
   // Applications
-  applications: ResignationApplicationListItem[];
-  applicationDetail: ResignationApplicationDetailResult | null;
+  applications: ResignationApplicationEntity[];
+  applicationDetail: ResignationApplicationDetailEntity | null;
   appPagination: {
     currentPage: number;
     perPage: number;
@@ -36,9 +33,9 @@ interface UseApiResignationReturn {
   };
 
   // Administration
-  adminList: ResignationAdministrationListItem[];
-  adminDetail: ResignationAdministrationDetailResult | null;
-  adminPopup: AdministrationPopupResult | null;
+  adminList: ResignationAdministrationEntity[];
+  adminDetail: ResignationAdministrationDetailEntity | null;
+  adminPopup: AdministrationPopupEntity | null;
   adminPagination: {
     currentPage: number;
     perPage: number;
@@ -46,9 +43,9 @@ interface UseApiResignationReturn {
   };
 
   // Dropdowns & Lists
-  documentTypes: DocumentTypeItem[];
-  employeeOptions: { label: string; value: string; name: string }[];
-  contractEndStatusOptions: { label: string; value: string }[];
+  documentTypes: DocumentTypeEntity[];
+  employeeOptions: EmployeeOptionEntity[];
+  contractEndStatusOptions: ContractEndStatusOptionEntity[];
   selectedEmployeeData: PersonalInformationFullData | null;
 
   // Server-side filtering states
@@ -97,8 +94,8 @@ export const useApiResignation = (): UseApiResignationReturn => {
   const [error, setError] = useState<string | null>(null);
 
   // Applications
-  const [applications, setApplications] = useState<ResignationApplicationListItem[]>([]);
-  const [applicationDetail, setApplicationDetail] = useState<ResignationApplicationDetailResult | null>(null);
+  const [applications, setApplications] = useState<ResignationApplicationEntity[]>([]);
+  const [applicationDetail, setApplicationDetail] = useState<ResignationApplicationDetailEntity | null>(null);
   const [appPagination, setAppPagination] = useState({
     currentPage: 1,
     perPage: 10,
@@ -106,9 +103,9 @@ export const useApiResignation = (): UseApiResignationReturn => {
   });
 
   // Administration
-  const [adminList, setAdminList] = useState<ResignationAdministrationListItem[]>([]);
-  const [adminDetail, setAdminDetail] = useState<ResignationAdministrationDetailResult | null>(null);
-  const [adminPopup, setAdminPopup] = useState<AdministrationPopupResult | null>(null);
+  const [adminList, setAdminList] = useState<ResignationAdministrationEntity[]>([]);
+  const [adminDetail, setAdminDetail] = useState<ResignationAdministrationDetailEntity | null>(null);
+  const [adminPopup, setAdminPopup] = useState<AdministrationPopupEntity | null>(null);
   const [adminPagination, setAdminPagination] = useState({
     currentPage: 1,
     perPage: 10,
@@ -116,9 +113,9 @@ export const useApiResignation = (): UseApiResignationReturn => {
   });
 
   // Dropdowns
-  const [documentTypes, setDocumentTypes] = useState<DocumentTypeItem[]>([]);
-  const [employeeOptions, setEmployeeOptions] = useState<{ label: string; value: string; name: string }[]>([]);
-  const [contractEndStatusOptions, setContractEndStatusOptions] = useState<{ label: string; value: string }[]>([]);
+  const [documentTypes, setDocumentTypes] = useState<DocumentTypeEntity[]>([]);
+  const [employeeOptions, setEmployeeOptions] = useState<EmployeeOptionEntity[]>([]);
+  const [contractEndStatusOptions, setContractEndStatusOptions] = useState<ContractEndStatusOptionEntity[]>([]);
   const [selectedEmployeeData, setSelectedEmployeeData] = useState<PersonalInformationFullData | null>(null);
 
   // Server-side filtering states
@@ -178,13 +175,12 @@ export const useApiResignation = (): UseApiResignationReturn => {
         }
       });
 
-      const resp = await resignationApplicationsService.getApplications(queryParams);
-      const data = resp.data as ResignationApplicationListResponse;
-      setApplications(data?.data || []);
+      const result = await resignationRepository.getApplications(queryParams);
+      setApplications(result.data);
       setAppPagination({
-        currentPage: data?.current_page || params?.page || 1,
-        perPage: data?.per_page || params?.pageSize || appPagination.perPage,
-        total: data?.total || 0,
+        currentPage: result.pagination.current_page,
+        perPage: result.pagination.per_page,
+        total: result.pagination.total,
       });
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Gagal mengambil daftar pengajuan';
@@ -199,8 +195,8 @@ export const useApiResignation = (): UseApiResignationReturn => {
     setLoading(true);
     setError(null);
     try {
-      const resp = await resignationApplicationsService.getApplicationDetail(id);
-      setApplicationDetail(resp.data as ResignationApplicationDetailResult);
+      const result = await resignationRepository.getApplicationDetail(id);
+      setApplicationDetail(result);
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Gagal mengambil detail pengajuan';
       setError(msg);
@@ -214,14 +210,7 @@ export const useApiResignation = (): UseApiResignationReturn => {
     setLoading(true);
     setError(null);
     try {
-      const form = new FormData();
-      payload.document_type_ids.forEach((docId, idx) => {
-        form.append(`document_type_id[${idx}]`, docId);
-      });
-      payload.files.forEach((file, idx) => {
-        form.append(`file[${idx}]`, file);
-      });
-      await resignationApplicationsService.uploadDocuments(id, form);
+      await resignationRepository.uploadApplicationDocuments(id, payload);
       return true;
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Gagal mengunggah dokumen pengajuan';
@@ -237,7 +226,7 @@ export const useApiResignation = (): UseApiResignationReturn => {
     setLoading(true);
     setError(null);
     try {
-      await resignationApplicationsService.approve(id, 'Disetujui', effectiveDate);
+      await resignationRepository.approveApplication(id, 'Disetujui', effectiveDate);
       return true;
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Gagal menyetujui pengajuan';
@@ -253,7 +242,7 @@ export const useApiResignation = (): UseApiResignationReturn => {
     setLoading(true);
     setError(null);
     try {
-      await resignationApplicationsService.reject(id, 'Ditolak', payload);
+      await resignationRepository.rejectApplication(id, 'Ditolak', payload);
       return true;
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Gagal menolak pengajuan';
@@ -269,7 +258,7 @@ export const useApiResignation = (): UseApiResignationReturn => {
     setLoading(true);
     setError(null);
     try {
-      await resignationApplicationsService.saveDraft(id);
+      await resignationRepository.saveDraftApplication(id);
       return true;
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Gagal menyimpan draft pengajuan';
@@ -284,7 +273,7 @@ export const useApiResignation = (): UseApiResignationReturn => {
     setLoading(true);
     setError(null);
     try {
-      await resignationApplicationsService.deleteDocument(applicationId, documentId);
+      await resignationRepository.deleteApplicationDocument(applicationId, documentId);
       return true;
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Gagal menghapus dokumen pengajuan';
@@ -300,8 +289,8 @@ export const useApiResignation = (): UseApiResignationReturn => {
     setLoading(true);
     setError(null);
     try {
-      const resp = await resignationAdministrationService.getPopup(nip);
-      setAdminPopup(resp.data as AdministrationPopupResult);
+      const result = await resignationRepository.getAdministrationPopup(nip);
+      setAdminPopup(result);
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Gagal mengambil popup terminasi';
       setError(msg);
@@ -315,14 +304,7 @@ export const useApiResignation = (): UseApiResignationReturn => {
     setLoading(true);
     setError(null);
     try {
-      const form = new FormData();
-      form.append('employee_id', payload.employee_id);
-      form.append('tanggal_pengajuan_terminasi', payload.tanggal_pengajuan_terminasi);
-      form.append('tanggal_efektif_terminasi', payload.tanggal_efektif_terminasi);
-      form.append('description', payload.description);
-      form.append('document', payload.document);
-      form.append('end_status_id', payload.end_status_id);
-      await resignationAdministrationService.store(form);
+      await resignationRepository.storeAdministration(payload);
       return true;
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Gagal menyimpan terminasi administrasi';
@@ -381,13 +363,12 @@ export const useApiResignation = (): UseApiResignationReturn => {
         }
       });
 
-      const resp = await resignationAdministrationService.getIndex(queryParams);
-      const data = resp.data as ResignationAdministrationListResponse;
-      setAdminList(data?.data || []);
+      const result = await resignationRepository.getAdministrationIndex(queryParams);
+      setAdminList(result.data);
       setAdminPagination({
-        currentPage: data?.current_page || params?.page || 1,
-        perPage: data?.per_page || params?.pageSize || adminPagination.perPage,
-        total: data?.total || 0,
+        currentPage: result.pagination.current_page,
+        perPage: result.pagination.per_page,
+        total: result.pagination.total,
       });
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Gagal mengambil daftar terminasi';
@@ -402,8 +383,8 @@ export const useApiResignation = (): UseApiResignationReturn => {
     setLoading(true);
     setError(null);
     try {
-      const resp = await resignationAdministrationService.getDetail(id);
-      setAdminDetail(resp.data as ResignationAdministrationDetailResult);
+      const result = await resignationRepository.getAdministrationDetail(id);
+      setAdminDetail(result);
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Gagal mengambil detail terminasi';
       setError(msg);
@@ -417,14 +398,7 @@ export const useApiResignation = (): UseApiResignationReturn => {
     setLoading(true);
     setError(null);
     try {
-      const form = new FormData();
-      payload.document_type_ids.forEach((docId, idx) => {
-        form.append(`document_type_id[${idx}]`, docId);
-      });
-      payload.files.forEach((file, idx) => {
-        form.append(`file[${idx}]`, file);
-      });
-      await resignationAdministrationService.uploadDocuments(id, form);
+      await resignationRepository.uploadAdministrationDocuments(id, payload);
       return true;
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Gagal mengunggah dokumen terminasi';
@@ -440,7 +414,7 @@ export const useApiResignation = (): UseApiResignationReturn => {
     setLoading(true);
     setError(null);
     try {
-      await resignationAdministrationService.submit(id);
+      await resignationRepository.submitAdministration(id);
       return true;
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Gagal submit terminasi administrasi';
@@ -456,8 +430,8 @@ export const useApiResignation = (): UseApiResignationReturn => {
     setLoading(true);
     setError(null);
     try {
-      const resp = await resignationAdministrationService.getDocumentTypes();
-      setDocumentTypes(resp.data || []);
+      const result = await resignationRepository.getDocumentTypes();
+      setDocumentTypes(result);
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Gagal mengambil tipe dokumen';
       setError(msg);
@@ -472,7 +446,7 @@ export const useApiResignation = (): UseApiResignationReturn => {
     setLoading(true);
     setError(null);
     try {
-      await resignationAdministrationService.deleteDocument(administrationId, documentId);
+      await resignationRepository.deleteAdministrationDocument(administrationId, documentId);
       return true;
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Gagal menghapus dokumen terminasi';
@@ -488,14 +462,8 @@ export const useApiResignation = (): UseApiResignationReturn => {
     setLoading(true);
     setError(null);
     try {
-      const resp = await organizationChangeService.getAllEmployeeDropdown(search);
-      const data = (resp as any)?.data ?? [];
-      const mapped = data.map((i: any) => ({
-        label: `${i.id} - ${i.full_name}`,
-        value: i.id,
-        name: i.full_name,
-      }));
-      setEmployeeOptions(mapped);
+      const result = await resignationRepository.getEmployeeList(search);
+      setEmployeeOptions(result);
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Gagal mengambil daftar karyawan';
       setError(msg);
@@ -510,8 +478,8 @@ export const useApiResignation = (): UseApiResignationReturn => {
     setLoading(true);
     setError(null);
     try {
-      const resp = await personalInformationService.getPersonalInformationData(employeeId);
-      setSelectedEmployeeData(resp.data as PersonalInformationFullData);
+      const result = await resignationRepository.getEmployeePersonalData(employeeId);
+      setSelectedEmployeeData(result);
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Gagal mengambil data personal karyawan';
       setError(msg);
@@ -526,12 +494,8 @@ export const useApiResignation = (): UseApiResignationReturn => {
     setLoading(true);
     setError(null);
     try {
-      const data = await contractService.getContractEndStatusDropdown(search);
-      const mapped = data.map((item: ContractEndStatusItem) => ({
-        label: item.name,
-        value: item.id,
-      }));
-      setContractEndStatusOptions(mapped);
+      const result = await resignationRepository.getContractEndStatusList(search);
+      setContractEndStatusOptions(result);
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Gagal mengambil status akhir kontrak';
       setError(msg);

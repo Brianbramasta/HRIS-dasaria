@@ -119,7 +119,7 @@ export default function DetailTerminationAdministrationPage() {
         </div>
       </div>
 
-     {(adminDetail?.resignation_details?.status_terminasi !== 'Selesai' ) && ( <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+     {(adminDetail?.resignationDetails?.status_terminasi !== 'Selesai' ) && ( <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
         <div className="font-semibold mb-4">Berkas / Dokumen</div>
         <div className="space-y-3">
           {uploadRows.map((row, index) => (
@@ -130,7 +130,7 @@ export default function DetailTerminationAdministrationPage() {
                   options={(documentTypes || [])
                     .filter((t: any) => {
                       // Exclude types already uploaded
-                      const isUploaded = (adminDetail?.resignation_documents || [])
+                      const isUploaded = (adminDetail?.resignationDocuments || [])
                         .some((d: any) => d?.document_type_id === t?.id);
                       
                       // Exclude types already selected in other rows (excluding current row)
@@ -203,18 +203,18 @@ export default function DetailTerminationAdministrationPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {(adminDetail?.resignation_documents?.length || 0) === 0 && (
+              {(adminDetail?.resignationDocuments?.length || 0) === 0 && (
                 <TableRow>
                   <TableCell className="px-4 py-3 text-center" colSpan={4}>Belum ada dokumen</TableCell>
                 </TableRow>
               )}
-              {(adminDetail?.resignation_documents || []).map((d, i) => (
+              {(adminDetail?.resignationDocuments || []).map((d: any, i: number) => (
                 <TableRow key={`${d.id}-${i}`} className="border-t border-gray-200 dark:border-gray-800">
                   <TableCell className="px-4 py-3">{i + 1}</TableCell>
-                  <TableCell className="px-4 py-3">{(d as any)?.file_type_name}</TableCell>
-                  <TableCell className="px-4 py-3">{(d as any)?.document_name}</TableCell>
+                  <TableCell className="px-4 py-3">{(d as any)?.fileTypeName}</TableCell>
+                  <TableCell className="px-4 py-3">{(d as any)?.documentName}</TableCell>
                   <TableCell className="px-4 py-3">
-                    {(adminDetail?.resignation_details?.status_terminasi !== 'Selesai' ) && (
+                    {(adminDetail?.resignationDetails?.status_terminasi !== 'Selesai' ) && (
                       <Button
                       variant="custom"
                       size="sm"
@@ -236,7 +236,7 @@ export default function DetailTerminationAdministrationPage() {
                       size="sm"
                       className="btn-primary"
                       onClick={() => {
-                        const documentPath = (d as any)?.document_path;
+                        const documentPath = (d as any)?.documentPath;
                         if (documentPath) {
                           handleViewFileByUrl(documentPath);
                         }
@@ -251,7 +251,7 @@ export default function DetailTerminationAdministrationPage() {
           </Table>
         </div>
       </div>
-              {(adminDetail?.resignation_details?.status_terminasi !== 'Selesai' ) && (
+              {(adminDetail?.resignationDetails?.status_terminasi !== 'Selesai' ) && (
                 <div className="flex items-center justify-end">
                   <div className="flex items-center gap-3">
                     <Button variant="custom" className="border border-gray-300" onClick={() => navigate('/resignation/termination-administration')}>

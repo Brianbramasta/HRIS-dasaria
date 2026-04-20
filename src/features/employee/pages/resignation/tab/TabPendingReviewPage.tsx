@@ -1,5 +1,5 @@
 import { DataTable, DataTableColumn, DataTableAction } from '../../../../../components/shared/datatable/DataTable';
-import { ResignationApplicationListItem } from '../../../types/dto/ResignationType';
+import { ResignationApplicationEntity } from '../../../types/entity/ResignationEntity';
 import { IconFileDetail, IconPencil } from '@/icons/components/icons';
 import { useEffect } from 'react';
 import { useApiResignation } from '../../../hooks/api/useApiResignation';
@@ -35,7 +35,7 @@ export default function TabPendingReview() {
   }, [appPagination.currentPage, appPagination.perPage]);
 
   // Define columns untuk DataTable
-  const columns: DataTableColumn<ResignationApplicationListItem>[] = [
+  const columns: DataTableColumn<ResignationApplicationEntity>[] = [
     {
       id: 'no',
       label: 'No.',
@@ -125,7 +125,7 @@ export default function TabPendingReview() {
   ];
 
   // Define actions untuk DataTable
-  const actions: DataTableAction<ResignationApplicationListItem>[] = [
+  const actions: DataTableAction<ResignationApplicationEntity>[] = [
     {
       icon: <IconPencil />,
       onClick: (row) => {

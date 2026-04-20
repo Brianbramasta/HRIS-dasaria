@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import AddUserTermination, { AddTerminationForm } from '@/features/employee/components/modals/termination/AddUserTermination';
 import { useApiResignation } from '@/features/employee/hooks/api/useApiResignation';
 import { formatDateToIndonesian } from '@/utils/formatDate';
-import { ResignationAdministrationListItem } from '@/features/employee/types/dto/ResignationType';
+import { ResignationAdministrationEntity } from '@/features/employee/types/entity/ResignationEntity';
 
-type TerminationItem = ResignationAdministrationListItem & {
+type TerminationItem = ResignationAdministrationEntity & {
   statusTerminasi: 'Selesai' | 'Sedang diproses';
 };
 
@@ -106,7 +106,7 @@ export default function TerminationAdministrationPage() {
         sortable: true,
         format: (v) => <span className="text-sm text-gray-600">{v}</span>,
       },
-      { id: 'end_status', label: 'Status Berakhir', minWidth: 160, sortable: true },
+      { id: 'end_status_id', label: 'Status Berakhir', minWidth: 160, sortable: true },
       {
         id: 'status_terminasi',
         label: 'Status Terminasi',
