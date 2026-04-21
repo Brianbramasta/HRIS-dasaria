@@ -28,6 +28,7 @@ export interface OrganizationChangeEntity {
 export interface OrganizationChangeDetailEntity {
   // Core Identity
   id: string;
+  org_change_status: string | null;
   
   // Employee Information
   employee_id: string;

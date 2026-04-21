@@ -231,7 +231,7 @@ const DetailOrganizationHistoryPage: React.FC = () => {
             />
           </div>
           <div className="col-span-1">
-            {organizationChangeDetail?.decree_file ? (
+            {organizationChangeDetail?.decree_file  ? (
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Sk Perubahan</label>
                 <LinkPreview 
@@ -241,7 +241,7 @@ const DetailOrganizationHistoryPage: React.FC = () => {
                 />
               </div>
             ) : (
-              <FIleField label="Upload Sk Perubahan" onChange={(e) => setSkFile(e.target.files?.[0] || null)} disabled={atasan === 'true'} />
+              <FIleField label="Upload Sk Perubahan" required={organizationChangeDetail?.org_change_status?.toLowerCase() !== 'selesai'} onChange={(e) => setSkFile(e.target.files?.[0] || null)} disabled={atasan === 'true' || organizationChangeDetail?.org_change_status?.toLowerCase() === 'selesai'} />
             )}
           </div>
           <div className="col-span-1">
@@ -258,7 +258,7 @@ const DetailOrganizationHistoryPage: React.FC = () => {
               <FIleField 
                 label="Upload Adendum" 
                 onChange={(e) => setAdendumFile(e.target.files?.[0] || null)} 
-                disabled={!!organizationChangeDetail?.decree_file || atasan === 'true'}
+                disabled={!!organizationChangeDetail?.decree_file || atasan === 'true' || organizationChangeDetail?.org_change_status?.toLowerCase() === 'selesai'}
               />
             )}
           </div>
@@ -273,7 +273,7 @@ const DetailOrganizationHistoryPage: React.FC = () => {
               onChange={() => {}}
             />
           </div>
-          {!organizationChangeDetail?.decree_file && atasan !== 'true' && (
+          { atasan !== 'true' && organizationChangeDetail?.org_change_status?.toLowerCase() !== 'selesai' && (
             <div className="col-span-1 md:col-span-2 flex justify-end">
               <Button
                 variant="custom"

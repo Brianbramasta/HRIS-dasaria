@@ -46,6 +46,7 @@ export class OrganizationChangeModel {
   static transformDetailFromApi(dto: OrganizationChangeDetail): OrganizationChangeDetailEntity {
     return {
       id: dto.id,
+      org_change_status: dto.org_change_status ?? null,
       employee_id: dto.employee_id,
       employee_name: dto.employee_name,
       marital_status: dto.marital_status,

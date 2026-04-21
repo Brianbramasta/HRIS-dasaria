@@ -115,7 +115,7 @@ export interface OrganizationChangeDetail {
   recommended_by?: string | null;
   created_by?: string | null;
   reason?: string;
-  org_change_status?: string;
+  org_change_status?: string | null;
   created_at?: string;
   updated_at?: string;
 }
