@@ -243,14 +243,14 @@ const rowCount = displayData.length;
           <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-0">{title}</h4>
         )}
         {/* Dokumentasi: Bar atas dengan layout kiri (input/Select) dan kanan (tombol) */}
-        <div className="flex flex-row items-start gap-1 md:items-center md:justify-between md:gap-3 md:flex-row mb-4 ">
+        <div className="flex flex-col items-start gap-1 md:items-center md:justify-between md:gap-3 md:flex-row mb-4 ">
           {!isNewLine && title && (
             <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-0">{title}</h4>
           )}
           <div className="flex-1 min-w-0">
             {toolbarLeftSlotAtas}
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3 w-full md:w-fit">
             {!toolbarRightSlotAtas && (
               <>
                 {onExport && (
@@ -312,7 +312,7 @@ const rowCount = displayData.length;
         </div>
 
 
-        <div className="flex items-center gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
           <div className="relative">
             <input
               type="text"
@@ -332,8 +332,7 @@ const rowCount = displayData.length;
               </svg>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             {filterable && (
               <Button 
                 onClick={() => filterModalHook.setFilterModalOpen(true)} 

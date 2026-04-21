@@ -153,11 +153,11 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
 
   const toolbarRightSlotAtas = isApprovalPage
     ? (<>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-center gap-3">
           {/* <Button variant="custom" className="bg-[red] text-white dark:text-white" size="sm" disabled={!hasSelection}>Ditolak</Button> */}
           <Button
             variant="custom"
-            className="bg-success text-white dark:text-white"
+            className="bg-success text-white dark:text-white w-full sm:w-auto"
             size="sm"
             disabled={!hasSelection || !onFinalize || (approvalType ? approvalStore.isApprovalDisabled(approvalType) : false)}
             onClick={() => setShowApprovalModal(true)}
@@ -169,10 +169,10 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
       )
     : isDistribusiPage
     ? (
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-center gap-3">
           <Button
             variant="custom"
-            className='w-max bg-[#007BFF] text-white dark:text-white'
+            className='w-full sm:w-auto bg-[#007BFF] text-white dark:text-white'
             size="sm"
             disabled={!hasSelection || !onFinalize || approvalStore.isDistributionDisabled()}
             onClick={() => setShowApprovalModal(true)}
@@ -186,10 +186,10 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
         </div>
       )
     : (
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-center gap-3 w-full">
           {!disableTemplateButton && <Button 
             variant="custom" 
-            className="w-max border border-[#007BFF] bg-[white] text-[#007BFF] dark:text-white color-[#007BFF]" 
+            className="w-full sm:w-auto border border-[#007BFF] bg-[white] text-[#007BFF] dark:text-white color-[#007BFF]" 
             size="sm"
             onClick={() => window.open(`${apiUrl || (globalThis as any).API_URL + (globalThis as any).API_PREFIX}/payroll/payroll-periode/export-template${templateType ? `?type=${templateType}` : ''}`, '_blank')}
             disabled={approvalStore.isAllButtonsDisabled()}
@@ -201,7 +201,7 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
           {!disableImportButton && <Button
             variant="outline"
             size="sm"
-            className="bg-success text-white dark:text-white"
+            className="bg-success text-white dark:text-white w-full sm:w-auto"
             onClick={() => setShowUpload(true)}
             disabled={disableImportButton || approvalStore.isImportDisabled()}
           >
@@ -210,7 +210,7 @@ export default function PenggajianTabBase<TRow extends BaseRow>({
 
           <Button
             variant="custom"
-            className="w-max bg-[#007BFF] text-white dark:text-white"
+            className="w-full sm:w-auto bg-[#007BFF] text-white dark:text-white"
             size="sm"
             disabled={!hasSelection || disableFinalizeButton || approvalStore.isFinalizeDisabled()}
             onClick={() => setShowApprovalModal(true)}

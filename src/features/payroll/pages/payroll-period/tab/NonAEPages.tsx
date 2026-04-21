@@ -162,7 +162,7 @@ export default function NonAETab({}: { resetKey?: string }) {
       onFinalize={handleFinalize}
       templateType="Staff"
       toolbarRightSlot={
-        <>
+        <div className="flex flex-col sm:flex-row gap-2">
           <DevGeneratePayrollButton
             types={["Staff"]}
            onGenerated={() => navigate('/payroll-period/non-ae', { replace: true })}
@@ -174,7 +174,7 @@ export default function NonAETab({}: { resetKey?: string }) {
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 variant="outline"
                 size="sm"
-                className="flex items-center gap-1 dropdown-toggle"
+                className="flex items-center justify-center gap-1 dropdown-toggle w-full sm:w-auto"
               >
                 {approvalType}
                 <ChevronDown size={16} />
@@ -215,7 +215,7 @@ export default function NonAETab({}: { resetKey?: string }) {
               </Dropdown>
             </div>
           )}
-        </>
+        </div>
       }
     />
   );

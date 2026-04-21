@@ -225,7 +225,7 @@ export default function JenisPengajuanPage() {
         }}
         isNewLine={true}// Jika true, judul akan ditampilkan di baris baru
         toolbarLeftSlotAtas={
-          <div className="md:w-full w-72">
+          <div className="md:w-full md:w-72">
             <Select
               options={jenisOptions}
               placeholder="Pilih Jenis Pengajuan"
