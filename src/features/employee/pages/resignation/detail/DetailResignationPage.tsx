@@ -239,7 +239,9 @@ export default function DetailPengunduranDiriPage() {
               const resignationId = applicationDetail?.resignationDetails?.resignation_id;
               if (!resignationId) return;
               const ok = await uploadApplicationDocuments(resignationId, { document_type_ids: typeIds, files });
+              console.log(ok,'ok')
               if (ok) {
+                console.log('test jalan')
                 await fetchApplicationDetail(id);
                 // Clear all upload rows and reset to single empty row
                 handleResetUploadRows();

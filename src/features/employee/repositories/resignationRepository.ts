@@ -102,10 +102,12 @@ export const resignationRepository = {
       payload.files.forEach((file, idx) => {
         form.append(`file[${idx}]`, file);
       });
+      console.log('test',form)
       
       const response = await resignationApplicationsService.uploadDocuments(id, form);
+      console.log('response',response)
       
-      if (response && response.meta?.status === 200) {
+      if (response && response.meta?.status === 201) {
         return response.data;
       } else {
         throw new Error(response?.meta?.message || 'Gagal mengunggah dokumen pengajuan');
@@ -313,7 +315,7 @@ export const resignationRepository = {
       
       const response = await resignationAdministrationService.uploadDocuments(id, form);
       
-      if (response && response.meta?.status === 200) {
+      if (response && response.meta?.status === 201) {
         return response.data;
       } else {
         throw new Error(response?.meta?.message || 'Gagal mengunggah dokumen terminasi');

@@ -224,8 +224,8 @@ export default function DetailTerminationAdministrationPage() {
               {(adminDetail?.resignationDocuments || []).map((d: any, i: number) => (
                 <TableRow key={`${d.id}-${i}`} className="border-t border-gray-200 dark:border-gray-800">
                   <TableCell className="px-4 py-3">{i + 1}</TableCell>
-                  <TableCell className="px-4 py-3">{(d as any)?.fileTypeName}</TableCell>
-                  <TableCell className="px-4 py-3">{(d as any)?.documentName}</TableCell>
+                  <TableCell className="px-4 py-3">{(d as any)?.file_type_name}</TableCell>
+                  <TableCell className="px-4 py-3">{(d as any)?.document_name}</TableCell>
                   <TableCell className="px-4 py-3">
                     {(adminDetail?.resignationDetails?.status_terminasi !== 'Selesai' ) && (
                       <Button
@@ -249,7 +249,7 @@ export default function DetailTerminationAdministrationPage() {
                       size="sm"
                       className="btn-primary"
                       onClick={() => {
-                        const documentPath = (d as any)?.documentPath;
+                        const documentPath = (d as any)?.document_path;
                         if (documentPath) {
                           handleViewFileByUrl(documentPath);
                         }
