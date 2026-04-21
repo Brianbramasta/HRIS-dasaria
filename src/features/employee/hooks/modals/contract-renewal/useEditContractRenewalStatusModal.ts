@@ -263,9 +263,50 @@ export function useEditContractRenewalStatusModal({
       errors.push(...validationErrors);
     }
     
+    // Validasi untuk mencegah data kontrak baru sama dengan kontrak lama
+    if (shouldShowAllComponents() && oldContractData && newContractData) {
+      const fieldsToCompare = [
+        { oldKey: 'employee_category_name', newKey: 'new_employee_category_name_label', label: 'Kategori Karyawan' },
+        { oldKey: 'company_name', newKey: 'new_company_name_label', label: 'Perusahaan' },
+        { oldKey: 'office_name', newKey: 'new_office_name_label', label: 'Kantor' },
+        { oldKey: 'directorate_name', newKey: 'new_directorate_name_label', label: 'Direktorat' },
+        { oldKey: 'division_name', newKey: 'new_division_name_label', label: 'Divisi' },
+        { oldKey: 'department_name', newKey: 'new_department_name_label', label: 'Departemen' },
+        { oldKey: 'unit_name', newKey: 'new_unit_name_label', label: 'Unit' },
+        { oldKey: 'position_name', newKey: 'new_position_name_label', label: 'Position' },
+        { oldKey: 'job_title_name', newKey: 'new_job_title_name_label', label: 'Jabatan Kepangkatan' },
+        { oldKey: 'structural_position_name', newKey: 'new_structural_position_name_label', label: 'Jabatan Struktural' },
+        { oldKey: 'position_level_name', newKey: 'new_position_level_name_label', label: 'Jenjang Jabatan' },
+        { oldKey: 'grade', newKey: 'new_grade', label: 'Golongan' }
+      ];
+
+      let hasDifference = false;
+      
+      fieldsToCompare.forEach(field => {
+        const oldValue = oldContractData[field.oldKey];
+        const newValue = newContractData[field.newKey];
+        
+        // Handle empty values - treat null, undefined, and empty string as the same
+        const normalizedOld = oldValue || '';
+        const normalizedNew = newValue || '';
+      //   console.log(normalizedOld,' normalizedOld')
+      // console.log(normalizedNew,' normalizedNew')
+        // Check if there's any difference
+        if (normalizedOld !== normalizedNew) {
+          hasDifference = true;
+        }
+      });
+      
+      
+      if (!hasDifference) {
+        errors.push('Minimal harus ada satu field yang berbeda antara kontrak lama dan kontrak baru');
+      }
+      // errors.push('test dummy')
+      // console.log(hasDifference,' hasDifference')
+    }
         
     return errors;
-  }, []);
+  }, [oldContractData, newContractData, shouldShowAllComponents]);
 
   const handleSubmit = useCallback(async () => {
     setSubmitting(true);

@@ -170,6 +170,7 @@ export default function NewContract({
               const selectedOption = kategoriKaryawanOptions.find(
                 (option) => option.value === value,
               );
+              handleInputChange("new_employee_category_name_label", selectedOption?.label);
               if (selectedOption?.label === "Staff") {
                 fetchNonFixAllowanceDropdown();
               }
@@ -184,9 +185,13 @@ export default function NewContract({
             options={jobTitleOptions}
             defaultValue={data?.new_job_title_name}
             disabled={!isEditing}
-            onChange={(value) =>
-              handleNewContractChange("new_job_title_name", value)
-            }
+            onChange={(value) => {
+              handleNewContractChange("new_job_title_name", value);
+              const selectedOption = jobTitleOptions.find(
+                (option) => option.value === value,
+              );
+              handleNewContractChange("new_job_title_name_label", selectedOption?.label);
+            }}
             onSearch={setJobTitleSearch}
             containerClassName="space-y-2"
             placeholder="Select"
@@ -196,9 +201,13 @@ export default function NewContract({
             options={jabatanStrukturalOptions}
             defaultValue={data?.new_structural_position_name}
             disabled={!isEditing || !data?.new_job_title_name}
-            onChange={(value) =>
-              handleInputChange("new_structural_position_name", value)
-            }
+            onChange={(value) => {
+              handleInputChange("new_structural_position_name", value);
+              const selectedOption = jabatanStrukturalOptions.find(
+                (option) => option.value === value,
+              );
+              handleInputChange("new_structural_position_name_label", selectedOption?.label);
+            }}
             containerClassName="space-y-2"
             placeholder="Select"
           />
@@ -208,7 +217,13 @@ export default function NewContract({
             options={companyOptions}
             defaultValue={data?.new_company_name}
             disabled={!isEditing}
-            onChange={(value) => handleInputChange("new_company_name", value)}
+            onChange={(value) => {
+              handleInputChange("new_company_name", value);
+              const selectedOption = companyOptions.find(
+                (option) => option.value === value,
+              );
+              handleInputChange("new_company_name_label", selectedOption?.label);
+            }}
             onSearch={setCompanySearch}
             containerClassName="space-y-2"
             placeholder="Select"
@@ -222,7 +237,13 @@ export default function NewContract({
             }
             defaultValue={data?.new_office_name}
             disabled={!isEditing || officeOptions.length === 0}
-            onChange={(value) => handleInputChange("new_office_name", value)}
+            onChange={(value) => {
+              handleInputChange("new_office_name", value);
+              const selectedOption = officeOptions.find(
+                (option) => option.value === value,
+              );
+              handleInputChange("new_office_name_label", selectedOption?.label);
+            }}
             onSearch={setOfficeSearch}
             containerClassName="space-y-2"
             placeholder="Select"
@@ -234,9 +255,13 @@ export default function NewContract({
               options={directorateOptions}
               defaultValue={data?.new_directorate_name}
               disabled={!isEditing}
-              onChange={(value) =>
-                handleInputChange("new_directorate_name", value)
-              }
+              onChange={(value) => {
+                handleInputChange("new_directorate_name", value);
+                const selectedOption = directorateOptions.find(
+                  (option) => option.value === value,
+                );
+                handleInputChange("new_directorate_name_label", selectedOption?.label);
+              }}
               onSearch={setDirectorateSearch}
               containerClassName="space-y-2"
               placeholder="Select"
@@ -252,7 +277,13 @@ export default function NewContract({
               }
               defaultValue={data?.new_division_name}
               disabled={!isEditing || divisionOptions.length === 0}
-              onChange={(value) => handleInputChange("new_division_name", value)}
+              onChange={(value) => {
+                handleInputChange("new_division_name", value);
+                const selectedOption = divisionOptions.find(
+                  (option) => option.value === value,
+                );
+                handleInputChange("new_division_name_label", selectedOption?.label);
+              }}
               onSearch={setDivisionSearch}
               containerClassName="space-y-2"
               placeholder="Select"
@@ -269,9 +300,13 @@ export default function NewContract({
               }
               defaultValue={data?.new_department_name}
               disabled={!isEditing || departmentOptions.length === 0}
-              onChange={(value) =>
-                handleInputChange("new_department_name", value)
-              }
+              onChange={(value) => {
+                handleInputChange("new_department_name", value);
+                const selectedOption = departmentOptions.find(
+                  (option) => option.value === value,
+                );
+                handleInputChange("new_department_name_label", selectedOption?.label);
+              }}
               onSearch={setDepartmentSearch}
               containerClassName="space-y-2"
               placeholder="Select"
@@ -287,7 +322,13 @@ export default function NewContract({
               }
               defaultValue={data?.new_unit_name}
               disabled={!isEditing || unitOptions.length === 0}
-              onChange={(value) => handleInputChange("new_unit_name", value)}
+              onChange={(value) => {
+                handleInputChange("new_unit_name", value);
+                const selectedOption = unitOptions.find(
+                  (option) => option.value === value,
+                );
+                handleInputChange("new_unit_name_label", selectedOption?.label);
+              }}
               onSearch={setUnitSearch}
               containerClassName="space-y-2"
               placeholder="Select"
@@ -299,9 +340,13 @@ export default function NewContract({
             options={filteredPositionLevelOptions}
             defaultValue={data?.new_position_level_name}
             disabled={!isEditing || !data?.new_job_title_name}
-            onChange={(value) =>
-              handleNewContractChange("new_position_level_name", value)
-            }
+            onChange={(value) => {
+              handleNewContractChange("new_position_level_name", value);
+              const selectedOption = filteredPositionLevelOptions.find(
+                (option) => option.value === value,
+              );
+              handleNewContractChange("new_position_level_name_label", selectedOption?.label);
+            }}
             onSearch={setPositionLevelSearch}
             containerClassName="space-y-2"
             placeholder="Select"
@@ -312,7 +357,13 @@ export default function NewContract({
               options={positionOptions}
               defaultValue={data?.new_position_name}
               disabled={!isEditing}
-              onChange={(value) => handleInputChange("new_position_name", value)}
+              onChange={(value) => {
+                handleInputChange("new_position_name", value);
+                const selectedOption = positionOptions.find(
+                  (option) => option.value === value,
+                );
+                handleInputChange("new_position_name_label", selectedOption?.label);
+              }}
               onSearch={setPositionSearch}
               containerClassName="space-y-2"
               placeholder="Select"

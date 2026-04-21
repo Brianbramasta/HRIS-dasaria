@@ -638,10 +638,13 @@ export function useNewContract({
       );
       if (exists) {
         setSelectedEmployeeCategory(exists.value);
+        // Set default label value
+        handleInputChange("new_employee_category_name_label", exists.label);
       }
     }
-  }, [data?.new_employee_category_name, kategoriKaryawanOptions]);
+  }, [data?.new_employee_category_name, kategoriKaryawanOptions, handleInputChange]);
 
+  
   useEffect(() => {
     const fetchPayrollPreview = async () => {
       if (
