@@ -16,6 +16,7 @@ export function useFraudTab({ employeeId }: Params) {
   const {
     violations,
     isLoading,
+    error,
     isSubmitting,
     createViolation,
     updateViolation,
@@ -181,6 +182,7 @@ export function useFraudTab({ employeeId }: Params) {
     handleSave,
     closeModal,
     isLoading,
+    error,
     isSubmitting,
     page,
     total,

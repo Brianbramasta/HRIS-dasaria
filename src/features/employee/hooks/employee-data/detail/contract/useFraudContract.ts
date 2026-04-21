@@ -69,7 +69,8 @@ export function useFraudContract({ employeeId, autoFetch = true, initialPage = 1
       return;
     }
     setIsLoading(true);
-    setError(null);
+    //ubah ini ketika selesai develop
+    setError('error');
     try {
       const queryParams: ViolationListParams = {
         page,

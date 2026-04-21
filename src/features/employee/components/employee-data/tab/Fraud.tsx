@@ -18,6 +18,7 @@ export default function PelanggaranTab({ employeeId }: Props) {
     handleSave,
     closeModal,
     isLoading,
+    error,
     isSubmitting,
     page,
     total,
@@ -34,6 +35,15 @@ export default function PelanggaranTab({ employeeId }: Props) {
  
   return (
     <>
+      {error && (
+        <div className="h-fit rounded-lg border border-l-8 border-[#EE0017] bg-[#F1AEB580]/60 p-4 dark:border-red-800 dark:bg-red-900/20 mb-6 shadow-lg">
+           <div className="text-lg font-semibold text-[#212529] dark:text-red-300 mb-2 text-center">Skema Baru Belum Digunakan</div>
+            <div className="text-xs text-[#626262] dark:text-red-400 text-center">
+              Menu pelanggaran belum dapat digunakan pada fase saat ini. Fitur ini masih dalam tahap pengembangan dan akan segera tersedia.
+            </div>
+        </div>
+      )}
+      
       <DataTable<PelanggaranEntry>
         title="Pelanggaran"
         resetKey='pelanggaran'
