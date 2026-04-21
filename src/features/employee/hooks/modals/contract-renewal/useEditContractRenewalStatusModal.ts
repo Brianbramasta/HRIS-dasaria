@@ -379,6 +379,8 @@ export function useEditContractRenewalStatusModal({
         // }
          if (newContractData.new_change_type_name) {
           formData.append("change_type_name", newContractData.new_change_type_name);
+          formData.append("change_type", newContractData.new_change_type_name);
+
         }
 
         // Add non-fix allowance (tunjangan diskresi)
