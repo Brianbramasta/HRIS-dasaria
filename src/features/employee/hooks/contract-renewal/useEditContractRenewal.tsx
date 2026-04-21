@@ -104,7 +104,9 @@ export function useEditContractRenewal(): UseEditContractRenewalReturn {
       if (!payload.has('_method')) {
         payload.append('_method', 'PATCH');
       }
-
+      // const payloadObject = Object.fromEntries(payload.entries());
+      // console.log(payloadObject, 'payload')
+      // return false
       await contractExtensionsService.updateContract(id, payload);
       // addNotification({
       //   title: 'Success',

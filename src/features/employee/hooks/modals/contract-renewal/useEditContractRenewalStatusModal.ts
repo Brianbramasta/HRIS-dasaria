@@ -365,7 +365,6 @@ export function useEditContractRenewalStatusModal({
             "position_level_id",
             newContractData.new_position_level_name,
           );
-        // if (newContractData.new_change_type_id) formData.append('change_type_id', newContractData.new_change_type_id);
         if (newContractData.new_employee_category_name)
           formData.append(
             "employee_category_id",
@@ -373,8 +372,13 @@ export function useEditContractRenewalStatusModal({
           );
 
         // Add change_type and extension_type
-        if (newContractData.new_change_type_name) {
-          formData.append("change_type", newContractData.new_change_type_name);
+        if (newContractData.new_change_type_id) formData.append('change_type_id', newContractData.new_change_type_id);
+
+        // if (newContractData.new_change_type_name) {
+        //   formData.append("change_type", newContractData.new_change_type_name);
+        // }
+         if (newContractData.new_change_type_name) {
+          formData.append("change_type_name", newContractData.new_change_type_name);
         }
 
         // Add non-fix allowance (tunjangan diskresi)
