@@ -29,7 +29,7 @@ type KasbonApprovalRow = {
   nominal_loan: string;
   nominal_installment: string;
   loan_period: string;
-  loan_status: 'Menunggu Persetujuan FAT' | 'Disetujui' | 'Ditolak';
+  loan_status_name: 'Menunggu Persetujuan FAT' | 'Disetujui' | 'Ditolak';
   rejection_reason?: string;
   remaining_balance: string;
   total_active_kasbon: number;
@@ -134,7 +134,7 @@ export default function CashAdvanceApprovalPage() {
     },
     { id: 'loan_period', label: 'Periode Cicilan', sortable: true },
     {
-      id: 'loan_status',
+      id: 'loan_status_name',
       label: 'Status Kasbon',
       sortable: true,
       filterOptions: [
@@ -142,7 +142,7 @@ export default function CashAdvanceApprovalPage() {
         { label: 'Disetujui', value: 'Disetujui' },
         { label: 'Ditolak', value: 'Ditolak' },
       ],
-      format: (value: KasbonApprovalRow['loan_status']) => {
+      format: (value: KasbonApprovalRow['loan_status_name']) => {
         const color =
           value === 'Disetujui' ? 'bg-success-100 text-success-700' :
             value === 'Ditolak' ? 'bg-error-100 text-error-700' :
@@ -178,13 +178,13 @@ export default function CashAdvanceApprovalPage() {
       icon: <XCircle size={18} />,
       className: 'text-error-600 hover:text-error-700',
       onClick: (row) => handleRejectOpen((row as any).raw),
-      condition: (row) => row.loan_status === 'Menunggu Persetujuan FAT',
+      condition: (row) => row.loan_status_name === 'Menunggu Persetujuan FAT',
     },
     {
       icon: <CheckCircle size={18} />,
       className: 'text-success-600 hover:text-success-700',
       onClick: (row) => handleApproveOpen((row as any).raw),
-      condition: (row) => row.loan_status === 'Menunggu Persetujuan FAT',
+      condition: (row) => row.loan_status_name === 'Menunggu Persetujuan FAT',
     },
     {
       label: 'Disetujui',
@@ -192,7 +192,7 @@ export default function CashAdvanceApprovalPage() {
       variant: 'custom',
       className: 'text-success-600 font-bold flex items-center gap-2 cursor-default pointer-events-none p-0',
       onClick: () => { },
-      condition: (row) => row.loan_status === 'Disetujui',
+      condition: (row) => row.loan_status_name === 'Disetujui',
     },
     {
       label: 'Ditolak',
@@ -200,7 +200,7 @@ export default function CashAdvanceApprovalPage() {
       variant: 'custom',
       className: 'text-error-600 font-bold flex items-center gap-2 cursor-default pointer-events-none p-0',
       onClick: () => { },
-      condition: (row) => row.loan_status === 'Ditolak',
+      condition: (row) => row.loan_status_name === 'Ditolak',
     },
   ];
 

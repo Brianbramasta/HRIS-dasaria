@@ -59,6 +59,7 @@ export const useCashAdvanceHistory = () => {
     }, [columnFilters, setColumnFilters]);
 
     const rows = useMemo(() => {
+        console.log(cashAdvances,'cashAdvances');
         return cashAdvances.map((item, index) => ({
             no: (page - 1) * pageSize + index + 1,
             employee_id: item.employeeId,

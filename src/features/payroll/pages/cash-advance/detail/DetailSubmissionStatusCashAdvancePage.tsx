@@ -8,7 +8,7 @@ import { formatCurrencyValue } from '@/utils/formatCurrency';
 import { handleViewFileByUrl } from '@/utils/viewFileHandle';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCashAdvanceDetail } from '@/features/payroll/hooks/cash-advance/useCashAdvanceDetail';
-import { CashAdvanceDetailResponseEntity } from '@/features/payroll/models/CashAdvanceModel';
+// import { CashAdvanceDetailResponseEntity } from '@/features/payroll/models/CashAdvanceModel';
 
 export default function DetailSubmissionStatusCashAdvancePage() {
   const { id: loanId } = useParams<{ id: string }>();

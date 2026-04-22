@@ -121,6 +121,7 @@ export const useCashAdvanceApproval = () => {
 
     // Map entities to UI format
     const rows = useMemo(() => {
+        console.log(cashAdvances,'cashAdvances')
         return cashAdvances.map((item, index) => ({
             no: (page - 1) * pageSize + index + 1,
             employee_id: item.employee_id,
@@ -139,7 +140,7 @@ export const useCashAdvanceApproval = () => {
             nominal_loan: String(item.nominal_loan),
             nominal_installment: String(item.nominal_installment),
             loan_period: `${item.loan_period} bulan`,
-            loan_status: item.loan_status as any,
+            loan_status_name: item.loan_status_name as any,
             rejection_reason: item.rejection_reason || '—',
             remaining_balance: String(item.remaining_balance),
             total_active_kasbon: item.total_active_kasbon,

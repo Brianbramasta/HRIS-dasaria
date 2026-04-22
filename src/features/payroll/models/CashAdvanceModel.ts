@@ -211,7 +211,7 @@ export const mapRawToCashAdvanceEntity = (raw: any): CashAdvanceEntity => ({
     deduction_end_period: raw.deduction_end_period || null,
     disbursed_at: raw.disbursed_at,
     loan_type_name: raw.loan_type_name,
-    loan_status_name: raw.loan_status,
+    loan_status_name: raw.loan_status_name,
     position_name: raw.position_name,
     department_name: raw.department_name,
     rejection_reason: raw.rejection_reason,

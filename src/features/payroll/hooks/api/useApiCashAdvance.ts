@@ -28,7 +28,7 @@ const mapToCashAdvanceListItem = (item: any): CashAdvanceListItem => ({
     deductionStartPeriod: item.deduction_start_period,
     disbursedAt: item.disbursed_at,
     loanTypeName: item.loan_type_name,
-    loanStatus: item.loan_status,
+    loanStatus: item.loan_status_name,
     positionName: item.position_name,
     departmentName: item.department_name,
     rejectionReason: item.rejection_reason,
@@ -47,7 +47,7 @@ const mapToActiveAndCompletedLoansListItem = (item: any): ActiveAndCompletedLoan
     deductionStartPeriod: item.deduction_start_period,
     disbursedAt: item.disbursed_at,
     loanTypeName: item.loan_type_name,
-    loanStatus: item.loan_status,
+    loanStatus: item.loan_status_name,
     positionName: item.position_name,
     departmentName: item.department_name,
 });
