@@ -7,20 +7,25 @@ import { useStatusCashAdvance } from '@/features/payroll/hooks/cash-advance/useS
 
 type StatusKasbonRow = {
   no?: number;
-  employee_id: string;
+  nip: string;
   loan_id: string;
   full_name: string;
-  avatar?: string;
+  avatar?: string | null;
   application_date: string;
   position_name: string;
   department_name: string;
   deduction_start_period: string;
+  deduction_end_period: string;
   disbursed_at: string;
   loan_type_name: string;
   nominal_loan: string;
   nominal_installment: string;
   loan_period: string;
-  loan_status_name: 'Menunggu Cicilan' | 'Selesai' | 'New Cicilan' | 'Masa Cicilan';
+  loan_status: 'Menunggu Cicilan' | 'Selesai' | 'New Cicilan' | 'Masa Cicilan';
+  remaining_balance: string;
+  total_active_kasbon: number;
+  total_periode_kasbon: number;
+  has_active_loan: boolean;
   detail?: string;
 };
 
@@ -50,7 +55,7 @@ export default function StatusKasbonPage() {
       align: 'center',
       sortable: false,
     },
-    { id: 'employee_id', label: 'NIP', sortable: true },
+    { id: 'nip', label: 'NIP', sortable: true },
     {
       id: 'full_name',
       label: 'Pengguna',
@@ -76,22 +81,22 @@ export default function StatusKasbonPage() {
       format: (val) => formatDateToIndonesian(val) || val
     },
     {
-      id: 'disbursed_at',
+      id: 'deduction_end_period',
       label: 'Bulan Selesai Potongan',
       sortable: true,
       dateRangeFilter: true,
       format: (val) => formatDateToIndonesian(val) || val
     },
     {
-      id: 'nominal_installment',
+      id: 'remaining_balance',
       label: 'Sisa Nominal Cicilan',
       align: 'right',
       sortable: true,
       format: (val) => formatCurrencyValue(parseCurrency(val))
     },
-    { id: 'loan_period', label: 'Sisa Periode Cicilan', sortable: true },
+    { id: 'total_periode_kasbon', label: 'Sisa Periode Cicilan', sortable: true },
     {
-      id: 'loan_status_name',
+      id: 'loan_status',
       label: 'Status Kasbon',
       sortable: true,
       filterOptions: [
@@ -100,7 +105,7 @@ export default function StatusKasbonPage() {
         { label: 'Selesai', value: 'Selesai' },
         { label: 'New Cicilan', value: 'New Cicilan' },
       ],
-      format: (value: StatusKasbonRow['loan_status_name']) => {
+      format: (value: StatusKasbonRow['loan_status']) => {
         const color =
           value === 'Selesai' ? 'bg-success-100 text-success-700' :
             value === 'Menunggu Cicilan' ? 'bg-warning-100 text-warning-700' :
@@ -116,7 +121,7 @@ export default function StatusKasbonPage() {
       sortable: false,
       format: (_, row) => (
         <button
-          onClick={() => navigate(`/cash-advance/detail-status/${row.loan_id}`)}
+          onClick={() => navigate(`/cash-advance/detail-status/${row.nip}`)}
           className="inline-flex items-center justify-center rounded-md p-2 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-white/[0.06]"
         >
           <IconFileDetail />

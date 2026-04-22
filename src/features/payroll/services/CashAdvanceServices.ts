@@ -6,8 +6,7 @@ class CashAdvanceServices {
 
     /**
      * Get Cash Advance List
-     * @param filter - Filter parameters
-     * @returns Promise dengan data cash advance
+     * Pure API call - no transformation logic
      */
     async getCashAdvanceList(filter: any): Promise<any> {
         const qs = apiService.buildQueryString(filter);
@@ -16,8 +15,7 @@ class CashAdvanceServices {
 
     /**
      * Get Cash Advance Detail
-     * @param id - Cash Advance ID
-     * @returns Promise dengan detail cash advance
+     * Pure API call - no transformation logic
      */
     async getCashAdvanceDetail(id: string): Promise<any> {
         return apiService.get<any>(`${this.basePath}/${id}`);
@@ -25,8 +23,7 @@ class CashAdvanceServices {
 
     /**
      * Get Employee Info for Cash Advance
-     * @param employeeId - Employee ID or NIP
-     * @returns Promise dengan data employee info
+     * Pure API call - no transformation logic
      */
     async getEmployeeInfo(employeeId: string): Promise<any> {
         return apiService.get<any>(`${this.basePath}/${employeeId}/employee-info`);
@@ -34,23 +31,24 @@ class CashAdvanceServices {
 
     /**
      * Get Active and Completed Loans
-     * @param filter - Filter parameters (optional employee_id)
-     * @returns Promise dengan data active and completed loans
+     * Pure API call - no transformation logic
      */
     async getActiveAndCompletedLoans(filter?: any): Promise<any> {
         const qs = apiService.buildQueryString(filter || {});
         return apiService.get<any>(`${this.basePath}/active-and-completed-loans${qs ? `?${qs}` : ''}`);
     }
 
+    /**
+     * Get Loan Types Dropdown
+     * Pure API call - no transformation logic
+     */
     async getLoanTypesDropdown(): Promise<ApiResponse<LoanTypeItem[]>> {
         return apiService.get<LoanTypeItem[]>(`${this.basePath}/dropdown-loan-type`);
     }
 
     /**
      * Approve Cash Advance
-     * @param id - Cash Advance ID
-     * @param formData - FormData dengan status, deduction_start_period, dan disbursed_at
-     * @returns Promise dengan response API
+     * Pure API call - no transformation logic
      */
     async approveCashAdvance(id: string, formData: FormData): Promise<any> {
         return apiService.post<any>(`${this.basePath}/${id}/approve`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
@@ -58,9 +56,7 @@ class CashAdvanceServices {
 
     /**
      * Reject Cash Advance
-     * @param id - Cash Advance ID
-     * @param formData - FormData dengan status dan rejection_reason
-     * @returns Promise dengan response API
+     * Pure API call - no transformation logic
      */
     async rejectCashAdvance(id: string, formData: FormData): Promise<any> {
         return apiService.post<any>(`${this.basePath}/${id}/reject`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });

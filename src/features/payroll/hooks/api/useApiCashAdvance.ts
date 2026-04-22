@@ -28,14 +28,14 @@ const mapToCashAdvanceListItem = (item: any): CashAdvanceListItem => ({
     deductionStartPeriod: item.deduction_start_period,
     disbursedAt: item.disbursed_at,
     loanTypeName: item.loan_type_name,
-    loanStatusName: item.loan_status_name,
+    loanStatus: item.loan_status,
     positionName: item.position_name,
     departmentName: item.department_name,
     rejectionReason: item.rejection_reason,
 });
 
 const mapToActiveAndCompletedLoansListItem = (item: any): ActiveAndCompletedLoansListItem => ({
-    employeeId: item.employee_id,
+    nip: item.nip,
     fullName: item.full_name,
     email: item.email,
     avatar: item.avatar,
@@ -47,7 +47,7 @@ const mapToActiveAndCompletedLoansListItem = (item: any): ActiveAndCompletedLoan
     deductionStartPeriod: item.deduction_start_period,
     disbursedAt: item.disbursed_at,
     loanTypeName: item.loan_type_name,
-    loanStatusName: item.loan_status_name,
+    loanStatus: item.loan_status,
     positionName: item.position_name,
     departmentName: item.department_name,
 });

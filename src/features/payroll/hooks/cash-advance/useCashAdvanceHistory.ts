@@ -76,7 +76,7 @@ export const useCashAdvanceHistory = () => {
             nominal_loan: String(item.nominalLoan),
             nominal_installment: String(item.nominalInstallment),
             loan_period: `${item.loanPeriod} bulan`,
-            loan_status_name: item.loanStatusName as any,
+            loan_status_name: item.loanStatus as any,
             rejection_reason: item.rejectionReason || '',
             raw: item,
         }));

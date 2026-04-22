@@ -12,7 +12,7 @@ export interface CashAdvanceListItem {
     deductionStartPeriod: string | null;
     disbursedAt: string | null;
     loanTypeName: string;
-    loanStatusName: string;
+    loanStatus: string;
     positionName: string;
     departmentName: string;
     rejectionReason?: string | null;
@@ -42,7 +42,7 @@ export interface CashAdvanceEmployeeInfo {
 }
 
 export interface ActiveAndCompletedLoansListItem {
-    employeeId: string;
+    nip: string;
     fullName: string;
     email: string;
     avatar?: string | null;
@@ -54,7 +54,7 @@ export interface ActiveAndCompletedLoansListItem {
     deductionStartPeriod: string;
     disbursedAt: string;
     loanTypeName: string;
-    loanStatusName: string;
+    loanStatus: string;
     positionName: string;
     departmentName: string;
 }
