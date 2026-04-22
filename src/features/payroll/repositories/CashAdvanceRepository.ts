@@ -4,11 +4,13 @@ import {
     CashAdvanceEmployeeInfoEntity,
     ActiveAndCompletedLoansEntity,
     CashAdvanceResponseEntity,
+    CashAdvanceDetailResponseEntity,
     mapRawToCashAdvanceEntity,
     mapRawToActiveAndCompletedLoansEntity,
     mapToCashAdvanceDetailEntity,
     mapToCashAdvanceEmployeeInfoEntity,
-    mapToCashAdvanceResponseEntity
+    mapToCashAdvanceResponseEntity,
+    mapCashAdvanceDetailDTOToEntity
 } from '../models/CashAdvanceModel';
 import { cashAdvanceServices } from '../services/CashAdvanceServices';
 import { TableFilter } from '@/types/SharedType';
@@ -33,7 +35,7 @@ export interface CashAdvanceRepository {
     }): Promise<ActiveAndCompletedLoansEntity[]>;
     
     // Detail operations
-    getCashAdvanceDetail(id: string): Promise<CashAdvanceDetailEntity | null>;
+    getCashAdvanceDetail(id: string): Promise<CashAdvanceDetailResponseEntity | null>;
     getEmployeeInfo(employeeId: string): Promise<CashAdvanceEmployeeInfoEntity | null>;
     
     // Action operations
@@ -176,30 +178,13 @@ export const cashAdvanceRepository: CashAdvanceRepository = {
     /**
      * Get cash advance detail by ID
      */
-    async getCashAdvanceDetail(id: string): Promise<CashAdvanceDetailEntity | null> {
+    async getCashAdvanceDetail(id: string): Promise<CashAdvanceDetailResponseEntity | null> {
         try {
             const response = await cashAdvanceServices.getCashAdvanceDetail(id);
-            const item = (response as any)?.data as any;
             
-            if (!item) return null;
+            if (!response) return null;
 
-            return mapToCashAdvanceDetailEntity({
-                loanId: item.loan_id,
-                nip: item.nip,
-                fullName: item.full_name,
-                applicationDate: item.application_date,
-                positionName: item.position_name,
-                departmentName: item.department_name,
-                deductionStartPeriod: item.deduction_start_period,
-                loanTypeName: item.loan_type_name,
-                nominalLoan: item.nominal_loan,
-                loanPeriod: item.loan_period,
-                nominalInstallment: item.nominal_installment,
-                limitKasbon: item.limit_loan || 0,
-                supervisorApprovalFile: item.supervisor_approval_file,
-                supportingDocuments: item.supporting_documents,
-                loanDescription: item.loan_description,
-            });
+            return mapCashAdvanceDetailDTOToEntity(response);
         } catch (error) {
             console.error('Repository Error - Failed to get cash advance detail:', error);
             throw new Error('Failed to get cash advance detail');

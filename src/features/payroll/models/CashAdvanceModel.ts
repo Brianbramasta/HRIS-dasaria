@@ -5,6 +5,10 @@ import {
     ActiveAndCompletedLoansListItem,
     CashAdvanceResponse
 } from '../types/dto/CashAdvanceType';
+import { 
+    CashAdvanceDetailDTO, 
+    LoanDetailDTO 
+} from '../types/dto/CashAdvanceDetailDTO';
 
 // Entity Types - Internal application format
 export interface CashAdvanceEntity {
@@ -23,7 +27,7 @@ export interface CashAdvanceEntity {
     deduction_end_period: string | null;
     disbursed_at: string | null;
     loan_type_name: string;
-    loan_status: string;
+    loan_status_name: string;
     position_name: string;
     department_name: string;
     rejection_reason?: string | null;
@@ -115,7 +119,7 @@ export const mapToCashAdvanceEntity = (dto: CashAdvanceListItem): CashAdvanceEnt
     deduction_end_period: null, // Default value, akan diupdate dari response API
     disbursed_at: dto.disbursedAt,
     loan_type_name: dto.loanTypeName,
-    loan_status: dto.loanStatus,
+    loan_status_name: dto.loanStatus,
     position_name: dto.positionName,
     department_name: dto.departmentName,
     rejection_reason: dto.rejectionReason,
@@ -207,7 +211,7 @@ export const mapRawToCashAdvanceEntity = (raw: any): CashAdvanceEntity => ({
     deduction_end_period: raw.deduction_end_period || null,
     disbursed_at: raw.disbursed_at,
     loan_type_name: raw.loan_type_name,
-    loan_status: raw.loan_status,
+    loan_status_name: raw.loan_status,
     position_name: raw.position_name,
     department_name: raw.department_name,
     rejection_reason: raw.rejection_reason,
@@ -238,4 +242,60 @@ export const mapRawToActiveAndCompletedLoansEntity = (raw: any): ActiveAndComple
     total_active_kasbon: raw.total_active_kasbon || 0,
     total_periode_kasbon: raw.total_periode_kasbon || raw.loan_period,
     has_active_loan: raw.has_active_loan || false,
+});
+
+// New Entity Types for Detail API Response
+export interface CashAdvanceDetailResponseEntity {
+    employeeId: string;
+    fullName: string;
+    positionName: string | null;
+    departmentName: string | null;
+    statusLoan: string;
+    deductionStartPeriod: string;
+    deductionEndPeriod: string;
+    remainingBalance: number;
+    loans: LoanDetailResponseEntity[];
+}
+
+export interface LoanDetailResponseEntity {
+    loanId: string;
+    applicationDate: string;
+    disbursedAt: string;
+    limitLoan: number;
+    loanTypeName: string;
+    nominalLoan: number;
+    loanPeriod: number;
+    supervisorApprovalFile: string;
+    supportingDocuments: string;
+    description: string;
+    rejectionReason: string | null;
+    loanStatusName: string;
+}
+
+// New mapping functions for CashAdvanceDetailDTO
+export const mapLoanDetailDTOToEntity = (dto: LoanDetailDTO): LoanDetailResponseEntity => ({
+    loanId: dto.loan_id,
+    applicationDate: dto.application_date,
+    disbursedAt: dto.disbursed_at,
+    limitLoan: parseFloat(dto.limit_loan),
+    loanTypeName: dto.loan_type_name,
+    nominalLoan: parseFloat(dto.nominal_loan),
+    loanPeriod: dto.loan_period,
+    supervisorApprovalFile: dto.supervisor_approval_file,
+    supportingDocuments: dto.supporting_documents,
+    description: dto.description,
+    rejectionReason: dto.rejection_reason,
+    loanStatusName: dto.loan_status_name,
+});
+
+export const mapCashAdvanceDetailDTOToEntity = (dto: CashAdvanceDetailDTO): CashAdvanceDetailResponseEntity => ({
+    employeeId: dto.data.employee_id,
+    fullName: dto.data.full_name,
+    positionName: dto.data.position_name,
+    departmentName: dto.data.department_name,
+    statusLoan: dto.data.status_loan,
+    deductionStartPeriod: dto.data.deduction_start_period,
+    deductionEndPeriod: dto.data.deduction_end_period,
+    remainingBalance: dto.data.remaining_balance,
+    loans: dto.data.loans.map(mapLoanDetailDTOToEntity),
 });

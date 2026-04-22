@@ -7,81 +7,73 @@ import TextAreaField from '@/components/shared/field/TextAreaField';
 import { formatCurrencyValue } from '@/utils/formatCurrency';
 import { handleViewFileByUrl } from '@/utils/viewFileHandle';
 import { useParams, useNavigate } from 'react-router-dom';
-
-// Dummy data interface
-interface CashAdvanceDetailData {
-  nip: string;
-  fullName: string;
-  statusKasbon: string;
-  positionName: string;
-  departmentName: string;
-  bulanMulaiPotongan: string;
-  bulanSelesaiPotongan: string;
-  sisaNominalCicilan: number;
-  sisaPeriodeCicilan: number;
-  detailKasbon: Array<{
-    id: number;
-    tanggalPengajuan: string;
-    tanggalPencairan: string;
-    limitKasbon: number;
-    jenisKasbon: string;
-    nominalKasbon: number;
-    periodeCicilan: number;
-    suratPersetujuanAtasan: string;
-    dokumenPendukung: string;
-    keterangan: string;
-  }>;
-}
+import { useCashAdvanceDetail } from '@/features/payroll/hooks/cash-advance/useCashAdvanceDetail';
+import { CashAdvanceDetailResponseEntity } from '@/features/payroll/models/CashAdvanceModel';
 
 export default function DetailSubmissionStatusCashAdvancePage() {
   const { id: loanId } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
+  // Use the hook to fetch cash advance detail
+  const { data: cashAdvanceData, loading, error } = useCashAdvanceDetail(loanId || '');
+
   // Log the loanId for debugging purposes
   console.log('Loan ID:', loanId);
-
-  // Dummy data
-  const cashAdvanceData: CashAdvanceDetailData = {
-    nip: 'EMP001234',
-    fullName: 'Ahmad Rizki',
-    statusKasbon: 'Masa Cicilan',
-    positionName: 'Software Engineer',
-    departmentName: 'IT Department',
-    bulanMulaiPotongan: '2024-01-01',
-    bulanSelesaiPotongan: '2024-12-01',
-    sisaNominalCicilan: 2500000,
-    sisaPeriodeCicilan: 6,
-    detailKasbon: [
-      {
-        id: 1,
-        tanggalPengajuan: '2023-12-15',
-        tanggalPencairan: '2023-12-20',
-        limitKasbon: 10000000,
-        jenisKasbon: 'Kasbon Regular',
-        nominalKasbon: 5000000,
-        periodeCicilan: 12,
-        suratPersetujuanAtasan: 'https://example.com/surat-persetujuan-1.pdf',
-        dokumenPendukung: 'https://example.com/dokumen-pendukung-1.pdf',
-        keterangan: 'Pengajuan kasbon untuk keperluan mendesak'
-      },
-      {
-        id: 2,
-        tanggalPengajuan: '2024-02-10',
-        tanggalPencairan: '2024-02-15',
-        limitKasbon: 10000000,
-        jenisKasbon: 'Kasbon Khusus',
-        nominalKasbon: 3000000,
-        periodeCicilan: 6,
-        suratPersetujuanAtasan: 'https://example.com/surat-persetujuan-2.pdf',
-        dokumenPendukung: 'https://example.com/dokumen-pendukung-2.pdf',
-        keterangan: 'Pengajuan kasbon untuk biaya pendidikan'
-      }
-    ]
-  };
 
   const handleBack = () => {
     navigate(-1);
   };
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="p-6 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading cash advance detail...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="p-6 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-600 mb-4">
+            <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <p className="text-red-600 font-medium mb-2">Error loading data</p>
+          <p className="text-gray-600 text-sm">{error}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Show no data state
+  if (!cashAdvanceData) {
+    return (
+      <div className="p-6 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-gray-400 mb-4">
+            <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <p className="text-gray-600">No cash advance data found</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 space-y-6">
@@ -106,7 +98,7 @@ export default function DetailSubmissionStatusCashAdvancePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <InputField
             label="NIP"
-            value={cashAdvanceData.nip || ''}
+            value={cashAdvanceData.employeeId || ''}
             readonly
             placeholder="Otomatis"
           />
@@ -120,7 +112,7 @@ export default function DetailSubmissionStatusCashAdvancePage() {
 
           <InputField
             label="Status Kasbon"
-            value={cashAdvanceData.statusKasbon || ''}
+            value={cashAdvanceData.statusLoan || ''}
             readonly
             placeholder="Status Kasbon"
           />
@@ -141,80 +133,80 @@ export default function DetailSubmissionStatusCashAdvancePage() {
 
           <DateField
             label="Bulan Mulai Potongan"
-            defaultDate={cashAdvanceData.bulanMulaiPotongan}
+            defaultDate={cashAdvanceData.deductionStartPeriod}
             disabled
             placeholder="Bulan Mulai Potongan"
           />
 
           <DateField
             label="Bulan Selesai Potongan"
-            defaultDate={cashAdvanceData.bulanSelesaiPotongan}
+            defaultDate={cashAdvanceData.deductionEndPeriod}
             disabled
             placeholder="Bulan Selesai Potongan"
           />
 
           <InputField
             label="Sisa Nominal Cicilan"
-            value={formatCurrencyValue(cashAdvanceData.sisaNominalCicilan)}
+            value={formatCurrencyValue(cashAdvanceData.remainingBalance)}
             readonly
             placeholder="Sisa Nominal Cicilan"
           />
 
           <InputField
-            label="Sisa Periode Cicilan"
-            value={`${cashAdvanceData.sisaPeriodeCicilan} bulan`}
+            label="Total Pinjaman"
+            value={`${cashAdvanceData.loans.length} transaksi`}
             readonly
-            placeholder="Sisa Periode Cicilan"
+            placeholder="Total Pinjaman"
           />
         </div>
       </PayrollCard>
 
       {/* Cash Advance Details Cards */}
-      {cashAdvanceData.detailKasbon.map((detail, index) => (
+      {cashAdvanceData.loans.map((detail, index) => (
         <PayrollCard
-          key={detail.id}
+          key={detail.loanId}
           title={`Detail Kasbon ${index + 1}`}
           headerColor="green"
         >
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <DateField
               label="Tanggal Pengajuan"
-              defaultDate={detail.tanggalPengajuan}
+              defaultDate={detail.applicationDate}
               disabled
               placeholder="Tanggal Pengajuan"
             />
 
             <DateField
               label="Tanggal Pencairan"
-              defaultDate={detail.tanggalPencairan}
+              defaultDate={detail.disbursedAt}
               disabled
               placeholder="Tanggal Pencairan"
             />
 
             <InputField
               label="Limit Kasbon"
-              value={formatCurrencyValue(detail.limitKasbon)}
+              value={formatCurrencyValue(detail.limitLoan)}
               readonly
               placeholder="Limit Kasbon"
             />
 
             <InputField
               label="Jenis Kasbon"
-              value={detail.jenisKasbon}
+              value={detail.loanTypeName}
               readonly
               placeholder="Jenis Kasbon"
             />
 
             <InputField
               label="Nominal Kasbon"
-              value={formatCurrencyValue(detail.nominalKasbon)}
+              value={formatCurrencyValue(detail.nominalLoan)}
               readonly
               placeholder="Nominal Kasbon"
             />
 
             <InputField
               label="Periode Cicilan"
-              value={`${detail.periodeCicilan} bulan`}
+              value={`${detail.loanPeriod} bulan`}
               readonly
               placeholder="Periode Cicilan"
             />
@@ -224,9 +216,9 @@ export default function DetailSubmissionStatusCashAdvancePage() {
                 Surat Persetujuan Atasan
               </label>
               <LinkPreview
-                url={detail.suratPersetujuanAtasan}
+                url={detail.supervisorApprovalFile}
                 label="Lihat Detail"
-                onClick={() => handleViewFileByUrl(detail.suratPersetujuanAtasan)}
+                onClick={() => handleViewFileByUrl(detail.supervisorApprovalFile)}
               />
             </div>
 
@@ -235,16 +227,16 @@ export default function DetailSubmissionStatusCashAdvancePage() {
                 Dokumen Pendukung
               </label>
               <LinkPreview
-                url={detail.dokumenPendukung}
+                url={detail.supportingDocuments}
                 label="Lihat Detail"
-                onClick={() => handleViewFileByUrl(detail.dokumenPendukung)}
+                onClick={() => handleViewFileByUrl(detail.supportingDocuments)}
               />
             </div>
 
             <div className="md:col-span-2 lg:col-span-3">
               <TextAreaField
                 label="Keterangan"
-                value={detail.keterangan}
+                value={detail.description}
                 readonly
                 rows={4}
                 placeholder="Detail Catatan ..."
