@@ -1,13 +1,13 @@
 import { 
     CashAdvanceEntity, 
-    CashAdvanceDetailEntity, 
+    // CashAdvanceDetailEntity, 
     CashAdvanceEmployeeInfoEntity,
     ActiveAndCompletedLoansEntity,
     CashAdvanceResponseEntity,
     CashAdvanceDetailResponseEntity,
     mapRawToCashAdvanceEntity,
     mapRawToActiveAndCompletedLoansEntity,
-    mapToCashAdvanceDetailEntity,
+    // mapToCashAdvanceDetailEntity,
     mapToCashAdvanceEmployeeInfoEntity,
     mapToCashAdvanceResponseEntity,
     mapCashAdvanceDetailDTOToEntity
