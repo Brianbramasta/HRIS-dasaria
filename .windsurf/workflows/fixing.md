@@ -2,7 +2,7 @@
 auto_execution_mode: 0
 description: Fix bugs and resolve issues in the HRIS application following clean architecture principles
 ---
-You are a senior software engineer tasked with debugging and fixing issues in the HRIS application following clean architecture principles.
+You are a senior software engineer tasked with debugging and fixing issues in the HRIS application following clean architecture principles and repository pattern.
 
 Your task is to identify, analyze, and resolve bugs while maintaining the established patterns and architecture of the codebase. Focus on:
 
@@ -11,17 +11,18 @@ Your task is to identify, analyze, and resolve bugs while maintaining the establ
 ### Initial Investigation:
 - **Understand the issue** - clearly identify what's broken vs expected behavior
 - **Reproduce the bug** - create consistent reproduction steps
-- **Identify affected layers** - determine which clean architecture layers are involved
+- **Identify affected layers** - determine which repository architecture layers are involved
 - **Check error logs** - review console errors, network failures, API responses
-- **Analyze data flow** - trace the issue through `Page -> Hook -> Service -> Backend`
+- **Analyze data flow** - trace the issue through `Page -> Hook -> Repository -> Service -> Model -> Backend`
 
 ### Common Bug Categories:
 - **UI/Rendering issues** - component not displaying, layout problems
 - **Logic errors** - validation failures, incorrect calculations, wrong decisions
 - **API issues** - failed requests, wrong endpoints, data mapping problems
-- **State management** - incorrect state updates, stale data, race conditions
+- **Repository communication issues** - data not accessible from hooks, repository methods failing
+- **Data mapping issues** - data transformation failing, DTO to Entity mapping errors
+- **State management issues** - state not updating correctly
 - **Type errors** - TypeScript compilation issues, wrong type usage
-- **Performance issues** - slow rendering, memory leaks, unnecessary re-renders
 
 ## 2. **Debugging by Layer**
 
@@ -48,19 +49,38 @@ Your task is to identify, analyze, and resolve bugs while maintaining the establ
 - Business logic not working
 - Validation failing
 - State not updating
-- API data not processed correctly
+- Repository communication failing
 
 **Debugging Steps:**
-1. Check if service calls are working
+1. Check if Repository calls are working
 2. Verify state management logic
 3. Validate business rules implementation
-4. Check data mapping and transformation
+4. Check if data is coming from Repository correctly
 
 **Common Fixes:**
 - Fix logic flow in hooks
 - Update validation rules
 - Correct state management
-- Fix data mapping
+- Fix Repository communication
+
+### `repositories/` Layer Issues:
+**Symptoms:**
+- Data not accessible from hooks
+- Repository methods failing
+- Data mapping issues
+- Multiple API combination problems
+
+**Debugging Steps:**
+1. Check if Service calls are working
+2. Verify Model mapping is correct
+3. Review data transformation logic
+4. Test Repository methods directly
+
+**Common Fixes:**
+- Fix Repository method implementation
+- Update Service integration
+- Correct Model usage
+- Fix data aggregation logic
 
 ### `services/` Layer Issues:
 **Symptoms:**
@@ -80,6 +100,25 @@ Your task is to identify, analyze, and resolve bugs while maintaining the establ
 - Fix authentication setup
 - Update request/response handling
 - Fix error handling
+
+### `models/` Layer Issues:
+**Symptoms:**
+- Data transformation failing
+- DTO to Entity mapping errors
+- Inconsistent data structure
+- API changes not reflected
+
+**Debugging Steps:**
+1. Check Model mapping functions
+2. Verify DTO structure matches API response
+3. Review Entity structure consistency
+4. Test Model functions with sample data
+
+**Common Fixes:**
+- Update Model mapping functions
+- Fix DTO type definitions
+- Correct Entity structure
+- Adjust data transformation logic
 
 ### `components/` Layer Issues:
 **Symptoms:**
@@ -127,14 +166,14 @@ Your task is to identify, analyze, and resolve bugs while maintaining the establ
 4. Note any error messages or logs
 
 ### Step 2: Root Cause Analysis
-1. Trace the issue through clean architecture layers
+1. Trace the issue through repository architecture layers
 2. Identify the exact layer where the problem occurs
 3. Check for related issues in dependent layers
 4. Verify data flow and state changes
 
 ### Step 3: Fix Implementation
 1. Apply minimal fix to resolve the issue
-2. Ensure clean architecture principles are maintained
+2. Ensure repository architecture principles are maintained
 3. Update related types if necessary
 4. Maintain naming conventions
 
@@ -152,6 +191,8 @@ Your task is to identify, analyze, and resolve bugs while maintaining the establ
 - Check hook return values
 - Verify data destructuring in pages
 - Ensure async data handling with loading states
+- Check Repository communication in hooks
+- Verify Model mapping in Repository
 
 ### State Management Issues:
 **Problem**: State not updating correctly
@@ -166,20 +207,24 @@ Your task is to identify, analyze, and resolve bugs while maintaining the establ
 - Verify service endpoint URLs
 - Check request/response format matching
 - Fix authentication and headers
+- Check Repository-Service integration
+- Verify Model mapping for data transformation
 
 ### Type Definition Issues:
 **Problem**: TypeScript errors or type mismatches
 **Solution**:
 - Update interface definitions in types/
+- Ensure DTO and Entity type separation
 - Ensure consistent type usage across layers
 - Fix type annotations and generics
 
 ### Component Rendering Issues:
 **Problem**: Components not rendering or displaying incorrectly
 **Solution**:
-- Check component props and interfaces
-- Verify conditional rendering logic
-- Fix component composition and hierarchy
+- Check component props interface
+- Verify callback functions
+- Check component composition
+- Review styling and CSS
 
 ## 5. **Debugging Tools & Techniques**
 
@@ -212,7 +257,7 @@ console.log('State update:', newState);
 
 ### During Fix:
 - [ ] Apply minimal change principle
-- [ ] Maintain clean architecture separation
+- [ ] Maintain repository architecture separation
 - [ ] Follow naming conventions
 - [ ] Update related types if needed
 
@@ -226,7 +271,7 @@ console.log('State update:', newState);
 ## 7. **Prevention Strategies**
 
 ### Code Review Focus:
-- Clean architecture layer separation
+- Repository architecture layer separation
 - Type definition consistency
 - Error handling completeness
 - State management correctness
@@ -249,6 +294,8 @@ console.log('State update:', newState);
 |----------|--------------|--------------|-----------|
 | UI not rendering | `pages/` | Hook data issue | Check data flow |
 | Logic errors | `hooks/` | Business rule bug | Fix logic flow |
+| Data access issues | `repositories/` | Repository/Service bug | Fix Repository |
+| Data mapping issues | `models/` | Transformation bug | Fix Model |
 | API failures | `services/` | Endpoint/auth issue | Fix API call |
 | Type errors | `types/` | Interface mismatch | Update types |
 | Component issues | `components/` | Props/callback bug | Fix component |
@@ -258,10 +305,13 @@ Make sure to:
 1. Reproduce bugs consistently before fixing
 2. Identify root cause, not just symptoms
 3. Apply minimal fixes that maintain architecture
-4. Test thoroughly after implementing fixes
-5. Document complex fixes for future reference
-6. Consider adding tests to prevent regression
-7. Follow clean architecture principles strictly
-8. Maintain naming conventions and code standards
+4. Ensure repository architecture is maintained
+5. Verify Repository and Model layers are working correctly
+6. Test thoroughly after implementing fixes
+7. Document complex fixes for future reference
+8. Consider adding tests to prevent regression
+9. Follow repository architecture principles strictly
+10. Maintain naming conventions and code standards
+11. Ensure backend changes only impact DTO, Model, Service, Repository - never Hook or UI
 
 When fixing bugs, always prioritize understanding the issue completely before implementing changes, and ensure the fix doesn't break other functionality or violate architectural principles.

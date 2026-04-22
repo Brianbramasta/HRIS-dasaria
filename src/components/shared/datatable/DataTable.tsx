@@ -421,7 +421,7 @@ const rowCount = displayData.length;
                       {column.id === 'no'
                         ? (index + 1)
                         : column.format
-                          ? column.format(row[column.id as keyof T], row)
+                          ? column.format(row[column.id as keyof T], row)  || '-'
                           : (row[column.id as keyof T] as React.ReactNode) || '-'}
                     </TableCell>
                   ))}
