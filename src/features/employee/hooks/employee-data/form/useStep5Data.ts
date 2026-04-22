@@ -90,12 +90,10 @@ export const useStep5Data = () => {
     // const existingFile = getFileForField(doc.id);
     
     // Check if this is the "Foto KTP" document
-    const isFotoKTP = doc.document_name.toLowerCase().includes('foto ktp') || 
-                     doc.document_name.toLowerCase().includes('ktp');
+    const isFotoKTP = doc.document_name.toLowerCase().includes('foto terbaru');
     
     // Check if this is a photo-related document
-    const isPhotoDocument = doc.document_name.toLowerCase().includes('foto') || 
-                           doc.document_name.toLowerCase().includes('photo');
+    const isPhotoDocument = doc.document_name.toLowerCase().includes('foto ktp') || doc.document_name.toLowerCase().includes('foto terbaru');
     
     // Set accepted formats based on document type
     const acceptedFormats = isPhotoDocument 
