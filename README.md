@@ -115,6 +115,28 @@ export const userRepository = {
 - **DO**: Helper umum (format tanggal, helper math, dsb).
 - **DON'T**: Akses API, akses state, akses UI.
 
+  
+[ USER UI ] 
+    │
+    ▼
+[ Page / Component ] <───> [ Store (Global State) ]
+    │ (Memanggil)
+    ▼
+[ Hook (Business Logic) ] 
+    │ (Request Data)
+    ▼
+[ Repository ] ──────────> [ Model (Mapping DTO to Entity) ]
+    │ (Fetch)                ▲ (Transform)
+    ▼                        │
+[ Service (API Call) ] ──────┘
+    │
+    ▼
+[ Backend API ]
+
+<img width="5408" height="2240" alt="image" src="https://github.com/user-attachments/assets/3107130a-c18c-429c-acf3-17201a61ad4b" />
+
+
+
 ---
 
 ## Aturan Penamaan & Konvensi
@@ -195,3 +217,4 @@ export const userRepository = {
 - **Input**: Kode sumber di `src/`.
 - **Output**: Aplikasi web React yang bisa diakses via Vite dev server.
 - **Sukses**: Aplikasi berjalan lokal tanpa error build, halaman otentikasi dan modul staff/dashboards dapat dimuat.
+- 
