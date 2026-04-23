@@ -10,6 +10,10 @@ import {
   EmploymentPositionResponse,
   PersonalInformationData,
 } from '@/features/employee/types/detail/PersonalInformation';
+import type {
+  PayrollHistoryResponseDTO,
+  KasbonHistoryResponseDTO,
+} from '@/features/employee/types/dto/PayrollHistoryDto';
 // ===================== Response Types =====================
 
 
@@ -171,6 +175,28 @@ class PersonalInformationService {
     return apiService.post<{ temporary_url: string; expires_at: string }>(
       'temporaries/url',
       { path }
+    );
+  }
+
+  /**
+   * Get Payroll History - Mengambil riwayat penggajian karyawan
+   * @param employeeId - ID karyawan
+   * @returns Promise dengan data riwayat penggajian
+   */
+  async getPayrollHistory(employeeId: string): Promise<ApiResponse<PayrollHistoryResponseDTO>> {
+    return apiService.get<PayrollHistoryResponseDTO>(
+      `employee-master-data/employees/salaries/${employeeId}/index`
+    );
+  }
+
+  /**
+   * Get Kasbon History - Mengambil riwayat kasbon karyawan
+   * @param employeeId - ID karyawan
+   * @returns Promise dengan data riwayat kasbon
+   */
+  async getKasbonHistory(employeeId: string): Promise<ApiResponse<KasbonHistoryResponseDTO>> {
+    return apiService.get<KasbonHistoryResponseDTO>(
+      `employee-master-data/employees/kasbon/${employeeId}/index`
     );
   }
 }

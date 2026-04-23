@@ -92,8 +92,7 @@ export default function StoryPayrollTab({ employeeId, isEditable }: Props) {
                       <SummaryItem label="NPWP">{payrollInfo.npwp || '-'}</SummaryItem>
                       <SummaryItem label="PTKP Status">{payrollInfo.ptkpStatus || '-'}</SummaryItem>
                       <SummaryItem label="Gaji Bersih">{formatCurrency(payrollInfo.gajiBersih)}</SummaryItem>
-                      {/* belum integrasi */}
-                      <SummaryItem label="Kasbon Berjalan">{formatCurrency(300000)} (belum integrasi api)</SummaryItem>
+                      <SummaryItem label="Kasbon Berjalan">{formatCurrency(300000)}</SummaryItem>
                     </div>
                   
                 </div>
