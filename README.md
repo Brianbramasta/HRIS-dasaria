@@ -147,6 +147,7 @@ export const userRepository = {
                                 │
                                 ▼
                        [ BACKEND API SERVER ]
+```
 
 <img width="5408" height="2240" alt="image" src="https://github.com/user-attachments/assets/3107130a-c18c-429c-acf3-17201a61ad4b" />
 
