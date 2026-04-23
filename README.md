@@ -116,6 +116,9 @@ export const userRepository = {
 - **DON'T**: Akses API, akses state, akses UI.
 
   
+### 🌊 Flow Arsitektur
+
+```text
 ┌──────────────────────────────────────────────────────────┐
 │                      USER INTERFACE                      │
 │        (Pages & Components - src/pages, src/components)  │
