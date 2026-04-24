@@ -46,6 +46,7 @@ export type KasbonHistoryRow = {
   nominal: string;
   periode: string;
   hasDetail: boolean;
+  loanId: string;
 };
 
 export function useStoryPayrollTab(employeeId?: string, isEditable?: boolean) {
@@ -296,6 +297,7 @@ export function useStoryPayrollTab(employeeId?: string, isEditable?: boolean) {
       nominal: item.nominalLoan ? formatCurrency(item.nominalLoan) : '-',
       periode: item.loanPeriod ? `${item.loanPeriod} bulan` : '-',
       hasDetail: true, // Assuming all have detail for now
+      loanId: item.loanId,
     })),
     [kasbonHistory],
   );
@@ -313,13 +315,17 @@ export function useStoryPayrollTab(employeeId?: string, isEditable?: boolean) {
         label: 'Detail Kasbon',
         align: 'center' as const,
         sortable: false,
-        format: (value: boolean) =>
-          value
+        format: (_, row) =>
+          row.hasDetail
             ? React.createElement(
                 'button',
                 {
                   type: 'button',
-                  className: '',
+                  className: 'inline-flex items-center justify-center rounded-md p-2 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-white/[0.06]',
+                  onClick: () => {
+                    // Navigate to detail page
+                    window.location.href = `/cash-advance/detail/${row.loanId}`;
+                  },
                 },
                 React.createElement(IconFileDetail),
               )
