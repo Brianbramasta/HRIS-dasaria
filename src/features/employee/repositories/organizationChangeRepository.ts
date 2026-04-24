@@ -1,7 +1,7 @@
 import { 
   OrganizationChangeEntity, 
   OrganizationChangeDetailEntity, 
-  EmployeeOrganizationChangeHistoryEntity 
+  // EmployeeOrganizationChangeHistoryEntity 
 } from '../types/entity/OrganizationChangeEntity';
 import { 
   OrganizationChangeQueryParams,
