@@ -87,7 +87,7 @@ export const organizationChangeRepository = {
    * @param employeeId - Employee ID
    * @returns Promise with transformed employee organization changes
    */
-  async getOrganizationChangesByEmployee(employeeId: string): Promise<EmployeeOrganizationChangeHistoryEntity[]> {
+  async getOrganizationChangesByEmployee(employeeId: string): Promise<any> {
     try {
       const response = await organizationChangeNewService.getOrganizationChangesByEmployee(employeeId);
       
@@ -98,9 +98,8 @@ export const organizationChangeRepository = {
           const transformedData = OrganizationChangeModel.transformEmployeeHistoryListFromApi(response.data);
           return transformedData;
         } else {
-          // This is employee detail response, extract organization changes if available
-          // For now, return empty array as the structure is different
-          return [];
+          // This is employee detail response - return the employee data directly
+          return response.data;
         }
       } else {
         throw new Error(response?.meta?.message || 'Gagal memuat data perubahan organisasi karyawan');

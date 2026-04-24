@@ -381,6 +381,7 @@ export const useCreateOrganizationHistory = () => {
 
   // Validation functions
   const validateActiveContract = useCallback((employeeData: any) => {
+    console.log('kontrak aktif', employeeData )
     if (!employeeData.end_date) {
       const errorMsg = "Karyawan ini tidak memiliki kontrak aktif. Perubahan organisasi tidak dapat diproses sebelum kontrak aktif tersedia.";
       setValidationErrors(prev => ({ ...prev, no_active_contract: errorMsg }));
