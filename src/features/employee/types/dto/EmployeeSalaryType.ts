@@ -91,6 +91,7 @@ export interface EmployeeInformation {
   bank_account_holder: string;
   bank_account_number: string;
   npwp: string;
+  Active_Loans: number;
 }
 
 export interface PayrollInformation {

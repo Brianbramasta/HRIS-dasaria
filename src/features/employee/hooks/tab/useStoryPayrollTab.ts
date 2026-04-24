@@ -21,6 +21,7 @@ export type PayrollInfo = {
   npwp: string;
   ptkpStatus: string;
   gajiBersih: number;
+  activeLoans: number;
 };
 
 export type PayrollDetailCardData = {
@@ -119,6 +120,7 @@ export function useStoryPayrollTab(employeeId?: string, isEditable?: boolean) {
         npwp: employeeInfo.npwp || '-',
         ptkpStatus: employeeInfo.ptkp || '-',
         gajiBersih: payrollInfo.take_home_pay || 0,
+        activeLoans: employeeInfo.Active_Loans || 0,
       };
     }
 
@@ -130,6 +132,7 @@ export function useStoryPayrollTab(employeeId?: string, isEditable?: boolean) {
       npwp: salary?.npwp ?? '',
       ptkpStatus: salary?.ptkp_id ?? '',
       gajiBersih: 0,
+      activeLoans: 0,
     };
   }, [employeeSalaryShow, detail]);
 
