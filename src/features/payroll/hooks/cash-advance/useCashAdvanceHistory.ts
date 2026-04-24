@@ -133,7 +133,7 @@ export const useCashAdvanceHistory = () => {
             loan_type_name: item.loan_type_name,
             nominal_loan: String(item.nominal_loan),
             nominal_installment: String(item.nominal_installment),
-            loan_period: `${item.loan_period} bulan`,
+            loan_period: item.loan_period ? `${item.loan_period} bulan` : '',
             loan_status_name: item.loan_status_name as any,
             rejection_reason: item.rejection_reason || '',
             raw: item,

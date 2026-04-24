@@ -117,7 +117,7 @@ export default function DetailSubmissionPage() {
 
           <InputField
             label="Periode Cicilan"
-            value={`${cashAdvanceData.loanPeriod} bulan`}
+            value={cashAdvanceData.loanPeriod ? `${cashAdvanceData.loanPeriod} bulan` : ''}
             readonly
             placeholder="Periode Cicilan"
           />
