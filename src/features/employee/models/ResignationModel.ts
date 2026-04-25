@@ -180,6 +180,8 @@ export class ResignationModel {
         position_name: dto.employee_data.position_name,
       },
       has_active_loan: dto.has_active_loan,
+      // Dummy data for contract_end_date - will be replaced with actual API data when available
+      contract_end_date: dto.contract_end_date || '2026-05-01',
     };
   }
 

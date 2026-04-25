@@ -4,6 +4,7 @@ import { formatDateToIndonesian } from '@/utils/formatDate';
 type UseEffectiveResignationDateModalParams = {
   isOpen: boolean;
   onSubmit: (tanggalEfektif: string, deskripsi: string) => void;
+  contractEndDate?: string | null;
 };
 
 type UseEffectiveResignationDateModalReturn = {
@@ -13,21 +14,25 @@ type UseEffectiveResignationDateModalReturn = {
   setDeskripsi: (value: string) => void;
   handleDateChange: (selectedDates: Date[]) => void;
   handleSubmit: () => void;
+  validationError: string | null;
 };
 
 export function useEffectiveResignationDateModal({
   isOpen,
   onSubmit,
+  contractEndDate,
 }: UseEffectiveResignationDateModalParams): UseEffectiveResignationDateModalReturn {
   const [tanggalEfektif, setTanggalEfektif] = useState('');
   const [tanggalEfektifIso, setTanggalEfektifIso] = useState('');
   const [deskripsi, setDeskripsi] = useState('');
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isOpen) {
       setTanggalEfektif('');
       setTanggalEfektifIso('');
       setDeskripsi('');
+      setValidationError(null);
     }
   }, [isOpen]);
 
@@ -47,6 +52,20 @@ export function useEffectiveResignationDateModal({
       const iso = `${yyyy}-${mm}-${dd}`;
       setTanggalEfektifIso(iso);
       setTanggalEfektif(formatDateToIndonesian(iso) || iso);
+      
+      // Validate against contract end date
+      if (contractEndDate) {
+        const effective = new Date(iso);
+        const contractEnd = new Date(contractEndDate);
+        
+        if (effective > contractEnd) {
+          setValidationError('Tanggal efektif tidak boleh melebihi tanggal berakhir kontrak');
+        } else {
+          setValidationError(null);
+        }
+      } else {
+        setValidationError(null);
+      }
     }
   };
 
@@ -57,5 +76,6 @@ export function useEffectiveResignationDateModal({
     setDeskripsi,
     handleDateChange,
     handleSubmit,
+    validationError,
   };
 }

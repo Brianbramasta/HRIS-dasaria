@@ -355,6 +355,7 @@ export default function DetailPengunduranDiriPage() {
         namaLengkap={applicationDetail?.resignationDetails?.full_name || data?.name || ''}
         posisi={applicationDetail?.resignationDetails?.position_name || data?.posisi || ''}
         tanggalPengajuan={applicationDetail?.resignationDetails?.tanggal_pengajuan || data?.tanggalPengajuan || ''}
+        contractEndDate={applicationDetail?.resignationDetails?.contract_end_date || '2025-05-01'}
       />
 
       <RejectionConfirmtionResignnationModal

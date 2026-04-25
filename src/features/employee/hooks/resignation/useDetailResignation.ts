@@ -6,6 +6,7 @@ import { addNotification } from '../../../../stores/notificationStore';
 // import { error } from 'console';
 import errorHandle from '@/utils/errorHandle';
 import { handleViewFileByUrl } from '@/utils/viewFileHandle';
+import { formatDateToIndonesian } from '@/utils/formatDate';
 
 interface UploadRow {
   id: number;
@@ -27,6 +28,8 @@ export const useDetailResignation = (id: string | undefined) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [contractEndDate, setContractEndDate] = useState<string | null>(null);
+  const [validationError, setValidationError] = useState<string | null>(null);
   const [docs, setDocs] = useState<DocumentItem[]>([
     { tipeFile: 'Form Exit Discussion', namaFile: 'Form Exit Discussion.pdf' },
     { tipeFile: 'Surat Balasan Resign', namaFile: 'Surat Balasan Resign.pdf' },
@@ -64,6 +67,25 @@ export const useDetailResignation = (id: string | undefined) => {
     setIsModalOpen(false);
     setTanggalEfektif('');
     setDeskripsi('');
+    setValidationError(null);
+  };
+
+  // Validation function for effective date
+  const validateEffectiveDate = (effectiveDate: string, contractEndDate: string | null): string | null => {
+    if (!effectiveDate || !contractEndDate) {
+      return null;
+    }
+    
+    // Parse dates for comparison
+    const effective = new Date(effectiveDate);
+    const contractEnd = new Date(contractEndDate);
+    
+    // Check if effective date exceeds contract end date
+    if (effective > contractEnd) {
+      return 'Tanggal efektif tidak boleh melebihi tanggal berakhir kontrak';
+    }
+    
+    return null;
   };
 
   // Handle approve from modal
@@ -232,5 +254,10 @@ export const useDetailResignation = (id: string | undefined) => {
     handleUploadRows,
     handleRemoveDocument,
     handlePreviewPDF,
+    contractEndDate,
+    setContractEndDate,
+    validationError,
+    setValidationError,
+    validateEffectiveDate,
   };
 };

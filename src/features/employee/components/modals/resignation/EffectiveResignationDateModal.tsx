@@ -2,7 +2,7 @@ import React from 'react';
 import ModalAddEdit from '../../../../../components/shared/modal/ModalAddEdit';
 import Label from '../../../../../components/form/Label';
 import InputField from '../../../../../components/form/input/InputField';
-import DatePicker from '../../../../../components/form/date-picker';
+import DateField from '../../../../../components/shared/field/DateField';
 import TextArea from '../../../../../components/form/input/TextArea';
 import { useEffectiveResignationDateModal } from '../../../hooks/modals/resignation/useEffectiveResignationDateModal';
 import { formatDateToIndonesian } from '@/utils/formatDate';
@@ -16,6 +16,7 @@ interface EffectiveResignationDateModalProps {
   namaLengkap: string;
   posisi: string;
   tanggalPengajuan: string;
+  contractEndDate?: string | null;
 }
 
 const EffectiveResignationDateModal: React.FC<EffectiveResignationDateModalProps> = ({
@@ -27,9 +28,11 @@ const EffectiveResignationDateModal: React.FC<EffectiveResignationDateModalProps
   namaLengkap,
   posisi,
   tanggalPengajuan,
+  contractEndDate,
 }) => {
-  const { deskripsi, setDeskripsi, handleDateChange, handleSubmit } =
-    useEffectiveResignationDateModal({ isOpen, onSubmit });
+  const { deskripsi, setDeskripsi, handleDateChange, handleSubmit, validationError } =
+    useEffectiveResignationDateModal({ isOpen, onSubmit, contractEndDate });
+ 
 
   const content = (
     <div className="space-y-4">
@@ -78,13 +81,29 @@ const EffectiveResignationDateModal: React.FC<EffectiveResignationDateModalProps
       </div>
 
       <div>
-        <Label htmlFor="tanggal-efektif">Tanggal Efektif</Label>
-        <DatePicker
+        <DateField
           id="tanggal-efektif"
+          label="Tanggal Efektif"
           mode="single"
-          onChange={handleDateChange}
-          placeholder="Select a date"
+          onChange={(_dates, dateStr) => {
+            // Convert DateField output to hook format
+            const selectedDates = dateStr ? [new Date(dateStr)] : [];
+            handleDateChange(selectedDates);
+          }}
+          placeholder="Pilih tanggal"
+          maxDate={(() => {
+            if (!contractEndDate) return undefined;
+            const parsed = new Date(contractEndDate);
+            // Check if date is valid
+            return isNaN(parsed.getTime()) ? undefined : parsed;
+          })()}
+          error={validationError || undefined}
         />
+        {contractEndDate && (
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            Tanggal berakhir kontrak: {formatDateToIndonesian(contractEndDate) || contractEndDate}
+          </p>
+        )}
       </div>
 
       <div>

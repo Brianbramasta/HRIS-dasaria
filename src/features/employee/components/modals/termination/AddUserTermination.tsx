@@ -6,6 +6,7 @@ import DateField from '@/components/shared/field/DateField';
 import FIleField from '@/components/shared/field/FIleField';
 import TextAreaField from '@/components/shared/field/TextAreaField';
 import { useApiResignation } from '@/features/employee/hooks/api/useApiResignation';
+import { formatDateToIndonesian } from '@/utils/formatDate';
 
 export type AddTerminationForm = {
   nip: string;
@@ -37,6 +38,7 @@ const AddUserTermination: React.FC<Props> = ({ isOpen, onClose, onSubmit, submit
   const [file, setFile] = useState<File | undefined>(undefined);
   const [letterOfCommitment, setLetterOfCommitment] = useState<File | undefined>(undefined);
   const [catatan, setCatatan] = useState('');
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   const {
     loading,
@@ -115,12 +117,31 @@ const AddUserTermination: React.FC<Props> = ({ isOpen, onClose, onSubmit, submit
       setFile(undefined);
       setLetterOfCommitment(undefined);
       setCatatan('');
+      setValidationError(null);
     }
   }, [isOpen]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
     setFile(f);
+  };
+
+  // Validation function for effective date
+  const validateEffectiveDate = (effectiveDate: string, contractEndDate: string | null): string | null => {
+    if (!effectiveDate || !contractEndDate) {
+      return null;
+    }
+    
+    // Parse dates for comparison
+    const effective = new Date(effectiveDate);
+    const contractEnd = new Date(contractEndDate);
+    
+    // Check if effective date exceeds contract end date
+    if (effective > contractEnd) {
+      return 'Tanggal efektif tidak boleh melebihi tanggal berakhir kontrak';
+    }
+    
+    return null;
   };
 
   const handleSubmit = () => {
@@ -183,6 +204,12 @@ const AddUserTermination: React.FC<Props> = ({ isOpen, onClose, onSubmit, submit
               setTanggalEfektif(null);
             }
           }}
+          maxDate={(() => {
+            if (!adminPopup?.contract_end_date) return undefined;
+            const parsed = new Date(adminPopup.contract_end_date);
+            // Check if date is valid
+            return isNaN(parsed.getTime()) ? undefined : parsed;
+          })()}
           disabled={submitting || !nip}
           required
         />
@@ -190,12 +217,34 @@ const AddUserTermination: React.FC<Props> = ({ isOpen, onClose, onSubmit, submit
           label="Tanggal Efektif"
           // placeholder="Select a date"
           defaultDate={tanggalEfektif || undefined}
-          onChange={(_dates, dateStr) => setTanggalEfektif(dateStr || null)}
+          onChange={(_dates, dateStr) => {
+            setTanggalEfektif(dateStr || null);
+            // Validate against contract end date
+            if (dateStr && adminPopup?.contract_end_date) {
+              const error = validateEffectiveDate(dateStr, adminPopup.contract_end_date);
+              setValidationError(error);
+            } else {
+              setValidationError(null);
+            }
+          }}
           disabled={submitting || !nip}
           required
           minDate={tanggalPengajuan || undefined}
+          maxDate={(() => {
+            if (!adminPopup?.contract_end_date) return undefined;
+            const parsed = new Date(adminPopup.contract_end_date);
+            // Check if date is valid
+            return isNaN(parsed.getTime()) ? undefined : parsed;
+          })()}
+          error={validationError || undefined}
         />
+        
       </div>
+      {adminPopup?.contract_end_date && (
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            Tanggal berakhir kontrak: {formatDateToIndonesian(adminPopup.contract_end_date) || adminPopup.contract_end_date}
+          </p>
+        )}
       <FIleField
         label="Upload Dokumen"
         onChange={handleFileChange}

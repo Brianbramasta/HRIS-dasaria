@@ -126,6 +126,7 @@ export interface AdministrationPopupResult {
     position_name: string;
   };
   has_active_loan: boolean;
+  contract_end_date: string | null;
 }
 
 export interface DocumentTypeItem {
