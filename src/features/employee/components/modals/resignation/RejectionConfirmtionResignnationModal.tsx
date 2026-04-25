@@ -58,7 +58,7 @@ export default function RejectionConfirmtionResignnationModal({
             required
           />
           <div className="text-xs text-red-500">
-            *Harap memberikan alasan penolakan perpanjangan kontrak.
+            *Harap memberikan alasan penolakan pengunduran diri.
           </div>
         </div>
       }
