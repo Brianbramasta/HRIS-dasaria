@@ -1,1 +1,0 @@
-export { toFileSummary } from './toFileSummary';

@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { employeeMasterDataService } from '@/features/employee/services/EmployeeMasterData.service';
 
 export interface ContractData {
   id: string;
@@ -44,31 +43,15 @@ export const useSpamModalStore = create<SpamModalState>((set, get) => ({
   fetchEmployeesNearContractEnd: async () => {
     set({ loading: true, error: null });
     try {
-      const response = await employeeMasterDataService.getEmployeesNearContractEnd();
-      if (response?.data) {
-        let employees = [];
-        
-        // Handle different API response structures
-        if (Array.isArray(response.data)) {
-          employees = response.data;
-        } else if (response.data && typeof response.data === 'object' && 'data' in response.data && Array.isArray((response.data as any).data)) {
-          employees = (response.data as any).data;
-        }
-
-        const mappedData: ContractData[] = employees.map((item: any, index: number) => ({
-          id: `${item.employee_name}-${index}`,
-          employeeName: item.employee_name,
-          avatar: item.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${item.employee_name}`,
-          contractDuration: `${item.remaining_month}`,
-          durationColor: get().getDurationColor(item.remaining_month),
-        }));
-
-        set({ displayData: mappedData });
-        
-        // Only open modal if it hasn't been closed for current page and there's data
-        if (mappedData.length > 0 && !get().hasBeenClosed) {
-          set({ isOpen: true });
-        }
+      // For now, return empty data since employee service is removed
+      // TODO: Implement when employee feature is restored
+      const mockData: ContractData[] = [];
+      
+      set({ displayData: mockData });
+      
+      // Only open modal if it hasn't been closed for current page and there's data
+      if (mockData.length > 0 && !get().hasBeenClosed) {
+        set({ isOpen: true });
       }
     } catch (err) {
       set({ error: err instanceof Error ? err.message : 'Failed to fetch employees near contract end' });

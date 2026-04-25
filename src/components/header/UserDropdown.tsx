@@ -2,15 +2,20 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
-import { useAuthStore } from "@/features/auth/stores/AuthStore";
 import { clearAllFilterPersistence } from "@/stores/filterStore";
 
 const isDev = import.meta.env.VITE_APP_ENV === 'dev';
 
+// Mock user data since auth is removed
+const mockUser = {
+  name: "Demo User",
+  email: "demo@company.com",
+  employeeNip: "EMP001"
+};
+
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  const { user, logout } = useAuthStore((state) => state);
 
   function toggleDropdown() {
     setIsOpen(!isOpen);
@@ -19,9 +24,10 @@ export default function UserDropdown() {
   function closeDropdown() {
     setIsOpen(false);
   }
+  
   function handleLogout() {
     clearAllFilterPersistence();
-    logout();
+    // For now, just navigate to login page (though auth is removed)
     navigate('/login');
   }
 
@@ -37,7 +43,7 @@ export default function UserDropdown() {
           <img src="/images/user/owner.jpg" alt="User" />
         </span>
 
-        <span className="block mr-1 font-medium text-theme-sm">{user?.name}</span>
+        <span className="block mr-1 font-medium text-theme-sm">{mockUser?.name}</span>
         <svg
           className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${
             isOpen ? "rotate-180" : ""
@@ -65,10 +71,10 @@ export default function UserDropdown() {
       >
         <div>
           <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-            {user?.employee?.employee?.full_name || user?.name}
+            {mockUser?.name}
           </span>
           <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
-            {user?.employee?.employee_nip || user?.employee?.employee?.employee_nip || user?.email}
+            {mockUser?.email}
           </span>
         </div>
 
@@ -77,7 +83,7 @@ export default function UserDropdown() {
             <DropdownItem
               onItemClick={closeDropdown}
               tag="a"
-              to={`/employee-data/${user?.employeeNip}?mode=view`}
+              to={`/employee-data/${mockUser?.employeeNip}?mode=view`}
               className="flex items-center gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
             >
               <svg

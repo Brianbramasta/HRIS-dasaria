@@ -1,25 +1,7 @@
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { useAuthStore } from '@/features/auth/stores/AuthStore';
-import { canAccessRoute } from '@/features/auth/config/RolePermissions';
-
-// Role-based access: HR/Admin -> full access; staff -> only data master karyawan
-// const STAFF_ALLOWED_PATHS = ['/data-karyawan', '/data-karyawan/form'];
+import { Outlet } from 'react-router-dom';
 
 export default function ProtectedOutlet() {
-  const { isAuthenticated, user } = useAuthStore((s) => ({ isAuthenticated: s.isAuthenticated, user: s.user }));
-  const location = useLocation();
-
-  if (!isAuthenticated) {
-    // Simpan intended URL agar setelah login bisa diarahkan kembali
-    localStorage.setItem('intended_url', location.pathname + location.search);
-    return <Navigate to="/login" replace />;
-  }
-
-  // Role-based access via centralized policy
-  const path = location.pathname;
-  if (!canAccessRoute(user?.role, path)) {
-    return <Navigate to="/dashboard" replace />;
-  }
-
+  // For now, bypass authentication since auth feature is removed
+  // TODO: Implement authentication when auth feature is restored
   return <Outlet />;
 }

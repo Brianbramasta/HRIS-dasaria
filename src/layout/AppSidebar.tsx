@@ -11,8 +11,6 @@ import {
 import { IconPenggajian, IconKaryawan, IconStrukturOrganisasi, IconHakAksesMenu, IconJenisPengajuan } from '@/icons/components/icons'
 import { useSidebar } from "../context/SidebarContext";
 // import SidebarWidget from "./SidebarWidget";
-import { useAuthStore } from "../features/auth/stores/AuthStore";
-import { filterMenuByRole } from "../features/auth/config/RolePermissions";
 import { useSpamModalStore } from "../stores/useSpamModalStore";
 
 type NavItem = {
@@ -73,9 +71,9 @@ const navItems: NavItem[] = [
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const location = useLocation();
-  const role = useAuthStore((s) => s.user?.role);
   const openModal = useSpamModalStore((s) => s.openModal);
-  const mainMenu = filterMenuByRole(role, navItems, "main");
+  // For now, show all menu items since auth is removed
+  const mainMenu = navItems;
 
   const [openSubmenu, setOpenSubmenu] = useState<{
     type: "main"
